@@ -764,3 +764,11 @@ export const DIRECT_MESSAGES_PER_DAY = 300;
 
 /** Express apply with the sample resume ("Try a sample resume") as the current one: a made-up person's is never sent. */
 export const SAMPLE_CANT_SEND = "The sample resume can't be sent. Upload your own resume first.";
+
+/**
+ * App emails (the weekly My jobs email, and later the Monday events digest) sent a day across the whole app, counted
+ * per India day in app_email_days (T151, T153). Resend's free plan allows 100 a day; sign-in codes keep the other 60.
+ */
+export const APP_EMAIL_DAILY_BUDGET = 40;
+/** Most of APP_EMAIL_DAILY_BUDGET the Monday events digest may take (Timetable PR 5, not built yet); the weekly email gets the rest. */
+export const APP_EMAIL_DIGEST_SHARE = 20;

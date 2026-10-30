@@ -159,9 +159,9 @@ ${roleCount} role profiles await review in all.
 ## How answers flow back into the app
 
 1. Save the returned file in \`/mnt/project-files/careermetro/review/returned/\`, with the reviewer's name and the date in the file name.
-2. Development runs \`node scripts/review/read-review.mjs <returned file>\`. It lists every line with an answer, grouped by role or question, and flags Refs that no longer exist.
-3. Development makes the changes in \`src/content\` in one PR. For a role, it sets \`reviewedBy\` (the reviewer's name and field) and \`updatedOn\`; for a question or a certification, it sets \`reviewed: true\`. The usual checks (the matcher and closest-role evals) run in CI.
-4. The pack is generated again from the new content, so reviewed roles drop out of it.
+2. Development runs \`node scripts/review/read-review.mjs <returned file>\`. It lists every line with an answer, grouped by role or question, and flags any Ref the current pack no longer holds (a removed role, skill, duty, question or certification, or one reviewed since).
+3. Development makes the changes in \`src/content\` in one PR. For a role, it sets \`reviewedBy\` (the reviewer's name and field) and \`updatedOn\`; for a timed-test question or a certification, it sets \`reviewed: true\`. Practice questions have no review mark: a change is edited in place in \`src/content/practice-questions.json\`, and the Practice file keeps listing every question. The usual checks (the matcher and closest-role evals) run in CI.
+4. The pack is generated again from the new content, so reviewed roles, timed-test questions and certifications drop out of it.
 
 Reviewers' names go in the content only with their consent. Nothing in this pack comes from a user.
 `;

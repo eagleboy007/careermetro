@@ -142,11 +142,6 @@
       "why": "Covers Vertex AI pipelines and serving"
     },
     {
-      "certId": "azure-data-scientist",
-      "importance": "optional",
-      "why": "Covers Azure Machine Learning workspaces and deployment"
-    },
-    {
       "certId": "azure-mlops-engineer",
       "importance": "optional",
       "why": "Covers Azure Machine Learning pipelines, deployment and monitoring"

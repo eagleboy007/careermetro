@@ -111,7 +111,8 @@ async function Today({ searchParams }: PageProps<"/today">) {
   const lead =
     interview && today
       ? await jobPrep(account.id, interview.ref, { now })
-          .then((prep) => leadSkills(prep?.open ?? [], today))
+          // Today's ride holds one goal, so only its skill can lead it (T155).
+          .then((prep) => leadSkills(prep?.open ?? [], [today.skillId]))
           .catch(failed<string[]>("today_interview_skills_failed", []))
       : [];
   const nextUp = interview ? { ...interview, days: daysUntil(interview.interviewAt, now), leadSkills: lead } : null;

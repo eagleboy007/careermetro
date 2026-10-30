@@ -1585,6 +1585,21 @@ export const weeklyEmails = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.week] }), index("weekly_emails_sent").on(t.sentAt)],
 );
 
+/**
+ * App emails sent each India day (Asia/Kolkata), all kinds together: the weekly My jobs email now, the Monday events
+ * digest later. Resend's free plan allows 100 a day; sign-in codes keep 60, so app emails share APP_EMAIL_DAILY_BUDGET
+ * (src/lib/email/budget.ts takes one atomically before each send). A count only: no person, address or content.
+ */
+export const appEmailDays = pgTable(
+  "app_email_days",
+  {
+    day: date("day").primaryKey(),
+    sent: integer("sent").notNull().default(0),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [check("app_email_days_sent", sql`${t.sent} >= 0`)],
+);
+
 /** Each run of the daily feed, counts only, for Departures' "Updated". Runs over 90 days old are deleted. */
 export const jobFeedRuns = pgTable(
   "job_feed_runs",

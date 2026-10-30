@@ -35,16 +35,20 @@ describe("the still-open skills that lead today's ride (C20)", () => {
     { skillId: "python", skillName: "Python" },
   ];
 
-  it("names today's goal first, then the job's other open goals, two at most", () => {
-    expect(leadSkills(open, { skillId: "threat-detection" })).toEqual(["Threat detection", "SIEM"]);
-    expect(leadLine(leadSkills(open, { skillId: "siem" }))).toBe("Its still-open skills, SIEM and Threat detection, lead today's ride.");
-    expect(leadLine(["SIEM"])).toBe("Its still-open skill, SIEM, leads today's ride.");
+  it("names only skills on today's ride: today's goal, and another open skill only when the ride holds it too (T155)", () => {
+    // Today's ride is one goal, so the job's other open goals are left out.
+    expect(leadSkills(open, ["threat-detection"])).toEqual(["Threat detection"]);
+    expect(leadLine(leadSkills(open, ["siem"]))).toBe("Its still-open skill, SIEM, leads today's ride.");
+    // A ride that holds two of the job's open skills names both, today's goal first, two at most.
+    expect(leadSkills(open, ["threat-detection", "siem", "python"])).toEqual(["Threat detection", "SIEM"]);
+    expect(leadLine(leadSkills(open, ["siem", "threat-detection"]))).toBe("Its still-open skills, SIEM and Threat detection, lead today's ride.");
   });
 
-  it("says nothing when today's ride is not on one of the job's open skills, or the job has none", () => {
-    expect(leadSkills(open, { skillId: "power-bi" })).toEqual([]);
-    expect(leadSkills(open, null)).toEqual([]);
-    expect(leadSkills([], { skillId: "siem" })).toEqual([]);
+  it("says nothing when today's goal is not one of the job's open skills, or the job has none", () => {
+    expect(leadSkills(open, ["power-bi"])).toEqual([]);
+    expect(leadSkills(open, ["power-bi", "siem"])).toEqual([]);
+    expect(leadSkills(open, [])).toEqual([]);
+    expect(leadSkills([], ["siem"])).toEqual([]);
     expect(leadLine([])).toBeNull();
   });
 });

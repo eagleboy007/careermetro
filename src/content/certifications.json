@@ -127,6 +127,7 @@
     "issuer": "Microsoft",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "az-900",
       "azure fundamentals"
@@ -345,6 +346,7 @@
     "issuer": "Google (Coursera)",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "google data analytics certificate",
       "google data analytics professional certificate"
@@ -505,6 +507,7 @@
     "issuer": "Meta (Coursera)",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "meta front-end developer"
     ],
@@ -521,6 +524,7 @@
     "issuer": "ISTQB",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "istqb",
       "ctfl",
@@ -540,6 +544,7 @@
     "issuer": "ISTQB",
     "level": "advanced",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "ct-tae",
       "istqb test automation"
@@ -573,6 +578,7 @@
     "issuer": "Scrum.org",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "pspo",
       "professional scrum product owner"
@@ -624,6 +630,7 @@
     "issuer": "IIBA",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "ecba"
     ],
@@ -839,6 +846,7 @@
     "issuer": "OffSec",
     "level": "professional",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "oscp"
     ],
@@ -1008,6 +1016,7 @@
     "issuer": "Python Institute",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "pcep",
       "pcep-30-02",
@@ -1024,6 +1033,7 @@
     "issuer": "Python Institute",
     "level": "associate",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "pcap",
       "pcap-31-03",
@@ -1042,6 +1052,7 @@
     "issuer": "Microsoft",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "mo-200",
       "mos excel associate",
@@ -1058,6 +1069,7 @@
     "issuer": "Microsoft",
     "level": "associate",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "mo-201",
       "mos excel expert",
@@ -1112,6 +1124,7 @@
     "issuer": "Microsoft",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "sc-900",
       "security, compliance, and identity fundamentals"
@@ -1197,6 +1210,7 @@
     "issuer": "Google",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "google cybersecurity professional certificate",
       "google cybersecurity certificate"
@@ -1406,6 +1420,7 @@
     "issuer": "Google",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "google ux design professional certificate",
       "google ux design certificate"
@@ -1886,6 +1901,7 @@
     "issuer": "Microsoft",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "power platform fundamentals",
       "pl-900"
@@ -2454,6 +2470,7 @@
     "issuer": "Scrum.org",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "professional scrum master i",
       "professional scrum master",
@@ -2532,6 +2549,7 @@
     "issuer": "ISTQB",
     "level": "professional",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "istqb advanced test manager",
       "istqb advanced level test management",
@@ -2553,6 +2571,7 @@
     "issuer": "ISTQB",
     "level": "associate",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "istqb performance testing",
       "istqb certified tester performance testing",
@@ -3057,6 +3076,7 @@
     "issuer": "Zero-Point Security",
     "level": "associate",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "certified red team operator",
       "crto",

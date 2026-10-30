@@ -34,7 +34,11 @@ const m = vi.hoisted(() => ({
   clearShared: vi.fn(async () => ({ sharedJobsCleared: 0 })),
   clearWeekly: vi.fn(async () => ({ weeklyRowsCleared: 0 })),
   runWeekly: vi.fn<
-    (o: { site: string; cap: number; send: (m: { to: string; subject: string; text: string; html: string; preheader: string; offUrl: string }) => Promise<{ ok: boolean }> }) => Promise<{ considered: number; sent: number; empty: number; failed: number; capped: boolean }>
+    (o: {
+      site: string;
+      cap: number;
+      send: (m: { to: string; subject: string; text: string; html: string; preheader: string; offUrl: string; idempotencyKey: string }) => Promise<{ ok: boolean; quota?: boolean; maybeSent?: boolean }>;
+    }) => Promise<{ considered: number; sent: number; empty: number; failed: number; capped: boolean }>
   >(async () => ({ considered: 0, sent: 0, empty: 0, failed: 0, capped: false })),
   turnOff: vi.fn<(t: string) => Promise<void>>(async () => {}),
   holdShared: vi.fn<(job: { text: string; url: string }, userId: string | null) => Promise<string>>(async () => "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f"),
@@ -75,7 +79,7 @@ vi.mock("@/lib/departures/store", () => ({ clearOldDepartures: m.clearDepartures
 vi.mock("@/lib/library/store", () => ({ clearOldLibraryRecords: m.clearLibrary }));
 vi.mock("@/lib/notifications/store", () => ({ clearOldNotifications: m.clearNotifications }));
 vi.mock("@/lib/my-jobs/store", () => ({ clearUnsavedJobText: m.clearJobText }));
-vi.mock("@/lib/my-jobs/weekly-store", () => ({ clearOldWeeklyEmails: m.clearWeekly, runWeeklyEmails: m.runWeekly, turnOffWeeklyEmail: m.turnOff, WEEKLY_EMAIL_CAP: 40 }));
+vi.mock("@/lib/my-jobs/weekly-store", () => ({ clearOldWeeklyEmails: m.clearWeekly, runWeeklyEmails: m.runWeekly, turnOffWeeklyEmail: m.turnOff }));
 vi.mock("@/lib/my-jobs/share", async (original) => ({ ...(await original<typeof import("@/lib/my-jobs/share")>()), clearOldSharedJobs: m.clearShared, holdSharedJob: m.holdShared }));
 vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
@@ -479,19 +483,23 @@ describe("the weekly My jobs email", () => {
     expect(m.runWeekly).not.toHaveBeenCalled();
   });
 
-  it("sends up to the cap, from hello@, with the one-click unsubscribe headers, and logs counts only", async () => {
+  it("sends within the shared budget, from hello@, with the one-click unsubscribe headers and the idempotency key, and logs counts only", async () => {
     vi.stubEnv("CRON_SECRET", "s3cret-value");
     vi.stubEnv("RESEND_API_KEY", "re_test");
     vi.stubEnv("EMAIL_FROM", "CareerMetro <codes@careermetro.com>");
     const fetch = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response('{"id":"x"}', { status: 200 }));
+    const key = `weekly-${ID}-2026-10-26`;
+    const outcomes: { ok: boolean; quota?: boolean; maybeSent?: boolean }[] = [];
     m.runWeekly.mockImplementationOnce(async (o) => {
       const offUrl = `${o.site}/api/email/off?t=${TOKEN}`;
-      await o.send({ to: "priya.sharma@example.test", subject: "1 job waiting on a reply", text: "Priya, your week on My jobs.", html: "<p>Priya</p>", preheader: "", offUrl });
+      outcomes.push(await o.send({ to: "priya.sharma@example.test", subject: "1 job waiting on a reply", text: "Priya, your week on My jobs.", html: "<p>Priya</p>", preheader: "", offUrl, idempotencyKey: key }));
       return { considered: 1, sent: 1, empty: 0, failed: 0, capped: false };
     });
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     expect(await json(await weeklyCron(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, considered: 1, sent: 1, empty: 0, failed: 0, capped: false } });
     expect(m.runWeekly.mock.calls[0]![0].cap).toBe(40);
+    expect(outcomes).toEqual([{ ok: true }]);
+    expect(new Headers((fetch.mock.calls[0]![1] as RequestInit).headers).get("idempotency-key")).toBe(key);
     const body = JSON.parse(String((fetch.mock.calls[0]![1] as RequestInit).body));
     expect(body.from).toBe("CareerMetro <hello@careermetro.com>");
     expect(body.headers).toEqual({ "List-Unsubscribe": `<${SITE}/api/email/off?t=${TOKEN}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" });
@@ -500,6 +508,32 @@ describe("the weekly My jobs email", () => {
     expect(all).toContain("weekly_email_done");
     for (const secret of ["priya", "Priya", TOKEN]) expect(all).not.toContain(secret);
     logs.mockRestore();
+    fetch.mockRestore();
+  });
+
+  it("tells the run when Resend's daily quota is spent, and when a send may have gone out", async () => {
+    vi.stubEnv("CRON_SECRET", "s3cret-value");
+    vi.stubEnv("RESEND_API_KEY", "re_test");
+    vi.stubEnv("EMAIL_FROM", "CareerMetro <codes@careermetro.com>");
+    const fetch = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response('{"statusCode":429,"name":"daily_quota_exceeded"}', { status: 429 }))
+      .mockResolvedValueOnce(new Response('{"statusCode":500,"name":"application_error"}', { status: 500 }));
+    const outcomes: { ok: boolean; quota?: boolean; maybeSent?: boolean }[] = [];
+    m.runWeekly.mockImplementationOnce(async (o) => {
+      const m1 = { to: "a@example.test", subject: "s", text: "t", html: "<p>t</p>", preheader: "", offUrl: `${o.site}/api/email/off?t=${TOKEN}`, idempotencyKey: `weekly-${ID}-2026-10-26` };
+      outcomes.push(await o.send(m1), await o.send(m1));
+      return { considered: 1, sent: 0, empty: 0, failed: 1, capped: true };
+    });
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    expect((await weeklyCron(get("Bearer s3cret-value"))).status).toBe(200);
+    expect(outcomes).toEqual([
+      { ok: false, quota: true, maybeSent: false },
+      { ok: false, quota: false, maybeSent: true },
+    ]);
+    log.mockRestore();
+    warn.mockRestore();
     fetch.mockRestore();
   });
 

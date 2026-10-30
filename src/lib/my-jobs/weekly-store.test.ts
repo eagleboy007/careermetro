@@ -3,8 +3,10 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as schema from "@/db/schema";
+import { appEmailsSent } from "@/lib/email/budget";
+import { APP_EMAIL_DAILY_BUDGET } from "@/lib/schemas/constants";
 import { setJobStatus, updateJob } from "./store";
-import { runWeeklyEmails, turnOffWeeklyEmail, weeklyFor, type WeeklySend } from "./weekly-store";
+import { runWeeklyEmails, turnOffWeeklyEmail, weeklyFor, weeklyKey, type WeeklySend } from "./weekly-store";
 
 vi.mock("server-only", () => ({}));
 
@@ -23,11 +25,15 @@ describe.skipIf(!db)("the weekly My jobs email (database)", () => {
   const TUESDAY = new Date("2026-10-27T03:00:00Z");
   const d = () => db as unknown as Db;
 
-  beforeEach(() => {
+  // The shared app-email budget is one count a day for the whole app, so each test starts these days at zero.
+  const DAYS = ["2026-10-26", "2026-10-27", "2026-10-28"];
+  beforeEach(async () => {
     for (const level of ["log", "warn", "error"] as const) vi.spyOn(console, level).mockImplementation((line: unknown) => void lines.push(String(line)));
+    await db!.delete(schema.appEmailDays).where(inArray(schema.appEmailDays.day, DAYS));
   });
   afterEach(() => vi.restoreAllMocks());
   afterAll(async () => {
+    await db!.delete(schema.appEmailDays).where(inArray(schema.appEmailDays.day, DAYS));
     if (userIds.length) await db!.delete(schema.users).where(inArray(schema.users.id, userIds));
     await db!.delete(schema.jobPosts).where(like(schema.jobPosts.boardToken, `${run}%`));
     await sqlClient!.end();
@@ -96,19 +102,95 @@ describe.skipIf(!db)("the weekly My jobs email (database)", () => {
     expect([...capped.sent, ...rest.sent].map((m) => m.to).sort()).toEqual([a.email, b.email].sort());
   });
 
-  it("stops at the sender's daily limit, and the next day sends the rest", async () => {
+  it("stops at the sender's daily quota, and the next day sends the rest", async () => {
     const a = await person();
     const b = await person();
     const only = [a.userId, b.userId];
     let calls = 0;
-    const limited: WeeklySend = async () => {
+    const quota: WeeklySend = async () => {
       calls++;
-      return { ok: false, limited: true };
+      return { ok: false, quota: true };
     };
-    expect(await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: limited, only })).toMatchObject({ sent: 0, failed: 1, capped: true });
+    expect(await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: quota, only })).toMatchObject({ sent: 0, failed: 1, capped: true });
     expect(calls).toBe(1);
+    // Nothing went out, so the week and the budget are free again.
+    expect(await rows(a.userId)).toEqual([]);
+    expect(await rows(b.userId)).toEqual([]);
+    expect(await appEmailsSent({ db: d(), now: MONDAY })).toBe(0);
     const rest = sender();
     expect(await runWeeklyEmails({ db: d(), now: TUESDAY, site: "https://careermetro.test", send: rest.send, only })).toMatchObject({ sent: 2, capped: false });
+    expect(await appEmailsSent({ db: d(), now: TUESDAY })).toBe(2);
+  });
+
+  it("sends each with its idempotency key, and draws from the shared app-email budget", async () => {
+    const a = await person();
+    const b = await person();
+    const only = [a.userId, b.userId];
+    // Another app email (later, the events digest) already took all but one of today's budget.
+    await db!.insert(schema.appEmailDays).values({ day: "2026-10-26", sent: APP_EMAIL_DAILY_BUDGET - 1 });
+    const first = sender();
+    expect(await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: first.send, only })).toMatchObject({ sent: 1, capped: true });
+    expect(await appEmailsSent({ db: d(), now: MONDAY })).toBe(APP_EMAIL_DAILY_BUDGET);
+    const to = first.sent[0]!.to === a.email ? a : b;
+    expect(first.sent[0]!.idempotencyKey).toBe(weeklyKey(to.userId, "2026-10-26"));
+    expect(first.sent[0]!.idempotencyKey).toBe(`weekly-${to.userId}-2026-10-26`);
+    // Spent: nobody else gets one today.
+    const none = sender();
+    expect(await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: none.send, only })).toMatchObject({ sent: 0, capped: true });
+    expect(none.sent).toHaveLength(0);
+  });
+
+  it("starts with the people sent longest ago, so the same people aren't always left at the end", async () => {
+    const a = await person();
+    const b = await person();
+    const [low, high] = [a, b].sort((x, y) => (x.userId < y.userId ? -1 : 1));
+    // The later id was sent longer ago, so it goes first even though its id sorts last.
+    await db!.insert(schema.weeklyEmails).values([
+      { userId: low!.userId, week: "2026-10-19" },
+      { userId: high!.userId, week: "2026-10-12" },
+    ]);
+    const one = sender();
+    expect(await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: one.send, only: [a.userId, b.userId], cap: 1 })).toMatchObject({ sent: 1, capped: true });
+    expect(one.sent.map((m) => m.to)).toEqual([high!.email]);
+    // Someone never sent goes before both.
+    const c = await person();
+    const next = sender();
+    expect(await runWeeklyEmails({ db: d(), now: TUESDAY, site: "https://careermetro.test", send: next.send, only: [a.userId, b.userId, c.userId], cap: 1 })).toMatchObject({ sent: 1 });
+    expect(next.sent.map((m) => m.to)).toEqual([c.email]);
+  });
+
+  it("never sends twice when a send may have gone out: one more try with the same key, then the week stays claimed", async () => {
+    const a = await person();
+    const only = [a.userId];
+    const keys: string[] = [];
+    const unsure: WeeklySend = async (m) => {
+      keys.push(m.idempotencyKey);
+      return { ok: false, maybeSent: true };
+    };
+    expect(await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: unsure, only })).toMatchObject({ sent: 0, failed: 1 });
+    expect(keys).toEqual([weeklyKey(a.userId, "2026-10-26"), weeklyKey(a.userId, "2026-10-26")]);
+    expect((await rows(a.userId)).map((r) => r.week)).toEqual(["2026-10-26"]);
+    expect(await appEmailsSent({ db: d(), now: MONDAY })).toBe(1);
+    // Tuesday's run leaves them alone.
+    const again = sender();
+    await runWeeklyEmails({ db: d(), now: TUESDAY, site: "https://careermetro.test", send: again.send, only });
+    expect(again.sent).toHaveLength(0);
+    // An unsure first try that the second (same key) confirms counts as sent.
+    const b = await person();
+    let tries = 0;
+    const late: WeeklySend = async () => (++tries === 1 ? { ok: false, maybeSent: true } : { ok: true });
+    expect(await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: late, only: [b.userId] })).toMatchObject({ sent: 1, failed: 0 });
+    expect(tries).toBe(2);
+  });
+
+  it("sends one email when two runs go at once", async () => {
+    const a = await person();
+    const one = sender();
+    const two = sender();
+    const runs = await Promise.all([one, two].map((s) => runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: s.send, only: [a.userId] })));
+    expect(runs.reduce((n, r) => n + r.sent, 0)).toBe(1);
+    expect(one.sent.length + two.sent.length).toBe(1);
+    expect(await appEmailsSent({ db: d(), now: MONDAY })).toBe(1);
   });
 
   it("turns off from the email's token, once, and an unknown token changes nothing", async () => {

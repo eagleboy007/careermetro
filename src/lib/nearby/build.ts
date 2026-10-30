@@ -77,14 +77,16 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
         toAdd: open.filter((g) => g.status !== "weak").map((g) => ({ name: g.skillName, outdated: g.status === "outdated" })),
         crossSkillIds: lineSkillIds.filter((id, i) => openIds.has(id) && lineSkillIds.indexOf(id) === i),
       };
-      // Shared skills without the context ones, over the role's skills without them: the same counts the line shows,
-      // but a role can't come first on "communication" alone.
-      const contextShared = match.met.filter((m) => contextIds.has(m.skillId)).length;
-      const key = line.shared - contextShared;
-      const keyTotal = line.total - contextShared;
+      // Key skills: the role's required skills without any context one (shown or not), so a role can't come first on
+      // "communication" alone and listing it never raises a share (T154). The matcher drops a context skill the resume
+      // doesn't show, so counting from its rows leaves out every required context skill.
+      const isKey = (row: MatchedSkill) => !contextIds.has(row.skillId);
+      const key = match.met.filter(isKey).length + match.gaps.filter((g) => isKey(g) && byProof(g)).length;
+      const keyTotal = match.met.filter(isKey).length + match.gaps.filter(isKey).length;
       return {
         line,
         key,
+        keyTotal,
         keyShare: keyTotal ? key / keyTotal : 0,
         // How many of the resume's shown skills the role asks for at all, nice-to-have ones included.
         asks: key + match.niceToHave.filter((n) => n.status === "met" && !contextIds.has(n.skillId)).length,
@@ -111,16 +113,25 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
   // Near on key skills: a role isn't near because the resume shows communication. The line still shows every shared skill.
   const near = scored.filter((s) => s.keyShare >= NEARBY_MIN_SHARE && s.key >= NEARBY_MIN_SHARED).slice(0, NEARBY_MAX);
   if (near.length) return nearbyLines.parse({ lines: near.map((s) => s.line), closest: null });
-  // Closest when none is near: the role holding the most of the resume's key skills (half for each one only listed),
-  // at least two, then the one asking for more of the resume, then share, then likeness to the target role. So a small
-  // role sharing 2 of its 6 doesn't beat a larger one the resume holds as much of, and one shared skill names nothing
-  // (src/evals/closest-eval.test.ts).
+  // Closest when none is near: a role whose years fit first, as for the lines (T154), then the one holding the most of
+  // the resume's key skills (half for each one only listed), at least two, then the one asking for more of the resume,
+  // then share, then likeness to the target role. So a small role sharing 2 of its 6 doesn't beat a larger one the
+  // resume holds as much of, and one shared skill names nothing (src/evals/closest-eval.test.ts). The sentence counts
+  // key skills, as the filter above does, so it never says a role shares half while saying none does.
   const held = (s: (typeof scored)[number]) => s.key + s.line.onResume.length / 2;
   const best = scored
-    .filter((s) => s.key >= NEARBY_MIN_SHARED)
-    .sort((a, b) => held(b) - held(a) || b.asks - a.asks || b.share - a.share || b.like - a.like || a.line.title.localeCompare(b.line.title))[0];
+    .filter((s) => s.key >= NEARBY_MIN_SHARED && s.keyTotal > 0)
+    .sort(
+      (a, b) =>
+        Number(b.fits) - Number(a.fits) ||
+        held(b) - held(a) ||
+        b.asks - a.asks ||
+        b.share - a.share ||
+        b.like - a.like ||
+        a.line.title.localeCompare(b.line.title),
+    )[0];
   return nearbyLines.parse({
     lines: [],
-    closest: best ? { slug: best.line.slug, title: best.line.title, shared: best.line.shared, total: best.line.total } : null,
+    closest: best ? { slug: best.line.slug, title: best.line.title, shared: best.key, total: best.keyTotal } : null,
   });
 }

@@ -172,7 +172,9 @@ export const ROLE_TITLES = {
   // A customer service or contact centre title before the IT service desk rule ("Customer Service Desk Agent"); never a
   // support engineer, and "Customer Support Associate" stays product support (below).
   "customer-support-executive": /^((senior|sr\.?|junior|jr\.?) )?((customer (service|care)|contact cent(re|er)|call cent(re|er)|phone banking)( desk)? (executive|associate|representative|agent|officer|advisor|adviser)|(customer|chat|voice|email) support (executive|representative|agent|officer|advisor|adviser))\b/i,
-  "it-support-engineer": /\b(desktop support|deskside support|service desk|help ?desk|end user computing( \(euc\))?|euc|it support|field support) (engineer|specialist|analyst|associate|executive|technician|agent)\b/i,
+  // A customer, HR, travel or other business desk ("Customer Service Desk Agent", "HR Helpdesk Executive") is not IT
+  // support unless the title says IT (T152); a plain "Service Desk Agent" stays IT support.
+  "it-support-engineer": /^(?!(?!.*\bit\b).*\b(customer|consumer|hr|human resources?|payroll|travel|voice|guest|patient|bpo|call cent(er|re)|contact cent(er|re))\b).*\b(desktop support|deskside support|service desk|help ?desk|end user computing( \(euc\))?|euc|it support|field support) (engineer|specialist|analyst|associate|executive|technician|agent)\b/i,
   // A cloud support title before the product support one that would read "Technical Support Engineer" in it.
   "cloud-support-engineer": /\b(cloud|aws|azure|gcp|google cloud)( technical)? support (engineer|associate|specialist|analyst)\b|\bcloud support\b/i,
   // An application or production support title before the product support one.

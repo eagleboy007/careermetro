@@ -46,6 +46,7 @@ export const CERTIFICATE_REFUSAL_MESSAGES: Record<CertificateRefusal, string> = 
   no_name: "Please add your name to your account first, then add the certificate.",
   link: "Use the verify link from the issuer or from Credly. Other links can't be checked.",
   too_many: "You've added a lot of certificates today. Please try again tomorrow.",
+  expiry_needed: "This certificate has an expiry date. Add the date printed on it.",
   reviewed:
     "We reviewed this certificate and couldn't confirm it for your account, so it can't be added again. If you think that's wrong, tell us from the Grievances page.",
 };
