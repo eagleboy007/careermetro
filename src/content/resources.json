@@ -10185,17 +10185,6 @@
     "free": true
   },
   {
-    "title": "Get started with Adobe Commerce for developers",
-    "url": "https://experienceleague.adobe.com/docs/courses/using/commerce-d-1-2023-1-introduction.html",
-    "provider": "Adobe Experience League",
-    "kind": "course",
-    "skillIds": [
-      "adobe-commerce-magento"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "Commerce videos and tutorials",
     "url": "https://experienceleague.adobe.com/en/docs/commerce-learn/tutorials/overview",
     "provider": "Adobe Experience League",
@@ -10305,17 +10294,6 @@
       "ran-performance-optimization"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "TEMS Investigation: mobile network drive testing",
-    "url": "https://prod.infovista.com/tems/investigation",
-    "provider": "Infovista",
-    "kind": "docs",
-    "skillIds": [
-      "drive-test-analysis"
-    ],
-    "minutes": 10,
     "free": true
   },
   {
@@ -10451,17 +10429,6 @@
     "free": true
   },
   {
-    "title": "Appian Academy",
-    "url": "https://community.appian.com/learn/",
-    "provider": "Appian Academy",
-    "kind": "course",
-    "skillIds": [
-      "appian-development"
-    ],
-    "minutes": 2700,
-    "free": true
-  },
-  {
     "title": "Appian interfaces overview (SAIL)",
     "url": "https://docs.appian.com/suite/help/26.6/interface_overview.html",
     "provider": "Appian",
@@ -10523,28 +10490,6 @@
     "kind": "docs",
     "skillIds": [
       "mendix-development"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Demo Storytelling",
-    "url": "https://trailhead.salesforce.com/content/learn/modules/demo-storytelling-public",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "solution-demos-poc"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Demo Design Strategies",
-    "url": "https://trailhead.salesforce.com/content/learn/modules/demo-design-strategies",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "solution-demos-poc"
     ],
     "minutes": 30,
     "free": true
