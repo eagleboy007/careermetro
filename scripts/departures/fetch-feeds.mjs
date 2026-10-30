@@ -12,7 +12,7 @@
 // so the Market's counts outlive the 180-day purge of closed posts; the daily cleanup never deletes rollups. Without DATABASE_URL, it reads the boards and prints the counts (a
 // dry run).
 // Usage: node scripts/departures/fetch-feeds.mjs
-import { appendFileSync, readFileSync } from "node:fs";
+import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import postgres from "postgres";
 import { capPosts, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, postRow, rawPost, skillMatchersFor, USER_AGENT } from "../../src/lib/departures/feed-rules.mjs";
@@ -519,15 +519,29 @@ export function roleLine(/** @type {{ roleSlug: string | null }[]} */ rows) {
  * count together. Company job titles are public; nothing a person wrote is printed.
  */
 export function unmatchedLine(/** @type {{ title: string; roleSlug: string | null }[]} */ rows, top = 25) {
+  const counts = unmatchedCounts(rows);
+  if (!counts.length) return null;
+  return `Commonest titles with no role: ${counts.slice(0, top).map(([t, n]) => `${t} ${n}`).join("; ")}.`;
+}
+
+/** Unmatched titles folded as unmatchedLine folds them, with their counts, commonest first. */
+export function unmatchedCounts(/** @type {{ title: string; roleSlug: string | null }[]} */ rows) {
+  /** @type {Map<string, number>} */
   const count = new Map();
   for (const r of rows) {
     if (r.roleSlug) continue;
     const key = r.title.split(/ [-–] |[,(|/]/)[0].toLowerCase().replace(/\s+/g, " ").trim();
     if (key) count.set(key, (count.get(key) ?? 0) + 1);
   }
-  if (!count.size) return null;
-  const shown = [...count.entries()].sort(([a, x], [b, y]) => y - x || a.localeCompare(b)).slice(0, top).map(([t, n]) => `${t} ${n}`);
-  return `Commonest titles with no role: ${shown.join("; ")}.`;
+  return [...count.entries()].sort(([a, x], [b, y]) => y - x || a.localeCompare(b));
+}
+
+/**
+ * The same counts as a tab-separated file for Data research, to pick new roles from real demand (the workflow uploads
+ * it as an artifact). Public company job titles and counts only.
+ */
+export function unmatchedTsv(/** @type {{ title: string; roleSlug: string | null }[]} */ rows, top = 200) {
+  return ["count\ttitle", ...unmatchedCounts(rows).slice(0, top).map(([t, n]) => `${n}\t${t.replace(/\t/g, " ")}`)].join("\n") + "\n";
 }
 
 export async function main() {
@@ -557,6 +571,7 @@ export async function main() {
   const places = placeLine(rows);
   if (places) lines.splice(1, 0, places);
   for (const line of [roleLine(rows), unmatchedLine(rows)]) if (line) lines.push(line);
+  if (process.env.UNMATCHED_TITLES_OUT) writeFileSync(process.env.UNMATCHED_TITLES_OUT, unmatchedTsv(rows));
   for (const line of lines) console.log(line);
   // An annotation too, so a dead board shows on the run's page, not only in its log.
   if (written?.stuck.length) console.log(`::warning title=Feed boards::${written.stuck.length} boards had a problem ${FEED_LIMITS.badRuns} runs in a row or more`);

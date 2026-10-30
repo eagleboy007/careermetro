@@ -56,4 +56,19 @@ jobs:
         run: node scripts/departures/fetch-feeds.mjs
       - name: Read the boards (dry run, nothing written)
         if: steps.db.outputs.write != 'yes' && github.event_name != 'schedule'
+        env:
+          UNMATCHED_TITLES_OUT: unmatched-titles.tsv
         run: node scripts/departures/fetch-feeds.mjs
+      # The commonest titles no role reads (public company titles and counts only), for Data research to pick new roles
+      # from real demand. Only on a manual run, which is a dry run off the default branch.
+      - name: Keep the unmatched titles
+        if: steps.db.outputs.write != 'yes' && github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: unmatched-titles
+          path: unmatched-titles.tsv
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Print the unmatched titles
+        if: steps.db.outputs.write != 'yes' && github.event_name == 'workflow_dispatch'
+        run: if [ -f unmatched-titles.tsv ]; then cat unmatched-titles.tsv; fi
