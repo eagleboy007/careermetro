@@ -111,7 +111,7 @@ Turning the digest off is one tap, from the email (the same one-click token as t
 
 - Monday at 07:30 IST, from a new cron, `/api/cron/events-digest`. It runs before the weekly email (08:00 IST), and Tuesday picks up anyone a cap or the limit stopped.
 - It goes only to people with `events_digest` on and at least one matching event in the next 7 days. The message lists up to 5 events: title, organiser, day and time in IST, city or Online, and the source link. It names no other person.
-- **Budget:** Resend's free plan allows 100 emails a day, and sign-in codes need 60 of them. The digest and the weekly email share the other 40. The digest takes at most 20 a run, the weekly email keeps 40 on Monday and fills on Tuesday and Wednesday, and both stop at Resend's limit (T142). A `email_sends` count per day is not added; the existing limit handling is enough while the beta is small. The tech-stack register already lists Resend's paid plan as the upgrade.
+- **Budget:** Resend's free plan allows 100 emails a day, and sign-in codes need 60 of them. The digest and the weekly email share the other 40. Together they never pass 40 a day: on Monday the digest takes at most 20 and the weekly email at most 20 (40 less the digest's cap), and the weekly email fills its 40 on Tuesday and Wednesday. Both stop at Resend's limit (T142). A `email_sends` count per day is not added; the existing limit handling is enough while the beta is small. The tech-stack register already lists Resend's paid plan as the upgrade.
 - A `events_digests` table (`user_id`, `week`, `sent_at`) keeps one send a week per person, the same way `weekly_emails` does.
 - One-click unsubscribe (RFC 8058), using the existing token.
 
@@ -129,7 +129,7 @@ Turning the digest off is one tap, from the email (the same one-click token as t
   - Meetup: the API needs Pro, and commercial use needs written consent.
   - Microsoft Reactor and Learn events: their terms allow non-commercial use only.
   - NASSCOM FutureSkills Prime: no reproduction without consent.
-  - Eventbrite only for organisers we name (title and link), since public search is gone.
+- **Eventbrite (amber, not red):** only events of organisers we name, title and link only, since public search is gone.
 - **Emails to organisers:** asking the 11 organisers on Data research's list for permission is Milin's call, since those emails leave the project.
 - **How feeds are read:** each feed goes in `src/content/event-feeds.json` with its terms link and the date the terms were read. A daily GitHub Actions job, like the Departures feed, reads each feed once, upserts events by `source_key`, marks events the feed no longer lists as `cancelled`, and logs counts only.
 - **Suggestions:** "Suggest an event" takes a link and the basic fields and saves them as `pending`. An admin checks each one on `/admin/reports` before it goes `live`. Members' suggestions need a grievance officer (pending item 15), so the first version takes suggestions from signed-in members but keeps them all `pending` until that is settled. Organisers suggest the same way.
