@@ -553,8 +553,9 @@ describe("feed rules", () => {
       ["HR Helpdesk Executive", null],
       ["HR IT Helpdesk Analyst", "it-support-engineer"],
       ["Hardware Architect", "hardware-design-engineer"],
-      // A chip-level hardware architect reads as hardware design on purpose (Project manager, 2026-10-30).
-      ["SoC Hardware Architect", "hardware-design-engineer"],
+      // A chip-level (SoC) architect is not board-level hardware design (Testing T160).
+      ["SoC Hardware Architect", null],
+      ["Chip Hardware Architect", null],
       ["Staff Site Reliability Engineer", null],
       ["Citrix NetScaler Engineer", null],
       ["Packaging Engineer", null],
