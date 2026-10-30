@@ -64,6 +64,7 @@ jobs:
         # Not a project dependency: only this job needs it.
         run: npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
       - name: Walk the app
+        id: walk
         env:
           VERCEL_ENV: preview
           ANTHROPIC_API_KEY: sk-e2e
@@ -84,6 +85,42 @@ jobs:
           for i in $(seq 60); do curl -sf "$BASE/api/health" > /dev/null && break; sleep 1; done
           curl -sf "$BASE/api/health" > /dev/null || { echo "The app did not start"; cat e2e-server.log; exit 1; }
           node e2e/walk.mjs
+      # T150: one synthetic member with every list full and every text at its cap (e2e/max-data/seed.run.ts), then each
+      # signed-in page at 390 and 1280 px in light and dark (e2e/oversize.mjs): sideways spill, page height, PDF time.
+      # Runs when the walk ran, pass or fail, so a broken walk step doesn't hide a spill. About 3 minutes.
+      - name: Oversize check with the max-data member
+        id: oversize
+        if: ${{ !cancelled() && (steps.walk.outcome == 'success' || steps.walk.outcome == 'failure') }}
+        timeout-minutes: 10
+        env:
+          VERCEL_ENV: preview
+          ANTHROPIC_API_KEY: sk-e2e
+          ANTHROPIC_BASE_URL: http://127.0.0.1:4011
+          # The same test-only values as the walk, for the app if it has to be started again here.
+          PHONE_KEY: e2e-only-phone-key
+          FIND_REF_KEY: e2e-only-find-ref-key
+          NAME_HASH_KEY: e2e-only-name-hash-key
+          CRON_SECRET: e2e-only-cron-secret
+          BASE: http://localhost:3211
+        run: |
+          # The walk step's app keeps running into this step; start it again only if it stopped.
+          if ! curl -sf "$BASE/api/health" > /dev/null; then
+            node e2e/mock-ai.mjs >> e2e-mock-ai.log 2>&1 &
+            npx next start -p 3211 >> e2e-server.log 2>&1 &
+            for i in $(seq 60); do curl -sf "$BASE/api/health" > /dev/null && break; sleep 1; done
+            curl -sf "$BASE/api/health" > /dev/null || { echo "The app did not start"; tail -50 e2e-server.log; exit 1; }
+          fi
+          MAX_DATA_ACTION=seed npx vitest run --config vitest.max-data.config.ts
+          # Removes the member at the end, after a failure too.
+          node e2e/oversize.mjs
+      - name: Keep the oversize screenshots
+        if: ${{ !cancelled() && steps.oversize.outcome != 'skipped' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: oversize-screenshots
+          path: e2e/results/oversize/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Keep screenshots and logs
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

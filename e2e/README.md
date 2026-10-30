@@ -25,6 +25,22 @@ VERCEL_ENV=preview ANTHROPIC_API_KEY=sk-e2e ANTHROPIC_BASE_URL=http://127.0.0.1:
 BASE=http://localhost:3211 node e2e/walk.mjs   # needs `npm install --no-save playwright` once
 ```
 
+## Oversize check (T150)
+
+After the walk, the `e2e` job seeds one synthetic member, Max Data, with every text at its cap (an 80-character word,
+emoji and Hindi mixed through each list) and every growable list full, using the app's own stores for the gaps, path
+and goals (`e2e/max-data/seed.run.ts`, sizes in `e2e/max-data/data.ts`; local databases only). `oversize.mjs` then signs
+in as Max Data and opens Today, Map, My jobs, Me (Board and List), their /u profile, Library (three tabs), Practice, Mock,
+Inbox, Network, the resume editor and the builder at 390x844 and 1280x800 in light and dark. It fails on sideways spill
+(and lists the elements past the edge), on a page taller than its limit (`PAGES` in the script), or on the resume PDF
+taking more than 10 s, prints every page's height, saves `e2e/results/oversize/` (the `oversize-screenshots` artifact) and
+removes the member. Locally, after the walk's set-up:
+
+```sh
+MAX_DATA_ACTION=seed npx vitest run --config vitest.max-data.config.ts
+BASE=http://localhost:3211 node e2e/oversize.mjs
+```
+
 ## Upload load test
 
 `load-upload.mjs` sends a burst of uploads at once, then a steady rate, each from its own session and IP, against a
