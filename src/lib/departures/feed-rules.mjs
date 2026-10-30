@@ -169,7 +169,9 @@ export const ROLE_TITLES = {
   // never a facility (power, cooling), design, network or security one.
   "data-center-engineer": /^(?!.*\b(software|developer|design|architect|electrical|mechanical|hvac|facility|facilities|construction|network|security)\b).*(\b(data ?cent(er|re)|colocation)( (operations|ops|hardware|infrastructure|infra|services|support))? (engineer|technician|specialist|associate|executive|administrator|admin)\b|\b(dc|colo) (operations|ops) (engineer|technician|specialist|associate|executive)\b|\bremote hands (engineer|technician|specialist)\b)/i,
   "system-administrator": /\b(sys ?admin|systems? (administrator|admin)|(it )?server (administrator|admin)|it administrator|infrastructure support engineer|(linux|unix|windows|wintel|vmware|active directory)( server| system| systems)? (administrator|admin|engineer|support engineer))\b/i,
-  "it-support-engineer": /\b(desktop support|deskside support|service desk|help ?desk|end user computing( \(euc\))?|euc|it support|field support) (engineer|specialist|analyst|associate|executive|technician|agent)\b/i,
+  // A customer, HR, travel or other business desk ("Customer Service Desk Agent", "HR Helpdesk Executive") is not IT
+  // support unless the title says IT (T152); a plain "Service Desk Agent" stays IT support.
+  "it-support-engineer": /^(?!(?!.*\bit\b).*\b(customer|consumer|hr|human resources?|payroll|travel|voice|guest|patient|bpo|call cent(er|re)|contact cent(er|re))\b).*\b(desktop support|deskside support|service desk|help ?desk|end user computing( \(euc\))?|euc|it support|field support) (engineer|specialist|analyst|associate|executive|technician|agent)\b/i,
   // A cloud support title before the product support one that would read "Technical Support Engineer" in it.
   "cloud-support-engineer": /\b(cloud|aws|azure|gcp|google cloud)( technical)? support (engineer|associate|specialist|analyst)\b|\bcloud support\b/i,
   // An application or production support title before the product support one.

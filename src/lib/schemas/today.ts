@@ -40,7 +40,7 @@ export const provePitstop = z.object({
   goalId: z.string().min(1).max(60).nullable().default(null),
   /** Certificates on our list that fill this goal (dev/proof-plan.md). Empty when none does. */
   certificates: z
-    .array(z.object({ id: z.string().min(1).max(80), name: z.string().min(1).max(120), issuer: z.string().min(1).max(80) }))
+    .array(z.object({ id: z.string().min(1).max(80), name: z.string().min(1).max(120), issuer: z.string().min(1).max(80), lifetime: z.literal(true).optional() }))
     .max(GOAL_CERTIFICATES_MAX)
     .default([]),
   /** The goal's certificate expired, so it needs a current one to fill the gap again. */

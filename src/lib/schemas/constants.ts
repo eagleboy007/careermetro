@@ -603,6 +603,33 @@ export const BUILDER_JOB_KIND_LABELS: Record<(typeof BUILDER_JOB_KINDS)[number],
   volunteer: "Volunteer",
 };
 
+/*
+ * Long lists (Testing Run 7, T147): a list that can grow shows this many rows, then "Show more" adds this many at a
+ * time (src/components/ui/show-more.tsx). The stores still return every row up to their own cap.
+ */
+export const LIST_PAGE_SIZE = 20;
+/** Inbox chats one person's Inbox loads, newest first. */
+export const INBOX_THREADS_MAX = 500;
+/** Rows each Network list (connections, requests waiting, requests sent) loads, newest first. */
+export const NETWORK_LIST_MAX = 500;
+
+/*
+ * Resume profile caps (Testing Run 7, T146): what one parsed or edited profile may hold. Text matches Me's cuts; the
+ * lists are roomier than what Me shows, because the gap matcher and the resume download read every skill, role and
+ * line, and the builder makes up to 20 jobs plus 20 projects. A longer value from the parser or an older save is cut
+ * to fit (clampProfile in profile.ts), never refused.
+ */
+export const PROFILE_TEXT_MAX = 120;
+export const PROFILE_HIGHLIGHT_MAX = 300;
+export const PROFILE_HIGHLIGHTS_MAX = 15;
+export const PROFILE_EVIDENCE_MAX = 5;
+export const PROFILE_SKILL_NAME_MAX = 80;
+export const PROFILE_CERTIFICATION_NAME_MAX = 160;
+export const PROFILE_ROLES_MAX = 40;
+export const PROFILE_SKILLS_MAX = 100;
+export const PROFILE_EDUCATION_MAX = 20;
+export const PROFILE_CERTIFICATIONS_MAX = 30;
+
 /** Caps from the plan, section 4. */
 export const BUILDER_ROWS_MAX = 20;
 export const BUILDER_TEXT_MAX = 600;
@@ -738,7 +765,7 @@ export const DIRECT_MESSAGES_PER_DAY = 300;
 /** Express apply with the sample resume ("Try a sample resume") as the current one: a made-up person's is never sent. */
 export const SAMPLE_CANT_SEND = "The sample resume can't be sent. Upload your own resume first.";
 
-/* Timetable (docs/plans/timetable-plan.md, migration 0054) ------------------------------------------------------------- */
+/* Timetable (docs/plans/timetable-plan.md, migration 0055) ------------------------------------------------------------- */
 
 /** Where an event came from: an organiser's public feed, or a moderated suggestion. */
 export const EVENT_SOURCES = ["feed", "suggestion"] as const;
@@ -777,3 +804,10 @@ export const TIMETABLE_EVENTS_MAX = 2000;
 export const INTEREST_TOPICS_MAX = 200;
 export const INTEREST_TOPIC_ALIASES_MAX = 30;
 export const TIMETABLE_NO_CITY = "Add your city in your profile to see events near you.";
+/**
+ * App emails (the weekly My jobs email, and later the Monday events digest) sent a day across the whole app, counted
+ * per India day in app_email_days (T151, T153). Resend's free plan allows 100 a day; sign-in codes keep the other 60.
+ */
+export const APP_EMAIL_DAILY_BUDGET = 40;
+/** Most of APP_EMAIL_DAILY_BUDGET the Monday events digest may take (Timetable PR 5, not built yet); the weekly email gets the rest. */
+export const APP_EMAIL_DIGEST_SHARE = 20;

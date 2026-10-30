@@ -25,9 +25,9 @@ export function Key({ swatch, children }: { swatch: string; children: ReactNode 
 
 export function Panel({ kicker, title, children }: { kicker: string; title: string; children: ReactNode }) {
   return (
-    <div className="flex animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-3.5 [&>p]:text-[0.88rem] [&>p]:text-muted">
+    <div className="flex min-w-0 animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-3.5 [&>p]:text-[0.88rem] [&>p]:text-muted [&>p]:[overflow-wrap:anywhere]">
       <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">{kicker}</span>
-      <h3 className="text-[1.35rem] font-semibold leading-[1.15]">{title}</h3>
+      <h3 className="text-[1.35rem] font-semibold leading-[1.15] [overflow-wrap:anywhere]">{title}</h3>
       {children}
     </div>
   );
@@ -43,8 +43,8 @@ export function List({ items }: { items: Item[] }) {
       {items.map(({ Icon, title, detail }, i) => (
         <li key={i} className="flex items-center gap-2.5 rounded-md bg-surface-2 px-[11px] py-[9px] text-[0.84rem]">
           <Icon size={16} className="shrink-0 text-muted" {...ICON} />
-          <span className="min-w-0 flex-1">{title}</span>
-          <small className="max-w-[45%] text-right font-mono text-[0.7rem] text-muted">{detail}</small>
+          <span className="min-w-0 flex-1 [overflow-wrap:anywhere]">{title}</span>
+          <small className="max-w-[45%] text-right font-mono text-[0.7rem] text-muted [overflow-wrap:anywhere]">{detail}</small>
         </li>
       ))}
     </ul>

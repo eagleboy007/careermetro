@@ -457,7 +457,10 @@ await step("add a certificate: the form opens, and a name that isn't yours is re
   await form.getByLabel("Credential ID").fill(`WALK-${Date.now()}`);
   await form.getByLabel("Your name as printed").fill("Amit Verma");
   await form.getByLabel("Date issued").fill("2025-03-01");
-  await form.getByLabel("It never expires").check();
+  // "It never expires" shows only for a certificate that never does (T156); otherwise the date is asked for.
+  const never = form.getByLabel("It never expires");
+  if (await never.count()) await never.check();
+  else await form.getByLabel("Expiry date").fill("2028-03-01");
   await form.getByLabel("Verify link").fill("https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000000f1");
   await form.getByLabel(/This certificate is mine/).check();
   await form.getByRole("button", { name: "Save certificate" }).click();
@@ -1156,7 +1159,10 @@ await step("share from the phone: the shared job fills the add box, checks at on
     await box.getByText("Shared from your phone.", { exact: false }).waitFor({ timeout: 15000 });
     if (!(await box.getByLabel("Job description").inputValue()).includes("Example Analytics Pvt Ltd helps retail brands")) throw new Error("the shared text didn't fill the box");
     if ((await box.getByLabel("Link to the job").inputValue()) !== "https://careers.example.com/data-analyst") throw new Error("the shared link didn't fill the box");
-    if (p.url().includes("shared=")) throw new Error("the hold's id stayed in the address");
+    // The address is cleaned with a client-side replace after the box fills, so give it a moment rather than reading it at once.
+    await p.waitForURL((u) => !u.searchParams.has("shared"), { timeout: 10000 }).catch(() => {
+      throw new Error("the hold's id stayed in the address");
+    });
     await box.locator("[data-added-job]").getByRole("heading", { name: "Check these, then save" }).waitFor({ timeout: 60000 });
     await a11y("my-jobs-shared");
     await shot("my-jobs-shared");

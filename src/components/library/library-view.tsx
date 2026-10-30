@@ -24,6 +24,7 @@ import {
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
+import { ShowMore, usePaged } from "@/components/ui/show-more";
 import { StatusChip } from "@/components/ui/status-chip";
 import { filtersOn, goalCards, goalOf, lengthLabel, moreResults, NO_FILTERS, pick, readyToProve, type LibraryFilters } from "@/lib/library/filter";
 import type { EliteShelfView, LibraryGoal, LibraryItem, LibraryKind, LibraryView as View } from "@/lib/schemas";
@@ -362,7 +363,7 @@ export function LibraryView({
               {tab === "saved" && (
                 <>
                   {savedItems.length > 0 ? (
-                    <ResultList title="Saved">{savedItems.map(row)}</ResultList>
+                    <PagedResultList title="Saved" items={savedItems} row={row} noun="saved items" />
                   ) : (
                     <p className={EMPTY}>{saved.length ? "Nothing saved matches. Try another word or clear a filter." : EMPTY_SAVED}</p>
                   )}
@@ -384,7 +385,7 @@ export function LibraryView({
                     </div>
                   ))}
                   {done.length > 0 ? (
-                    <ResultList title="Finished">{done.map(row)}</ResultList>
+                    <PagedResultList title="Finished" items={done} row={row} noun="finished items" />
                   ) : (
                     <p className={EMPTY}>
                       {finished.size
@@ -460,6 +461,21 @@ function ResultList({ title, children }: { title: string; children: ReactNode })
     <section aria-label={title} className="overflow-hidden rounded-[20px] border border-line bg-surface">
       <h3 className="border-b border-line px-4 py-3.5 text-[1.08rem] font-semibold">{title}</h3>
       <ul className="flex flex-col px-4 py-2">{children}</ul>
+    </section>
+  );
+}
+
+/** A Saved or Finished list, which can hold hundreds of items: 20 show at a time, then "Show more" (T147). */
+function PagedResultList({ title, items, row, noun }: { title: string; items: LibraryItem[]; row: (i: LibraryItem) => ReactNode; noun: string }) {
+  const paged = usePaged(items);
+  const list = useRef<HTMLUListElement>(null);
+  return (
+    <section aria-label={title} className="overflow-hidden rounded-[20px] border border-line bg-surface">
+      <h3 className="border-b border-line px-4 py-3.5 text-[1.08rem] font-semibold">{title}</h3>
+      <ul ref={list} className="flex flex-col px-4 py-2">
+        {paged.shown.map(row)}
+      </ul>
+      <ShowMore left={paged.left} shown={paged.shown.length} onMore={paged.more} list={list} noun={noun} className="flex px-4 pb-3.5" />
     </section>
   );
 }

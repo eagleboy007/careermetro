@@ -6,6 +6,14 @@ import { ResumeDownload } from "@/components/resume/resume-download";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { readApiReply } from "@/lib/api-reply";
 import type { Profile } from "@/lib/schemas";
+import {
+  ME_EDUCATION_TEXT_MAX,
+  ME_EDUCATION_YEAR_MAX,
+  PROFILE_CERTIFICATION_NAME_MAX,
+  PROFILE_SKILL_NAME_MAX,
+  PROFILE_SKILLS_MAX,
+  PROFILE_TEXT_MAX,
+} from "@/lib/schemas/constants";
 
 const field = "w-full min-w-0 rounded-sm border border-line-strong bg-surface px-3 py-2 text-sm text-ink";
 const label = "flex min-w-0 flex-col gap-1 text-xs font-medium text-muted";
@@ -124,7 +132,7 @@ export function ProfileEditor({
           <div className="grid gap-3 sm:grid-cols-[1fr_160px]">
             <label className={label}>
               Headline
-              <input className={field} value={profile.headline ?? ""} onChange={(e) => set("headline", e.target.value)} placeholder="Data Analyst" />
+              <input className={field} maxLength={PROFILE_TEXT_MAX} value={profile.headline ?? ""} onChange={(e) => set("headline", e.target.value)} placeholder="Data Analyst" />
             </label>
             <label className={label}>
               Years of experience
@@ -150,11 +158,11 @@ export function ProfileEditor({
                   <div className="grid flex-1 gap-3 sm:grid-cols-2">
                     <label className={label}>
                       Title
-                      <input className={field} value={r.title} onChange={(e) => update("roles", i, { title: e.target.value })} />
+                      <input className={field} maxLength={PROFILE_TEXT_MAX} value={r.title} onChange={(e) => update("roles", i, { title: e.target.value })} />
                     </label>
                     <label className={label}>
                       Employer
-                      <input className={field} value={r.employer} onChange={(e) => update("roles", i, { employer: e.target.value })} />
+                      <input className={field} maxLength={PROFILE_TEXT_MAX} value={r.employer} onChange={(e) => update("roles", i, { employer: e.target.value })} />
                     </label>
                     <label className={label}>
                       Start
@@ -168,7 +176,7 @@ export function ProfileEditor({
                   <RemoveButton what={`${r.title} at ${r.employer}`} onClick={() => remove("roles", i)} />
                 </div>
                 {r.highlights.length > 0 && (
-                  <ul className="flex list-disc flex-col gap-1 pl-5 text-sm text-muted">
+                  <ul className="flex min-w-0 list-disc flex-col gap-1 pl-5 text-sm text-muted [overflow-wrap:anywhere]">
                     {r.highlights.map((h, j) => (
                       <li key={j}>{h}</li>
                     ))}
@@ -184,11 +192,11 @@ export function ProfileEditor({
             {profile.skills.map((s, i) => (
               <li key={i} className="flex items-start gap-3 p-3">
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <input aria-label={`Skill name${s.name ? `, ${s.name}` : ""}`} className={`${field} max-w-xs font-medium`} value={s.name} onChange={(e) => update("skills", i, { name: e.target.value })} />
+                  <input aria-label={`Skill name${s.name ? `, ${s.name}` : ""}`} className={`${field} max-w-xs font-medium`} maxLength={PROFILE_SKILL_NAME_MAX} value={s.name} onChange={(e) => update("skills", i, { name: e.target.value })} />
                   {s.evidence[0] ? (
                     <p className="flex items-start gap-1.5 text-sm text-muted">
                       <Quote size={14} strokeWidth={1.75} className="mt-0.5 shrink-0" aria-hidden="true" />
-                      <span className="min-w-0 break-words">{s.evidence[0]}</span>
+                      <span className="min-w-0 [overflow-wrap:anywhere]">{s.evidence[0]}</span>
                     </p>
                   ) : (
                     <p className="text-sm text-muted">Listed on your resume, with no example.</p>
@@ -203,12 +211,12 @@ export function ProfileEditor({
             onSubmit={(e) => {
               e.preventDefault();
               const name = newSkill.trim();
-              if (!name) return;
+              if (!name || profile.skills.length >= PROFILE_SKILLS_MAX) return;
               set("skills", [...profile.skills, { name, lastUsed: null, evidence: [] }]);
               setNewSkill("");
             }}
           >
-            <input aria-label="Add a skill" className={`${field} max-w-xs`} value={newSkill} onChange={(e) => setNewSkill(e.target.value)} placeholder="Add a skill we missed" />
+            <input aria-label="Add a skill" className={`${field} max-w-xs`} maxLength={PROFILE_SKILL_NAME_MAX} value={newSkill} onChange={(e) => setNewSkill(e.target.value)} placeholder="Add a skill we missed" />
             <Button type="submit" variant="ghost">
               <Plus size={16} strokeWidth={1.75} aria-hidden="true" />
               Add
@@ -224,15 +232,15 @@ export function ProfileEditor({
                 <div className="grid flex-1 gap-3 sm:grid-cols-[1fr_1fr_100px]">
                   <label className={label}>
                     Qualification
-                    <input className={field} value={e.qualification} onChange={(ev) => update("education", i, { qualification: ev.target.value })} />
+                    <input className={field} maxLength={ME_EDUCATION_TEXT_MAX} value={e.qualification} onChange={(ev) => update("education", i, { qualification: ev.target.value })} />
                   </label>
                   <label className={label}>
                     Institution
-                    <input className={field} value={e.institution} onChange={(ev) => update("education", i, { institution: ev.target.value })} />
+                    <input className={field} maxLength={ME_EDUCATION_TEXT_MAX} value={e.institution} onChange={(ev) => update("education", i, { institution: ev.target.value })} />
                   </label>
                   <label className={label}>
                     Year
-                    <input className={field} value={e.year ?? ""} onChange={(ev) => update("education", i, { year: ev.target.value.trim() || null })} />
+                    <input className={field} maxLength={ME_EDUCATION_YEAR_MAX} value={e.year ?? ""} onChange={(ev) => update("education", i, { year: ev.target.value.trim() || null })} />
                   </label>
                 </div>
                 <RemoveButton what={e.qualification} onClick={() => remove("education", i)} />
@@ -249,7 +257,7 @@ export function ProfileEditor({
                 <div className="grid flex-1 gap-3 sm:grid-cols-[1fr_110px_110px]">
                   <label className={label}>
                     Certification
-                    <input className={field} value={c.name} onChange={(e) => update("certifications", i, { name: e.target.value })} />
+                    <input className={field} maxLength={PROFILE_CERTIFICATION_NAME_MAX} value={c.name} onChange={(e) => update("certifications", i, { name: e.target.value })} />
                   </label>
                   <label className={label}>
                     Passed

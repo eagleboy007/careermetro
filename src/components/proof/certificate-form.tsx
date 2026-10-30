@@ -6,7 +6,8 @@ import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
 const input =
   "min-w-0 rounded-md border border-line-strong bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
 
-export type CertificateOption = { id: string; name: string; issuer: string };
+/** `lifetime`: the certificate never expires, so the form offers "It never expires" for it (T156). */
+export type CertificateOption = { id: string; name: string; issuer: string; lifetime?: boolean };
 
 /**
  * "Add a certificate" for one goal (dev/proof-plan.md): only certificates that prove the goal's skill, the credential
@@ -35,7 +36,11 @@ export function CertificateForm({
   const id = useId();
   const [pending, start] = useTransition();
   const [result, setResult] = useState<CertificateResult | null>(null);
-  const [expires, setExpires] = useState(true);
+  const [certId, setCertId] = useState("");
+  const [never, setNever] = useState(false);
+  // "It never expires" only for a certificate on our list that never does (T156); any other asks for its expiry date.
+  const lifetime = certificates.some((c) => c.id === certId && c.lifetime === true);
+  const expires = !(lifetime && never);
   const [issued, setIssued] = useState("");
   const done = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -145,7 +150,8 @@ export function CertificateForm({
           name="certId"
           {...field("certId")}
           required
-          defaultValue=""
+          value={certId}
+          onChange={(e) => setCertId(e.target.value)}
           className={input}
         >
           <option value="" disabled>
@@ -215,15 +221,17 @@ export function CertificateForm({
           />
         </label>
       </div>
-      <label className="flex items-center gap-2 text-[0.84rem]">
-        <input
-          type="checkbox"
-          checked={!expires}
-          onChange={(e) => setExpires(!e.target.checked)}
-          className="size-4 accent-ink"
-        />
-        It never expires
-      </label>
+      {lifetime && (
+        <label className="flex items-center gap-2 text-[0.84rem]">
+          <input
+            type="checkbox"
+            checked={never}
+            onChange={(e) => setNever(e.target.checked)}
+            className="size-4 accent-ink"
+          />
+          It never expires
+        </label>
+      )}
       <label className="flex min-w-0 flex-col gap-1.5">
         <span className="text-[0.82rem] font-semibold">Verify link</span>
         <input

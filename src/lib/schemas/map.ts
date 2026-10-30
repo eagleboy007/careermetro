@@ -30,7 +30,7 @@ export const mapGoal = z.object({
   goalId: z.string().min(1).max(60).nullable().default(null),
   /** Certificates on our list that fill this goal (dev/proof-plan.md). */
   certificates: z
-    .array(z.object({ id: z.string().min(1).max(80), name: z.string().min(1).max(120), issuer: z.string().min(1).max(80) }))
+    .array(z.object({ id: z.string().min(1).max(80), name: z.string().min(1).max(120), issuer: z.string().min(1).max(80), lifetime: z.literal(true).optional() }))
     .max(GOAL_CERTIFICATES_MAX)
     .default([]),
   /** Its certificate expired, so it waits for a current one. */

@@ -252,7 +252,7 @@ export const userSettings = pgTable("user_settings", {
    */
   usuallyFree: text("usually_free").array().notNull().default(sql`'{}'::text[]`),
   /**
-   * Timetable (docs/plans/timetable-plan.md, migration 0054): the radius around the profile city, 25 or 100 km ("Show
+   * Timetable (docs/plans/timetable-plan.md, migration 0055): the radius around the profile city, 25 or 100 km ("Show
    * outside 25 km" sets 100 for one visit only; Settings saves it), "Include online", and "Send me this week's events",
    * off until the person turns it on.
    */
@@ -1605,7 +1605,7 @@ export const weeklyEmails = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.week] }), index("weekly_emails_sent").on(t.sentAt)],
 );
 
-/* Timetable (docs/plans/timetable-plan.md, migration 0054) ---------------------------------------------------------------- */
+/* Timetable (docs/plans/timetable-plan.md, migration 0055) ---------------------------------------------------------------- */
 
 /**
  * An event from an organiser's public feed or a moderated suggestion: our short summary only (title, organiser, kind,
@@ -1721,6 +1721,19 @@ export const eventsDigests = pgTable(
     sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.week] }), index("events_digests_sent").on(t.sentAt)],
+/**
+ * App emails sent each India day (Asia/Kolkata), all kinds together: the weekly My jobs email now, the Monday events
+ * digest later. Resend's free plan allows 100 a day; sign-in codes keep 60, so app emails share APP_EMAIL_DAILY_BUDGET
+ * (src/lib/email/budget.ts takes one atomically before each send). A count only: no person, address or content.
+ */
+export const appEmailDays = pgTable(
+  "app_email_days",
+  {
+    day: date("day").primaryKey(),
+    sent: integer("sent").notNull().default(0),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [check("app_email_days_sent", sql`${t.sent} >= 0`)],
 );
 
 /** Each run of the daily feed, counts only, for Departures' "Updated". Runs over 90 days old are deleted. */

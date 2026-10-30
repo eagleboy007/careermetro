@@ -616,16 +616,16 @@ function JobRow({
           onClick={onOpen}
           aria-current={selected || undefined}
           aria-controls={detailId}
-          className="text-left text-[0.98rem] font-semibold outline-none after:absolute after:inset-0 after:rounded-[18px] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-accent"
+          className="text-left text-[0.98rem] font-semibold outline-none [overflow-wrap:anywhere] after:absolute after:inset-0 after:rounded-[18px] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-accent"
         >
           {job.role}
           <span className="sr-only"> at {job.company}</span>
         </button>
-        <p className="flex flex-wrap gap-1.5 text-[0.8rem] text-muted">
+        <p className="flex flex-wrap gap-1.5 text-[0.8rem] text-muted [overflow-wrap:anywhere]">
           {[job.company, job.city, job.workType, job.experience, job.posted ? `posted ${job.posted}` : null].filter(Boolean).map((m, i) => (
             <span key={i} className="contents">
               {i > 0 && <span aria-hidden="true">·</span>}
-              <span>{m}</span>
+              <span className="min-w-0">{m}</span>
             </span>
           ))}
         </p>
@@ -717,9 +717,9 @@ function JobDetail({
     <div className="flex animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-4 min-[760px]:sticky min-[760px]:top-4">
       <div className="flex items-center gap-3">
         <Logo name={job.company} />
-        <div>
-          <h3 className="text-[1.3rem] font-semibold leading-[1.15]">{job.role}</h3>
-          <small className="mt-0.5 block text-[0.8rem] text-muted">
+        <div className="min-w-0">
+          <h3 className="text-[1.3rem] font-semibold leading-[1.15] [overflow-wrap:anywhere]">{job.role}</h3>
+          <small className="mt-0.5 block text-[0.8rem] text-muted [overflow-wrap:anywhere]">
             {job.company} · {job.city} · {job.workType}
             {job.hours ? ` (${job.hours})` : ""}
             {job.experience ? ` · ${job.experience}` : ""}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from "react";
 import { ICON } from "@/components/map/map-parts";
+import { ShowMore, usePaged } from "@/components/ui/show-more";
 import { StatusChip } from "@/components/ui/status-chip";
 import { actionFailed, readApiReply } from "@/lib/api-reply";
 import { interviewIcs } from "@/lib/calendar/ics";
@@ -117,6 +118,9 @@ export function MyJobsList({
 }) {
   const [filter, setFilter] = useState<MyJobFilter>("all");
   const shown = jobs.filter((j) => inFilter(j.status, filter));
+  // Up to 300 jobs: 20 show at a time (T147), starting again on the first page when the filter changes.
+  const paged = usePaged(shown, filter);
+  const list = useRef<HTMLUListElement>(null);
   const empty = myJobsEmpty(filter, MY_JOB_FILTER_LABELS[filter]);
   return (
     <section aria-label="My jobs" className="flex flex-col gap-3">
@@ -131,8 +135,8 @@ export function MyJobsList({
         </div>
       </div>
       {shown.length ? (
-        <ul className="flex flex-col gap-2.5">
-          {shown.map((j) => (
+        <ul ref={list} className="flex flex-col gap-2.5">
+          {paged.shown.map((j) => (
             <MyJobRow key={j.key} job={j} onStatus={(s) => onStatus(j, s)} onEdit={() => onEdit(j)} />
           ))}
         </ul>
@@ -148,6 +152,7 @@ export function MyJobsList({
           </button>
         </div>
       )}
+      <ShowMore left={paged.left} shown={paged.shown.length} onMore={paged.more} list={list} noun="jobs" />
     </section>
   );
 }
@@ -207,13 +212,7 @@ function MyJobRow({ job, onStatus, onEdit }: { job: MyJobView; onStatus: (s: MyJ
             ))}
           </p>
         )}
-        {job.note && (
-          <p className="flex items-start gap-1.5 text-[0.8rem] text-muted">
-            <Lock size={13} {...ICON} className="mt-[3px] shrink-0" />
-            <span className="sr-only">Your private note: </span>
-            <span className="whitespace-pre-line [overflow-wrap:anywhere]">{job.note}</span>
-          </p>
-        )}
+        {job.note && <PrivateNote note={job.note} />}
       </div>
       <div className="col-start-2 flex flex-wrap items-center justify-between gap-2 min-[760px]:col-start-3 min-[760px]:flex-col min-[760px]:items-end">
         <StatusMenu job={job} onPick={onStatus} />
@@ -230,6 +229,43 @@ function MyJobRow({ job, onStatus, onEdit }: { job: MyJobView; onStatus: (s: MyJ
         </div>
       </div>
     </li>
+  );
+}
+
+/**
+ * A row's private note, cut to three lines (T148) with Show more and Show less when it runs longer, so a note of
+ * many short lines can't make one card thousands of pixels tall. Whether it runs longer is measured, not guessed, so
+ * a long note at phone width always gets the button.
+ */
+function PrivateNote({ note }: { note: string }) {
+  const [open, setOpen] = useState(false);
+  const [clipped, setClipped] = useState(false);
+  const text = useRef<HTMLSpanElement>(null);
+  const id = useId();
+  useEffect(() => {
+    const el = text.current;
+    if (!el) return;
+    // The observer reports once on start and again on every resize, such as a turned phone or Show more.
+    const observer = new ResizeObserver(() => setClipped(el.scrollHeight > el.clientHeight + 1));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [note]);
+  return (
+    <div className="flex flex-col items-start gap-0.5">
+      <p className="flex min-w-0 items-start gap-1.5 text-[0.8rem] text-muted">
+        <Lock size={13} {...ICON} className="mt-[3px] shrink-0" />
+        <span className="sr-only">Your private note: </span>
+        <span ref={text} id={id} className={`min-w-0 whitespace-pre-line [overflow-wrap:anywhere] ${open ? "" : "line-clamp-3"}`}>
+          {note}
+        </span>
+      </p>
+      {(open || clipped) && (
+        <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)} className="min-h-6 pl-[19px] text-[0.76rem] font-[550] text-muted underline-offset-2 hover:text-ink hover:underline">
+          {open ? "Show less" : "Show more"}
+          <span className="sr-only"> of the note</span>
+        </button>
+      )}
+    </div>
   );
 }
 

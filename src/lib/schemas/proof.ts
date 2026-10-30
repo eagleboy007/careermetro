@@ -23,7 +23,7 @@ export const certificateSubmission = z
 export type CertificateSubmission = z.infer<typeof certificateSubmission>;
 
 /** Why a certificate was not accepted. Each has its own plain message (src/lib/proofs/messages.ts). */
-export const CERTIFICATE_REFUSALS = ["not_found", "unknown_cert", "not_covered", "expired", "issued_in_future", "name", "no_name", "link", "too_many", "reviewed"] as const;
+export const CERTIFICATE_REFUSALS = ["not_found", "unknown_cert", "not_covered", "expired", "issued_in_future", "name", "no_name", "link", "too_many", "reviewed", "expiry_needed"] as const;
 export type CertificateRefusal = (typeof CERTIFICATE_REFUSALS)[number];
 
 /**

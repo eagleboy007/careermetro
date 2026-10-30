@@ -545,7 +545,16 @@ describe("feed rules", () => {
       ["Intune Engineer", "euc-engineer"],
       ["EUC Analyst", "it-support-engineer"],
       ["IT Infrastructure Service Desk Agent", "it-support-engineer"],
+      ["Service Desk Agent", "it-support-engineer"],
+      // Business desks are not IT support unless the title says IT (T152).
+      ["Customer Service Desk Agent", null],
+      ["HR Service Desk Agent", null],
+      ["Travel Service Desk Agent", null],
+      ["HR Helpdesk Executive", null],
+      ["HR IT Helpdesk Analyst", "it-support-engineer"],
       ["Hardware Architect", "hardware-design-engineer"],
+      // A chip-level hardware architect reads as hardware design on purpose (Project manager, 2026-10-30).
+      ["SoC Hardware Architect", "hardware-design-engineer"],
       ["Staff Site Reliability Engineer", null],
       ["Citrix NetScaler Engineer", null],
       ["Packaging Engineer", null],

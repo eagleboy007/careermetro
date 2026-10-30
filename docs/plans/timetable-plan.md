@@ -1,6 +1,6 @@
 # Timetable: plan (events that match your goals and interests)
 
-Development 4, 2026-10-30. Source: handoff section 10 (`docs/design/post-login-handoff.md`), the `events`, `event_topics` and `event_rsvps` rows of handoff section 13, and prototype v2 (`prototype-v2/source/evt.html`, `evt.js`, `evt.css`). This plan changes the data model; the Project manager signed off on it under Milin's delegation (2026-10-30), and migration 0054 is in PR 1. Sources come from Data research's review (section 6).
+Development 4, 2026-10-30. Source: handoff section 10 (`docs/design/post-login-handoff.md`), the `events`, `event_topics` and `event_rsvps` rows of handoff section 13, and prototype v2 (`prototype-v2/source/evt.html`, `evt.js`, `evt.css`). This plan changes the data model; the Project manager signed off on it under Milin's delegation (2026-10-30), and migration 0055 is in PR 1. Sources come from Data research's review (section 6).
 
 **The rules this keeps:**
 - Only events whose topic matches one of the person's goals or interests are shown. Nothing is sponsored, and there are no random tech talks.
@@ -23,7 +23,7 @@ Development 4, 2026-10-30. Source: handoff section 10 (`docs/design/post-login-h
 
 ## 1. Data model (needs sign-off)
 
-Migration 0054, all new tables. Zod schemas and tests come first, as usual.
+Migration 0055, all new tables. Zod schemas and tests come first, as usual.
 
 ### `events`
 
@@ -150,7 +150,7 @@ Turning the digest off is one tap, from the email (the same one-click token as t
 
 ## 8. PRs
 
-1. Migration 0054 (`events`, `event_topics`, `event_rsvps`, `events_digests`, `user_settings` columns), Zod schemas, `city-centres.json` and `interest-topics.json`, the matcher with tests, and export v36. After sign-off. **Done (2026-10-30)**: data model signed off by the Project manager under Milin's delegation; matcher in `src/lib/timetable/match.ts`, export in `src/lib/timetable/store.ts`.
+1. Migration 0055 (`events`, `event_topics`, `event_rsvps`, `events_digests`, `user_settings` columns), Zod schemas, `city-centres.json` and `interest-topics.json`, the matcher with tests, and export v36. After sign-off. **Done (2026-10-30)**: data model signed off by the Project manager under Milin's delegation; matcher in `src/lib/timetable/match.ts`, export in `src/lib/timetable/store.ts`.
 2. `/timetable` and the Today teaser over the example events, then live rows, Save, I'm going and Add to calendar.
 3. The prep task on the ride.
 4. The feed job, starting with FOSS United and confs.tech.

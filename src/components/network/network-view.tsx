@@ -3,6 +3,7 @@
 import { BadgeCheck, Ban, CalendarDays, Clock, Flag, Link2, MessageSquare, Plus, Route, Search, UserMinus, Users } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useRef, useState, useTransition, type KeyboardEvent, type ReactNode } from "react";
+import { ShowMore, usePaged } from "@/components/ui/show-more";
 import { Switch } from "@/components/ui/switch";
 import { MessageBox } from "./message-box";
 import { ReportPerson } from "./report-person";
@@ -330,7 +331,7 @@ export function NetworkView({ data, actions, note, example }: { data: NetworkDat
               <p className="text-[0.86rem] text-muted">People who keep &ldquo;Let people find me&rdquo; off can&rsquo;t be found by name. Ask them for their profile link instead.</p>
             )
           ) : shown.length ? (
-            <PeopleList rows={shown} tab={tab} panel={panel} pick={pick} setPick={setPick} setPanel={setPanel} act={act} pending={pending} />
+            <PeopleList key={`${tab}-${sort}`} rows={shown} tab={tab} panel={panel} pick={pick} setPick={setPick} setPanel={setPanel} act={act} pending={pending} />
           ) : (
             <Empty
               tab={tab}
@@ -395,13 +396,22 @@ type Act = Record<"connect" | "send" | "accept" | "ignore" | "withdraw" | "remov
   report: (p: NetworkRow, reason: ReportReason, note: string) => void;
 };
 
+/** What each list's "Show more" says, so two lists never share a button name. */
+const MORE_NOUN: Record<NetworkTab, string> = { connections: "connections", requests: "requests", sent: "sent requests", find: "people" };
+
 function PeopleList(props: { rows: NetworkRow[]; tab: NetworkTab; panel: Panel; pick: How; setPick: (h: How) => void; setPanel: (p: Panel) => void; act: Act; pending: boolean }) {
+  // Long lists show 20 people at a time (T147); the list is keyed by tab and sort, so each starts on its first page.
+  const paged = usePaged(props.rows);
+  const list = useRef<HTMLUListElement>(null);
   return (
-    <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-[14px] border border-line bg-surface">
-      {props.rows.map((p) => (
-        <PersonRow key={p.id} person={p} {...props} />
-      ))}
-    </ul>
+    <>
+      <ul ref={list} className="flex flex-col divide-y divide-line overflow-hidden rounded-[14px] border border-line bg-surface">
+        {paged.shown.map((p) => (
+          <PersonRow key={p.id} person={p} {...props} />
+        ))}
+      </ul>
+      <ShowMore left={paged.left} shown={paged.shown.length} onMore={paged.more} list={list} noun={MORE_NOUN[props.tab]} />
+    </>
   );
 }
 

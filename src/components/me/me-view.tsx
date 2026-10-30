@@ -162,15 +162,15 @@ export function MeView({
           >
             {initials(me.name)}
           </span>
-          <div className="flex min-w-[220px] flex-1 flex-col gap-1">
-            <h1 className="text-[1.7rem] font-semibold leading-[1.1]">
+          <div className="flex min-w-0 flex-[1_1_220px] flex-col gap-1">
+            <h1 className="text-[1.7rem] font-semibold leading-[1.1] [overflow-wrap:anywhere]">
               {me.name}
               {eliteBadge && <EliteBadge className="ml-2.5" />}
             </h1>
-            {me.headline && <p className="text-[0.95rem]">{me.headline}</p>}
+            {me.headline && <p className="text-[0.95rem] [overflow-wrap:anywhere]">{me.headline}</p>}
             {own && status}
             {/* The target role says the person is looking, so others see it only when they turn it on in Account settings. */}
-            {(own || me.aim) && <p className="text-[0.92rem] text-muted">{me.aim ? `Aiming for ${me.aim}` : "Picking a target role"}</p>}
+            {(own || me.aim) && <p className="text-[0.92rem] text-muted [overflow-wrap:anywhere]">{me.aim ? `Aiming for ${me.aim}` : "Picking a target role"}</p>}
           </div>
           <div className="flex flex-wrap items-center gap-1 self-center">
             {own && (
@@ -234,15 +234,15 @@ export function MeView({
                     {initials(e.employer)}
                   </span>
                   <div className="flex min-w-0 flex-col gap-1.5">
-                    <div className="flex flex-wrap items-baseline gap-2">
-                      <b className="text-[0.96rem] font-semibold">{e.title}</b>
+                    <div className="flex min-w-0 flex-wrap items-baseline gap-2">
+                      <b className="min-w-0 text-[0.96rem] font-semibold [overflow-wrap:anywhere]">{e.title}</b>
                       {e.current && (
                         <span className="rounded-full bg-surface-2 px-[7px] py-0.5 font-mono text-[0.64rem] uppercase tracking-[0.06em]">
                           Current
                         </span>
                       )}
                     </div>
-                    <span className="text-[0.8rem] text-muted">
+                    <span className="text-[0.8rem] text-muted [overflow-wrap:anywhere]">
                       {e.employer} · {e.dates}
                     </span>
                     {e.check && <JobCheckBadge check={e.check} own={own} />}
@@ -265,7 +265,7 @@ export function MeView({
                       />
                     )}
                     {own && e.highlights.length > 0 && (
-                      <ul className="mt-0.5 flex list-disc flex-col gap-[3px] pl-[18px] text-[0.86rem]">
+                      <ul className="mt-0.5 flex min-w-0 list-disc flex-col gap-[3px] pl-[18px] text-[0.86rem] [overflow-wrap:anywhere]">
                         {e.highlights.map((h, j) => (
                           <li key={j}>{h}</li>
                         ))}
@@ -362,8 +362,8 @@ export function MeView({
                     <BookOpen size={20} {...ICON} />
                   </span>
                   <div className="flex min-w-0 flex-col gap-1">
-                    <b className="text-[0.96rem] font-semibold">{e.qualification}</b>
-                    <span className="text-[0.8rem] text-muted">{[e.institution, e.year].filter(Boolean).join(" · ")}</span>
+                    <b className="text-[0.96rem] font-semibold [overflow-wrap:anywhere]">{e.qualification}</b>
+                    <span className="text-[0.8rem] text-muted [overflow-wrap:anywhere]">{[e.institution, e.year].filter(Boolean).join(" · ")}</span>
                     {own && e.added && rowControls("education", e.added.id, e.qualification)}
                     {own && e.added && isOpen("education", e.added.id) && (
                       <EducationForm
@@ -421,7 +421,7 @@ export function MeView({
           ) : (
             <ul className="flex flex-wrap gap-1.5" aria-label="Interests">
               {me.interests.map((t) => (
-                <li key={t} className="rounded-full bg-surface-2 px-2.5 py-1 text-[0.78rem]">
+                <li key={t} className="min-w-0 max-w-full rounded-full bg-surface-2 px-2.5 py-1 text-[0.78rem] [overflow-wrap:anywhere]">
                   {t}
                 </li>
               ))}
@@ -439,7 +439,7 @@ export function MeView({
               <ul className="flex flex-col gap-2.5">
                 {practice.map((t) => (
                   <li key={t.skillId} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 text-[0.88rem] min-[560px]:grid-cols-[minmax(0,150px)_minmax(0,1fr)_auto]">
-                    <b className="min-w-0 font-semibold">{t.name}</b>
+                    <b className="min-w-0 font-semibold [overflow-wrap:anywhere]">{t.name}</b>
                     <ConfidenceSpark ratings={t.ratings} className="col-span-2 row-start-2 max-h-9 min-[560px]:col-span-1 min-[560px]:row-start-auto" />
                     <span className="whitespace-nowrap text-[0.76rem] text-muted min-[560px]:col-start-3 min-[560px]:row-start-1">
                       {confidenceWord(t.ratings[t.ratings.length - 1])} · {sessionsText(t.ratings.length)}
@@ -462,8 +462,8 @@ export function MeView({
                 <li key={i} className="flex items-center gap-3 rounded-[14px] border border-line px-3.5 py-3">
                   <FlaskConical size={18} {...ICON} className="shrink-0 text-muted" />
                   <span className="min-w-0 flex-1">
-                    <b className="block text-[0.88rem] font-[550]">{p.title}</b>
-                    <small className="text-[0.76rem] text-muted">{p.detail}</small>
+                    <b className="block text-[0.88rem] font-[550] [overflow-wrap:anywhere]">{p.title}</b>
+                    <small className="text-[0.76rem] text-muted [overflow-wrap:anywhere]">{p.detail}</small>
                   </span>
                 </li>
               ))}
@@ -657,7 +657,7 @@ function Journey({ stops }: { stops: JourneyStop[] }) {
 
 function SkillCol({ name, names, status }: { name: string; names: string[]; status: "met" | "weak" | "missing" }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex min-w-0 flex-col gap-2">
       <span className={label}>
         {name} · {names.length}
       </span>
@@ -717,7 +717,7 @@ function Stories({ stories, own, controls }: { stories: Story[]; own: boolean; c
               className={`flex min-w-0 flex-col gap-2 rounded-[14px] ${view === "board" ? "bg-surface-2 p-2.5" : ""}`}
             >
               <div className="flex items-baseline gap-2">
-                <b className="text-[0.88rem]">{box}</b>
+                <b className="min-w-0 text-[0.88rem] [overflow-wrap:anywhere]">{box}</b>
                 <span className="font-mono text-[0.7rem] text-muted">{inBox.length}</span>
               </div>
               {inBox.length ? (
@@ -776,8 +776,8 @@ function StoryCard({ s, own, controls }: { s: Story; own: boolean; controls?: ()
   return (
     <details className="group rounded-[12px] border border-line bg-surface px-3 py-2.5">
       <summary className="flex cursor-pointer list-none flex-col gap-1 [&::-webkit-details-marker]:hidden">
-        <b className="text-[0.86rem] font-semibold leading-[1.3]">{s.title}</b>
-        <small className="text-[0.74rem] text-muted">{s.where}</small>
+        <b className="text-[0.86rem] font-semibold leading-[1.3] [overflow-wrap:anywhere]">{s.title}</b>
+        <small className="text-[0.74rem] text-muted [overflow-wrap:anywhere]">{s.where}</small>
         <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
           {own && <Smart letters={s.smart} />}
           {s.confirmed && (
@@ -789,7 +789,7 @@ function StoryCard({ s, own, controls }: { s: Story; own: boolean; controls?: ()
           {s.fromGoal && <span className="text-[0.7rem] text-muted">{own ? "From your goal" : "From a goal"}</span>}
         </span>
       </summary>
-      <dl className="mt-2 flex flex-col gap-0.5 text-[0.8rem] [&>dd]:break-words [&>dt:not(:first-child)]:mt-1.5 [&>dt]:font-mono [&>dt]:text-[0.66rem] [&>dt]:uppercase [&>dt]:tracking-[0.05em] [&>dt]:text-muted">
+      <dl className="mt-2 flex flex-col gap-0.5 text-[0.8rem] [&>dd]:[overflow-wrap:anywhere] [&>dt:not(:first-child)]:mt-1.5 [&>dt]:font-mono [&>dt]:text-[0.66rem] [&>dt]:uppercase [&>dt]:tracking-[0.05em] [&>dt]:text-muted">
         <dt>Situation</dt>
         <dd>{s.situation}</dd>
         <dt>Task</dt>
@@ -799,7 +799,7 @@ function StoryCard({ s, own, controls }: { s: Story; own: boolean; controls?: ()
         <dt>Result</dt>
         <dd>{s.result}</dd>
       </dl>
-      {own && s.hint && <p className="mt-2 border-t border-dashed border-line pt-1.5 text-[0.76rem] text-muted">{s.hint}</p>}
+      {own && s.hint && <p className="mt-2 border-t border-dashed border-line pt-1.5 text-[0.76rem] text-muted [overflow-wrap:anywhere]">{s.hint}</p>}
       {controls?.()}
     </details>
   );

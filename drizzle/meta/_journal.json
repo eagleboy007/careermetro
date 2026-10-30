@@ -384,7 +384,14 @@
       "idx": 54,
       "version": "7",
       "when": 1792518000000,
-      "tag": "0054_timetable",
+      "tag": "0054_app_email_budget",
+      "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "7",
+      "when": 1792521600000,
+      "tag": "0055_timetable",
       "breakpoints": true
     }
   ]

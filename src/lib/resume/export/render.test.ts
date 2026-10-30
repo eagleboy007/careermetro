@@ -1,9 +1,13 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import fontkit from "@pdf-lib/fontkit";
+import { PDFDocument } from "pdf-lib";
 import { describe, expect, it } from "vitest";
 import type { Profile } from "@/lib/schemas";
 import { extractResumeText } from "@/lib/resume/extract";
 import { buildResumeDocument } from "./document";
 import { renderResumeDocx } from "./docx";
-import { renderResumePdf, UnprintableTextError } from "./pdf";
+import { renderResumePdf, UnprintableTextError, wrap } from "./pdf";
 
 const NOW = new Date("2026-10-12T12:00:00Z");
 const profile: Profile = {
@@ -85,5 +89,29 @@ describe("resume Word file", () => {
     const { type, text } = await extractResumeText(bytes);
     expect(type).toBe("docx");
     expectInOrder(text.replace(/\t/g, " "));
+  });
+});
+
+describe("PDF line wrapping", () => {
+  const embed = async () => {
+    const pdf = await PDFDocument.create();
+    pdf.registerFontkit(fontkit);
+    return pdf.embedFont(await readFile(path.join(process.cwd(), "assets", "fonts", "Geist-Regular.ttf")), { subset: true });
+  };
+
+  it("breaks a 60,000-character word into lines that fit, quickly (T146)", async () => {
+    const font = await embed();
+    const word = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJ0123456789".repeat(1_400).slice(0, 60_000);
+    const started = performance.now();
+    const lines = wrap(`Before ${word} after`, font, 10, 400);
+    expect(performance.now() - started).toBeLessThan(2_000);
+    expect(lines.join("").replace(/\s/g, "")).toBe(`Before${word}after`);
+    expect(lines.length).toBeGreaterThan(100);
+    for (const line of lines) expect(font.widthOfTextAtSize(line, 10)).toBeLessThanOrEqual(400);
+  });
+
+  it("still keeps short words whole", async () => {
+    const font = await embed();
+    expect(wrap("Built the weekly sales dashboard", font, 10, 400)).toEqual(["Built the weekly sales dashboard"]);
   });
 });

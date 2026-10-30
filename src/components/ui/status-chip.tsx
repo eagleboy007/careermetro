@@ -10,10 +10,14 @@ const styles: Record<GapStatus, { label: string; className: string; Icon: typeof
 
 export function StatusChip({ status, label }: { status: GapStatus; label?: string }) {
   const { label: defaultLabel, className, Icon } = styles[status];
+  const text = label ?? defaultLabel;
   return (
-    <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium ${className}`}>
-      <Icon size={14} strokeWidth={1.75} aria-hidden="true" />
-      {label ?? defaultLabel}
+    <span
+      title={text}
+      className={`inline-flex min-w-0 max-w-[16rem] items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium ${className}`}
+    >
+      <Icon size={14} strokeWidth={1.75} aria-hidden="true" className="shrink-0" />
+      <span className="min-w-0 truncate">{text}</span>
     </span>
   );
 }
