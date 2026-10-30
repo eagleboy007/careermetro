@@ -5,7 +5,7 @@ import { buildPack, csv, FIELDS } from "../../scripts/review/build-review-pack.m
 import { answers, parseCsv } from "../../scripts/review/read-review.mjs";
 
 const root = resolve(__dirname, "../..");
-const pack = buildPack() as Record<string, string>;
+const pack: Record<string, string> = buildPack();
 
 describe("the expert review pack (docs/review/pack)", () => {
   it("is current: run node scripts/review/build-review-pack.mjs after a content change", () => {

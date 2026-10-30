@@ -64,6 +64,7 @@ export function roleRows(role, skills) {
 export function buildPack() {
   const { roles, skills, families, bank, practice } = loadContent();
   const familyOf = new Map(Object.entries(families).flatMap(([fam, slugs]) => slugs.map((s) => [s, fam])));
+  /** @type {Record<string, string>} */
   const files = {};
   const counts = [];
   const awaiting = roles.filter((r) => r.reviewedBy === null);
