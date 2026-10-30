@@ -12767,7 +12767,8 @@
     "provider": "MIT OpenCourseWare",
     "kind": "course",
     "skillIds": [
-      "business-case"
+      "business-case",
+      "financial-modelling"
     ],
     "minutes": 1200,
     "free": true
@@ -12987,7 +12988,7 @@
   },
   {
     "title": "15.835 Entrepreneurial Marketing: course materials",
-    "url": "https://ocw.mit.edu/courses/15-835-entrepreneurial-marketing-spring-2002/resources/",
+    "url": "https://ocw.mit.edu/courses/15-835-entrepreneurial-marketing-spring-2002/",
     "provider": "MIT OpenCourseWare",
     "kind": "docs",
     "skillIds": [
@@ -13049,17 +13050,6 @@
       "financial-modelling"
     ],
     "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "15.401 Finance Theory I: lectures and slides",
-    "url": "https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/resources",
-    "provider": "MIT OpenCourseWare",
-    "kind": "video",
-    "skillIds": [
-      "financial-modelling"
-    ],
-    "minutes": 1500,
     "free": true
   },
   {
@@ -13320,7 +13310,7 @@
   },
   {
     "title": "15.067 Competitive Decision-Making and Negotiation: course materials",
-    "url": "https://ocw.mit.edu/courses/15-067-competitive-decision-making-and-negotiation-spring-2011/resources/",
+    "url": "https://ocw.mit.edu/courses/15-067-competitive-decision-making-and-negotiation-spring-2011/",
     "provider": "MIT OpenCourseWare",
     "kind": "docs",
     "skillIds": [
@@ -13331,7 +13321,7 @@
   },
   {
     "title": "11.011 The Art and Science of Negotiation: course materials",
-    "url": "https://ocw.mit.edu/courses/11-011-the-art-and-science-of-negotiation-spring-2006/resources/",
+    "url": "https://ocw.mit.edu/courses/11-011-the-art-and-science-of-negotiation-spring-2006/",
     "provider": "MIT OpenCourseWare",
     "kind": "docs",
     "skillIds": [
@@ -13831,17 +13821,6 @@
     "free": true
   },
   {
-    "title": "SEBI Master Circular on AML Standards and CFT Obligations of Securities Market Intermediaries (2024)",
-    "url": "https://nsdl.co.in/downloadables/pdf/2024-0077-_Policy-SEBI_Master_Circular_on_Guidelines_on_AML_Standards_and_CFT_Obligations_of_Securities_Market_Intermediaries_under_the_PMLA_2002_and_Rules_frame.pdf",
-    "provider": "SEBI (copy hosted by NSDL)",
-    "kind": "docs",
-    "skillIds": [
-      "kyc-due-diligence"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "FINnet 2.0: user manuals and guides for reporting entities",
     "url": "https://fiuindia.gov.in/files/misc/finnet2.html",
     "provider": "FIU-IND",
@@ -13873,17 +13852,6 @@
       "str-regulatory-reporting"
     ],
     "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "Handbook on Sexual Harassment of Women at Workplace (POSH Act, 2013)",
-    "url": "https://www.highereduhry.ac.in/ActsRules/HandbookOnSHWW.pdf",
-    "provider": "MWCD (copy hosted by Govt of Haryana)",
-    "kind": "docs",
-    "skillIds": [
-      "indian-labour-law-compliance"
-    ],
-    "minutes": 90,
     "free": true
   },
   {
@@ -14377,7 +14345,7 @@
   },
   {
     "title": "15.818 Pricing (MIT Sloan) course materials",
-    "url": "https://ocw.mit.edu/courses/15-818-pricing-spring-2010/resources/",
+    "url": "https://ocw.mit.edu/courses/15-818-pricing-spring-2010/",
     "provider": "MIT OpenCourseWare",
     "kind": "course",
     "skillIds": [
@@ -14387,8 +14355,8 @@
     "free": true
   },
   {
-    "title": "Principles of Pricing (15.810 Marketing Management)",
-    "url": "https://ocw.mit.edu/courses/15-810-marketing-management-analytics-frameworks-and-applications-fall-2015/external-resources/principles-of-pricing_c707963b-388a-4b7d-9e40-415f73083615/",
+    "title": "15.810 Marketing Management course materials (see the Principles of Pricing session)",
+    "url": "https://ocw.mit.edu/courses/15-810-marketing-management-analytics-frameworks-and-applications-fall-2015/",
     "provider": "MIT OpenCourseWare",
     "kind": "docs",
     "skillIds": [
@@ -14487,7 +14455,7 @@
   },
   {
     "title": "15.511 Financial Accounting (MIT Sloan) course materials",
-    "url": "https://ocw.mit.edu/courses/15-511-financial-accounting-summer-2004/resources",
+    "url": "https://ocw.mit.edu/courses/15-511-financial-accounting-summer-2004/",
     "provider": "MIT OpenCourseWare",
     "kind": "course",
     "skillIds": [
@@ -14604,17 +14572,6 @@
       "payroll-inputs-processing"
     ],
     "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "EPFO Unified Portal: ECR user manuals and FAQs",
-    "url": "https://epfindia.gov.in/site_en/EPFOUnifiedPortal.php",
-    "provider": "EPFO",
-    "kind": "docs",
-    "skillIds": [
-      "payroll-inputs-processing"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
