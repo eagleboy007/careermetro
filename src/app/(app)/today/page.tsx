@@ -18,8 +18,8 @@ import { errorFields, logEvent } from "@/lib/log";
 import { rideWithSignal, withSignalTask } from "@/lib/ride/build";
 import { greetingAt } from "@/lib/today/board";
 import { departuresBoard } from "@/lib/departures/store";
-import { nextInterview } from "@/lib/my-jobs/store";
-import { daysUntil } from "@/lib/my-jobs/view";
+import { jobPrep, nextInterview } from "@/lib/my-jobs/store";
+import { daysUntil, leadSkills } from "@/lib/my-jobs/view";
 import { onYourLineFor, todayBoardFor } from "@/lib/today/live";
 import { currentAnalysis, todayStateFor } from "@/lib/today/state";
 import { switchJobSearch } from "../settings/job-search-actions";
@@ -106,7 +106,15 @@ async function Today({ searchParams }: PageProps<"/today">) {
           // "Interview in 2 days" from My jobs (handoff 12m), counted in India days here so the page and the card agree.
           nextInterview(account.id, { now }).catch(failed<NextInterviewView | null>("today_interview_failed", null)),
         ]);
-  const nextUp = interview ? { ...interview, days: daysUntil(interview.interviewAt, now) } : null;
+  // C20: the job's still-open skills that lead today's ride, only on a returning day; left out when it can't be read.
+  const today = found.state === "returning" ? found.current : null;
+  const lead =
+    interview && today
+      ? await jobPrep(account.id, interview.ref, { now })
+          .then((prep) => leadSkills(prep?.open ?? [], today))
+          .catch(failed<string[]>("today_interview_skills_failed", []))
+      : [];
+  const nextUp = interview ? { ...interview, days: daysUntil(interview.interviewAt, now), leadSkills: lead } : null;
   const signal = found.state === "no_resume" ? null : found.signal;
   const own: TodayData =
     found.state === "first"

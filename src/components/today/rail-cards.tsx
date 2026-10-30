@@ -1,7 +1,7 @@
 import { ArrowRight, CalendarClock, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { prepareHref } from "@/lib/my-jobs/rules";
-import { countdownWords, interviewWhen } from "@/lib/my-jobs/view";
+import { countdownWords, interviewWhen, leadLine } from "@/lib/my-jobs/view";
 import type { EventTeaser, NextInterviewView, OnYourLine } from "@/lib/schemas";
 
 const card = "flex min-w-0 flex-col gap-3.5 rounded-[18px] border border-line bg-surface p-4 md:rounded-[20px] md:px-[22px] md:py-5";
@@ -83,14 +83,19 @@ export function OnYourLineCard({ line, firstDay = false, label = "On your line" 
   );
 }
 
-/** Today's countdown to an interview in My jobs: the job, and `days` worked out on the server in India days. */
-export type NextInterview = NextInterviewView & { days: number };
+/**
+ * Today's countdown to an interview in My jobs: the job, `days` worked out on the server in India days, and the job's
+ * still-open skills that lead today's ride (C20; empty or absent for none).
+ */
+export type NextInterview = NextInterviewView & { days: number; leadSkills?: string[] };
 
 /**
  * "Interview in 2 days" (handoff 12m: "Today counts down to it"): the soonest interview the person set in My jobs, with
- * Practice on its skills, the mock interview for it, and My jobs. Neutral colours: cobalt stays for progress.
+ * Practice on its skills, the mock interview for it, and My jobs. Neutral colours: cobalt stays for progress, and the
+ * card never says anything about the person's chances (C20).
  */
 export function NextInterviewCard({ next }: { next: NextInterview }) {
+  const lead = leadLine(next.leadSkills ?? []);
   const link = "inline-flex min-h-11 items-center gap-1 px-2 text-[0.8rem] font-semibold text-ink hover:text-muted";
   return (
     <section aria-label="Next interview" className={card}>
@@ -103,6 +108,7 @@ export function NextInterviewCard({ next }: { next: NextInterview }) {
         <b className="font-semibold">{next.title}</b> at {next.company}
         <small className="mt-0.5 block font-mono text-[0.72rem] tracking-[0.04em] text-muted">{interviewWhen(next.interviewAt)} IST</small>
       </p>
+      {lead && <p className="text-[0.82rem] text-muted">{lead}</p>}
       <div className="flex flex-wrap items-center gap-1">
         <Link href={prepareHref(next.ref, "practice")} className="inline-flex items-center gap-1.5 rounded-full border border-line-strong px-3.5 py-2 text-[0.82rem] font-[550] text-ink hover:bg-surface-2">
           Practise its skills

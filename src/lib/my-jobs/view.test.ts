@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { countdownWords, daysUntil, interviewWhen, minuteValue } from "./view";
+import { countdownWords, daysUntil, interviewWhen, leadLine, leadSkills, minuteValue } from "./view";
 
 describe("the interview in IST (handoff 12m)", () => {
   const at = "2026-10-30T05:00:00.000Z"; // 10:30 IST on Friday 30 October
@@ -25,5 +25,26 @@ describe("the interview in IST (handoff 12m)", () => {
 
   it("says the countdown in words", () => {
     expect([0, 1, 3].map(countdownWords)).toEqual(["today", "tomorrow", "in 3 days"]);
+  });
+});
+
+describe("the still-open skills that lead today's ride (C20)", () => {
+  const open = [
+    { skillId: "siem", skillName: "SIEM" },
+    { skillId: "threat-detection", skillName: "Threat detection" },
+    { skillId: "python", skillName: "Python" },
+  ];
+
+  it("names today's goal first, then the job's other open goals, two at most", () => {
+    expect(leadSkills(open, { skillId: "threat-detection" })).toEqual(["Threat detection", "SIEM"]);
+    expect(leadLine(leadSkills(open, { skillId: "siem" }))).toBe("Its still-open skills, SIEM and Threat detection, lead today's ride.");
+    expect(leadLine(["SIEM"])).toBe("Its still-open skill, SIEM, leads today's ride.");
+  });
+
+  it("says nothing when today's ride is not on one of the job's open skills, or the job has none", () => {
+    expect(leadSkills(open, { skillId: "power-bi" })).toEqual([]);
+    expect(leadSkills(open, null)).toEqual([]);
+    expect(leadSkills([], { skillId: "siem" })).toEqual([]);
+    expect(leadLine([])).toBeNull();
   });
 });

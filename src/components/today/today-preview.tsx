@@ -175,7 +175,8 @@ export function TodayView({
         )}
       </div>
       <div className="flex min-w-0 flex-col gap-4 min-[960px]:gap-[22px]">
-        {state !== "no_resume" && data.nextInterview && <NextInterviewCard next={data.nextInterview} />}
+        {/* Hidden on the first day and with no resume (C20). */}
+        {state === "returning" && data.nextInterview && <NextInterviewCard next={data.nextInterview} />}
         {/* Inside a JobSearchProvider, job search off shows "Job search is off" in the board's place (handoff 6). */}
         {state === "no_resume" ? (
           <DeparturesBoard rows={data.departures} locked allHref={departuresHref} />
