@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-30 (Timetable plan, awaiting data model sign-off)
+Last updated: 2026-10-30 (69 Mumbai and Pune job boards, two feed title rules)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -103,6 +103,8 @@ Last updated: 2026-10-30 (Timetable plan, awaiting data model sign-off)
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/` from src/content, with one CSV per field (cloud 25, security 25, data 21, enterprise apps 24, testing 4, other 54; all 153 roles have `reviewedBy` null), the 54 timed-test questions, the 135 Practice questions and a README for reviewers. Each line has a Ref plus Agree / Change to / Comment columns. A copy is in `/mnt/project-files/careermetro/review/roles/`. `node scripts/review/read-review.mjs <file>` lists a returned file's answers. A test fails when the pack is out of date, so re-run the script after any content change.
 
 - Timetable plan (`docs/plans/timetable-plan.md`, handoff 10 and 13, prototype v2 evt): migration 0054 (`events`, `event_topics`, `event_rsvps`, `events_digests`, three `user_settings` columns) waits on the Project manager's sign-off under Milin's delegation. Sources follow Data research's review (`data/events/sources-2026-10-30.md`): FOSS United and confs.tech first; Meetup, Microsoft Reactor and NASSCOM are never used. Section 9 lists the other unbuilt v2 controls.
+
+- Departures boards: Data research's Mumbai and Pune batch went through the board check (84 asked: 69 passing, 1 404, 2 timeouts, 12 with no India post). The 69 that pass are in `src/content/job-boards.json`, which now holds 281 of the 300 allowed. The feed now maps "service desk agent" to it-support-engineer and "hardware architect" to hardware-design-engineer.
 
 ## Next up
 
