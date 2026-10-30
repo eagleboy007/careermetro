@@ -11531,17 +11531,6 @@
     "free": true
   },
   {
-    "title": "LTspice simulator and tutorials",
-    "url": "https://www.analog.com/en/ltspice",
-    "provider": "Analog Devices",
-    "kind": "docs",
-    "skillIds": [
-      "analog-power-circuit-design"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Switched Mode Power Conversion",
     "url": "https://nptel.ac.in/courses/108108036",
     "provider": "NPTEL (IISc Bangalore)",
