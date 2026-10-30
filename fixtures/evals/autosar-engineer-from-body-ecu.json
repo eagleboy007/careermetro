@@ -1,0 +1,52 @@
+{
+  "id": "autosar-engineer-from-body-ecu",
+  "roleSlug": "autosar-engineer",
+  "persona": "Embedded engineer configuring AUTOSAR stacks for a body control ECU",
+  "resumeText": "Pranav Kulkarni | Pune | pranav.kulkarni@example.com\n\nEXPERIENCE\nEmbedded Software Engineer, Indrayani Auto Electronics, Pune (2021 - present)\n- Configured AUTOSAR BSW communication modules in DaVinci Configurator for a body control ECU.\n- Wrote Embedded C application code for door and lighting features following MISRA C.\n- Debugged CAN bus signal timeouts using Vector CANoe traces.\n- Implemented UDS diagnostics services for reading DTCs and ECU flashing.\n- Tuned RTOS task timing and alarms on Infineon AURIX microcontrollers.\n\nSKILLS\nEmbedded C, AUTOSAR, CAN, UDS, JTAG\n\nEDUCATION\nBE Electronics and Telecommunication, College of Engineering Pune, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "autosar-classic",
+        "quote": "Configured AUTOSAR BSW communication modules in DaVinci Configurator"
+      },
+      {
+        "skillId": "embedded-c",
+        "quote": "Wrote Embedded C application code for door and lighting features"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Debugged CAN bus signal timeouts"
+      },
+      {
+        "skillId": "automotive-network-diagnostics",
+        "quote": "Implemented UDS diagnostics services for reading DTCs"
+      },
+      {
+        "skillId": "rtos",
+        "quote": "Tuned RTOS task timing and alarms"
+      },
+      {
+        "skillId": "microcontrollers",
+        "quote": "on Infineon AURIX microcontrollers"
+      },
+      {
+        "skillId": "embedded-debugging",
+        "quote": "JTAG"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "embedded-debugging",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "cpp",
+      "unit-testing",
+      "embedded-linux",
+      "git"
+    ]
+  },
+  "reviewedBy": null
+}

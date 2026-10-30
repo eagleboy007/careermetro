@@ -1,0 +1,103 @@
+{
+  "slug": "plc-scada-engineer",
+  "title": "PLC/SCADA Engineer",
+  "summary": "PLC/SCADA engineers program the controllers (PLCs) and operator screens (SCADA and HMI) that run machines, factories, plants and utilities. They sit in industrial automation teams at system integrators, equipment makers and plants, and spend time both at a desk and on site during commissioning.",
+  "dailyDuties": [
+    "Write and change PLC logic for machines and process lines",
+    "Build HMI and SCADA screens, alarms and trends",
+    "Test control panels and logic before dispatch",
+    "Commission systems at customer sites",
+    "Connect drives, meters and field devices over industrial networks",
+    "Troubleshoot breakdowns with plant maintenance teams"
+  ],
+  "typicalTitles": [
+    "PLC Programmer",
+    "PLC Engineer",
+    "SCADA Engineer",
+    "Senior PLC Engineer",
+    "Industrial Automation Engineer",
+    "Commissioning Engineer - Automation"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "plc-iec-61131-programming",
+      "importance": "required",
+      "expectation": "Write and change PLC logic in ladder, structured text or function blocks",
+      "postingShare": null
+    },
+    {
+      "skillId": "industrial-control-systems",
+      "importance": "required",
+      "expectation": "Work with Siemens, Rockwell or Schneider PLCs and field I/O",
+      "postingShare": null
+    },
+    {
+      "skillId": "scada-hmi-platforms",
+      "importance": "required",
+      "expectation": "Build SCADA and HMI screens, alarms and trends",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Connect field devices over Modbus and RS-485",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Set up IP addressing and Ethernet links between PLCs, HMIs and servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Find and fix faults during testing, commissioning and plant breakdowns",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Work with customers and operators on site and train them on the system",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Store and report plant data from historians or MES databases",
+      "postingShare": null
+    },
+    {
+      "skillId": "ot-ics-security",
+      "importance": "nice_to_have",
+      "expectation": "Apply basic security to plant networks",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script data exports and small tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Maintain I/O lists and test sheets",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

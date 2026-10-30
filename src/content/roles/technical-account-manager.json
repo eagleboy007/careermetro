@@ -1,0 +1,125 @@
+{
+  "slug": "technical-account-manager",
+  "title": "Technical Account Manager",
+  "summary": "Technical account managers (TAMs) are the named technical contact for a set of large customers of a software or cloud product. They sit between the customer, support, product and engineering teams, and keep customers healthy by solving problems early and helping them use more of the product.",
+  "dailyDuties": [
+    "Hold regular calls with customer engineering teams",
+    "Track open tickets and push urgent escalations to resolution",
+    "Debug customer integration problems with API logs and queries",
+    "Run quarterly business reviews on usage and adoption",
+    "Pass feature requests and bug patterns to product teams",
+    "Plan upgrades and new feature rollouts with customers"
+  ],
+  "typicalTitles": [
+    "Senior Technical Account Manager",
+    "Enterprise Technical Account Manager",
+    "Strategic Technical Account Manager",
+    "Technical Customer Success Manager",
+    "Customer Success Manager - Technical"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "technical-account-management",
+      "importance": "required",
+      "expectation": "Own the technical relationship with a set of enterprise customers and drive product adoption",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain technical issues and plans clearly to customer engineers and managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Coordinate support, product and engineering teams on customer needs",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "required",
+      "expectation": "Reproduce customer issues and lead root cause analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Read API requests, responses and webhooks to debug integrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "required",
+      "expectation": "Manage escalations during outages and share postmortems with customers",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Break down vague customer problems into clear next steps",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query product data to check usage and investigate issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "support-ticketing-tools",
+      "importance": "nice_to_have",
+      "expectation": "Track customer issues in a ticketing tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Keep account notes and renewal risks in a CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "solution-demos-poc",
+      "importance": "nice_to_have",
+      "expectation": "Demo new features and run small proofs of concept for customers",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-federation",
+      "importance": "nice_to_have",
+      "expectation": "Help customers set up SSO with SAML or OAuth",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Understand customer deployments on a public cloud",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "aws-cloud-practitioner",
+      "importance": "optional",
+      "why": "Basic cloud vocabulary for customer conversations"
+    },
+    {
+      "certId": "azure-fundamentals",
+      "importance": "optional",
+      "why": "Basic cloud vocabulary for customers on Azure"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

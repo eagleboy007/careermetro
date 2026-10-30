@@ -1,0 +1,48 @@
+{
+  "id": "plm-developer-teamcenter",
+  "roleSlug": "plm-developer",
+  "persona": "Teamcenter consultant writing ITK and SOA customisations",
+  "resumeText": "Neha Agarwal | Noida | neha.agarwal@example.com\n\nEXPERIENCE\nPLM Consultant, Yamuna Engineering Software, Noida (2019 - present)\n- Wrote Teamcenter ITK server extensions in C for part numbering and release checks.\n- Defined new item types and properties in BMIDE for an automotive client.\n- Built Java SOA clients that sync engineering BOMs to the ERP system.\n- Exposed custom REST APIs for a supplier portal to read released drawings.\n- Wrote SQL queries against the Teamcenter database to audit workflow data.\n- Ran workshops with design engineers to capture change management requirements.\n\nSKILLS\nTeamcenter, Java, C, SQL, Active Workspace (basic)\n\nEDUCATION\nBTech Mechanical Engineering, AKTU, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "teamcenter-customization",
+        "quote": "Wrote Teamcenter ITK server extensions in C"
+      },
+      {
+        "skillId": "java",
+        "quote": "Built Java SOA clients that sync engineering BOMs"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Exposed custom REST APIs for a supplier portal"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries against the Teamcenter database"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Ran workshops with design engineers to capture change management requirements"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Ran workshops with design engineers"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "oop",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "windchill-customization",
+      "sap-interfaces",
+      "javascript",
+      "react"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,123 @@
+{
+  "slug": "servicenow-administrator",
+  "title": "ServiceNow Administrator",
+  "summary": "ServiceNow administrators keep a company's ServiceNow instance (its IT ticketing and workflow platform) running well, mostly through configuration rather than code. They sit in the IT service management team, managing users and access, catalog items, reports and upgrades, and pass bigger builds to developers.",
+  "dailyDuties": [
+    "Add and update users, groups and roles",
+    "Create catalog items, forms and notifications",
+    "Move changes between instances with update sets",
+    "Build reports and dashboards for IT managers",
+    "Resolve platform tickets and find root causes",
+    "Test the instance before and after upgrades and patches",
+    "Agree new requests with process owners"
+  ],
+  "typicalTitles": [
+    "ServiceNow Admin",
+    "ServiceNow System Administrator",
+    "ServiceNow Platform Administrator",
+    "ServiceNow Platform Analyst",
+    "ServiceNow ITSM Administrator",
+    "ServiceNow Support Analyst",
+    "Senior ServiceNow Administrator"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "servicenow-platform-administration",
+      "importance": "required",
+      "expectation": "Run the ServiceNow instance: users, groups, roles, ACLs, catalog items, notifications, reports, update sets and upgrades",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Know incident, problem, change and request processes the ITIL way",
+      "postingShare": null
+    },
+    {
+      "skillId": "servicenow-flow-designer",
+      "importance": "required",
+      "expectation": "Build and fix simple approval and task flows without code",
+      "postingShare": null
+    },
+    {
+      "skillId": "manual-testing",
+      "importance": "required",
+      "expectation": "Run regression tests on forms, catalog items and flows before each upgrade",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "required",
+      "expectation": "Resolve L2 tickets about the platform and find root causes",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain changes to process owners and write clear release notes",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Take requests from IT teams and process owners and agree priorities",
+      "postingShare": null
+    },
+    {
+      "skillId": "servicenow-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Read and tweak business rules and client scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Write small scripts when configuration is not enough",
+      "postingShare": null
+    },
+    {
+      "skillId": "servicenow-itom",
+      "importance": "nice_to_have",
+      "expectation": "Keep CMDB data clean and support Discovery",
+      "postingShare": null
+    },
+    {
+      "skillId": "servicenow-service-portal",
+      "importance": "nice_to_have",
+      "expectation": "Maintain portal pages and knowledge articles",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "nice_to_have",
+      "expectation": "Set up LDAP or SSO sign-in for users",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "nice_to_have",
+      "expectation": "Write admin runbooks and user guides",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Deliver small enhancements in sprints",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

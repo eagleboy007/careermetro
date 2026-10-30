@@ -1,0 +1,52 @@
+{
+  "id": "servicenow-administrator-from-service-desk",
+  "roleSlug": "servicenow-administrator",
+  "persona": "Service desk analyst who became a junior ServiceNow admin",
+  "resumeText": "Mohammed Imran | Bengaluru | mohammed.imran@example.com\n\nEXPERIENCE\nServiceNow Administrator, Tungabhadra Tech Services, Bengaluru (2023 - present)\n- Created users, groups and roles and maintained assignment rules for 60 support teams.\n- Built catalog items, variables and notifications for laptop and access requests.\n- Moved configuration between instances with update sets and fixed collisions.\n- Built Flow Designer flows for catalog approvals and task creation.\n- Ran regression testing on the incident and change modules before each upgrade.\n- Built ServiceNow reports and dashboards on incident SLAs for IT managers.\n\nIT Service Desk Analyst, Tungabhadra Tech Services, Bengaluru (2021 - 2023)\n- Logged and resolved incidents and service requests following ITIL processes.\n\nSKILLS\nServiceNow, JavaScript, ITIL v4, CMDB\n\nEDUCATION\nBSc Computer Science, Bangalore University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "servicenow-platform-administration",
+        "quote": "Moved configuration between instances with update sets"
+      },
+      {
+        "skillId": "servicenow-flow-designer",
+        "quote": "Built Flow Designer flows for catalog approvals"
+      },
+      {
+        "skillId": "manual-testing",
+        "quote": "Ran regression testing on the incident and change modules"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "resolved incidents and service requests following ITIL processes"
+      },
+      {
+        "skillId": "data-visualization",
+        "quote": "Built ServiceNow reports and dashboards on incident SLAs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "application-support",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "servicenow-scripting",
+      "servicenow-service-portal",
+      "python",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

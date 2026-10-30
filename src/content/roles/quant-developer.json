@@ -1,0 +1,122 @@
+{
+  "slug": "quant-developer",
+  "title": "Quant Developer",
+  "summary": "Quant developers build the software that trading firms use to read market data, run trading strategies and send orders, where every microsecond counts. They sit with quant researchers and traders, writing fast C++ for live systems and Python for research tools.",
+  "dailyDuties": [
+    "Write and review C++ for trading and market data systems",
+    "Profile and cut latency on the order path",
+    "Build exchange gateways and order book handlers",
+    "Turn researcher strategy ideas into production code",
+    "Write Python tools for backtests and data checks",
+    "Monitor live trading systems and fix issues during market hours"
+  ],
+  "typicalTitles": [
+    "Quantitative Developer",
+    "Quant Software Engineer",
+    "Low Latency C++ Developer",
+    "HFT Developer",
+    "Algo Trading Developer",
+    "Trading Systems Developer",
+    "C++ Developer - Low Latency Trading"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Write production C++ for trading and market data systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "modern-cpp",
+      "importance": "required",
+      "expectation": "Use C++17 or later, templates and the STL with care for performance",
+      "postingShare": null
+    },
+    {
+      "skillId": "low-latency-programming",
+      "importance": "required",
+      "expectation": "Measure and cut latency: cache-aware code, memory layout, kernel bypass networking",
+      "postingShare": null
+    },
+    {
+      "skillId": "concurrency-multithreading",
+      "importance": "required",
+      "expectation": "Write lock-free and multithreaded code that is correct under load",
+      "postingShare": null
+    },
+    {
+      "skillId": "trading-systems-market-data",
+      "importance": "required",
+      "expectation": "Build order books, exchange gateways and strategy plumbing on market data feeds",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "required",
+      "expectation": "Choose data structures and algorithms for tight time budgets",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Work on Linux and tune servers, processes and the network stack",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Understand TCP/IP and UDP multicast used by exchange feeds",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write Python for research tools, backtests and data checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "nice_to_have",
+      "expectation": "Read strategy results and help researchers test ideas",
+      "postingShare": null
+    },
+    {
+      "skillId": "pandas",
+      "importance": "nice_to_have",
+      "expectation": "Analyse tick and trade data in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query trade and position databases",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "nice_to_have",
+      "expectation": "Automate deployments and checks on trading servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpga-design",
+      "importance": "nice_to_have",
+      "expectation": "Work with FPGA engineers on hardware-accelerated paths",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

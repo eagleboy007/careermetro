@@ -1,0 +1,47 @@
+{
+  "id": "sap-successfactors-consultant-from-hr-operations",
+  "roleSlug": "sap-successfactors-consultant",
+  "persona": "HR operations executive who moved into Employee Central configuration",
+  "resumeText": "Priya Raghavan | Hyderabad | priya.raghavan@example.com\n\nEXPERIENCE\nSAP SuccessFactors Consultant, Deccan HR Cloud Solutions, Hyderabad (2023 - present)\n- Configured Employee Central foundation objects, picklists and business rules for a retail client with 9,000 employees.\n- Set up role-based permissions and event reasons for hire, transfer and termination.\n- Loaded employee data through import templates and fixed validation errors before cutover.\n- Ran workshops with HR business partners to capture leave and transfer rules.\n- Supported HR users during user acceptance testing and logged defects.\n\nHR Operations Executive, Sunrise Retail, Hyderabad (2020 - 2023)\n- Maintained employee master data in SAP HCM for 3,000 store staff.\n- Answered employee queries on payroll and leave.\n\nSKILLS\nSuccessFactors Employee Central, Integration Center, Excel\n\nEDUCATION\nMBA Human Resources, Osmania University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "sap-successfactors-employee-central",
+        "quote": "Configured Employee Central foundation objects, picklists and business rules"
+      },
+      {
+        "skillId": "data-cleaning",
+        "quote": "Loaded employee data through import templates and fixed validation errors"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Ran workshops with HR business partners"
+      },
+      {
+        "skillId": "uat",
+        "quote": "Supported HR users during user acceptance testing"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "process-mapping",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-successfactors-talent-modules",
+      "rest-apis",
+      "sap-abap"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,119 @@
+{
+  "slug": "sap-successfactors-consultant",
+  "title": "SAP SuccessFactors Consultant",
+  "summary": "SAP SuccessFactors consultants set up SAP's cloud HR software for a company, covering employee records or talent processes such as hiring, onboarding, appraisals and pay reviews. They sit in an HR technology project or support team, working with HR users, payroll and integration teams.",
+  "dailyDuties": [
+    "Run workshops with HR teams to capture processes",
+    "Configure business rules, workflows and permissions",
+    "Prepare and load employee data with import templates",
+    "Write test cases and support HR users in testing",
+    "Fix tickets raised by HR users",
+    "Review the half-yearly SuccessFactors release changes",
+    "Train HR users on new screens and steps"
+  ],
+  "typicalTitles": [
+    "SAP SuccessFactors Functional Consultant",
+    "SuccessFactors Employee Central Consultant",
+    "SAP SF EC Consultant",
+    "SuccessFactors Recruiting and Onboarding Consultant",
+    "SAP SuccessFactors Compensation Consultant",
+    "SuccessFactors PMGM Consultant",
+    "SAP HR SuccessFactors Consultant",
+    "Senior SAP SuccessFactors Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "sap-successfactors-employee-central",
+      "importance": "required",
+      "expectation": "Configure Employee Central: foundation objects, business rules, workflows and role-based permissions",
+      "postingShare": null,
+      "oneOf": "successfactors-module"
+    },
+    {
+      "skillId": "sap-successfactors-talent-modules",
+      "importance": "required",
+      "expectation": "Configure one talent module such as Recruiting, Onboarding, Performance and Goals or Compensation",
+      "postingShare": null,
+      "oneOf": "successfactors-module"
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run workshops with HR teams and write configuration workbooks",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map hire-to-retire or talent processes as-is and to-be",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-cleaning",
+      "importance": "required",
+      "expectation": "Prepare, load and check employee data through import templates",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Write test cases and support HR users in acceptance testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Train HR users and explain designs in plain words",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with HR, payroll, IT and integration teams through each phase",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "nice_to_have",
+      "expectation": "Build simple Integration Center or OData API integrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Prepare and check data templates and reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "nice_to_have",
+      "expectation": "Handle support tickets and half-yearly release changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Deliver in SAP Activate phases or sprints",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "successfactors-module",
+      "label": "A SuccessFactors module (Employee Central or a talent module)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

@@ -1,0 +1,151 @@
+{
+  "slug": "cloud-network-engineer",
+  "title": "Cloud Network Engineer",
+  "summary": "Cloud network engineers design and run the private networks inside AWS, Azure or Google Cloud and the links that join them to office and data-centre networks. They sit in the cloud or infrastructure team, between classic network engineers and the teams that run applications.",
+  "dailyDuties": [
+    "Design VPC or VNet layouts, subnets and routing for new workloads",
+    "Set up and monitor dedicated links and VPN tunnels to data centres",
+    "Configure BGP between cloud gateways and on-premises routers",
+    "Write network changes as Terraform and get them reviewed",
+    "Troubleshoot DNS, routing and firewall problems raised by app teams",
+    "Review security rules and segmentation with the security team"
+  ],
+  "typicalTitles": [
+    "Azure Network Engineer",
+    "AWS Network Engineer",
+    "GCP Network Engineer",
+    "Cloud Networking Engineer",
+    "Senior Cloud Network Engineer",
+    "Cloud Network Lead",
+    "Hybrid Cloud Network Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "cloud-networking",
+      "importance": "required",
+      "expectation": "Design VPCs or VNets, subnets, route tables and hub-and-spoke or transit layouts",
+      "postingShare": null
+    },
+    {
+      "skillId": "hybrid-cloud-connectivity",
+      "importance": "required",
+      "expectation": "Set up and run Direct Connect, ExpressRoute, Interconnect or site-to-site VPN links to data centres",
+      "postingShare": null
+    },
+    {
+      "skillId": "routing-switching",
+      "importance": "required",
+      "expectation": "Configure and troubleshoot BGP routing between cloud and on-premises networks",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Build networks on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Build networks on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Build networks on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Troubleshoot TCP/IP, DNS and load balancing problems",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-security",
+      "importance": "required",
+      "expectation": "Apply segmentation, security rules and VPN encryption to cloud traffic",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "required",
+      "expectation": "Write network changes as Terraform or similar infrastructure code",
+      "postingShare": null
+    },
+    {
+      "skillId": "firewall-platforms",
+      "importance": "nice_to_have",
+      "expectation": "Run cloud firewalls or virtual next-generation firewalls in the hub network",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Use flow logs and monitoring tools to find drops and latency",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script checks and network automation",
+      "postingShare": null
+    },
+    {
+      "skillId": "sase-ztna",
+      "importance": "nice_to_have",
+      "expectation": "Connect users to cloud apps through a SASE or zero-trust service",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "nice_to_have",
+      "expectation": "Join on-call and lead network outage calls",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "ccna",
+      "importance": "recommended",
+      "why": "Proves the routing, switching and BGP basics this role builds on"
+    },
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "optional",
+      "why": "Covers AWS VPC design and connectivity options"
+    },
+    {
+      "certId": "azure-administrator",
+      "importance": "optional",
+      "why": "Covers Azure virtual networks and VPN gateways"
+    },
+    {
+      "certId": "terraform-associate",
+      "importance": "optional",
+      "why": "Shows you can manage network changes as code"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

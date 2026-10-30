@@ -1,0 +1,120 @@
+{
+  "slug": "post-silicon-validation-engineer",
+  "title": "Post-Silicon Validation Engineer",
+  "summary": "Post-silicon validation engineers test new chips in the lab once the first samples come back from the factory, checking that each block and interface works before the chip goes to customers. They work alongside chip design, verification (pre-silicon testing) and firmware teams in semiconductor companies.",
+  "dailyDuties": [
+    "Write validation plans and test cases for chip features",
+    "Bring up new boards and silicon samples in the lab",
+    "Write C tests and Python automation for overnight runs",
+    "Debug failures with JTAG, oscilloscopes and logic analysers",
+    "File and track silicon bugs with the design team",
+    "Report pass and fail status for each validation milestone"
+  ],
+  "typicalTitles": [
+    "Silicon Validation Engineer",
+    "SoC Validation Engineer",
+    "Post-Si Validation Engineer",
+    "Silicon Bring-up Engineer",
+    "Platform Validation Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "post-silicon-validation",
+      "importance": "required",
+      "expectation": "Plan and run validation of new chips in the lab, from bring-up to sign-off",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "required",
+      "expectation": "Write C test code that programs registers and checks hardware behaviour",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate test runs, lab equipment and result parsing in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-debugging",
+      "importance": "required",
+      "expectation": "Debug failures with JTAG, oscilloscopes and logic analysers",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Validate I2C, SPI, UART and similar interfaces",
+      "postingShare": null
+    },
+    {
+      "skillId": "digital-logic-design",
+      "importance": "required",
+      "expectation": "Read block diagrams, timing and register specs to root-cause silicon bugs",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Work on Linux test hosts and read system logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-linux",
+      "importance": "nice_to_have",
+      "expectation": "Use kernel drivers and boot logs while bringing up boards",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "nice_to_have",
+      "expectation": "Write test frameworks in C++",
+      "postingShare": null
+    },
+    {
+      "skillId": "amba-protocols",
+      "importance": "nice_to_have",
+      "expectation": "Understand AXI, AHB and APB bus traffic on the SoC",
+      "postingShare": null
+    },
+    {
+      "skillId": "eda-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Use Perl or Tcl scripts in the lab flow",
+      "postingShare": null
+    },
+    {
+      "skillId": "systemverilog-uvm",
+      "importance": "nice_to_have",
+      "expectation": "Reuse pre-silicon test ideas from the verification team",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpga-design",
+      "importance": "nice_to_have",
+      "expectation": "Run tests on FPGA or emulation platforms before silicon arrives",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "pcap",
+      "importance": "optional",
+      "why": "Shows working Python for test automation"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

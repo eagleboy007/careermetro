@@ -66,7 +66,11 @@
       "euc-engineer",
       "m365-administrator",
       "telecom-ran-engineer",
-      "presales-engineer"
+      "presales-engineer",
+      "data-center-engineer",
+      "hpc-gpu-engineer",
+      "cloud-network-engineer",
+      "technical-account-manager"
     ],
     "backend": [
       "software-engineer",
@@ -84,7 +88,9 @@
       "tech-lead",
       "cpp-developer",
       "gis-developer",
-      "ruby-on-rails-developer"
+      "ruby-on-rails-developer",
+      "quant-developer",
+      "developer-advocate"
     ],
     "frontend-mobile": [
       "frontend-developer",
@@ -114,7 +120,12 @@
       "sap-mm-consultant",
       "workday-consultant",
       "sharepoint-developer",
-      "low-code-developer"
+      "low-code-developer",
+      "implementation-consultant",
+      "sap-sd-consultant",
+      "sap-successfactors-consultant",
+      "servicenow-administrator",
+      "plm-developer"
     ],
     "quality": [
       "qa-automation-engineer",
@@ -127,7 +138,10 @@
       "iot-engineer",
       "robotics-engineer",
       "vlsi-design-engineer",
-      "fpga-engineer"
+      "fpga-engineer",
+      "post-silicon-validation-engineer",
+      "autosar-engineer",
+      "plc-scada-engineer"
     ],
     "delivery": [
       "business-analyst",

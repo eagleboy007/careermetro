@@ -1,0 +1,52 @@
+{
+  "id": "data-center-engineer-from-colo-technician",
+  "roleSlug": "data-center-engineer",
+  "persona": "Colocation technician moving up to data center engineer",
+  "resumeText": "Arjun Nair | Chennai | arjun.nair@example.com\n\nEXPERIENCE\nData Centre Technician, Coromandel Colo Services, Chennai (2021 - present)\n- Racked and stacked over 300 Dell and HPE servers across two colocation halls.\n- Ran and labelled Cat6 and single-mode fibre cabling between racks and patch panels.\n- Replaced failed disks, memory and power supplies and handled RMA returns with vendors.\n- Installed Ubuntu and RHEL on new servers and set up iLO and iDRAC access.\n- Worked change and incident tickets in the ticketing tool on 24x7 rotational shifts.\n- Tested fibre links with an OTDR and a light meter.\n\nSKILLS\nLinux, TCP/IP, VLANs, Windows Server\n\nEDUCATION\nDiploma in Electronics and Communication, Central Polytechnic College, Chennai, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "datacenter-hardware-ops",
+        "quote": "Racked and stacked over 300 Dell and HPE servers"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Installed Ubuntu and RHEL on new servers"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Worked change and incident tickets in the ticketing tool"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "TCP/IP"
+      },
+      {
+        "skillId": "routing-switching",
+        "quote": "VLANs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "networking-basics",
+        "status": "weak"
+      },
+      {
+        "skillId": "routing-switching",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "virtualization",
+      "san-storage",
+      "python",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}
