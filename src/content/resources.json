@@ -179,17 +179,6 @@
     "free": true
   },
   {
-    "title": "Introduction to Corporate Finance (audit free)",
-    "url": "https://www.coursera.org/learn/wharton-finance",
-    "provider": "Wharton on Coursera",
-    "kind": "course",
-    "skillIds": [
-      "business-case"
-    ],
-    "minutes": 600,
-    "free": true
-  },
-  {
     "title": "The Green Book: appraisal and evaluation guidance",
     "url": "https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government",
     "provider": "HM Treasury",
@@ -367,17 +356,6 @@
       "crm-tools"
     ],
     "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Cryptography I (audit free)",
-    "url": "https://www.coursera.org/learn/crypto",
-    "provider": "Stanford on Coursera",
-    "kind": "course",
-    "skillIds": [
-      "cryptography-basics"
-    ],
-    "minutes": 1500,
     "free": true
   },
   {
@@ -1545,17 +1523,6 @@
     "free": true
   },
   {
-    "title": "Creative Problem Solving (audit free)",
-    "url": "https://www.coursera.org/learn/creative-problem-solving",
-    "provider": "University of Minnesota on Coursera",
-    "kind": "course",
-    "skillIds": [
-      "problem-solving"
-    ],
-    "minutes": 600,
-    "free": true
-  },
-  {
     "title": "BPMN tutorial and examples",
     "url": "https://camunda.com/bpmn/",
     "provider": "Camunda",
@@ -2115,17 +2082,6 @@
       "stakeholder-management"
     ],
     "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "Foundations of Project Management (audit free)",
-    "url": "https://www.coursera.org/learn/project-management-foundations",
-    "provider": "Google on Coursera",
-    "kind": "course",
-    "skillIds": [
-      "stakeholder-management"
-    ],
-    "minutes": 900,
     "free": true
   },
   {
@@ -9667,18 +9623,6 @@
     "free": true
   },
   {
-    "title": "FTK Imager",
-    "url": "https://exterro.com/digital-forensics-software/ftk-imager",
-    "provider": "Exterro",
-    "kind": "docs",
-    "skillIds": [
-      "forensic-tool-suites",
-      "forensic-evidence-handling"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
     "title": "NIST SP 800-101 Rev. 1: Guidelines on Mobile Device Forensics",
     "url": "https://csrc.nist.gov/pubs/sp/800/101/r1/final",
     "provider": "NIST",
@@ -10514,17 +10458,6 @@
       "pega-case-management"
     ],
     "minutes": 520,
-    "free": true
-  },
-  {
-    "title": "Introduction to Presales",
-    "url": "https://www.presalescollective.com/academy/pre-sales",
-    "provider": "Presales Collective",
-    "kind": "course",
-    "skillIds": [
-      "solution-demos-poc"
-    ],
-    "minutes": 120,
     "free": true
   },
   {
@@ -12829,6 +12762,72 @@
       "forensic-evidence-handling"
     ],
     "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Finance Theory I (capital budgeting and valuation)",
+    "url": "https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "business-case"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "CryptoHack courses",
+    "url": "https://cryptohack.org/courses/",
+    "provider": "CryptoHack",
+    "kind": "practice",
+    "skillIds": [
+      "cryptography-basics"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Making creativity and innovation happen: Problem solving and critical thinking",
+    "url": "https://www.open.edu/openlearn/money-business/making-creativity-and-innovation-happen/content-section-5",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "problem-solving"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Managing projects through people",
+    "url": "https://www.open.edu/openlearn/money-business/business-strategy-studies/managing-projects-through-people/content-section-1",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "stakeholder-management"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "The Sleuth Kit Wiki",
+    "url": "https://wiki.sleuthkit.org/",
+    "provider": "The Sleuth Kit",
+    "kind": "docs",
+    "skillIds": [
+      "forensic-tool-suites"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Build Better Buyer-Focused Sales Demos Through Discovery",
+    "url": "https://sales-engineering.org/how-to-use-discovery-to-build-a-demo-the-buyer-actually-needs-to-see/",
+    "provider": "NAASE",
+    "kind": "docs",
+    "skillIds": [
+      "solution-demos-poc"
+    ],
+    "minutes": 15,
     "free": true
   }
 ]
