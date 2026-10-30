@@ -8421,17 +8421,6 @@
     "free": true
   },
   {
-    "title": "Tcl tutorial",
-    "url": "https://www.tcl-lang.org/man/tcl8.5/tutorial/Tcl0.html",
-    "provider": "Tcl Developer Xchange",
-    "kind": "docs",
-    "skillIds": [
-      "eda-scripting"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "Perl first steps",
     "url": "https://learn.perl.org/first_steps/",
     "provider": "Perl.org",
