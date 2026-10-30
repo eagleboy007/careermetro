@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-30 (certifications parts 1 and 2 and catalogue fixes)
+Last updated: 2026-10-30 (Timetable PR 1: data model and matcher)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -103,7 +103,8 @@ Last updated: 2026-10-30 (certifications parts 1 and 2 and catalogue fixes)
 
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/` from src/content, with one CSV per field (cloud 25, security 25, data 21, enterprise apps 24, testing 4, other 54; all 153 roles have `reviewedBy` null), the 54 timed-test questions, the 135 Practice questions and a README for reviewers. Each line has a Ref plus Agree / Change to / Comment columns. A copy is in `/mnt/project-files/careermetro/review/roles/`. `node scripts/review/read-review.mjs <file>` lists a returned file's answers. A test fails when the pack is out of date, so re-run the script after any content change.
 
-- Timetable plan (`docs/plans/timetable-plan.md`, handoff 10 and 13, prototype v2 evt): migration 0054 (`events`, `event_topics`, `event_rsvps`, `events_digests`, three `user_settings` columns) waits on the Project manager's sign-off under Milin's delegation. Sources follow Data research's review (`data/events/sources-2026-10-30.md`): FOSS United and confs.tech first; Meetup, Microsoft Reactor and NASSCOM are never used. Section 9 lists the other unbuilt v2 controls.
+- Timetable plan (`docs/plans/timetable-plan.md`, handoff 10 and 13, prototype v2 evt): data model signed off by the Project manager under Milin's delegation. Sources follow Data research's review (`data/events/sources-2026-10-30.md`): FOSS United and confs.tech first; Meetup, Microsoft Reactor and NASSCOM are never used. Section 9 lists the other unbuilt v2 controls.
+  - PR 1, no screen: migration 0054 (`events`, `event_topics`, `event_rsvps`, `events_digests`, `user_settings.events_radius_km`/`events_online`/`events_digest`; RLS, no policies), Zod schemas (`src/lib/schemas/timetable.ts`), `city-centres.json` (all 51 `PERSON_CITIES`) and `interest-topics.json` (33 topics), the pure matcher `src/lib/timetable/match.ts` (taxonomy and interest topics found by code, haversine between city centres, 60-day window, IST groups), export v36 (`timetable`) and digest rows over 90 days in the daily cleanup. Next: PR 2, `/timetable` and the Today teaser.
 
 - Departures boards: Data research's Mumbai and Pune batch went through the board check (84 asked: 69 passing, 1 404, 2 timeouts, 12 with no India post). The 69 that pass are in `src/content/job-boards.json`, which now holds 281 of the 300 allowed. The feed now maps "service desk agent" to it-support-engineer and "hardware architect" to hardware-design-engineer.
 
@@ -127,7 +128,7 @@ Waiting: the end of Milin's name-search message ("city or …"); photo and certi
 
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 
-Numbers: the next migration is **0049**. `EXPORT_VERSION` (32) lives in `src/lib/account/export.ts`. The latest FR is FR-56 (FR-36 filled a number that was never used).
+Numbers: the next migration is **0055**. `EXPORT_VERSION` (36) lives in `src/lib/account/export.ts`. The latest FR is FR-56 (FR-36 filled a number that was never used).
 
 ## Decisions log (newest first)
 

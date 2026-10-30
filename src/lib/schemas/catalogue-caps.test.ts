@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { mockQuestions, practiceQuestions, resources, roleProfiles, roleTracks, skills } from "@/content";
+import { interestTopics, mockQuestions, practiceQuestions, resources, roleProfiles, roleTracks, skills } from "@/content";
 import { buildLibrary, type CatalogRow } from "@/lib/library/build";
 import { exampleMapLine } from "@/lib/map/fixtures";
 import { matchListFor } from "@/lib/match/build";
 import { bankViewFor, mockRoles, type MockRoleProfile } from "@/lib/mock/rules";
 import { certificatesFor } from "@/lib/proofs/eligible";
+import { timetableFor, topicsOf } from "@/lib/timetable/match";
 import { exampleRide } from "@/lib/today/fixtures";
 import {
+  interestTopicsFile,
   libraryGoal,
   mapGoal,
   matchList,
@@ -16,6 +18,7 @@ import {
   practiceView,
   provePitstop,
   roleTracksFile,
+  timetableView,
   type MockQuestion,
   type Profile,
   type RoleProfile,
@@ -134,5 +137,36 @@ describe("catalogue caps", () => {
       job: null,
     };
     expect(practiceView.safeParse(view).error).toBeUndefined();
+  });
+
+  it("reads an interest topic list twice the size of today's", () => {
+    const copy = twice(interestTopics, (t) => ({ ...t, key: `${t.key}-x2`, aliases: t.aliases.map((a) => `${a} x2`), ambiguous: t.ambiguous.map((a) => `${a} x2`) }));
+    expect(interestTopicsFile.safeParse(copy).error).toBeUndefined();
+  });
+
+  it("tags one event with every topic it can keep, for a person whose goals are the whole taxonomy", () => {
+    const names = skills.map((s) => s.name).join(", ");
+    const topics = topicsOf(names, names);
+    const startsAt = new Date("2026-10-16T12:30:00Z");
+    const event = {
+      id: "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f",
+      title: "Every skill night",
+      organiser: "Example Meetup",
+      kind: "meetup" as const,
+      startsAt,
+      endsAt: startsAt,
+      online: true,
+      city: null,
+      venue: null,
+      cost: "Free",
+      sourceUrl: "https://events.example.org/every",
+      status: "live" as const,
+      topics,
+      rsvp: null,
+    };
+    const person = { city: null, radiusKm: 25, online: true, goalSkillIds: skills.map((s) => s.id), interestKeys: interestTopics.map((t) => t.key) };
+    const view = timetableFor([event], person, new Date("2026-10-14T06:30:00Z"));
+    expect(view.groups[0].events[0].tags).toHaveLength(topics.length);
+    expect(timetableView.safeParse(view).error).toBeUndefined();
   });
 });

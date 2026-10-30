@@ -737,3 +737,43 @@ export const DIRECT_MESSAGES_PER_DAY = 300;
 
 /** Express apply with the sample resume ("Try a sample resume") as the current one: a made-up person's is never sent. */
 export const SAMPLE_CANT_SEND = "The sample resume can't be sent. Upload your own resume first.";
+
+/* Timetable (docs/plans/timetable-plan.md, migration 0054) ------------------------------------------------------------- */
+
+/** Where an event came from: an organiser's public feed, or a moderated suggestion. */
+export const EVENT_SOURCES = ["feed", "suggestion"] as const;
+export const EVENT_KINDS = ["meetup", "workshop", "conference", "online"] as const;
+export type EventKind = (typeof EVENT_KINDS)[number];
+export const EVENT_KIND_LABELS: Record<EventKind, string> = { meetup: "Meetup", workshop: "Workshop", conference: "Conference", online: "Online" };
+/** Feed events start live; suggestions start pending until an admin checks them. */
+export const EVENT_STATUSES = ["pending", "live", "hidden", "cancelled"] as const;
+/** An event's topic is a skill id from the taxonomy or an interest topic key (src/content/interest-topics.json). */
+export const EVENT_TOPIC_KINDS = ["skill", "interest"] as const;
+/** "Save" is saved; "I'm going" is going. */
+export const EVENT_RSVP_STATES = ["saved", "going"] as const;
+export const EVENT_SOURCE_KEY_MAX = 200;
+export const EVENT_URL_MAX = 2000;
+/** Titles are clipped with "…" to this, like job titles (JOB_TITLE_SHOWN). */
+export const EVENT_TITLE_MAX = 160;
+export const EVENT_ORGANISER_MAX = 120;
+export const EVENT_VENUE_MAX = 120;
+export const EVENT_COST_MAX = 60;
+/**
+ * Topics kept for one event. The matcher finds them by code over the title and description, which can name many
+ * skills; the cap has room to grow with the taxonomy and the matcher keeps the first ones in taxonomy order.
+ */
+export const EVENT_TOPICS_MAX = 100;
+/** Tags on one event card: the person's goals and interests it matches, never more than the event's topics. */
+export const EVENT_TAGS_MAX = EVENT_TOPICS_MAX;
+/** The radius choices: the saved 25 km, and "Show outside 25 km" for one visit. */
+export const EVENT_RADII_KM = [25, 100] as const;
+export const EVENT_RADIUS_DEFAULT_KM = 25;
+/** The timetable shows the next 60 days, and drops events that started more than 2 hours ago. */
+export const EVENT_WINDOW_DAYS = 60;
+export const EVENT_STARTED_GRACE_MS = 2 * 3600_000;
+/** Events on one timetable view: room to grow well past what the first feeds list in 60 days. */
+export const TIMETABLE_EVENTS_MAX = 2000;
+/** Interest topics the content file may hold, and the aliases one topic may have. */
+export const INTEREST_TOPICS_MAX = 200;
+export const INTEREST_TOPIC_ALIASES_MAX = 30;
+export const TIMETABLE_NO_CITY = "Add your city in your profile to see events near you.";

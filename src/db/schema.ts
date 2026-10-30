@@ -27,7 +27,18 @@ import {
   REPORT_STATUSES,
   REPORT_TARGETS,
 } from "../lib/schemas/inbox";
-import { NOTIFICATION_KINDS, RESOURCE_REPORT_REASONS, RESOURCE_REPORT_STATUSES, SUGGESTION_DECLINE_REASONS, SUGGESTION_STATUSES } from "../lib/schemas/constants";
+import {
+  EVENT_KINDS,
+  EVENT_RSVP_STATES,
+  EVENT_SOURCES,
+  EVENT_STATUSES,
+  EVENT_TOPIC_KINDS,
+  NOTIFICATION_KINDS,
+  RESOURCE_REPORT_REASONS,
+  RESOURCE_REPORT_STATUSES,
+  SUGGESTION_DECLINE_REASONS,
+  SUGGESTION_STATUSES,
+} from "../lib/schemas/constants";
 import {
   APPLICATION_EVENT_KINDS,
   APPLICATION_STAGES,
@@ -240,6 +251,14 @@ export const userSettings = pgTable("user_settings", {
    * pages and only pre-ticks open times when a company asks for times.
    */
   usuallyFree: text("usually_free").array().notNull().default(sql`'{}'::text[]`),
+  /**
+   * Timetable (docs/plans/timetable-plan.md, migration 0054): the radius around the profile city, 25 or 100 km ("Show
+   * outside 25 km" sets 100 for one visit only; Settings saves it), "Include online", and "Send me this week's events",
+   * off until the person turns it on.
+   */
+  eventsRadiusKm: integer("events_radius_km").notNull().default(25),
+  eventsOnline: boolean("events_online").notNull().default(true),
+  eventsDigest: boolean("events_digest").notNull().default(false),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 },
   (t) => [
@@ -248,6 +267,7 @@ export const userSettings = pgTable("user_settings", {
     check("user_settings_open_to_work_in_max", sql`cardinality(${t.openToWorkIn}) <= 6`),
     // Each entry a weekday and a picker time (FREE_DAYS by SLOT_TIMES), checked again by usuallyFreeInput.
     check("user_settings_usually_free_slots", sql`cardinality(${t.usuallyFree}) <= 40 and ${t.usuallyFree} <@ array['mon 10:00', 'mon 11:00', 'mon 12:00', 'mon 14:00', 'mon 15:00', 'mon 16:00', 'mon 17:00', 'mon 18:00', 'tue 10:00', 'tue 11:00', 'tue 12:00', 'tue 14:00', 'tue 15:00', 'tue 16:00', 'tue 17:00', 'tue 18:00', 'wed 10:00', 'wed 11:00', 'wed 12:00', 'wed 14:00', 'wed 15:00', 'wed 16:00', 'wed 17:00', 'wed 18:00', 'thu 10:00', 'thu 11:00', 'thu 12:00', 'thu 14:00', 'thu 15:00', 'thu 16:00', 'thu 17:00', 'thu 18:00', 'fri 10:00', 'fri 11:00', 'fri 12:00', 'fri 14:00', 'fri 15:00', 'fri 16:00', 'fri 17:00', 'fri 18:00']::text[]`),
+    check("user_settings_events_radius_km", sql`${t.eventsRadiusKm} in (25, 100)`),
   ],
 );
 
@@ -1583,6 +1603,124 @@ export const weeklyEmails = pgTable(
     sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.week] }), index("weekly_emails_sent").on(t.sentAt)],
+);
+
+/* Timetable (docs/plans/timetable-plan.md, migration 0054) ---------------------------------------------------------------- */
+
+/**
+ * An event from an organiser's public feed or a moderated suggestion: our short summary only (title, organiser, kind,
+ * time, place, cost) and the organiser's https page, always shown as its link. The description is read for topics by
+ * code and never kept. `city` is one of PERSON_CITIES, null when online; there is no lat/lng (distance goes between city
+ * centres, src/content/city-centres.json). Feed events start live; suggestions start pending until an admin checks them.
+ * Belongs to no one.
+ */
+export const events = pgTable(
+  "events",
+  {
+    id: id(),
+    source: text("source", { enum: EVENT_SOURCES }).notNull(),
+    /** The feed's id for the event, or the suggestion's. Unique with `source`, so a re-read updates, not duplicates. */
+    sourceKey: text("source_key").notNull(),
+    sourceUrl: text("source_url").notNull(),
+    title: text("title").notNull(),
+    organiser: text("organiser").notNull(),
+    kind: text("kind", { enum: EVENT_KINDS }).notNull(),
+    startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+    endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+    online: boolean("online").notNull().default(false),
+    city: text("city"),
+    /** An area such as "Baner, Pune"; never a street address. */
+    venue: text("venue"),
+    /** "Free", "₹200": words, never a payment link. */
+    cost: text("cost").notNull().default(""),
+    status: text("status", { enum: EVENT_STATUSES }).notNull().default("pending"),
+    /** The last time the feed still listed it. */
+    checkedAt: timestamp("checked_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("events_source_key").on(t.source, t.sourceKey),
+    index("events_status_starts").on(t.status, t.startsAt),
+    check("events_source", sql`${t.source} in ('feed', 'suggestion')`),
+    check("events_kind", sql`${t.kind} in ('meetup', 'workshop', 'conference', 'online')`),
+    check("events_status", sql`${t.status} in ('pending', 'live', 'hidden', 'cancelled')`),
+    check("events_source_key_length", sql`char_length(${t.sourceKey}) between 1 and 200`),
+    check("events_source_url", sql`${t.sourceUrl} like 'https://%' and char_length(${t.sourceUrl}) <= 2000`),
+    check("events_title_length", sql`char_length(${t.title}) between 1 and 160`),
+    check("events_organiser_length", sql`char_length(${t.organiser}) between 1 and 120`),
+    check("events_city_length", sql`${t.city} is null or char_length(${t.city}) between 1 and 60`),
+    check("events_venue_length", sql`${t.venue} is null or char_length(${t.venue}) between 1 and 120`),
+    check("events_cost_length", sql`char_length(${t.cost}) <= 60`),
+    check("events_online_no_city", sql`not ${t.online} or ${t.city} is null`),
+    check("events_ends_after_start", sql`${t.endsAt} >= ${t.startsAt}`),
+  ],
+);
+
+/**
+ * The topics code found in an event's title and description (src/lib/timetable/match.ts topicsOf): a skill id from
+ * skills.json or an interest topic key from interest-topics.json. No model call; the description itself is not kept.
+ * Goes with its event.
+ */
+export const eventTopics = pgTable(
+  "event_topics",
+  {
+    eventId: uuid("event_id")
+      .notNull()
+      .references(() => events.id, { onDelete: "cascade" }),
+    kind: text("kind", { enum: EVENT_TOPIC_KINDS }).notNull(),
+    topic: text("topic").notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.eventId, t.kind, t.topic] }),
+    index("event_topics_topic").on(t.kind, t.topic),
+    check("event_topics_kind", sql`${t.kind} in ('skill', 'interest')`),
+    check("event_topics_topic_length", sql`char_length(${t.topic}) between 1 and 80`),
+  ],
+);
+
+/**
+ * The person's own Save ("saved") or I'm going ("going") on an event, with the goal's skill a prep task is for (only
+ * when going). Going is never proof. Owner only; goes with the account or the event; in Download your data (export
+ * version 36). No "N going" count until people can opt in to being counted.
+ */
+export const eventRsvps = pgTable(
+  "event_rsvps",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    eventId: uuid("event_id")
+      .notNull()
+      .references(() => events.id, { onDelete: "cascade" }),
+    state: text("state", { enum: EVENT_RSVP_STATES }).notNull(),
+    goalSkillId: text("goal_skill_id"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.eventId] }),
+    index("event_rsvps_event").on(t.eventId),
+    check("event_rsvps_state", sql`${t.state} in ('saved', 'going')`),
+    check("event_rsvps_goal_length", sql`${t.goalSkillId} is null or char_length(${t.goalSkillId}) between 1 and 80`),
+    check("event_rsvps_goal_when_going", sql`${t.goalSkillId} is null or ${t.state} = 'going'`),
+  ],
+);
+
+/**
+ * The Monday events digest sent (Timetable PR 5): one row per person per India week (its Monday), so a re-run never
+ * sends twice, as weekly_emails does. Goes with the account; rows over 90 days old are deleted by the daily cleanup.
+ * No content is kept.
+ */
+export const eventsDigests = pgTable(
+  "events_digests",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    week: date("week").notNull(),
+    sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.week] }), index("events_digests_sent").on(t.sentAt)],
 );
 
 /** Each run of the daily feed, counts only, for Departures' "Updated". Runs over 90 days old are deleted. */

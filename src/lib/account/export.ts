@@ -22,6 +22,7 @@ import { exportNetwork } from "@/lib/network/store";
 import { exportNotifications } from "@/lib/notifications/store";
 import { exportPractice } from "@/lib/practice/store";
 import { isSampleResume } from "@/lib/resume/sample-mime";
+import { exportTimetable } from "@/lib/timetable/store";
 import { exportAvailability } from "./availability-store";
 import { exportSettings } from "./settings-store";
 import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pathSteps, profiles, resumes, rideDays, roleProfiles, userGoals, users } from "@/db/schema";
@@ -29,7 +30,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 35;
+export const EXPORT_VERSION = 36;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -121,7 +122,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
         .orderBy(asc(jobChecks.createdAt))
     : [];
 
-  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch, departureRows, myJobRows, libraryRows, meEdits, notificationRows, availability, weeklySent] = await Promise.all([
+  const [consentRows, goalRows, proofRows, rideRows, jdRows, inbox, companyRoles, jobsOwned, applicationRows, interviewer, settings, discovery, practiceRows, jobEmailCheckRows, network, builderDraft, plan, timedTestRows, mockSessionRows, jobSearch, departureRows, myJobRows, libraryRows, meEdits, notificationRows, availability, weeklySent, timetable] = await Promise.all([
     db.select({ purpose: consents.purpose, policyVersion: consents.policyVersion, givenAt: consents.givenAt, withdrawnAt: consents.withdrawnAt }).from(consents).where(eq(consents.userId, userId)).orderBy(asc(consents.givenAt)),
     db
       .select({
@@ -188,6 +189,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     exportNotifications(userId, db),
     exportAvailability(userId, db),
     lastWeeklyEmail(userId, db),
+    exportTimetable(userId, db),
   ]);
 
   return {
@@ -294,5 +296,10 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // Your availability (from version 31): the weekday hours you said you are usually free ("mon 17:00"). Only you see
     // them; they only pre-tick times when a company asks for times.
     availability,
+    // Timetable (from version 36, docs/plans/timetable-plan.md): your radius in km, Include online and whether the Monday
+    // events digest is on (the defaults until you save some), the India week (its Monday) the digest last went out, and
+    // the events you saved or marked I'm going, each with its title, organiser, start, link and the goal a prep task is
+    // for. Nothing the digest said is kept, and nobody else's saves are here.
+    timetable,
   };
 }

@@ -37,3 +37,4 @@ export * from "./notifications";
 export * from "./role-track";
 export * from "./csp-report";
 export * from "./my-jobs";
+export * from "./timetable";

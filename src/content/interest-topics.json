@@ -1,0 +1,180 @@
+[
+  {
+    "key": "ai",
+    "label": "AI",
+    "aliases": ["ai", "artificial intelligence", "genai", "gen ai", "generative ai", "llm", "llms", "large language models", "agentic ai", "ai agents", "prompt engineering"]
+  },
+  {
+    "key": "machine-learning",
+    "label": "Machine learning",
+    "aliases": ["machine learning", "ml", "deep learning", "neural networks", "mlops", "computer vision", "nlp", "natural language processing"]
+  },
+  {
+    "key": "data",
+    "label": "Data and analytics",
+    "aliases": ["data and analytics", "data", "data science", "data analytics", "analytics", "big data", "data engineering", "business intelligence", "data visualization"],
+    "ambiguous": ["data", "analytics"]
+  },
+  {
+    "key": "cloud",
+    "label": "Cloud",
+    "aliases": ["cloud", "cloud computing", "aws", "azure", "gcp", "google cloud", "serverless", "cloud native"]
+  },
+  {
+    "key": "devops",
+    "label": "DevOps",
+    "aliases": ["devops", "ci/cd", "sre", "site reliability", "site reliability engineering", "platform engineering", "kubernetes", "docker", "infrastructure as code"]
+  },
+  {
+    "key": "security",
+    "label": "Security",
+    "aliases": ["security", "cybersecurity", "cyber security", "infosec", "information security", "appsec", "application security", "ethical hacking", "ctf", "capture the flag", "bug bounty"]
+  },
+  {
+    "key": "web",
+    "label": "Web development",
+    "aliases": ["web development", "web", "web dev", "frontend", "front end", "front-end", "full stack", "full-stack", "javascript", "typescript", "react", "webdev"],
+    "ambiguous": ["web", "react"]
+  },
+  {
+    "key": "mobile",
+    "label": "Mobile development",
+    "aliases": ["mobile development", "mobile", "mobile apps", "app development", "android", "ios", "flutter", "react native", "kotlin", "swift"],
+    "ambiguous": ["mobile", "swift"]
+  },
+  {
+    "key": "open-source",
+    "label": "Open source",
+    "aliases": ["open source", "open-source", "foss", "oss", "free software", "linux"]
+  },
+  {
+    "key": "blockchain",
+    "label": "Blockchain",
+    "aliases": ["blockchain", "web3", "crypto", "cryptocurrency", "ethereum", "smart contracts", "solidity"]
+  },
+  {
+    "key": "iot",
+    "label": "IoT",
+    "aliases": ["iot", "internet of things", "smart devices", "iiot", "industrial iot"]
+  },
+  {
+    "key": "embedded",
+    "label": "Embedded systems",
+    "aliases": ["embedded systems", "embedded", "firmware", "microcontrollers", "arduino", "raspberry pi", "rtos"]
+  },
+  {
+    "key": "ui-ux",
+    "label": "UI/UX",
+    "aliases": ["ui/ux", "ux", "ui", "ux design", "ui design", "user experience", "product design", "interaction design", "design", "figma"],
+    "ambiguous": ["design"]
+  },
+  {
+    "key": "product",
+    "label": "Product management",
+    "aliases": ["product management", "product", "product manager", "product managers", "pm"],
+    "ambiguous": ["product", "pm"]
+  },
+  {
+    "key": "testing",
+    "label": "Software testing",
+    "aliases": ["software testing", "testing", "qa", "quality assurance", "test automation", "automation testing", "selenium"],
+    "ambiguous": ["testing"]
+  },
+  {
+    "key": "programming",
+    "label": "Programming",
+    "aliases": ["programming", "coding", "software development", "software engineering"]
+  },
+  {
+    "key": "python",
+    "label": "Python",
+    "aliases": ["python", "django", "pydata", "pycon"]
+  },
+  {
+    "key": "java",
+    "label": "Java",
+    "aliases": ["java", "spring boot", "jvm"]
+  },
+  {
+    "key": "game-dev",
+    "label": "Game development",
+    "aliases": ["game development", "gamedev", "game dev", "gaming", "games", "game design", "unity", "unreal engine"],
+    "ambiguous": ["gaming", "games", "unity"]
+  },
+  {
+    "key": "robotics",
+    "label": "Robotics",
+    "aliases": ["robotics", "robots", "ros", "drones"]
+  },
+  {
+    "key": "ar-vr",
+    "label": "AR/VR",
+    "aliases": ["ar/vr", "ar", "vr", "augmented reality", "virtual reality", "xr", "mixed reality", "metaverse"],
+    "ambiguous": ["ar"]
+  },
+  {
+    "key": "networking",
+    "label": "Computer networking",
+    "aliases": ["computer networking", "networking", "computer networks", "network engineering", "ccna", "5g"],
+    "ambiguous": ["networking"]
+  },
+  {
+    "key": "databases",
+    "label": "Databases",
+    "aliases": ["databases", "database", "sql", "nosql", "postgresql", "mongodb"]
+  },
+  {
+    "key": "startups",
+    "label": "Startups",
+    "aliases": ["startups", "startup", "entrepreneurship", "founders"]
+  },
+  {
+    "key": "careers",
+    "label": "Career growth",
+    "aliases": ["career growth", "career", "careers", "job search", "interview prep", "resume writing", "mentorship"],
+    "ambiguous": ["career", "careers"]
+  },
+  {
+    "key": "women-in-tech",
+    "label": "Women in tech",
+    "aliases": ["women in tech", "women in technology", "women in stem", "diversity in tech"]
+  },
+  {
+    "key": "quantum",
+    "label": "Quantum computing",
+    "aliases": ["quantum computing", "quantum"]
+  },
+  {
+    "key": "hackathons",
+    "label": "Hackathons",
+    "aliases": ["hackathons", "hackathon"]
+  },
+  {
+    "key": "fintech",
+    "label": "Fintech",
+    "aliases": ["fintech", "financial technology", "payments", "upi"],
+    "ambiguous": ["payments"]
+  },
+  {
+    "key": "semiconductors",
+    "label": "Semiconductors",
+    "aliases": ["semiconductors", "semiconductor", "vlsi", "chip design"]
+  },
+  {
+    "key": "competitive-programming",
+    "label": "Competitive programming",
+    "aliases": ["competitive programming", "dsa", "data structures", "algorithms", "leetcode"]
+  },
+  {
+    "key": "technical-writing",
+    "label": "Technical writing",
+    "aliases": ["technical writing", "documentation", "docs as code"],
+    "ambiguous": ["documentation"]
+  },
+  {
+    "key": "sustainability",
+    "label": "Green tech",
+    "aliases": ["green tech", "climate tech", "sustainability", "clean energy"],
+    "ambiguous": ["sustainability"]
+  }
+]
