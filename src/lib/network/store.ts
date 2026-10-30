@@ -26,6 +26,7 @@ import { logEvent } from "@/lib/log";
 import { isSampleResume, SAMPLE_MIME } from "@/lib/resume/sample-mime";
 import { forgetBetween, forgetRequests, notify } from "@/lib/notifications/store";
 import { DEFAULT_SETTINGS, gapAnalysis } from "@/lib/schemas";
+import { NETWORK_LIST_MAX } from "@/lib/schemas/constants";
 import {
   CONNECTION_PENDING_MAX,
   DEFAULT_NETWORK_SETTINGS,
@@ -616,7 +617,7 @@ const personColumns = {
   showSkills: userSettings.showSkills,
 };
 
-/** The /network tabs: Connections (newest first), Requests waiting on this person, and Sent, each with its count. */
+/** The /network tabs: Connections (newest first), Requests waiting on this person, and Sent, each with its count, NETWORK_LIST_MAX rows each at most. */
 export async function networkLists(userId: string, deps: Deps = {}): Promise<{ connections: NetworkPerson[]; requests: NetworkPerson[]; sent: NetworkPerson[] }> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();
@@ -628,21 +629,24 @@ export async function networkLists(userId: string, deps: Deps = {}): Promise<{ c
       .innerJoin(users, eq(users.id, other))
       .leftJoin(userSettings, eq(userSettings.userId, users.id))
       .where(and(or(eq(connections.userLow, userId), eq(connections.userHigh, userId)), shownTo(userId)))
-      .orderBy(desc(connections.createdAt), asc(users.id)),
+      .orderBy(desc(connections.createdAt), asc(users.id))
+      .limit(NETWORK_LIST_MAX),
     db
       .select({ ...personColumns, how: connectionRequests.how, at: connectionRequests.createdAt, status: connectionRequests.status })
       .from(connectionRequests)
       .innerJoin(users, eq(users.id, connectionRequests.fromUser))
       .leftJoin(userSettings, eq(userSettings.userId, users.id))
       .where(and(eq(connectionRequests.toUser, userId), eq(connectionRequests.status, "pending"), shownTo(userId)))
-      .orderBy(desc(connectionRequests.createdAt), asc(users.id)),
+      .orderBy(desc(connectionRequests.createdAt), asc(users.id))
+      .limit(NETWORK_LIST_MAX),
     db
       .select({ ...personColumns, how: connectionRequests.how, at: connectionRequests.createdAt, status: connectionRequests.status })
       .from(connectionRequests)
       .innerJoin(users, eq(users.id, connectionRequests.toUser))
       .leftJoin(userSettings, eq(userSettings.userId, users.id))
       .where(and(eq(connectionRequests.fromUser, userId), inArray(connectionRequests.status, ["pending", "ignored"]), shownTo(userId)))
-      .orderBy(desc(connectionRequests.createdAt), asc(users.id)),
+      .orderBy(desc(connectionRequests.createdAt), asc(users.id))
+      .limit(NETWORK_LIST_MAX),
   ]);
   const people = await asPeople(
     userId,

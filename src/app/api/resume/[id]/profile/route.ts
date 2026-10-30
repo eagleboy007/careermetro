@@ -23,7 +23,9 @@ export async function PUT(request: Request, { params }: RouteContext<"/api/resum
   if (!parsed.success) {
     const where = parsed.error.issues.some((i) => ["start", "end", "lastUsed"].includes(String(i.path.at(-1))))
       ? "Check the dates: use YYYY or YYYY-MM, like 2022-06."
-      : "Some fields are empty. Fill them in or remove the entry.";
+      : parsed.error.issues.some((i) => i.code === "too_big")
+        ? "Some entries are too long, or there are too many of them. Shorten or remove some and try again."
+        : "Some fields are empty. Fill them in or remove the entry.";
     return fail(400, where);
   }
 

@@ -21,6 +21,7 @@ import {
   type InboxThread,
 } from "@/lib/inbox/types";
 import { ANTI_SCAM_LINE } from "@/lib/schemas/constants";
+import { ShowMore, usePaged } from "@/components/ui/show-more";
 import type { ReportReason } from "@/lib/schemas/inbox";
 import { GRIEVANCE_OFFICER } from "@/lib/grievance";
 import { UsuallyFree } from "./usually-free";
@@ -134,6 +135,9 @@ export function InboxView({
   };
 
   const shown = filterThreads(threads, filter);
+  // Long Inboxes show 20 chats at a time (T147); the open chat stays open whatever page it is on.
+  const paged = usePaged(shown, filter);
+  const threadList = useRef<HTMLUListElement>(null);
   const current = threads.find((t) => t.id === currentId) ?? null;
   const update = (id: string, change: (t: Thread) => Thread) => setThreads((all) => all.map((t) => (t.id === id ? change(t) : t)));
 
@@ -353,9 +357,9 @@ export function InboxView({
               </button>
             ))}
           </div>
-          <ul className="flex flex-col gap-0.5 p-2">
+          <ul ref={threadList} className="flex flex-col gap-0.5 p-2">
             {shown.length === 0 && <li className="p-3 text-[0.84rem] text-muted">Nothing here.</li>}
-            {shown.map((t) => {
+            {paged.shown.map((t) => {
               const last = lastMessage(t);
               const lead = t.found && t.kind === "request" ? `Company · ${t.job} · ` : t.kind === "request" ? "Message request · " : t.kind === "application" ? `${t.job} · ` : "";
               return (
@@ -369,7 +373,7 @@ export function InboxView({
                   >
                     <Avatar thread={t} />
                     <span className="min-w-0">
-                      <b className="block text-[0.88rem] font-semibold leading-[1.25]">{t.name}</b>
+                      <b className="block min-w-0 truncate text-[0.88rem] font-semibold leading-[1.25]" title={t.name}>{t.name}</b>
                       <small className="block truncate text-[0.76rem] text-muted">
                         {lead}
                         {last?.text}
@@ -389,6 +393,7 @@ export function InboxView({
               );
             })}
           </ul>
+          <ShowMore left={paged.left} shown={paged.shown.length} onMore={paged.more} list={threadList} noun="chats" className="flex px-2 pb-2.5" />
         </section>
 
         {current && (
@@ -401,9 +406,9 @@ export function InboxView({
                 <ArrowLeft size={20} strokeWidth={1.75} aria-hidden="true" />
               </button>
               <Avatar thread={current} />
-              <div className="min-w-0 flex-1 min-[760px]:flex-none">
+              <div className="min-w-0 flex-1 min-[760px]:flex-initial">
                 <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                  <b className="font-semibold">{current.name}</b>
+                  <b className="min-w-0 font-semibold [overflow-wrap:anywhere]">{current.name}</b>
                   {isCompany(current) && current.verified && <VerifiedBadge />}
                 </span>
                 <small className="block truncate text-[0.78rem] text-muted">
@@ -694,9 +699,9 @@ function Message({
   onCancel: () => void;
   sending?: boolean;
 }) {
-  if (m.by === "system") return <li className="max-w-[90%] self-center text-center text-[0.76rem] text-muted">{m.text}</li>;
+  if (m.by === "system") return <li className="max-w-[90%] self-center text-center text-[0.76rem] text-muted [overflow-wrap:anywhere]">{m.text}</li>;
   const who = m.by === "me" ? "You" : m.who ? `${m.who} · ${thread.name}` : thread.name;
-  const meta = <span className="font-mono text-[0.68rem] text-muted">{`${who} · ${m.at ?? "now"}`}</span>;
+  const meta = <span className="max-w-full font-mono text-[0.68rem] text-muted [overflow-wrap:anywhere]">{`${who} · ${m.at ?? "now"}`}</span>;
 
   if (m.type === "times" && m.ask) {
     // A real "Ask for times" (corporate build step 6): the days asked, the picker's times, the slots too soon to offer.
@@ -712,7 +717,7 @@ function Message({
           <CalendarDays {...ICON} />
           Asking for interview times
         </span>
-        <p className="text-[0.88rem]">{m.text}</p>
+        <p className="whitespace-pre-wrap text-[0.88rem] [overflow-wrap:anywhere]">{m.text}</p>
         {ask.offered ? (
           <small className="text-[0.78rem] text-muted">
             You offered {ask.offered.length} {ask.offered.length === 1 ? "time" : "times"}: {ask.offered.join(" · ")}
@@ -792,7 +797,7 @@ function Message({
           <CalendarDays {...ICON} />
           Asking for interview times
         </span>
-        <p className="text-[0.88rem]">{m.text}</p>
+        <p className="whitespace-pre-wrap text-[0.88rem] [overflow-wrap:anywhere]">{m.text}</p>
         {thread.offered ? (
           <small className="text-[0.78rem] text-muted">
             You offered {thread.offered.length} times: {thread.offered.map(slotName).join(" · ")}
@@ -847,7 +852,7 @@ function Message({
   return (
     <li className={`flex max-w-[92%] flex-col gap-[3px] min-[760px]:max-w-[78%] ${mine ? "items-end self-end" : "items-start"}`}>
       {m.type === "question" && <span className={label}>Question</span>}
-      <div className={`rounded-[14px] border px-3 py-[9px] text-[0.88rem] ${mine ? "border-transparent bg-surface-2" : "border-line bg-surface"}`}>
+      <div className={`max-w-full whitespace-pre-wrap rounded-[14px] border px-3 py-[9px] text-[0.88rem] [overflow-wrap:anywhere] ${mine ? "border-transparent bg-surface-2" : "border-line bg-surface"}`}>
         {m.text}
       </div>
       {meta}

@@ -7,9 +7,9 @@ import type { Gap } from "@/lib/schemas";
  */
 export function GapCard({ gap, askedIn = null }: { gap: Gap; askedIn?: string | null }) {
   return (
-    <article className="flex flex-col gap-2 rounded-md border border-line p-3.5">
+    <article className="flex min-w-0 flex-col gap-2 rounded-md border border-line p-3.5 [overflow-wrap:anywhere]">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="font-sans text-[15px] font-semibold tracking-normal">{gap.skillName}</h3>
+        <h3 className="min-w-0 font-sans text-[15px] font-semibold tracking-normal">{gap.skillName}</h3>
         <StatusChip status={gap.status} />
       </div>
       {askedIn && <p className="font-mono text-xs text-muted">{askedIn}</p>}

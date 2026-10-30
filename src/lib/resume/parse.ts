@@ -6,7 +6,7 @@ import { isTransient, retryPause } from "@/lib/ai/errors";
 import type { AiCallRecord } from "@/lib/ai/log";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { z } from "zod";
-import { profile as profileSchema, type Profile } from "@/lib/schemas";
+import { clampProfile, uncappedProfile, type Profile } from "@/lib/schemas";
 import { containsPhrase, normalizeForMatch, verifyProfile, type VerifyReport } from "./verify";
 import { errorFields, logEvent } from "@/lib/log";
 
@@ -24,10 +24,12 @@ export type ParseClient = Pick<Anthropic, "beta">;
 /**
  * What the model returns: the profile plus the person's name as printed on the resume. The name is used once, for the
  * name check before the resume joins an account (src/lib/resume/name-match.ts), and is never stored or logged.
+ * It has no length caps: a long line or list is cut to the profile's caps after the check (clampProfile, T146), so it
+ * never fails the whole resume.
  */
-export const parsedResume = profileSchema.extend({ personName: z.string().nullable() });
+export const parsedResume = uncappedProfile.extend({ personName: z.string().nullable() });
 // Reading tolerates a missing name (older mocks and fixtures) as "no name shown".
-const readSchema = profileSchema.extend({ personName: z.string().nullable().catch(null) });
+const readSchema = uncappedProfile.extend({ personName: z.string().nullable().catch(null) });
 
 export type ParseResult =
   | { ok: true; profile: Profile; personName: string | null; report: VerifyReport; calls: AiCallRecord[] }
@@ -131,7 +133,8 @@ export async function parseResume(
     record(response.model, response.usage, parsed !== null);
     if (parsed) {
       const { personName, ...rest } = parsed;
-      const { profile, report } = verifyProfile(rest, maskedText);
+      const { profile: verified, report } = verifyProfile(rest, maskedText);
+      const profile = clampProfile(verified);
       // A name the resume doesn't print is dropped, like any other claim it doesn't support (AI-5).
       const name = personName?.trim() && containsPhrase(normalizeForMatch(maskedText), normalizeForMatch(personName)) ? personName.trim() : null;
       return { ok: true, profile, personName: name, report, calls };

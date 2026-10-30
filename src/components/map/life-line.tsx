@@ -7,6 +7,10 @@ import type { LifeLine } from "@/lib/schemas";
 import { LIFE_ROWS } from "@/lib/schemas/constants";
 import { Cta, Key, Label, List, Panel, Soon } from "./map-parts";
 
+/** SVG text never wraps, so a station's name is cut to about this many characters, with the full name in a <title>. */
+const LABEL_MAX = 24;
+const clipLabel = (text: string) => (text.length > LABEL_MAX ? `${text.slice(0, LABEL_MAX - 1).trimEnd()}…` : text);
+
 /** The Life line SVG (handoff section 7): five rows by year, big moments only. */
 export function LifeSvg({
   layout,
@@ -159,6 +163,7 @@ function LifeMark({ s, selected, onSelect }: { s: LifeStation; selected: boolean
   const row = group ? s.row : s.moment.row;
   const name = group ? s.label : s.moment.name;
   const date = group ? s.years : s.moment.date;
+  const shortName = clipLabel(name);
   const dx = s.anchor === "start" ? -8 : s.anchor === "end" ? 8 : 0;
   const text = "[paint-order:stroke] stroke-surface [stroke-width:4px] [stroke-linejoin:round]";
   // The words sit beside the button, hidden from assistive tech: its name says them in one order, "name, date",
@@ -207,13 +212,15 @@ function LifeMark({ s, selected, onSelect }: { s: LifeStation; selected: boolean
             {date}
           </text>
           <text x={s.x + dx} y={s.y - 19} textAnchor={s.anchor} className={`fill-ink text-[18px] font-[550] ${text}`}>
-            {name}
+            {shortName !== name && <title>{name}</title>}
+            {shortName}
           </text>
         </>
       ) : (
         <>
           <text x={s.x + dx} y={s.y + 36} textAnchor={s.anchor} className={`fill-ink text-[18px] font-[550] ${text}`}>
-            {name}
+            {shortName !== name && <title>{name}</title>}
+            {shortName}
           </text>
           <text x={s.x + dx} y={s.y + 55} textAnchor={s.anchor} className={`fill-muted font-mono text-[13.5px] tracking-[0.05em] ${text}`}>
             {date}
@@ -269,8 +276,8 @@ export function LifeSheet({
                 className="flex w-full items-center gap-2.5 rounded-md bg-surface-2 px-[11px] py-[9px] text-left text-[0.84rem] hover:underline"
               >
                 {m.verified ? <BadgeCheck size={16} strokeWidth={1.75} aria-hidden className="shrink-0 text-muted" /> : <Route size={16} strokeWidth={1.75} aria-hidden className="shrink-0 text-muted" />}
-                <span className="min-w-0 flex-1">{m.name}</span>
-                <small className="font-mono text-[0.7rem] text-muted">{m.date}</small>
+                <span className="min-w-0 flex-1 [overflow-wrap:anywhere]">{m.name}</span>
+                <small className="shrink-0 font-mono text-[0.7rem] text-muted">{m.date}</small>
               </button>
             </li>
           ))}
@@ -299,7 +306,7 @@ export function LifeSheet({
         {fed.length > 0 && (
           <div className="flex items-start gap-1.5 text-[0.76rem] text-muted">
             <Route size={14} strokeWidth={1.75} aria-hidden className="mt-0.5 shrink-0" />
-            <span>{fed.map((l) => (/[.…]$/.test(l.text) ? l.text : `${l.text}.`)).join(" ")}</span>
+            <span className="min-w-0 [overflow-wrap:anywhere]">{fed.map((l) => (/[.…]$/.test(l.text) ? l.text : `${l.text}.`)).join(" ")}</span>
           </div>
         )}
         <Soon>Add a moment</Soon>

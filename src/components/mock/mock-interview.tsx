@@ -310,23 +310,23 @@ export function MockInterview({
               <span className={LABEL}>
                 {q.position} · {q.topic}
               </span>
-              <b className="text-[0.95rem] font-[550]">{q.question}</b>
+              <b className="text-[0.95rem] font-[550] [overflow-wrap:anywhere]">{q.question}</b>
               {q.answer ? (
                 <>
-                  <blockquote className="border-l-2 border-line pl-3 text-[0.86rem] text-muted">{shortAnswer(q.answer)}</blockquote>
+                  <blockquote className="border-l-2 border-line pl-3 text-[0.86rem] text-muted [overflow-wrap:anywhere]">{shortAnswer(q.answer)}</blockquote>
                   {q.followUp && (
                     <div data-follow-up={q.followUp.answer ? "answered" : "skipped"} className="flex flex-col gap-1.5">
                       <span className={LABEL}>Follow-up</span>
-                      <b className="text-[0.9rem] font-[550]">{q.followUp.question}</b>
+                      <b className="text-[0.9rem] font-[550] [overflow-wrap:anywhere]">{q.followUp.question}</b>
                       {q.followUp.answer ? (
-                        <blockquote className="border-l-2 border-line pl-3 text-[0.86rem] text-muted">{shortAnswer(q.followUp.answer)}</blockquote>
+                        <blockquote className="border-l-2 border-line pl-3 text-[0.86rem] text-muted [overflow-wrap:anywhere]">{shortAnswer(q.followUp.answer)}</blockquote>
                       ) : (
                         <p className="text-[0.86rem] text-muted">Follow-up skipped.</p>
                       )}
                     </div>
                   )}
                   {q.whatWorked && q.addNextTime && (
-                    <dl className="grid gap-x-3.5 gap-y-2 text-[0.9rem] sm:grid-cols-[120px_minmax(0,1fr)]">
+                    <dl className="grid gap-x-3.5 gap-y-2 text-[0.9rem] [overflow-wrap:anywhere] sm:grid-cols-[120px_minmax(0,1fr)]">
                       <dt className={`${LABEL} pt-[3px]`}>What worked</dt>
                       <dd>{q.whatWorked}</dd>
                       <dt className={`${LABEL} border-t border-line pt-2.5 sm:pt-[13px]`}>Add next time</dt>
