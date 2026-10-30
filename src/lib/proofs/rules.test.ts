@@ -39,7 +39,10 @@ describe("checkCertificate", () => {
   it("takes no expiry date only for a certificate that never expires (T156)", () => {
     // AWS certificates expire, so "It never expires" isn't offered and the server refuses a missing date.
     expect(aws.lifetime).toBeUndefined();
-    expect(checkCertificate({ ...base, submission: { ...base.submission, expiresOn: null } })).toEqual({ ok: false, reason: "expiry_needed" });
+    const certmetrics = "https://cp.certmetrics.com/amazon/en/public/verify/credential/ABC123";
+    expect(checkCertificate({ ...base, submission: { ...base.submission, url: certmetrics, expiresOn: null } })).toEqual({ ok: false, reason: "expiry_needed" });
+    // A Credly badge gives its own expiry date when it is checked, so it may come without one.
+    expect(checkCertificate({ ...base, submission: { ...base.submission, expiresOn: null } })).toEqual({ ok: true, skillId: "aws" });
     const pcep = certifications.find((c) => c.id === "pcep")!;
     expect(pcep.lifetime).toBe(true);
     expect(checkCertificate({ ...base, cert: pcep, fillingSkills: ["python"], submission: { ...base.submission, expiresOn: null } })).toEqual({ ok: true, skillId: "python" });

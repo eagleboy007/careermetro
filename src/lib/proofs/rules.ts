@@ -47,6 +47,15 @@ export function allowedVerifyLink(url: string): boolean {
   return VERIFY_LINKS.some((l) => l.host === host && l.path.test(parsed.pathname));
 }
 
+/** A link on a Credly badge host, whose check reads the badge's own expiry date. */
+function isBadgeLink(url: string): boolean {
+  try {
+    return BADGE_LINK_HOSTS.has(new URL(url).host);
+  } catch {
+    return false;
+  }
+}
+
 /** A link on a Credly badge host whose path doesn't start with a badge id (credlyBadgeId would read none). */
 export function credlyLinkWithoutBadge(url: string): boolean {
   let parsed: URL;
@@ -79,8 +88,9 @@ export function checkCertificate(input: {
   if (!skillId) return { ok: false, reason: "not_covered" };
   if (submission.issuedOn > input.today) return { ok: false, reason: "issued_in_future" };
   if (submission.expiresOn && submission.expiresOn < input.today) return { ok: false, reason: "expired" };
-  // "It never expires" is only for a certificate that never does (T156); any other needs its expiry date.
-  if (!submission.expiresOn && !cert.lifetime) return { ok: false, reason: "expiry_needed" };
+  // "It never expires" is only for a certificate that can (T156); any other needs its expiry date, unless a Credly badge
+  // will give it when the badge is checked.
+  if (!submission.expiresOn && !cert.lifetime && !isBadgeLink(submission.url)) return { ok: false, reason: "expiry_needed" };
   if (!allowedVerifyLink(submission.url)) return { ok: false, reason: "link" };
   // A Credly link must name its badge, or it could never be checked and would skip the check (review B1).
   if (credlyLinkWithoutBadge(submission.url)) return { ok: false, reason: "link" };

@@ -12818,5 +12818,16 @@
     ],
     "minutes": 15,
     "free": true
+  },
+  {
+    "title": "Bash Scripting Tutorial",
+    "url": "https://ryanstutorials.net/bash-scripting-tutorial/",
+    "provider": "Ryan's Tutorials",
+    "kind": "course",
+    "skillIds": [
+      "scripting-bash"
+    ],
+    "minutes": 240,
+    "free": true
   }
 ]
