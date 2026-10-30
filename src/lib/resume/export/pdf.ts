@@ -24,13 +24,17 @@ function fontBytes() {
   return fonts;
 }
 
+/** Longer than any line the export draws (a page is under 600 points wide), so it is broken without measuring it whole. */
+const LONG_WORD = 400;
+
 /** Splits text into lines that fit `width`, breaking a word only when it is longer than a whole line. */
 export function wrap(text: string, font: PDFFont, size: number, width: number): string[] {
   const lines: string[] = [];
   let line = "";
   for (const word of text.split(/\s+/).filter(Boolean)) {
     const next = line ? `${line} ${word}` : word;
-    if (font.widthOfTextAtSize(next, size) <= width) {
+    // A word this long never fits a line, so it skips the whole-string measure (slow for tens of thousands of letters).
+    if (word.length <= LONG_WORD && font.widthOfTextAtSize(next, size) <= width) {
       line = next;
       continue;
     }

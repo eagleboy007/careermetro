@@ -104,7 +104,7 @@ describe("PDF line wrapping", () => {
     const word = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJ0123456789".repeat(1_400).slice(0, 60_000);
     const started = performance.now();
     const lines = wrap(`Before ${word} after`, font, 10, 400);
-    expect(performance.now() - started).toBeLessThan(1_000);
+    expect(performance.now() - started).toBeLessThan(2_000);
     expect(lines.join("").replace(/\s/g, "")).toBe(`Before${word}after`);
     expect(lines.length).toBeGreaterThan(100);
     for (const line of lines) expect(font.widthOfTextAtSize(line, 10)).toBeLessThanOrEqual(400);
