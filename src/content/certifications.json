@@ -23,9 +23,11 @@
     "level": "associate",
     "cost": "paid",
     "aliases": [
-      "aws solutions architect",
-      "aws certified solutions architect",
-      "saa-c03"
+      "aws solutions architect associate",
+      "aws certified solutions architect associate",
+      "aws solutions architect - associate",
+      "saa-c03",
+      "saa-c02"
     ],
     "proves": [
       "aws",

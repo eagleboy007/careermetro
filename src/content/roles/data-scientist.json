@@ -145,6 +145,11 @@
       "why": "Useful for employers that run on Azure"
     },
     {
+      "certId": "azure-mlops-engineer",
+      "importance": "optional",
+      "why": "Useful for employers on Azure; it replaced DP-100 in 2026 and leans toward deploying models"
+    },
+    {
       "certId": "gcp-professional-ml-engineer",
       "importance": "optional",
       "why": "A harder exam; worth it once you have deployed models on Google Cloud"
