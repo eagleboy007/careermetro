@@ -11344,17 +11344,6 @@
     "free": true
   },
   {
-    "title": "Soda Core v4 quickstart",
-    "url": "https://docs.soda.io/soda-v4/quickstart",
-    "provider": "Soda",
-    "kind": "docs",
-    "skillIds": [
-      "data-testing-observability"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "GX Core overview (Great Expectations)",
     "url": "https://docs.greatexpectations.io/docs/core/introduction/gx_overview/",
     "provider": "Great Expectations",
