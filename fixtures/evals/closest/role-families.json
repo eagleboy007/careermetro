@@ -13,7 +13,9 @@
       "data-architect",
       "database-developer",
       "database-administrator",
-      "database-architect"
+      "database-architect",
+      "kafka-streaming-engineer",
+      "data-quality-engineer"
     ],
     "data-science-ml": [
       "data-scientist",
@@ -43,7 +45,13 @@
       "grc-manager",
       "privacy-analyst",
       "digital-forensics-analyst",
-      "malware-analyst"
+      "malware-analyst",
+      "pam-engineer",
+      "siem-engineer",
+      "dlp-engineer",
+      "red-team-operator",
+      "third-party-risk-analyst",
+      "it-auditor"
     ],
     "infra-cloud": [
       "cloud-engineer",
@@ -90,7 +98,9 @@
       "gis-developer",
       "ruby-on-rails-developer",
       "quant-developer",
-      "developer-advocate"
+      "developer-advocate",
+      "search-engineer",
+      "rust-developer"
     ],
     "frontend-mobile": [
       "frontend-developer",
@@ -125,7 +135,9 @@
       "sap-sd-consultant",
       "sap-successfactors-consultant",
       "servicenow-administrator",
-      "plm-developer"
+      "plm-developer",
+      "oracle-ebs-consultant",
+      "sap-pp-consultant"
     ],
     "quality": [
       "qa-automation-engineer",
@@ -141,7 +153,8 @@
       "fpga-engineer",
       "post-silicon-validation-engineer",
       "autosar-engineer",
-      "plc-scada-engineer"
+      "plc-scada-engineer",
+      "linux-kernel-developer"
     ],
     "delivery": [
       "business-analyst",
@@ -150,7 +163,8 @@
       "scrum-master",
       "technical-writer",
       "technical-program-manager",
-      "it-project-manager"
+      "it-project-manager",
+      "ai-product-manager"
     ],
     "marketing": [
       "digital-marketing-executive"

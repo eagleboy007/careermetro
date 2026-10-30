@@ -1,0 +1,52 @@
+{
+  "id": "sap-pp-consultant-from-key-user",
+  "roleSlug": "sap-pp-consultant",
+  "persona": "Plant production planner who became the SAP PP key user",
+  "resumeText": "Vikram Patil | Nashik | vikram.patil@example.com\n\nEXPERIENCE\nSAP PP Key User, Godavari Auto Components, Nashik (2019 - present)\n- Configured MRP Live runs and MRP controllers for the S/4HANA plant rollout.\n- Maintained BOMs, routings and work centers for 600 forged parts in SAP PP.\n- Mapped as-is and to-be production processes during the S/4HANA migration.\n- Wrote and executed UAT scripts for production order confirmation.\n- Collected requirements from planners and shop-floor supervisors for capacity reports.\n- Trained 40 planners on MD04 and production order confirmation.\n\nProduction Planning Engineer, Godavari Auto Components, Nashik (2016 - 2019)\n- Planned weekly forging schedules against customer demand.\n\nSKILLS\nSAP PP, SAP MM, Excel\n\nEDUCATION\nBE Mechanical Engineering, Savitribai Phule Pune University, 2016\n",
+  "expected": {
+    "totalYearsExperience": 10,
+    "skills": [
+      {
+        "skillId": "sap-pp-configuration",
+        "quote": "Configured MRP Live runs and MRP controllers"
+      },
+      {
+        "skillId": "process-mapping",
+        "quote": "Mapped as-is and to-be production processes"
+      },
+      {
+        "skillId": "uat",
+        "quote": "Wrote and executed UAT scripts for production order confirmation"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Collected requirements from planners and shop-floor supervisors"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Trained 40 planners on MD04"
+      },
+      {
+        "skillId": "sap-mm-configuration",
+        "quote": "SAP MM"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-mm-configuration",
+        "status": "weak"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-abap",
+      "sap-sd-configuration",
+      "sap-co-configuration",
+      "sap-interfaces"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,138 @@
+{
+  "slug": "data-quality-engineer",
+  "title": "Data Quality Engineer",
+  "summary": "Data quality engineers write automated tests that check data as it moves through pipelines, so wrong or missing data is caught before it reaches reports or models. They sit in a data engineering team and work with data owners and analysts.",
+  "dailyDuties": [
+    "Write SQL checks that reconcile source and target data",
+    "Build reusable test suites in Python",
+    "Add freshness, volume and null checks to pipelines",
+    "Run data tests in CI before releases",
+    "Investigate failed checks and find the root cause",
+    "Report data defects to pipeline owners"
+  ],
+  "typicalTitles": [
+    "Data QA Engineer",
+    "Data Test Engineer",
+    "ETL Test Engineer",
+    "Data Quality Automation Engineer",
+    "Data Validation Engineer",
+    "Data Observability Engineer",
+    "ETL QA Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "data-testing-observability",
+      "importance": "required",
+      "expectation": "Automate data tests with tools such as Soda, Deequ, dbt tests or Great Expectations",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-quality-management",
+      "importance": "required",
+      "expectation": "Define data quality rules and profile data",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write complex SQL for reconciliation and validation",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Build reusable test frameworks in Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "etl",
+      "importance": "required",
+      "expectation": "Test ETL and ELT pipelines end to end",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "required",
+      "expectation": "Validate data in Snowflake, BigQuery, Redshift or Synapse",
+      "postingShare": null
+    },
+    {
+      "skillId": "spark",
+      "importance": "required",
+      "expectation": "Check large datasets with PySpark or Databricks",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Run data tests in CI so bad data blocks releases",
+      "postingShare": null
+    },
+    {
+      "skillId": "dbt",
+      "importance": "nice_to_have",
+      "expectation": "Write dbt tests on models",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-orchestration",
+      "importance": "nice_to_have",
+      "expectation": "Schedule checks in Airflow or similar",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-governance",
+      "importance": "nice_to_have",
+      "expectation": "Work with data owners on lineage and stewardship",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Use cloud data services",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Use pytest for test code",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Version test suites",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "databricks-data-engineer-associate",
+      "importance": "optional",
+      "why": "Spark and Databricks pipelines"
+    },
+    {
+      "certId": "snowflake-snowpro-core",
+      "importance": "optional",
+      "why": "Snowflake warehouse work"
+    },
+    {
+      "certId": "istqb-foundation",
+      "importance": "optional",
+      "why": "Testing basics"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

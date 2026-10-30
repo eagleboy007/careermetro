@@ -1,0 +1,138 @@
+{
+  "slug": "search-engineer",
+  "title": "Search Engineer",
+  "summary": "Search engineers build and tune the search box of a product: they run engines such as Elasticsearch, OpenSearch or Solr and change how results are scored and ranked so people find what they want. They sit in a backend or discovery team and work with data scientists and product managers.",
+  "dailyDuties": [
+    "Tune analyzers, synonyms and field boosts for better results",
+    "Build and maintain search and autocomplete APIs",
+    "Keep indices in sync with catalogue updates",
+    "Check click-through and no-result rates after each ranking change",
+    "Run A/B tests on new ranking models",
+    "Fix slow queries and cluster health issues"
+  ],
+  "typicalTitles": [
+    "Search Relevance Engineer",
+    "Elasticsearch Developer",
+    "Solr Developer",
+    "Search Platform Engineer",
+    "Software Engineer - Search",
+    "OpenSearch Engineer",
+    "Search and Ranking Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "lucene-search-engines",
+      "importance": "required",
+      "expectation": "Run Elasticsearch, OpenSearch or Solr indices, mappings and analyzers",
+      "postingShare": null
+    },
+    {
+      "skillId": "search-relevance-ranking",
+      "importance": "required",
+      "expectation": "Tune scoring, boosts and ranking and measure relevance",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Build search services in one backend language",
+      "postingShare": null,
+      "oneOf": "backend-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Build search services in one backend language",
+      "postingShare": null,
+      "oneOf": "backend-language"
+    },
+    {
+      "skillId": "go",
+      "importance": "required",
+      "expectation": "Build search services in one backend language",
+      "postingShare": null,
+      "oneOf": "backend-language"
+    },
+    {
+      "skillId": "nodejs",
+      "importance": "required",
+      "expectation": "Build search services in one backend language",
+      "postingShare": null,
+      "oneOf": "backend-language"
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Build search services in one backend language",
+      "postingShare": null,
+      "oneOf": "backend-language"
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build and maintain query and autocomplete APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "required",
+      "expectation": "Keep indices fresh through Kafka or similar update pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "required",
+      "expectation": "Judge ranking changes with online experiments, CTR and no-result rates",
+      "postingShare": null
+    },
+    {
+      "skillId": "vector-search",
+      "importance": "nice_to_have",
+      "expectation": "Add embeddings and hybrid or semantic retrieval",
+      "postingShare": null
+    },
+    {
+      "skillId": "machine-learning",
+      "importance": "nice_to_have",
+      "expectation": "Train learning-to-rank or query models with the ML team",
+      "postingShare": null
+    },
+    {
+      "skillId": "nosql",
+      "importance": "nice_to_have",
+      "expectation": "Use Redis or similar caches next to the search cluster",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "nice_to_have",
+      "expectation": "Design search clusters for scale and failover",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Watch query latency and cluster health",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "backend-language",
+      "label": "A backend language (Java, Go, Python, Node.js or C#)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

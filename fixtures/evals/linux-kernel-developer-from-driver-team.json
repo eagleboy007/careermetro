@@ -1,0 +1,52 @@
+{
+  "id": "linux-kernel-developer-from-driver-team",
+  "roleSlug": "linux-kernel-developer",
+  "persona": "Product NIC driver engineer who has not yet worked upstream",
+  "resumeText": "Rohan Kulkarni | Pune | rohan.kulkarni@example.com\n\nEXPERIENCE\nSystems Software Engineer, Sahyadri Networks, Pune (2020 - present)\n- Maintain the in-house Linux kernel network driver for our 25G Ethernet adapter on kernel 6.1.\n- Wrote PCIe probe, interrupt and DMA handling code in C for the driver.\n- Fixed race conditions in the transmit path using spinlocks and RCU.\n- Debug kernel panics from kdump crash dumps and ftrace traces.\n- Backport fixes from mainline into our product kernel tree with git.\n- Wrote bash scripts to run nightly driver regression tests.\n\nAssociate Engineer, Konkan Embedded Labs, Pune (2018 - 2020)\n- Wrote character device drivers for sensor boards running embedded Linux.\n\nSKILLS\nC, Linux kernel, Git, Python, Bash\n\nEDUCATION\nBTech Electronics and Telecommunication, College of Engineering Pune, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "linux-kernel-development",
+        "quote": "Debug kernel panics from kdump crash dumps and ftrace traces"
+      },
+      {
+        "skillId": "embedded-c",
+        "quote": "Wrote PCIe probe, interrupt and DMA handling code in C"
+      },
+      {
+        "skillId": "embedded-linux",
+        "quote": "Maintain the in-house Linux kernel network driver"
+      },
+      {
+        "skillId": "concurrency-multithreading",
+        "quote": "Fixed race conditions in the transmit path using spinlocks and RCU"
+      },
+      {
+        "skillId": "git",
+        "quote": "Backport fixes from mainline into our product kernel tree with git"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Wrote bash scripts to run nightly driver regression tests"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "embedded-debugging",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "rtos",
+      "microcontrollers",
+      "virtualization",
+      "cpp"
+    ]
+  },
+  "reviewedBy": null
+}

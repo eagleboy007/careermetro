@@ -1,0 +1,51 @@
+{
+  "id": "it-auditor-from-consultant",
+  "roleSlug": "it-auditor",
+  "persona": "Audit consultant doing ITGC work for banks",
+  "resumeText": "Karan Malhotra | Mumbai | karan.malhotra@example.com\n\nEXPERIENCE\nIT Auditor, Konkan Assurance Partners, Mumbai (2021 - present)\n- Performed ITGC and application control testing for banks.\n- Audited systems against ISO 27001 and COBIT.\n- Assessed IT risk and rated control deficiencies.\n- Tested user access reviews and segregation of duties.\n- Worked on RBI and SOX audits for banking clients.\n- Built audit workpapers and sampling in Excel.\n\nEDUCATION\nBCom and CA Inter, University of Mumbai, 2021\n\nCERTIFICATIONS\nCISA (2023)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "security-audits",
+        "quote": "Performed ITGC and application control testing for banks"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "Audited systems against ISO 27001 and COBIT"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Assessed IT risk and rated control deficiencies"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Tested user access reviews and segregation of duties"
+      },
+      {
+        "skillId": "domain-bfsi",
+        "quote": "Worked on RBI and SOX audits for banking clients"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built audit workpapers and sampling in Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "security-policies",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "adversary-emulation",
+      "data-loss-prevention",
+      "streaming-data"
+    ]
+  },
+  "reviewedBy": null
+}

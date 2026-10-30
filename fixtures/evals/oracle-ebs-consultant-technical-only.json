@@ -1,0 +1,56 @@
+{
+  "id": "oracle-ebs-consultant-technical-only",
+  "roleSlug": "oracle-ebs-consultant",
+  "persona": "Oracle Apps technical developer with little functional exposure",
+  "resumeText": "Sravani Reddy | Hyderabad | sravani.reddy@example.com\n\nEXPERIENCE\nOracle Apps Technical Consultant, Golconda Infotech, Hyderabad (2019 - present)\n- Develop RICE components in Oracle EBS R12.2 for a manufacturing client.\n- Write PL/SQL packages for AP invoice and GL journal interfaces.\n- Built XML Publisher reports and registered them as concurrent programs.\n- Customised Oracle Forms and added form personalization for the purchasing team.\n- Resolve L2 production support tickets for month-end close within SLA.\n- Tuned slow SQL queries using explain plans and new indexes.\n\nSKILLS\nPL/SQL, SQL, Oracle Forms, Oracle Reports, Unix shell, Oracle Financials (AP, GL)\n\nEDUCATION\nBTech Computer Science, Osmania University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "oracle-ebs-technical",
+        "quote": "Develop RICE components in Oracle EBS R12.2"
+      },
+      {
+        "skillId": "database-programming",
+        "quote": "Write PL/SQL packages for AP invoice and GL journal interfaces"
+      },
+      {
+        "skillId": "oracle-bi-publisher-otbi",
+        "quote": "Built XML Publisher reports and registered them as concurrent programs"
+      },
+      {
+        "skillId": "application-support",
+        "quote": "Resolve L2 production support tickets for month-end close"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Tuned slow SQL queries using explain plans"
+      },
+      {
+        "skillId": "oracle-ebs-functional-modules",
+        "quote": "Oracle Reports, Unix shell, Oracle Financials (AP, GL)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "oracle-ebs-functional-modules",
+        "status": "weak"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "oracle-fusion-cloud",
+      "oracle-paas-extensions",
+      "java",
+      "soap-xml"
+    ]
+  },
+  "reviewedBy": null
+}

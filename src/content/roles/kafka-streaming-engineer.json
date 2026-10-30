@@ -1,0 +1,149 @@
+{
+  "slug": "kafka-streaming-engineer",
+  "title": "Streaming Data Engineer",
+  "summary": "A streaming data engineer builds pipelines that process data the moment it is produced, rather than in nightly batches. They sit in a data or platform team, running Kafka and stream processors like Flink so that events flow reliably into apps, dashboards and warehouses in real time.",
+  "dailyDuties": [
+    "Build real-time pipelines with Flink or Kafka Streams",
+    "Run Kafka topics, Connect and Schema Registry",
+    "Design event schemas and handle their evolution",
+    "Query and transform streams and tables with SQL",
+    "Debug lag, backpressure and exactly-once issues",
+    "Land streams into lakehouse tables for analytics",
+    "Version and review pipeline code with the team"
+  ],
+  "typicalTitles": [
+    "Kafka Engineer",
+    "Kafka Developer",
+    "Flink Engineer",
+    "Real-Time Data Engineer",
+    "Event Streaming Engineer",
+    "Streaming Platform Engineer",
+    "Kafka Data Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 9
+  },
+  "skills": [
+    {
+      "skillId": "streaming-data",
+      "importance": "required",
+      "expectation": "Build real-time pipelines with Flink or Kafka Streams end to end",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "required",
+      "expectation": "Run Kafka topics, Connect and Schema Registry at scale",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write streaming jobs in a JVM or Python language",
+      "postingShare": null,
+      "oneOf": "stream-language"
+    },
+    {
+      "skillId": "scala",
+      "importance": "required",
+      "expectation": "Write streaming jobs in a JVM or Python language",
+      "postingShare": null,
+      "oneOf": "stream-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write streaming jobs in a JVM or Python language",
+      "postingShare": null,
+      "oneOf": "stream-language"
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query and transform streams and tables with SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Run streaming workloads on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Run streaming workloads on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Run streaming workloads on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Version and review pipeline code",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Debug lag, backpressure and exactly-once issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "spark",
+      "importance": "nice_to_have",
+      "expectation": "Use Spark Streaming or batch alongside Kafka",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-lakehouse",
+      "importance": "nice_to_have",
+      "expectation": "Land streams into Iceberg or Delta tables",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "nice_to_have",
+      "expectation": "Design event schemas and evolution",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "stream-language",
+      "label": "A streaming language (Java, Scala or Python)"
+    },
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "databricks-data-engineer-associate",
+      "importance": "optional",
+      "why": "Streaming and batch on the lakehouse"
+    },
+    {
+      "certId": "aws-data-engineer-associate",
+      "importance": "optional",
+      "why": "Data engineering on AWS including streaming services"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

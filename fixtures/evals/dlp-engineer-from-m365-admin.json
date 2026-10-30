@@ -1,0 +1,51 @@
+{
+  "id": "dlp-engineer-from-m365-admin",
+  "roleSlug": "dlp-engineer",
+  "persona": "Microsoft 365 administrator moving into data protection",
+  "resumeText": "Meera Nair | Kochi | meera.nair@example.com\n\nEXPERIENCE\nData Security Engineer, Backwater Cloud Services, Kochi (2021 - present)\n- Configured Microsoft Purview DLP policies for Exchange and SharePoint.\n- Administered the Microsoft 365 tenant and compliance centre.\n- Deployed endpoint DLP agents across 2000 laptops.\n- Triaged DLP incidents and escalated confirmed data leaks.\n- Set up sensitivity labels and auto-labeling for finance teams.\n\nEDUCATION\nBSc Computer Science, Cochin University, 2021\n\nCERTIFICATIONS\nMicrosoft SC-900 (2022)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "data-loss-prevention",
+        "quote": "Configured Microsoft Purview DLP policies for Exchange and SharePoint"
+      },
+      {
+        "skillId": "m365-administration",
+        "quote": "Administered the Microsoft 365 tenant and compliance centre"
+      },
+      {
+        "skillId": "endpoint-security",
+        "quote": "Deployed endpoint DLP agents across 2000 laptops"
+      },
+      {
+        "skillId": "security-incident-response",
+        "quote": "Triaged DLP incidents and escalated confirmed data leaks"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "compliance-frameworks",
+        "status": "missing"
+      },
+      {
+        "skillId": "data-privacy",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "adversary-emulation",
+      "siem",
+      "pam-platforms"
+    ]
+  },
+  "reviewedBy": null
+}

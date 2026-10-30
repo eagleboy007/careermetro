@@ -1,0 +1,47 @@
+{
+  "id": "kafka-streaming-engineer-from-batch",
+  "roleSlug": "kafka-streaming-engineer",
+  "persona": "Data engineer who moved from batch to real-time streaming",
+  "resumeText": "Vignesh Kumar | Chennai | vignesh.kumar@example.com\n\nEXPERIENCE\nStreaming Data Engineer, Marina Data Works, Chennai (2019 - present)\n- Built real-time pipelines with Apache Flink and Kafka Streams.\n- Ran Kafka topics, Connect and Schema Registry in production.\n- Wrote streaming jobs in Python and PyFlink.\n- Transformed streams and tables with SQL.\n- Deployed streaming workloads on AWS MSK and Kinesis.\n- Versioned pipeline code in Git with peer reviews.\n\nEDUCATION\nBE Computer Science, Anna University, 2019\n\nCERTIFICATIONS\nAWS Certified Data Engineer - Associate (2024)\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "streaming-data",
+        "quote": "Built real-time pipelines with Apache Flink and Kafka Streams"
+      },
+      {
+        "skillId": "messaging-queues",
+        "quote": "Ran Kafka topics, Connect and Schema Registry in production"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote streaming jobs in Python and PyFlink"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Transformed streams and tables with SQL"
+      },
+      {
+        "skillId": "aws",
+        "quote": "Deployed streaming workloads on AWS MSK and Kinesis"
+      },
+      {
+        "skillId": "git",
+        "quote": "Versioned pipeline code in Git with peer reviews"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "adversary-emulation",
+      "siem",
+      "data-loss-prevention"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -96,8 +96,20 @@ export const ROLE_TITLES = {
   "ot-security-engineer": /\b(ot\/ics|ot|ics|scada|operational technology) (cyber ?security|security)\b|\bindustrial cyber ?security\b/i,
   // Security built into pipelines, before the security and DevOps rules that would read either half of it.
   "devsecops-engineer": /\bdevsecops\b|\b(security platform|ci\/cd security|pipeline security) engineer\b/i,
-  "iam-engineer": /^(?=.*\b(engineer|analyst|developer|specialist|consultant|administrator|admin)\b).*\b(iam|idam|identity (and |& )?access( management)?|identity (governance|management|security)|access management|sailpoint|saviynt|okta|cyberark|ping ?identity|privileged access( management)?|pam)\b/i,
+  // A privileged access title before the IAM rule ("CyberArk Engineer", "PAM Engineer").
+  "pam-engineer": /^(?=.*\b(engineer|analyst|developer|specialist|consultant|administrator|admin)\b).*\b(pam|privileged (access|account|identity)( management)?|cyberark|beyondtrust|delinea|thycotic)\b/i,
+  // A DLP or information protection title before the privacy, storage and broad security rules; a plain "Data Security
+  // Engineer" stays a security one, and a Purview data governance or catalogue title is not one.
+  "dlp-engineer": /^(?!.*\b(governance|catalog|catalogue)\b).*\b(dlp|data loss prevention|information protection|(microsoft )?purview)\b.*\b(engineer|analyst|specialist|consultant|administrator|admin)\b/i,
+  "iam-engineer": /^(?=.*\b(engineer|analyst|developer|specialist|consultant|administrator|admin)\b).*\b(iam|idam|identity (and |& )?access( management)?|identity (governance|management|security)|access management|sailpoint|saviynt|okta|ping ?identity)\b/i,
+  // A vendor or third-party risk title before the information security rule; a procurement "Supplier Risk" one is not one.
+  "third-party-risk-analyst": /^(?=.*\b(analyst|specialist|associate|assessor|consultant|lead|officer)\b).*\b(third[- ]party (risk|security)|tprm|vendor (risk|security))\b/i,
+  // An IT or information systems audit title before the information security rule ("IT Audit Analyst"); never a
+  // financial, tax, quality or safety audit one.
+  "it-auditor": /^(?!.*\b(financial|finance|tax|statutory|clinical|quality|safety|energy)\b).*\b(it|is|information systems|technology|information security|cyber ?security|itgc)( risk (and|&))? audit(or|ing)?\b/i,
   "information-security-analyst": /\b(information security|infosec|grc|governance,? risk|security (compliance|governance|risk)|it risk|cyber ?risk|risk and compliance|it audit|isms|it compliance|third[- ]party risk)\b/i,
+  // A red team or adversary emulation title before the penetration testing rule; "Red Team Analyst" stays there.
+  "red-team-operator": /^(?!.*\banalyst\b).*\b(red team(er|ing)?|adversary (emulation|simulation)|offensive security operator)\b/i,
   "penetration-tester": /\b(penetration test(er|ing)?|pen ?test(er|ing)?|offensive security|red team|ethical hack(er|ing)|security tester|vulnerability assessment (analyst|engineer|specialist))\b/i,
   // After the penetration testing rule, so a "VAPT" pen tester title stays there.
   "vulnerability-management-analyst": /\b(vulnerability (management|analyst|engineer|specialist)|vapt analyst|qualys (analyst|engineer)|cyber hygiene)\b/i,
@@ -105,6 +117,8 @@ export const ROLE_TITLES = {
   "soc-lead": /\b(soc( shift)?|security operations( cent(er|re))?|cyber defen[cs]e|detection (and|&) response) (lead|manager)\b|\b(lead|manager),? soc\b|\bhead of (security operations|soc)\b/i,
   // Detection and hunting titles are L2 work, before the broad security rule that would read "threat" in them.
   "soc-analyst-l2": /\b(soc|security) analyst,? (l2|ii|2|level ?2)\b|\bl2 soc\b|\b(senior|sr\.?) soc analyst\b|\b(security operations|cyber defen[cs]e|siem) analyst\b|\bdetection engineer\b|\bthreat hunter\b/i,
+  // A SIEM platform or content title after the L2 rule, which keeps "SIEM Analyst"; never an analyst one.
+  "siem-engineer": /^(?!.*\banalyst\b)(?=.*\b(engineer|developer|administrator|admin|consultant|specialist)\b).*\b(siem|splunk|qradar|(microsoft |azure )?sentinel|arcsight|logrhythm|securonix|exabeam|security content)\b/i,
   "threat-intelligence-analyst": /^(?=.*\b(analyst|engineer|specialist|researcher|consultant)\b).*\b(threat intel(ligence)?|cti|threat research|dark web)\b/i,
   // A forensic analyst or examiner title before the incident response rule, which keeps investigator and DFIR titles;
   // never a fraud, accounting or audit one.
@@ -162,15 +176,24 @@ export const ROLE_TITLES = {
   "database-administrator": /\b(database (administrator|admin|support engineer)|dba|(sql server|oracle|mysql|postgres(ql)?|mongodb|db2) (database administrator|administrator|admin))\b/i,
   // A governance or data quality title before the data, analyst and test rules that would read "Data" or "Quality" in it.
   "data-governance-analyst": /\bdata steward\b|\b(data governance|data quality|metadata|data catalog|collibra)\b.*\b(analyst|specialist|associate|consultant)\b/i,
+  // A data testing or data quality engineering title after the governance rule, which keeps "Data Quality Analyst",
+  // and before the test and SRE rules ("ETL Test Engineer", "Data Observability Engineer").
+  "data-quality-engineer": /\b(data (quality|qa|test(ing)?|validation|observability)|(etl|dwh|data warehouse|big data) (test(ing)?|qa))( automation)? (engineer|tester)\b|\betl tester\b/i,
   // A data architect designs the whole data platform; a database architect stays with database design.
   "data-architect": /\b(data|data platform|lakehouse) architect\b/i,
   // An Oracle Fusion or Integration Cloud technical title, never a functional, DBA or Oracle Cloud Infrastructure one.
   "oracle-fusion-technical-consultant": /^(?!.*\b(functional|dba|database administrator|infrastructure)\b)(?=.*\b(technical|developer|engineer|consultant|analyst)\b).*\b(oracle (fusion|cloud (erp|hcm|scm|financials|technical)|integration cloud|oic|hcm cloud|erp cloud)|oic)\b/i,
+  // An Oracle EBS (Oracle Apps, R12) technical or techno-functional title after the Fusion rule; never a DBA, test or
+  // plain functional one (those stay with the DBA and business analyst rules).
+  "oracle-ebs-consultant": /^(?!.*\b(dba|database administrator|fusion|cloud|test|tester|testing|qa)\b)(?!.*(?<!techno-)\bfunctional\b)(?=.*\b(consultant|developer|engineer|analyst|programmer|lead)\b).*\b(oracle (ebs|e-business suite|apps|applications|r12|11i)|ebs r12)\b/i,
   "database-architect": /\b(database (design )?(architect|engineer)|database reliability|data modeler)\b/i,
   // Before the data, AI and machine learning rules, which would read "Video Analytics Engineer" or "Vision AI Engineer".
   "computer-vision-engineer": /^(?=.*\b(engineer|developer)\b).*\b(computer vision|cv|vision ai|image processing|machine vision|video analytics|perception)\b/i,
   // A dbt or analytics engineering title before the ETL and data engineering rules.
   "analytics-engineer": /(?<!\btext )\banalytics engineer(ing)?\b|\bdbt (developer|engineer)\b|\bdata modell?ing engineer\b/i,
+  // A Kafka, Flink or streaming data title before the ETL, data and platform rules ("Streaming Data Engineer",
+  // "Streaming Platform Engineer"); never a video or media streaming one.
+  "kafka-streaming-engineer": /^(?!.*\b(test|tester|testing|qa|video|media|audio|ott|live)\b)(?=.*\b(engineer|developer|programmer|specialist|consultant|administrator|admin)\b).*\b(kafka|confluent|flink|(event|data) streaming|streaming (data|platform|pipelines?)|real[- ]?time data|stream processing)\b/i,
   // An ETL tool title before the data engineering rule; never a test one.
   "etl-developer": /^(?!.*\b(test|tester|testing|qa)\b).*\b(etl|informatica|ssis|talend|iics|datastage|data warehouse|dwh)\b.*\b(developer|engineer|consultant)\b/i,
   // A PL/SQL or T-SQL programmer; "Oracle DBA" stays a DBA title (above).
@@ -185,6 +208,9 @@ export const ROLE_TITLES = {
   // An HPC, GPU or CUDA title after the ML rules and before the performance test and DevOps rules ("GPU Performance
   // Engineer", "HPC Infrastructure Engineer"); never a chip design, verification or hardware one.
   "hpc-gpu-engineer": /^(?!.*\b(test|tester|testing|qa|design|verification|validation|rtl|asic|physical|dft|silicon|hardware)\b)(?=.*\b(engineer|developer|programmer|specialist|administrator|admin)\b).*\b(hpc|high[- ]performance computing|gpu|cuda|supercomput(er|ing))\b/i,
+  // A search or search relevance title after the ML rules and before the platform, Java and software rules ("Software
+  // Engineer - Search"); never an SEO or marketing one.
+  "search-engineer": /^(?!.*\b(test|tester|testing|qa|seo|sem|marketing|optimi[sz]ation|executive)\b)(?=.*\b(engineer|developer|programmer)\b).*\b(search|elasticsearch|opensearch|solr|lucene|vespa)\b/i,
   // A BI developer builds the reports; a "BI Analyst" stays a data analyst.
   "bi-developer": /\b(bi|power ?bi|msbi|business intelligence|tableau|qlik( ?sense| ?view)?|looker|ssrs|reporting|dashboard) (developer|engineer|consultant|specialist)\b/i,
   // A cloud cost title or a plain "FinOps" one; a plain "Financial Analyst" has no rule.
@@ -210,6 +236,8 @@ export const ROLE_TITLES = {
   "sap-mm-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|technical|ariba)\b).*\b(mm|mm-im|materials management|procurement|sourcing (and|&) procurement|purchasing)\b.*\b(consultant|analyst|lead|specialist|architect)\b/i,
   // An SAP sales and distribution or order-to-cash title, never a developer or technical one.
   "sap-sd-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|technical)\b).*\b(sd|sales (and|&) distribution|otc|o2c|order to cash)\b.*\b(consultant|analyst|lead|specialist|architect)\b/i,
+  // An SAP production planning or manufacturing title, never a developer or technical one.
+  "sap-pp-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|technical|execution)\b).*\b(pp|pp-pi|production planning|manufacturing)\b.*\b(consultant|analyst|lead|specialist|architect)\b/i,
   // An SAP finance title, never a developer or technical one (the ABAP rule below).
   "sap-fico-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|technical)\b).*\b(fico|fi\/co|fi-co|fi|co|finance|financial accounting|controlling)\b.*\b(consultant|analyst|lead|specialist|architect)\b/i,
   "sap-abap-developer": /^(?=.*\b(developer|consultant|engineer|lead|programmer)\b).*\babap\b|\bsap technical consultant\b/i,
@@ -233,6 +261,9 @@ export const ROLE_TITLES = {
   // A build or release title before the integration and DevOps rules; "CI/CD Engineer" stays DevOps, and an "SCM
   // Engineer" in a supply chain title is not one.
   "build-release-engineer": /^(?!.*\b(supply chain|logistics|procurement|warehouse)\b).*\b(build( (and|&) (release|integration))?|release( management)?|build automation|scm|software configuration management) engineer\b/i,
+  // A Linux kernel or driver title before the integration, embedded and software rules ("Kernel Software Engineer");
+  // never a test, Windows driver or GPU kernel one.
+  "linux-kernel-developer": /^(?!.*\b(test|tester|testing|qa|validation|windows|gpu|cuda|hpc|bypass)\b)(?=.*\b(engineer|developer|programmer)\b).*\b(linux (kernel|(device )?drivers?)|kernel)\b/i,
   // An AUTOSAR or MCAL title before the integration and embedded rules ("AUTOSAR Integration Engineer"); never a test or
   // validation one.
   "autosar-engineer": /^(?!.*\b(test|tester|testing|qa|validation)\b).*\b(autosar|mcal|bsw)\b.*\b(engineer|developer|integrator|architect|lead|specialist|consultant)\b/i,
@@ -267,6 +298,8 @@ export const ROLE_TITLES = {
   // A quant, HFT or trading systems title before the C++ and software rules ("Low Latency C++ Developer"); never a quant
   // analyst or researcher one.
   "quant-developer": /^(?!.*\b(test|tester|testing|qa|analyst|researcher)\b)(?=.*\b(developer|engineer|programmer)\b)(.*\b(quant(itative)?|hft|high[- ]frequency trading|algo(rithmic)? trading|trading (systems?|platform|infrastructure)|electronic trading)\b|.*\blow[- ]latency (c\+\+|trading|software|systems))/i,
+  // A Rust title after the embedded and blockchain rules, before the C++, backend and software rules; never a test one.
+  "rust-developer": /^(?!.*\b(test|tester|testing|qa|sdet|corrosion|coating|prevention)\b)(?=.*\b(developer|engineer|programmer)\b).*\brust\b/i,
   // A C++ title after the embedded, game and IoT rules; never a test one. "C" and "C#" titles stay out.
   "cpp-developer": /^(?!.*\b(test|tester|testing|qa|sdet)\b)(?=.*\b(developer|engineer|programmer)\b).*(?<![\w+#])(c\/c\+\+|c\+\+|cpp)(?![\w+#])/i,
   // A Ruby or Rails title before the full-stack rule; never a test one, and "Rails" only as a whole word.
@@ -296,6 +329,8 @@ export const ROLE_TITLES = {
   "engineering-manager": /\b(engineering manager|manager,? (software )?engineering|software (development|engineering) manager|head of engineering)\b|^((senior|sr\.?) )?(development manager|technical manager|engineering lead)\b/i,
   "senior-data-scientist": /\b(senior|sr\.?|lead|staff|principal) (data|applied|ml|machine learning) scientist\b|\bdata science (lead|manager)\b/i,
   "data-scientist": /\b(data scientist|machine learning scientist|applied scientist|ml scientist|decision scientist|data science (associate|analyst)|(predictive|statistical) model(l)?er)\b/i,
+  // An AI, ML or generative AI product title before the product rule.
+  "ai-product-manager": /^(?=.*\b(product manager|product owner|product lead)\b).*\b(ai|ml|genai|gen ai|generative ai|llm|machine learning|artificial intelligence)\b/i,
   "product-manager": /\b(product manager|product owner|associate product manager|product lead|product specialist)\b/i,
   // A user research title before the designer rule, which keeps "UX Writer".
   "ux-researcher": /\b(ux|user|design|product|user experience|usability) research(er| lead| specialist| analyst)\b|\busability (analyst|specialist)\b/i,
@@ -315,7 +350,7 @@ export const ROLE_TITLES = {
   "software-engineer": /^(?!.*\b(in test|qa|embedded|firmware|hardware|silicon|asic|mechanical|electrical)\b).*\b(software (engineer|developer|development engineer)|sde|programmer analyst|application developer|member of technical staff)\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email|online) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search|social media) (specialist|executive|manager|associate)\b/i,
 };
-const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant"]);
+const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;

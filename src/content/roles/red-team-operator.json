@@ -1,0 +1,128 @@
+{
+  "slug": "red-team-operator",
+  "title": "Red Team Operator",
+  "summary": "A red team operator imitates how a real attacker would break into a company over a longer, stealthy engagement, then shows the defenders what worked. They sit in a security team or consultancy and go deeper on evasion and adversary emulation than a penetration tester, who runs shorter, broader tests.",
+  "dailyDuties": [
+    "Plan full-scope adversary emulation engagements against agreed goals",
+    "Set up and operate command-and-control (C2) infrastructure",
+    "Attack Active Directory identity and privilege paths",
+    "Write custom tooling and automation for engagements",
+    "Map actions to MITRE ATT&CK and test detection coverage",
+    "Work with the blue team to improve defences",
+    "Write clear reports and brief stakeholders on findings"
+  ],
+  "typicalTitles": [
+    "Red Team Engineer",
+    "Red Team Consultant",
+    "Adversary Emulation Engineer",
+    "Adversary Simulation Specialist",
+    "Red Team Specialist",
+    "Offensive Security Operator"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "adversary-emulation",
+      "importance": "required",
+      "expectation": "Plan and run full-scope adversary emulation engagements with a C2 framework",
+      "postingShare": null
+    },
+    {
+      "skillId": "penetration-testing",
+      "importance": "required",
+      "expectation": "Find and exploit weaknesses across apps, networks and APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Attack Active Directory identity and privilege paths",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-detection",
+      "importance": "required",
+      "expectation": "Map actions to MITRE ATT&CK and test detection coverage",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Operate from Linux tooling and offensive distributions",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write custom tooling and automation for engagements",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Write custom tooling and automation for engagements",
+      "postingShare": null,
+      "oneOf": "scripting-language"
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Understand routing, DNS and protocols for pivoting",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear reports and brief defenders on findings",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "nice_to_have",
+      "expectation": "Understand and evade EDR controls",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Emulate attacks against cloud identities and workloads",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-security",
+      "importance": "nice_to_have",
+      "expectation": "Exploit web application weaknesses during engagements",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "scripting-language",
+      "label": "A scripting language (Python or Bash)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "oscp",
+      "importance": "recommended",
+      "why": "Baseline offensive security credential employers filter on"
+    },
+    {
+      "certId": "comptia-pentest-plus",
+      "importance": "optional",
+      "why": "Vendor-neutral penetration testing fundamentals"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

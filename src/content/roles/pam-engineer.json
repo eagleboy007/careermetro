@@ -1,0 +1,142 @@
+{
+  "slug": "pam-engineer",
+  "title": "PAM Engineer",
+  "summary": "A PAM engineer runs the system that stores and controls powerful admin passwords and sessions (privileged access management, or PAM). They sit in the security or identity team and keep tools like CyberArk, BeyondTrust or Delinea running so that admin access is vaulted, rotated and recorded.",
+  "dailyDuties": [
+    "Deploy and upgrade PAM components such as the vault, session and password managers",
+    "Onboard privileged accounts and set rotation and checkout rules",
+    "Configure session recording and isolation for admin logins",
+    "Integrate the platform with Active Directory and SSO",
+    "Automate onboarding and reporting with scripts and APIs",
+    "Troubleshoot connector, session and credential issues",
+    "Produce privileged access evidence for audits"
+  ],
+  "typicalTitles": [
+    "Privileged Access Management Engineer",
+    "PAM Consultant",
+    "CyberArk Consultant",
+    "BeyondTrust Engineer",
+    "Delinea Engineer",
+    "PAM Administrator",
+    "Privileged Access Engineer",
+    "CyberArk Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "pam-platforms",
+      "importance": "required",
+      "expectation": "Deploy and run a PAM suite such as CyberArk, BeyondTrust or Delinea end to end",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Onboard privileged accounts and manage directory and domain admin access",
+      "postingShare": null
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "required",
+      "expectation": "Administer the Windows servers the PAM components run on",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Administer the Linux servers the PAM components run on",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "required",
+      "expectation": "Automate account onboarding and rotation with scripts and APIs",
+      "postingShare": null,
+      "oneOf": "iam-scripting"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate account onboarding and rotation with scripts and APIs",
+      "postingShare": null,
+      "oneOf": "iam-scripting"
+    },
+    {
+      "skillId": "identity-federation",
+      "importance": "required",
+      "expectation": "Integrate the PAM platform with SSO using SAML or OIDC",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Troubleshoot session, connector and credential issues methodically",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Onboard application owners and document privileged access processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-security",
+      "importance": "nice_to_have",
+      "expectation": "Place vaults and jump hosts safely in the network",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "nice_to_have",
+      "expectation": "Use platform REST APIs for bulk and automated tasks",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-policies",
+      "importance": "nice_to_have",
+      "expectation": "Align privileged access with policy and least privilege",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "nice_to_have",
+      "expectation": "Produce privileged access evidence for audits",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "server-os",
+      "label": "A server operating system (Linux or Windows Server)"
+    },
+    {
+      "id": "iam-scripting",
+      "label": "A scripting language for identity automation (PowerShell or Python)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "sc-300",
+      "importance": "recommended",
+      "why": "Identity and access administration depth"
+    },
+    {
+      "certId": "comptia-security-plus",
+      "importance": "optional",
+      "why": "Security fundamentals for identity roles"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

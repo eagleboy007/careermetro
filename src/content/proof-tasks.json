@@ -12,6 +12,10 @@
     "task": "Install Magento Open Source 2.4 in Docker with sample data, build a small module that adds a delivery-date field to checkout and shows it on the order in admin, and share the module code and screenshots."
   },
   {
+    "skillId": "adversary-emulation",
+    "task": "In a home lab of free Windows evaluation VMs (a domain controller and two clients), emulate one ATT&CK technique chain such as Kerberoasting to lateral movement with open tools, then write the plan, steps, detections seen and fixes. Share the report."
+  },
+  {
     "skillId": "agile-coaching",
     "task": "Run a retrospective for a real or volunteer team of at least 3 with a format you choose, write down what the team agreed, then coach one practice for 2 sprints and share a one-page note on what changed and what you would try next."
   },
@@ -244,6 +248,10 @@
     "task": "Build a bronze, silver and gold medallion pipeline on Databricks Community Edition or local Spark with Delta Lake over a synthetic sales CSV: fix bad rows, merge late updates, and show one time-travel query with a README."
   },
   {
+    "skillId": "data-loss-prevention",
+    "task": "In a free Microsoft 365 developer tenant, build DLP policies for synthetic PAN and Aadhaar numbers across email and SharePoint, add sensitivity labels, test them with sample files, and share screenshots, the policy settings and a tuning note on false positives."
+  },
+  {
     "skillId": "data-modeling",
     "task": "Design a star schema for a fictional food delivery business (facts and dimensions with grain stated) and share the ER diagram with a short rationale."
   },
@@ -262,6 +270,10 @@
   {
     "skillId": "data-structures-algorithms",
     "task": "Solve 10 easy and medium LeetCode problems covering arrays, hashing, two pointers, trees and graphs, and push solutions with a time and space complexity note for each."
+  },
+  {
+    "skillId": "data-testing-observability",
+    "task": "On a public dataset loaded into DuckDB or a free warehouse, write freshness, null, uniqueness and range checks with Soda Core, Great Expectations or dbt tests, run them in a CI job that fails on a broken load, and share the repo and run logs."
   },
   {
     "skillId": "data-visualization",
@@ -358,6 +370,10 @@
   {
     "skillId": "embedded-debugging",
     "task": "On a development board (STM32, ESP32 or Arduino), plant a bug that hangs the firmware, find it with a debugger over SWD or JTAG (or GDB in an emulator such as QEMU), and write up the breakpoints, registers and fix with screenshots."
+  },
+  {
+    "skillId": "embedded-linux",
+    "task": "Build a minimal Linux image for QEMU (ARM) with Buildroot or Yocto, add a small out-of-tree kernel module and a user-space app that talks to it, boot it, and share the config, build steps and boot log."
   },
   {
     "skillId": "embedded-protocols",
@@ -564,6 +580,10 @@
     "task": "Write a Bash script that finds the 10 largest files under a folder, archives logs older than 7 days and reports disk usage. Put it in a repo with a README showing sample output."
   },
   {
+    "skillId": "linux-kernel-development",
+    "task": "Write a small Linux kernel module (a character device with read, write and ioctl), test it in a QEMU VM, check it with checkpatch.pl and trace it with ftrace, and share the code, the test script and a patch formatted with git format-patch."
+  },
+  {
     "skillId": "llm-apps",
     "task": "Build a small RAG demo over 5 public documents using an LLM API, write 10 test questions with expected answers, and report how many it got right and why it failed on the rest."
   },
@@ -582,6 +602,10 @@
   {
     "skillId": "lte-5g-nr-protocols",
     "task": "Draw the LTE attach and 5G NSA (EN-DC) addition call flows message by message with what each step does, then mark where each step shows up in a public sample signalling trace. Share the diagrams and notes."
+  },
+  {
+    "skillId": "lucene-search-engines",
+    "task": "Index a public product or movie dataset into OpenSearch, Elasticsearch or Solr with custom analyzers and synonyms, build a search API with filters and facets, and share the mapping, the code and example queries with results."
   },
   {
     "skillId": "m365-administration",
@@ -720,6 +744,14 @@
     "task": "In Oracle Live SQL, create a small schema, write PL/SQL for a stored procedure and a trigger, and share the script and output."
   },
   {
+    "skillId": "oracle-ebs-functional-modules",
+    "task": "From Oracle's public EBS documentation, write the setup steps and test cases for a synthetic company's procure-to-pay flow in R12 (operating unit, requisition, PO, receipt, AP invoice and payment), with a flow diagram. Share the document."
+  },
+  {
+    "skillId": "oracle-ebs-technical",
+    "task": "Design a synthetic Oracle EBS R12 RICE component: a PL/SQL concurrent program that loads supplier invoices from a staging table into the AP open interface, with validation and an error report. Share the code and a technical design document."
+  },
+  {
     "skillId": "oracle-fusion-cloud",
     "task": "For a fictional company moving from Oracle EBS to Fusion Cloud, map 3 modules (such as AP, GL and Core HR) to Fusion, list the extensions, reports and integrations each needs, and share a one-page scope with a diagram."
   },
@@ -746,6 +778,10 @@
   {
     "skillId": "outsystems-development",
     "task": "In a free OutSystems Personal Environment, build a ticket-tracking app with entities, list and detail screens, a server action that assigns tickets by category and a REST API for open tickets. Share screenshots and the module."
+  },
+  {
+    "skillId": "pam-platforms",
+    "task": "In a home lab, set up an open-source PAM tool (such as Teleport or JumpServer) in front of a Linux and a Windows VM, vault the admin passwords, record a session and rotate a password, and share the config, screenshots and a short runbook."
   },
   {
     "skillId": "pandas",
@@ -940,6 +976,10 @@
     "task": "Build a Rails 7 app for a fictional library with models and associations, a REST JSON API, background jobs with Sidekiq or Active Job, and RSpec or Minitest tests. Share the repo with a README and a short screen recording."
   },
   {
+    "skillId": "rust-programming",
+    "task": "Write a Rust command-line tool or small Axum web service with error handling, unit tests and a benchmark, keep cargo clippy clean, and share the repo with a README and the test and benchmark output."
+  },
+  {
     "skillId": "saas-implementation-configuration",
     "task": "Run a mock implementation of a free SaaS tool (such as a CRM or helpdesk trial) for a fictional 50-person company: requirements, configuration workbook, data migration template, test cases and a go-live checklist. Share them."
   },
@@ -1012,6 +1052,10 @@
     "task": "Using public SAP documentation, write the configuration steps for a two-level purchase order release strategy (characteristics, classes, release codes) for a synthetic company, with the test cases and expected results. Share the document."
   },
   {
+    "skillId": "sap-pp-configuration",
+    "task": "From public SAP documentation, write the configuration and master data steps for a synthetic plant's make-to-stock flow (BOM, routing, work center, MRP run, production order and confirmation), with test cases. Share the document."
+  },
+  {
     "skillId": "sap-sd-configuration",
     "task": "From public SAP documentation, write the configuration steps for a synthetic company's standard order-to-cash flow (sales area, order and delivery types, pricing procedure with a discount condition), with test cases. Share the document."
   },
@@ -1032,6 +1076,10 @@
     "task": "In the free Ignition Maker Edition or a SCADA trial, build an HMI for a simulated pump station with tags, alarms, a trend and a historian, and share screenshots, the project export and a short operator guide."
   },
   {
+    "skillId": "scala",
+    "task": "Write a Scala program that reads a public CSV dataset, cleans and aggregates it with case classes and collections (or Spark), add ScalaTest tests, and share the sbt project and output."
+  },
+  {
     "skillId": "scaled-agile",
     "task": "Plan a mock PI planning for a fictional 3-team release train: write 6 features with team objectives, a program board with dependencies and 3 risks sorted by ROAM, and share it as a one-page board with a short note."
   },
@@ -1042,6 +1090,10 @@
   {
     "skillId": "scripting-bash",
     "task": "Write a Bash script that scans a log folder, counts errors per hour, and emails or prints a summary, with argument checks and a usage message."
+  },
+  {
+    "skillId": "search-relevance-ranking",
+    "task": "On a public search dataset with relevance labels (such as an MS MARCO or Amazon ESCI sample), compare BM25 with a tuned or hybrid ranking, measure nDCG@10 for both, and share the code, results table and what moved the score."
   },
   {
     "skillId": "secrets-management",
@@ -1182,6 +1234,10 @@
   {
     "skillId": "statistics",
     "task": "Using a public data.gov.in dataset, compute summary statistics, plot a distribution and run one hypothesis test, then explain the result in 150 plain-English words for a manager."
+  },
+  {
+    "skillId": "streaming-data",
+    "task": "Stream a public or synthetic event feed through Kafka (or Redpanda) into a Flink, Spark Structured Streaming or Kafka Streams job with a windowed aggregation, write results to a table, and share the code, a diagram and output with late-event handling."
   },
   {
     "skillId": "structured-authoring",

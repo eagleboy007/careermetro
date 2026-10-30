@@ -1,0 +1,115 @@
+{
+  "slug": "linux-kernel-developer",
+  "title": "Linux Kernel Developer",
+  "summary": "Linux kernel developers write and fix code inside the Linux kernel, the core of the operating system, such as device drivers (code that controls hardware) and memory or scheduler changes. They sit in a platform or systems software team and send their changes for public review to the kernel community.",
+  "dailyDuties": [
+    "Write and fix device driver code in C",
+    "Debug kernel crashes from logs, traces and crash dumps",
+    "Send patch series and answer reviewer comments",
+    "Rebase product kernels on new mainline releases",
+    "Review patches from teammates",
+    "Run driver and stress tests on real hardware"
+  ],
+  "typicalTitles": [
+    "Linux Kernel Engineer",
+    "Kernel Developer",
+    "Linux Device Driver Developer",
+    "Linux Driver Engineer",
+    "Kernel Software Engineer",
+    "Linux Kernel Upstream Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "linux-kernel-development",
+      "importance": "required",
+      "expectation": "Work inside Linux kernel subsystems and get patches accepted upstream",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "required",
+      "expectation": "Write kernel C that follows the kernel coding style",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-linux",
+      "importance": "required",
+      "expectation": "Write and maintain Linux device drivers",
+      "postingShare": null
+    },
+    {
+      "skillId": "concurrency-multithreading",
+      "importance": "required",
+      "expectation": "Handle locking, interrupts and concurrency safely",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Prepare patch series with git and rebase on mainline",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-debugging",
+      "importance": "required",
+      "expectation": "Debug hangs and crashes with JTAG, gdb or crash dumps",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Discuss patches in public review with maintainers",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "nice_to_have",
+      "expectation": "Script builds and test runs",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Write test and tooling scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "virtualization",
+      "importance": "nice_to_have",
+      "expectation": "Work on KVM or virtio drivers",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "nice_to_have",
+      "expectation": "Understand the network stack for NIC drivers",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "nice_to_have",
+      "expectation": "Drive buses such as I2C and SPI from drivers",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "nice_to_have",
+      "expectation": "Read user-space tools written in C++",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

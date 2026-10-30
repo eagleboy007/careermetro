@@ -1,0 +1,141 @@
+{
+  "slug": "siem-engineer",
+  "title": "SIEM Engineer",
+  "summary": "A SIEM engineer builds and runs the platform that collects security logs and raises alerts (security information and event management, or SIEM). They sit in the security team, onboarding log sources and writing the detection content that SOC analysts act on, rather than watching alerts themselves.",
+  "dailyDuties": [
+    "Onboard log sources and normalise them to a common schema",
+    "Write and tune detection rules mapped to MITRE ATT&CK",
+    "Build dashboards and searches for investigations",
+    "Keep the SIEM platform and its forwarders healthy",
+    "Automate onboarding and content deployment with scripts",
+    "Fix broken parsing and missing or duplicated logs",
+    "Build response playbooks that act on alerts"
+  ],
+  "typicalTitles": [
+    "SIEM Content Engineer",
+    "Splunk Engineer",
+    "Splunk Developer",
+    "Sentinel Engineer",
+    "Security Content Engineer",
+    "SIEM Platform Engineer",
+    "QRadar Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "siem",
+      "importance": "required",
+      "expectation": "Build and run a SIEM such as Splunk, Sentinel or QRadar and write searches",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-detection",
+      "importance": "required",
+      "expectation": "Write and tune detection content mapped to MITRE ATT&CK",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Support investigations with the searches and dashboards you build",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-security",
+      "importance": "required",
+      "expectation": "Understand firewall, proxy and IDS logs you onboard",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate log onboarding and content deployment with scripts",
+      "postingShare": null,
+      "oneOf": "support-scripting"
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "required",
+      "expectation": "Automate log onboarding and content deployment with scripts",
+      "postingShare": null,
+      "oneOf": "support-scripting"
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Automate log onboarding and content deployment with scripts",
+      "postingShare": null,
+      "oneOf": "support-scripting"
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Run and troubleshoot SIEM components and forwarders on Linux",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Debug broken parsing and missing or duplicated logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "soar",
+      "importance": "nice_to_have",
+      "expectation": "Build response playbooks that act on alerts",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Onboard and monitor cloud platform logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "threat-intelligence",
+      "importance": "nice_to_have",
+      "expectation": "Enrich detections with indicators from threat feeds",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Document use cases and work with SOC analysts",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "support-scripting",
+      "label": "A scripting language (Python, Bash or PowerShell)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "splunk-core-user",
+      "importance": "recommended",
+      "why": "Core Splunk search and SPL skills"
+    },
+    {
+      "certId": "sc-200",
+      "importance": "optional",
+      "why": "Microsoft Sentinel and KQL depth"
+    },
+    {
+      "certId": "comptia-cysa-plus",
+      "importance": "optional",
+      "why": "Detection and monitoring fundamentals"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}
