@@ -1,7 +1,9 @@
 import { z } from "zod";
 import {
   certification,
+  cityCentresFile,
   eliteShelfFile,
+  interestTopicsFile,
   mockBankFile,
   practiceQuestion,
   proofTask,
@@ -12,6 +14,8 @@ import {
   skillGroups,
   skill,
   type Certification,
+  type CityCentre,
+  type InterestTopic,
   type ShelfEntry,
   type MockQuestion,
   type PracticeQuestion,
@@ -22,6 +26,8 @@ import {
   type Skill,
 } from "@/lib/schemas";
 import certificationsJson from "./certifications.json";
+import cityCentresJson from "./city-centres.json";
+import interestTopicsJson from "./interest-topics.json";
 import eliteShelfJson from "./elite-shelf.json";
 import mockBankJson from "./mock-bank.json";
 import practiceQuestionsJson from "./practice-questions.json";
@@ -218,6 +224,18 @@ export const mockQuestions: MockQuestion[] = mockBankFile.parse(mockBankJson).qu
  * only reviewed ones, src/lib/library/shelf.ts) and paid-course slots marked Coming soon. Never written by the model.
  */
 export const eliteShelfEntries: ShelfEntry[] = eliteShelfFile.parse(eliteShelfJson).entries;
+
+/**
+ * Timetable (docs/plans/timetable-plan.md section 3): one centre point per city a person may give (PERSON_CITIES), from
+ * public map data, to 4 decimals. Distance to an event is worked out between two city centres; nothing is geocoded.
+ */
+export const cityCentres: CityCentre[] = cityCentresFile.parse(cityCentresJson);
+
+/**
+ * Timetable (section 2): common interest topics, each with the words that mean it. An interest typed on Me maps to a
+ * topic only when it is the topic's key, label or one of its aliases exactly; anything else matches nothing.
+ */
+export const interestTopics: InterestTopic[] = interestTopicsFile.parse(interestTopicsJson);
 
 /** Hand-built role profiles (FR-8, FR-9). Unpublished until a domain expert sets reviewedBy. */
 export const roleProfiles: RoleProfile[] = z

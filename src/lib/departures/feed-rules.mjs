@@ -302,7 +302,7 @@ export const ROLE_TITLES = {
   // A board or electronics hardware design title after the FPGA and chip design rules, before the embedded rule ("ECU
   // Hardware Engineer"); never a test, software, chip, IT, networking or plant one. A plain "Hardware Engineer" has no
   // rule (it is often IT hardware).
-  "hardware-design-engineer": /^(?!.*\b(test|tester|testing|qa|validation|verification|software|firmware|fpga|asic|rtl|vlsi|silicon|technician|support|networking|network|desktop|it|plant|maintenance|field|service)\b).*(\bhardware (design|development)\b|\b(electronics?|board|pcb|schematic|circuit) design engineer\b|\b(ecu|embedded|electronics?|board) hardware (engineer|designer|lead)\b|\b(senior|sr\.?|lead) hardware engineer\b|\bhardware architect\b)/i,
+  "hardware-design-engineer": /^(?!.*\b(test|tester|testing|qa|validation|verification|software|firmware|fpga|asic|rtl|vlsi|silicon|soc|chip|technician|support|networking|network|desktop|it|plant|maintenance|field|service)\b).*(\bhardware (design|development)\b|\b(electronics?|board|pcb|schematic|circuit) design engineer\b|\b(ecu|embedded|electronics?|board) hardware (engineer|designer|lead)\b|\b(senior|sr\.?|lead) hardware engineer\b|\bhardware architect\b)/i,
   // A PLC, SCADA or DCS title before the robotics rule; a SCADA security title stays OT security (above), and a plain
   // "Automation Engineer" or "Control Systems Engineer" has no rule.
   "plc-scada-engineer": /^(?!.*\b(security|cyber ?security|test|tester|testing|qa)\b)(.*\b(plc|scada|dcs)\b.*\b(engineer|programmer|developer|specialist|technician|lead|consultant)\b|.*\bindustrial automation (engineer|specialist|lead)\b|.*\bcommissioning engineer\b.*\b(automation|plc|scada|dcs)\b)/i,
