@@ -11256,17 +11256,6 @@
     "free": true
   },
   {
-    "title": "Introduction to Information Retrieval (free online book)",
-    "url": "https://nlp.stanford.edu/IR-book/",
-    "provider": "Stanford NLP Group",
-    "kind": "docs",
-    "skillIds": [
-      "search-relevance-ranking"
-    ],
-    "minutes": 1200,
-    "free": true
-  },
-  {
     "title": "Learning to Rank (OpenSearch documentation)",
     "url": "https://docs.opensearch.org/latest/search-plugins/ltr/index/",
     "provider": "OpenSearch",
