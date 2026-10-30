@@ -1,0 +1,55 @@
+{
+  "id": "financial-analyst-mid-level-fpa",
+  "roleSlug": "financial-analyst",
+  "persona": "Mid-level FP&A analyst at a consumer goods company with a few gaps",
+  "resumeText": "Ananya Deshmukh | Pune | ananya.deshmukh@example.com\n\nEXPERIENCE\nFP&A Analyst, Sahyadri Consumer Foods Pvt Ltd, Pune (2023 - present)\n- Prepare the annual budget and quarterly rolling forecasts for the snacks business unit.\n- Built a driver-based financial model for a new packaging line in Chakan.\n- Automated the monthly cost reports in advanced Excel using pivot tables and XLOOKUP.\n- Present the monthly forecast to the CFO with key risks and opportunities.\n\nFinance Associate, Konkan Polymers Ltd, Mumbai (2021 - 2023)\n- Posted month-end accruals and prepared the trial balance with the accounting team.\n- Prepared fixed asset and prepaid schedules for the statutory audit.\n\nSKILLS\nBudgeting, Forecasting, Variance analysis, MS Excel, Power BI\n\nEDUCATION\nMBA Finance, Symbiosis Institute of Business Management, Pune, 2021\nBCom, Brihan Maharashtra College of Commerce, Pune, 2019\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "spend-forecasting",
+        "quote": "Prepare the annual budget and quarterly rolling forecasts"
+      },
+      {
+        "skillId": "financial-modelling",
+        "quote": "Built a driver-based financial model for a new packaging line"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Automated the monthly cost reports in advanced Excel"
+      },
+      {
+        "skillId": "excel-pivot-lookup",
+        "quote": "using pivot tables and XLOOKUP"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present the monthly forecast to the CFO"
+      },
+      {
+        "skillId": "financial-accounting",
+        "quote": "Posted month-end accruals and prepared the trial balance"
+      },
+      {
+        "skillId": "fpa-variance-reporting",
+        "quote": "Variance analysis"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "fpa-variance-reporting",
+        "status": "weak"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "fpa-planning-tools",
+      "sql",
+      "business-case"
+    ]
+  },
+  "reviewedBy": null
+}

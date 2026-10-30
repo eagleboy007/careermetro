@@ -1,0 +1,51 @@
+{
+  "id": "aml-kyc-analyst-mid-level-kyc-to-aml",
+  "roleSlug": "aml-kyc-analyst",
+  "persona": "Mid-level KYC analyst now doing AML alert reviews, with a few gaps",
+  "resumeText": "Priyanka Nair | Bengaluru | priyanka.nair@example.com\n\nEXPERIENCE\nAML Analyst, Vistara Payments Pvt Ltd, Bengaluru (2023 - present)\n- Investigate transaction monitoring alerts for merchant accounts and close or escalate each case.\n- Apply the RBI KYC Master Direction and PMLA rules when reviewing high-risk merchants.\n- Track alert ageing and closure numbers in Excel for the weekly team report.\n\nKYC Analyst, Konark Global Banking Operations, Bengaluru (2021 - 2023)\n- Completed customer due diligence and enhanced due diligence files for corporate clients in the UK and India.\n- Screened clients and directors against World-Check for sanctions, PEP and adverse media hits.\n\nSKILLS\nKYC, CDD, EDD, Transaction monitoring, STR filing, World-Check, MS Excel\n\nEDUCATION\nBCom, Mount Carmel College, Bengaluru, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "aml-transaction-monitoring",
+        "quote": "Investigate transaction monitoring alerts for merchant accounts"
+      },
+      {
+        "skillId": "aml-regulations",
+        "quote": "Apply the RBI KYC Master Direction and PMLA rules"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Track alert ageing and closure numbers in Excel"
+      },
+      {
+        "skillId": "kyc-due-diligence",
+        "quote": "Completed customer due diligence and enhanced due diligence files"
+      },
+      {
+        "skillId": "sanctions-screening",
+        "quote": "Screened clients and directors against World-Check"
+      },
+      {
+        "skillId": "str-regulatory-reporting",
+        "quote": "STR filing"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "str-regulatory-reporting",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sql",
+      "credit-appraisal",
+      "financial-modelling"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,117 @@
+{
+  "slug": "talent-acquisition-specialist",
+  "title": "Talent Acquisition Specialist",
+  "summary": "Talent acquisition specialists fill open roles end to end: they find and screen candidates, arrange interviews, negotiate offers and follow up until joining. They sit in the HR or recruitment team and work closely with hiring managers, reporting on hiring numbers such as time to fill.",
+  "dailyDuties": [
+    "Agree role requirements with hiring managers in intake calls",
+    "Source candidates with Boolean search, referrals and resume databases",
+    "Screen resumes and run first-round phone screens",
+    "Schedule interview rounds and collect panel feedback",
+    "Negotiate CTC and joining dates and roll out offers",
+    "Update candidate stages in the applicant tracking system",
+    "Share weekly hiring pipeline and time-to-fill reports"
+  ],
+  "typicalTitles": [
+    "Talent Acquisition Executive",
+    "Senior Talent Acquisition Specialist",
+    "Recruitment Specialist",
+    "Talent Acquisition Partner",
+    "Recruitment Executive",
+    "Corporate Recruiter",
+    "Non-IT Recruiter"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "full-cycle-recruitment",
+      "importance": "required",
+      "expectation": "Own hiring from requisition to joining for a set of roles",
+      "postingShare": null
+    },
+    {
+      "skillId": "candidate-sourcing",
+      "importance": "required",
+      "expectation": "Find active and passive candidates with Boolean search, referrals and databases",
+      "postingShare": null
+    },
+    {
+      "skillId": "candidate-screening-interviewing",
+      "importance": "required",
+      "expectation": "Screen resumes and run first-round phone or video screens",
+      "postingShare": null
+    },
+    {
+      "skillId": "interview-coordination",
+      "importance": "required",
+      "expectation": "Schedule interview rounds and keep candidates informed at each stage",
+      "postingShare": null
+    },
+    {
+      "skillId": "offer-negotiation",
+      "importance": "required",
+      "expectation": "Discuss CTC, notice period and joining date and close offers",
+      "postingShare": null
+    },
+    {
+      "skillId": "applicant-tracking-systems",
+      "importance": "required",
+      "expectation": "Keep every candidate and stage up to date in an applicant tracking system",
+      "postingShare": null
+    },
+    {
+      "skillId": "recruitment-metrics",
+      "importance": "required",
+      "expectation": "Track time to fill, offer-to-join ratio and pipeline numbers and report them weekly",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree role briefs and priorities with hiring managers and keep them updated",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear outreach messages and speak confidently with candidates",
+      "postingShare": null
+    },
+    {
+      "skillId": "campus-hiring",
+      "importance": "nice_to_have",
+      "expectation": "Plan and run campus drives for entry-level hiring",
+      "postingShare": null
+    },
+    {
+      "skillId": "employer-branding",
+      "importance": "nice_to_have",
+      "expectation": "Help with careers page content and employer brand posts",
+      "postingShare": null
+    },
+    {
+      "skillId": "background-verification",
+      "importance": "nice_to_have",
+      "expectation": "Start background checks and follow them up before joining",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Maintain hiring trackers and simple dashboards in Excel",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

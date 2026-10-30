@@ -270,7 +270,7 @@ await step("screening check: keywords, layout and headings for the uploaded PDF,
 // A role our library doesn't have (role-suggest-plan.md part B, point 4): the search counts it, and a posting stands in.
 let roleGapsUrl = "";
 await step("my role isn't listed: the search counts it, and a posting stands in as the target", async () => {
-  const posting = JSON.parse(readFileSync(new URL("../fixtures/job-postings/example-freight-supply-chain-analyst.json", import.meta.url), "utf8"));
+  const posting = JSON.parse(readFileSync(new URL("../fixtures/job-postings/example-freight-fleet-planning-analyst.json", import.meta.url), "utf8"));
   roleGapsUrl = p.url().split("?")[0];
   await p.goto(roleGapsUrl.replace(/\/gaps\/[^/]+$/, "/role"));
   const search = p.getByRole("searchbox", { name: "Search roles or skills" });
@@ -306,7 +306,7 @@ await step("my role isn't listed: the search counts it, and a posting stands in 
 
   await p.getByRole("link", { name: /My role isn't listed/ }).click();
   await p.waitForURL(/\/role\/other$/, { timeout: 15000 });
-  if (/title|supply/i.test(p.url())) throw new Error("the typed title is in the address");
+  if (/title|fleet/i.test(p.url())) throw new Error("the typed title is in the address");
   await p.getByLabel("Job title", { exact: true }).waitFor({ timeout: 10000 });
   // Carried in sessionStorage, read once the page is in the browser.
   const carried = await p
@@ -1017,7 +1017,7 @@ await step("my jobs: add a job you found, save it, move its status, keep a note,
     await p.goto(BASE + "/departures?tab=mine");
     await settled();
     // Signing in claimed the resume, and the newest job checked before it (the stand-in posting) waits here, Saved.
-    const claimed = p.getByRole("region", { name: "My jobs" }).getByRole("listitem").filter({ hasText: "Supply Chain Analyst" }).filter({ hasText: "Example Freight Pvt Ltd" });
+    const claimed = p.getByRole("region", { name: "My jobs" }).getByRole("listitem").filter({ hasText: "Fleet Planning Analyst" }).filter({ hasText: "Example Freight Pvt Ltd" });
     await claimed.getByRole("button", { name: /^Status: Saved/ }).waitFor({ timeout: 10000 });
     const box = p.getByRole("region", { name: "Add a job you found" });
     const link = box.getByLabel("Link to the job");

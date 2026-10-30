@@ -176,7 +176,27 @@
       "customer-success-manager"
     ],
     "marketing": [
-      "digital-marketing-executive"
+      "digital-marketing-executive",
+      "product-marketing-manager"
+    ],
+    "sales": [
+      "key-account-manager",
+      "area-sales-manager",
+      "inside-sales-executive"
+    ],
+    "finance": [
+      "financial-analyst",
+      "accounts-executive",
+      "credit-risk-analyst",
+      "aml-kyc-analyst"
+    ],
+    "hr": [
+      "hr-generalist",
+      "talent-acquisition-specialist"
+    ],
+    "operations": [
+      "supply-chain-analyst",
+      "customer-support-executive"
     ]
   },
   "neighbours": [
@@ -279,6 +299,26 @@
     [
       "delivery",
       "enterprise-apps"
+    ],
+    [
+      "sales",
+      "marketing"
+    ],
+    [
+      "finance",
+      "data-analytics"
+    ],
+    [
+      "operations",
+      "data-analytics"
+    ],
+    [
+      "operations",
+      "delivery"
+    ],
+    [
+      "hr",
+      "operations"
     ]
   ],
   "alsoNear": [

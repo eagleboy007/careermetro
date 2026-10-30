@@ -762,11 +762,11 @@ describe("job check", () => {
   });
 
   it("stands in for a role we don't have, and counts its title once it is saved", async () => {
-    const standIn = { ...good, roleSlug: null, title: "Supply Chain Analyst" };
+    const standIn = { ...good, roleSlug: null, title: "Fleet Planning Analyst" };
     m.createJobCheck.mockResolvedValueOnce({ ok: true, id: "check-2", reused: false });
     expect(await json(await checkJob(post(standIn)))).toEqual({ status: 200, body: { ok: true, id: "check-2", reused: false } });
     expect(m.createJobCheck).toHaveBeenCalledWith({ ...standIn, text: posting.trim() }, { sessionId: SESSION }, { clientHash: expect.any(String) });
-    expect(m.countRoleRequest).toHaveBeenCalledWith("Supply Chain Analyst", { sessionId: SESSION });
+    expect(m.countRoleRequest).toHaveBeenCalledWith("Fleet Planning Analyst", { sessionId: SESSION });
 
     // Not again for a posting checked before, nor when nothing was saved, nor for a library role.
     m.countRoleRequest.mockClear();
@@ -967,31 +967,31 @@ describe("role requests", () => {
     });
 
   it("refuses another site, big or wrong bodies, and no session, before counting anything", async () => {
-    for (const origin of [null, "https://evil.example"]) expect((await requestRole(post({ title: "Supply Chain Analyst" }, origin))).status).toBe(403);
-    expect((await requestRole(post({ title: "Supply Chain Analyst" }, SITE, { "content-length": "5000" }))).status).toBe(413);
+    for (const origin of [null, "https://evil.example"]) expect((await requestRole(post({ title: "Fleet Planning Analyst" }, origin))).status).toBe(403);
+    expect((await requestRole(post({ title: "Fleet Planning Analyst" }, SITE, { "content-length": "5000" }))).status).toBe(413);
     for (const body of ["not json", {}, { title: 5 }, { title: "priya@example.com" }, { title: "Analyst", email: "a@b.c" }, { title: "x".repeat(300) }]) {
       expect((await requestRole(post(body))).status).toBe(400);
     }
     m.jar!.clear();
-    expect((await requestRole(post({ title: "Supply Chain Analyst" }))).status).toBe(404);
+    expect((await requestRole(post({ title: "Fleet Planning Analyst" }))).status).toBe(404);
     expect(m.countRoleRequest).not.toHaveBeenCalled();
   });
 
   it("counts for the session or account, and answers the same whether or not it counted", async () => {
     for (const outcome of ["counted", "repeat", "limit", "known", "failed"]) {
       m.countRoleRequest.mockResolvedValueOnce(outcome);
-      expect(await json(await requestRole(post({ title: "  Supply   Chain Analyst" })))).toEqual({ status: 200, body: { ok: true } });
+      expect(await json(await requestRole(post({ title: "  Fleet   Planning Analyst" })))).toEqual({ status: 200, body: { ok: true } });
     }
-    expect(m.countRoleRequest).toHaveBeenLastCalledWith("supply chain analyst", { sessionId: SESSION });
+    expect(m.countRoleRequest).toHaveBeenLastCalledWith("fleet planning analyst", { sessionId: SESSION });
     m.account = { id: "user-1" };
-    await requestRole(post({ title: "Supply Chain Analyst" }));
-    expect(m.countRoleRequest).toHaveBeenLastCalledWith("supply chain analyst", { userId: "user-1" });
+    await requestRole(post({ title: "Fleet Planning Analyst" }));
+    expect(m.countRoleRequest).toHaveBeenLastCalledWith("fleet planning analyst", { userId: "user-1" });
   });
 
   it("never logs the title", async () => {
     const lines: string[] = [];
     const spy = vi.spyOn(console, "log").mockImplementation((...a: unknown[]) => void lines.push(a.map(String).join(" ")));
-    await requestRole(post({ title: "Supply Chain Analyst" }));
+    await requestRole(post({ title: "Fleet Planning Analyst" }));
     expect(lines.join(" ")).toContain("role_request");
     expect(lines.join(" ").toLowerCase()).not.toContain("supply");
     spy.mockRestore();

@@ -1,0 +1,104 @@
+{
+  "slug": "inside-sales-executive",
+  "title": "Inside Sales Executive",
+  "summary": "An inside sales executive sells remotely, finding and qualifying business buyers by phone, email and LinkedIn and booking or closing deals without field visits. The role sits early in the sales team of software and services companies, often as a sales development representative who hands qualified meetings to account executives.",
+  "dailyDuties": [
+    "Research target accounts and build lead lists",
+    "Make cold calls and send outbound email sequences",
+    "Run discovery calls to qualify leads",
+    "Book meetings or give short product demos",
+    "Log activities and update deal stages in the CRM",
+    "Review pipeline and activity numbers with the sales manager"
+  ],
+  "typicalTitles": [
+    "Inside Sales Representative",
+    "Sales Development Representative",
+    "Business Development Representative",
+    "Inside Sales Associate",
+    "Account Executive - Inside Sales",
+    "Inside Sales Specialist",
+    "SDR - SaaS"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "b2b-prospecting",
+      "importance": "required",
+      "expectation": "Prospect into target accounts by phone, email and LinkedIn every day",
+      "postingShare": null
+    },
+    {
+      "skillId": "lead-qualification",
+      "importance": "required",
+      "expectation": "Qualify inbound and outbound leads on discovery calls before handing over",
+      "postingShare": null
+    },
+    {
+      "skillId": "pipeline-management",
+      "importance": "required",
+      "expectation": "Keep the pipeline clean and move deals through stages",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "required",
+      "expectation": "Log every activity and opportunity in Salesforce, HubSpot or Zoho CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-engagement-tools",
+      "importance": "required",
+      "expectation": "Run outbound sequences in a sales engagement or prospecting tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "solution-demos-poc",
+      "importance": "required",
+      "expectation": "Give short virtual product demos to prospects",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear cold emails and handle objections on calls",
+      "postingShare": null
+    },
+    {
+      "skillId": "deal-closing",
+      "importance": "nice_to_have",
+      "expectation": "Close small and mid-size deals against a monthly quota",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Forecast the month's pipeline and bookings",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "nice_to_have",
+      "expectation": "Negotiate pricing and discounts within approval limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Clean lead lists and track activity numbers",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

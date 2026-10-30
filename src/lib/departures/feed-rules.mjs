@@ -169,6 +169,9 @@ export const ROLE_TITLES = {
   // never a facility (power, cooling), design, network or security one.
   "data-center-engineer": /^(?!.*\b(software|developer|design|architect|electrical|mechanical|hvac|facility|facilities|construction|network|security)\b).*(\b(data ?cent(er|re)|colocation)( (operations|ops|hardware|infrastructure|infra|services|support))? (engineer|technician|specialist|associate|executive|administrator|admin)\b|\b(dc|colo) (operations|ops) (engineer|technician|specialist|associate|executive)\b|\bremote hands (engineer|technician|specialist)\b)/i,
   "system-administrator": /\b(sys ?admin|systems? (administrator|admin)|(it )?server (administrator|admin)|it administrator|infrastructure support engineer|(linux|unix|windows|wintel|vmware|active directory)( server| system| systems)? (administrator|admin|engineer|support engineer))\b/i,
+  // A customer service or contact centre title before the IT service desk rule ("Customer Service Desk Agent"); never a
+  // support engineer, and "Customer Support Associate" stays product support (below).
+  "customer-support-executive": /^((senior|sr\.?|junior|jr\.?) )?((customer (service|care)|contact cent(re|er)|call cent(re|er)|phone banking)( desk)? (executive|associate|representative|agent|officer|advisor|adviser)|(customer|chat|voice|email) support (executive|representative|agent|officer|advisor|adviser))\b/i,
   "it-support-engineer": /\b(desktop support|deskside support|service desk|help ?desk|end user computing( \(euc\))?|euc|it support|field support) (engineer|specialist|analyst|associate|executive|technician|agent)\b/i,
   // A cloud support title before the product support one that would read "Technical Support Engineer" in it.
   "cloud-support-engineer": /\b(cloud|aws|azure|gcp|google cloud)( technical)? support (engineer|associate|specialist|analyst)\b|\bcloud support\b/i,
@@ -374,8 +377,26 @@ export const ROLE_TITLES = {
   // Last of the engineering roles: a plain "Software Engineer" or "SDE", never a test, embedded or hardware one.
   "software-engineer": /^(?!.*\b(in test|qa|embedded|firmware|hardware|silicon|asic|mechanical|electrical)\b).*\b(software (engineer|developer|development engineer)|sde|programmer analyst|application developer|member of technical staff|back[- ]?end (engineer|developer))\b|^((senior|sr\.?) )?mts\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email|online) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search|social media) (specialist|executive|manager|associate)\b/i,
+  // Business roles (batch B1), last, each read only from the titles it is built for. A plain "Account Executive",
+  // "Sales Manager", "Business Development Executive", "Account Manager" or "HR Business Partner" has no rule.
+  "product-marketing-manager": /\bproduct marketing (manager|lead|specialist|associate|executive)\b|^manager,? ?[-–]? ?product marketing\b/i,
+  "key-account-manager": /^((senior|sr\.?|national|regional|zonal|corporate|associate|deputy|assistant) )*key accounts? (manager|executive|lead|specialist)\b|^((senior|sr\.?|deputy|assistant) )?modern trade (manager|executive|lead)\b/i,
+  "area-sales-manager": /^((senior|sr\.?|deputy|assistant) )?((area|territory) sales (manager|officer|executive|lead)|area manager\b.*\bsales|area business manager)\b/i,
+  "inside-sales-executive": /^((senior|sr\.?|associate|junior|jr\.?) )?(inside sales (executive|representative|rep|associate|specialist)|(sales|business) development (representative|rep)|sdr|bdr)\b|^account executive\b.*\binside sales\b/i,
+  // FP&A and business finance analysts; never a financial systems, crime, data or cloud cost one.
+  "financial-analyst": /^(?!.*\b(systems?|crime|data|cloud|software|it)\b)((senior|sr\.?|associate|junior|jr\.?|lead) )?(fp ?& ?a|financial planning (and|&) analysis|business finance|commercial finance|budgeting (and|&) forecasting|financial|finance) (analyst|associate)\b/i,
+  // "Accounts Executive" in finance, never the sales "Account Executive"; a forensic or chartered accountant is not one.
+  "accounts-executive": /^((senior|sr\.?|junior|jr\.?|assistant) )?(accounts( (and|&) (taxation|tax|finance|admin))?|accounts payable|accounts receivable) (executive|assistant|officer|associate)\b|^executive,? ?[-–]? ?accounts\b|^((junior|jr\.?|assistant) )?((tally|gst) )?accountant\b|^accounts (payable|receivable) specialist\b/i,
+  "credit-risk-analyst": /^(?!.*\b(model(l)?(er|ing)?|models?|quant|data|engineer|developer|card)\b)((senior|sr\.?|associate|junior|jr\.?|lead) )?((wholesale|retail|corporate|sme|msme|commercial|consumer) )?(credit risk|credit portfolio|credit appraisal|credit) (analyst|underwriter|officer)\b/i,
+  "aml-kyc-analyst": /^(?!.*\b(engineer|developer|data|software|test|tester|qa)\b).*\b(aml|kyc|cdd|edd|anti[- ]money laundering|transaction monitoring|sanctions|financial crime|fcc|customer due diligence)(\/(aml|kyc))?( (due diligence|operations|compliance|screening|review|investigations?))? (analyst|investigator|specialist|associate|officer|reviewer)\b/i,
+  "hr-generalist": /^((senior|sr\.?|junior|jr\.?|associate|assistant|plant|factory|site|corporate) )*(hr|human resources?|people operations|people ops)( (and|&) admin(istration)?| operations| ops)? (generalist|executive|officer|associate|coordinator)\b/i,
+  // Recruiter and talent acquisition titles; an SAP or SuccessFactors recruiting one stays with those rules above.
+  "talent-acquisition-specialist": /^((senior|sr\.?|junior|jr\.?|associate|lead|corporate|campus|non-it|it|technical|tech) )*((talent acquisition|recruitment) (specialist|executive|partner|associate|consultant|coordinator|lead)|recruiter)\b/i,
+  "supply-chain-analyst": /^(?!.*\b(engineer|developer|data|software|sap|consultant)\b)((senior|sr\.?|junior|jr\.?|associate|lead) )?((supply chain( planning)?|supply planning|demand planning|inventory( control| planning)?|procurement|logistics|sourcing|s&op) analyst|(demand|supply) planner)\b/i,
 };
-const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager"]);
+const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager"]);
+/** The business rules that may read a sales or recruiting title, which NOT_IN_SCOPE drops for every other rule. */
+const SALES_OK = new Set(["key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;
@@ -390,8 +411,11 @@ export function classify(/** @type {string} */ title, /** @type {string} */ text
     .replace(/\b(technical|cloud) pre-?sales\b/i, "")
     .replace(/\bsales (and|&) distribution\b/i, (m) => (/\bsap\b/i.test(title) ? "" : m))
     .replace(/\b(successfactors|sap sf) (recruiting|recruitment)\b/i, "$1");
-  if ((SENIOR.test(title) && !SENIOR_TITLES.test(title)) || NOT_IN_SCOPE.test(unsold)) return null;
+  if (SENIOR.test(title) && !SENIOR_TITLES.test(title)) return null;
+  // A sales, recruiting or legal title reads only as a business rule built for it ("Sales Engineer" stays null).
+  const outOfScope = NOT_IN_SCOPE.test(unsold);
   for (const [slug, re] of Object.entries(ROLE_TITLES)) {
+    if (outOfScope && !SALES_OK.has(slug)) continue;
     if (!re.test(title)) continue;
     if (!MANAGER_OK.has(slug) && /\bmanager\b/i.test(title)) continue;
     if (TEST_ROLES.has(slug) && NOT_SOFTWARE.test(title)) continue;

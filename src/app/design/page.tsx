@@ -1510,7 +1510,7 @@ export default function DesignPage() {
               { slug: "full-stack-developer", title: "Full Stack Developer (MERN)", experience: "1 to 5 years", met: 5, total: 10, shown: ["JavaScript", "Node.js", "SQL"], fits: true },
               { slug: "senior-backend-engineer", title: "Senior Backend Engineer", experience: "5 to 10 years", met: 4, total: 9, shown: ["Node.js", "SQL"], fits: false },
             ]}
-            standIns={[{ id: "example-stand-in", title: "Supply Chain Analyst", company: "Example Freight Pvt Ltd" }]}
+            standIns={[{ id: "example-stand-in", title: "Fleet Planning Analyst", company: "Example Freight Pvt Ltd" }]}
             demo
           />
           <p className="text-sm text-muted">With a target role picked on Today before the upload: it shows first.</p>
@@ -1575,11 +1575,11 @@ export default function DesignPage() {
       <section className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">My role isn&apos;t listed</h2>
-          <StandInForm resumeId="example" initialTitle="Supply Chain Analyst" demo />
+          <StandInForm resumeId="example" initialTitle="Fleet Planning Analyst" demo />
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">A job standing in for the role</h2>
-          <StandInNote title="Supply Chain Analyst" />
+          <StandInNote title="Fleet Planning Analyst" />
           <ReadinessCard
             readiness={{
               headline: "You cover 2 of the 5 skills this job asks for.",

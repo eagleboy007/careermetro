@@ -1,0 +1,60 @@
+{
+  "id": "area-sales-manager-from-sales-officer",
+  "roleSlug": "area-sales-manager",
+  "persona": "FMCG senior sales officer ready to become area sales manager",
+  "resumeText": "Rohit Yadav | Lucknow | rohit.yadav@example.com\n\nEXPERIENCE\nSenior Sales Officer, Ganga Consumer Products Ltd, Lucknow (2021 - present)\n- Appointed three new distributors in Barabanki and Sitapur and reviewed distributor ROI every quarter.\n- Drive primary and secondary sales across 2,400 general trade outlets in six towns.\n- Planned new beats and territory expansion into 40 rural markets.\n- Lead a team of five territory sales executives and coach them on outlet calls.\n- Prepare monthly Excel reports of target vs achievement by distributor and town.\n- Present the monthly territory review to the regional sales manager.\n- Use the Bizom app for distributor orders and team attendance.\n\nSales Officer, Awadh Snacks Pvt Ltd, Kanpur (2018 - 2021)\n- Grew numeric distribution in Kanpur city from 900 to 1,500 outlets.\n- Handled retailer complaints and stock rotation with the distributor.\n\nEDUCATION\nBBA, Lucknow University, 2018\n\nSKILLS\nDistributor collections, MS Excel, Team handling\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "distributor-management",
+        "quote": "Appointed three new distributors in Barabanki and Sitapur"
+      },
+      {
+        "skillId": "primary-secondary-sales",
+        "quote": "Drive primary and secondary sales across 2,400 general trade outlets"
+      },
+      {
+        "skillId": "territory-sales-planning",
+        "quote": "Planned new beats and territory expansion into 40 rural markets"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Lead a team of five territory sales executives"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Prepare monthly Excel reports of target vs achievement"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present the monthly territory review to the regional sales manager"
+      },
+      {
+        "skillId": "dms-sfa-tools",
+        "quote": "Use the Bizom app for distributor orders"
+      },
+      {
+        "skillId": "channel-credit-collections",
+        "quote": "Distributor collections"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "channel-credit-collections",
+        "status": "weak"
+      },
+      {
+        "skillId": "trade-spend-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "modern-trade-retail",
+      "domain-bfsi",
+      "power-bi",
+      "key-account-planning"
+    ]
+  },
+  "reviewedBy": null
+}

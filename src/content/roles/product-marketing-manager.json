@@ -1,0 +1,121 @@
+{
+  "slug": "product-marketing-manager",
+  "title": "Product Marketing Manager",
+  "summary": "A product marketing manager decides how a product is described and sold: who it is for, why it beats alternatives, and how it reaches the market at launch. The role sits in marketing at product companies and links the product, sales and customer success teams.",
+  "dailyDuties": [
+    "Write and refine positioning and messaging for products",
+    "Plan launch timelines with product, sales and design",
+    "Build pitch decks, battlecards and sales training",
+    "Interview customers and sales reps for buyer insights",
+    "Track competitors and update comparison material",
+    "Measure launch results and report to leadership"
+  ],
+  "typicalTitles": [
+    "Senior Product Marketing Manager",
+    "Product Marketing Lead",
+    "Product Marketing Specialist",
+    "Manager, Product Marketing",
+    "Associate Product Marketing Manager",
+    "Product Marketing Associate"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "product-positioning-messaging",
+      "importance": "required",
+      "expectation": "Write positioning and messaging for each product and audience",
+      "postingShare": null
+    },
+    {
+      "skillId": "go-to-market-launches",
+      "importance": "required",
+      "expectation": "Plan and run product launches with product, sales and design",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-enablement",
+      "importance": "required",
+      "expectation": "Build pitch decks, battlecards and train the sales team",
+      "postingShare": null
+    },
+    {
+      "skillId": "competitive-intelligence",
+      "importance": "required",
+      "expectation": "Track competitors and run win/loss analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-market-research",
+      "importance": "required",
+      "expectation": "Define buyer personas and the ideal customer profile from research",
+      "postingShare": null
+    },
+    {
+      "skillId": "content-marketing",
+      "importance": "required",
+      "expectation": "Write web pages, case studies and launch content",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Align product, sales, customer success and marketing teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present product stories to sales, customers and leadership",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-metrics",
+      "importance": "nice_to_have",
+      "expectation": "Measure launch impact on adoption, activation and pipeline",
+      "postingShare": null
+    },
+    {
+      "skillId": "pricing-packaging",
+      "importance": "nice_to_have",
+      "expectation": "Contribute to pricing and packaging decisions",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Pull pipeline and campaign data from a CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Read website and funnel data for launch pages",
+      "postingShare": null
+    },
+    {
+      "skillId": "email-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Plan launch and product update emails",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "hubspot-inbound-marketing",
+      "importance": "optional",
+      "why": "Free course on inbound content and email that product marketers support"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -9,7 +9,7 @@ import { standInView } from "./stand-in";
 const NOW = new Date("2026-10-12T10:00:00Z");
 
 // A role our library doesn't have: the posting stands in as the target.
-const fixture = JSON.parse(readFileSync("fixtures/job-postings/example-freight-supply-chain-analyst.json", "utf8")) as {
+const fixture = JSON.parse(readFileSync("fixtures/job-postings/example-freight-fleet-planning-analyst.json", "utf8")) as {
   company: string;
   title: string;
   text: string;
@@ -51,7 +51,7 @@ describe("the fixture posting", () => {
   it("maps to our skills, keeps unknown names and drops the invented quote", () => {
     expect(mapped.requiredSkillIds).toEqual(["sql", "excel", "data-cleaning", "statistics", "power-bi"]);
     expect(mapped.niceSkillIds).toEqual(["python", "tableau"]);
-    expect(mapped.unknownSkills).toEqual(["Demand forecasting", "SAP WM"]);
+    expect(mapped.unknownSkills).toEqual(["Fleet scheduling", "SAP WM"]);
     expect(mapped.dropped).toBe(1);
   });
 });
@@ -69,7 +69,7 @@ describe("standInView", () => {
       ["excel", "met"],
     ]);
     expect(view.goodToHave.map((n) => n.skillId)).toEqual(["python", "tableau"]);
-    expect(view.unknown).toEqual(["Demand forecasting", "SAP WM"]);
+    expect(view.unknown).toEqual(["Fleet scheduling", "SAP WM"]);
   });
 
   it("says readiness in words about this job, never a bare score", () => {

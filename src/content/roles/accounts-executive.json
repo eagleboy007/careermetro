@@ -1,0 +1,92 @@
+{
+  "slug": "accounts-executive",
+  "title": "Accounts Executive",
+  "summary": "Accounts executives keep a company's day-to-day books: they post entries in Tally or an ERP, pay vendors, track customer receipts and reconcile bank and party ledgers. They sit in the accounts team under the accounts manager and also prepare GST and TDS returns and support month-end close and audits.",
+  "dailyDuties": [
+    "Post purchase, sales and journal vouchers in Tally or the ERP",
+    "Process vendor invoices and schedule payments",
+    "Reconcile bank, vendor and customer ledgers",
+    "Prepare GSTR-1 and GSTR-3B data and reconcile GSTR-2B",
+    "Calculate TDS, pay challans and file quarterly returns",
+    "Pass month-end accruals and prepare schedules for audit"
+  ],
+  "typicalTitles": [
+    "Executive - Accounts",
+    "Accounts and Taxation Executive",
+    "Accounts Assistant",
+    "Junior Accountant",
+    "Tally Accountant",
+    "Accounts Payable Executive",
+    "GST Accountant"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "financial-accounting",
+      "importance": "required",
+      "expectation": "Keep books, pass journal entries and support month-end close",
+      "postingShare": null
+    },
+    {
+      "skillId": "gst-tds-compliance",
+      "importance": "required",
+      "expectation": "Prepare GSTR-1 and GSTR-3B, calculate TDS and file returns on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "tally-accounting-software",
+      "importance": "required",
+      "expectation": "Post vouchers in Tally Prime or a similar accounting package",
+      "postingShare": null
+    },
+    {
+      "skillId": "accounts-payable-receivable",
+      "importance": "required",
+      "expectation": "Process vendor invoices and payments and follow up customer receipts",
+      "postingShare": null
+    },
+    {
+      "skillId": "account-reconciliations",
+      "importance": "required",
+      "expectation": "Reconcile bank, vendor and customer ledgers every month",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep schedules and reconciliations in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "statutory-audit-support",
+      "importance": "nice_to_have",
+      "expectation": "Prepare audit schedules and answer first-level auditor queries",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "nice_to_have",
+      "expectation": "Use pivot tables and VLOOKUP to match large ledgers",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Follow up clearly with vendors, customers and auditors",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

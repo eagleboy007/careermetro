@@ -436,7 +436,7 @@ describe.skipIf(!db)("job checks (database)", () => {
   });
 
   describe("standing in for a role we don't have", () => {
-    const standIn = JSON.parse(readFileSync("fixtures/job-postings/example-freight-supply-chain-analyst.json", "utf8")) as typeof fixture;
+    const standIn = JSON.parse(readFileSync("fixtures/job-postings/example-freight-fleet-planning-analyst.json", "utf8")) as typeof fixture;
     const standInRequest = (resumeId: string): JobCheckRequest => ({ resumeId, roleSlug: null, company: standIn.company, title: standIn.title, text: standIn.text });
 
     it("saves with no role, shows the posting's skills as gaps, and makes no goal, analysis, path or ride", async () => {
@@ -453,7 +453,7 @@ describe.skipIf(!db)("job checks (database)", () => {
       expect(await snapshot()).toEqual(before);
 
       const [row] = await checksOf(me.resumeId);
-      expect(row).toMatchObject({ roleSlug: null, title: "Supply Chain Analyst", unknownSkills: ["Demand forecasting", "SAP WM"] });
+      expect(row).toMatchObject({ roleSlug: null, title: "Fleet Planning Analyst", unknownSkills: ["Fleet scheduling", "SAP WM"] });
       const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, row.aiCallId!));
       expect(call.inputRefs).toEqual({ resumeId: me.resumeId });
 

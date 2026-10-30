@@ -1,0 +1,60 @@
+{
+  "id": "key-account-manager-from-modern-trade-executive",
+  "roleSlug": "key-account-manager",
+  "persona": "Modern trade executive at an FMCG company stepping up to key account manager",
+  "resumeText": "Ananya Kulkarni | Mumbai | ananya.kulkarni@example.com\n\nEXPERIENCE\nAssistant Manager - Modern Trade, Sahyadri Foods Pvt Ltd, Mumbai (2021 - present)\n- Manage four regional supermarket chains and two quick commerce platforms for the West zone.\n- Prepared annual joint business plans with category managers at two national retail chains.\n- Negotiated trade terms and listing fees for 40 new SKUs across the chains.\n- Track trade spend against budget and report promotion ROI to the brand team every month.\n- Built weekly Excel trackers for fill rate, offtake and stock cover by store.\n- Coordinate with supply chain and finance teams to fix short supplies and pricing errors.\n- Presented quarterly business reviews to buyers with sales, fill rate and promotion results.\n\nModern Trade Executive, Coastline Beverages Ltd, Pune (2019 - 2021)\n- Checked planogram compliance and shelf share in 60 hypermarket stores.\n- Supported in-store promotions and visibility drives with merchandisers.\n\nEDUCATION\nMBA Marketing, Pune University, 2019\n\nSKILLS\nSales forecasting, Power BI, Advanced Excel, Negotiation\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "key-account-planning",
+        "quote": "Prepared annual joint business plans with category managers"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "quote": "Negotiated trade terms and listing fees for 40 new SKUs"
+      },
+      {
+        "skillId": "trade-spend-management",
+        "quote": "Track trade spend against budget and report promotion ROI"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built weekly Excel trackers for fill rate, offtake and stock cover"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Coordinate with supply chain and finance teams to fix short supplies"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented quarterly business reviews to buyers"
+      },
+      {
+        "skillId": "modern-trade-retail",
+        "quote": "Checked planogram compliance and shelf share in 60 hypermarket stores"
+      },
+      {
+        "skillId": "sales-forecasting",
+        "quote": "Sales forecasting"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sales-forecasting",
+        "status": "weak"
+      },
+      {
+        "skillId": "channel-credit-collections",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "distributor-management",
+      "crm-tools",
+      "people-management",
+      "b2b-prospecting"
+    ]
+  },
+  "reviewedBy": null
+}

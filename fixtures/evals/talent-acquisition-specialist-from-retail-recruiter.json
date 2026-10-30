@@ -1,0 +1,68 @@
+{
+  "id": "talent-acquisition-specialist-from-retail-recruiter",
+  "roleSlug": "talent-acquisition-specialist",
+  "persona": "Mid-level retail recruiter with a few gaps",
+  "resumeText": "Rohan Mehta | Gurugram | rohan.mehta@example.com\n\nEXPERIENCE\nTalent Acquisition Executive, Kesar Retail Pvt Ltd, Gurugram (2023 - present)\n- Ran end-to-end recruitment for 60 store and corporate roles a year, from requisition to joining.\n- Sourced passive candidates with Boolean search on job portals and through employee referrals.\n- Conducted telephonic screening of 40 candidates a week against the role brief.\n- Scheduled interview rounds with store managers and regional heads.\n- Tracked candidates and stages in Zoho Recruit and updated each requisition daily.\n- Met hiring managers every Monday to agree role briefs and priorities.\n\nRecruitment Executive, Aravalli Staffing Solutions, New Delhi (2021 - 2023)\n- Organised campus drives at three Delhi colleges for management trainee hiring.\n- Prepared weekly hiring trackers in Excel for client account managers.\n\nEDUCATION\nBBA, Guru Gobind Singh Indraprastha University, 2021\n\nSKILLS\nSourcing, Zoho Recruit, MS Excel, time to fill\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "full-cycle-recruitment",
+        "quote": "Ran end-to-end recruitment for 60 store and corporate roles"
+      },
+      {
+        "skillId": "candidate-sourcing",
+        "quote": "Sourced passive candidates with Boolean search"
+      },
+      {
+        "skillId": "candidate-screening-interviewing",
+        "quote": "Conducted telephonic screening of 40 candidates"
+      },
+      {
+        "skillId": "interview-coordination",
+        "quote": "Scheduled interview rounds with store managers"
+      },
+      {
+        "skillId": "applicant-tracking-systems",
+        "quote": "Tracked candidates and stages in Zoho Recruit"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Met hiring managers every Monday to agree role briefs"
+      },
+      {
+        "skillId": "campus-hiring",
+        "quote": "Organised campus drives at three Delhi colleges"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Prepared weekly hiring trackers in Excel"
+      },
+      {
+        "skillId": "recruitment-metrics",
+        "quote": "time to fill"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "offer-negotiation",
+        "status": "missing"
+      },
+      {
+        "skillId": "recruitment-metrics",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "employer-branding",
+      "background-verification",
+      "payroll-inputs-processing",
+      "workday-hcm-configuration"
+    ]
+  },
+  "reviewedBy": null
+}

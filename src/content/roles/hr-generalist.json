@@ -1,0 +1,123 @@
+{
+  "slug": "hr-generalist",
+  "title": "HR Generalist",
+  "summary": "HR generalists run day-to-day people processes for a site or business unit, from joining and exit formalities to payroll inputs, PF and ESI (provident fund and state insurance) filings and HR policies. They sit in the HR team, answer employee questions and support managers on grievances and discipline.",
+  "dailyDuties": [
+    "Complete joining formalities and induction for new employees",
+    "Send monthly attendance, leave and exit inputs to payroll",
+    "Prepare and file PF and ESI challans and keep statutory registers",
+    "Answer employee questions on leave, policies and pay",
+    "Handle grievances and support managers with disciplinary cases",
+    "Update employee records in the HRMS and prepare HR MIS reports",
+    "Conduct exit interviews and process full and final settlements"
+  ],
+  "typicalTitles": [
+    "HR Executive",
+    "Senior HR Executive",
+    "HR Operations Executive",
+    "Plant HR Executive",
+    "HR Officer",
+    "HR & Admin Executive",
+    "People Operations Generalist"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "employee-onboarding-exits",
+      "importance": "required",
+      "expectation": "Run joining formalities, induction and exit formalities including full and final inputs",
+      "postingShare": null
+    },
+    {
+      "skillId": "indian-labour-law-compliance",
+      "importance": "required",
+      "expectation": "Keep PF, ESI, gratuity, POSH and Shops and Establishments records and filings correct",
+      "postingShare": null
+    },
+    {
+      "skillId": "payroll-inputs-processing",
+      "importance": "required",
+      "expectation": "Send accurate monthly attendance, leave, joiner and exit inputs to payroll",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-relations",
+      "importance": "required",
+      "expectation": "Handle employee queries and grievances and advise managers on disciplinary steps",
+      "postingShare": null
+    },
+    {
+      "skillId": "hr-policy-administration",
+      "importance": "required",
+      "expectation": "Maintain HR policies, letters and employee records and explain policies to staff",
+      "postingShare": null
+    },
+    {
+      "skillId": "hrms-tools",
+      "importance": "required",
+      "expectation": "Keep employee data, leave and attendance up to date in an HRMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Prepare headcount, attrition and other HR MIS reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain policies and decisions clearly to employees and managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-appraisal-administration",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate the appraisal cycle and track forms and ratings",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-engagement",
+      "importance": "nice_to_have",
+      "expectation": "Plan engagement activities and run engagement surveys",
+      "postingShare": null
+    },
+    {
+      "skillId": "full-cycle-recruitment",
+      "importance": "nice_to_have",
+      "expectation": "Support hiring for junior roles when the team needs it",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "nice_to_have",
+      "expectation": "Use pivot tables and lookups to reconcile HR data",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with finance, payroll vendors and business heads",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "mos-excel-associate",
+      "importance": "optional",
+      "why": "Shows the Excel skills used for HR MIS reports"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
