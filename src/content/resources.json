@@ -10528,39 +10528,6 @@
     "free": true
   },
   {
-    "title": "Appian Developer (self-paced)",
-    "url": "https://community.appian.com/learn/courses/p/developer",
-    "provider": "Appian Academy",
-    "kind": "course",
-    "skillIds": [
-      "appian-development"
-    ],
-    "minutes": 900,
-    "free": true
-  },
-  {
-    "title": "Appian Developer Fundamentals",
-    "url": "https://community.appian.com/learn/courses/p/developer-fundamentals",
-    "provider": "Appian Academy",
-    "kind": "course",
-    "skillIds": [
-      "appian-development"
-    ],
-    "minutes": 600,
-    "free": true
-  },
-  {
-    "title": "Build a solution and demonstrate your work",
-    "url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-skills-and-experience-building/build-a-solution-and-demonstrate-your-work",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "solution-demos-poc"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "Introduction to Presales",
     "url": "https://www.presalescollective.com/academy/pre-sales",
     "provider": "Presales Collective",
