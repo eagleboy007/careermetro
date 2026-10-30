@@ -1,0 +1,56 @@
+{
+  "id": "area-sales-manager-thin-junior-sales-officer",
+  "roleSlug": "area-sales-manager",
+  "persona": "Thin business resume: junior FMCG sales officer whose only shared skills with tech roles are Excel and pivot tables",
+  "resumeText": "Kavya Patil | Nashik | kavya.patil@example.com\n\nEXPERIENCE\nSales Officer, Godavari Foods Pvt Ltd, Nashik (2024 - present)\n- Ran retailer trade schemes and tracked scheme claims for 300 general trade outlets.\n- Visited 25 outlets a day on the assigned beat and booked retailer orders.\n- Built a weekly Excel sheet with pivot tables of scheme spend by outlet.\n\nEDUCATION\nBCom, Savitribai Phule Pune University, 2024\n\nSKILLS\nMS Excel, Trade schemes\n",
+  "expected": {
+    "totalYearsExperience": 2,
+    "skills": [
+      {
+        "skillId": "trade-spend-management",
+        "quote": "Ran retailer trade schemes and tracked scheme claims"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built a weekly Excel sheet"
+      },
+      {
+        "skillId": "excel-pivot-lookup",
+        "quote": "Excel sheet with pivot tables"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "distributor-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "primary-secondary-sales",
+        "status": "missing"
+      },
+      {
+        "skillId": "territory-sales-planning",
+        "status": "missing"
+      },
+      {
+        "skillId": "channel-credit-collections",
+        "status": "missing"
+      },
+      {
+        "skillId": "people-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "ran-performance-optimization",
+      "drive-test-analysis",
+      "key-account-planning",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}
