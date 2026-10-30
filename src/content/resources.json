@@ -12039,17 +12039,6 @@
     "free": true
   },
   {
-    "title": "GNU Bash manual",
-    "url": "https://www.gnu.org/s/bash/manual/",
-    "provider": "GNU Project",
-    "kind": "docs",
-    "skillIds": [
-      "scripting-bash"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "Get started with ABAP development on-premise",
     "url": "https://developers.sap.com/tutorials/mission-get-started-with-abap-development-on-premise",
     "provider": "SAP Developers",
