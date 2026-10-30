@@ -1156,7 +1156,10 @@ await step("share from the phone: the shared job fills the add box, checks at on
     await box.getByText("Shared from your phone.", { exact: false }).waitFor({ timeout: 15000 });
     if (!(await box.getByLabel("Job description").inputValue()).includes("Example Analytics Pvt Ltd helps retail brands")) throw new Error("the shared text didn't fill the box");
     if ((await box.getByLabel("Link to the job").inputValue()) !== "https://careers.example.com/data-analyst") throw new Error("the shared link didn't fill the box");
-    if (p.url().includes("shared=")) throw new Error("the hold's id stayed in the address");
+    // The address is cleaned with a client-side replace after the box fills, so give it a moment rather than reading it at once.
+    await p.waitForURL((u) => !u.searchParams.has("shared"), { timeout: 10000 }).catch(() => {
+      throw new Error("the hold's id stayed in the address");
+    });
     await box.locator("[data-added-job]").getByRole("heading", { name: "Check these, then save" }).waitFor({ timeout: 60000 });
     await a11y("my-jobs-shared");
     await shot("my-jobs-shared");
