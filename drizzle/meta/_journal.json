@@ -379,6 +379,13 @@
       "when": 1792514400000,
       "tag": "0053_weekly_my_jobs_email",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1792518000000,
+      "tag": "0054_app_email_budget",
+      "breakpoints": true
     }
   ]
 }

@@ -2,7 +2,7 @@
 //   node scripts/review/read-review.mjs <returned.csv>
 // Prints only the reviewer's answers and the Refs; it changes nothing in src/content.
 import { readFileSync } from "node:fs";
-import { ANSWER_COLUMNS, loadContent } from "./build-review-pack.mjs";
+import { ANSWER_COLUMNS, buildPack } from "./build-review-pack.mjs";
 
 /** RFC 4180 CSV rows (quoted cells, doubled quotes, CRLF or LF), without a leading byte-order mark. */
 export function parseCsv(input) {
@@ -38,7 +38,20 @@ export function parseCsv(input) {
   return rows.filter((r) => r.some((x) => x.trim()));
 }
 
-/** The answered lines of a returned file, and the Refs that no longer exist in src/content. */
+/**
+ * Every full Ref the pack built from today's content holds (column 0 of each CSV), such as "data-analyst#skill:sql",
+ * so a line for a removed skill, duty, question or certification is flagged, not only one for a removed role (T158).
+ */
+export function packRefs(pack = buildPack()) {
+  return new Set(
+    Object.entries(pack)
+      .filter(([name]) => name.endsWith(".csv"))
+      .flatMap(([, body]) => parseCsv(body).slice(1).map((r) => r[0]?.trim() ?? ""))
+      .filter(Boolean),
+  );
+}
+
+/** The answered lines of a returned file, and the Refs (whole, as `packRefs` lists them) that no longer exist. */
 export function answers(text, known) {
   const [head, ...rows] = parseCsv(text);
   const at = (name) => head.indexOf(name);
@@ -49,7 +62,7 @@ export function answers(text, known) {
     const line = { ref: r[at("Ref")]?.trim() ?? "", agree: r[agree]?.trim() ?? "", change: r[change]?.trim() ?? "", comment: r[comment]?.trim() ?? "" };
     if (!line.agree && !line.change && !line.comment) continue;
     const owner = line.ref.split("#")[0] || r[at("Role")]?.trim() || "(no ref)";
-    out.push({ ...line, owner, unknown: line.ref !== "" && !known.has(line.ref.split("#")[0]) });
+    out.push({ ...line, owner, unknown: line.ref !== "" && !known.has(line.ref) });
   }
   return out;
 }
@@ -57,8 +70,7 @@ export function answers(text, known) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const file = process.argv[2];
   if (!file) throw new Error("usage: node scripts/review/read-review.mjs <returned.csv>");
-  const { roles, bank, practice, certifications } = loadContent();
-  const known = new Set([...roles.map((r) => r.slug), ...bank.map((q) => q.id), ...practice.map((q) => q.id), ...certifications.map((c) => c.id)]);
+  const known = packRefs();
   let owner = "";
   for (const a of answers(readFileSync(file, "utf8"), known)) {
     if (a.owner !== owner) console.log(`\n## ${(owner = a.owner)}`);

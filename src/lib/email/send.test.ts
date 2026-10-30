@@ -57,10 +57,43 @@ describe("the app's email sender", () => {
   it("says it failed, without throwing or logging the message, when Resend refuses or the network fails", async () => {
     quiet();
     expect(await sendEmail(message, env, { fetch: vi.fn(async () => new Response("{}", { status: 422 })) })).toEqual({ ok: false, reason: "failed" });
-    // Resend's rate or daily limit: a batch stops on it (T142).
-    expect(await sendEmail(message, env, { fetch: vi.fn(async () => new Response("{}", { status: 429 })) })).toEqual({ ok: false, reason: "limited" });
-    expect(await sendEmail(message, env, { fetch: vi.fn(async () => Promise.reject(new TypeError("fetch failed"))) })).toEqual({ ok: false, reason: "failed" });
+    // A timeout or a server error may come after Resend accepted it (T151).
+    expect(await sendEmail(message, env, { fetch: vi.fn(async () => Promise.reject(new TypeError("fetch failed"))) })).toEqual({ ok: false, reason: "failed", maybeSent: true });
+    expect(await sendEmail(message, env, { fetch: vi.fn(async () => new Response("{}", { status: 503 })) })).toEqual({ ok: false, reason: "failed", maybeSent: true });
+    expect(await sendEmail(message, env, { fetch: vi.fn(async () => new Response('{"name":"concurrent_idempotent_requests"}', { status: 409 })) })).toEqual({ ok: false, reason: "failed", maybeSent: true });
     expect(lines.join("\n")).toContain("email_send_refused");
     expect(lines.join("\n")).toContain("email_send_failed");
+  });
+
+  it("sends the idempotency key as a request header, never in the email", async () => {
+    const fetch = vi.fn(async () => new Response('{"id":"x"}', { status: 200 }));
+    await sendEmail({ ...message, idempotencyKey: "weekly-u1-2026-10-26" }, env, { fetch });
+    const [, init] = fetch.mock.calls[0] as unknown as [string, RequestInit];
+    expect(new Headers(init.headers).get("idempotency-key")).toBe("weekly-u1-2026-10-26");
+    expect(String(init.body)).not.toContain("weekly-u1");
+  });
+
+  it("waits and tries again on Resend's per-second rate limit, with the same key, and stops at once on a spent quota (T151)", async () => {
+    quiet();
+    const sleep = vi.fn(async () => {});
+    const rate = () => new Response('{"statusCode":429,"message":"Too many requests","name":"rate_limit_exceeded"}', { status: 429, headers: { "retry-after": "1" } });
+    const once = vi.fn<typeof globalThis.fetch>().mockResolvedValueOnce(rate()).mockResolvedValueOnce(new Response('{"id":"x"}', { status: 200 }));
+    expect(await sendEmail({ ...message, idempotencyKey: "k1" }, env, { fetch: once, sleep })).toEqual({ ok: true });
+    expect(once).toHaveBeenCalledTimes(2);
+    expect(sleep).toHaveBeenCalledWith(1000);
+    for (const [, init] of once.mock.calls) expect(new Headers(init!.headers).get("idempotency-key")).toBe("k1");
+    // Still limited after three tries: this email didn't go, but a batch may go on.
+    const always = vi.fn(async () => rate());
+    expect(await sendEmail(message, env, { fetch: always, sleep })).toEqual({ ok: false, reason: "limited" });
+    expect(always).toHaveBeenCalledTimes(3);
+    // A 429 with no error name is read as the rate limit too.
+    const bare = vi.fn(async () => new Response("{}", { status: 429 }));
+    expect(await sendEmail(message, env, { fetch: bare, sleep })).toEqual({ ok: false, reason: "limited" });
+    for (const name of ["daily_quota_exceeded", "monthly_quota_exceeded"]) {
+      const quota = vi.fn(async () => new Response(JSON.stringify({ statusCode: 429, message: "quota", name }), { status: 429 }));
+      expect(await sendEmail(message, env, { fetch: quota, sleep })).toEqual({ ok: false, reason: "quota" });
+      expect(quota).toHaveBeenCalledTimes(1);
+    }
+    expect(lines.join("\n")).toContain('"error":"daily_quota_exceeded"');
   });
 });

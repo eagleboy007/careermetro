@@ -168,6 +168,7 @@ Resumes are dense personal data (name, phone, employer history, sometimes salary
 - Responsive: mobile-first (most Indian job seekers are on phones). Route map collapses to a vertical line on small screens (already prototyped).
 - Languages: English at launch; i18n structure in place for Hindi next.
 - Observability: structured logs, error tracking, per-feature funnel analytics (privacy-respecting, no resume content in logs).
+- Email budget (T151, T153, Project manager for Milin, 2026-10-30): on Resend's free plan (100 a day), sign-in codes keep 60 and the app's own bulk emails (the weekly My jobs email, and later the Monday events digest, at most 20 of them) share 40 an India day, counted in the database before each send so two runs can't overspend. The weekly email goes to the people sent longest ago first, at most once a person a week (the week is claimed before sending, with an idempotency key), and only counts reach the logs.
 
 ## 10. Design requirements
 

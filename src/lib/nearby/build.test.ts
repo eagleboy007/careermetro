@@ -161,6 +161,33 @@ describe("nearbyLinesFor", () => {
     expect(empty).toEqual({ lines: [], closest: null });
   });
 
+  it("counts key skills in the closest sentence, as the near filter does, so showing communication changes nothing (T154)", () => {
+    const quote = "Presented the weekly report to branch managers";
+    const speaker = profile({
+      ...analyst,
+      roles: [{ ...analyst.roles[0], highlights: [...analyst.roles[0].highlights, quote] }],
+      skills: [...analyst.skills, used("Communication skills", quote)],
+    });
+    const wide = role("wide-role", ["sql", "excel", "machine-learning", "statistics", "aws", "linux", "communication"]);
+    const quiet = nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, far, wide], now: NOW });
+    const talks = nearbyLinesFor({ profile: speaker, targetSlug: "target-role", roles: [target, far, wide], now: NOW });
+    // 2 of its 6 key skills either way: communication is neither shared nor counted.
+    expect(quiet.closest).toEqual({ slug: "wide-role", title: "Wide Role", shared: 2, total: 6 });
+    expect(talks.closest).toEqual(quiet.closest);
+    expect(matchProfile(speaker, wide, NOW).readiness).toMatchObject({ requiredMet: 3, requiredTotal: 7 });
+  });
+
+  it("names a closest role whose years fit before one asking for many more years than the resume shows (T154)", () => {
+    const wide = role("wide-role", ["sql", "excel", "machine-learning", "statistics", "aws", "linux"]); // 2 of 6
+    const senior = role("senior-wide-role", ["sql", "excel", "python", "machine-learning", "statistics", "aws", "linux"], {
+      experienceBand: { minYears: 8, maxYears: 12 },
+    }); // 3 of 7, but asks for 8 years
+    const res = nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, senior, wide], now: NOW });
+    expect(res).toEqual({ lines: [], closest: { slug: "wide-role", title: "Wide Role", shared: 2, total: 6 } });
+    // With nothing else, the senior role is still named.
+    expect(nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, senior], now: NOW }).closest?.slug).toBe("senior-wide-role");
+  });
+
   it("names where each line can cross the person's own line: its unshared skills that are gaps there, in line order", () => {
     const res = nearbyLinesFor({
       profile: analyst,

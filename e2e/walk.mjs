@@ -457,7 +457,10 @@ await step("add a certificate: the form opens, and a name that isn't yours is re
   await form.getByLabel("Credential ID").fill(`WALK-${Date.now()}`);
   await form.getByLabel("Your name as printed").fill("Amit Verma");
   await form.getByLabel("Date issued").fill("2025-03-01");
-  await form.getByLabel("It never expires").check();
+  // "It never expires" shows only for a certificate that never does (T156); otherwise the date is asked for.
+  const never = form.getByLabel("It never expires");
+  if (await never.count()) await never.check();
+  else await form.getByLabel("Expiry date").fill("2028-03-01");
   await form.getByLabel("Verify link").fill("https://www.credly.com/badges/c4ed1100-0000-4000-8000-0000000000f1");
   await form.getByLabel(/This certificate is mine/).check();
   await form.getByRole("button", { name: "Save certificate" }).click();

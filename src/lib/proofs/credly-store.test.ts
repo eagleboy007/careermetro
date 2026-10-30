@@ -265,7 +265,8 @@ describe.skipIf(!db)("Credly check (database)", () => {
 
     it("turns a verified certificate to Renew when Credly later shows it expired", async () => {
       const me = await person("t49-later");
-      const id = await verified(me.userId, me.goalId, { expiresOn: null });
+      // AWS certificates expire, so the form asks for the printed date (T156); Credly's earlier one wins.
+      const id = await verified(me.userId, me.goalId, { expiresOn: "2028-03-01" });
       expect(await goalStatus(me.goalId)).toBe("met");
       expect(await check(me.userId, id, answering({ expires_at_date: "2026-06-30" }))).toEqual({ status: "added", note: "expired" });
       expect(await proof(id)).toMatchObject({ expiresOn: "2026-06-30" });
