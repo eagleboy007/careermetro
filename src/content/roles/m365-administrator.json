@@ -120,6 +120,21 @@
       "certId": "azure-administrator",
       "importance": "optional",
       "why": "Useful when the role also covers Azure resources"
+    },
+    {
+      "certId": "m365-endpoint-administrator",
+      "importance": "optional",
+      "why": "Covers the device management side of Microsoft 365 administration."
+    },
+    {
+      "certId": "ms-teams-voice-engineer",
+      "importance": "optional",
+      "why": "For admins who also own Teams Phone."
+    },
+    {
+      "certId": "ms-information-security-administrator",
+      "importance": "optional",
+      "why": "Covers Purview labelling, DLP and retention, which M365 admins often run."
     }
   ],
   "sources": [

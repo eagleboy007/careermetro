@@ -57,8 +57,8 @@ export function answers(text, known) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const file = process.argv[2];
   if (!file) throw new Error("usage: node scripts/review/read-review.mjs <returned.csv>");
-  const { roles, bank, practice } = loadContent();
-  const known = new Set([...roles.map((r) => r.slug), ...bank.map((q) => q.id), ...practice.map((q) => q.id)]);
+  const { roles, bank, practice, certifications } = loadContent();
+  const known = new Set([...roles.map((r) => r.slug), ...bank.map((q) => q.id), ...practice.map((q) => q.id), ...certifications.map((c) => c.id)]);
   let owner = "";
   for (const a of answers(readFileSync(file, "utf8"), known)) {
     if (a.owner !== owner) console.log(`\n## ${(owner = a.owner)}`);

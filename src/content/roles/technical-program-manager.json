@@ -144,6 +144,11 @@
       "certId": "csm",
       "importance": "optional",
       "why": "Shows Scrum knowledge"
+    },
+    {
+      "certId": "safe-scrum-master",
+      "importance": "optional",
+      "why": "Helps in companies that run SAFe release trains."
     }
   ],
   "sources": [

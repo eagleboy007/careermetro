@@ -156,6 +156,21 @@
       "certId": "ccsp",
       "importance": "optional",
       "why": "Vendor-neutral cloud security for senior architects"
+    },
+    {
+      "certId": "aws-solutions-architect-professional",
+      "importance": "recommended",
+      "why": "The senior AWS architect certification most cloud architect postings name."
+    },
+    {
+      "certId": "azure-solutions-architect-expert",
+      "importance": "recommended",
+      "why": "The Azure architect certification for employers that build on Azure."
+    },
+    {
+      "certId": "gcp-professional-cloud-architect",
+      "importance": "optional",
+      "why": "The Google Cloud architect certification for GCP-based teams."
     }
   ],
   "sources": [

@@ -111,7 +111,13 @@
       "label": "A PLM platform (Teamcenter or Windchill)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "siemens-teamcenter-associate",
+      "importance": "optional",
+      "why": "Teamcenter postings name Siemens certification as a plus."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

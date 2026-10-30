@@ -146,6 +146,11 @@
       "certId": "aws-solutions-architect-associate",
       "importance": "optional",
       "why": "General cloud architecture on AWS"
+    },
+    {
+      "certId": "azure-ai-apps-agents-developer",
+      "importance": "optional",
+      "why": "Azure is a frequently named cloud in AI architect postings."
     }
   ],
   "sources": [

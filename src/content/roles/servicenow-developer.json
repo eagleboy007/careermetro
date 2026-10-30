@@ -91,7 +91,18 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "servicenow-csa",
+      "importance": "recommended",
+      "why": "Developer postings usually expect CSA as the base certification."
+    },
+    {
+      "certId": "servicenow-cad",
+      "importance": "recommended",
+      "why": "The developer-level ServiceNow certification, often paired with CSA in postings."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",

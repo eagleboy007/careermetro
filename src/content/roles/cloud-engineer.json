@@ -132,6 +132,11 @@
       "certId": "terraform-associate",
       "importance": "optional",
       "why": "Proves IaC"
+    },
+    {
+      "certId": "aws-cloudops-engineer-associate",
+      "importance": "optional",
+      "why": "Proves AWS operations skills such as monitoring, networking and recovery."
     }
   ],
   "sources": [

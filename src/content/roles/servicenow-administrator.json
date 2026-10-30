@@ -111,7 +111,18 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "servicenow-csa",
+      "importance": "recommended",
+      "why": "The entry ServiceNow certification that most admin postings require."
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "ServiceNow work is built around ITSM processes, and many postings list ITIL Foundation."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

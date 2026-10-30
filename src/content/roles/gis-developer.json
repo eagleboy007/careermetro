@@ -116,7 +116,18 @@
       "label": "A front-end framework (React or Angular)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "esri-arcgis-developer-foundation",
+      "importance": "optional",
+      "why": "Esri's entry developer exam covers the ArcGIS platform and APIs that most Indian GIS postings use."
+    },
+    {
+      "certId": "esri-arcgis-maps-sdk-javascript-associate",
+      "importance": "optional",
+      "why": "Proves web map development with Esri's JavaScript SDK."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

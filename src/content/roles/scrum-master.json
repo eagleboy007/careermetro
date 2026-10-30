@@ -101,6 +101,16 @@
       "certId": "pmp",
       "importance": "optional",
       "why": "Helps when the role also covers project delivery"
+    },
+    {
+      "certId": "psm-i",
+      "importance": "recommended",
+      "why": "Indian postings accept PSM I alongside CSM."
+    },
+    {
+      "certId": "safe-scrum-master",
+      "importance": "optional",
+      "why": "Preferred in companies that run SAFe."
     }
   ],
   "sources": [

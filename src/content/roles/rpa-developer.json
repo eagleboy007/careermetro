@@ -137,7 +137,18 @@
       "label": "A language for bot code (Python, C# or PowerShell)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "uipath-automation-developer-associate",
+      "importance": "recommended",
+      "why": "UiPath is the most common RPA tool in Indian postings and this is its developer certification."
+    },
+    {
+      "certId": "automation-anywhere-advanced",
+      "importance": "optional",
+      "why": "Asked for in Automation Anywhere-focused postings."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",

@@ -97,7 +97,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "tuv-sud-functional-safety-engineer",
+      "importance": "optional",
+      "why": "Automotive software teams in India value ISO 26262 training, and this certificate proves it."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

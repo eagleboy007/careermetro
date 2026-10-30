@@ -141,6 +141,11 @@
       "certId": "gcp-professional-ml-engineer",
       "importance": "optional",
       "why": "Google Cloud ML platform including Vertex AI"
+    },
+    {
+      "certId": "azure-ai-apps-agents-developer",
+      "importance": "recommended",
+      "why": "Azure OpenAI and Foundry agent work is common in Indian GenAI postings, and this is Microsoft's current AI developer certification."
     }
   ],
   "sources": [

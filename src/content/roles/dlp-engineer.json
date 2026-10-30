@@ -108,6 +108,11 @@
       "certId": "comptia-security-plus",
       "importance": "optional",
       "why": "Security fundamentals for data protection roles"
+    },
+    {
+      "certId": "ms-information-security-administrator",
+      "importance": "recommended",
+      "why": "Microsoft Purview DLP is repeatedly asked for in DLP postings."
     }
   ],
   "sources": [

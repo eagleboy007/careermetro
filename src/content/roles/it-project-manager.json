@@ -127,6 +127,21 @@
       "certId": "csm",
       "importance": "optional",
       "why": "Shows agile delivery basics for hybrid projects"
+    },
+    {
+      "certId": "capm",
+      "importance": "optional",
+      "why": "An entry step before PMP for newer project managers."
+    },
+    {
+      "certId": "prince2-foundation",
+      "importance": "optional",
+      "why": "Named alongside PMP in some Indian postings, especially for UK clients."
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Useful for project managers who run IT service transitions."
     }
   ],
   "sources": [

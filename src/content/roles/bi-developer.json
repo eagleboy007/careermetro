@@ -119,6 +119,11 @@
       "certId": "azure-fundamentals",
       "importance": "optional",
       "why": "Basic Azure for BI work on Azure data services"
+    },
+    {
+      "certId": "fabric-analytics-engineer",
+      "importance": "optional",
+      "why": "Microsoft Fabric is showing up in newer Power BI postings."
     }
   ],
   "sources": [

@@ -133,6 +133,26 @@
       "certId": "ccna",
       "importance": "optional",
       "why": "Networking base for virtual switching and VLANs"
+    },
+    {
+      "certId": "windows-server-hybrid-administrator",
+      "importance": "optional",
+      "why": "Covers Hyper-V and hybrid Windows Server work."
+    },
+    {
+      "certId": "veeam-vmce",
+      "importance": "optional",
+      "why": "Backup of virtual machines is part of most virtualization roles."
+    },
+    {
+      "certId": "vcp-vcf-administrator",
+      "importance": "recommended",
+      "why": "VMware is still the main platform in Indian data centres, and this is Broadcom's current VCP."
+    },
+    {
+      "certId": "nutanix-ncp-mci",
+      "importance": "optional",
+      "why": "For Nutanix-heavy environments."
     }
   ],
   "sources": [

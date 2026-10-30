@@ -104,6 +104,11 @@
       "why": "Azure ML stack"
     },
     {
+      "certId": "azure-mlops-engineer",
+      "importance": "optional",
+      "why": "Azure ML stack; the successor to DP-100"
+    },
+    {
       "certId": "gcp-professional-ml-engineer",
       "importance": "optional",
       "why": "GCP ML stack"

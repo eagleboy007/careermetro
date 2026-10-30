@@ -122,6 +122,21 @@
       "certId": "rhcsa",
       "importance": "optional",
       "why": "Linux administration for server bring-up"
+    },
+    {
+      "certId": "comptia-server-plus",
+      "importance": "optional",
+      "why": "Vendor-neutral proof of hands-on server work."
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Data centre operations follow ITIL change and incident processes."
+    },
+    {
+      "certId": "vcp-vcf-administrator",
+      "importance": "optional",
+      "why": "Useful where data centre staff manage the VMware layer."
     }
   ],
   "sources": [

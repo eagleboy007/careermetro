@@ -132,6 +132,16 @@
       "certId": "snowflake-snowpro-core",
       "importance": "optional",
       "why": "Snowflake shops"
+    },
+    {
+      "certId": "gcp-professional-data-engineer",
+      "importance": "optional",
+      "why": "The Google Cloud data engineering certification for GCP-based teams."
+    },
+    {
+      "certId": "fabric-data-engineer",
+      "importance": "optional",
+      "why": "Microsoft's current data engineering certification for Azure and Fabric shops."
     }
   ],
   "sources": [

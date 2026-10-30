@@ -128,6 +128,11 @@
       "certId": "istqb-foundation",
       "importance": "optional",
       "why": "Common testing baseline in Indian QA hiring"
+    },
+    {
+      "certId": "istqb-performance-testing",
+      "importance": "optional",
+      "why": "ISTQB's specialist certification for performance testing."
     }
   ],
   "sources": [

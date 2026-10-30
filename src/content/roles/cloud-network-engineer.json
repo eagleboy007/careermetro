@@ -138,6 +138,21 @@
       "certId": "terraform-associate",
       "importance": "optional",
       "why": "Shows you can manage network changes as code"
+    },
+    {
+      "certId": "azure-network-engineer",
+      "importance": "recommended",
+      "why": "Microsoft's networking certification for hub-spoke, VPN and ExpressRoute work on Azure."
+    },
+    {
+      "certId": "aws-advanced-networking-specialty",
+      "importance": "optional",
+      "why": "The senior AWS networking certification for hybrid and Transit Gateway designs."
+    },
+    {
+      "certId": "gcp-professional-cloud-network-engineer",
+      "importance": "optional",
+      "why": "The Google Cloud networking certification for GCP-based teams."
     }
   ],
   "sources": [

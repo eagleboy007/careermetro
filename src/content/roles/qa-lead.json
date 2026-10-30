@@ -134,6 +134,11 @@
       "certId": "csm",
       "importance": "optional",
       "why": "Scrum knowledge for leads working inside agile teams"
+    },
+    {
+      "certId": "istqb-test-manager",
+      "importance": "recommended",
+      "why": "Indian test lead postings name ISTQB Advanced Test Manager as required or preferred."
     }
   ],
   "sources": [

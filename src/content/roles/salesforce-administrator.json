@@ -97,7 +97,23 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "salesforce-platform-administrator",
+      "importance": "recommended",
+      "why": "Indian Salesforce admin postings most often ask for this certification, sometimes as a must-have."
+    },
+    {
+      "certId": "salesforce-platform-app-builder",
+      "importance": "optional",
+      "why": "A common second certification that shows you can build apps declaratively."
+    },
+    {
+      "certId": "salesforce-platform-administrator-ii",
+      "importance": "optional",
+      "why": "Signals senior admin depth in security, data and automation."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

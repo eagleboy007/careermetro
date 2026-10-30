@@ -136,6 +136,11 @@
       "certId": "aws-data-engineer-associate",
       "importance": "optional",
       "why": "Data engineering on AWS including streaming services"
+    },
+    {
+      "certId": "confluent-ccdak",
+      "importance": "recommended",
+      "why": "Confluent's Kafka developer certification, the one Kafka postings name."
     }
   ],
   "sources": [

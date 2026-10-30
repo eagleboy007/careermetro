@@ -23,9 +23,11 @@
     "level": "associate",
     "cost": "paid",
     "aliases": [
-      "aws solutions architect",
-      "aws certified solutions architect",
-      "saa-c03"
+      "aws solutions architect associate",
+      "aws certified solutions architect associate",
+      "aws solutions architect - associate",
+      "saa-c03",
+      "saa-c02"
     ],
     "proves": [
       "aws",
@@ -196,7 +198,7 @@
   },
   {
     "id": "azure-data-scientist",
-    "name": "Microsoft Certified: Azure Data Scientist Associate (DP-100)",
+    "name": "Microsoft Certified: Azure Data Scientist Associate (DP-100, retired 2026)",
     "issuer": "Microsoft",
     "level": "associate",
     "cost": "paid",
@@ -759,7 +761,7 @@
     "name": "ISC2 Certified in Cybersecurity (CC)",
     "issuer": "ISC2",
     "level": "entry",
-    "cost": null,
+    "cost": "free",
     "aliases": [
       "certified in cybersecurity",
       "isc2 cc"
@@ -1443,5 +1445,1979 @@
     "partial": [
       "performance-marketing"
     ]
+  },
+  {
+    "id": "salesforce-platform-administrator",
+    "name": "Salesforce Certified Platform Administrator",
+    "issuer": "Salesforce",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "salesforce certified platform administrator",
+      "salesforce platform administrator",
+      "salesforce certified administrator",
+      "salesforce administrator certification",
+      "adm-201"
+    ],
+    "proves": [
+      "salesforce-data-management"
+    ],
+    "partial": [
+      "salesforce-security-model",
+      "salesforce-flows",
+      "salesforce-clouds",
+      "data-visualization"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "salesforce-platform-administrator-ii",
+    "name": "Salesforce Certified Platform Administrator II",
+    "issuer": "Salesforce",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "salesforce certified platform administrator ii",
+      "salesforce platform administrator ii",
+      "salesforce advanced administrator",
+      "salesforce certified advanced administrator"
+    ],
+    "proves": [
+      "salesforce-security-model",
+      "salesforce-data-management"
+    ],
+    "partial": [
+      "salesforce-flows",
+      "salesforce-clouds"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "salesforce-platform-app-builder",
+    "name": "Salesforce Certified Platform App Builder",
+    "issuer": "Salesforce",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "salesforce certified platform app builder",
+      "salesforce platform app builder",
+      "salesforce app builder"
+    ],
+    "proves": [],
+    "partial": [
+      "salesforce-flows",
+      "salesforce-data-management",
+      "salesforce-security-model",
+      "salesforce-clouds"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "salesforce-platform-developer",
+    "name": "Salesforce Certified Platform Developer",
+    "issuer": "Salesforce",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "salesforce certified platform developer",
+      "salesforce platform developer i",
+      "salesforce platform developer 1",
+      "platform developer i",
+      "salesforce pd1"
+    ],
+    "proves": [
+      "salesforce-apex"
+    ],
+    "partial": [
+      "salesforce-lwc",
+      "salesforce-flows",
+      "unit-testing"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "salesforce-platform-developer-ii",
+    "name": "Salesforce Certified Platform Developer II",
+    "issuer": "Salesforce",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "salesforce certified platform developer ii",
+      "salesforce platform developer ii",
+      "salesforce platform developer 2",
+      "salesforce pd2"
+    ],
+    "proves": [
+      "salesforce-apex",
+      "salesforce-lwc"
+    ],
+    "partial": [
+      "unit-testing",
+      "rest-apis"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "servicenow-csa",
+    "name": "ServiceNow Certified System Administrator (CSA)",
+    "issuer": "ServiceNow",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "servicenow certified system administrator",
+      "servicenow csa",
+      "servicenow system administrator certification",
+      "certified system administrator servicenow"
+    ],
+    "proves": [
+      "servicenow-platform-administration"
+    ],
+    "partial": [
+      "itsm",
+      "servicenow-flow-designer",
+      "servicenow-scripting"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "servicenow-cad",
+    "name": "ServiceNow Certified Application Developer (CAD)",
+    "issuer": "ServiceNow",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "servicenow certified application developer",
+      "servicenow cad",
+      "certified application developer servicenow"
+    ],
+    "proves": [
+      "servicenow-scripting"
+    ],
+    "partial": [
+      "servicenow-flow-designer",
+      "servicenow-service-portal",
+      "rest-apis"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "sap-abap-cloud-developer",
+    "name": "SAP Certified - Backend Developer - ABAP Cloud (C_ABAPD)",
+    "issuer": "SAP",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "sap certified backend developer abap cloud",
+      "sap certified associate back-end developer abap cloud",
+      "c_abapd",
+      "sap abap cloud certification"
+    ],
+    "proves": [
+      "sap-abap"
+    ],
+    "partial": [
+      "sap-abap-hana",
+      "sap-fiori-ui5"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "pega-cpsa",
+    "name": "Certified Pega System Architect (CPSA)",
+    "issuer": "Pegasystems",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "certified pega system architect",
+      "pega certified system architect",
+      "pega csa",
+      "pcsa"
+    ],
+    "proves": [
+      "pega-case-management"
+    ],
+    "partial": [
+      "pega-platform"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "pega-cpssa",
+    "name": "Certified Pega Senior System Architect (CPSSA)",
+    "issuer": "Pegasystems",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "certified pega senior system architect",
+      "pega certified senior system architect",
+      "pega cssa",
+      "pcssa",
+      "cpssa"
+    ],
+    "proves": [
+      "pega-platform"
+    ],
+    "partial": [
+      "pega-case-management",
+      "rest-apis"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "sap-successfactors-employee-central",
+    "name": "SAP Certified - SAP SuccessFactors Employee Central Core and Position Management (C_THR81)",
+    "issuer": "SAP",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "sap successfactors employee central certification",
+      "sap certified successfactors employee central",
+      "c_thr81",
+      "successfactors ec certified"
+    ],
+    "proves": [
+      "sap-successfactors-employee-central"
+    ],
+    "partial": [],
+    "reviewed": false
+  },
+  {
+    "id": "sap-s4hana-financial-accounting",
+    "name": "SAP Certified - SAP S/4HANA Cloud Private Edition, Financial Accounting (C_TS4FI)",
+    "issuer": "SAP",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "sap certified s/4hana financial accounting",
+      "sap fico certification",
+      "sap fi certification",
+      "c_ts4fi"
+    ],
+    "proves": [
+      "sap-fi-configuration"
+    ],
+    "partial": [
+      "financial-accounting"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "sap-s4hana-management-accounting",
+    "name": "SAP Certified - SAP S/4HANA Cloud Private Edition, Management Accounting",
+    "issuer": "SAP",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "sap certified s/4hana management accounting",
+      "sap co certification",
+      "sap controlling certification"
+    ],
+    "proves": [
+      "sap-co-configuration"
+    ],
+    "partial": [
+      "financial-accounting"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "sap-s4hana-production-planning",
+    "name": "SAP Certified - SAP S/4HANA Cloud Private Edition, Production Planning and Manufacturing (C_TS422)",
+    "issuer": "SAP",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "sap certified production planning and manufacturing",
+      "sap pp certification",
+      "c_ts422"
+    ],
+    "proves": [
+      "sap-pp-configuration"
+    ],
+    "partial": [
+      "sap-mm-configuration"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "sap-s4hana-sourcing-procurement",
+    "name": "SAP Certified - SAP S/4HANA Cloud Private Edition, Sourcing and Procurement (C_TS452)",
+    "issuer": "SAP",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "sap certified sourcing and procurement",
+      "sap mm certification",
+      "c_ts452"
+    ],
+    "proves": [
+      "sap-mm-configuration"
+    ],
+    "partial": [],
+    "reviewed": false
+  },
+  {
+    "id": "sap-s4hana-sales",
+    "name": "SAP Certified - Implementation Consultant for SAP S/4HANA Cloud Private Edition, Sales (C_TS462)",
+    "issuer": "SAP",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "sap certified s/4hana sales",
+      "sap sd certification",
+      "c_ts462"
+    ],
+    "proves": [
+      "sap-sd-configuration"
+    ],
+    "partial": [],
+    "reviewed": false
+  },
+  {
+    "id": "mulesoft-developer",
+    "name": "Salesforce Certified MuleSoft Developer",
+    "issuer": "Salesforce (MuleSoft)",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "salesforce certified mulesoft developer",
+      "mulesoft certified developer",
+      "mulesoft certified developer level 1",
+      "mcd level 1",
+      "mcd - level 1 (mule 4)"
+    ],
+    "proves": [
+      "mulesoft"
+    ],
+    "partial": [
+      "rest-apis",
+      "api-documentation"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "boomi-associate-integration-developer",
+    "name": "Boomi Associate Integration Developer",
+    "issuer": "Boomi",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "boomi associate integration developer",
+      "boomi associate developer",
+      "dell boomi associate developer"
+    ],
+    "proves": [],
+    "partial": [
+      "boomi",
+      "rest-apis",
+      "soap-xml"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "uipath-automation-developer-associate",
+    "name": "UiPath Certified Professional Automation Developer Associate",
+    "issuer": "UiPath",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "uipath certified professional automation developer associate",
+      "uipath automation developer associate",
+      "uiada",
+      "uipath certified rpa associate",
+      "uirpa"
+    ],
+    "proves": [
+      "uipath"
+    ],
+    "partial": [
+      "robotic-process-automation"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "automation-anywhere-advanced",
+    "name": "Automation Anywhere Advanced Automation Certification",
+    "issuer": "Automation Anywhere",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "automation anywhere certified advanced rpa professional",
+      "automation anywhere advanced rpa professional",
+      "automation anywhere advanced automation certification",
+      "aa advanced rpa"
+    ],
+    "proves": [
+      "automation-anywhere"
+    ],
+    "partial": [
+      "robotic-process-automation"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "power-platform-developer-associate",
+    "name": "Microsoft Certified: Power Platform Developer Associate (AB-400)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "power platform developer associate",
+      "microsoft certified power platform developer associate",
+      "ab-400",
+      "pl-400"
+    ],
+    "proves": [
+      "dataverse"
+    ],
+    "partial": [
+      "power-apps",
+      "power-automate",
+      "dynamics-365-extensibility",
+      "rest-apis"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "power-platform-fundamentals",
+    "name": "Microsoft Certified: Power Platform Fundamentals (PL-900)",
+    "issuer": "Microsoft",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "power platform fundamentals",
+      "pl-900"
+    ],
+    "proves": [],
+    "partial": [
+      "power-apps",
+      "power-automate",
+      "dataverse",
+      "power-bi"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "azure-ai-apps-agents-developer",
+    "name": "Microsoft Certified: Azure AI Apps and Agents Developer Associate (AI-103)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "azure ai apps and agents developer associate",
+      "ai-103",
+      "azure ai engineer associate",
+      "ai-102"
+    ],
+    "proves": [
+      "cloud-ai-platforms"
+    ],
+    "partial": [
+      "llm-apps",
+      "ai-agents",
+      "azure",
+      "vector-search"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "azure-solutions-architect-expert",
+    "name": "Microsoft Certified: Azure Solutions Architect Expert (AZ-305)",
+    "issuer": "Microsoft",
+    "level": "expert",
+    "cost": "paid",
+    "aliases": [
+      "azure solutions architect expert",
+      "az-305",
+      "az-303",
+      "az-304"
+    ],
+    "proves": [
+      "azure"
+    ],
+    "partial": [
+      "system-design",
+      "high-availability-dr",
+      "cloud-migration",
+      "identity-access-management",
+      "cloud-networking"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "azure-network-engineer",
+    "name": "Microsoft Certified: Azure Network Engineer Associate (AZ-700)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "azure network engineer associate",
+      "az-700"
+    ],
+    "proves": [
+      "cloud-networking"
+    ],
+    "partial": [
+      "azure",
+      "hybrid-cloud-connectivity",
+      "network-security"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "m365-endpoint-administrator",
+    "name": "Microsoft 365 Certified: Endpoint Administrator Associate (MD-102)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "endpoint administrator associate",
+      "md-102",
+      "md-100",
+      "md-101",
+      "modern desktop administrator"
+    ],
+    "proves": [
+      "endpoint-management"
+    ],
+    "partial": [
+      "endpoint-security",
+      "entra-id-administration",
+      "desktop-support"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "windows-server-hybrid-administrator",
+    "name": "Microsoft Certified: Windows Server Hybrid Administrator Associate (AZ-802)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "windows server hybrid administrator associate",
+      "az-802",
+      "az-800",
+      "az-801"
+    ],
+    "proves": [
+      "windows-server"
+    ],
+    "partial": [
+      "azure",
+      "identity-access-management",
+      "high-availability-dr",
+      "powershell-scripting"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "azure-virtual-desktop-specialty",
+    "name": "Microsoft Certified: Azure Virtual Desktop Specialty (AZ-140)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "azure virtual desktop specialty",
+      "az-140"
+    ],
+    "proves": [],
+    "partial": [
+      "vdi-platforms",
+      "azure",
+      "endpoint-management"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "ms-information-security-administrator",
+    "name": "Microsoft Certified: Information Security Administrator Associate (SC-401)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "information security administrator associate",
+      "sc-401",
+      "sc-400",
+      "information protection and compliance administrator"
+    ],
+    "proves": [
+      "data-loss-prevention"
+    ],
+    "partial": [
+      "data-privacy",
+      "m365-administration",
+      "compliance-frameworks"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "fabric-analytics-engineer",
+    "name": "Microsoft Certified: Fabric Analytics Engineer Associate (DP-600)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "fabric analytics engineer associate",
+      "dp-600"
+    ],
+    "proves": [],
+    "partial": [
+      "power-bi",
+      "data-modeling",
+      "sql",
+      "cloud-data-warehouse",
+      "data-lakehouse"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "fabric-data-engineer",
+    "name": "Microsoft Certified: Fabric Data Engineer Associate (DP-700)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "fabric data engineer associate",
+      "dp-700",
+      "dp-203",
+      "azure data engineer associate"
+    ],
+    "proves": [],
+    "partial": [
+      "etl",
+      "spark",
+      "data-lakehouse",
+      "streaming-data",
+      "azure",
+      "sql"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "ms-teams-voice-engineer",
+    "name": "Microsoft 365 Certified: Collaboration Communications Systems Engineer Associate (MS-721)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "collaboration communications systems engineer associate",
+      "ms-721"
+    ],
+    "proves": [
+      "teams-phone-voice"
+    ],
+    "partial": [
+      "voip-sip-sbc",
+      "m365-administration"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "aws-solutions-architect-professional",
+    "name": "AWS Certified Solutions Architect \u2013 Professional",
+    "issuer": "Amazon Web Services",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "aws certified solutions architect professional",
+      "aws solutions architect professional",
+      "sap-c02",
+      "sap-c03"
+    ],
+    "proves": [
+      "aws",
+      "system-design"
+    ],
+    "partial": [
+      "cloud-migration",
+      "high-availability-dr",
+      "cloud-networking",
+      "cloud-security",
+      "cloud-cost",
+      "cloud-landing-zones"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "aws-cloudops-engineer-associate",
+    "name": "AWS Certified CloudOps Engineer \u2013 Associate",
+    "issuer": "Amazon Web Services",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "aws certified cloudops engineer associate",
+      "aws cloudops engineer",
+      "aws certified sysops administrator associate",
+      "aws sysops administrator",
+      "soa-c03",
+      "soa-c02"
+    ],
+    "proves": [
+      "aws"
+    ],
+    "partial": [
+      "monitoring",
+      "cloud-networking",
+      "identity-access-management",
+      "high-availability-dr"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "aws-advanced-networking-specialty",
+    "name": "AWS Certified Advanced Networking \u2013 Specialty",
+    "issuer": "Amazon Web Services",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "aws certified advanced networking specialty",
+      "aws advanced networking",
+      "ans-c01"
+    ],
+    "proves": [
+      "cloud-networking"
+    ],
+    "partial": [
+      "aws",
+      "hybrid-cloud-connectivity",
+      "network-security",
+      "routing-switching"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "gcp-professional-cloud-architect",
+    "name": "Google Cloud Professional Cloud Architect",
+    "issuer": "Google Cloud",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "google cloud professional cloud architect",
+      "gcp professional cloud architect",
+      "gcp cloud architect",
+      "pca google cloud"
+    ],
+    "proves": [
+      "gcp",
+      "system-design"
+    ],
+    "partial": [
+      "cloud-security",
+      "cloud-migration",
+      "high-availability-dr",
+      "cloud-networking"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "gcp-professional-data-engineer",
+    "name": "Google Cloud Professional Data Engineer",
+    "issuer": "Google Cloud",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "google cloud professional data engineer",
+      "gcp professional data engineer",
+      "gcp data engineer",
+      "pde google cloud"
+    ],
+    "proves": [
+      "gcp"
+    ],
+    "partial": [
+      "etl",
+      "cloud-data-warehouse",
+      "streaming-data",
+      "data-orchestration",
+      "data-modeling",
+      "data-governance"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "gcp-professional-cloud-network-engineer",
+    "name": "Google Cloud Professional Cloud Network Engineer",
+    "issuer": "Google Cloud",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "google cloud professional cloud network engineer",
+      "gcp professional cloud network engineer",
+      "gcp network engineer"
+    ],
+    "proves": [
+      "cloud-networking"
+    ],
+    "partial": [
+      "gcp",
+      "hybrid-cloud-connectivity",
+      "network-security"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "ccnp-enterprise",
+    "name": "Cisco Certified Network Professional (CCNP) Enterprise",
+    "issuer": "Cisco",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "ccnp enterprise",
+      "ccnp routing and switching",
+      "ccnp r&s",
+      "350-401",
+      "encor"
+    ],
+    "proves": [
+      "routing-switching"
+    ],
+    "partial": [
+      "networking-basics",
+      "network-security",
+      "network-monitoring"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "ccnp-security",
+    "name": "Cisco Certified Network Professional (CCNP) Security",
+    "issuer": "Cisco",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "ccnp security",
+      "350-701"
+    ],
+    "proves": [
+      "network-security"
+    ],
+    "partial": [
+      "firewall-platforms",
+      "network-access-control",
+      "sase-ztna",
+      "cryptography-basics"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "ccnp-collaboration",
+    "name": "Cisco Certified Network Professional (CCNP) Collaboration",
+    "issuer": "Cisco",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "ccnp collaboration",
+      "350-801",
+      "clcor"
+    ],
+    "proves": [
+      "cisco-collaboration-cucm"
+    ],
+    "partial": [
+      "voip-sip-sbc"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "palo-alto-ngfw-engineer",
+    "name": "Palo Alto Networks Certified Next-Generation Firewall Engineer",
+    "issuer": "Palo Alto Networks",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "palo alto networks certified next-generation firewall engineer",
+      "palo alto ngfw engineer",
+      "ngfw engineer",
+      "pcnse",
+      "pcnsa"
+    ],
+    "proves": [],
+    "partial": [
+      "firewall-platforms",
+      "network-security"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "fortinet-nse4",
+    "name": "Fortinet NSE 4 \u2013 FortiOS Administrator",
+    "issuer": "Fortinet",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "fortinet nse 4",
+      "nse 4",
+      "nse4",
+      "fortios administrator",
+      "fortigate administrator",
+      "fcp network security",
+      "fcp - fortigate administrator"
+    ],
+    "proves": [],
+    "partial": [
+      "firewall-platforms",
+      "network-security"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "check-point-ccsa",
+    "name": "Check Point Certified Security Administrator (CCSA) R82",
+    "issuer": "Check Point",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "check point certified security administrator",
+      "ccsa r82",
+      "ccsa r81.20",
+      "156-215.82",
+      "check point ccsa"
+    ],
+    "proves": [],
+    "partial": [
+      "firewall-platforms",
+      "network-security"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "comptia-a-plus",
+    "name": "CompTIA A+",
+    "issuer": "CompTIA",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "comptia a+",
+      "comptia a plus",
+      "a+ certification",
+      "220-1201",
+      "220-1202"
+    ],
+    "proves": [
+      "desktop-support"
+    ],
+    "partial": [
+      "networking-basics",
+      "endpoint-security",
+      "windows-server"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "itil-foundation",
+    "name": "ITIL Foundation (Version 5)",
+    "issuer": "PeopleCert (AXELOS)",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "itil foundation",
+      "itil 4 foundation",
+      "itil v4 foundation",
+      "itil v4",
+      "itil 5 foundation",
+      "itil v3 foundation",
+      "itil certified"
+    ],
+    "proves": [],
+    "partial": [
+      "itsm",
+      "incident-management"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "comptia-server-plus",
+    "name": "CompTIA Server+",
+    "issuer": "CompTIA",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "comptia server+",
+      "comptia server plus",
+      "sk0-005"
+    ],
+    "proves": [],
+    "partial": [
+      "datacenter-hardware-ops",
+      "windows-server",
+      "linux",
+      "virtualization",
+      "san-storage"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "psm-i",
+    "name": "Professional Scrum Master I (PSM I)",
+    "issuer": "Scrum.org",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "professional scrum master i",
+      "professional scrum master",
+      "psm i",
+      "psm 1",
+      "psm1"
+    ],
+    "proves": [
+      "agile-scrum"
+    ],
+    "partial": [
+      "agile-coaching",
+      "agile-metrics"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "safe-scrum-master",
+    "name": "Certified SAFe Scrum Master (SSM)",
+    "issuer": "Scaled Agile",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "certified safe scrum master",
+      "safe scrum master",
+      "ssm safe",
+      "safe ssm"
+    ],
+    "proves": [],
+    "partial": [
+      "scaled-agile",
+      "agile-scrum",
+      "agile-coaching"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "capm",
+    "name": "Certified Associate in Project Management (CAPM)",
+    "issuer": "PMI",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "certified associate in project management",
+      "capm"
+    ],
+    "proves": [],
+    "partial": [
+      "it-project-management",
+      "agile-scrum",
+      "requirements-gathering"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "prince2-foundation",
+    "name": "PRINCE2 Project Management Foundation (Version 7)",
+    "issuer": "PeopleCert (AXELOS)",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "prince2 foundation",
+      "prince2 7 foundation",
+      "prince2 project management foundation",
+      "prince2"
+    ],
+    "proves": [],
+    "partial": [
+      "it-project-management"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "istqb-test-manager",
+    "name": "ISTQB Certified Tester Advanced Level Test Management (CTAL-TM)",
+    "issuer": "ISTQB",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "istqb advanced test manager",
+      "istqb advanced level test management",
+      "ctal-tm",
+      "istqb test manager"
+    ],
+    "proves": [
+      "test-planning"
+    ],
+    "partial": [
+      "people-management",
+      "stakeholder-management"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "istqb-performance-testing",
+    "name": "ISTQB Certified Tester Performance Testing (CT-PT)",
+    "issuer": "ISTQB",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "istqb performance testing",
+      "istqb certified tester performance testing",
+      "ct-pt"
+    ],
+    "proves": [],
+    "partial": [
+      "performance-testing",
+      "test-planning"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "gcti",
+    "name": "GIAC Cyber Threat Intelligence (GCTI)",
+    "issuer": "GIAC",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "giac cyber threat intelligence",
+      "gcti"
+    ],
+    "proves": [
+      "threat-intelligence"
+    ],
+    "partial": [
+      "osint",
+      "threat-detection"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "gcfa",
+    "name": "GIAC Certified Forensic Analyst (GCFA)",
+    "issuer": "GIAC",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "giac certified forensic analyst",
+      "gcfa"
+    ],
+    "proves": [
+      "digital-forensics"
+    ],
+    "partial": [
+      "security-incident-response",
+      "forensic-tool-suites",
+      "threat-detection"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "grem",
+    "name": "GIAC Reverse Engineering Malware (GREM)",
+    "issuer": "GIAC",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "giac reverse engineering malware",
+      "grem"
+    ],
+    "proves": [
+      "malware-analysis",
+      "binary-reverse-engineering"
+    ],
+    "partial": [
+      "threat-intelligence"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "gicsp",
+    "name": "Global Industrial Cyber Security Professional (GICSP)",
+    "issuer": "GIAC",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "global industrial cyber security professional",
+      "giac gicsp",
+      "gicsp"
+    ],
+    "proves": [
+      "ot-ics-security"
+    ],
+    "partial": [
+      "industrial-control-systems",
+      "network-security",
+      "security-incident-response"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "chfi",
+    "name": "Computer Hacking Forensic Investigator (CHFI)",
+    "issuer": "EC-Council",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "computer hacking forensic investigator",
+      "ec-council chfi",
+      "chfi",
+      "312-49"
+    ],
+    "proves": [],
+    "partial": [
+      "digital-forensics",
+      "forensic-tool-suites",
+      "forensic-evidence-handling",
+      "mobile-forensics"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "csslp",
+    "name": "Certified Secure Software Lifecycle Professional (CSSLP)",
+    "issuer": "ISC2",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "certified secure software lifecycle professional",
+      "isc2 csslp",
+      "csslp"
+    ],
+    "proves": [
+      "application-security"
+    ],
+    "partial": [
+      "secure-code-review",
+      "threat-modeling",
+      "devsecops",
+      "software-supply-chain-security"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "esri-arcgis-developer-foundation",
+    "name": "Esri ArcGIS Developer Foundation",
+    "issuer": "Esri",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "esri arcgis developer foundation",
+      "arcgis developer foundation",
+      "eadf"
+    ],
+    "proves": [],
+    "partial": [
+      "gis-platforms",
+      "web-mapping-libraries",
+      "python",
+      "javascript"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "esri-arcgis-maps-sdk-javascript-associate",
+    "name": "Esri ArcGIS Maps SDK for JavaScript Associate",
+    "issuer": "Esri",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "esri arcgis maps sdk for javascript associate",
+      "arcgis maps sdk for javascript associate",
+      "arcgis api for javascript associate",
+      "esri web application developer associate"
+    ],
+    "proves": [
+      "web-mapping-libraries"
+    ],
+    "partial": [
+      "gis-platforms",
+      "javascript"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "workday-pro-hcm-core",
+    "name": "Workday Pro HCM Core Certification",
+    "issuer": "Workday",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "workday pro hcm core",
+      "workday pro hcm core certification",
+      "workday hcm certified",
+      "workday certified hcm"
+    ],
+    "proves": [],
+    "partial": [
+      "workday-hcm-configuration"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "tuv-sud-functional-safety-engineer",
+    "name": "T\u00dcV S\u00dcD Functional Safety Engineer (ISO 26262 Automotive)",
+    "issuer": "T\u00dcV S\u00dcD",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "t\u00fcv s\u00fcd functional safety engineer",
+      "tuv sud functional safety engineer",
+      "iso 26262 functional safety engineer",
+      "fscp level 1",
+      "tuv functional safety engineer iso 26262"
+    ],
+    "proves": [],
+    "partial": [
+      "automotive-functional-safety"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "elastic-certified-engineer",
+    "name": "Elastic Certified Engineer",
+    "issuer": "Elastic",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "elastic certified engineer",
+      "elasticsearch certified engineer",
+      "elastic certified elasticsearch engineer"
+    ],
+    "proves": [],
+    "partial": [
+      "lucene-search-engines",
+      "search-relevance-ranking",
+      "monitoring"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "salesforce-b2c-commerce-developer",
+    "name": "Salesforce Certified B2C Commerce Developer",
+    "issuer": "Salesforce",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "salesforce certified b2c commerce developer",
+      "salesforce b2c commerce cloud developer",
+      "sfcc developer certification",
+      "b2c commerce developer"
+    ],
+    "proves": [
+      "salesforce-b2c-commerce"
+    ],
+    "partial": [
+      "javascript"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "adobe-commerce-developer-professional",
+    "name": "Adobe Certified Professional \u2013 Adobe Commerce Developer (AD0-E724)",
+    "issuer": "Adobe",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "adobe commerce developer professional",
+      "adobe certified professional adobe commerce developer",
+      "magento 2 certified professional developer",
+      "ad0-e724",
+      "ad0-e717"
+    ],
+    "proves": [
+      "adobe-commerce-magento"
+    ],
+    "partial": [
+      "php"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "appian-associate-developer",
+    "name": "Appian Certified Associate Developer",
+    "issuer": "Appian",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "appian certified associate developer",
+      "appian associate developer",
+      "appian l1 certified"
+    ],
+    "proves": [],
+    "partial": [
+      "appian-development"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "appian-senior-developer",
+    "name": "Appian Certified Senior Developer",
+    "issuer": "Appian",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "appian certified senior developer",
+      "appian senior developer",
+      "appian l2 certified"
+    ],
+    "proves": [],
+    "partial": [
+      "appian-development",
+      "data-modeling",
+      "rest-apis"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "outsystems-associate-developer",
+    "name": "OutSystems Associate Developer (O11 / ODC)",
+    "issuer": "OutSystems",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "outsystems associate developer",
+      "outsystems associate reactive developer",
+      "outsystems associate developer o11",
+      "outsystems associate developer odc",
+      "outsystems associate traditional web developer"
+    ],
+    "proves": [],
+    "partial": [
+      "outsystems-development"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "mendix-rapid-developer",
+    "name": "Mendix Rapid Developer",
+    "issuer": "Mendix (Siemens)",
+    "level": "entry",
+    "cost": "free",
+    "aliases": [
+      "mendix rapid developer",
+      "mendix certified rapid developer",
+      "mendix rapid"
+    ],
+    "proves": [],
+    "partial": [
+      "mendix-development"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "mendix-intermediate-developer",
+    "name": "Mendix Intermediate Developer",
+    "issuer": "Mendix (Siemens)",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "mendix intermediate developer",
+      "mendix certified intermediate developer",
+      "mendix intermediate"
+    ],
+    "proves": [],
+    "partial": [
+      "mendix-development",
+      "data-modeling"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "unity-certified-associate-programmer",
+    "name": "Unity Certified User: Associate Programmer",
+    "issuer": "Unity",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "unity certified associate programmer",
+      "unity associate programmer",
+      "unity certified user associate programmer"
+    ],
+    "proves": [],
+    "partial": [
+      "unity-engine",
+      "csharp-dotnet"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "unity-certified-professional-programmer",
+    "name": "Unity Certified Professional: Programmer",
+    "issuer": "Unity",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "unity certified professional programmer",
+      "unity professional programmer",
+      "unity certified programmer"
+    ],
+    "proves": [
+      "unity-engine"
+    ],
+    "partial": [
+      "csharp-dotnet",
+      "game-math",
+      "performance-profiling"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "siemens-teamcenter-associate",
+    "name": "Siemens Teamcenter Associate Certification",
+    "issuer": "Siemens Digital Industries Software",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "siemens teamcenter associate",
+      "teamcenter associate certification",
+      "teamcenter x associate",
+      "teamcenter certified"
+    ],
+    "proves": [],
+    "partial": [
+      "teamcenter-customization"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "siemens-certified-programmer-tia-portal",
+    "name": "Siemens Certified Programmer in TIA Portal",
+    "issuer": "Siemens (SITRAIN)",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "siemens certified programmer in tia portal",
+      "siemens certified programmer",
+      "sitrain certified programmer",
+      "tia portal certified programmer",
+      "cpt-fap"
+    ],
+    "proves": [],
+    "partial": [
+      "plc-iec-61131-programming",
+      "industrial-control-systems",
+      "scada-hmi-platforms"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "ipc-cid",
+    "name": "IPC Certified Interconnect Designer (CID)",
+    "issuer": "IPC",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "ipc certified interconnect designer",
+      "ipc cid",
+      "cid+",
+      "ipc cid+"
+    ],
+    "proves": [],
+    "partial": [
+      "pcb-schematic-design",
+      "emc-signal-integrity"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "isa-iec-62443-fundamentals-specialist",
+    "name": "ISA/IEC 62443 Cybersecurity Fundamentals Specialist",
+    "issuer": "ISA",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "isa/iec 62443 cybersecurity fundamentals specialist",
+      "isa 62443 fundamentals specialist",
+      "iec 62443 cybersecurity fundamentals specialist",
+      "isa 62443 certificate 1"
+    ],
+    "proves": [],
+    "partial": [
+      "ot-ics-security",
+      "industrial-control-systems",
+      "risk-assessment"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "osep",
+    "name": "OffSec Experienced Penetration Tester (OSEP)",
+    "issuer": "OffSec",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "offsec experienced penetration tester",
+      "osep",
+      "pen-300"
+    ],
+    "proves": [],
+    "partial": [
+      "adversary-emulation",
+      "penetration-testing",
+      "endpoint-security"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "crto",
+    "name": "Red Team Operator (CRTO)",
+    "issuer": "Zero-Point Security",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "certified red team operator",
+      "crto",
+      "zero-point security red team operator",
+      "red team ops"
+    ],
+    "proves": [],
+    "partial": [
+      "adversary-emulation",
+      "penetration-testing"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "crtp",
+    "name": "Certified Red Team Professional (CRTP)",
+    "issuer": "Altered Security",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "certified red team professional",
+      "crtp",
+      "altered security crtp"
+    ],
+    "proves": [],
+    "partial": [
+      "adversary-emulation",
+      "penetration-testing",
+      "identity-access-management"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "okta-certified-professional",
+    "name": "Okta Certified Professional",
+    "issuer": "Okta",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "okta certified professional",
+      "okta professional certification",
+      "okpro1"
+    ],
+    "proves": [],
+    "partial": [
+      "identity-access-management",
+      "identity-federation"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "sailpoint-identityiq-engineer",
+    "name": "SailPoint Certified IdentityIQ Engineer",
+    "issuer": "SailPoint",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "sailpoint certified identityiq engineer",
+      "sailpoint identityiq engineer",
+      "sailpoint iiq engineer",
+      "iiq certified"
+    ],
+    "proves": [
+      "identity-governance"
+    ],
+    "partial": [
+      "identity-access-management"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "cyberark-defender-pam",
+    "name": "CyberArk Defender \u2013 PAM",
+    "issuer": "CyberArk (Idira)",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "cyberark defender pam",
+      "cyberark defender",
+      "cyberark certified defender",
+      "pam-def"
+    ],
+    "proves": [],
+    "partial": [
+      "pam-platforms"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "cyberark-sentry-pam",
+    "name": "CyberArk Sentry \u2013 PAM",
+    "issuer": "CyberArk (Idira)",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "cyberark sentry pam",
+      "cyberark sentry",
+      "cyberark certified sentry",
+      "pam-sen"
+    ],
+    "proves": [],
+    "partial": [
+      "pam-platforms",
+      "identity-access-management"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "splunk-cybersecurity-defense-engineer",
+    "name": "Splunk Certified Cybersecurity Defense Engineer",
+    "issuer": "Splunk",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "splunk certified cybersecurity defense engineer",
+      "splunk cybersecurity defense engineer",
+      "splk-5002"
+    ],
+    "proves": [],
+    "partial": [
+      "siem",
+      "threat-detection",
+      "soar"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "finops-certified-practitioner",
+    "name": "FinOps Certified Practitioner (FOCP)",
+    "issuer": "FinOps Foundation",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "finops certified practitioner",
+      "focp",
+      "finops practitioner"
+    ],
+    "proves": [],
+    "partial": [
+      "cloud-cost",
+      "cloud-billing-analysis",
+      "cost-allocation",
+      "commitment-discounts"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "cdmp",
+    "name": "Certified Data Management Professional (CDMP)",
+    "issuer": "DAMA International",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "certified data management professional",
+      "cdmp",
+      "dama cdmp",
+      "cdmp associate"
+    ],
+    "proves": [],
+    "partial": [
+      "data-governance",
+      "data-quality-management",
+      "data-modeling"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "netapp-ncda",
+    "name": "NetApp Certified Data Administrator, ONTAP (NCDA)",
+    "issuer": "NetApp",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "netapp certified data administrator",
+      "netapp ncda",
+      "ncda ontap",
+      "ns0-163",
+      "ns0-162"
+    ],
+    "proves": [
+      "nas-storage"
+    ],
+    "partial": [
+      "san-storage",
+      "backup-software"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "veeam-vmce",
+    "name": "Veeam Certified Engineer (VMCE+)",
+    "issuer": "Veeam",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "veeam certified engineer",
+      "vmce",
+      "vmce+",
+      "veeam vmce"
+    ],
+    "proves": [],
+    "partial": [
+      "backup-software",
+      "high-availability-dr",
+      "virtualization"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "confluent-ccdak",
+    "name": "Confluent Certified Developer for Apache Kafka (CCDAK)",
+    "issuer": "Confluent",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "confluent certified developer for apache kafka",
+      "ccdak",
+      "confluent kafka developer certification"
+    ],
+    "proves": [],
+    "partial": [
+      "streaming-data",
+      "messaging-queues"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "oracle-oci-application-integration-professional",
+    "name": "Oracle Cloud Infrastructure Application Integration Professional (1Z0-1042-26)",
+    "issuer": "Oracle",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "oracle cloud infrastructure application integration professional",
+      "oci application integration professional",
+      "oracle integration cloud certified",
+      "1z0-1042"
+    ],
+    "proves": [
+      "oracle-integration-cloud"
+    ],
+    "partial": [
+      "rest-apis"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "oracle-plsql-developer-professional",
+    "name": "Oracle Database PL/SQL Developer Certified Professional",
+    "issuer": "Oracle",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "oracle database pl/sql developer certified professional",
+      "oracle pl/sql developer certified professional",
+      "oracle plsql certified professional",
+      "1z0-149"
+    ],
+    "proves": [],
+    "partial": [
+      "database-programming",
+      "oracle-database",
+      "query-optimization"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "vcp-vcf-administrator",
+    "name": "VMware Certified Professional \u2013 VMware Cloud Foundation Administrator (VCP-VCF Administrator)",
+    "issuer": "Broadcom (VMware)",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "vmware certified professional vmware cloud foundation administrator",
+      "vcp-vcf administrator",
+      "vcp-vcf",
+      "vcp-dcv",
+      "2v0-17.25"
+    ],
+    "proves": [
+      "virtualization"
+    ],
+    "partial": [
+      "hyperconverged-infrastructure",
+      "high-availability-dr"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "citrix-cca-v",
+    "name": "Citrix Certified Associate \u2013 Virtualization (CCA-V)",
+    "issuer": "Citrix (Cloud Software Group)",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "citrix certified associate virtualization",
+      "cca-v",
+      "citrix cca-v",
+      "1y0-204"
+    ],
+    "proves": [],
+    "partial": [
+      "vdi-platforms",
+      "virtualization"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "nutanix-ncp-mci",
+    "name": "Nutanix Certified Professional \u2013 Multicloud Infrastructure (NCP-MCI)",
+    "issuer": "Nutanix",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "nutanix certified professional multicloud infrastructure",
+      "ncp-mci"
+    ],
+    "proves": [
+      "hyperconverged-infrastructure"
+    ],
+    "partial": [
+      "virtualization",
+      "high-availability-dr"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "nvidia-ncp-aii",
+    "name": "NVIDIA-Certified Professional: AI Infrastructure (NCP-AII)",
+    "issuer": "NVIDIA",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "nvidia certified professional ai infrastructure",
+      "ncp-aii",
+      "nvidia ai infrastructure professional"
+    ],
+    "proves": [],
+    "partial": [
+      "hpc-cluster-scheduling",
+      "cuda-gpu-programming",
+      "linux",
+      "kubernetes"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "azure-mlops-engineer",
+    "name": "Microsoft Certified: Machine Learning Operations Engineer Associate (AI-300)",
+    "issuer": "Microsoft",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "ai-300",
+      "mlops engineer associate"
+    ],
+    "proves": [
+      "mlops"
+    ],
+    "partial": [
+      "machine-learning",
+      "azure"
+    ],
+    "reviewed": false
   }
 ]

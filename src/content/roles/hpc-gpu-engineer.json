@@ -115,6 +115,11 @@
       "certId": "cka",
       "importance": "optional",
       "why": "Helps where GPU jobs run on Kubernetes"
+    },
+    {
+      "certId": "nvidia-ncp-aii",
+      "importance": "optional",
+      "why": "NVIDIA's certification for deploying and validating GPU clusters."
     }
   ],
   "sources": [

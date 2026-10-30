@@ -1,5 +1,5 @@
 // Builds the expert review pack from src/content: one CSV per field of role profiles, one for the timed-test
-// questions and one for the Practice bank, plus a README. Re-run after any content change:
+// questions, one for the Practice bank and one for certifications awaiting review, plus a README. Re-run after any content change:
 //   node scripts/review/build-review-pack.mjs [outDir]   (default docs/review/pack)
 // Only content files are read. No resumes, no user data.
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -41,7 +41,8 @@ export function loadContent() {
   const families = read("fixtures/evals/closest/role-families.json").families;
   const bank = read("src/content/mock-bank.json").questions;
   const practice = read("src/content/practice-questions.json");
-  return { roles, skills, families, bank, practice };
+  const certifications = read("src/content/certifications.json");
+  return { roles, skills, families, bank, practice, certifications };
 }
 
 /** One review line per field of a role: title, summary, each normal-day duty, typical titles, years, each skill. */
@@ -61,8 +62,19 @@ export function roleRows(role, skills) {
   return rows.map((r) => [...r, "", "", ""]);
 }
 
+/** One review line per certification awaiting review: what it proves and touches, and the roles that recommend it. */
+export function certificationRows(certifications, roles, skills) {
+  const names = (ids) => ids.map((id) => skills.get(id) ?? id).join("; ");
+  return certifications
+    .filter((c) => c.reviewed === false)
+    .map((c) => {
+      const by = roles.flatMap((r) => (r.certifications ?? []).filter((rc) => rc.certId === c.id).map((rc) => `${r.title} (${rc.importance})`));
+      return [c.id, c.name, c.issuer, names(c.proves), names(c.partial), by.join("; "), "", "", ""];
+    });
+}
+
 export function buildPack() {
-  const { roles, skills, families, bank, practice } = loadContent();
+  const { roles, skills, families, bank, practice, certifications } = loadContent();
   const familyOf = new Map(Object.entries(families).flatMap(([fam, slugs]) => slugs.map((s) => [s, fam])));
   /** @type {Record<string, string>} */
   const files = {};
@@ -96,11 +108,13 @@ export function buildPack() {
     ["Ref", "Skill", "Level", "Question", "A strong answer covers", ...ANSWER_COLUMNS],
     ...practice.map((q) => [q.id, skills.get(q.skillId) ?? q.skillId, q.level, q.question, q.lookFor, "", "", ""]),
   ]);
-  files["README.md"] = readme(counts, awaiting.length, choice.length, practice.length);
+  const certRows = certificationRows(certifications, roles, skills);
+  files["certifications.csv"] = csv([["Ref", "Name", "Issuer", "Proves", "Partial", "Roles", ...ANSWER_COLUMNS], ...certRows]);
+  files["README.md"] = readme(counts, awaiting.length, choice.length, practice.length, certRows.length);
   return files;
 }
 
-function readme(counts, roleCount, choiceCount, practiceCount) {
+function readme(counts, roleCount, choiceCount, practiceCount, certCount) {
   return `# CareerMetro expert review pack
 
 Generated from \`src/content\` by \`node scripts/review/build-review-pack.mjs\`. Do not edit these files by hand in the repo; re-run the script after content changes.
@@ -122,6 +136,8 @@ In the role files, **Section** says what the line is: the summary, "A normal day
 
 In the timed-test file, check that the marked answer is the only right one, the question is fair for the level (L1 is basic, L2 working, L3 expert), and the explanation is correct. In the Practice file, check the question and what a strong answer covers.
 
+In the certifications file, **Proves** lists skills that holding the certificate shows on its own, and **Partial** skills it only touches. Put a skill in Proves only when the issuer's official exam outline names it. Until someone checks the outline, a skill proposed for Proves waits at the start of Partial; write it in **Change to** if the outline names it. **Roles** lists the roles that recommend it, as recommended or optional; say if it is wrong for a role, retired or renamed.
+
 ## Files
 
 | Field | File | Roles awaiting review |
@@ -133,13 +149,17 @@ ${counts.join("\n")}
 | Timed test (multiple choice, hidden until reviewed) | \`timed-test-questions.csv\` | ${choiceCount} |
 | Practice bank (open questions) | \`practice-questions.csv\` | ${practiceCount} |
 
+| Certifications | File | Lines |
+| --- | --- | --- |
+| Certifications awaiting review (what each proves, and the roles that recommend it) | \`certifications.csv\` | ${certCount} |
+
 ${roleCount} role profiles await review in all.
 
 ## How answers flow back into the app
 
 1. Save the returned file in \`/mnt/project-files/careermetro/review/returned/\`, with the reviewer's name and the date in the file name.
 2. Development runs \`node scripts/review/read-review.mjs <returned file>\`. It lists every line with an answer, grouped by role or question, and flags Refs that no longer exist.
-3. Development makes the changes in \`src/content\` in one PR. For a role, it sets \`reviewedBy\` (the reviewer's name and field) and \`updatedOn\`; for a question, it sets \`reviewed: true\`. The usual checks (the matcher and closest-role evals) run in CI.
+3. Development makes the changes in \`src/content\` in one PR. For a role, it sets \`reviewedBy\` (the reviewer's name and field) and \`updatedOn\`; for a question or a certification, it sets \`reviewed: true\`. The usual checks (the matcher and closest-role evals) run in CI.
 4. The pack is generated again from the new content, so reviewed roles drop out of it.
 
 Reviewers' names go in the content only with their consent. Nothing in this pack comes from a user.

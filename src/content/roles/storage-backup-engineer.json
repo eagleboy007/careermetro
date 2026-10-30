@@ -111,7 +111,28 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Storage and backup roles in managed-services firms often ask for ITIL Foundation."
+    },
+    {
+      "certId": "comptia-server-plus",
+      "importance": "optional",
+      "why": "Vendor-neutral proof of server and storage hardware basics."
+    },
+    {
+      "certId": "netapp-ncda",
+      "importance": "optional",
+      "why": "Listed as preferred in NetApp storage postings."
+    },
+    {
+      "certId": "veeam-vmce",
+      "importance": "optional",
+      "why": "Preferred in Veeam-focused backup postings."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",

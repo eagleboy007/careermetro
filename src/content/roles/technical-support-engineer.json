@@ -113,6 +113,11 @@
       "certId": "azure-fundamentals",
       "importance": "optional",
       "why": "Basic cloud vocabulary for products hosted on Azure"
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Support teams run on ITIL incident and problem processes."
     }
   ],
   "sources": [

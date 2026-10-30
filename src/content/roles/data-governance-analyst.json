@@ -110,6 +110,11 @@
       "certId": "dsci-dcpp",
       "importance": "optional",
       "why": "Indian privacy credential for roles that also handle DPDP tagging"
+    },
+    {
+      "certId": "cdmp",
+      "importance": "recommended",
+      "why": "DAMA-DMBOK is named in Indian data governance postings, and CDMP tests it."
     }
   ],
   "sources": [

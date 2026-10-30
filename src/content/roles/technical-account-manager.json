@@ -112,6 +112,11 @@
       "certId": "azure-fundamentals",
       "importance": "optional",
       "why": "Basic cloud vocabulary for customers on Azure"
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Common on support-side resumes and useful for service reviews with customers."
     }
   ],
   "sources": [

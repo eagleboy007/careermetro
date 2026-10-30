@@ -127,6 +127,11 @@
       "certId": "aws-cloud-practitioner",
       "importance": "optional",
       "why": "Cloud basics for apps moving to AWS"
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "recommended",
+      "why": "Production support postings in India commonly ask for ITIL Foundation."
     }
   ],
   "sources": [

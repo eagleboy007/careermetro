@@ -111,7 +111,18 @@
       "label": "A game language (C# or C++)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "unity-certified-associate-programmer",
+      "importance": "optional",
+      "why": "An entry Unity programming credential for freshers."
+    },
+    {
+      "certId": "unity-certified-professional-programmer",
+      "importance": "optional",
+      "why": "Unity's professional programmer exam for experienced Unity developers."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",

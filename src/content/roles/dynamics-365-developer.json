@@ -104,7 +104,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "power-platform-developer-associate",
+      "importance": "recommended",
+      "why": "Covers Dataverse plug-ins and extensions, the core of Dynamics 365 CE development."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",

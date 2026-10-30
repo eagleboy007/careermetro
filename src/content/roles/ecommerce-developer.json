@@ -125,7 +125,18 @@
       "label": "A commerce platform (Shopify, Adobe Commerce or Salesforce Commerce Cloud)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "salesforce-b2c-commerce-developer",
+      "importance": "optional",
+      "why": "Required in Salesforce Commerce Cloud postings."
+    },
+    {
+      "certId": "adobe-commerce-developer-professional",
+      "importance": "optional",
+      "why": "Adobe's developer exam for Magento-based stores."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

@@ -86,7 +86,13 @@
       "postingShare": null
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "google-ux-design",
+      "importance": "optional",
+      "why": "A low-cost structured course that freshers in India use to show UX fundamentals."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public job descriptions, issuer exam outlines and Indian hiring practice (Data researcher, 2026-10-10). Awaiting domain-expert review.",

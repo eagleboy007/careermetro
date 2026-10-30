@@ -131,6 +131,16 @@
       "certId": "comptia-security-plus",
       "importance": "optional",
       "why": "Broad security base"
+    },
+    {
+      "certId": "okta-certified-professional",
+      "importance": "optional",
+      "why": "Okta is common in product companies, and some postings require this certification."
+    },
+    {
+      "certId": "sailpoint-identityiq-engineer",
+      "importance": "optional",
+      "why": "SailPoint IdentityIQ is the most named governance tool in Indian IAM postings."
     }
   ],
   "sources": [

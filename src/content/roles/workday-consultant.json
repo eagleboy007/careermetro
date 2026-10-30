@@ -99,7 +99,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "workday-pro-hcm-core",
+      "importance": "recommended",
+      "why": "Workday postings often ask for an active Workday certification, and HCM Core is the base one."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

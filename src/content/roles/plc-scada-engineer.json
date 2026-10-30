@@ -91,7 +91,18 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "siemens-certified-programmer-tia-portal",
+      "importance": "optional",
+      "why": "Siemens PLCs are widely used in Indian plants, and this is SITRAIN's programmer certification."
+    },
+    {
+      "certId": "isa-iec-62443-fundamentals-specialist",
+      "importance": "optional",
+      "why": "OT security under IEC 62443 is increasingly expected of control engineers."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

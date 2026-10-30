@@ -112,7 +112,18 @@
       "label": "An integration platform (MuleSoft or Boomi)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "mulesoft-developer",
+      "importance": "recommended",
+      "why": "MuleSoft developer postings in India often require this certification."
+    },
+    {
+      "certId": "boomi-associate-integration-developer",
+      "importance": "optional",
+      "why": "Useful for teams that build on Boomi instead of MuleSoft."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

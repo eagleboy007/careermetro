@@ -121,6 +121,11 @@
       "certId": "istqb-foundation",
       "importance": "optional",
       "why": "Shared testing vocabulary asked for in some postings"
+    },
+    {
+      "certId": "tuv-sud-functional-safety-engineer",
+      "importance": "optional",
+      "why": "HIL test plans often trace to ISO 26262 safety goals."
     }
   ],
   "sources": [

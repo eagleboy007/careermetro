@@ -119,7 +119,33 @@
       "label": "A low-code platform (Appian, OutSystems or Mendix)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "appian-associate-developer",
+      "importance": "optional",
+      "why": "Appian postings in India often ask for the Associate or Senior Developer certification."
+    },
+    {
+      "certId": "appian-senior-developer",
+      "importance": "optional",
+      "why": "Preferred in mid-level Appian postings."
+    },
+    {
+      "certId": "outsystems-associate-developer",
+      "importance": "optional",
+      "why": "OutSystems' developer certification, asked for in OutSystems postings."
+    },
+    {
+      "certId": "mendix-rapid-developer",
+      "importance": "optional",
+      "why": "Free entry certification that several Mendix postings make mandatory."
+    },
+    {
+      "certId": "mendix-intermediate-developer",
+      "importance": "optional",
+      "why": "Shows working Mendix depth beyond the entry level."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
