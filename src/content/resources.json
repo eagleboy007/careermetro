@@ -12797,5 +12797,27 @@
     ],
     "minutes": 15,
     "free": true
+  },
+  {
+    "title": "Automation Developer Career Quest",
+    "url": "https://university.automationanywhere.com/training/rpa-learning-trails/bot-developer-automation-360/",
+    "provider": "Automation Anywhere University",
+    "kind": "course",
+    "skillIds": [
+      "automation-anywhere"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SAP HANA - Installation and Administration",
+    "url": "https://learning.sap.com/learning-journeys/installing-and-administering-sap-hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-basis-administration"
+    ],
+    "minutes": 240,
+    "free": true
   }
 ]
