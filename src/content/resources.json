@@ -10760,17 +10760,6 @@
     "free": true
   },
   {
-    "title": "FIX Latest Online Specification",
-    "url": "https://fixtrading.org/online-specification",
-    "provider": "FIX Trading Community",
-    "kind": "docs",
-    "skillIds": [
-      "trading-systems-market-data"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "QuickFIX/J developer documentation",
     "url": "https://quickfix-j.github.io/quickfixj-pages/docs/developer-docs",
     "provider": "QuickFIX/J",
@@ -11025,17 +11014,6 @@
     "free": true
   },
   {
-    "title": "Vector e-learning: Teaser for AUTOSAR",
-    "url": "https://elearning.vector.com/course/view.php?id=24",
-    "provider": "Vector",
-    "kind": "course",
-    "skillIds": [
-      "autosar-classic"
-    ],
-    "minutes": 190,
-    "free": true
-  },
-  {
     "title": "Unified Diagnostic Services (UDS, ISO 14229) know-how",
     "url": "https://www.vector.com/en/business-unit/testing-validation-diagnostics/diagnostics/standards-knowhow/uds/",
     "provider": "Vector",
@@ -11044,17 +11022,6 @@
       "automotive-network-diagnostics"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Vector e-learning: CAN communication",
-    "url": "https://elearning.vector.com/course/view.php?id=20",
-    "provider": "Vector",
-    "kind": "course",
-    "skillIds": [
-      "automotive-network-diagnostics"
-    ],
-    "minutes": 370,
     "free": true
   },
   {
