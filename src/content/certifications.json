@@ -1610,7 +1610,9 @@
       "sap certified backend developer abap cloud",
       "sap certified associate back-end developer abap cloud",
       "c_abapd",
-      "sap abap cloud certification"
+      "sap abap cloud certification",
+      "c_abapd_2507",
+      "c_abapd_2309"
     ],
     "proves": [
       "sap-abap"
@@ -3153,7 +3155,8 @@
       "cyberark sentry pam",
       "cyberark sentry",
       "cyberark certified sentry",
-      "pam-sen"
+      "pam-sen",
+      "idira sentry pam"
     ],
     "proves": [],
     "partial": [
@@ -3232,7 +3235,9 @@
       "netapp ncda",
       "ncda ontap",
       "ns0-163",
-      "ns0-162"
+      "ns0-162",
+      "ns0-164",
+      "ns0-165"
     ],
     "proves": [
       "nas-storage"

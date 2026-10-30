@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-30 (certifications parts 1 and 2 and catalogue fixes)
+Last updated: 2026-10-30 (resource batch 15 and three certificate aliases)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -39,6 +39,7 @@ Last updated: 2026-10-30 (certifications parts 1 and 2 and catalogue fixes)
 - **Proof**
   - Certificate proof (#109, #110) and profile certifications with the Credly check (#132).
   - Certifications parts 1 and 2 from Data research's batch of 2026-10-30, all awaiting expert review (`reviewed: false`, 178 in all): 96 new certificates plus AI-300, linked to 80 roles (137 links). 58 `proves` pairs are backed by the issuer's exam outline (Data research's outline-evidence/all.tsv); the other 17 stay `partial`; SAA aliases name Associate only, so a Professional line no longer credits it; old codes (PL-400, AI-102, SC-400, AZ-800/801, SysOps, PCNSE/PCNSA, CCSA R81.20, VCP-DCV, 1Y0-204, AD0-E717, NS0-162) are aliases on their successors. DP-100 is marked retired 2026 and ISC2 CC is free; the review pack gains `certifications.csv`.
+  - Resource batch 15 from Data research (78 free links; two that returned 404 replaced) and two NIST forensics guides in place of a dead SWGDE page; certificate aliases added for C_ABAPD_2507/2309, NS0-164/165 and the Idira (CyberArk) rename.
   - A Credly link fills a goal only after the check (#135, migration 0029).
   - The held-proof review screen `/admin/proofs`, FR-44 (#137).
 - **Admin:** report review `/admin/reports` with the IT Rules deadlines, FR-45 (`docs/plans/reports-review-plan.md`). Report notes are kept, as the privacy notice will say (launch-readiness item 8).
