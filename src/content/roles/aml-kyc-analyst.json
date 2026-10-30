@@ -1,0 +1,99 @@
+{
+  "slug": "aml-kyc-analyst",
+  "title": "AML/KYC Analyst",
+  "summary": "AML/KYC analysts check that a bank or fintech knows who its customers are and spot money laundering, by reviewing customer documents, screening names against sanctions lists and investigating unusual transactions. They sit in the financial crime compliance or operations team and pass suspicious cases on for reporting to FIU-IND, India's financial intelligence unit.",
+  "dailyDuties": [
+    "Review KYC documents and ownership details for new and existing customers",
+    "Complete enhanced due diligence on high-risk customers",
+    "Screen names for sanctions, PEP and adverse media hits",
+    "Investigate transaction monitoring alerts and write case notes",
+    "Escalate suspicious cases and draft STRs",
+    "Track case ageing and quality review findings"
+  ],
+  "typicalTitles": [
+    "KYC Analyst",
+    "AML Analyst",
+    "Transaction Monitoring Analyst",
+    "Sanctions Screening Analyst",
+    "Customer Due Diligence Analyst",
+    "Financial Crime Compliance Analyst",
+    "KYC Due Diligence Analyst",
+    "AML Investigator"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "kyc-due-diligence",
+      "importance": "required",
+      "expectation": "Complete CDD and EDD reviews for onboarding and periodic KYC",
+      "postingShare": null
+    },
+    {
+      "skillId": "aml-transaction-monitoring",
+      "importance": "required",
+      "expectation": "Investigate transaction monitoring alerts and close or escalate them",
+      "postingShare": null
+    },
+    {
+      "skillId": "sanctions-screening",
+      "importance": "required",
+      "expectation": "Screen customers for sanctions, PEP and adverse media hits",
+      "postingShare": null
+    },
+    {
+      "skillId": "str-regulatory-reporting",
+      "importance": "required",
+      "expectation": "Draft suspicious transaction reports for FIU-IND",
+      "postingShare": null
+    },
+    {
+      "skillId": "aml-regulations",
+      "importance": "required",
+      "expectation": "Apply PMLA, the RBI KYC Master Direction and FATF guidance",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Track cases and alert volumes in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear case narratives and escalation notes",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know banking, payments or fintech products",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull transaction data with SQL for investigations",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "nice_to_have",
+      "expectation": "Use pivot tables and lookups on transaction extracts",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,76 @@
+{
+  "id": "hr-generalist-from-plant-hr-executive",
+  "roleSlug": "hr-generalist",
+  "persona": "Mid-level plant HR executive with a few gaps",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nEXPERIENCE\nHR Executive, Sahyadri Autocomp Pvt Ltd, Chakan, Pune (2022 - present)\n- Handle joining formalities, induction and exit formalities for 450 plant and office staff.\n- Compile monthly attendance, leave and overtime as payroll inputs for the finance team.\n- File monthly PF and ESIC challans and keep registers under the Shops and Establishments Act.\n- Maintain employee records and leave balances in greytHR.\n- Prepare monthly headcount and attrition MIS reports in Excel with pivot tables.\n- Coordinated the annual appraisal cycle for 120 staff and tracked KRA forms.\n- Screened resumes and scheduled interviews for 30 shop-floor hires a year.\n\nHR Assistant, Indrayani Packwell Pvt Ltd, Pune (2020 - 2022)\n- Collected joining documents and opened personnel files for new workers.\n- Organised festival celebrations and quarterly employee engagement activities.\n\nEDUCATION\nMBA (HR), Savitribai Phule Pune University, 2020\n\nSKILLS\ngreytHR, MS Excel, HR policies, PF and ESI\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "employee-onboarding-exits",
+        "quote": "Handle joining formalities, induction and exit formalities"
+      },
+      {
+        "skillId": "payroll-inputs-processing",
+        "quote": "Compile monthly attendance, leave and overtime as payroll inputs"
+      },
+      {
+        "skillId": "indian-labour-law-compliance",
+        "quote": "File monthly PF and ESIC challans"
+      },
+      {
+        "skillId": "hrms-tools",
+        "quote": "Maintain employee records and leave balances in greytHR"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Prepare monthly headcount and attrition MIS reports in Excel"
+      },
+      {
+        "skillId": "excel-pivot-lookup",
+        "quote": "attrition MIS reports in Excel with pivot tables"
+      },
+      {
+        "skillId": "performance-appraisal-administration",
+        "quote": "Coordinated the annual appraisal cycle for 120 staff"
+      },
+      {
+        "skillId": "employee-engagement",
+        "quote": "quarterly employee engagement activities"
+      },
+      {
+        "skillId": "hr-policy-administration",
+        "quote": "HR policies"
+      },
+      {
+        "skillId": "candidate-screening-interviewing",
+        "quote": "Screened resumes"
+      },
+      {
+        "skillId": "interview-coordination",
+        "quote": "scheduled interviews for 30 shop-floor hires a year"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "employee-relations",
+        "status": "missing"
+      },
+      {
+        "skillId": "hr-policy-administration",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "full-cycle-recruitment",
+      "offer-negotiation",
+      "workday-hcm-configuration",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

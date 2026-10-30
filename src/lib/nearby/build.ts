@@ -38,6 +38,11 @@ const likeness = (a: Set<string>, b: Set<string>) => {
 /** Communication, problem solving and the like: they count when shown, but never decide which role is nearest. */
 const contextIds = new Set(skills.filter((s) => s.scoring === "context").map((s) => s.id));
 
+/** Whether one skill implies another, directly or through a chain (pivot tables → Excel). */
+const impliesById = new Map(skills.map((s) => [s.id, s.implies]));
+const implies = (from: string, to: string, seen = new Set<string>()): boolean =>
+  (impliesById.get(from) ?? []).some((id) => id === to || (!seen.has(id) && (seen.add(id), implies(id, to, seen))));
+
 /** The skills a matcher row stands for: a "one of these" group's skills, or the one skill. */
 const unitSkills = (row: MatchedSkill) => row.group?.skillIds ?? [row.skillId];
 
@@ -83,10 +88,15 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
       const isKey = (row: MatchedSkill) => !contextIds.has(row.skillId);
       const key = match.met.filter(isKey).length + match.gaps.filter((g) => isKey(g) && byProof(g)).length;
       const keyTotal = match.met.filter(isKey).length + match.gaps.filter(isKey).length;
+      // Shared key skills as separate abilities: one a shared skill implies isn't counted again, so Excel and pivot
+      // tables are one, and a role can't be closest on them alone (business batch B1: Telecom RAN for a sales resume).
+      const keyIds = [...match.met.filter(isKey), ...match.gaps.filter((g) => isKey(g) && byProof(g))].map((r) => r.skillId);
+      const keyAbilities = keyIds.filter((id) => !keyIds.some((other) => other !== id && implies(other, id))).length;
       return {
         line,
         key,
         keyTotal,
+        keyAbilities,
         keyShare: keyTotal ? key / keyTotal : 0,
         // How many of the resume's shown skills the role asks for at all, nice-to-have ones included.
         asks: key + match.niceToHave.filter((n) => n.status === "met" && !contextIds.has(n.skillId)).length,
@@ -115,12 +125,13 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
   if (near.length) return nearbyLines.parse({ lines: near.map((s) => s.line), closest: null });
   // Closest when none is near: a role whose years fit first, as for the lines (T154), then the one holding the most of
   // the resume's key skills (half for each one only listed), at least two, then the one asking for more of the resume,
-  // then share, then likeness to the target role. So a small role sharing 2 of its 6 doesn't beat a larger one the
+  // then share, then likeness to the target role. Two shared skills where one implies the other count as one, so the
+  // role must share two separate abilities. So a small role sharing 2 of its 6 doesn't beat a larger one the
   // resume holds as much of, and one shared skill names nothing (src/evals/closest-eval.test.ts). The sentence counts
   // key skills, as the filter above does, so it never says a role shares half while saying none does.
   const held = (s: (typeof scored)[number]) => s.key + s.line.onResume.length / 2;
   const best = scored
-    .filter((s) => s.key >= NEARBY_MIN_SHARED && s.keyTotal > 0)
+    .filter((s) => s.keyAbilities >= NEARBY_MIN_SHARED && s.keyTotal > 0)
     .sort(
       (a, b) =>
         Number(b.fits) - Number(a.fits) ||

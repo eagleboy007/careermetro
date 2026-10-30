@@ -1,0 +1,124 @@
+{
+  "slug": "customer-support-executive",
+  "title": "Customer Support Executive",
+  "summary": "Customer support executives answer customers of banks, online stores and service companies over phone, chat and email, resolving queries and complaints about orders, accounts and bills. They work in a contact centre or support team, often in shifts, and are measured on handle time, customer satisfaction and quality scores.",
+  "dailyDuties": [
+    "Answer inbound calls, chats and emails from customers",
+    "Resolve queries on orders, payments, refunds or accounts",
+    "Log each interaction with notes and the right disposition in the CRM",
+    "Escalate cases that need another team and follow them up",
+    "Meet daily targets on handle time, quality and CSAT",
+    "Follow process and compliance steps such as identity checks"
+  ],
+  "typicalTitles": [
+    "Customer Service Executive",
+    "Customer Care Executive",
+    "Customer Support Associate",
+    "Customer Service Associate",
+    "Phone Banking Officer",
+    "Chat Support Executive",
+    "Customer Service Representative",
+    "Contact Centre Associate"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "customer-query-resolution",
+      "importance": "required",
+      "expectation": "Resolve customer queries and complaints about orders, accounts or services",
+      "postingShare": null
+    },
+    {
+      "skillId": "omnichannel-support",
+      "importance": "required",
+      "expectation": "Handle customers over voice, chat and email, often in rotational shifts",
+      "postingShare": null
+    },
+    {
+      "skillId": "contact-centre-metrics",
+      "importance": "required",
+      "expectation": "Meet targets on AHT, CSAT, first contact resolution, quality and SLA",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "required",
+      "expectation": "Calm upset customers and escalate cases correctly when needed",
+      "postingShare": null
+    },
+    {
+      "skillId": "case-documentation",
+      "importance": "required",
+      "expectation": "Record clear notes and the right disposition for every interaction",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "required",
+      "expectation": "Work in a CRM or ticketing tool to log and track customer cases",
+      "postingShare": null,
+      "oneOf": "service-tool"
+    },
+    {
+      "skillId": "support-ticketing-tools",
+      "importance": "required",
+      "expectation": "Work in a CRM or ticketing tool to log and track customer cases",
+      "postingShare": null,
+      "oneOf": "service-tool"
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Speak and write clearly and politely in English and Hindi or a regional language",
+      "postingShare": null
+    },
+    {
+      "skillId": "cross-selling-upselling",
+      "importance": "nice_to_have",
+      "expectation": "Offer suitable products or upgrades during service calls",
+      "postingShare": null
+    },
+    {
+      "skillId": "kyc-verification",
+      "importance": "nice_to_have",
+      "expectation": "Check KYC documents for banking and fintech requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "order-returns-refunds",
+      "importance": "nice_to_have",
+      "expectation": "Process return, replacement and refund requests for e-commerce orders",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Keep simple trackers and daily reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "nice_to_have",
+      "expectation": "Work out what the customer needs and find the fastest fix",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "service-tool",
+      "label": "A CRM or ticketing tool"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

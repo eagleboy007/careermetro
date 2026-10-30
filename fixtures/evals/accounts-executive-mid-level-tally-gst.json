@@ -1,0 +1,52 @@
+{
+  "id": "accounts-executive-mid-level-tally-gst",
+  "roleSlug": "accounts-executive",
+  "persona": "Mid-level accounts executive at a food manufacturer with a few gaps",
+  "resumeText": "Sneha Wankhede | Nagpur | sneha.wankhede@example.com\n\nEXPERIENCE\nAccounts Executive, Vidarbha Agro Foods Pvt Ltd, Nagpur (2023 - present)\n- Pass purchase, sales and journal vouchers in Tally Prime for two plants.\n- Prepare GSTR-1 and GSTR-3B returns every month and calculate TDS on contractor bills.\n- Prepare monthly bank and vendor reconciliations for 120 suppliers.\n- Support month-end closing with accruals, prepaid entries and the trial balance.\n\nAccounts Assistant, Shree Ganesh Traders, Nagpur (2022 - 2023)\n- Entered daily cash and bank vouchers and kept the petty cash book.\n\nSKILLS\nTally Prime, GST, TDS, Accounts payable, MS Excel\n\nEDUCATION\nMCom, Rashtrasant Tukadoji Maharaj Nagpur University, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "tally-accounting-software",
+        "quote": "journal vouchers in Tally Prime for two plants"
+      },
+      {
+        "skillId": "gst-tds-compliance",
+        "quote": "Prepare GSTR-1 and GSTR-3B returns every month"
+      },
+      {
+        "skillId": "account-reconciliations",
+        "quote": "Prepare monthly bank and vendor reconciliations"
+      },
+      {
+        "skillId": "financial-accounting",
+        "quote": "Support month-end closing with accruals, prepaid entries"
+      },
+      {
+        "skillId": "accounts-payable-receivable",
+        "quote": "Accounts payable"
+      },
+      {
+        "skillId": "excel",
+        "quote": "MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "accounts-payable-receivable",
+        "status": "weak"
+      },
+      {
+        "skillId": "excel",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "statutory-audit-support",
+      "sap-fi-configuration",
+      "spend-forecasting",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

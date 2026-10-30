@@ -1,0 +1,151 @@
+{
+  "slug": "supply-chain-analyst",
+  "title": "Supply Chain Analyst",
+  "summary": "Supply chain analysts use data to keep the right stock in the right place: they forecast demand, set stock levels and report on purchasing and delivery performance. They sit in the planning or supply chain team of a manufacturer, retailer or e-commerce company and work with sales, procurement and warehouses.",
+  "dailyDuties": [
+    "Update demand forecasts and review forecast accuracy",
+    "Set safety stock and reorder points and flag shortages or excess stock",
+    "Pull stock and purchase order data from the ERP",
+    "Track supplier lead times and purchase order status",
+    "Report fill rate, OTIF (on time, in full) and freight cost",
+    "Build and refresh Excel models and BI dashboards",
+    "Prepare data for the monthly sales and operations planning meeting"
+  ],
+  "typicalTitles": [
+    "Demand Planner",
+    "Inventory Analyst",
+    "Supply Planning Analyst",
+    "Procurement Analyst",
+    "Logistics Analyst",
+    "Supply Chain Planning Analyst",
+    "Inventory Control Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "demand-forecasting",
+      "importance": "required",
+      "expectation": "Build and review demand forecasts and track forecast accuracy",
+      "postingShare": null
+    },
+    {
+      "skillId": "inventory-planning-optimization",
+      "importance": "required",
+      "expectation": "Set safety stock and reorder points and flag excess or ageing stock",
+      "postingShare": null
+    },
+    {
+      "skillId": "procurement-analytics",
+      "importance": "required",
+      "expectation": "Analyse purchase orders, supplier lead times and spend",
+      "postingShare": null
+    },
+    {
+      "skillId": "logistics-analytics",
+      "importance": "required",
+      "expectation": "Report on fill rate, OTIF, freight cost and delivery lead times",
+      "postingShare": null
+    },
+    {
+      "skillId": "supply-chain-erp-reporting",
+      "importance": "required",
+      "expectation": "Pull stock, order and receipt data from SAP or another ERP",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build planning models and reports in advanced Excel, with pivot tables and lookups on large SKU lists",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query sales, stock and order tables to answer planning questions",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "required",
+      "expectation": "Build supply chain dashboards in a BI tool",
+      "postingShare": null,
+      "oneOf": "sc-bi-tool"
+    },
+    {
+      "skillId": "tableau",
+      "importance": "required",
+      "expectation": "Build supply chain dashboards in a BI tool",
+      "postingShare": null,
+      "oneOf": "sc-bi-tool"
+    },
+    {
+      "skillId": "sales-operations-planning",
+      "importance": "nice_to_have",
+      "expectation": "Prepare data for the monthly S&OP meeting",
+      "postingShare": null
+    },
+    {
+      "skillId": "supply-planning-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use a planning tool such as SAP IBP, Kinaxis or o9",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate data cleaning or simple forecasting models",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "nice_to_have",
+      "expectation": "Apply basic statistics to forecasting and variability",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with sales, procurement, warehouse and finance teams",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "sc-bi-tool",
+      "label": "A BI tool (Power BI or Tableau)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "power-bi-data-analyst",
+      "importance": "recommended",
+      "why": "Covers the Power BI dashboards the role builds"
+    },
+    {
+      "certId": "mos-excel-expert",
+      "importance": "optional",
+      "why": "Proves advanced Excel used for planning models"
+    },
+    {
+      "certId": "tableau-desktop-specialist",
+      "importance": "optional",
+      "why": "For teams that report in Tableau"
+    },
+    {
+      "certId": "sap-s4hana-sourcing-procurement",
+      "importance": "optional",
+      "why": "Deep SAP procurement knowledge; more than most analyst roles ask"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

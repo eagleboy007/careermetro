@@ -1,0 +1,60 @@
+{
+  "id": "supply-chain-analyst-from-inventory-analyst",
+  "roleSlug": "supply-chain-analyst",
+  "persona": "Mid-level inventory analyst with a few gaps",
+  "resumeText": "Arjun Nair | Chennai | arjun.nair@example.com\n\nEXPERIENCE\nInventory Analyst, Coromandel Home Appliances Pvt Ltd, Chennai (2023 - present)\n- Track stock for 2,500 SKUs and set safety stock and reorder points for 12 warehouses.\n- Built a monthly SKU-level demand forecast using moving averages and tracked forecast accuracy by region.\n- Pull stock, purchase order and goods receipt data from SAP for daily planning reports.\n- Write SQL queries on the sales data warehouse to compare dispatches with orders.\n- Built a Power BI dashboard on inventory ageing and stock cover for the planning head.\n\nMIS Executive, Marina Consumer Durables Pvt Ltd, Chennai (2021 - 2023)\n- Maintain the weekly replenishment plan in Excel with VLOOKUP and pivot tables.\n- Shared daily dispatch summaries with the warehouse and sales teams.\n\nEDUCATION\nBE Mechanical Engineering, Anna University, 2021\n\nSKILLS\nSAP, Excel, SQL, Power BI, OTIF reporting\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "inventory-planning-optimization",
+        "quote": "set safety stock and reorder points for 12 warehouses"
+      },
+      {
+        "skillId": "demand-forecasting",
+        "quote": "Built a monthly SKU-level demand forecast"
+      },
+      {
+        "skillId": "supply-chain-erp-reporting",
+        "quote": "Pull stock, purchase order and goods receipt data from SAP"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Write SQL queries on the sales data warehouse"
+      },
+      {
+        "skillId": "power-bi",
+        "quote": "Built a Power BI dashboard on inventory ageing"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Maintain the weekly replenishment plan in Excel"
+      },
+      {
+        "skillId": "excel-pivot-lookup",
+        "quote": "in Excel with VLOOKUP and pivot tables"
+      },
+      {
+        "skillId": "logistics-analytics",
+        "quote": "OTIF reporting"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "logistics-analytics",
+        "status": "weak"
+      },
+      {
+        "skillId": "procurement-analytics",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "supply-planning-tools",
+      "sales-operations-planning",
+      "tableau"
+    ]
+  },
+  "reviewedBy": null
+}

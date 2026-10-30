@@ -161,6 +161,30 @@ describe("nearbyLinesFor", () => {
     expect(empty).toEqual({ lines: [], closest: null });
   });
 
+  it("counts Excel and pivot tables as one ability, so they alone name no closest role (business batch B1)", () => {
+    const sheet = "Built a weekly Excel sheet with pivot tables of scheme spend";
+    const orders = "Wrote SQL queries to match orders with invoices";
+    const job = { title: "Sales Officer", employer: "Example Foods Pvt Ltd", start: "2024-06", end: null };
+    const sales = profile({
+      roles: [{ ...job, highlights: [sheet] }],
+      skills: [used("Excel", sheet), used("Pivot tables", sheet)],
+    });
+    const office = role("office-role", ["excel", "excel-pivot-lookup", "sql", "machine-learning", "statistics", "power-bi", "aws", "linux"]);
+    expect(matchProfile(sales, office, NOW).met.map((m) => m.skillId).sort()).toEqual(["excel", "excel-pivot-lookup"]);
+    expect(nearbyLinesFor({ profile: sales, targetSlug: "target-role", roles: [target, office], now: NOW }).closest).toBeNull();
+    // A second, separate ability names it, and the sentence still counts every shared key skill.
+    const withSql = profile({
+      roles: [{ ...job, highlights: [sheet, orders] }],
+      skills: [used("Excel", sheet), used("Pivot tables", sheet), used("SQL", orders)],
+    });
+    expect(nearbyLinesFor({ profile: withSql, targetSlug: "target-role", roles: [target, office], now: NOW }).closest).toEqual({
+      slug: "office-role",
+      title: "Office Role",
+      shared: 3,
+      total: 8,
+    });
+  });
+
   it("counts key skills in the closest sentence, as the near filter does, so showing communication changes nothing (T154)", () => {
     const quote = "Presented the weekly report to branch managers";
     const speaker = profile({

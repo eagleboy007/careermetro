@@ -16,6 +16,7 @@ export const FIELDS = [
   { file: "roles-enterprise-apps.csv", name: "Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others)", families: ["enterprise-apps"] },
   { file: "roles-testing.csv", name: "Testing and quality", families: ["quality"] },
   { file: "roles-other.csv", name: "Software, hardware, delivery and marketing", families: ["backend", "frontend-mobile", "hardware", "delivery", "marketing"] },
+  { file: "roles-business.csv", name: "Sales, finance, HR and operations", families: ["sales", "finance", "hr", "operations"] },
 ];
 
 export const ANSWER_COLUMNS = ["Agree (yes / no)", "Change to", "Comment"];
