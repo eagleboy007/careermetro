@@ -108,14 +108,17 @@ export function citiesOf(jobs: JobPost[]): string[] {
     .map(([c]) => c);
 }
 
-/** "SC" for "Sahyadri Fintech": the first letters of the first two words. */
+/**
+ * "SF" for "Sahyadri Fintech": the first characters of the first two words, by code point, so a name starting with an
+ * emoji never yields half a surrogate pair (the server writes that as U+FFFD and React hydration fails, T150).
+ */
 export function initials(name: string): string {
   return (
     name
       .split(/\s+/)
       .filter(Boolean)
       .slice(0, 2)
-      .map((w) => w[0]!.toUpperCase())
+      .map((w) => Array.from(w)[0]!.toUpperCase())
       .join("") || "?"
   );
 }

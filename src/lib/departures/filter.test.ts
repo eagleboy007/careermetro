@@ -95,6 +95,13 @@ describe("citiesOf and initials", () => {
     expect(initials("Garuda")).toBe("G");
     expect(initials("  ")).toBe("?");
   });
+
+  it("never splits an emoji or a Devanagari letter in half (server and client must render the same text)", () => {
+    expect(initials("🚀📈🎯 Data")).toBe("🚀D");
+    expect(initials("डेटा विश्लेषण")).toBe("डव");
+    // encodeURIComponent throws on a lone surrogate.
+    for (const name of ["🚀📈", "📊 🧠", "x 💡"]) expect(() => encodeURIComponent(initials(name))).not.toThrow();
+  });
 });
 
 describe("an empty Departures list", () => {

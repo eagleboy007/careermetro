@@ -1,4 +1,4 @@
-import { meProfile, type GapAnalysis, type JourneyStop, type MapLine, type MeProfile, type Profile, type StoryBox } from "@/lib/schemas";
+import { cutText, meProfile, type GapAnalysis, type JourneyStop, type MapLine, type MeProfile, type Profile, type StoryBox } from "@/lib/schemas";
 import { decimalYear, monthLabel, readYearMonth } from "@/lib/map/life-layout";
 import { indiaDate, profileCertifications, type ProofCertRow } from "./certs";
 import { experienceCheck, jobKeyOf, jobToCheck, type JobCheckRow } from "./job-check-rules";
@@ -61,8 +61,8 @@ export type MeInput = {
   added?: MeAdditions;
 };
 
-/** Cut to the schema's limit at a word break. */
-const cut = (text: string, max: number) => (text.length <= max ? text : `${text.slice(0, max - 1).replace(/\s+\S*$/, "")}…`);
+/** Cut to the schema's limit at a word break, never through an emoji (half of one fails hydration, T150). */
+const cut = (text: string, max: number) => (text.length <= max ? text : `${cutText(text, max - 1).replace(/\s+\S*$/, "")}…`);
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
