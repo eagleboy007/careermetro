@@ -12260,17 +12260,6 @@
     "free": true
   },
   {
-    "title": "Creating your first bots",
-    "url": "https://developer.automationanywhere.com/learn/bot-developer-journey/creating-your-first-bots",
-    "provider": "Automation Anywhere",
-    "kind": "course",
-    "skillIds": [
-      "automation-anywhere"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "Get started with Power Automate for desktop",
     "url": "https://learn.microsoft.com/en-in/power-automate/desktop-flows/getting-started-freeorg",
     "provider": "Microsoft Learn",
@@ -12488,17 +12477,6 @@
       "linux-kernel-development"
     ],
     "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "SAP S/4HANA System Administration",
-    "url": "https://learning.sap.com/courses/sap-s-4hana-system-administration",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-basis-administration"
-    ],
-    "minutes": 120,
     "free": true
   },
   {
