@@ -1,0 +1,56 @@
+{
+  "id": "hil-test-engineer-from-canoe-tester",
+  "roleSlug": "hil-test-engineer",
+  "persona": "Body ECU tester on CANoe moving to dSPACE HIL automation",
+  "resumeText": "Priya Venkatesan | Chennai | priya.venkatesan@example.com\n\nEXPERIENCE\nECU Test Engineer, Marina Auto Electronics, Chennai (2021 - present)\n- Wrote CAPL scripts in Vector CANoe to simulate the restbus for body control module tests.\n- Tested CAN and LIN communication between the body control module and door modules.\n- Automated 300 regression test cases in Python, cutting the release test cycle from five days to two.\n- Wrote test specifications from ECU software requirements and traced them in Polarion.\n- Executed regression test runs for each body ECU software release and published reports.\n- Logged defects in Jira with CANoe traces for the software team.\n\nSKILLS\nCANoe, CAPL, Python, dSPACE ControlDesk, Jira, Git\n\nEDUCATION\nBE Electrical and Electronics Engineering, Anna University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "automotive-network-diagnostics",
+        "quote": "Wrote CAPL scripts in Vector CANoe to simulate the restbus"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Tested CAN and LIN communication between the body control module"
+      },
+      {
+        "skillId": "python",
+        "quote": "Automated 300 regression test cases in Python"
+      },
+      {
+        "skillId": "test-planning",
+        "quote": "Wrote test specifications from ECU software requirements"
+      },
+      {
+        "skillId": "manual-testing",
+        "quote": "Executed regression test runs for each body ECU software release"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Logged defects in Jira with CANoe traces"
+      },
+      {
+        "skillId": "hil-testing",
+        "quote": "dSPACE ControlDesk"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "hil-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "matlab-simulink",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "cpp",
+      "ci-cd",
+      "automotive-functional-safety",
+      "adas-functions"
+    ]
+  },
+  "reviewedBy": null
+}

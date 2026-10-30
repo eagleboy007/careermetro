@@ -1,0 +1,122 @@
+{
+  "slug": "ai-research-scientist",
+  "title": "AI Research Scientist",
+  "summary": "AI research scientists invent and test new machine learning methods, such as better ways to train language or vision models, and publish what they find as papers. They sit in a research lab or a central AI team, often with a PhD, and hand their best ideas to engineers who put them into products.",
+  "dailyDuties": [
+    "Read new papers and pick research ideas to try",
+    "Design and run training experiments on GPU clusters",
+    "Write research code in PyTorch or JAX",
+    "Build benchmarks and compare results with statistics",
+    "Write papers and internal reports on findings",
+    "Present results in lab reading groups",
+    "Help engineers move a working method into a product"
+  ],
+  "typicalTitles": [
+    "Machine Learning Research Scientist",
+    "ML Research Scientist",
+    "AI Scientist",
+    "Research Scientist - Machine Learning",
+    "Deep Learning Research Scientist"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "machine-learning",
+      "importance": "required",
+      "expectation": "Know the theory behind ML methods well enough to invent new ones",
+      "postingShare": null
+    },
+    {
+      "skillId": "deep-learning",
+      "importance": "required",
+      "expectation": "Design and train new neural network architectures",
+      "postingShare": null
+    },
+    {
+      "skillId": "pytorch",
+      "importance": "required",
+      "expectation": "Write research code and run experiments in PyTorch or JAX",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write clean Python for experiments, data loading and evaluation",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "required",
+      "expectation": "Use probability and statistics to compare results fairly",
+      "postingShare": null
+    },
+    {
+      "skillId": "ml-research-publications",
+      "importance": "required",
+      "expectation": "Publish papers at top ML conferences or journals",
+      "postingShare": null
+    },
+    {
+      "skillId": "nlp",
+      "importance": "required",
+      "expectation": "Do research in language or speech models",
+      "postingShare": null,
+      "oneOf": "research-area"
+    },
+    {
+      "skillId": "computer-vision",
+      "importance": "required",
+      "expectation": "Do research in vision or multimodal models",
+      "postingShare": null,
+      "oneOf": "research-area"
+    },
+    {
+      "skillId": "large-model-training",
+      "importance": "nice_to_have",
+      "expectation": "Pre-train or post-train large models across many GPUs",
+      "postingShare": null
+    },
+    {
+      "skillId": "hugging-face-transformers",
+      "importance": "nice_to_have",
+      "expectation": "Build on open transformer models and datasets",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-evaluation",
+      "importance": "nice_to_have",
+      "expectation": "Build benchmarks and evaluations for new models",
+      "postingShare": null
+    },
+    {
+      "skillId": "cuda-gpu-programming",
+      "importance": "nice_to_have",
+      "expectation": "Write or tune GPU kernels for faster training",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Share research code in version control",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "research-area",
+      "label": "A research area (language or vision)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-06"
+}

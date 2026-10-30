@@ -1,0 +1,103 @@
+{
+  "slug": "automotive-diagnostics-engineer",
+  "title": "Automotive Diagnostics Engineer",
+  "summary": "Automotive diagnostics engineers find and explain faults in whole vehicles, including electric and hybrid ones, using scan tools, meters and wiring diagrams. They write the step-by-step troubleshooting guides that workshop technicians follow and sit in an aftermarket, service or vehicle engineering team.",
+  "dailyDuties": [
+    "Diagnose faults on test vehicles from symptoms and trouble codes",
+    "Read live data with OBD-II and OEM diagnostic testers",
+    "Trace wiring faults with multimeters and oscilloscopes",
+    "Write guided troubleshooting steps and repair procedures",
+    "Record test results and removal and refit steps",
+    "Explain field issues to engineering and workshop teams"
+  ],
+  "typicalTitles": [
+    "Vehicle Diagnostics Engineer",
+    "Automotive Diagnostic Specialist",
+    "Automotive Systems Diagnostic Engineer",
+    "EV Diagnostics Engineer",
+    "Automotive Troubleshooting Engineer",
+    "Aftermarket Diagnostic Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "vehicle-electrical-troubleshooting",
+      "importance": "required",
+      "expectation": "Find vehicle faults from symptoms, trouble codes and wiring diagrams",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-network-diagnostics",
+      "importance": "required",
+      "expectation": "Read trouble codes and live data with OBD-II and OEM testers over UDS",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Understand CAN and LIN networks when tracing communication faults",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-debugging",
+      "importance": "required",
+      "expectation": "Measure signals with multimeters and oscilloscopes",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "required",
+      "expectation": "Write guided troubleshooting steps and repair procedures",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Work from symptom to root cause in a structured way",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain findings to engineering teams and workshop technicians",
+      "postingShare": null
+    },
+    {
+      "skillId": "ev-hev-systems",
+      "importance": "nice_to_have",
+      "expectation": "Diagnose high-voltage battery, motor and charging systems safely",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script checks on diagnostic logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Track test results and fault data",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "nice_to_have",
+      "expectation": "Report and follow field issues to closure",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-06"
+}

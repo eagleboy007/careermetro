@@ -1,0 +1,51 @@
+{
+  "id": "hardware-design-engineer-from-industrial-controls",
+  "roleSlug": "hardware-design-engineer",
+  "persona": "Industrial controls hardware engineer moving into senior board design",
+  "resumeText": "Rohan Kulkarni | Pune | rohan.kulkarni@example.com\n\nEXPERIENCE\nHardware Engineer, Sahyadri Power Controls, Pune (2019 - present)\n- Designed schematics in Altium Designer for 6-layer controller boards built around STM32 microcontrollers.\n- Designed 24V to 5V and 3.3V DC-DC converter stages and simulated them in LTspice before layout.\n- Brought up every new board in the lab with an oscilloscope and logic analyzer.\n- Added CAN and RS-485 interfaces between the controller and field sensors.\n- Prepared bills of materials and worked with the layout vendor on DFM fixes.\n\nEDUCATION\nBE Electronics and Telecommunication, College of Engineering Pune, 2019\n\nSKILLS\nDigital electronics, KiCad, Embedded C\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "pcb-schematic-design",
+        "quote": "Designed schematics in Altium Designer for 6-layer controller boards"
+      },
+      {
+        "skillId": "microcontrollers",
+        "quote": "controller boards built around STM32 microcontrollers"
+      },
+      {
+        "skillId": "analog-power-circuit-design",
+        "quote": "Designed 24V to 5V and 3.3V DC-DC converter stages"
+      },
+      {
+        "skillId": "embedded-debugging",
+        "quote": "Brought up every new board in the lab with an oscilloscope"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Added CAN and RS-485 interfaces between the controller"
+      },
+      {
+        "skillId": "digital-logic-design",
+        "quote": "Digital electronics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "digital-logic-design",
+        "status": "weak"
+      },
+      {
+        "skillId": "emc-signal-integrity",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "fpga-design",
+      "automotive-functional-safety",
+      "cuda-gpu-programming"
+    ]
+  },
+  "reviewedBy": null
+}

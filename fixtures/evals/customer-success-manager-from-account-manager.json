@@ -1,0 +1,52 @@
+{
+  "id": "customer-success-manager-from-account-manager",
+  "roleSlug": "customer-success-manager",
+  "persona": "SaaS account manager moving into customer success",
+  "resumeText": "Priya Menon | Kochi | priya.menon@example.com\n\nEXPERIENCE\nAccount Manager, Backwaters HR Cloud, Kochi (2021 - present)\n- Managed renewals for 60 mid-market accounts and cut churn from 9% to 5% in a year.\n- Ran quarterly business reviews with HR heads to show usage and return on investment.\n- Logged every call and renewal date in HubSpot for the whole portfolio.\n- Built Excel trackers of logins and feature usage for each account.\n- Explained new payroll features to customers on monthly webinars in English and Malayalam.\n\nInside Sales Executive, Backwaters HR Cloud, Kochi (2018 - 2021)\n- Booked product demos for small businesses across Kerala.\n\nEDUCATION\nMBA Marketing, Rajagiri College of Social Sciences, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "customer-retention-expansion",
+        "quote": "Managed renewals for 60 mid-market accounts and cut churn"
+      },
+      {
+        "skillId": "technical-account-management",
+        "quote": "Ran quarterly business reviews with HR heads"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Logged every call and renewal date in HubSpot"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built Excel trackers of logins and feature usage"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Explained new payroll features to customers on monthly webinars"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      },
+      {
+        "skillId": "product-metrics",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sql",
+      "support-ticketing-tools",
+      "llm-apps",
+      "saas-implementation-configuration"
+    ]
+  },
+  "reviewedBy": null
+}

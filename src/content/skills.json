@@ -6305,5 +6305,331 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "pcb-schematic-design",
+    "name": "PCB and schematic design",
+    "category": "programming",
+    "aliases": [
+      "schematic capture",
+      "schematic design",
+      "pcb design",
+      "pcb layout",
+      "altium designer",
+      "orcad capture",
+      "cadence allegro",
+      "kicad"
+    ],
+    "ambiguous": [
+      "schematic design"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "analog-power-circuit-design",
+    "name": "Analog and power circuit design",
+    "category": "programming",
+    "aliases": [
+      "analog circuit design",
+      "power supply design",
+      "dc-dc converters",
+      "smps design",
+      "ltspice",
+      "pspice",
+      "circuit simulation"
+    ],
+    "ambiguous": [
+      "circuit simulation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "emc-signal-integrity",
+    "name": "EMI/EMC and signal integrity design",
+    "category": "programming",
+    "aliases": [
+      "emi/emc",
+      "emi emc",
+      "emc compliance",
+      "signal integrity",
+      "power integrity",
+      "hyperlynx",
+      "high-speed pcb design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "automotive-functional-safety",
+    "name": "Automotive functional safety (ISO 26262)",
+    "category": "testing",
+    "aliases": [
+      "iso 26262",
+      "fmeda",
+      "asil",
+      "iso26262",
+      "asil decomposition",
+      "sotif",
+      "iso 21448",
+      "automotive functional safety",
+      "hazard analysis and risk assessment"
+    ],
+    "ambiguous": [
+      "hazard analysis and risk assessment"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ml-research-publications",
+    "name": "ML research publications",
+    "category": "ml",
+    "aliases": [
+      "research publications",
+      "peer-reviewed publications",
+      "neurips",
+      "icml",
+      "iclr",
+      "cvpr",
+      "emnlp"
+    ],
+    "ambiguous": [
+      "research publications",
+      "peer-reviewed publications"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "large-model-training",
+    "name": "Large model training",
+    "category": "ml",
+    "aliases": [
+      "distributed training",
+      "deepspeed",
+      "fsdp",
+      "megatron-lm",
+      "llm pretraining",
+      "rlhf"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "deep-learning"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "cloud-ai-platforms",
+    "name": "Cloud AI platforms",
+    "category": "ml",
+    "aliases": [
+      "azure openai",
+      "azure ai foundry",
+      "azure ai studio",
+      "amazon bedrock",
+      "aws bedrock",
+      "vertex ai",
+      "amazon sagemaker",
+      "sagemaker",
+      "azure machine learning"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "responsible-ai-governance",
+    "name": "Responsible AI and AI governance",
+    "category": "ml",
+    "aliases": [
+      "responsible ai",
+      "ai governance",
+      "eu ai act"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "customer-retention-expansion",
+    "name": "Customer retention, renewals and expansion",
+    "category": "business",
+    "aliases": [
+      "customer retention",
+      "churn reduction",
+      "renewal management",
+      "net revenue retention",
+      "customer health score",
+      "account expansion",
+      "gainsight",
+      "totango",
+      "churnzero"
+    ],
+    "ambiguous": [
+      "customer retention",
+      "churn reduction",
+      "account expansion"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ccaas-ivr-development",
+    "name": "Contact center (CCaaS) and IVR development",
+    "category": "tools",
+    "aliases": [
+      "amazon connect",
+      "amazon connect contact flows",
+      "nice cxone",
+      "cxone studio",
+      "nice incontact",
+      "incontact studio",
+      "genesys cloud",
+      "genesys cloud cx",
+      "genesys architect",
+      "genesys architect flows",
+      "ivr development",
+      "ivr call flows",
+      "contact center as a service",
+      "ccaas",
+      "computer telephony integration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "adas-functions",
+    "name": "ADAS functions",
+    "category": "programming",
+    "aliases": [
+      "adas",
+      "advanced driver assistance systems",
+      "adaptive cruise control",
+      "automatic emergency braking",
+      "autonomous emergency braking",
+      "lane keep assist",
+      "lane keeping assist",
+      "lane departure warning",
+      "traffic sign recognition",
+      "euro ncap"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "matlab-simulink",
+    "name": "MATLAB and Simulink",
+    "category": "tools",
+    "aliases": [
+      "matlab",
+      "simulink",
+      "matlab/simulink",
+      "stateflow",
+      "model-based design",
+      "embedded coder",
+      "simulink test"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ecu-measurement-calibration",
+    "name": "ECU measurement and calibration (INCA, CANape)",
+    "category": "tools",
+    "aliases": [
+      "etas inca",
+      "inca calibration",
+      "vector canape",
+      "canape",
+      "xcp protocol",
+      "a2l files",
+      "ecu calibration",
+      "vehicle calibration",
+      "measurement and calibration"
+    ],
+    "ambiguous": [
+      "measurement and calibration"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hil-testing",
+    "name": "Hardware-in-the-loop (HIL) testing",
+    "category": "testing",
+    "aliases": [
+      "hil testing",
+      "hardware in the loop",
+      "hardware-in-the-loop",
+      "hil test bench",
+      "hil bench",
+      "dspace hil",
+      "dspace scalexio",
+      "scalexio",
+      "dspace controldesk",
+      "controldesk",
+      "automationdesk",
+      "configurationdesk",
+      "ni veristand",
+      "veristand",
+      "ecu-test",
+      "tracetronic ecu-test"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "vehicle-electrical-troubleshooting",
+    "name": "Vehicle diagnostics and electrical troubleshooting",
+    "category": "tools",
+    "aliases": [
+      "vehicle diagnostics",
+      "vehicle fault diagnosis",
+      "automotive fault diagnosis",
+      "automotive troubleshooting",
+      "vehicle troubleshooting",
+      "automotive wiring diagrams",
+      "vehicle wiring diagrams",
+      "wiring harness troubleshooting",
+      "diagnostic trouble codes",
+      "dtc troubleshooting",
+      "guided troubleshooting",
+      "automotive electrical systems"
+    ],
+    "ambiguous": [
+      "guided troubleshooting"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ev-hev-systems",
+    "name": "EV and hybrid vehicle systems",
+    "category": "programming",
+    "aliases": [
+      "electric vehicle systems",
+      "ev systems",
+      "hybrid electric vehicles",
+      "hybrid vehicles",
+      "ev powertrain",
+      "battery management system",
+      "high voltage systems",
+      "high-voltage safety",
+      "traction motor",
+      "ev charging systems"
+    ],
+    "ambiguous": [
+      "high voltage systems",
+      "high-voltage safety"
+    ],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

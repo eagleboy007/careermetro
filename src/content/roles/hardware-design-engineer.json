@@ -1,0 +1,117 @@
+{
+  "slug": "hardware-design-engineer",
+  "title": "Hardware Design Engineer",
+  "summary": "Hardware design engineers design the electronic circuit boards inside products such as vehicle control units (ECUs), industrial controllers and medical devices: they draw schematics, pick parts and guide the PCB (printed circuit board) layout. They sit in a product hardware team with firmware, mechanical and test engineers and take each board from first prototype to production.",
+  "dailyDuties": [
+    "Draw and review schematics for new boards",
+    "Select components and keep the bill of materials up to date",
+    "Work with the layout engineer on stack-up, routing and DFM fixes",
+    "Bring up prototype boards in the lab with oscilloscopes and power analysers",
+    "Simulate power supply and analog stages before layout",
+    "Fix EMI/EMC and signal problems found in testing",
+    "Write design and test reports for each hardware release"
+  ],
+  "typicalTitles": [
+    "Hardware Development Engineer",
+    "Electronics Hardware Design Engineer",
+    "Board Design Engineer",
+    "ECU Hardware Engineer",
+    "Lead Hardware Engineer",
+    "Electronics Design Engineer",
+    "Schematic Design Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "pcb-schematic-design",
+      "importance": "required",
+      "expectation": "Draw schematics and guide multilayer PCB layout in Altium, OrCAD or a similar tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "analog-power-circuit-design",
+      "importance": "required",
+      "expectation": "Design power supplies and analog stages and check them in circuit simulation",
+      "postingShare": null
+    },
+    {
+      "skillId": "digital-logic-design",
+      "importance": "required",
+      "expectation": "Design the digital side of a board: clocks, resets, logic and memory interfaces",
+      "postingShare": null
+    },
+    {
+      "skillId": "microcontrollers",
+      "importance": "required",
+      "expectation": "Pick and wire up the microcontroller or processor at the heart of the board",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Add UART, SPI, I2C, CAN and Ethernet interfaces to the board",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-debugging",
+      "importance": "required",
+      "expectation": "Bring up new boards in the lab with an oscilloscope and logic analyser",
+      "postingShare": null
+    },
+    {
+      "skillId": "emc-signal-integrity",
+      "importance": "required",
+      "expectation": "Design boards that pass EMI/EMC tests and keep high-speed signals clean",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-functional-safety",
+      "importance": "nice_to_have",
+      "expectation": "Do hardware safety analysis such as FMEDA for ISO 26262 ECUs",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "nice_to_have",
+      "expectation": "Write small test firmware to check a new board",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpga-design",
+      "importance": "nice_to_have",
+      "expectation": "Put an FPGA on the board and work with the FPGA team",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-network-diagnostics",
+      "importance": "nice_to_have",
+      "expectation": "Test ECU networks with CANoe or similar tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script lab tests and data logging",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "nice_to_have",
+      "expectation": "Lead a small hardware team and review their schematics",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-06"
+}

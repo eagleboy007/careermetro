@@ -1,0 +1,52 @@
+{
+  "id": "contact-center-developer-from-avaya-ivr",
+  "roleSlug": "contact-center-developer",
+  "persona": "Avaya IVR developer moving to cloud contact center platforms",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nEXPERIENCE\nIVR Developer, Sahyadri Contact Solutions, Pune (2020 - present)\n- Built Amazon Connect contact flows for a US insurance client's claims helpline, handling 20,000 calls a day.\n- Wrote Python Lambda functions that look up policy numbers before routing calls.\n- Called the client's REST APIs from contact flows to fetch claim status.\n- Met the client's operations team to capture routing rules for six queues.\n- Tested every call flow end to end in UAT before each release.\n\nAssociate Developer, Sahyadri Contact Solutions, Pune (2018 - 2020)\n- Maintained Avaya Experience Portal IVR applications for a bank.\n\nSKILLS\nAmazon Connect, Python, Avaya, Salesforce, Postman\n\nEDUCATION\nBE Electronics and Telecommunication, Pune University, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "ccaas-ivr-development",
+        "quote": "Built Amazon Connect contact flows for a US insurance client"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python Lambda functions that look up policy numbers"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Called the client's REST APIs from contact flows"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "capture routing rules for six queues"
+      },
+      {
+        "skillId": "manual-testing",
+        "quote": "Tested every call flow end to end"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Salesforce"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "crm-tools",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "terraform",
+      "llm-apps",
+      "nosql",
+      "voip-sip-sbc"
+    ]
+  },
+  "reviewedBy": null
+}

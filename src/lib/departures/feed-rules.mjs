@@ -81,6 +81,9 @@ export const ROLE_TITLES = {
   // A developer relations title before the language, cloud and security rules that would read the rest of it ("Cloud
   // Developer Advocate", "Python Developer Advocate"); a "Developer Relations Manager" has no rule.
   "developer-advocate": /\b(developer|dev) (advocate|evangelist)\b|\bdeveloper relations( (engineer|advocate|lead|specialist))?\b|\bdevrel\b|\btechnical evangelist\b/i,
+  // A forward deployed or customer-embedded engineer title before the AI, embedded and software rules that would read
+  // the rest of it ("Forward Deployed AI Engineer", "Customer-Embedded Software Engineer").
+  "forward-deployed-engineer": /\bforward[- ]deployed\b.*\b(engineer|developer|engineering)\b|\bcustomer[- ]embedded (software )?engineer\b|\bai deployment engineer\b/i,
   // A malware title before the threat intelligence and broad security rules ("Threat Researcher - Malware"); a plain
   // "Reverse Engineer" can be a mechanical one, so it counts only beside security or binary.
   "malware-analyst": /^(?=.*\b(analyst|engineer|researcher|specialist|consultant)\b)(.*\bmalware\b|.*\b(security|binary) reverse engineer(ing)?\b)/i,
@@ -126,6 +129,9 @@ export const ROLE_TITLES = {
   "incident-response-analyst": /\b(incident respon(se|der)s?|incident handl(er|ing)|dfir|((digital|cyber|computer) )?forensics? investigator|(csirt|cert) (analyst|engineer))\b/i,
   // A network operations centre title before the network rules; "Network Operations Engineer" stays a network one.
   "noc-engineer": /\b(noc|network operations cent(er|re)|network monitoring) (engineer|analyst|specialist|technician|support engineer|executive|associate)\b|\b(l[123]|level ?[123]) noc\b/i,
+  // A contact center platform (CCaaS, IVR) title before the calling and cloud rules ("Genesys Cloud Developer"); never a
+  // test, support or agent one, nor a plain on-premises telephony one.
+  "contact-center-developer": /^(?!.*\b(test|tester|testing|qa|support|agent|executive|associate)\b)(?=.*\b(developer|engineer|programmer|consultant)\b).*\b(contact cent(er|re)|amazon connect|aws connect|(nice )?cxone|(nice )?incontact|genesys( cloud| purecloud| engage)?|ivr|ccaas)\b/i,
   // A calling or collaboration platform title; never a voice AI or speech one, nor an Office 365 collaboration admin.
   "unified-communications-engineer": /\b(unified communications?|uc|voip|voice|telephony|ip telephony|cisco (voice|collaboration|uc)|(microsoft )?teams (voice|phone)|cucm|webex)( and video)? (engineer|administrator|admin|specialist|consultant)\b|\bcollaboration engineer\b/i,
   // A radio network title before the performance test and test rules ("RF Performance Engineer", "Drive Test Engineer");
@@ -168,9 +174,12 @@ export const ROLE_TITLES = {
   "cloud-support-engineer": /\b(cloud|aws|azure|gcp|google cloud)( technical)? support (engineer|associate|specialist|analyst)\b|\bcloud support\b/i,
   // An application or production support title before the product support one.
   "application-support-engineer": /\b(application|app|production|prod) (production )?support (engineer|analyst|specialist|associate|executive|lead)\b/i,
-  // A technical account or technical customer success title; a plain "Customer Success Manager" or "Account Manager"
-  // has no rule.
+  // A technical account or technical customer success title; a plain "Customer Success Manager" is customer success
+  // (below), and a plain "Account Manager" has no rule.
   "technical-account-manager": /\b(technical|cloud) account manager\b|\btechnical customer success manager\b|\bcustomer success manager\b.*\btechnical\b/i,
+  // A customer success title after the TAM rule, which keeps "Technical Customer Success Manager"; "Customer Success
+  // Engineer" stays product support, and an edtech "Customer Success Executive" or "Associate" is not one.
+  "customer-success-manager": /\b(customer|client|ai|saas) success (manager|lead|specialist|partner)\b|\bcustomer success account manager\b/i,
   // A product support title; "Database Support Engineer" stays a DBA one.
   "technical-support-engineer": /\b(technical|tech|product|customer|saas|l[123]) support (engineer|specialist|associate|analyst)\b|\bcustomer success engineer\b|^((senior|sr\.?|associate|lead) )?(support|escalation) engineer\b/i,
   "database-administrator": /\b(database (administrator|admin|support engineer)|dba|(sql server|oracle|mysql|postgres(ql)?|mongodb|db2) (database administrator|administrator|admin))\b/i,
@@ -189,6 +198,13 @@ export const ROLE_TITLES = {
   "database-architect": /\b(database (design )?(architect|engineer)|database reliability|data modeler)\b/i,
   // Before the data, AI and machine learning rules, which would read "Video Analytics Engineer" or "Vision AI Engineer".
   "computer-vision-engineer": /^(?=.*\b(engineer|developer)\b).*\b(computer vision|cv|vision ai|image processing|machine vision|video analytics|perception)\b/i,
+  // A hardware-in-the-loop or ECU validation title before the test, C++ and embedded rules ("HIL Test Engineer", "C++
+  // Experts for ADAS HIL Framework Development"); it is not a test role, so a hardware word never blocks it.
+  "hil-test-engineer": /^(?=.*\b(engineer|developer|development|tester|specialist|experts?|lead)\b).*(\b(hil|hil\/sil|sil\/hil|hardware[- ]in[- ](the[- ])?loop|dspace|veristand)\b|\becu (validation|test(ing)?)\b)/i,
+  // An ADAS title after the computer vision rule, which keeps perception titles, and after the HIL rule.
+  "adas-engineer": /^(?=.*\b(engineer|engineering|developer|specialist|lead)\b).*\b(adas|advanced driver[- ]assistance( systems?)?|driver[- ]assistance)\b/i,
+  // A whole-vehicle diagnostic or troubleshooting title; never a UDS stack, software or developer one.
+  "automotive-diagnostics-engineer": /^(?!.*\b(software|developer|uds|stack|autosar)\b)(?=.*\b(engineer|specialist|expert|lead)\b).*\b(automotive|vehicle|ev|hev|aftermarket)( \(?systems?\)?)? (diagnostics?|troubleshooting)\b/i,
   // A dbt or analytics engineering title before the ETL and data engineering rules.
   "analytics-engineer": /(?<!\btext )\banalytics engineer(ing)?\b|\bdbt (developer|engineer)\b|\bdata modell?ing engineer\b/i,
   // A Kafka, Flink or streaming data title before the ETL, data and platform rules ("Streaming Data Engineer",
@@ -199,6 +215,9 @@ export const ROLE_TITLES = {
   // A PL/SQL or T-SQL programmer; "Oracle DBA" stays a DBA title (above).
   "database-developer": /\b((oracle )?pl\/?sql|t-?sql|oracle|sql( server)?|database|db) (developer|programmer)\b/i,
   "data-engineer": /\b(data engineer|big data engineer|data platform engineer|data (pipeline|integration) engineer|pyspark (developer|engineer)|databricks (engineer|developer))\b|\bsoftware (engineer|developer)\b.*\bdata\b/i,
+  // An AI, ML, NLP, vision or applied research scientist title before the NLP and data science rules; a plain or
+  // "Associate Research Scientist" has no rule (lab and pharma boards use it), and "Applied Scientist" stays data science.
+  "ai-research-scientist": /^(?!.*\b(chemistry|chemical|biology|biological|pharma|pharmaceutical|clinical|formulation|analytical|hplc|materials?|food|polymer)\b).*(\b((ai|ml|machine learning|deep learning|nlp|computer vision|vision|applied|llm|gen(erative)?[- ]?ai) research scientist|ai scientist)\b|\bresearch scientist\b.*\b(ai|ml|machine learning|deep learning|nlp|natural language processing|computer vision|vision|llm|gen(erative)?[- ]?ai|applied)\b)/i,
   // An NLP title before the AI, machine learning and data science rules; "Machine Learning Engineer - NLP" stays ML.
   "nlp-engineer": /\b(nlp|natural language processing|text analytics)( data)? (engineer|scientist|developer|researcher)\b|\bcomputational linguist\b/i,
   "mlops-engineer": /\b(ml[- ]?ops|llm[- ]?ops|machine learning operations|ml devops|model ?ops)\b.*\b(engineer|developer|specialist)\b|\b(ml|machine learning|ai) (platform|infrastructure|infra) engineer\b|\bsoftware (engineer|developer)\b.*\b(ml[- ]?ops|llm[- ]?ops)\b/i,
@@ -278,6 +297,10 @@ export const ROLE_TITLES = {
   "fpga-engineer": /^(?!.*\b(test|tester|testing|qa|validation|software)\b).*\bfpga\b.*\b(engineer|developer|designer)\b/i,
   // A chip design or verification title (front end: RTL, verification), never a post-silicon validation one.
   "vlsi-design-engineer": /^(?!.*\b(validation|software|physical design|analog|dft)\b)(.*\b(vlsi|asic|rtl|soc (design|verification)|digital (ic )?design|design verification|chip design|silicon design)\b.*\b(engineer|developer)\b|^((senior|sr\.?|junior|jr\.?|lead) )?verification engineer$)/i,
+  // A board or electronics hardware design title after the FPGA and chip design rules, before the embedded rule ("ECU
+  // Hardware Engineer"); never a test, software, chip, IT, networking or plant one. A plain "Hardware Engineer" has no
+  // rule (it is often IT hardware).
+  "hardware-design-engineer": /^(?!.*\b(test|tester|testing|qa|validation|verification|software|firmware|fpga|asic|rtl|vlsi|silicon|technician|support|networking|network|desktop|it|plant|maintenance|field|service)\b).*(\bhardware (design|development)\b|\b(electronics?|board|pcb|schematic|circuit) design engineer\b|\b(ecu|embedded|electronics?|board) hardware (engineer|designer|lead)\b|\b(senior|sr\.?|lead) hardware engineer\b)/i,
   // A PLC, SCADA or DCS title before the robotics rule; a SCADA security title stays OT security (above), and a plain
   // "Automation Engineer" or "Control Systems Engineer" has no rule.
   "plc-scada-engineer": /^(?!.*\b(security|cyber ?security|test|tester|testing|qa)\b)(.*\b(plc|scada|dcs)\b.*\b(engineer|programmer|developer|specialist|technician|lead|consultant)\b|.*\bindustrial automation (engineer|specialist|lead)\b|.*\bcommissioning engineer\b.*\b(automation|plc|scada|dcs)\b)/i,
@@ -340,6 +363,8 @@ export const ROLE_TITLES = {
   "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b|\bsoftware (development )?engineer\b.*\b(in test|qa|quality)\b|\bautomation tester\b|\b(manual|automation)( (&|and) (manual|automation))? testing\b|\bselenium\b.*\b(engineer|tester|developer)\b/i,
   // Reliability and production engineers in software only, never in a plant or on hardware.
   "site-reliability-engineer": /\b(site reliability|sre)\b|^(?!.*\b(hardware|mechanical|manufacturing|plant|electrical|civil|chemical|silicon|asic)\b).*\b(((systems?|infrastructure|platform) )?reliability|observability|production) engineer\b/i,
+  // An AI, ML or generative AI architect title before the cloud and solutions architect rules ("GenAI Solution Architect").
+  "ai-architect": /(?<![\w/])(ai|ai\/ml|ml\/ai|ml|machine learning|gen(erative)?[- ]?ai|llm|applied ai|agentic ai|conversational ai)( solutions?| platform)? architect\b/i,
   "cloud-architect": /\b(cloud( solutions?| infrastructure| platform)? architect|(aws|azure|gcp|google cloud|multi-?cloud|hybrid cloud)( cloud)?( solutions?)? architect)\b/i,
   "solutions-architect": /\b(solutions?|technical|software|application|integration|enterprise|pre-?sales) architect\b/i,
   "cloud-engineer": /\b(cloud( solutions?| infrastructure)? (engineer|consultant|administrator|developer|operations|ops)|(aws|azure|gcp|google cloud)( solutions?)? (engineer|consultant|administrator|developer))\b|\bsoftware (engineer|developer)\b.*\bcloud\b/i,
@@ -350,7 +375,7 @@ export const ROLE_TITLES = {
   "software-engineer": /^(?!.*\b(in test|qa|embedded|firmware|hardware|silicon|asic|mechanical|electrical)\b).*\b(software (engineer|developer|development engineer)|sde|programmer analyst|application developer|member of technical staff|back[- ]?end (engineer|developer))\b|^((senior|sr\.?) )?mts\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email|online) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search|social media) (specialist|executive|manager|associate)\b/i,
 };
-const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager"]);
+const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;

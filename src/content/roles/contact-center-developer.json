@@ -1,0 +1,153 @@
+{
+  "slug": "contact-center-developer",
+  "title": "Contact Center Developer",
+  "summary": "Contact center developers build the phone and chat systems that customer support teams use: IVR menus (the automated 'press 1' prompts), call routing and links to the CRM so agents see who is calling. They work on cloud platforms such as Amazon Connect, NICE CXone or Genesys Cloud, usually in a customer experience or IT services team.",
+  "dailyDuties": [
+    "Build and change IVR and call-routing flows",
+    "Write integration functions that look up callers in the CRM",
+    "Connect chat, voice and callback channels to agent queues",
+    "Test call flows end to end before a release",
+    "Fix call drops and flow errors reported by support teams",
+    "Meet client teams to turn routing needs into designs"
+  ],
+  "typicalTitles": [
+    "Amazon Connect Developer",
+    "NICE CXone Developer",
+    "Genesys Cloud Developer",
+    "IVR Developer",
+    "CCaaS Developer",
+    "Contact Center Engineer",
+    "Amazon Connect Engineer",
+    "Genesys Developer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "ccaas-ivr-development",
+      "importance": "required",
+      "expectation": "Build IVR and routing flows on Amazon Connect, NICE CXone Studio or Genesys Cloud Architect",
+      "postingShare": null
+    },
+    {
+      "skillId": "nodejs",
+      "importance": "required",
+      "expectation": "Write integration functions, such as AWS Lambda handlers, behind the call flows",
+      "postingShare": null,
+      "oneOf": "lambda-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write integration functions, such as AWS Lambda handlers, behind the call flows",
+      "postingShare": null,
+      "oneOf": "lambda-language"
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Call CRM and back-office APIs from flows to look up callers and update records",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "required",
+      "expectation": "Connect the contact center to a CRM so agents see caller details (CTI)",
+      "postingShare": null
+    },
+    {
+      "skillId": "manual-testing",
+      "importance": "required",
+      "expectation": "Test call and chat flows end to end before each release",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn business call-routing needs into flow designs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain designs and issues to client teams, often in US time zones",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Use Lambda, DynamoDB, Lex and CloudWatch around Amazon Connect",
+      "postingShare": null
+    },
+    {
+      "skillId": "nosql",
+      "importance": "nice_to_have",
+      "expectation": "Store caller and routing data in a key-value store such as DynamoDB",
+      "postingShare": null
+    },
+    {
+      "skillId": "voip-sip-sbc",
+      "importance": "nice_to_have",
+      "expectation": "Understand SIP trunks and telephony basics when troubleshooting calls",
+      "postingShare": null
+    },
+    {
+      "skillId": "observability",
+      "importance": "nice_to_have",
+      "expectation": "Monitor queues, flow errors and call quality dashboards",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Deploy contact center setup as code",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Add AI virtual agents and call summaries to flows",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Keep flow exports and integration code in version control",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Deliver flow changes in sprints with the client team",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "lambda-language",
+      "label": "An integration language (Node.js or Python)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-developer-associate",
+      "importance": "optional",
+      "why": "Lambda and serverless skills used in Amazon Connect builds"
+    },
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "optional",
+      "why": "Broader AWS design knowledge for Amazon Connect projects"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-06"
+}

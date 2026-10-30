@@ -1,0 +1,115 @@
+{
+  "slug": "customer-success-manager",
+  "title": "Customer Success Manager",
+  "summary": "Customer success managers look after a group of customers who already pay for a software product, making sure they use it well, renew their contracts and buy more over time. They sit in the customer success team next to sales and support and are measured on retention, renewals and account growth.",
+  "dailyDuties": [
+    "Check account health and usage for your customers",
+    "Run onboarding check-ins and training calls",
+    "Hold quarterly business reviews with customer leaders",
+    "Plan renewals and spot upsell chances",
+    "Raise customer problems with product and support teams",
+    "Update account notes and renewal dates in the CRM"
+  ],
+  "typicalTitles": [
+    "Enterprise Customer Success Manager",
+    "AI Success Manager",
+    "Customer Success Lead",
+    "Client Success Manager",
+    "Customer Success Account Manager",
+    "SaaS Customer Success Manager"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "customer-retention-expansion",
+      "importance": "required",
+      "expectation": "Own renewals, cut churn and grow accounts through upsell",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-account-management",
+      "importance": "required",
+      "expectation": "Run onboarding check-ins, health reviews and quarterly business reviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain the product's value clearly to users and executives",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work across sales, product and support for each customer",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "required",
+      "expectation": "Keep accounts, renewals and notes up to date in a CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Find why an account is unhappy and fix it",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Track usage and account health in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-metrics",
+      "importance": "required",
+      "expectation": "Read usage and retention metrics",
+      "postingShare": null
+    },
+    {
+      "skillId": "saas-implementation-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Help new customers set up the product",
+      "postingShare": null
+    },
+    {
+      "skillId": "support-ticketing-tools",
+      "importance": "nice_to_have",
+      "expectation": "Follow open tickets for your accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "solution-demos-poc",
+      "importance": "nice_to_have",
+      "expectation": "Demo new features to existing customers",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull account usage data yourself",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Help customers get value from AI features",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-06"
+}

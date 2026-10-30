@@ -8,6 +8,10 @@
     "task": "Audit a page you built with Lighthouse and axe, fix the issues (labels, contrast, keyboard focus, alt text) and document before-and-after scores."
   },
   {
+    "skillId": "adas-functions",
+    "task": "Using MATLAB's free Automated Driving examples or an open simulator (CARLA, esmini), build a simple adaptive cruise or emergency braking function, test it on cut-in and stopped-car scenarios, and share the model or code, plots and a short note on the limits you found."
+  },
+  {
     "skillId": "adobe-commerce-magento",
     "task": "Install Magento Open Source 2.4 in Docker with sample data, build a small module that adds a delivery-date field to checkout and shows it on the order in admin, and share the module code and screenshots."
   },
@@ -34,6 +38,10 @@
   {
     "skillId": "amba-protocols",
     "task": "Write an AXI4-Lite slave with four registers in Verilog or SystemVerilog, test reads, writes and back-to-back transfers with a testbench in a free simulator (Icarus, Verilator or EDA Playground), and share the code and waveforms."
+  },
+  {
+    "skillId": "analog-power-circuit-design",
+    "task": "Design a 12V to 5V and 3.3V power stage (a buck converter plus an LDO) for a small board, simulate start-up, ripple, load steps and efficiency in LTspice, and share the schematic, the simulation files and a one-page design note with your part choices."
   },
   {
     "skillId": "android",
@@ -80,6 +88,10 @@
     "task": "In the free Automation Anywhere Community Edition, build a bot that reads a synthetic invoice Excel file, enters each row into a demo web form, logs failures to a CSV and emails a summary. Share the bot export and screenshots."
   },
   {
+    "skillId": "automotive-functional-safety",
+    "task": "For a synthetic electric window lift or brake light function, write an ISO 26262 style item definition, a HARA with ASIL ratings, safety goals and a few functional safety requirements, and share the document with your reasoning for each rating."
+  },
+  {
     "skillId": "automotive-network-diagnostics",
     "task": "Write a small UDS server in Python with python-can and python-udsoncan on a virtual CAN bus that answers Read DTC, Read Data By Identifier and Diagnostic Session Control, test it with a client script and share the code and logs."
   },
@@ -124,6 +136,10 @@
     "task": "Write a one-page cost-benefit analysis for replacing a manual approval process with software: costs, benefits, a 3-year NPV in a spreadsheet and a recommendation."
   },
   {
+    "skillId": "ccaas-ivr-development",
+    "task": "In an Amazon Connect free tier instance (or a Genesys Cloud or NICE CXone trial), build an IVR that greets callers, looks up a synthetic order number through a Lambda function and routes them to a queue. Share the exported flow, the code and a call recording or screenshots."
+  },
+  {
     "skillId": "ci-cd",
     "task": "Add a GitHub Actions workflow to a small repo that lints, tests and builds a Docker image on every pull request, and share a link to a passing run."
   },
@@ -134,6 +150,10 @@
   {
     "skillId": "cisco-collaboration-cucm",
     "task": "In Cisco Packet Tracer or a Cisco dCloud lab, set up 2 IP phones with directory numbers, a hunt group and a route pattern between 2 sites, test calls both ways, and share the config with a one-page call-flow diagram."
+  },
+  {
+    "skillId": "cloud-ai-platforms",
+    "task": "On a free tier of Azure AI Foundry, Amazon Bedrock or Vertex AI, deploy a model behind a small API that answers questions over a public document set, add basic monitoring and a cost estimate, and share the code, the setup steps and a note on the service choices."
   },
   {
     "skillId": "cloud-billing-analysis",
@@ -230,6 +250,10 @@
   {
     "skillId": "cuda-gpu-programming",
     "task": "Write a CUDA matrix multiply with a naive and a shared-memory tiled kernel, check results against NumPy, time both on a free cloud GPU (such as Colab), and share the code, timings and an Nsight or nvprof profile summary."
+  },
+  {
+    "skillId": "customer-retention-expansion",
+    "task": "For a synthetic SaaS account list (usage, tickets, renewal dates), build a health score in a spreadsheet, flag at-risk and expansion accounts, and write a one-page renewal and success plan for the top three. Share the sheet and the plan."
   },
   {
     "skillId": "data-catalog-tools",
@@ -356,6 +380,10 @@
     "task": "In a Dynamics 365 trial, write a C# plugin that validates a field on create, register it with the Plugin Registration Tool, add a JavaScript form script using Xrm.WebApi, and share the code with screenshots of both running."
   },
   {
+    "skillId": "ecu-measurement-calibration",
+    "task": "With Vector's free CANape demo or an open XCP tool (such as pyXCP against a simulated ECU), read and change calibration values from an A2L file, log a measurement, and share the setup, screenshots and a short note on what each parameter changed."
+  },
+  {
     "skillId": "eda-scripting",
     "task": "Write a Tcl or Perl script that parses a sample timing report or log from an open-source flow such as OpenROAD's examples, lists the 10 worst paths or errors, and writes a CSV summary. Share the script and its output."
   },
@@ -378,6 +406,10 @@
   {
     "skillId": "embedded-protocols",
     "task": "Read a temperature sensor over I2C or SPI on a development board and send the readings over UART to your laptop, capture one transaction with a logic analyser or a simulator trace, and explain each byte in a README."
+  },
+  {
+    "skillId": "emc-signal-integrity",
+    "task": "For a small board you designed or an open-source one (KiCad), review it for EMI/EMC and signal integrity: stack-up, return paths, decoupling and high-speed traces. Simulate one critical net if you can, and share a marked-up review with the fixes you would make."
   },
   {
     "skillId": "endpoint-management",
@@ -478,6 +510,10 @@
   {
     "skillId": "high-availability-dr",
     "task": "Set up PostgreSQL streaming replication with Docker, simulate a primary failure, promote the replica and write a runbook with RPO and RTO targets."
+  },
+  {
+    "skillId": "hil-testing",
+    "task": "Build a small software-in-the-loop or low-cost HIL bench (a Python plant model with an Arduino or a CAN-connected board as the ECU), automate ten test cases with pass/fail reports, and share the code, a wiring or setup diagram and the test report."
   },
   {
     "skillId": "hpc-cluster-scheduling",
@@ -628,6 +664,10 @@
     "task": "Write 20 test cases (positive, negative, boundary) for a public demo login and signup page, run them, and log results with pass/fail and evidence."
   },
   {
+    "skillId": "matlab-simulink",
+    "task": "In MATLAB Online (free tier) or Octave, model a simple vehicle speed controller in Simulink (or a script), tune it for a step change and a hill, and share the model, the response plots and a note on the gains you chose."
+  },
+  {
     "skillId": "mendix-development",
     "task": "In the free Mendix Studio Pro, build an asset-tracking app with a domain model, two pages, a microflow that checks and saves a checkout, and role-based access. Share the project export and screenshots of it running."
   },
@@ -646,6 +686,10 @@
   {
     "skillId": "microsoft-graph-api",
     "task": "Write a script or SPFx web part that calls Microsoft Graph to list a test user's recent files and calendar events in a free Microsoft 365 developer tenant, handling paging and throttling. Share the code and screenshots."
+  },
+  {
+    "skillId": "ml-research-publications",
+    "task": "Reproduce the main result of a recent ML paper with public code and data, run one ablation of your own, and write it up as a 4-page workshop-style paper (or a ML Reproducibility Challenge report). Share the PDF and the code."
   },
   {
     "skillId": "mlops",
@@ -786,6 +830,10 @@
   {
     "skillId": "pandas",
     "task": "In a pandas notebook, explore a public data.gov.in dataset using merge, groupby, pivot_table and date handling, and answer 5 questions with short written findings."
+  },
+  {
+    "skillId": "pcb-schematic-design",
+    "task": "Design a small microcontroller board in KiCad (power input, regulator, MCU, USB or CAN and a few connectors): schematic, part choices, a 2- or 4-layer layout and design rule checks. Share the KiCad project, the BOM and Gerber files."
   },
   {
     "skillId": "pega-case-management",
@@ -934,6 +982,10 @@
   {
     "skillId": "research-synthesis",
     "task": "Interview five friends or classmates about how they plan a trip (or use five public interview transcripts), code the notes, build an affinity map in a free tool such as Miro or FigJam and write three insights with quotes. Share both."
+  },
+  {
+    "skillId": "responsible-ai-governance",
+    "task": "For a synthetic AI use case (such as a loan or hiring assistant), write a short AI risk assessment covering bias, privacy, safety and human oversight, map it to the NIST AI RMF or the EU AI Act, and list the controls and tests you would require. Share the document."
   },
   {
     "skillId": "rest-apis",
@@ -1362,6 +1414,10 @@
   {
     "skillId": "vector-search",
     "task": "Index 200 synthetic support answers with free embeddings in pgvector, Chroma or FAISS, try 2 chunk sizes, and report how many of 15 test questions find the right answer in the top 3, with the settings that worked best."
+  },
+  {
+    "skillId": "vehicle-electrical-troubleshooting",
+    "task": "From a public wiring diagram (such as a common car's headlamp or starter circuit), write a guided troubleshooting procedure for one fault and its trouble codes: checks in order, expected meter readings and the repair. Share the procedure with the marked diagram."
   },
   {
     "skillId": "verilog-rtl",
