@@ -1,0 +1,217 @@
+﻿Ref,Skill,Level,Question,Options,Marked answer,Why,Agree (yes / no),Change to,Comment
+sql-mc-1,SQL,L1,Which clause filters groups after GROUP BY?,"A. WHERE
+B. HAVING
+C. ORDER BY
+D. LIMIT",B. HAVING,HAVING filters groups after the rows are grouped and counted. WHERE filters single rows before grouping.,,,
+sql-mc-2,SQL,L1,A LEFT JOIN from customers to orders returns…,"A. Every customer, with empty order columns where there is no order
+B. Only customers who have orders
+C. Only orders that have a customer
+D. Every pairing of every customer with every order","A. Every customer, with empty order columns where there is no order",A LEFT JOIN keeps every row of the left table and fills the right table's columns with NULL where nothing matches.,,,
+sql-mc-3,SQL,L1,What does COUNT(column) leave out?,"A. Repeated values
+B. Zeros
+C. Nothing: it counts every row
+D. NULL values",D. NULL values,COUNT(column) counts the rows where that column is not NULL. COUNT(*) counts every row.,,,
+sql-mc-4,SQL,L1,Which keyword removes repeated rows from a query's result?,"A. UNIQUE
+B. GROUP
+C. DISTINCT
+D. DIFFERENT",C. DISTINCT,"SELECT DISTINCT returns each different row once. UNIQUE is a constraint on a table, not part of a SELECT.",,,
+python-mc-1,Python,L1,"What does len({1, 2, 2, 3}) return?","A. 4
+B. 3
+C. 2
+D. An error",B. 3,"Curly braces with values make a set, and a set keeps one copy of each value: 1, 2 and 3.",,,
+python-mc-2,Python,L1,Which of these can be a dictionary key?,"A. A tuple of numbers, such as (1, 2)
+B. A list, such as [1, 2]
+C. Another dictionary
+D. A set","A. A tuple of numbers, such as (1, 2)","Keys must be hashable, which means they cannot change. Tuples of numbers can't change; lists, dictionaries and sets can.",,,
+python-mc-3,Python,L1,"What does ""data""[1:3] return?","A. ""da""
+B. ""ata""
+C. ""dat""
+D. ""at""","D. ""at""","Slicing starts at index 1 and stops before index 3, so it takes the characters at 1 and 2: ""a"" and ""t"".",,,
+python-mc-4,Python,L1,Which line opens a file so it is closed even if an error happens?,"A. f = open(""data.csv"")
+B. f.read(""data.csv"")
+C. with open(""data.csv"") as f:
+D. import data.csv","C. with open(""data.csv"") as f:","A with block closes the file when the block ends, whether it ends normally or with an error.",,,
+git-mc-1,Git and version control,L1,Which command shows the line-by-line changes you have not staged yet?,"A. git log
+B. git diff
+C. git show
+D. git branch",B. git diff,git diff with no arguments compares your working files with what is staged. git log lists commits.,,,
+git-mc-2,Git and version control,L1,What does git pull do?,"A. Fetches the remote branch and merges it (or rebases) into yours
+B. Uploads your commits to the remote
+C. Throws away your local changes
+D. Makes a new branch",A. Fetches the remote branch and merges it (or rebases) into yours,"git pull is git fetch followed by a merge, or a rebase if you set it so. git push uploads.",,,
+git-mc-3,Git and version control,L1,You need to undo a commit that is already on a shared branch. The safe choice is…,"A. git reset --hard, then force-push
+B. Delete the branch and start again
+C. git commit --amend
+D. git revert with that commit",D. git revert with that commit,"git revert adds a new commit that undoes the old one, so nobody else's history is rewritten.",,,
+git-mc-4,Git and version control,L1,Which file lists the paths Git should not track?,"A. .gitconfig
+B. .gitkeep
+C. .gitignore
+D. README.md",C. .gitignore,".gitignore lists files and folders Git leaves out, such as build output and local secrets.",,,
+linux-mc-1,Linux command line,L1,"Which command shows running processes and their CPU use, updating live?","A. ls
+B. top
+C. cat
+D. chmod",B. top,top shows processes sorted by CPU use and refreshes every few seconds. htop is a friendlier version where installed.,,,
+linux-mc-2,Linux command line,L1,What does chmod 644 report.txt allow?,"A. The owner reads and writes; everyone else only reads
+B. Everyone reads, writes and runs it
+C. Only the owner can run it
+D. Nobody can read it",A. The owner reads and writes; everyone else only reads,"Each digit is owner, group, others. 6 is read and write, 4 is read only.",,,
+linux-mc-3,Linux command line,L1,"Which command finds the lines containing ""error"" in app.log?","A. find error app.log
+B. cd error app.log
+C. mv error app.log
+D. grep error app.log",D. grep error app.log,grep prints the lines of a file that match a pattern. find looks for files by name or type.,,,
+linux-mc-4,Linux command line,L1,What does cd .. do?,"A. Goes to your home folder
+B. Lists hidden files
+C. Moves up one folder
+D. Deletes the current folder",C. Moves up one folder,"Two dots mean the parent folder. cd on its own, or cd ~, goes home.",,,
+docker-mc-1,Docker,L1,What is the difference between an image and a container?,"A. They are two names for the same thing
+B. An image is a read-only template; a container is a running copy of it
+C. A container is a template; an image is what runs
+D. Images run only on Linux; containers run anywhere",B. An image is a read-only template; a container is a running copy of it,"You build an image once and can start many containers from it, each with its own writable layer.",,,
+docker-mc-2,Docker,L1,Which file describes how to build an image?,"A. Dockerfile
+B. docker-compose.yml
+C. package.json
+D. .dockerignore",A. Dockerfile,A Dockerfile lists the steps to build an image. A compose file describes how to run several containers together.,,,
+docker-mc-3,Docker,L1,What does docker run -p 8080:80 nginx do?,"A. Port 80 on your machine reaches port 8080 in the container
+B. It starts two containers, one on each port
+C. It runs nginx on port 8080 inside the container
+D. Port 8080 on your machine reaches port 80 in the container",D. Port 8080 on your machine reaches port 80 in the container,"The -p option is host port first, then container port.",,,
+docker-mc-4,Docker,L1,Files a container writes outside any volume…,"A. Are kept forever on the host
+B. Are saved into the image
+C. Are lost when the container is removed
+D. Are shared with every other container",C. Are lost when the container is removed,A container's own layer goes with the container. Data that must stay goes in a volume or a bind mount.,,,
+rest-apis-mc-1,REST API design,L1,Which HTTP method should only read and never change anything on the server?,"A. POST
+B. GET
+C. DELETE
+D. PATCH",B. GET,"GET is a safe method: it asks for data. POST, PATCH and DELETE change things.",,,
+rest-apis-mc-2,REST API design,L1,Which status code usually answers a POST that created something?,"A. 201 Created
+B. 200 OK
+C. 204 No Content
+D. 404 Not Found",A. 201 Created,"201 says something new was created, often with a Location header pointing at it.",,,
+rest-apis-mc-3,REST API design,L1,What is the difference between 401 and 403?,"A. 401: you aren't allowed; 403: we don't know who you are
+B. Both mean the server is down
+C. Both mean the page doesn't exist
+D. 401: we don't know who you are; 403: we know, and you aren't allowed","D. 401: we don't know who you are; 403: we know, and you aren't allowed",401 Unauthorized asks for valid credentials. 403 Forbidden means the credentials are fine but the action isn't allowed.,,,
+rest-apis-mc-4,REST API design,L1,Which method should have the same effect whether it is sent once or twice?,"A. POST
+B. Neither of them
+C. PUT
+D. Only methods without a body",C. PUT,"PUT replaces a resource with what you send, so repeating it changes nothing more. Two POSTs can create two records.",,,
+ci-cd-mc-1,CI/CD pipelines,L1,What does continuous integration mean?,"A. Releasing once a quarter after a long test phase
+B. Merging small changes often, with an automatic build and tests on each one
+C. Writing the tests after the release
+D. Everyone working on one shared server","B. Merging small changes often, with an automatic build and tests on each one",CI finds problems early because every change is built and tested as soon as it is pushed.,,,
+ci-cd-mc-2,CI/CD pipelines,L1,Tests fail in the pipeline on a pull request. What usually happens?,"A. The merge is blocked until the tests pass
+B. It merges anyway and is fixed later
+C. Production is rolled back
+D. The repository is locked for everyone",A. The merge is blocked until the tests pass,"Branch protection makes a passing pipeline a condition for merging, so broken code stays out of the main branch.",,,
+ci-cd-mc-3,CI/CD pipelines,L1,Where should a password or deploy key used by a pipeline be kept?,"A. In the repository, next to the code
+B. In the README
+C. In a commit message
+D. In the CI system's secret store",D. In the CI system's secret store,Secret stores keep the value out of the code and the logs and let you change it without a commit.,,,
+ci-cd-mc-4,CI/CD pipelines,L1,Continuous delivery and continuous deployment differ how?,"A. Deployment has the manual step; delivery is automatic
+B. They mean exactly the same
+C. Delivery keeps every change ready to release with a manual step; deployment releases every passing change automatically
+D. Delivery skips the tests",C. Delivery keeps every change ready to release with a manual step; deployment releases every passing change automatically,Both build and test every change. Continuous deployment also releases it without a person pressing a button.,,,
+statistics-mc-1,Statistics,L1,"Five salaries in lakh: 3, 4, 4, 5 and 50. Which number describes a typical salary best?","A. The mean
+B. The median
+C. The range
+D. The maximum",B. The median,"The median, 4, isn't pulled up by the one very high salary. The mean, 13.2, is.",,,
+statistics-mc-2,Statistics,L1,"What is the median of 2, 7, 4, 9 and 5?","A. 5
+B. 4
+C. 7
+D. 5.4",A. 5,"Sorted, the values are 2, 4, 5, 7, 9, and the middle one is 5. 5.4 is the mean.",,,
+statistics-mc-3,Statistics,L1,A test gives a p-value of 0.03. What does that mean?,"A. There is a 3% chance there is no effect
+B. The effect is 3% in size
+C. We are 97% sure the result matters
+D. If there were no real effect, results at least this extreme would come up about 3% of the time","D. If there were no real effect, results at least this extreme would come up about 3% of the time","A p-value is about the data assuming no effect. It is not the chance the effect is real, and it says nothing about size.",,,
+statistics-mc-4,Statistics,L1,Two measures have a correlation of 0.9. What does that show?,"A. One causes the other
+B. They are unrelated
+C. They move together strongly
+D. One is 90% of the other",C. They move together strongly,A correlation close to 1 means a strong straight-line link. It says nothing on its own about cause.,,,
+excel-mc-1,Excel,L1,Which function finds a value in the first column of a table and returns a value from another column of that row?,"A. SUMIF
+B. VLOOKUP
+C. CONCAT
+D. LEN",B. VLOOKUP,VLOOKUP looks down the first column. XLOOKUP and INDEX with MATCH do the same job more flexibly.,,,
+excel-mc-2,Excel,L1,The formula =A1*$B$1 is copied down a column. Which part stays the same?,"A. $B$1
+B. A1
+C. Both of them
+D. Neither of them",A. $B$1,"Dollar signs fix the column and the row, so $B$1 stays put while A1 becomes A2, A3 and so on.",,,
+excel-mc-3,Excel,L1,Which tool summarises sales by region and month without writing formulas?,"A. Freeze Panes
+B. Text to Columns
+C. Format Painter
+D. A PivotTable",D. A PivotTable,"A PivotTable groups and totals rows by the fields you drag in, and updates when you refresh it.",,,
+excel-mc-4,Excel,L1,"What does =COUNTIF(A:A, "">100"") return?","A. The total of the values above 100
+B. The first value above 100
+C. How many cells in column A are above 100
+D. TRUE if any value is above 100",C. How many cells in column A are above 100,COUNTIF counts the cells that meet the condition. SUMIF would add them up.,,,
+data-cleaning-mc-1,Data cleaning,L1,"A city column holds ""Mumbai"", ""mumbai "" and ""MUMBAI"". What do you do first?","A. Delete those rows
+B. Trim the spaces and make the case the same
+C. Replace them with the most common city
+D. Leave them; they mean the same",B. Trim the spaces and make the case the same,"Left as they are, they count as three cities in any group or chart. Trimming and one case make them one.",,,
+data-cleaning-mc-2,Data cleaning,L1,2% of rows have no age. What is a sensible first step?,"A. Find out why they are missing, then choose to drop or fill them
+B. Delete the whole age column
+C. Fill them with zero
+D. Leave them out of the report without saying so","A. Find out why they are missing, then choose to drop or fill them",Whether values are missing at random decides what is safe. Zero would pull every average down.,,,
+data-cleaning-mc-3,Data cleaning,L1,"Two rows are the same in every column, including the order id. They are most likely…","A. Two real orders
+B. Two different customers
+C. A formatting problem
+D. A duplicate to check and remove",D. A duplicate to check and remove,"An id is meant to be unique, so a repeated row with the same id is usually loaded twice. Check the source before deleting.",,,
+data-cleaning-mc-4,Data cleaning,L1,An order date column mixes 03/04/2026 and 2026-04-03. What is the risk?,"A. There is no risk
+B. The dates sort faster
+C. 03/04 can be read as 3 April or as 4 March
+D. The spreadsheet deletes them",C. 03/04 can be read as 3 April or as 4 March,"Day and month order differs by country. Convert every date to one format, such as 2026-04-03, before you work with them.",,,
+data-visualization-mc-1,Data visualization,L1,Which chart shows monthly revenue over two years most clearly?,"A. A pie chart
+B. A line chart
+C. A scatter plot
+D. A donut chart",B. A line chart,A line chart shows change over time. Pie and donut charts show parts of one whole.,,,
+data-visualization-mc-2,Data visualization,L1,Which chart compares sales across 8 product categories best?,"A. A bar chart
+B. A pie chart with 8 slices
+C. A line chart
+D. A 3D pie chart",A. A bar chart,"Bars of one length scale are easy to compare. Eight pie slices are hard to tell apart, and 3D makes it worse.",,,
+data-visualization-mc-3,Data visualization,L1,A bar chart's value axis starts at 90 instead of 0. What does that do?,"A. Makes the bars more accurate
+B. Changes nothing
+C. Makes the chart easier to print
+D. Makes the differences look bigger than they are",D. Makes the differences look bigger than they are,"Bar length should match the value, so bar charts start at zero. A cut axis exaggerates small gaps.",,,
+data-visualization-mc-4,Data visualization,L1,"To see how ad spend relates to sales across 200 shops, use…","A. A pie chart
+B. A stacked bar chart
+C. A scatter plot
+D. A gauge",C. A scatter plot,"A scatter plot puts one dot per shop, so you can see a trend, clusters and odd shops at a glance.",,,
+aws-mc-1,AWS,L1,Which AWS service stores files as objects in buckets?,"A. EC2
+B. S3
+C. RDS
+D. Lambda",B. S3,"S3 is object storage. EC2 runs servers, RDS runs managed databases and Lambda runs functions.",,,
+aws-mc-2,AWS,L1,Which AWS service gives you virtual servers?,"A. EC2
+B. S3
+C. IAM
+D. CloudFront",A. EC2,EC2 instances are virtual machines you choose the size and system of.,,,
+aws-mc-3,AWS,L1,What is IAM used for?,"A. Storing backups
+B. Sending email
+C. Running a website's DNS
+D. Deciding who can do what in your AWS account",D. Deciding who can do what in your AWS account,"IAM holds users, roles and policies. Route 53 does DNS, SES sends email.",,,
+aws-mc-4,AWS,L1,What is the safest way to let an app on EC2 read from S3?,"A. Put access keys in the app's code
+B. Make the bucket public
+C. Attach an IAM role to the instance
+D. Share the account's root password",C. Attach an IAM role to the instance,"A role gives the instance short-lived credentials that change on their own, with no keys to leak.",,,
+data-structures-algorithms-mc-1,Data structures and algorithms,L1,Which data structure gives O(1) average time for checking whether an item exists?,"A. Sorted array
+B. Hash set
+C. Linked list
+D. Binary heap",B. Hash set,"A hash set looks items up by their hash in constant time on average. A sorted array needs O(log n) binary search, and a linked list or heap needs a scan.",,,
+oop-mc-1,Object-oriented design,L1,Which principle hides an object's internal data behind methods?,"A. Inheritance
+B. Polymorphism
+C. Abstraction
+D. Encapsulation",D. Encapsulation,"Encapsulation keeps fields private and exposes behaviour through methods, so internal data can change without breaking callers.",,,
+unit-testing-mc-1,Unit testing,L1,A unit test calls a real payment gateway over the network. What is the main problem?,"A. It is slow and can fail for reasons outside the code
+B. It improves coverage too much
+C. It makes the test too short
+D. It cannot use assertions",A. It is slow and can fail for reasons outside the code,Network calls make tests slow and flaky. Unit tests should replace external services with stubs or mocks.,,,
+java-mc-1,Java,L1,Which collection keeps keys in sorted order?,"A. HashMap
+B. TreeMap
+C. LinkedList
+D. ArrayList",B. TreeMap,"TreeMap stores keys in a red-black tree, so they stay sorted. HashMap keeps no order, and the lists are not key-value maps.",,,
+javascript-mc-1,JavaScript,L1,What does typeof null return in JavaScript?,"A. ""null""
+B. ""undefined""
+C. ""object""
+D. ""number""","C. ""object""","typeof null returns ""object"" because of a long-standing quirk in the language. Check for null with === null instead.",,,
+cpp-mc-1,C++,L1,Which smart pointer allows only one owner of an object?,"A. shared_ptr
+B. weak_ptr
+C. auto_ptr
+D. unique_ptr",D. unique_ptr,"unique_ptr has sole ownership and can only be moved, not copied. shared_ptr allows many owners, and auto_ptr is removed from modern C++.",,,
