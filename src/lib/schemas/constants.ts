@@ -183,8 +183,8 @@ export const RECHECK_CLOSED_TEXT =
 export const SIGNUP_CLOSED_TEXT = "Company sign-up opens soon.";
 /** "Your choice" goals one person may have: goals they add themselves, such as from a job check's "Only for this job". */
 export const MAX_CHOICE_GOALS = 20;
-/** Certificates on our list that fill one goal, all of them (178 certificates in all on 30 Oct, 81 of them filling a goal), with room to grow. */
-export const GOAL_CERTIFICATES_MAX = 200;
+/** Certificates on our list that fill one goal, all of them (178 certificates in all on 30 Oct, 120 of them filling a goal), with room to grow. */
+export const GOAL_CERTIFICATES_MAX = 400;
 /** A role someone looked for and we don't have (role_requests): its title is cut to this many characters. */
 export const ROLE_REQUEST_TITLE_MAX = 80;
 
