@@ -1,11 +1,14 @@
 import { emailReady, sendEmail, weeklyFrom } from "@/lib/email/send";
 import { errorFields, logEvent } from "@/lib/log";
-import { runWeeklyEmails, WEEKLY_EMAIL_CAP } from "@/lib/my-jobs/weekly-store";
+import { runWeeklyEmails } from "@/lib/my-jobs/weekly-store";
+import { APP_EMAIL_DAILY_BUDGET } from "@/lib/schemas/constants";
 import { hasBearer } from "@/lib/secret";
 
-// Each send is one Resend call of at most 10 seconds; the run stops well before this so the next day can go on.
+// Each Resend call takes at most 10 seconds, and one person's send can take two of them (an unsure first try is tried
+// once more with the same idempotency key) plus a few seconds of rate-limit waits; no person starts after RUN_MS, so
+// the run ends before this and the next day can go on.
 export const maxDuration = 60;
-const RUN_MS = 45_000;
+const RUN_MS = 30_000;
 
 /** The app's own address for the email's links. */
 const siteOf = (request: Request) =>
@@ -13,9 +16,11 @@ const siteOf = (request: Request) =>
 
 /**
  * The weekly My jobs email (C22, docs/plans/application-tracker-plan.md section 6), run by Vercel Cron at 08:00 IST
- * Monday to Wednesday (vercel.json). Monday sends; Tuesday and Wednesday pick up anyone a cap, a time limit or a failed
- * send left out, and skip anyone already sent this India week. Up to WEEKLY_EMAIL_CAP a run, because Resend's free plan
- * allows 100 a day, shared with sign-in codes, and stops at Resend's limit (T142). Counts only in the logs: never a name, an address or a job.
+ * Monday to Wednesday (vercel.json). Monday sends; Tuesday and Wednesday pick up anyone the budget, a time limit or a
+ * refused send left out, and skip anyone already sent this India week. Each send takes one from the shared app-email
+ * budget, APP_EMAIL_DAILY_BUDGET an India day (Resend's free plan allows 100 a day and sign-in codes keep 60; T142,
+ * T151, T153), carries the idempotency key weekly-<userId>-<week>, waits and tries again on Resend's per-second rate
+ * limit, and the run stops at Resend's daily quota. Counts only in the logs: never a name, an address or a job.
  */
 export async function GET(request: Request) {
   if (!hasBearer(request, process.env.CRON_SECRET)) return Response.json({ ok: false }, { status: 401 });
@@ -27,7 +32,7 @@ export async function GET(request: Request) {
   try {
     const run = await runWeeklyEmails({
       site: siteOf(request),
-      cap: WEEKLY_EMAIL_CAP,
+      cap: APP_EMAIL_DAILY_BUDGET,
       deadline: Date.now() + RUN_MS,
       send: async (m) => {
         const sent = await sendEmail({
@@ -38,8 +43,9 @@ export async function GET(request: Request) {
           html: m.html,
           // One-click unsubscribe (RFC 8058), which Gmail and Yahoo expect from bulk senders.
           headers: { "List-Unsubscribe": `<${m.offUrl}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },
+          idempotencyKey: m.idempotencyKey,
         });
-        return { ok: sent.ok, limited: !sent.ok && sent.reason === "limited" };
+        return sent.ok ? { ok: true } : { ok: false, quota: sent.reason === "quota", maybeSent: sent.maybeSent === true };
       },
     });
     logEvent("info", "weekly_email_done", run);

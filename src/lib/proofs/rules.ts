@@ -79,6 +79,8 @@ export function checkCertificate(input: {
   if (!skillId) return { ok: false, reason: "not_covered" };
   if (submission.issuedOn > input.today) return { ok: false, reason: "issued_in_future" };
   if (submission.expiresOn && submission.expiresOn < input.today) return { ok: false, reason: "expired" };
+  // "It never expires" is only for a certificate that never does (T156); any other needs its expiry date.
+  if (!submission.expiresOn && !cert.lifetime) return { ok: false, reason: "expiry_needed" };
   if (!allowedVerifyLink(submission.url)) return { ok: false, reason: "link" };
   // A Credly link must name its badge, or it could never be checked and would skip the check (review B1).
   if (credlyLinkWithoutBadge(submission.url)) return { ok: false, reason: "link" };

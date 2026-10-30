@@ -140,11 +140,6 @@
       "why": "Helps if you want to move toward deploying models on AWS"
     },
     {
-      "certId": "azure-data-scientist",
-      "importance": "optional",
-      "why": "Useful for employers that run on Azure"
-    },
-    {
       "certId": "azure-mlops-engineer",
       "importance": "optional",
       "why": "Useful for employers on Azure; it replaced DP-100 in 2026 and leans toward deploying models"

@@ -33,8 +33,18 @@ describe("checkCertificate", () => {
   it("refuses an expired certificate, and one issued in the future", () => {
     expect(checkCertificate({ ...base, submission: { ...base.submission, expiresOn: "2026-10-11" } })).toEqual({ ok: false, reason: "expired" });
     expect(checkCertificate({ ...base, submission: { ...base.submission, expiresOn: "2026-10-12" } }).ok).toBe(true);
-    expect(checkCertificate({ ...base, submission: { ...base.submission, expiresOn: null } }).ok).toBe(true);
     expect(checkCertificate({ ...base, submission: { ...base.submission, issuedOn: "2026-10-13" } })).toEqual({ ok: false, reason: "issued_in_future" });
+  });
+
+  it("takes no expiry date only for a certificate that never expires (T156)", () => {
+    // AWS certificates expire, so "It never expires" isn't offered and the server refuses a missing date.
+    expect(aws.lifetime).toBeUndefined();
+    expect(checkCertificate({ ...base, submission: { ...base.submission, expiresOn: null } })).toEqual({ ok: false, reason: "expiry_needed" });
+    const pcep = certifications.find((c) => c.id === "pcep")!;
+    expect(pcep.lifetime).toBe(true);
+    expect(checkCertificate({ ...base, cert: pcep, fillingSkills: ["python"], submission: { ...base.submission, expiresOn: null } })).toEqual({ ok: true, skillId: "python" });
+    // A date is still taken, and checked, when one is printed.
+    expect(checkCertificate({ ...base, cert: pcep, fillingSkills: ["python"], submission: { ...base.submission, expiresOn: "2026-10-11" } })).toEqual({ ok: false, reason: "expired" });
   });
 
   it("matches names ignoring case, dots, spacing and order, and blocks other names", () => {

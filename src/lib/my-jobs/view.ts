@@ -79,19 +79,22 @@ export function daysUntil(iso: string, now: Date): number {
   return day(Date.parse(iso)) - day(now.getTime());
 }
 
-/** Today's countdown: "today", "tomorrow" or "in 3 days". */
 /** How many still-open skills the Next interview card names. */
 export const LEAD_SKILLS_SHOWN = 2;
 
 /**
- * The job's still-open skills that lead today's ride, for the Next interview card (C20): today's goal first, then the
- * job's other open goals, at most LEAD_SKILLS_SHOWN. Empty unless today's ride is on one of them, so the line is true.
+ * The job's still-open skills that lead today's ride, for the Next interview card (C20): today's goal first (the first
+ * of `rideSkillIds`), then any other of the job's open skills that is also on today's ride, at most LEAD_SKILLS_SHOWN.
+ * Empty unless today's goal is one of them. A skill that isn't on today's ride is never named, so the line is true
+ * (T155): today a ride holds one goal, so the card names one skill.
  */
-export function leadSkills(open: { skillId: string; skillName: string }[], current: { skillId: string } | null): string[] {
-  if (!current || !open.some((s) => s.skillId === current.skillId)) return [];
-  const first = open.filter((s) => s.skillId === current.skillId);
-  const rest = open.filter((s) => s.skillId !== current.skillId);
-  return [...first, ...rest].slice(0, LEAD_SKILLS_SHOWN).map((s) => s.skillName);
+export function leadSkills(open: { skillId: string; skillName: string }[], rideSkillIds: readonly string[]): string[] {
+  const current = rideSkillIds[0];
+  if (!current || !open.some((s) => s.skillId === current)) return [];
+  const onRide = new Set(rideSkillIds);
+  const first = open.filter((s) => s.skillId === current);
+  const rest = open.filter((s) => s.skillId !== current && onRide.has(s.skillId));
+  return [...new Set([...first, ...rest].map((s) => s.skillName))].slice(0, LEAD_SKILLS_SHOWN);
 }
 
 /** "Its still-open skills, SIEM and Threat detection, lead today's ride." Null for none. Nothing about chances. */
@@ -100,4 +103,5 @@ export function leadLine(names: string[]): string | null {
   return names.length === 1 ? `Its still-open skill, ${names[0]}, leads today's ride.` : `Its still-open skills, ${andList(names)}, lead today's ride.`;
 }
 
+/** Today's countdown: "today", "tomorrow" or "in 3 days". */
 export const countdownWords = (days: number): string => (days <= 0 ? "today" : days === 1 ? "tomorrow" : `in ${days} days`);

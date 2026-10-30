@@ -4,9 +4,11 @@ import { and, asc, eq, inArray, isNull, lt, notExists, sql } from "drizzle-orm";
 import { skills as allSkills } from "@/content";
 import { getDb } from "@/db";
 import { jobChecks, jobPosts, jobSaves, users, userSettings, weeklyEmails } from "@/db/schema";
+import { giveBackAppEmail, takeAppEmail } from "@/lib/email/budget";
 import { eliteOn } from "@/lib/elite/store";
 import { jobCheckView } from "@/lib/jobs/groups";
 import { indiaDay, mondayOf } from "@/lib/ride/days";
+import { APP_EMAIL_DAILY_BUDGET } from "@/lib/schemas/constants";
 import { stageOf, statusOf } from "./rules";
 import { fitContext, jobName } from "./store";
 import { weeklyEmail, weeklyView, type WeeklyEmail, type WeeklyJob, type WeeklyView } from "./weekly";
@@ -110,25 +112,33 @@ export async function turnOffWeeklyEmail(token: string, db: Db = getDb()): Promi
   await db.update(userSettings).set({ emailWeeklySummary: false, emailOffToken: newOffToken() }).where(eq(userSettings.emailOffToken, token));
 }
 
-/**
- * Most weekly emails one cron run sends. Resend's free plan allows 100 a day, shared with sign-in codes and work-email
- * codes, so 60 a day stay for codes (T142). Raise it with Resend Pro (docs/stack.md).
- */
-export const WEEKLY_EMAIL_CAP = 40;
-
 export type WeeklyRun = { considered: number; sent: number; empty: number; failed: number; capped: boolean };
-/** `limited`: the sender refused for its rate or daily limit, so the run stops and the next day picks up the rest. */
-export type WeeklySend = (message: WeeklyEmail & { to: string; offUrl: string }) => Promise<{ ok: boolean; limited?: boolean }>;
+/**
+ * Sends one weekly email with its idempotency key. `quota`: the sender's daily quota is spent, so the run stops and the
+ * next day picks up the rest. `maybeSent`: it may have gone out anyway (a timeout or a server error).
+ */
+export type WeeklySend = (message: WeeklyEmail & { to: string; offUrl: string; idempotencyKey: string }) => Promise<{ ok: boolean; quota?: boolean; maybeSent?: boolean }>;
+
+/** The idempotency key for one person's weekly email (T151): the sender sends it at most once within 24 hours. */
+export const weeklyKey = (userId: string, week: string) => `weekly-${userId}-${week}`;
 
 /**
  * One cron run (Monday to Wednesday, 08:00 IST): everyone with the switch on and no email yet this India week gets
- * one, when their week isn't empty, up to `cap`. A week sent, or found empty, gets its row, so a later run skips it;
- * a failed send gets none and is tried again the next day. Stops before `deadline`, or at the sender's limit. Counts only.
+ * one, when their week isn't empty, while the shared app-email budget lasts (`cap` a day, APP_EMAIL_DAILY_BUDGET,
+ * shared with the events digest later; src/lib/email/budget.ts). People go in the order of the last week they had a
+ * row (never first, then the longest ago), then id, so the same people aren't left at the end every week (T151).
+ *
+ * At most one email a person a week (T151): before sending, the run takes one from the day's budget and claims the
+ * person's week row, so another run skips them. A send Resend refused outright (nothing went out) gives both back and
+ * the next day tries again. A send that may have gone out (a timeout or a server error) is tried once more with the
+ * same idempotency key, which Resend sends at most once; if that is unsure too, the claim and the budget stay, so the
+ * person may miss a week but never gets two. A week found empty gets its row too. Stops before `deadline`, when the
+ * budget is spent, or at Resend's daily quota. Counts only.
  */
 export async function runWeeklyEmails({
   db = getDb(),
   now = new Date(),
-  cap = WEEKLY_EMAIL_CAP,
+  cap = APP_EMAIL_DAILY_BUDGET,
   site,
   send,
   deadline = Number.POSITIVE_INFINITY,
@@ -144,6 +154,7 @@ export async function runWeeklyEmails({
   only?: string[];
 }): Promise<WeeklyRun> {
   const week = mondayOf(indiaDay(now));
+  const lastWeek = sql`(select max(${weeklyEmails.week}) from ${weeklyEmails} where ${weeklyEmails.userId} = ${users.id})`;
   const people = await db
     .select({ id: users.id, email: users.email, firstName: users.firstName })
     .from(userSettings)
@@ -157,10 +168,10 @@ export async function runWeeklyEmails({
         notExists(db.select({ one: sql`1` }).from(weeklyEmails).where(and(eq(weeklyEmails.userId, users.id), eq(weeklyEmails.week, week)))),
       ),
     )
-    .orderBy(asc(users.id));
+    .orderBy(sql`${lastWeek} asc nulls first`, asc(users.id));
   const run: WeeklyRun = { considered: 0, sent: 0, empty: 0, failed: 0, capped: false };
   for (const person of people) {
-    if (run.sent >= cap || Date.now() > deadline) {
+    if (Date.now() > deadline) {
       run.capped = true;
       break;
     }
@@ -175,17 +186,33 @@ export async function runWeeklyEmails({
       }
       const offUrl = `${site}/api/email/off?t=${await offTokenFor(person.id, db)}`;
       const email = weeklyEmail(view, { name: person.firstName, site, offUrl });
-      const result = await send({ ...email, to: person.email, offUrl });
-      if (!result.ok) {
-        run.failed++;
-        if (result.limited) {
-          run.capped = true;
-          break;
-        }
+      const day = await takeAppEmail({ db, now, cap });
+      if (!day) {
+        run.capped = true;
+        break;
+      }
+      const claimed = await db.insert(weeklyEmails).values({ userId: person.id, week, sentAt: now }).onConflictDoNothing().returning({ week: weeklyEmails.week });
+      if (!claimed.length) {
+        // Another run claimed this person's week since the list was read.
+        await giveBackAppEmail(day, db);
         continue;
       }
-      await db.insert(weeklyEmails).values({ userId: person.id, week, sentAt: now }).onConflictDoNothing();
-      run.sent++;
+      const message = { ...email, to: person.email, offUrl, idempotencyKey: weeklyKey(person.id, week) };
+      let result = await send(message);
+      if (!result.ok && result.maybeSent) result = await send(message);
+      if (result.ok) {
+        run.sent++;
+        continue;
+      }
+      run.failed++;
+      if (result.maybeSent) continue;
+      // Refused outright, so nothing went out: free the week and the budget for the next run.
+      await db.delete(weeklyEmails).where(and(eq(weeklyEmails.userId, person.id), eq(weeklyEmails.week, week)));
+      await giveBackAppEmail(day, db);
+      if (result.quota) {
+        run.capped = true;
+        break;
+      }
     } catch {
       run.failed++;
     }

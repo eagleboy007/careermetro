@@ -356,7 +356,8 @@
       "data-visualization",
       "tableau",
       "excel"
-    ]
+    ],
+    "lifetime": true
   },
   {
     "id": "tableau-desktop-specialist",
@@ -372,7 +373,8 @@
     ],
     "partial": [
       "data-visualization"
-    ]
+    ],
+    "lifetime": true
   },
   {
     "id": "snowflake-snowpro-core",
@@ -513,7 +515,8 @@
       "html-css",
       "javascript",
       "react"
-    ]
+    ],
+    "lifetime": true
   },
   {
     "id": "istqb-foundation",
@@ -532,7 +535,8 @@
     ],
     "partial": [
       "bug-tracking"
-    ]
+    ],
+    "lifetime": true
   },
   {
     "id": "istqb-test-automation",
@@ -550,7 +554,8 @@
       "playwright-cypress",
       "api-testing",
       "test-planning"
-    ]
+    ],
+    "lifetime": true
   },
   {
     "id": "cspo",
@@ -582,7 +587,8 @@
     ],
     "partial": [
       "roadmapping"
-    ]
+    ],
+    "lifetime": true
   },
   {
     "id": "csm",
@@ -1016,7 +1022,8 @@
     "proves": [
       "python"
     ],
-    "partial": []
+    "partial": [],
+    "lifetime": true
   },
   {
     "id": "pcap",
@@ -1034,7 +1041,8 @@
     ],
     "partial": [
       "oop"
-    ]
+    ],
+    "lifetime": true
   },
   {
     "id": "mos-excel-associate",
@@ -1050,7 +1058,8 @@
     "proves": [
       "excel"
     ],
-    "partial": []
+    "partial": [],
+    "lifetime": true
   },
   {
     "id": "mos-excel-expert",
@@ -1067,7 +1076,8 @@
       "excel",
       "excel-pivot-lookup"
     ],
-    "partial": []
+    "partial": [],
+    "lifetime": true
   },
   {
     "id": "sc-200",
@@ -1207,7 +1217,8 @@
       "linux",
       "networking-basics",
       "security-incident-response"
-    ]
+    ],
+    "lifetime": true
   },
   {
     "id": "comptia-pentest-plus",
@@ -1416,7 +1427,8 @@
       "figma",
       "ux-research",
       "prototyping"
-    ]
+    ],
+    "lifetime": true
   },
   {
     "id": "hubspot-seo",
@@ -2468,6 +2480,7 @@
       "agile-coaching",
       "agile-metrics"
     ],
+    "lifetime": true,
     "reviewed": false
   },
   {
@@ -2545,6 +2558,7 @@
       "people-management",
       "stakeholder-management"
     ],
+    "lifetime": true,
     "reviewed": false
   },
   {
@@ -2563,6 +2577,7 @@
       "performance-testing",
       "test-planning"
     ],
+    "lifetime": true,
     "reviewed": false
   },
   {
