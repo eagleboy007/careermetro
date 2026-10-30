@@ -1721,6 +1721,8 @@ export const eventsDigests = pgTable(
     sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.week] }), index("events_digests_sent").on(t.sentAt)],
+);
+
 /**
  * App emails sent each India day (Asia/Kolkata), all kinds together: the weekly My jobs email now, the Monday events
  * digest later. Resend's free plan allows 100 a day; sign-in codes keep 60, so app emails share APP_EMAIL_DAILY_BUDGET
