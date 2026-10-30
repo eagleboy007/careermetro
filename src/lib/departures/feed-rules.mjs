@@ -70,14 +70,14 @@ const NOT_IN_SCOPE = /\b(counsel|attorney|legal|paralegal|sales|account executiv
 // "Member of Technical Staff" is a plain engineering title, not a staff-level one.
 const SENIOR = /\b(director|head of|vice president|vp|principal|(?<!technical )staff|chief|intern|internship)\b/i;
 // The principal, staff and head-of titles that a senior role is built for, so they read as it rather than being dropped.
-const SENIOR_TITLES = /\b(principal|staff) (data architect|database engineer|back[- ]?end (engineer|developer)|front[- ]?end (engineer|developer)|data scientist|technical program(me)? manager)\b|\bhead of (engineering|grc|security operations|soc)\b/i;
+const SENIOR_TITLES = /\b(principal|staff) (data architect|database engineer|back[- ]?end (engineer|developer)|front[- ]?end (engineer|developer)|data scientist|technical program(me)? manager)\b|\bhead of (engineering|grc|security operations|soc)\b|\bdirector of engineering\b|\bengineering director\b/i;
 // Order matters: the first matching role wins, so a narrower role comes before the broader one that would also match
 // ("Cloud security engineer" before security, "SRE" and "Cloud engineer" before DevOps, "React Native" before front end).
 export const ROLE_TITLES = {
   // A pre-sales engineer or consultant title before the security, network and cloud rules that would read the rest of
   // it ("Cyber Security Presales Engineer"); a pre-sales architect stays a solutions architect, and a plain "Sales
   // Engineer" stays out of scope.
-  "presales-engineer": /\bpre-?sales( (solutions?|technical|cloud))? (engineer|consultant|specialist|lead)\b|\b(technical|cloud) pre-?sales\b|^(?!.*\bsupport\b)((senior|sr\.?|associate|lead) )?solutions engineer\b/i,
+  "presales-engineer": /\bpre-?sales( (solutions?|technical|cloud))? (engineer|consultant|specialist|lead)\b|\b(technical|cloud) pre-?sales\b|^(?!.*\bsupport\b)((senior|sr\.?|associate|lead) )?solutions? engineer\b/i,
   // A developer relations title before the language, cloud and security rules that would read the rest of it ("Cloud
   // Developer Advocate", "Python Developer Advocate"); a "Developer Relations Manager" has no rule.
   "developer-advocate": /\b(developer|dev) (advocate|evangelist)\b|\bdeveloper relations( (engineer|advocate|lead|specialist))?\b|\bdevrel\b|\btechnical evangelist\b/i,
@@ -114,7 +114,7 @@ export const ROLE_TITLES = {
   // After the penetration testing rule, so a "VAPT" pen tester title stays there.
   "vulnerability-management-analyst": /\b(vulnerability (management|analyst|engineer|specialist)|vapt analyst|qualys (analyst|engineer)|cyber hygiene)\b/i,
   "appsec-engineer": /\b(appsec|application security|product security|software security (engineer|analyst)|secure code review(er)?)\b|\bsoftware (engineer|developer)\b.*\bsecurity\b/i,
-  "soc-lead": /\b(soc( shift)?|security operations( cent(er|re))?|cyber defen[cs]e|detection (and|&) response) (lead|manager)\b|\b(lead|manager),? soc\b|\bhead of (security operations|soc)\b/i,
+  "soc-lead": /\b(soc( shift)?|security operations( cent(er|re))?|cyber defen[cs]e|detection (and|&) response) (lead|manager)\b|\b(lead|manager),? soc\b|\bhead of (security operations|soc)\b|\bsoc (l3|level 3|tier 3)( analyst)?\b/i,
   // Detection and hunting titles are L2 work, before the broad security rule that would read "threat" in them.
   "soc-analyst-l2": /\b(soc|security) analyst,? (l2|ii|2|level ?2)\b|\bl2 soc\b|\b(senior|sr\.?) soc analyst\b|\b(security operations|cyber defen[cs]e|siem) analyst\b|\bdetection engineer\b|\bthreat hunter\b/i,
   // A SIEM platform or content title after the L2 rule, which keeps "SIEM Analyst"; never an analyst one.
@@ -172,7 +172,7 @@ export const ROLE_TITLES = {
   // has no rule.
   "technical-account-manager": /\b(technical|cloud) account manager\b|\btechnical customer success manager\b|\bcustomer success manager\b.*\btechnical\b/i,
   // A product support title; "Database Support Engineer" stays a DBA one.
-  "technical-support-engineer": /\b(technical|tech|product|customer|saas|l[123]) support (engineer|specialist|associate|analyst)\b|\bcustomer success engineer\b/i,
+  "technical-support-engineer": /\b(technical|tech|product|customer|saas|l[123]) support (engineer|specialist|associate|analyst)\b|\bcustomer success engineer\b|^((senior|sr\.?|associate|lead) )?(support|escalation) engineer\b/i,
   "database-administrator": /\b(database (administrator|admin|support engineer)|dba|(sql server|oracle|mysql|postgres(ql)?|mongodb|db2) (database administrator|administrator|admin))\b/i,
   // A governance or data quality title before the data, analyst and test rules that would read "Data" or "Quality" in it.
   "data-governance-analyst": /\bdata steward\b|\b(data governance|data quality|metadata|data catalog|collibra)\b.*\b(analyst|specialist|associate|consultant)\b/i,
@@ -256,7 +256,7 @@ export const ROLE_TITLES = {
   "plm-developer": /^(?!.*\b(test|tester|testing|qa)\b)(?=.*\b(developer|engineer|programmer|technical consultant|architect)\b).*\b(plm|teamcenter|windchill|enovia|3dexperience)\b/i,
   // A SaaS implementation or customer onboarding title after the platform rules ("Workday Implementation Consultant"
   // stays Workday); never an SAP, ERP or project one, nor a bank's KYC or an HR onboarding one.
-  "implementation-consultant": /^(?!.*\b(sap|erp|project|kyc|aml|client|hr|employee|vendor|supplier)\b).*(\b((saas|software|product|customer|technical|solutions?) )?implementation (consultant|specialist|analyst|manager|lead)\b|\b(saas|customer|technical) onboarding (consultant|specialist|manager)\b|\bonboarding consultant\b)/i,
+  "implementation-consultant": /^(?!.*\b(sap|erp|project|kyc|aml|client|hr|employee|vendor|supplier)\b).*(\b((saas|software|product|customer|technical|solutions?) )?implementation (consultant|specialist|analyst|manager|lead)\b|\b(saas|customer|technical) onboarding (consultant|specialist|manager)\b|\bonboarding consultant\b|\bprofessional services consultant\b)/i,
   "mainframe-developer": /^(?!.*\b(test|tester|testing|qa)\b).*\b(mainframe|cobol)\b.*\b(developer|programmer|engineer)\b/i,
   // A build or release title before the integration and DevOps rules; "CI/CD Engineer" stays DevOps, and an "SCM
   // Engineer" in a supply chain title is not one.
@@ -326,7 +326,7 @@ export const ROLE_TITLES = {
   // An IT, software or ERP project title after the technical program and agile rules; a plain "Project Manager" has no
   // rule, and never a civil, construction, plant or marketing one ("Project Manager - Infrastructure" can be a road).
   "it-project-manager": /^(?!.*\b(civil|construction|mechanical|electrical|solar|epc|real estate|interior|site|plant|marketing|clinical|highway|roads?)\b).*(\b(it|software|erp|sap|application|technology|implementation|it infrastructure) project (manager|lead)\b|\bproject manager\b.*\b(it|software|erp|sap|application delivery|implementation|it infrastructure|infrastructure)\b|\b(it )?pmo (manager|lead)\b)/i,
-  "engineering-manager": /\b(engineering manager|manager,? (software )?engineering|software (development|engineering) manager|head of engineering)\b|^((senior|sr\.?) )?(development manager|technical manager|engineering lead)\b/i,
+  "engineering-manager": /\b(engineering manager|manager,? (software )?engineering|software (development|engineering) manager|head of engineering|director of engineering|engineering director|tech lead manager)\b|^((senior|sr\.?) )?(development manager|technical manager|engineering lead)\b/i,
   "senior-data-scientist": /\b(senior|sr\.?|lead|staff|principal) (data|applied|ml|machine learning) scientist\b|\bdata science (lead|manager)\b/i,
   "data-scientist": /\b(data scientist|machine learning scientist|applied scientist|ml scientist|decision scientist|data science (associate|analyst)|(predictive|statistical) model(l)?er)\b/i,
   // An AI, ML or generative AI product title before the product rule.
@@ -337,7 +337,7 @@ export const ROLE_TITLES = {
   "ui-ux-designer": /\b(ui ?\/? ?ux|ux ?\/? ?ui|ux|ui|product|interaction|visual|experience|web) designer\b|\bux writer\b/i,
   // After the designer rule, which keeps "UX Writer".
   "technical-writer": /\b(technical|api|documentation|docs) (writer|author|editor)\b|\bdocumentation (specialist|engineer|lead)\b|\binformation developer\b|\bcontent developer\b.*\btechnical\b/i,
-  "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b|\bsoftware (development )?engineer\b.*\b(in test|qa|quality)\b|\bautomation tester\b|\bselenium\b.*\b(engineer|tester|developer)\b/i,
+  "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b|\bsoftware (development )?engineer\b.*\b(in test|qa|quality)\b|\bautomation tester\b|\b(manual|automation)( (&|and) (manual|automation))? testing\b|\bselenium\b.*\b(engineer|tester|developer)\b/i,
   // Reliability and production engineers in software only, never in a plant or on hardware.
   "site-reliability-engineer": /\b(site reliability|sre)\b|^(?!.*\b(hardware|mechanical|manufacturing|plant|electrical|civil|chemical|silicon|asic)\b).*\b(((systems?|infrastructure|platform) )?reliability|observability|production) engineer\b/i,
   "cloud-architect": /\b(cloud( solutions?| infrastructure| platform)? architect|(aws|azure|gcp|google cloud|multi-?cloud|hybrid cloud)( cloud)?( solutions?)? architect)\b/i,
@@ -347,7 +347,7 @@ export const ROLE_TITLES = {
   "platform-engineer": /^(?!.*\b(devops|devsecops|reliability|sre)\b).*(\bplatform (engineer|engineering|developer)\b|\b(engineer|developer)\b.*\bplatform\b)/i,
   "devops-engineer": /\b(devops|infrastructure engineer|(ci\/cd|infrastructure automation|kubernetes) engineer)\b|\bsoftware (engineer|developer)\b.*\binfra(structure)?\b/i,
   // Last of the engineering roles: a plain "Software Engineer" or "SDE", never a test, embedded or hardware one.
-  "software-engineer": /^(?!.*\b(in test|qa|embedded|firmware|hardware|silicon|asic|mechanical|electrical)\b).*\b(software (engineer|developer|development engineer)|sde|programmer analyst|application developer|member of technical staff)\b/i,
+  "software-engineer": /^(?!.*\b(in test|qa|embedded|firmware|hardware|silicon|asic|mechanical|electrical)\b).*\b(software (engineer|developer|development engineer)|sde|programmer analyst|application developer|member of technical staff|back[- ]?end (engineer|developer))\b|^((senior|sr\.?) )?mts\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email|online) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search|social media) (specialist|executive|manager|associate)\b/i,
 };
 const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager"]);
