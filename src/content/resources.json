@@ -9712,17 +9712,6 @@
     "free": true
   },
   {
-    "title": "SWGDE Best Practices for Digital Evidence Collection",
-    "url": "https://www.swgde.org/documents/published-complete-listing/18-f-002-swgde-best-practices-for-digital-evidence-collection/",
-    "provider": "SWGDE",
-    "kind": "docs",
-    "skillIds": [
-      "forensic-evidence-handling"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "SWGDE Best Practices for Computer Forensic Acquisitions",
     "url": "https://www.swgde.org/wp-content/uploads/2024/03/2023-06-15-SWGDE-Best-Practices-for-Computer-Forensic-Acquisitions-17-F-002-2.0.pdf",
     "provider": "SWGDE",
@@ -12818,6 +12807,28 @@
       "sap-basis-administration"
     ],
     "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-86: Guide to Integrating Forensic Techniques into Incident Response",
+    "url": "https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-86.pdf",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "forensic-evidence-handling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "NISTIR 8428: Digital Forensics and Incident Response (DFIR) Framework",
+    "url": "https://nvlpubs.nist.gov/nistpubs/ir/2022/NIST.IR.8428.pdf",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "forensic-evidence-handling"
+    ],
+    "minutes": 60,
     "free": true
   }
 ]
