@@ -80,4 +80,24 @@ export function daysUntil(iso: string, now: Date): number {
 }
 
 /** Today's countdown: "today", "tomorrow" or "in 3 days". */
+/** How many still-open skills the Next interview card names. */
+export const LEAD_SKILLS_SHOWN = 2;
+
+/**
+ * The job's still-open skills that lead today's ride, for the Next interview card (C20): today's goal first, then the
+ * job's other open goals, at most LEAD_SKILLS_SHOWN. Empty unless today's ride is on one of them, so the line is true.
+ */
+export function leadSkills(open: { skillId: string; skillName: string }[], current: { skillId: string } | null): string[] {
+  if (!current || !open.some((s) => s.skillId === current.skillId)) return [];
+  const first = open.filter((s) => s.skillId === current.skillId);
+  const rest = open.filter((s) => s.skillId !== current.skillId);
+  return [...first, ...rest].slice(0, LEAD_SKILLS_SHOWN).map((s) => s.skillName);
+}
+
+/** "Its still-open skills, SIEM and Threat detection, lead today's ride." Null for none. Nothing about chances. */
+export function leadLine(names: string[]): string | null {
+  if (names.length === 0) return null;
+  return names.length === 1 ? `Its still-open skill, ${names[0]}, leads today's ride.` : `Its still-open skills, ${andList(names)}, lead today's ride.`;
+}
+
 export const countdownWords = (days: number): string => (days <= 0 ? "today" : days === 1 ? "tomorrow" : `in ${days} days`);
