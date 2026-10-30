@@ -596,7 +596,7 @@ function PersonDrawer({
                     <h4 className="text-[0.84rem] font-semibold">Skills</h4>
                     <ul className="flex flex-wrap gap-1.5">
                       {p.skills.have.map((s) => (
-                        <li key={s} className="rounded-full border border-line px-2.5 py-0.5 text-[0.8rem]">
+                        <li key={s} className="min-w-0 max-w-full rounded-full border border-line px-2.5 py-0.5 text-[0.8rem] [overflow-wrap:anywhere]">
                           {s}
                         </li>
                       ))}

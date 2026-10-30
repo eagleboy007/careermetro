@@ -338,7 +338,7 @@ function CandidateDrawer({
             <h2 id={`${ids}-name`} className="text-[1.25rem] font-semibold leading-[1.2] [overflow-wrap:anywhere]">
               {name}
             </h2>
-            {(candidate?.profile.headline ?? card?.headline) && <p className="text-[0.86rem] text-muted">{candidate?.profile.headline ?? card?.headline}</p>}
+            {(candidate?.profile.headline ?? card?.headline) && <p className="text-[0.86rem] text-muted [overflow-wrap:anywhere]">{candidate?.profile.headline ?? card?.headline}</p>}
             <p className="mt-1.5 flex flex-wrap gap-1.5 text-[0.78rem]">
               <span className="rounded-full bg-surface-2 px-2.5 py-0.5 font-medium">{APPLICATION_STAGE_LABELS[stage]}</span>
               {card && <span className="rounded-full border border-line px-2.5 py-0.5">Can join: {CAN_JOIN_LABELS[card.canJoin]}</span>}

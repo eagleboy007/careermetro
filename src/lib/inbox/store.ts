@@ -8,7 +8,7 @@ import { blockCompanyIn, companyBlocked } from "@/lib/corporate/company-blocks";
 import { askDaysOf } from "@/lib/corporate/interview-reads";
 import { chatClosed } from "@/lib/corporate/rules";
 import { askAnswered, dayParts, slotLabel, slotOpen, slotStart } from "@/lib/corporate/slots";
-import { SLOT_TIMES } from "@/lib/schemas/constants";
+import { INBOX_THREADS_MAX, SLOT_TIMES } from "@/lib/schemas/constants";
 import { jobSearchOn } from "@/lib/job-search/store";
 import { logEvent } from "@/lib/log";
 import { areConnected, dropBetween } from "@/lib/network/store";
@@ -476,7 +476,9 @@ async function visibleChats(userId: string, db: Db) {
               where o.conversation_id = ${conversations.id} and o.user_id <> ${userId} and b.blocker_id = ${userId})`,
       ),
     )
-    .orderBy(desc(conversations.lastMessageAt));
+    .orderBy(desc(conversations.lastMessageAt))
+    // The Inbox pages them 20 at a time on screen (T147); this keeps one load bounded.
+    .limit(INBOX_THREADS_MAX);
 }
 
 /**
@@ -509,7 +511,7 @@ export function formatAt(at: Date, now: Date): string {
   return at.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: IST });
 }
 
-/** The person's Inbox: their chats, newest first, each with up to MESSAGES_PER_CHAT recent messages. */
+/** The person's Inbox: their newest INBOX_THREADS_MAX chats, newest first, each with up to MESSAGES_PER_CHAT recent messages. */
 export async function listThreads(userId: string, deps: { db?: Db; now?: Date } = {}): Promise<InboxThread[]> {
   const db = deps.db ?? getDb();
   const now = deps.now ?? new Date();

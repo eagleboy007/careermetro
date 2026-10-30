@@ -35,16 +35,46 @@ export function wrap(text: string, font: PDFFont, size: number, width: number): 
       continue;
     }
     if (line) lines.push(line);
-    line = word;
-    while (font.widthOfTextAtSize(line, size) > width && line.length > 1) {
-      let cut = line.length - 1;
-      while (cut > 1 && font.widthOfTextAtSize(line.slice(0, cut), size) > width) cut--;
-      lines.push(line.slice(0, cut));
-      line = line.slice(cut);
-    }
+    // A word that fits comes back whole as `rest`; a longer one is broken into lines first.
+    const { pieces, rest } = breakWord(word, font, size, width);
+    for (const piece of pieces) lines.push(piece);
+    line = rest;
   }
   if (line) lines.push(line);
   return lines;
+}
+
+/**
+ * Breaks a word into pieces that fit a line, plus the last piece (the whole word when it fits), which the next word
+ * may join. Each
+ * letter's width is measured once and added up (T146: a 60,000-character word used to be re-measured whole at every
+ * letter); each piece is then measured once more and shortened while kerning makes it too wide. One letter wider than
+ * a whole line keeps a line to itself. Splits by code point, so an emoji is never cut in two.
+ */
+function breakWord(word: string, font: PDFFont, size: number, width: number): { pieces: string[]; rest: string } {
+  const chars = Array.from(word);
+  const widths = new Map<string, number>();
+  const widthOf = (ch: string) => {
+    let w = widths.get(ch);
+    if (w === undefined) {
+      w = font.widthOfTextAtSize(ch, size);
+      widths.set(ch, w);
+    }
+    return w;
+  };
+  const pieces: string[] = [];
+  let start = 0;
+  for (;;) {
+    let end = start;
+    let sum = 0;
+    while (end < chars.length && sum + widthOf(chars[end]) <= width) sum += widthOf(chars[end++]);
+    if (end === start) end = start + 1;
+    let piece = chars.slice(start, end).join("");
+    while (end - start > 1 && font.widthOfTextAtSize(piece, size) > width) piece = chars.slice(start, --end).join("");
+    if (end >= chars.length) return { pieces, rest: piece };
+    pieces.push(piece);
+    start = end;
+  }
 }
 
 /**

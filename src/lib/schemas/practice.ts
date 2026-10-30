@@ -60,9 +60,11 @@ export const PRACTICE_TAGS = ["current", "ahead", "met", "job"] as const;
 
 /**
  * Ratings one skill can hold: answers are kept 30 days, and feedback calls stop at 20 a person a day
- * (PRACTICE_LIMITS.callsPerPersonPerDay), which bounds Elite too, since Elite has no cap of 10 (FR-50).
+ * (PRACTICE_LIMITS.callsPerPersonPerDay), which bounds Elite too, since Elite has no cap of 10 (FR-50). The store
+ * keeps only the newest this many before it parses (T149), so a clean-up job that stops for a few days never breaks
+ * Practice or Me.
  */
-const PRACTICE_RATINGS_MAX = 20 * 31;
+export const PRACTICE_RATINGS_MAX = 20 * 31;
 
 /** One skill in the picker: a goal of the person's with questions in the bank, and their own ratings for it, oldest first. */
 export const practiceSkill = z.strictObject({

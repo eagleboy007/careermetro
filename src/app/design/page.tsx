@@ -399,6 +399,26 @@ const exampleToday: TodayData = {
   greeting: "Evening",
 };
 
+/* Long lists and long text (Testing Run 7, T143-T148): more rows than one page, and values with no spaces. */
+const LONG_WORD = "Enterprisedataplatformmodernisationprogrammeworkstreamlead".repeat(2);
+const LONG_NOTE = `${"Call the recruiter again on Monday.\n".repeat(10)}${LONG_WORD}`;
+const manyMine = Array.from({ length: 24 }, (_, i) => {
+  const base = exampleMine[i % exampleMine.length];
+  return { ...base, key: `${base.key}-long-${i}`, title: i === 0 ? LONG_WORD : `${base.title} ${i + 1}`, note: i === 0 ? LONG_NOTE : base.note, updatedAt: `2026-10-${String(28 - (i % 28)).padStart(2, "0")}T06:30:00.000Z` };
+});
+const manyThreads = Array.from({ length: 24 }, (_, i) => {
+  const base = exampleThreads[i % exampleThreads.length];
+  return { ...base, id: `${base.id}-long-${i}`, name: i === 0 ? LONG_WORD : `${base.name} ${i + 1}` };
+});
+const manyConnections = Array.from({ length: 24 }, (_, i) => {
+  const base = exampleNetwork.connections[i % exampleNetwork.connections.length];
+  return { ...base, id: `${base.id}-long-${i}`, name: `${base.name} ${i + 1}` };
+});
+const manySaved = Array.from({ length: 24 }, (_, i) => {
+  const base = exampleLibrary.items[i % exampleLibrary.items.length];
+  return { ...base, id: `${base.id}-long-${i}`, title: `${base.title} (${i + 1})` };
+});
+
 const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5", "elite", "elite-soft", "on-elite"] as const;
 
 // Live counts for the Market section, from synthetic reads (src/lib/market/fixtures.ts).
@@ -465,6 +485,11 @@ export default function DesignPage() {
           <StatusChip status="weak" />
           <StatusChip status="outdated" />
           <StatusChip status="met" />
+        </div>
+        <p className="text-sm text-muted">A long skill name is cut with an ellipsis; the full name shows on hover (T143).</p>
+        <div className="flex max-w-sm flex-wrap gap-2">
+          <StatusChip status="weak" label="Microsoft Power Platform administration and governance at enterprise scale" />
+          <StatusChip status="missing" label={LONG_WORD} />
         </div>
         <div className="flex flex-wrap gap-2">
           <ChoiceTag company={null} />
@@ -941,6 +966,20 @@ export default function DesignPage() {
             items: exampleMockResult.items.map((i) => ({ ...i, whatWorked: null, addNextTime: null, followUp: i.followUp ? { ...i.followUp, answer: null } : null })),
           }}
         />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Long lists and long text (Testing Run 7)</h2>
+        <p className="text-sm text-muted">
+          Lists that can grow show 20 rows, then &ldquo;Show more&rdquo; adds 20 at a time, with how many are left (T147); focus moves to the first new
+          row. Below: My jobs with 24 jobs, whose first has a title with no spaces and a long note cut to three lines with Show more (T148); the Inbox
+          with 24 chats, the first with a name too long for the list; Network with 24 connections; and the Library&apos;s Saved tab with 24 items. Long
+          words wrap instead of pushing the page sideways (T143 to T145). Example data, so nothing saves.
+        </p>
+        <DeparturesView jobs={exampleJobs} initialMine={manyMine} initialTab="mine" resumeId="example" demo />
+        <InboxView threads={manyThreads} />
+        <NetworkView data={{ ...exampleNetwork, connections: manyConnections }} example={exampleSearch} />
+        <LibraryView view={{ ...exampleLibrary, items: [...exampleLibrary.items, ...manySaved], saved: manySaved.map((i) => i.id) }} shelf={exampleEliteShelf(false)} tab="saved" />
       </section>
 
       <section className="flex flex-col gap-4">

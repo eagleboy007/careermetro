@@ -1,7 +1,8 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
-import type { Profile } from "@/lib/schemas";
+import { profile, type Profile } from "@/lib/schemas";
+import { PROFILE_HIGHLIGHT_MAX } from "@/lib/schemas/constants";
 import { parseResume, readProfile, wrapResume, type ParseClient } from "./parse";
 
 const resume = "Priya Sharma\nData Analyst, Example Retail Pvt Ltd (2022 - Present)\nSKILLS: SQL, Excel";
@@ -53,6 +54,19 @@ describe("parseResume", () => {
     expect(request.model).toBe("claude-opus-5-5");
     expect(request.messages[0].content).toBe(wrapResume(resume));
     expect(request.tools).toBeUndefined();
+  });
+
+  it("cuts an over-long line to the profile's caps instead of failing the resume (T146)", async () => {
+    const bullet = `Built ${"dashboards ".repeat(40).trim()}`;
+    const text = `${resume}\n${bullet}`;
+    const long = { ...good, roles: [{ ...good.roles[0], highlights: [bullet] }] };
+    const { client } = fakeClient({ text: JSON.stringify(long) });
+    const result = await parseResume(text, {}, client);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(bullet.length).toBeGreaterThan(PROFILE_HIGHLIGHT_MAX);
+    expect(result.profile.roles[0].highlights).toEqual([bullet.slice(0, PROFILE_HIGHLIGHT_MAX)]);
+    expect(profile.safeParse(result.profile).success).toBe(true);
   });
 
   it("never puts resume text in the call log", async () => {

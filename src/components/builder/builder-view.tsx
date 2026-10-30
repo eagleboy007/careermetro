@@ -670,7 +670,7 @@ function Review({
       </header>
 
       <div className="grid min-w-0 gap-5 min-[860px]:grid-cols-[minmax(0,1fr)_300px]">
-        <article aria-label="Resume preview" className="flex min-w-0 flex-col gap-4 rounded-[14px] border border-line bg-surface p-4 min-[760px]:p-6">
+        <article aria-label="Resume preview" className="flex min-w-0 flex-col gap-4 rounded-[14px] border border-line bg-surface p-4 min-[760px]:p-6 [overflow-wrap:anywhere]">
           <div>
             <h2 className="text-[1.4rem] font-semibold">{data.name}</h2>
             <p className="text-[0.82rem] text-muted">{[a.role.city, a.links.email, a.links.linkedin, a.links.github, a.links.portfolio].filter(Boolean).join(" · ")}</p>
@@ -724,7 +724,7 @@ function Review({
           )}
         </article>
 
-        <aside className="flex min-w-0 flex-col gap-4">
+        <aside className="flex min-w-0 flex-col gap-4 [overflow-wrap:anywhere]">
           <section aria-labelledby="builder-found" className="flex flex-col gap-2 rounded-[14px] border border-line bg-surface p-4">
             <h2 id="builder-found" className="text-[0.95rem] font-semibold">
               Skills we found

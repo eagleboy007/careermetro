@@ -16,6 +16,7 @@ import { jobPrep, savedJobNames } from "@/lib/my-jobs/store";
 import {
   PRACTICE_DAILY_ANSWERS,
   PRACTICE_KEEP_DAYS,
+  PRACTICE_RATINGS_MAX,
   practiceAnswerInput,
   practiceRateInput,
   practiceTrend,
@@ -198,7 +199,14 @@ async function ratingsBySkill(db: Db, userId: string): Promise<Map<string, numbe
     .where(and(eq(practiceAnswers.userId, userId), isNotNull(practiceAnswers.confidence)))
     .orderBy(asc(practiceAnswers.createdAt), asc(practiceAnswers.id));
   const out = new Map<string, number[]>();
-  for (const r of rows) if (r.confidence !== null) out.set(r.skillId, [...(out.get(r.skillId) ?? []), r.confidence]);
+  for (const r of rows) {
+    if (r.confidence === null) continue;
+    const list = out.get(r.skillId);
+    if (list) list.push(r.confidence);
+    else out.set(r.skillId, [r.confidence]);
+  }
+  // Only the newest PRACTICE_RATINGS_MAX of a skill, oldest first, so the parse below never throws (T149).
+  for (const [skillId, list] of out) if (list.length > PRACTICE_RATINGS_MAX) out.set(skillId, list.slice(-PRACTICE_RATINGS_MAX));
   return out;
 }
 

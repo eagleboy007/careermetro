@@ -85,7 +85,7 @@ export function RideCard({
             {today ? `${today} · ` : ""}Today&apos;s ride, about {ride.tasks.reduce((n, t) => n + t.minutes, 0)} min
           </span>
         </div>
-        <h2 className="max-w-[28ch] text-balance text-[clamp(1.6rem,3.2vw,2.3rem)] font-semibold leading-[1.05] tracking-[-0.03em]">
+        <h2 className="max-w-[28ch] text-balance text-[clamp(1.6rem,3.2vw,2.3rem)] font-semibold leading-[1.05] tracking-[-0.03em] [overflow-wrap:anywhere]">
           {name ? `${greeting}, ${name}.` : `${greeting}.`} {lead}
           {ride.titleEmphasis && <em className="not-italic text-accent">{ride.titleEmphasis}</em>}
         </h2>

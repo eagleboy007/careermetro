@@ -312,7 +312,7 @@ function GoalRow({ goal, open, onToggle, action }: { goal: Goal; open: boolean; 
         </span>
       </button>
       {open && (
-        <div id={detailId} className="flex flex-col gap-2 px-3.5 pb-3 text-[0.82rem] text-muted sm:pl-14">
+        <div id={detailId} className="flex min-w-0 flex-col gap-2 px-3.5 pb-3 text-[0.82rem] text-muted [overflow-wrap:anywhere] sm:pl-14">
           <p>{goal.evidence}</p>
           {goal.quote && (
             <p>
