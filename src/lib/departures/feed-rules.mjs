@@ -169,7 +169,7 @@ export const ROLE_TITLES = {
   // never a facility (power, cooling), design, network or security one.
   "data-center-engineer": /^(?!.*\b(software|developer|design|architect|electrical|mechanical|hvac|facility|facilities|construction|network|security)\b).*(\b(data ?cent(er|re)|colocation)( (operations|ops|hardware|infrastructure|infra|services|support))? (engineer|technician|specialist|associate|executive|administrator|admin)\b|\b(dc|colo) (operations|ops) (engineer|technician|specialist|associate|executive)\b|\bremote hands (engineer|technician|specialist)\b)/i,
   "system-administrator": /\b(sys ?admin|systems? (administrator|admin)|(it )?server (administrator|admin)|it administrator|infrastructure support engineer|(linux|unix|windows|wintel|vmware|active directory)( server| system| systems)? (administrator|admin|engineer|support engineer))\b/i,
-  "it-support-engineer": /\b(desktop support|deskside support|service desk|help ?desk|end user computing( \(euc\))?|euc|it support|field support) (engineer|specialist|analyst|associate|executive|technician)\b/i,
+  "it-support-engineer": /\b(desktop support|deskside support|service desk|help ?desk|end user computing( \(euc\))?|euc|it support|field support) (engineer|specialist|analyst|associate|executive|technician|agent)\b/i,
   // A cloud support title before the product support one that would read "Technical Support Engineer" in it.
   "cloud-support-engineer": /\b(cloud|aws|azure|gcp|google cloud)( technical)? support (engineer|associate|specialist|analyst)\b|\bcloud support\b/i,
   // An application or production support title before the product support one.
@@ -300,7 +300,7 @@ export const ROLE_TITLES = {
   // A board or electronics hardware design title after the FPGA and chip design rules, before the embedded rule ("ECU
   // Hardware Engineer"); never a test, software, chip, IT, networking or plant one. A plain "Hardware Engineer" has no
   // rule (it is often IT hardware).
-  "hardware-design-engineer": /^(?!.*\b(test|tester|testing|qa|validation|verification|software|firmware|fpga|asic|rtl|vlsi|silicon|technician|support|networking|network|desktop|it|plant|maintenance|field|service)\b).*(\bhardware (design|development)\b|\b(electronics?|board|pcb|schematic|circuit) design engineer\b|\b(ecu|embedded|electronics?|board) hardware (engineer|designer|lead)\b|\b(senior|sr\.?|lead) hardware engineer\b)/i,
+  "hardware-design-engineer": /^(?!.*\b(test|tester|testing|qa|validation|verification|software|firmware|fpga|asic|rtl|vlsi|silicon|technician|support|networking|network|desktop|it|plant|maintenance|field|service)\b).*(\bhardware (design|development)\b|\b(electronics?|board|pcb|schematic|circuit) design engineer\b|\b(ecu|embedded|electronics?|board) hardware (engineer|designer|lead)\b|\b(senior|sr\.?|lead) hardware engineer\b|\bhardware architect\b)/i,
   // A PLC, SCADA or DCS title before the robotics rule; a SCADA security title stays OT security (above), and a plain
   // "Automation Engineer" or "Control Systems Engineer" has no rule.
   "plc-scada-engineer": /^(?!.*\b(security|cyber ?security|test|tester|testing|qa)\b)(.*\b(plc|scada|dcs)\b.*\b(engineer|programmer|developer|specialist|technician|lead|consultant)\b|.*\bindustrial automation (engineer|specialist|lead)\b|.*\bcommissioning engineer\b.*\b(automation|plc|scada|dcs)\b)/i,
