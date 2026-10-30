@@ -122,6 +122,11 @@
       "certId": "comptia-network-plus",
       "importance": "optional",
       "why": "Vendor-neutral networking basics for freshers"
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "NOC teams work to ITIL incident and change processes, and postings often prefer it."
     }
   ],
   "sources": [

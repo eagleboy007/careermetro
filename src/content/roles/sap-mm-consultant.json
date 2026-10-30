@@ -104,6 +104,11 @@
       "certId": "pmp",
       "importance": "optional",
       "why": "Helps senior consultants who lead workstreams"
+    },
+    {
+      "certId": "sap-s4hana-sourcing-procurement",
+      "importance": "recommended",
+      "why": "The SAP certification that matches MM configuration work."
     }
   ],
   "sources": [

@@ -115,6 +115,26 @@
       "certId": "comptia-security-plus",
       "importance": "optional",
       "why": "Vendor-neutral security basics"
+    },
+    {
+      "certId": "palo-alto-ngfw-engineer",
+      "importance": "recommended",
+      "why": "Palo Alto firewalls are widely named, and this replaces the PCNSE that postings still ask for."
+    },
+    {
+      "certId": "fortinet-nse4",
+      "importance": "optional",
+      "why": "Proves FortiGate administration, common in Indian enterprise networks."
+    },
+    {
+      "certId": "check-point-ccsa",
+      "importance": "optional",
+      "why": "Required in Check Point-focused postings."
+    },
+    {
+      "certId": "ccnp-security",
+      "importance": "optional",
+      "why": "Preferred in Cisco-heavy security postings."
     }
   ],
   "sources": [

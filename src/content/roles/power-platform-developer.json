@@ -113,6 +113,16 @@
       "certId": "azure-fundamentals",
       "importance": "optional",
       "why": "Basics of the Azure services used with Power Platform"
+    },
+    {
+      "certId": "power-platform-developer-associate",
+      "importance": "recommended",
+      "why": "Microsoft's developer certification for Power Platform, named in Indian postings."
+    },
+    {
+      "certId": "power-platform-fundamentals",
+      "importance": "optional",
+      "why": "A low-cost entry certification some postings list as preferred."
     }
   ],
   "sources": [

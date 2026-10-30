@@ -107,7 +107,13 @@
       "label": "A SuccessFactors module (Employee Central or a talent module)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "sap-successfactors-employee-central",
+      "importance": "recommended",
+      "why": "Employee Central certification is required in many SuccessFactors postings, usually through a partner."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

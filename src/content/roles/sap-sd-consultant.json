@@ -117,6 +117,11 @@
       "certId": "pmp",
       "importance": "optional",
       "why": "Helps senior consultants who lead workstreams"
+    },
+    {
+      "certId": "sap-s4hana-sales",
+      "importance": "recommended",
+      "why": "The SAP certification that matches SD configuration work."
     }
   ],
   "sources": [

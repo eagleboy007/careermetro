@@ -115,6 +115,11 @@
       "certId": "oracle-sql-associate",
       "importance": "optional",
       "why": "SQL basics"
+    },
+    {
+      "certId": "oracle-plsql-developer-professional",
+      "importance": "optional",
+      "why": "EBS technical work is mostly PL/SQL."
     }
   ],
   "sources": [

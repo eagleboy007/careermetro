@@ -128,6 +128,11 @@
       "certId": "comptia-security-plus",
       "importance": "optional",
       "why": "Broad security base"
+    },
+    {
+      "certId": "gcfa",
+      "importance": "optional",
+      "why": "Proves deep forensic analysis for incident response."
     }
   ],
   "sources": [

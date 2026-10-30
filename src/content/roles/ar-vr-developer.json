@@ -123,7 +123,13 @@
       "label": "A game language (C# or C++)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "unity-certified-professional-programmer",
+      "importance": "optional",
+      "why": "Most XR work in India is built in Unity, and this proves Unity programming depth."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",

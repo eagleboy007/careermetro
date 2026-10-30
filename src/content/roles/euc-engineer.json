@@ -122,6 +122,21 @@
       "certId": "sc-300",
       "importance": "optional",
       "why": "Covers Entra ID device and access policies"
+    },
+    {
+      "certId": "m365-endpoint-administrator",
+      "importance": "recommended",
+      "why": "Intune and Autopilot are core EUC skills, and EUC postings name this certification."
+    },
+    {
+      "certId": "azure-virtual-desktop-specialty",
+      "importance": "optional",
+      "why": "For EUC roles that run Azure Virtual Desktop."
+    },
+    {
+      "certId": "citrix-cca-v",
+      "importance": "optional",
+      "why": "Citrix Virtual Apps and Desktops is common in Indian EUC and BFSI roles."
     }
   ],
   "sources": [

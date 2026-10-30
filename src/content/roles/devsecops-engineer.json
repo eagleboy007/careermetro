@@ -162,6 +162,11 @@
       "certId": "comptia-security-plus",
       "importance": "optional",
       "why": "Security fundamentals for engineers coming from DevOps"
+    },
+    {
+      "certId": "csslp",
+      "importance": "optional",
+      "why": "Covers security across the software lifecycle, which DevSecOps roles own."
     }
   ],
   "sources": [

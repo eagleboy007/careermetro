@@ -99,7 +99,18 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "pega-cpsa",
+      "importance": "recommended",
+      "why": "Indian Pega postings usually make the System Architect certification mandatory."
+    },
+    {
+      "certId": "pega-cpssa",
+      "importance": "recommended",
+      "why": "Senior System Architect is asked for in most mid-level Pega postings."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

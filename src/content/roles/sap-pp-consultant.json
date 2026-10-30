@@ -98,7 +98,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "sap-s4hana-production-planning",
+      "importance": "recommended",
+      "why": "The SAP certification that matches PP configuration work."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

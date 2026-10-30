@@ -99,6 +99,16 @@
       "certId": "comptia-network-plus",
       "importance": "optional",
       "why": "Vendor-neutral networking base"
+    },
+    {
+      "certId": "ccnp-enterprise",
+      "importance": "recommended",
+      "why": "Mid-level Indian network engineer postings often ask for CCNP after CCNA."
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Network operations in service firms follow ITIL processes."
     }
   ],
   "sources": [

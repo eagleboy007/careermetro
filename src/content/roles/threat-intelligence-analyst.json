@@ -112,6 +112,11 @@
       "certId": "cissp",
       "importance": "optional",
       "why": "Broad security credential for senior analysts"
+    },
+    {
+      "certId": "gcti",
+      "importance": "recommended",
+      "why": "The certification most named in Indian CTI postings."
     }
   ],
   "sources": [

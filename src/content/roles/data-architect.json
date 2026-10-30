@@ -146,6 +146,16 @@
       "certId": "aws-data-engineer-associate",
       "importance": "optional",
       "why": "AWS data services such as Glue, Redshift and Kinesis"
+    },
+    {
+      "certId": "gcp-professional-data-engineer",
+      "importance": "optional",
+      "why": "Covers data platform design on Google Cloud."
+    },
+    {
+      "certId": "cdmp",
+      "importance": "optional",
+      "why": "Vendor-neutral proof of data management and governance knowledge."
     }
   ],
   "sources": [

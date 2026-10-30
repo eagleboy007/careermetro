@@ -102,6 +102,11 @@
       "certId": "ceh",
       "importance": "optional",
       "why": "Asked for in many Indian VAPT postings"
+    },
+    {
+      "certId": "crtp",
+      "importance": "optional",
+      "why": "Proves Active Directory attack skills that internal pentests need."
     }
   ],
   "sources": [

@@ -103,6 +103,11 @@
       "certId": "oracle-sql-associate",
       "importance": "recommended",
       "why": "Oracle SQL basics; the PL/SQL professional exam builds on it"
+    },
+    {
+      "certId": "oracle-plsql-developer-professional",
+      "importance": "recommended",
+      "why": "PL/SQL packages and procedures are the core of the role, and this certification covers them."
     }
   ],
   "sources": [

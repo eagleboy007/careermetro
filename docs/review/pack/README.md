@@ -19,6 +19,8 @@ In the role files, **Section** says what the line is: the summary, "A normal day
 
 In the timed-test file, check that the marked answer is the only right one, the question is fair for the level (L1 is basic, L2 working, L3 expert), and the explanation is correct. In the Practice file, check the question and what a strong answer covers.
 
+In the certifications file, **Proves** lists skills that holding the certificate shows on its own, and **Partial** skills it only touches. Put a skill in Proves only when the issuer's official exam outline names it. Until someone checks the outline, a skill proposed for Proves waits at the start of Partial; write it in **Change to** if the outline names it. **Roles** lists the roles that recommend it, as recommended or optional; say if it is wrong for a role, retired or renamed.
+
 ## Files
 
 | Field | File | Roles awaiting review |
@@ -35,13 +37,17 @@ In the timed-test file, check that the marked answer is the only right one, the 
 | Timed test (multiple choice, hidden until reviewed) | `timed-test-questions.csv` | 54 |
 | Practice bank (open questions) | `practice-questions.csv` | 135 |
 
+| Certifications | File | Lines |
+| --- | --- | --- |
+| Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
+
 153 role profiles await review in all.
 
 ## How answers flow back into the app
 
 1. Save the returned file in `/mnt/project-files/careermetro/review/returned/`, with the reviewer's name and the date in the file name.
 2. Development runs `node scripts/review/read-review.mjs <returned file>`. It lists every line with an answer, grouped by role or question, and flags Refs that no longer exist.
-3. Development makes the changes in `src/content` in one PR. For a role, it sets `reviewedBy` (the reviewer's name and field) and `updatedOn`; for a question, it sets `reviewed: true`. The usual checks (the matcher and closest-role evals) run in CI.
+3. Development makes the changes in `src/content` in one PR. For a role, it sets `reviewedBy` (the reviewer's name and field) and `updatedOn`; for a question or a certification, it sets `reviewed: true`. The usual checks (the matcher and closest-role evals) run in CI.
 4. The pack is generated again from the new content, so reviewed roles drop out of it.
 
 Reviewers' names go in the content only with their consent. Nothing in this pack comes from a user.

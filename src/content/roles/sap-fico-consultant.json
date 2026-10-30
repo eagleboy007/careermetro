@@ -99,7 +99,18 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "sap-s4hana-financial-accounting",
+      "importance": "recommended",
+      "why": "The standard SAP FI certification that FICO postings ask for."
+    },
+    {
+      "certId": "sap-s4hana-management-accounting",
+      "importance": "optional",
+      "why": "Proves the Controlling half of a FICO consultant's work."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

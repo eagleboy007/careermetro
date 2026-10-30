@@ -144,6 +144,16 @@
       "certId": "comptia-network-plus",
       "importance": "optional",
       "why": "Networking base"
+    },
+    {
+      "certId": "windows-server-hybrid-administrator",
+      "importance": "recommended",
+      "why": "Microsoft's Windows Server certification, relevant to most Indian sysadmin postings."
+    },
+    {
+      "certId": "vcp-vcf-administrator",
+      "importance": "optional",
+      "why": "Many sysadmin roles also run VMware clusters."
     }
   ],
   "sources": [

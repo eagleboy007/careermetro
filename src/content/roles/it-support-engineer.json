@@ -108,6 +108,21 @@
       "certId": "ccna",
       "importance": "optional",
       "why": "Useful for support engineers moving towards network roles"
+    },
+    {
+      "certId": "comptia-a-plus",
+      "importance": "recommended",
+      "why": "The standard entry certification for hardware, OS and end-user support."
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "recommended",
+      "why": "Desktop support postings often prefer ITIL Foundation for ticket and SLA work."
+    },
+    {
+      "certId": "m365-endpoint-administrator",
+      "importance": "optional",
+      "why": "Proves Intune and Windows device management."
     }
   ],
   "sources": [

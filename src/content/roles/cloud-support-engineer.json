@@ -168,6 +168,11 @@
       "certId": "comptia-network-plus",
       "importance": "optional",
       "why": "Networking fundamentals used in daily troubleshooting"
+    },
+    {
+      "certId": "aws-cloudops-engineer-associate",
+      "importance": "recommended",
+      "why": "AWS's operations certification, closest to day-to-day cloud support work."
     }
   ],
   "sources": [

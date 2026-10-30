@@ -103,6 +103,11 @@
       "certId": "oracle-sql-associate",
       "importance": "optional",
       "why": "SQL basics that every Fusion technical role uses"
+    },
+    {
+      "certId": "oracle-oci-application-integration-professional",
+      "importance": "recommended",
+      "why": "Oracle Integration Cloud is asked for in nearly every Fusion technical posting."
     }
   ],
   "sources": [

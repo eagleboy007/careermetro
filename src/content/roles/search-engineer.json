@@ -126,7 +126,13 @@
       "label": "A backend language (Java, Go, Python, Node.js or C#)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "elastic-certified-engineer",
+      "importance": "recommended",
+      "why": "Elasticsearch is the most common search engine in Indian postings, and this is Elastic's hands-on exam."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

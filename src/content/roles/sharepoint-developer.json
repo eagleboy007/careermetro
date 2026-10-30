@@ -115,7 +115,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "power-platform-developer-associate",
+      "importance": "optional",
+      "why": "Microsoft has no SharePoint-specific developer exam, and this covers the Power Apps and Power Automate side of the role."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",

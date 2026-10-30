@@ -121,6 +121,11 @@
       "certId": "comptia-security-plus",
       "importance": "optional",
       "why": "Security basics"
+    },
+    {
+      "certId": "csslp",
+      "importance": "optional",
+      "why": "Named as good to have in Indian AppSec postings."
     }
   ],
   "sources": [

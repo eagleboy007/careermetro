@@ -134,6 +134,11 @@
       "certId": "azure-fundamentals",
       "importance": "optional",
       "why": "Azure pricing and cost management basics"
+    },
+    {
+      "certId": "finops-certified-practitioner",
+      "importance": "recommended",
+      "why": "Preferred in most FinOps postings and has no prerequisites."
     }
   ],
   "sources": [

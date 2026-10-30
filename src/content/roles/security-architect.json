@@ -142,6 +142,11 @@
       "certId": "aws-security-specialty",
       "importance": "optional",
       "why": "AWS security depth"
+    },
+    {
+      "certId": "azure-solutions-architect-expert",
+      "importance": "optional",
+      "why": "Some Indian security architect postings ask for Azure architecture depth."
     }
   ],
   "sources": [

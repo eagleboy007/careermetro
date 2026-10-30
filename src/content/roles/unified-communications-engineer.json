@@ -110,6 +110,16 @@
       "certId": "ccna",
       "importance": "optional",
       "why": "Networking base that Cisco voice roles expect"
+    },
+    {
+      "certId": "ccnp-collaboration",
+      "importance": "recommended",
+      "why": "The main certification for Cisco CUCM and Webex calling work."
+    },
+    {
+      "certId": "ms-teams-voice-engineer",
+      "importance": "optional",
+      "why": "Microsoft's certification for Teams Phone and Direct Routing."
     }
   ],
   "sources": [

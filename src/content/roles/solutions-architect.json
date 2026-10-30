@@ -145,6 +145,21 @@
       "certId": "azure-fundamentals",
       "importance": "optional",
       "why": "Entry point to the Azure architect track"
+    },
+    {
+      "certId": "aws-solutions-architect-professional",
+      "importance": "optional",
+      "why": "Named in senior Indian architect postings once the associate level is done."
+    },
+    {
+      "certId": "azure-solutions-architect-expert",
+      "importance": "optional",
+      "why": "The Azure architect certification for employers that build on Azure."
+    },
+    {
+      "certId": "gcp-professional-cloud-architect",
+      "importance": "optional",
+      "why": "The Google Cloud architect certification for GCP-based teams."
     }
   ],
   "sources": [

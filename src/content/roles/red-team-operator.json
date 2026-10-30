@@ -115,6 +115,21 @@
       "certId": "comptia-pentest-plus",
       "importance": "optional",
       "why": "Vendor-neutral penetration testing fundamentals"
+    },
+    {
+      "certId": "osep",
+      "importance": "recommended",
+      "why": "OffSec's evasion-focused exam, often named after OSCP in red team postings."
+    },
+    {
+      "certId": "crto",
+      "importance": "recommended",
+      "why": "The C2 and Cobalt Strike certification most named for red team roles."
+    },
+    {
+      "certId": "crtp",
+      "importance": "optional",
+      "why": "A low-cost Active Directory attack certification popular in India."
     }
   ],
   "sources": [

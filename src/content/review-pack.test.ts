@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { certifications } from ".";
 import { buildPack, csv, FIELDS } from "../../scripts/review/build-review-pack.mjs";
 import { answers, parseCsv } from "../../scripts/review/read-review.mjs";
 
@@ -16,6 +17,13 @@ describe("the expert review pack (docs/review/pack)", () => {
     const refs = FIELDS.flatMap((f: { file: string }) => parseCsv(pack[f.file]).slice(1).filter((r) => r[0].endsWith("#title")).map((r) => r[0]));
     expect(new Set(refs).size).toBe(refs.length);
     expect(refs.length).toBeGreaterThan(100);
+  });
+
+  it("lists every certification awaiting review once, and no reviewed one", () => {
+    const refs = parseCsv(pack["certifications.csv"]).slice(1).map((r) => r[0]);
+    const awaiting = certifications.filter((c) => c.reviewed === false).map((c) => c.id);
+    expect(refs).toEqual(awaiting);
+    expect(new Set(refs).size).toBe(refs.length);
   });
 
   it("reads back only answered lines, and flags a Ref that no longer exists", () => {

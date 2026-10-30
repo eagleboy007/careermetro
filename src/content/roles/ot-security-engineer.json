@@ -120,6 +120,16 @@
       "certId": "cissp",
       "importance": "optional",
       "why": "Broad security credential asked for in senior OT roles"
+    },
+    {
+      "certId": "gicsp",
+      "importance": "recommended",
+      "why": "The certification most often named as a plus in Indian OT security postings."
+    },
+    {
+      "certId": "isa-iec-62443-fundamentals-specialist",
+      "importance": "recommended",
+      "why": "IEC 62443 is asked for in almost every OT security posting, and this is ISA's first certificate."
     }
   ],
   "sources": [

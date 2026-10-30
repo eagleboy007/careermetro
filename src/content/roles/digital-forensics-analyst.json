@@ -120,6 +120,16 @@
       "certId": "ceh",
       "importance": "optional",
       "why": "Common entry security cert in Indian postings"
+    },
+    {
+      "certId": "chfi",
+      "importance": "recommended",
+      "why": "Named as mandatory in some Indian forensics postings."
+    },
+    {
+      "certId": "gcfa",
+      "importance": "optional",
+      "why": "Preferred in senior DFIR postings."
     }
   ],
   "sources": [

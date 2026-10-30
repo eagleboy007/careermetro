@@ -97,7 +97,23 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "salesforce-platform-developer",
+      "importance": "recommended",
+      "why": "The certification most Indian Salesforce developer postings name, often as mandatory."
+    },
+    {
+      "certId": "salesforce-platform-developer-ii",
+      "importance": "optional",
+      "why": "Preferred for senior developer roles that own complex Apex and LWC work."
+    },
+    {
+      "certId": "salesforce-platform-administrator",
+      "importance": "optional",
+      "why": "Some postings ask developers to hold the admin certification too."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-29. Awaiting domain-expert review.",

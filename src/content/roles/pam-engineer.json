@@ -129,6 +129,16 @@
       "certId": "comptia-security-plus",
       "importance": "optional",
       "why": "Security fundamentals for identity roles"
+    },
+    {
+      "certId": "cyberark-defender-pam",
+      "importance": "recommended",
+      "why": "CyberArk is the most named PAM tool, and Defender is its operations certification."
+    },
+    {
+      "certId": "cyberark-sentry-pam",
+      "importance": "recommended",
+      "why": "Sentry covers CyberArk deployment and is named mandatory in some postings."
     }
   ],
   "sources": [
