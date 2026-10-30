@@ -95,4 +95,4 @@ vcp-vcf-administrator,VMware Certified Professional – VMware Cloud Foundation 
 citrix-cca-v,Citrix Certified Associate – Virtualization (CCA-V),Citrix (Cloud Software Group),,"Virtual desktops (Citrix, Azure Virtual Desktop, Horizon); Server virtualisation",End User Computing Engineer (optional),,,
 nutanix-ncp-mci,Nutanix Certified Professional – Multicloud Infrastructure (NCP-MCI),Nutanix,,"Hyperconverged infrastructure (Nutanix, vSAN); Server virtualisation; Replication, high availability and recovery",Virtualization Engineer (optional),,,
 nvidia-ncp-aii,NVIDIA-Certified Professional: AI Infrastructure (NCP-AII),NVIDIA,,"HPC clusters and job schedulers (Slurm, PBS, LSF); CUDA and GPU programming; Linux command line; Kubernetes",HPC / GPU Engineer (optional),,,
-azure-mlops-engineer,Microsoft Certified: MLOps Engineer Associate (AI-300),Microsoft,,MLOps; Machine learning; Microsoft Azure,,,,
+azure-mlops-engineer,Microsoft Certified: MLOps Engineer Associate (AI-300),Microsoft,,MLOps; Machine learning; Microsoft Azure,Data Scientist (optional); MLOps Engineer (optional); Senior Data Scientist (optional),,,
