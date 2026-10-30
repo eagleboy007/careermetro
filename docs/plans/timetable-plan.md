@@ -111,7 +111,7 @@ Turning the digest off is one tap, from the email (the same one-click token as t
 
 - Monday at 07:30 IST, from a new cron, `/api/cron/events-digest`. It runs before the weekly email (08:00 IST), and Tuesday picks up anyone a cap or the limit stopped.
 - It goes only to people with `events_digest` on and at least one matching event in the next 7 days. The message lists up to 5 events: title, organiser, day and time in IST, city or Online, and the source link. It names no other person.
-- **Budget:** Resend's free plan allows 100 emails a day, and sign-in codes need 60 of them. The digest and the weekly email share the other 40. Together they never pass 40 a day: on Monday the digest takes at most 20 and the weekly email at most 20 (40 less the digest's cap), and the weekly email fills its 40 on Tuesday and Wednesday. Both stop at Resend's limit (T142). A `email_sends` count per day is not added; the existing limit handling is enough while the beta is small. The tech-stack register already lists Resend's paid plan as the upgrade.
+- **Budget:** Resend's free plan allows 100 emails a day, and sign-in codes keep 60 of them. App emails (the weekly email and this digest) share one budget of 40 per India day, counted in the database (built with the weekly-email fixes T151/T153, before this PR). The digest takes at most 20 of it; the weekly email takes what is left; both catch up on Tuesday and Wednesday and stop at Resend's limit (T142). The tech-stack register already lists Resend's paid plan as the upgrade.
 - A `events_digests` table (`user_id`, `week`, `sent_at`) keeps one send a week per person, the same way `weekly_emails` does.
 - One-click unsubscribe (RFC 8058), using the existing token.
 
