@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-30 (C20 Next interview: the still-open skills line)
+Last updated: 2026-10-30 (expert review pack for role profiles and questions)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -99,6 +99,8 @@ Last updated: 2026-10-30 (C20 Next interview: the still-open skills line)
 - `/api/health` adds `market` ("ok", "timeout", "missing" or "error"), a one-row read of `market_openings_monthly` (3 s statement, 2 s lock limit) that never changes `ok`; the staging screens script's Market step puts it at the front of its FAIL line. The app's pool closes idle sockets after 20 s and gives up a connect after 10 s; Market links to the same screen don't prefetch.
 - Path and Gaps flow fixes (Milin, 2026-10-25, no migration): below the steps, Path always shows a way on (`PathOnward`): signed in, "Continue to Today", saying the role's goals stay on Today and the Map only when the person's newest gap check is this resume and role, else that Today follows the other resume's or the other role's check (T123: "other", since the newest check can be on an older resume); signed out, the sign-in or waitlist of `PathEnd`, which takes its place once every step is done. Gaps ends on "Build my path", after the screening and job checks. On `/design`; the walk, dry run and `docs/launch/prod-smoke.md` 4.1 and 4.2 check both.
 - The Map's No resume card now reads "Until then, the lines of other roles are here to explore." Interests from Me join the Life line as one undated row at the end (`interestsRow` in `src/lib/map/life.ts`), drawn along the Interests row, or the row links to Me to add them; no "soon". Both states are on /design.
+
+- Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/` from src/content, with one CSV per field (cloud 25, security 25, data 21, enterprise apps 24, testing 4, other 54; all 153 roles have `reviewedBy` null), the 54 timed-test questions, the 135 Practice questions and a README for reviewers. Each line has a Ref plus Agree / Change to / Comment columns. A copy is in `/mnt/project-files/careermetro/review/roles/`. `node scripts/review/read-review.mjs <file>` lists a returned file's answers. A test fails when the pack is out of date, so re-run the script after any content change.
 
 ## Next up
 
