@@ -1,0 +1,63 @@
+{
+  "id": "implementation-consultant-from-payroll-saas-analyst",
+  "roleSlug": "implementation-consultant",
+  "persona": "Implementation analyst at a payroll SaaS company aiming for a consultant role",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nEXPERIENCE\nImplementation Analyst, PayNest Software, Pune (2022 - present)\n- Configured the payroll product for 18 mid-size customers, setting up workflows, approval rules and user roles.\n- Ran discovery calls with HR teams and wrote requirement documents for each rollout.\n- Wrote SQL queries to validate migrated employee records before go-live.\n- Cleaned and mapped legacy employee data from Excel files into the product import templates.\n- Prepared UAT scripts and supported customer users through acceptance testing and sign-off.\n- Logged product bugs in Jira and followed them up with the engineering team.\n\nCustomer Support Associate, PayNest Software, Pune (2021 - 2022)\n- Answered customer tickets about payslips and tax settings.\n\nSKILLS\nREST APIs, Postman, SQL, Excel, Jira\n\nEDUCATION\nBCom, Savitribai Phule Pune University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "saas-implementation-configuration",
+        "quote": "Configured the payroll product for 18 mid-size customers"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Ran discovery calls with HR teams and wrote requirement documents"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries to validate migrated employee records"
+      },
+      {
+        "skillId": "data-cleaning",
+        "quote": "Cleaned and mapped legacy employee data"
+      },
+      {
+        "skillId": "uat",
+        "quote": "supported customer users through acceptance testing and sign-off"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Logged product bugs in Jira"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "REST APIs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rest-apis",
+        "status": "weak"
+      },
+      {
+        "skillId": "it-project-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "crm-tools",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

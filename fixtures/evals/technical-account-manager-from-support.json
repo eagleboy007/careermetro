@@ -1,0 +1,64 @@
+{
+  "id": "technical-account-manager-from-support",
+  "roleSlug": "technical-account-manager",
+  "persona": "Senior SaaS support engineer already handling key enterprise accounts",
+  "resumeText": "Sneha Iyer | Bengaluru | sneha.iyer@example.com\n\nEXPERIENCE\nSenior Technical Support Engineer, Kaveri CloudWorks, Bengaluru (2019 - present)\n- Own technical account management for 18 enterprise customers on our payments API platform.\n- Run quarterly business reviews with customer engineering heads and share adoption metrics.\n- Debug failed REST API calls and webhook retries using request logs and Postman.\n- Lead root cause analysis for P1 escalations and fix customer integration issues.\n- Act as incident commander on P1 calls and write postmortems for affected customers.\n- Track all customer issues in Zendesk and Salesforce.\n\nSupport Engineer, Nandi Softlabs, Bengaluru (2017 - 2019)\n- Handled L2 tickets for an HR SaaS product.\n\nSKILLS\nREST APIs, SQL, Zendesk, Salesforce, JIRA\n\nEDUCATION\nBTech Computer Science, PES University, 2017\n",
+  "expected": {
+    "totalYearsExperience": 9,
+    "skills": [
+      {
+        "skillId": "technical-account-management",
+        "quote": "Own technical account management for 18 enterprise customers"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Run quarterly business reviews with customer engineering heads"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Run quarterly business reviews with customer engineering heads"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Debug failed REST API calls and webhook retries"
+      },
+      {
+        "skillId": "application-support",
+        "quote": "Lead root cause analysis for P1 escalations"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Lead root cause analysis for P1 escalations"
+      },
+      {
+        "skillId": "incident-management",
+        "quote": "write postmortems for affected customers"
+      },
+      {
+        "skillId": "support-ticketing-tools",
+        "quote": "Track all customer issues in Zendesk and Salesforce"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Track all customer issues in Zendesk and Salesforce"
+      },
+      {
+        "skillId": "sql",
+        "quote": "SQL"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sql",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "solution-demos-poc",
+      "identity-federation",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,60 @@
+{
+  "id": "developer-advocate-from-backend",
+  "roleSlug": "developer-advocate",
+  "persona": "Node.js backend engineer who writes docs and speaks at local meetups",
+  "resumeText": "Arjun Menon | Kochi | arjun.menon@example.com\n\nEXPERIENCE\nSoftware Engineer, Backwater Labs, Kochi (2021 - present)\n- Built REST APIs in Node.js for a logistics tracking product used by 40 partner companies.\n- Wrote JavaScript and TypeScript SDK wrappers for partner developers.\n- Wrote the public API documentation and OpenAPI specification for partner developers.\n- Published 12 technical blog posts on rate limiting and webhooks on the company blog.\n- Gave tech talks at Kochi JavaScript meetups about building webhook consumers.\n- Maintain open-source sample apps on GitHub that show how to call our API.\n- Recorded short video walkthroughs and technical demos for new partner integrations.\n\nSKILLS\nJavaScript, Node.js, TypeScript, Git\n\nEDUCATION\nBTech Computer Science, Cochin University of Science and Technology, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "rest-apis",
+        "quote": "Built REST APIs in Node.js"
+      },
+      {
+        "skillId": "nodejs",
+        "quote": "Built REST APIs in Node.js"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Wrote JavaScript and TypeScript SDK wrappers"
+      },
+      {
+        "skillId": "typescript",
+        "quote": "Wrote JavaScript and TypeScript SDK wrappers"
+      },
+      {
+        "skillId": "api-documentation",
+        "quote": "Wrote the public API documentation and OpenAPI specification"
+      },
+      {
+        "skillId": "technical-writing",
+        "quote": "Published 12 technical blog posts"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Gave tech talks at Kochi JavaScript meetups"
+      },
+      {
+        "skillId": "git",
+        "quote": "Maintain open-source sample apps on GitHub"
+      },
+      {
+        "skillId": "solution-demos-poc",
+        "quote": "Recorded short video walkthroughs and technical demos"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "developer-relations",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "llm-apps",
+      "aws",
+      "docs-as-code",
+      "kubernetes"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,109 @@
+{
+  "slug": "autosar-engineer",
+  "title": "AUTOSAR Engineer",
+  "summary": "AUTOSAR engineers build and configure the software inside car control units (ECUs) using AUTOSAR, a standard layered software architecture used across the auto industry. They sit in embedded automotive teams at carmakers, suppliers and engineering service firms, next to hardware, testing and diagnostics teams.",
+  "dailyDuties": [
+    "Configure BSW, RTE and MCAL modules in AUTOSAR tools",
+    "Integrate software components and generate ECU builds",
+    "Implement and test UDS diagnostic services",
+    "Debug CAN and LIN communication with network tools",
+    "Fix integration bugs on the target microcontroller",
+    "Review code for MISRA and process rules"
+  ],
+  "typicalTitles": [
+    "AUTOSAR Developer",
+    "AUTOSAR BSW Developer",
+    "AUTOSAR Integration Engineer",
+    "AUTOSAR Integrator",
+    "AUTOSAR Configuration Engineer",
+    "MCAL Developer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "autosar-classic",
+      "importance": "required",
+      "expectation": "Configure and integrate AUTOSAR Classic BSW, RTE and MCAL modules with tools like DaVinci or EB tresos",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "required",
+      "expectation": "Write MISRA-compliant Embedded C for ECU software components",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Work with CAN, LIN and other in-vehicle buses",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-network-diagnostics",
+      "importance": "required",
+      "expectation": "Implement UDS diagnostics and test network traffic with CANoe or CANalyzer",
+      "postingShare": null
+    },
+    {
+      "skillId": "microcontrollers",
+      "importance": "required",
+      "expectation": "Bring up software on automotive microcontrollers",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-debugging",
+      "importance": "required",
+      "expectation": "Debug ECU software with on-target debuggers and traces",
+      "postingShare": null
+    },
+    {
+      "skillId": "rtos",
+      "importance": "required",
+      "expectation": "Configure AUTOSAR OS tasks, alarms and scheduling",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "nice_to_have",
+      "expectation": "Work on Adaptive AUTOSAR applications in C++",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write unit and integration tests for software components",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script build, configuration and test steps",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Manage code and configuration in version control",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Work in sprints with the vehicle programme team",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

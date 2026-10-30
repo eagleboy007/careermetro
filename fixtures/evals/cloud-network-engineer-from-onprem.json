@@ -1,0 +1,56 @@
+{
+  "id": "cloud-network-engineer-from-onprem",
+  "roleSlug": "cloud-network-engineer",
+  "persona": "Enterprise network engineer who moved onto Azure networking",
+  "resumeText": "Rohit Deshmukh | Pune | rohit.deshmukh@example.com\n\nSUMMARY\nNetwork engineer with 8 years in enterprise routing, the last 3 years on Azure networking.\n\nEXPERIENCE\nNetwork Engineer, Sahyadri Infotech Services, Pune (2020 - present)\n- Built hub-and-spoke VNets with Azure Firewall for 30 application subscriptions.\n- Set up Azure ExpressRoute circuits and site-to-site VPN backup to the Pune data centre.\n- Configured BGP peering and route filters between on-premises routers and Azure.\n- Troubleshot DNS resolution and TCP/IP issues between branch offices and cloud workloads.\n- Wrote network segmentation rules and VPN policies for PCI workloads.\n\nNetwork Support Engineer, Deccan Netlink, Pune (2018 - 2020)\n- Managed Cisco switches and VLANs across 12 branch sites.\n- Monitored links with SolarWinds and handled L2 tickets.\n\nSKILLS\nAzure, BGP, OSPF, Cisco IOS, Terraform (basic)\n\nEDUCATION\nBE Electronics and Telecommunication, Savitribai Phule Pune University, 2018\n\nCERTIFICATIONS\nCCNA (2019)\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "azure",
+        "quote": "Built hub-and-spoke VNets with Azure Firewall"
+      },
+      {
+        "skillId": "cloud-networking",
+        "quote": "hub-and-spoke VNets with Azure Firewall"
+      },
+      {
+        "skillId": "hybrid-cloud-connectivity",
+        "quote": "Set up Azure ExpressRoute circuits and site-to-site VPN backup"
+      },
+      {
+        "skillId": "routing-switching",
+        "quote": "Configured BGP peering and route filters"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Troubleshot DNS resolution and TCP/IP issues"
+      },
+      {
+        "skillId": "network-security",
+        "quote": "Wrote network segmentation rules and VPN policies"
+      },
+      {
+        "skillId": "network-monitoring",
+        "quote": "Monitored links with SolarWinds and handled L2 tickets"
+      },
+      {
+        "skillId": "terraform",
+        "quote": "Terraform (basic)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "terraform",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "gcp",
+      "sase-ztna",
+      "kubernetes"
+    ]
+  },
+  "reviewedBy": null
+}

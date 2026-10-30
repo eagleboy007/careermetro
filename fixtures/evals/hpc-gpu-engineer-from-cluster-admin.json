@@ -1,0 +1,56 @@
+{
+  "id": "hpc-gpu-engineer-from-cluster-admin",
+  "roleSlug": "hpc-gpu-engineer",
+  "persona": "HPC cluster administrator moving into GPU performance work",
+  "resumeText": "Ananya Iyer | Pune | ananya.iyer@example.com\n\nEXPERIENCE\nHPC Systems Engineer, Sahyadri Computing Labs, Pune (2022 - present)\n- Administer a 120-node Slurm cluster with InfiniBand interconnect for engineering simulation teams.\n- Built and tested OpenMPI and Intel MPI stacks and ran OSU benchmarks after each upgrade.\n- Wrote Bash scripts to automate node health checks and drain faulty nodes.\n- Added 16 NVIDIA A100 GPU nodes and installed GPU drivers and the CUDA toolkit.\n- Wrote Python tools that summarise job usage per department.\n\nLinux Administrator, Western Ghats Infotech, Pune (2020 - 2022)\n- Patched and hardened 200 RHEL servers for internal applications.\n\nSKILLS\nLinux, Slurm, MPI, CUDA, C++, Python, Ansible\n\nEDUCATION\nBE Computer Engineering, College of Engineering Pune, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "hpc-cluster-scheduling",
+        "quote": "Administer a 120-node Slurm cluster"
+      },
+      {
+        "skillId": "mpi-parallel-programming",
+        "quote": "Built and tested OpenMPI and Intel MPI stacks"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Wrote Bash scripts to automate node health checks"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python tools that summarise job usage"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Patched and hardened 200 RHEL servers"
+      },
+      {
+        "skillId": "cuda-gpu-programming",
+        "quote": "CUDA"
+      },
+      {
+        "skillId": "cpp",
+        "quote": "C++"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cuda-gpu-programming",
+        "status": "weak"
+      },
+      {
+        "skillId": "cpp",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "pytorch",
+      "kubernetes",
+      "deep-learning",
+      "go"
+    ]
+  },
+  "reviewedBy": null
+}

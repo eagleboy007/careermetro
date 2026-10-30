@@ -1,0 +1,64 @@
+{
+  "id": "quant-developer-from-broker-oms",
+  "roleSlug": "quant-developer",
+  "persona": "C++ developer on a broker's order management team moving to a trading firm",
+  "resumeText": "Vikram Malhotra | Gurugram | vikram.malhotra@example.com\n\nEXPERIENCE\nSoftware Engineer, Aravalli Securities Tech, Gurugram (2022 - present)\n- Built order routing components in C++17 for the broker's equity derivatives order management system.\n- Parsed exchange market data feeds and maintained an in-memory order book for 2,000 instruments.\n- Used lock-free queues and thread pinning to cut order path latency from 40 to 12 microseconds.\n- Wrote Python scripts to replay market data and compare fills with exchange trade files.\n- Ran and tuned the trading servers on Red Hat Linux with the infrastructure team.\n\nGraduate Engineer, Aravalli Securities Tech, Gurugram (2021 - 2022)\n- Wrote unit tests for a margin calculation library.\n\nSKILLS\nC++, Python, STL, data structures, TCP/IP, UDP multicast, Git\n\nEDUCATION\nBTech Computer Science, NIT Kurukshetra, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "cpp",
+        "quote": "Built order routing components in C++17"
+      },
+      {
+        "skillId": "modern-cpp",
+        "quote": "Built order routing components in C++17"
+      },
+      {
+        "skillId": "trading-systems-market-data",
+        "quote": "Parsed exchange market data feeds and maintained an in-memory order book"
+      },
+      {
+        "skillId": "concurrency-multithreading",
+        "quote": "Used lock-free queues and thread pinning"
+      },
+      {
+        "skillId": "low-latency-programming",
+        "quote": "cut order path latency from 40 to 12 microseconds"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python scripts to replay market data"
+      },
+      {
+        "skillId": "linux",
+        "quote": "tuned the trading servers on Red Hat Linux"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "quote": "data structures"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "TCP/IP"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-structures-algorithms",
+        "status": "weak"
+      },
+      {
+        "skillId": "networking-basics",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "fpga-design",
+      "statistics",
+      "sql",
+      "pandas"
+    ]
+  },
+  "reviewedBy": null
+}

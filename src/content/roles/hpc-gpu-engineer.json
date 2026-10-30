@@ -1,0 +1,128 @@
+{
+  "slug": "hpc-gpu-engineer",
+  "title": "HPC / GPU Engineer",
+  "summary": "HPC (high-performance computing) and GPU engineers run and speed up large clusters of servers and graphics processors used for simulation and AI training. They sit with research, engineering or AI teams, tuning parallel code and keeping job schedulers, nodes and networks healthy.",
+  "dailyDuties": [
+    "Profile and tune CUDA and MPI jobs",
+    "Keep Slurm or LSF queues and GPU nodes healthy",
+    "Run benchmarks after driver and library upgrades",
+    "Help users fix slow or failing parallel jobs",
+    "Script node checks and cluster automation",
+    "Plan capacity for new GPU nodes"
+  ],
+  "typicalTitles": [
+    "HPC Engineer",
+    "GPU Engineer",
+    "CUDA Developer",
+    "CUDA Engineer",
+    "HPC Cluster Engineer",
+    "HPC Infrastructure Engineer",
+    "GPU Performance Engineer",
+    "HPC Systems Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "cuda-gpu-programming",
+      "importance": "required",
+      "expectation": "Write, profile and tune CUDA code and multi-GPU communication",
+      "postingShare": null
+    },
+    {
+      "skillId": "mpi-parallel-programming",
+      "importance": "required",
+      "expectation": "Build and run MPI and OpenMP jobs across many nodes",
+      "postingShare": null
+    },
+    {
+      "skillId": "hpc-cluster-scheduling",
+      "importance": "required",
+      "expectation": "Run GPU clusters with Slurm, PBS or LSF, fast interconnects and parallel file systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Administer and tune Linux on compute nodes",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Read and write C or C++ for performance-critical code",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write Python tools for benchmarks, job reports and automation",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Script node health checks and cluster tasks",
+      "postingShare": null
+    },
+    {
+      "skillId": "concurrency-multithreading",
+      "importance": "nice_to_have",
+      "expectation": "Reason about threads and synchronisation on CPU code",
+      "postingShare": null
+    },
+    {
+      "skillId": "pytorch",
+      "importance": "nice_to_have",
+      "expectation": "Support distributed training jobs on the cluster",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Schedule GPU workloads on Kubernetes",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package jobs in containers such as Docker or Apptainer",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Track GPU and node health with dashboards and alerts",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Provision and configure nodes with Ansible or similar tools",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "rhcsa",
+      "importance": "optional",
+      "why": "Linux administration for cluster nodes"
+    },
+    {
+      "certId": "cka",
+      "importance": "optional",
+      "why": "Helps where GPU jobs run on Kubernetes"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

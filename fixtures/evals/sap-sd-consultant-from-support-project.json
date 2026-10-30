@@ -1,0 +1,56 @@
+{
+  "id": "sap-sd-consultant-from-support-project",
+  "roleSlug": "sap-sd-consultant",
+  "persona": "SAP SD consultant from a support project aiming for implementation work",
+  "resumeText": "Rahul Deshmukh | Mumbai | rahul.deshmukh@example.com\n\nEXPERIENCE\nSAP SD Consultant, Konkan Infotech Services, Mumbai (2022 - present)\n- Configured pricing procedures, condition types and access sequences for a cement manufacturer in SAP S/4HANA.\n- Set up billing document types and output for domestic and export sales.\n- Monitored and reprocessed failed sales order IDocs from distributor EDI feeds.\n- Resolved SAP SD incidents and change requests within SLA in the ticketing tool.\n- Wrote test scripts and supported key users in user acceptance testing.\n- Configured GST condition types and e-invoicing outputs for billing documents.\n- Trained 40 sales users on order entry and returns.\n\nSAP SD Associate, Konkan Infotech Services, Mumbai (2021 - 2022)\n- Supported key users with sales order and delivery issues.\n\nSKILLS\nSAP SD, SAP S/4HANA, IDoc, Excel\n\nEDUCATION\nBE Mechanical Engineering, University of Mumbai, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "sap-sd-configuration",
+        "quote": "Configured pricing procedures, condition types and access sequences"
+      },
+      {
+        "skillId": "sap-interfaces",
+        "quote": "reprocessed failed sales order IDocs from distributor EDI feeds"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Resolved SAP SD incidents and change requests within SLA"
+      },
+      {
+        "skillId": "uat",
+        "quote": "supported key users in user acceptance testing"
+      },
+      {
+        "skillId": "gst-tds-compliance",
+        "quote": "Configured GST condition types and e-invoicing outputs"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Trained 40 sales users on order entry"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "requirements-gathering",
+        "status": "missing"
+      },
+      {
+        "skillId": "process-mapping",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-abap",
+      "sap-fiori-ui5",
+      "sap-mm-configuration",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

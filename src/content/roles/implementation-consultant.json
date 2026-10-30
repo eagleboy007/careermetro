@@ -1,0 +1,136 @@
+{
+  "slug": "implementation-consultant",
+  "title": "Implementation Consultant",
+  "summary": "Implementation consultants set up a software-as-a-service (SaaS) product for each new customer, from the first kickoff call to go-live. They sit between the customer, sales and the product team, configuring the product, moving data in and training users.",
+  "dailyDuties": [
+    "Run kickoff and discovery calls with new customers",
+    "Configure workflows, roles and rules in the product",
+    "Map and load customer data from old systems",
+    "Set up and test API or file integrations",
+    "Take customers through testing and sign-off",
+    "Track timelines and flag risks to the customer and sales",
+    "Hand customers over to support after go-live"
+  ],
+  "typicalTitles": [
+    "SaaS Implementation Consultant",
+    "Implementation Specialist",
+    "Implementation Analyst",
+    "Onboarding Consultant",
+    "Customer Onboarding Specialist",
+    "Implementation Manager",
+    "Technical Implementation Consultant",
+    "Senior Implementation Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "saas-implementation-configuration",
+      "importance": "required",
+      "expectation": "Set up a SaaS product for each customer: workflows, roles, business rules and settings, from kickoff to go-live",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run discovery calls and turn customer needs into a signed-off scope",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Write test scenarios and take customers through acceptance testing and sign-off",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL queries to check customer data and troubleshoot setups",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Configure and debug API, webhook and file-based integrations, reading JSON payloads",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-cleaning",
+      "importance": "required",
+      "expectation": "Clean and map customer data from old systems into import templates",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-project-management",
+      "importance": "required",
+      "expectation": "Own the implementation plan, timelines and go-live for several customers at once",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Lead kickoff calls, train customer users and write clear updates",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Manage customer teams, sales and product engineers through each rollout",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "nice_to_have",
+      "expectation": "Map the customer's current process to the product's workflow",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "nice_to_have",
+      "expectation": "Write onboarding guides and configuration notes",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Prepare and check data templates in Excel or Google Sheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "nice_to_have",
+      "expectation": "Log product bugs in Jira and follow them to a fix",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "nice_to_have",
+      "expectation": "Support customers in hypercare after go-live",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Keep account and project notes in the CRM",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "pmp",
+      "importance": "optional",
+      "why": "Helps senior consultants who run many projects"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

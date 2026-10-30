@@ -1,0 +1,47 @@
+{
+  "id": "plc-scada-engineer-process-integrator",
+  "roleSlug": "plc-scada-engineer",
+  "persona": "Automation engineer at a system integrator programming Siemens PLCs and WinCC",
+  "resumeText": "Imran Shaikh | Vadodara | imran.shaikh@example.com\n\nEXPERIENCE\nAutomation Engineer, Narmada Process Controls, Vadodara (2022 - present)\n- Wrote ladder logic and structured text in TIA Portal for Siemens S7-1500 packaging lines.\n- Built WinCC screens for alarms, trends and batch reports at a chemical plant.\n- Set up Modbus RTU links to energy meters and VFDs over RS-485.\n- Commissioned 6 lines at customer sites and trained plant operators on the HMI.\n- Traced faults with online monitoring and fixed interlock logic during plant shutdowns.\n\nTrainee Engineer, Sabarmati Panels, Ahmedabad (2021 - 2022)\n- Tested control panel wiring against electrical drawings.\n\nSKILLS\nSiemens TIA Portal, WinCC, Allen Bradley (basic), SQL\n\nEDUCATION\nBE Instrumentation and Control, Gujarat Technological University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "plc-iec-61131-programming",
+        "quote": "Wrote ladder logic and structured text in TIA Portal"
+      },
+      {
+        "skillId": "industrial-control-systems",
+        "quote": "in TIA Portal for Siemens S7-1500 packaging lines"
+      },
+      {
+        "skillId": "scada-hmi-platforms",
+        "quote": "Built WinCC screens for alarms, trends and batch reports"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Set up Modbus RTU links to energy meters"
+      },
+      {
+        "skillId": "communication",
+        "quote": "trained plant operators on the HMI"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Traced faults with online monitoring and fixed interlock logic"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "networking-basics",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "ot-ics-security",
+      "python",
+      "git"
+    ]
+  },
+  "reviewedBy": null
+}

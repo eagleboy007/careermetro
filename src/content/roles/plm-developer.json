@@ -1,0 +1,123 @@
+{
+  "slug": "plm-developer",
+  "title": "PLM Developer",
+  "summary": "PLM developers customise product lifecycle management (PLM) software, the systems engineering companies use to manage parts, drawings, bills of materials and design changes. They sit in PLM or engineering IT teams, often at IT services firms, and work with design engineers and ERP teams.",
+  "dailyDuties": [
+    "Write server-side customisations and workflow handlers",
+    "Add data model changes such as new item types and properties",
+    "Build integrations between PLM, CAD and ERP systems",
+    "Customise PLM web client screens and reports",
+    "Fix production issues raised by engineering users",
+    "Meet engineers to understand change and BOM processes"
+  ],
+  "typicalTitles": [
+    "Teamcenter Developer",
+    "Windchill Developer",
+    "PLM Technical Consultant",
+    "Teamcenter Customization Engineer",
+    "Windchill Customization Developer",
+    "PLM Software Engineer",
+    "Senior Windchill Developer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "teamcenter-customization",
+      "importance": "required",
+      "expectation": "Customise one major PLM platform with its server APIs, data model tools and UI framework",
+      "postingShare": null,
+      "oneOf": "plm-platform"
+    },
+    {
+      "skillId": "windchill-customization",
+      "importance": "required",
+      "expectation": "Customise one major PLM platform with its server APIs, data model tools and UI framework",
+      "postingShare": null,
+      "oneOf": "plm-platform"
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write Java code for PLM server extensions, clients and integrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query the PLM database to check and fix data",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build and call REST or SOA services to connect PLM with other systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "oop",
+      "importance": "required",
+      "expectation": "Write maintainable object-oriented code",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn engineering change and BOM processes into technical designs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain designs and changes to engineering users",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "nice_to_have",
+      "expectation": "Write Teamcenter ITK code in C or C++",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Customise web clients such as Active Workspace",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "nice_to_have",
+      "expectation": "Work with XML and SOAP-based PLM interfaces",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-interfaces",
+      "importance": "nice_to_have",
+      "expectation": "Integrate PLM with SAP through BAPIs or IDocs",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Manage customisation code in version control",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "plm-platform",
+      "label": "A PLM platform (Teamcenter or Windchill)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

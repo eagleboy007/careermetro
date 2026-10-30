@@ -1,0 +1,130 @@
+{
+  "slug": "sap-sd-consultant",
+  "title": "SAP SD Consultant",
+  "summary": "SAP SD consultants set up and support the Sales and Distribution part of SAP, which runs a company's order-to-cash work: orders, pricing, deliveries and invoices. They sit in an SAP project or support team, working with sales and finance users, other SAP consultants and developers.",
+  "dailyDuties": [
+    "Configure pricing, order types and billing in SAP",
+    "Run workshops and write functional specs for changes",
+    "Fix order, delivery and invoice tickets from users",
+    "Monitor and reprocess failed sales IDocs",
+    "Write test scripts and support user testing",
+    "Work with FI and MM consultants on integration issues",
+    "Train key users on new processes"
+  ],
+  "typicalTitles": [
+    "SAP SD Functional Consultant",
+    "SAP S/4HANA SD Consultant",
+    "SAP OTC Consultant",
+    "SAP Order to Cash Consultant",
+    "SAP SD Analyst",
+    "SAP Sales and Distribution Consultant",
+    "SAP SD Support Consultant",
+    "Senior SAP SD Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "sap-sd-configuration",
+      "importance": "required",
+      "expectation": "Configure and support SAP SD order-to-cash: sales orders, pricing, deliveries, billing, credit and output",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run workshops with sales and finance teams and write functional specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map order-to-cash processes as-is and to-be",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Write test scripts and run integration and user acceptance testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-interfaces",
+      "importance": "required",
+      "expectation": "Support sales order IDocs and EDI with customers and distributors",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Train key users and explain fixes in plain words",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with business users, FI and MM consultants and ABAP developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-fi-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Understand SD-FI integration such as revenue account determination",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-mm-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Understand SD-MM links such as availability check and stock transfers",
+      "postingShare": null
+    },
+    {
+      "skillId": "gst-tds-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Set up GST condition types and e-invoicing for Indian billing",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Read ABAP enough to debug and guide developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "nice_to_have",
+      "expectation": "Resolve support tickets within SLA on support projects",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Prepare and check data migration templates in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Work in SAP Activate or agile project phases",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "pmp",
+      "importance": "optional",
+      "why": "Helps senior consultants who lead workstreams"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

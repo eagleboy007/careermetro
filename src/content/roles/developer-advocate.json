@@ -1,0 +1,139 @@
+{
+  "slug": "developer-advocate",
+  "title": "Developer Advocate",
+  "summary": "Developer advocates help software developers learn and succeed with a product, usually an API, SDK, database or developer tool. They sit between engineering, product and marketing, writing code samples and tutorials, speaking at events and bringing developer feedback back to the product team.",
+  "dailyDuties": [
+    "Write tutorials, blog posts and getting-started guides",
+    "Build sample apps and demos in public repositories",
+    "Speak at meetups, conferences and webinars",
+    "Answer developer questions in forums and community channels",
+    "Report developer pain points to product and engineering",
+    "Review and improve API docs and SDK examples"
+  ],
+  "typicalTitles": [
+    "Developer Relations Engineer",
+    "DevRel Engineer",
+    "Developer Evangelist",
+    "Technical Evangelist",
+    "Senior Developer Advocate",
+    "Developer Relations Advocate"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "developer-relations",
+      "importance": "required",
+      "expectation": "Represent the product to developers through talks, community work and feedback to the product team",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write sample code and demos in at least one popular language",
+      "postingShare": null,
+      "oneOf": "devrel-language"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write sample code and demos in at least one popular language",
+      "postingShare": null,
+      "oneOf": "devrel-language"
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "required",
+      "expectation": "Write tutorials, guides and blog posts that developers can follow",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Give talks, workshops and webinars to developer audiences",
+      "postingShare": null
+    },
+    {
+      "skillId": "api-documentation",
+      "importance": "required",
+      "expectation": "Improve API reference docs and getting-started guides",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Explain and use the product's APIs from a developer's side",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Maintain public sample repositories and review community pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "solution-demos-poc",
+      "importance": "required",
+      "expectation": "Build demos and sample apps that show real use cases",
+      "postingShare": null
+    },
+    {
+      "skillId": "content-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Plan blog and video content with the marketing team",
+      "postingShare": null
+    },
+    {
+      "skillId": "typescript",
+      "importance": "nice_to_have",
+      "expectation": "Write typed SDK examples",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Build AI-powered demos with LLM APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "docs-as-code",
+      "importance": "nice_to_have",
+      "expectation": "Edit documentation sites kept in Git",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Bring developer feedback to product and engineering teams",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "devrel-language",
+      "label": "A sample-code language (JavaScript or Python)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "github-foundations",
+      "importance": "optional",
+      "why": "Shows comfort with GitHub workflows used in open-source samples"
+    },
+    {
+      "certId": "aws-cloud-practitioner",
+      "importance": "optional",
+      "why": "Helps when demos run on cloud services"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

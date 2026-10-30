@@ -5612,5 +5612,434 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "saas-implementation-configuration",
+    "name": "SaaS product implementation and configuration",
+    "category": "business",
+    "aliases": [
+      "saas implementation",
+      "software implementation",
+      "product implementation",
+      "customer implementation",
+      "customer implementations",
+      "tenant configuration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-sd-configuration",
+    "name": "SAP SD configuration (Sales and Distribution)",
+    "category": "business",
+    "aliases": [
+      "sap sd",
+      "sap sales and distribution",
+      "sap sd configuration",
+      "s/4hana sd",
+      "sap s/4hana sales",
+      "sap otc",
+      "sap order to cash",
+      "sap sd pricing",
+      "sap pricing procedure",
+      "sap credit management",
+      "sap output determination"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-successfactors-employee-central",
+    "name": "SAP SuccessFactors Employee Central configuration",
+    "category": "tools",
+    "aliases": [
+      "successfactors employee central",
+      "sap successfactors employee central",
+      "sap sf ec",
+      "sf ec",
+      "employee central",
+      "ec time off",
+      "employee central payroll"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-successfactors-talent-modules",
+    "name": "SAP SuccessFactors talent modules (Recruiting, Onboarding, Performance, Compensation)",
+    "category": "tools",
+    "aliases": [
+      "successfactors recruiting",
+      "successfactors rcm",
+      "sap sf rcm",
+      "successfactors onboarding",
+      "onboarding 2.0",
+      "successfactors performance and goals",
+      "successfactors pmgm",
+      "successfactors compensation",
+      "successfactors succession",
+      "successfactors learning",
+      "successfactors lms"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "datacenter-hardware-ops",
+    "name": "Data center hardware operations (rack and stack, cabling, break-fix)",
+    "category": "cloud-devops",
+    "aliases": [
+      "rack and stack",
+      "racking and stacking",
+      "structured cabling",
+      "fiber patching",
+      "fibre patching",
+      "server break-fix",
+      "hardware break-fix",
+      "rma handling",
+      "data center operations",
+      "data centre operations",
+      "remote hands"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "servicenow-platform-administration",
+    "name": "ServiceNow platform administration",
+    "category": "tools",
+    "aliases": [
+      "servicenow administration",
+      "servicenow admin",
+      "servicenow administrator",
+      "servicenow system administration",
+      "update sets",
+      "servicenow update sets",
+      "servicenow acls",
+      "servicenow catalog items",
+      "servicenow upgrades",
+      "servicenow user administration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "low-latency-programming",
+    "name": "Low-latency systems programming",
+    "category": "programming",
+    "aliases": [
+      "low-latency",
+      "low latency systems",
+      "low-latency systems",
+      "low latency c++",
+      "kernel bypass",
+      "dpdk",
+      "openonload",
+      "solarflare",
+      "tick-to-trade"
+    ],
+    "ambiguous": [
+      "low-latency"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "trading-systems-market-data",
+    "name": "Trading systems and market data (order books, FIX, exchange feeds)",
+    "category": "programming",
+    "aliases": [
+      "algorithmic trading",
+      "algo trading",
+      "high frequency trading",
+      "high-frequency trading",
+      "hft",
+      "market data feeds",
+      "market data feed",
+      "fix protocol",
+      "order book",
+      "exchange connectivity",
+      "market microstructure"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cuda-gpu-programming",
+    "name": "CUDA and GPU programming",
+    "category": "programming",
+    "aliases": [
+      "cuda",
+      "cuda c++",
+      "cuda programming",
+      "cuda kernels",
+      "gpu programming",
+      "gpu computing",
+      "nsight compute",
+      "nsight systems",
+      "nccl",
+      "cublas",
+      "rocm",
+      "hip programming"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mpi-parallel-programming",
+    "name": "Parallel programming with MPI and OpenMP",
+    "category": "programming",
+    "aliases": [
+      "mpi",
+      "openmpi",
+      "open mpi",
+      "intel mpi",
+      "mpich",
+      "message passing interface",
+      "openmp"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hpc-cluster-scheduling",
+    "name": "HPC clusters and job schedulers (Slurm, PBS, LSF)",
+    "category": "cloud-devops",
+    "aliases": [
+      "slurm",
+      "slurm workload manager",
+      "pbs pro",
+      "openpbs",
+      "ibm spectrum lsf",
+      "lsf",
+      "hpc cluster",
+      "hpc clusters",
+      "hpc administration",
+      "infiniband",
+      "lustre",
+      "gpfs"
+    ],
+    "ambiguous": [
+      "lustre"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hybrid-cloud-connectivity",
+    "name": "Hybrid cloud connectivity (Direct Connect, ExpressRoute, Interconnect)",
+    "category": "cloud-devops",
+    "aliases": [
+      "aws direct connect",
+      "direct connect gateway",
+      "azure expressroute",
+      "expressroute",
+      "cloud interconnect",
+      "dedicated interconnect",
+      "partner interconnect",
+      "site-to-site vpn",
+      "azure virtual wan",
+      "hybrid connectivity",
+      "hybrid cloud networking"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "cloud-networking"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "technical-account-management",
+    "name": "Technical account management",
+    "category": "business",
+    "aliases": [
+      "technical account management",
+      "technical account manager",
+      "customer success management",
+      "quarterly business reviews",
+      "qbrs",
+      "account health reviews",
+      "enterprise account management"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "developer-relations",
+    "name": "Developer relations and advocacy",
+    "category": "marketing",
+    "aliases": [
+      "developer relations",
+      "devrel",
+      "developer advocacy",
+      "developer advocate",
+      "developer evangelism",
+      "developer evangelist",
+      "developer community",
+      "developer communities"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "post-silicon-validation",
+    "name": "Post-silicon validation and bring-up",
+    "category": "testing",
+    "aliases": [
+      "post-silicon validation",
+      "post silicon validation",
+      "post-si validation",
+      "silicon validation",
+      "silicon bring-up",
+      "soc bring-up",
+      "silicon debug",
+      "soc validation",
+      "pcie validation",
+      "ddr validation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "autosar-classic",
+    "name": "AUTOSAR Classic (BSW, RTE, MCAL configuration)",
+    "category": "programming",
+    "aliases": [
+      "autosar",
+      "classic autosar",
+      "autosar classic",
+      "autosar bsw",
+      "autosar rte",
+      "autosar mcal",
+      "mcal",
+      "davinci configurator",
+      "davinci developer",
+      "eb tresos",
+      "arxml"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "embedded-c"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "automotive-network-diagnostics",
+    "name": "Automotive diagnostics and network tools (UDS, CANoe)",
+    "category": "tools",
+    "aliases": [
+      "uds",
+      "uds diagnostics",
+      "iso 14229",
+      "unified diagnostic services",
+      "canoe",
+      "vector canoe",
+      "canalyzer",
+      "capl",
+      "lin bus",
+      "flexray",
+      "doip",
+      "obd-ii"
+    ],
+    "ambiguous": [
+      "uds"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "plc-iec-61131-programming",
+    "name": "PLC programming languages (IEC 61131-3)",
+    "category": "programming",
+    "aliases": [
+      "ladder logic",
+      "ladder diagram",
+      "function block diagram",
+      "sequential function chart",
+      "iec 61131-3",
+      "tia portal",
+      "siemens tia portal",
+      "studio 5000",
+      "rslogix 5000",
+      "rslogix 500",
+      "codesys",
+      "ecostruxure control expert"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "industrial-control-systems"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "scada-hmi-platforms",
+    "name": "SCADA and HMI platforms (WinCC, FactoryTalk, Ignition)",
+    "category": "tools",
+    "aliases": [
+      "wincc",
+      "wincc unified",
+      "wincc oa",
+      "factorytalk view",
+      "ignition scada",
+      "inductive automation ignition",
+      "citect scada",
+      "aveva intouch",
+      "wonderware intouch",
+      "intouch hmi"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "industrial-control-systems"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "teamcenter-customization",
+    "name": "Siemens Teamcenter customization (ITK, BMIDE, Active Workspace)",
+    "category": "tools",
+    "aliases": [
+      "teamcenter",
+      "siemens teamcenter",
+      "teamcenter itk",
+      "itk customization",
+      "bmide",
+      "teamcenter bmide",
+      "active workspace",
+      "teamcenter rac",
+      "teamcenter soa",
+      "awc customization"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "windchill-customization",
+    "name": "PTC Windchill customization",
+    "category": "tools",
+    "aliases": [
+      "windchill",
+      "ptc windchill",
+      "windchill pdmlink",
+      "pdmlink",
+      "info*engine",
+      "windchill customization",
+      "windchill workflows"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

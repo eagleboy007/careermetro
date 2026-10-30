@@ -10537,5 +10537,590 @@
     ],
     "minutes": 120,
     "free": true
+  },
+  {
+    "title": "Use Success by Design for Dynamics 365 solutions",
+    "url": "https://learn.microsoft.com/en-us/training/paths/use-success-design",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "saas-implementation-configuration"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Success by Design: Dynamics 365 implementation guide",
+    "url": "https://learn.microsoft.com/dynamics365/guidance/implementation-guide/success-by-design",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "saas-implementation-configuration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Manage Your Projects as a Salesforce Admin",
+    "url": "https://trailhead.salesforce.com/content/learn/trails/manage-your-projects-as-a-salesforce-admins",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "saas-implementation-configuration"
+    ],
+    "minutes": 285,
+    "free": true
+  },
+  {
+    "title": "Exploring SAP S/4HANA Sales Essentials",
+    "url": "https://learning.sap.com/courses/exploring-sap-s-4hana-sales-essentials",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-sd-configuration"
+    ],
+    "minutes": 360,
+    "free": true
+  },
+  {
+    "title": "Fundamental Customizing in SAP S/4HANA Sales",
+    "url": "https://learning.sap.com/courses/fundamental-customizing-in-sap-s-4hana-sales",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-sd-configuration"
+    ],
+    "minutes": 420,
+    "free": true
+  },
+  {
+    "title": "Configuring Pricing in SAP S/4HANA Sales",
+    "url": "https://learning.sap.com/learning-journeys/configuring-pricing-in-sap-s-4hana-sales",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-sd-configuration"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Configuring SAP SuccessFactors Employee Central Core and Position Management",
+    "url": "https://learning.sap.com/learning-journeys/configuring-sap-successfactors-employee-central-core-and-position-management",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-successfactors-employee-central"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "SAP SuccessFactors Employee Central Position Management Academy",
+    "url": "https://learning.sap.com/courses/sap-successfactors-employee-central-position-management-academy",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-successfactors-employee-central"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Configuring SAP SuccessFactors Recruiting: Candidate Experience",
+    "url": "https://learning.sap.com/learning-journeys/configuring-sap-successfactors-recruiting-candidate-experience",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-successfactors-talent-modules"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Configuring SAP SuccessFactors Onboarding",
+    "url": "https://learning.sap.com/learning-journeys/configuring-sap-successfactors-onboarding",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-successfactors-talent-modules"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Configuring SAP SuccessFactors Performance and Goals",
+    "url": "https://learning.sap.com/learning-journeys/configure-sap-successfactors-performance-and-goals",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-successfactors-talent-modules"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Introduction to Datacenter (Microsoft Datacenter Academy)",
+    "url": "https://learn.microsoft.com/en-us/training/paths/introduction-to-datacenter",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "datacenter-hardware-ops"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Identify key hardware and IT infrastructure components of datacenters",
+    "url": "https://learn.microsoft.com/en-us/training/modules/identify-key-hardware-it-infrastructure-components/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "datacenter-hardware-ops"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Describe the best practices for datacenter operations",
+    "url": "https://learn.microsoft.com/en-us/training/modules/describe-best-practices-datacenter-operations/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "datacenter-hardware-ops"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "ServiceNow personal developer instance guide",
+    "url": "https://www.servicenow.com/docs/r/application-development/personal_developer_instance_guide.html",
+    "provider": "ServiceNow",
+    "kind": "practice",
+    "skillIds": [
+      "servicenow-platform-administration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Exploring Access Control Lists",
+    "url": "https://www.servicenow.com/docs/r/washingtondc/platform-security/access-control/exploring-access-control-list.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-platform-administration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Get started with update sets",
+    "url": "https://www.servicenow.com/docs/r/zurich/application-development/system-update-sets/get-started-update-sets.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-platform-administration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "DPDK Getting Started Guide for Linux",
+    "url": "https://doc.dpdk.org/guides/linux_gsg/index.html",
+    "provider": "DPDK",
+    "kind": "docs",
+    "skillIds": [
+      "low-latency-programming"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Scaling in the Linux Networking Stack (RSS, RPS, RFS, XPS)",
+    "url": "https://docs.kernel.org/networking/scaling.html",
+    "provider": "Linux kernel documentation",
+    "kind": "docs",
+    "skillIds": [
+      "low-latency-programming"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Designing low-latency C++ systems for trading (CppCon talk by David Gross)",
+    "url": "https://www.optiver.com/insights/technology-blog/designing-low-latency-cpp-systems/",
+    "provider": "Optiver",
+    "kind": "video",
+    "skillIds": [
+      "low-latency-programming",
+      "trading-systems-market-data"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "QuickFIX/J developer documentation",
+    "url": "https://quickfix-j.github.io/quickfixj-pages/docs/developer-docs",
+    "provider": "QuickFIX/J",
+    "kind": "docs",
+    "skillIds": [
+      "trading-systems-market-data"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "CUDA Programming Guide",
+    "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/index.html",
+    "provider": "NVIDIA",
+    "kind": "docs",
+    "skillIds": [
+      "cuda-gpu-programming"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "GPU Architectures and Programming",
+    "url": "https://nptel.ac.in/courses/106105220",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "cuda-gpu-programming"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "CUDA Programming Course: High-Performance Computing with GPUs",
+    "url": "https://www.freecodecamp.org/news/learn-cuda-programming/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "cuda-gpu-programming"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "Message Passing Interface (MPI) tutorial",
+    "url": "https://hpc-tutorials.llnl.gov/mpi/",
+    "provider": "Lawrence Livermore National Laboratory",
+    "kind": "docs",
+    "skillIds": [
+      "mpi-parallel-programming"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Introduction to Parallel Programming with OpenMP and MPI",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_cs21/preview",
+    "provider": "NPTEL (IIT Delhi)",
+    "kind": "course",
+    "skillIds": [
+      "mpi-parallel-programming"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Open MPI quick start",
+    "url": "https://docs.open-mpi.org/en/main/quickstart.html",
+    "provider": "Open MPI",
+    "kind": "docs",
+    "skillIds": [
+      "mpi-parallel-programming"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Slurm Quick Start User Guide",
+    "url": "https://slurm.schedmd.com/quickstart.html",
+    "provider": "SchedMD",
+    "kind": "docs",
+    "skillIds": [
+      "hpc-cluster-scheduling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Practical High-Performance Computing",
+    "url": "https://nptel.ac.in/courses/106104577",
+    "provider": "NPTEL (IIT Kanpur)",
+    "kind": "course",
+    "skillIds": [
+      "hpc-cluster-scheduling",
+      "mpi-parallel-programming"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "LLNL HPC tutorials and training",
+    "url": "https://hpc.llnl.gov/training/tutorials",
+    "provider": "Lawrence Livermore National Laboratory",
+    "kind": "docs",
+    "skillIds": [
+      "hpc-cluster-scheduling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Introduction to Azure ExpressRoute",
+    "url": "https://learn.microsoft.com/training/modules/intro-to-azure-expressroute",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "hybrid-cloud-connectivity"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Cloud Interconnect documentation",
+    "url": "https://docs.cloud.google.com/network-connectivity/docs/interconnect",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "hybrid-cloud-connectivity"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Get started with AWS Site-to-Site VPN",
+    "url": "https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/SetUpVPNConnections.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "hybrid-cloud-connectivity"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Enable customer success with a sound operating model (Cloud Adoption Framework)",
+    "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/get-started/enable",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "technical-account-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Customer Success Strategies for AppExchange Partners",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/appx_customer_success",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "technical-account-management"
+    ],
+    "minutes": 35,
+    "free": true
+  },
+  {
+    "title": "Customer Success for Sales",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/customer-success-for-sales",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "technical-account-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Create an open-source program by using GitHub best practices",
+    "url": "https://learn.microsoft.com/en-us/training/modules/create-open-source-program-github",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "developer-relations"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Contribute to an open-source project on GitHub",
+    "url": "https://learn.microsoft.com/en-us/training/modules/contribute-open-source/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "developer-relations"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Building communities documentation",
+    "url": "https://docs.github.com/en/communities",
+    "provider": "GitHub Docs",
+    "kind": "docs",
+    "skillIds": [
+      "developer-relations"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Digital VLSI Testing",
+    "url": "https://nptel.ac.in/courses/117105137",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "post-silicon-validation"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Embedded Systems: Design Verification and Test",
+    "url": "https://nptel.ac.in/courses/106103182",
+    "provider": "NPTEL (IIT Guwahati)",
+    "kind": "course",
+    "skillIds": [
+      "post-silicon-validation"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "OpenOCD User's Guide (JTAG and boundary scan)",
+    "url": "https://openocd.org/doc/html",
+    "provider": "OpenOCD",
+    "kind": "docs",
+    "skillIds": [
+      "post-silicon-validation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "AUTOSAR standards (Classic Platform)",
+    "url": "https://www.autosar.org/standards",
+    "provider": "AUTOSAR",
+    "kind": "docs",
+    "skillIds": [
+      "autosar-classic"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Unified Diagnostic Services (UDS, ISO 14229) know-how",
+    "url": "https://www.vector.com/en/business-unit/testing-validation-diagnostics/diagnostics/standards-knowhow/uds/",
+    "provider": "Vector",
+    "kind": "docs",
+    "skillIds": [
+      "automotive-network-diagnostics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Programming in Ladder Diagram (LD)",
+    "url": "https://content.helpme-codesys.com/en/CODESYS%20LD%20FBD/_cds_programming_in_ld.html",
+    "provider": "CODESYS",
+    "kind": "docs",
+    "skillIds": [
+      "plc-iec-61131-programming"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SCE learn/training documents for TIA Portal",
+    "url": "https://www.siemens.com/sce/documents",
+    "provider": "Siemens",
+    "kind": "course",
+    "skillIds": [
+      "plc-iec-61131-programming"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Inductive University (Ignition SCADA training)",
+    "url": "https://inductiveuniversity.com",
+    "provider": "Inductive Automation",
+    "kind": "course",
+    "skillIds": [
+      "scada-hmi-platforms"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Ignition 8.3 user manual: Getting Started",
+    "url": "https://docs.inductiveautomation.com/docs/8.3/getting-started",
+    "provider": "Inductive Automation",
+    "kind": "docs",
+    "skillIds": [
+      "scada-hmi-platforms"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Energy Management Systems and SCADA",
+    "url": "https://nptel.ac.in/courses/108106022",
+    "provider": "NPTEL (IIT Madras)",
+    "kind": "course",
+    "skillIds": [
+      "scada-hmi-platforms"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Teamcenter documentation home",
+    "url": "https://blogs.sw.siemens.com/teamcenter/teamcenter-documentation-home/",
+    "provider": "Siemens Digital Industries Software",
+    "kind": "docs",
+    "skillIds": [
+      "teamcenter-customization"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Windchill Help Center: Basic Customization",
+    "url": "https://support.ptc.com/help/windchill/whc/whc_en/Windchill_Help_Center/BasicCustomization_LP.html",
+    "provider": "PTC",
+    "kind": "docs",
+    "skillIds": [
+      "windchill-customization"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "PTC Learning Connector (free Windchill tutorials)",
+    "url": "https://support.ptc.com/products/ptc-university/learning-connector",
+    "provider": "PTC University",
+    "kind": "course",
+    "skillIds": [
+      "windchill-customization"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Appian Application Building Tutorial",
+    "url": "https://docs.appian.com/suite/help/26.9/Application_Building_Tutorial.html",
+    "provider": "Appian",
+    "kind": "docs",
+    "skillIds": [
+      "appian-development"
+    ],
+    "minutes": 90,
+    "free": true
   }
 ]

@@ -1,0 +1,135 @@
+{
+  "slug": "data-center-engineer",
+  "title": "Data Center Engineer",
+  "summary": "Data center engineers install and look after the physical servers, network gear and cabling in a data center or colocation site (a building that rents rack space). They work on-site, often in shifts, fixing hardware faults and supporting remote IT, network and facilities teams.",
+  "dailyDuties": [
+    "Rack and stack new servers and network devices",
+    "Run, label and test copper and fibre cables",
+    "Replace failed disks, memory and power supplies",
+    "Raise and return faulty parts with vendors",
+    "Work incident and change tickets in shift",
+    "Do daily floor checks of racks, power and cooling alerts",
+    "Keep rack layouts and asset records up to date"
+  ],
+  "typicalTitles": [
+    "Data Centre Engineer",
+    "Data Center Operations Engineer",
+    "DC Operations Engineer",
+    "Data Centre Technician",
+    "Data Center Hardware Engineer",
+    "Data Center Infrastructure Engineer",
+    "Remote Hands Engineer",
+    "Colocation Operations Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "datacenter-hardware-ops",
+      "importance": "required",
+      "expectation": "Rack and stack servers, run copper and fibre cabling, and replace failed parts with vendor RMAs",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Install and check a server operating system after hardware work",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "required",
+      "expectation": "Install and check a server operating system after hardware work",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Set IP addresses, test links and trace basic network faults",
+      "postingShare": null
+    },
+    {
+      "skillId": "routing-switching",
+      "importance": "required",
+      "expectation": "Patch and configure switch ports and VLANs",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Work incident and change tickets and follow change windows",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Hand over shifts clearly and update remote teams and vendors",
+      "postingShare": null
+    },
+    {
+      "skillId": "network-monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Watch alerts for power, temperature and device health",
+      "postingShare": null
+    },
+    {
+      "skillId": "virtualization",
+      "importance": "nice_to_have",
+      "expectation": "Bring up hosts in VMware or Hyper-V clusters",
+      "postingShare": null
+    },
+    {
+      "skillId": "san-storage",
+      "importance": "nice_to_have",
+      "expectation": "Connect and swap disks in storage arrays and SAN switches",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "nice_to_have",
+      "expectation": "Script repeated checks on servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate hardware vendors and colocation providers",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "server-os",
+      "label": "A server operating system (Linux or Windows Server)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "ccna",
+      "importance": "recommended",
+      "why": "Shows the switching and cabling basics asked in most posts"
+    },
+    {
+      "certId": "comptia-network-plus",
+      "importance": "optional",
+      "why": "Vendor-neutral networking basics"
+    },
+    {
+      "certId": "rhcsa",
+      "importance": "optional",
+      "why": "Linux administration for server bring-up"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "post-silicon-validation-from-embedded",
+  "roleSlug": "post-silicon-validation-engineer",
+  "persona": "Embedded validation engineer testing peripheral controllers on a new SoC",
+  "resumeText": "Kavya Reddy | Hyderabad | kavya.reddy@example.com\n\nEXPERIENCE\nEmbedded Validation Engineer, Golconda Semitech, Hyderabad (2020 - present)\n- Run post-silicon validation of I2C, SPI and UART controllers on a new IoT SoC.\n- Write C test cases that program controller registers and check interrupts.\n- Automate overnight regression runs with Python scripts and a lab power controller.\n- Debug hangs with JTAG and capture bus timing on an oscilloscope and logic analyzer.\n- Bring up boards on Linux and read kernel logs to triage driver failures.\n\nSKILLS\nC, Python, Linux, JTAG, Perl\n\nEDUCATION\nBTech Electronics and Communication, JNTU Hyderabad, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "post-silicon-validation",
+        "quote": "Run post-silicon validation of I2C, SPI and UART controllers"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "I2C, SPI and UART controllers"
+      },
+      {
+        "skillId": "embedded-c",
+        "quote": "Write C test cases that program controller registers"
+      },
+      {
+        "skillId": "python",
+        "quote": "Automate overnight regression runs with Python scripts"
+      },
+      {
+        "skillId": "embedded-debugging",
+        "quote": "Debug hangs with JTAG and capture bus timing"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Bring up boards on Linux and read kernel logs"
+      },
+      {
+        "skillId": "embedded-linux",
+        "quote": "read kernel logs to triage driver failures"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "digital-logic-design",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "amba-protocols",
+      "systemverilog-uvm",
+      "fpga-design",
+      "cpp"
+    ]
+  },
+  "reviewedBy": null
+}

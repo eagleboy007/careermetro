@@ -76,6 +76,14 @@
     "task": "In the free Automation Anywhere Community Edition, build a bot that reads a synthetic invoice Excel file, enters each row into a demo web form, logs failures to a CSV and emails a summary. Share the bot export and screenshots."
   },
   {
+    "skillId": "automotive-network-diagnostics",
+    "task": "Write a small UDS server in Python with python-can and python-udsoncan on a virtual CAN bus that answers Read DTC, Read Data By Identifier and Diagnostic Session Control, test it with a client script and share the code and logs."
+  },
+  {
+    "skillId": "autosar-classic",
+    "task": "From the public AUTOSAR Classic specifications, design a synthetic door-lock ECU: two software components with ports, an RTE mapping to runnables and a COM signal list, and write how BSW modules would be configured. Share the diagrams and notes."
+  },
+  {
     "skillId": "aws",
     "task": "On the AWS free tier, host a static site on S3 behind CloudFront, lock down the bucket, add a budget alarm, and share a diagram and screenshots in a short README."
   },
@@ -216,6 +224,10 @@
     "task": "Build a small ASP.NET Core Web API with two endpoints, input validation and one unit test project. Share the repo."
   },
   {
+    "skillId": "cuda-gpu-programming",
+    "task": "Write a CUDA matrix multiply with a naive and a shared-memory tiled kernel, check results against NumPy, time both on a free cloud GPU (such as Colab), and share the code, timings and an Nsight or nvprof profile summary."
+  },
+  {
     "skillId": "data-catalog-tools",
     "task": "Set up OpenMetadata or DataHub locally with Docker over a sample database, add owners, a business glossary of 10 terms and lineage for one table, and share screenshots with a note on who would use each part."
   },
@@ -264,6 +276,10 @@
     "task": "On a local PostgreSQL database, create read-only and app roles, enable row-level security, mask a sensitive column with a view, and turn on audit logging. Document each step."
   },
   {
+    "skillId": "datacenter-hardware-ops",
+    "task": "Write a runbook for a synthetic 42U rack: an elevation diagram, power and cabling plan with labels, a server install checklist and a break-fix and RMA procedure for a failed disk. Share the diagram and runbook."
+  },
+  {
     "skillId": "dataverse",
     "task": "In the free Power Apps Developer Plan, design 3 related Dataverse tables for a fictional asset tracker with choices, a lookup, business rules and a security role, and share the data model diagram and screenshots."
   },
@@ -286,6 +302,10 @@
   {
     "skillId": "desktop-support",
     "task": "On a spare laptop or a VM, install Windows 11 from scratch, join it to a test domain or workgroup, set up a shared printer and fix 3 faults you create yourself. Write a runbook with screenshots for each fix."
+  },
+  {
+    "skillId": "developer-relations",
+    "task": "Pick an open-source tool you use, write a getting-started tutorial with a working sample repo, record a 10-minute demo, and file or answer three community issues or forum questions about it. Share the links."
   },
   {
     "skillId": "devsecops",
@@ -444,12 +464,20 @@
     "task": "Set up PostgreSQL streaming replication with Docker, simulate a primary failure, promote the replica and write a runbook with RPO and RTO targets."
   },
   {
+    "skillId": "hpc-cluster-scheduling",
+    "task": "Build a small Slurm cluster from three VMs or containers, set up two partitions and fair-share, submit array and multi-node MPI jobs, and share the config files, job scripts and squeue and sacct output."
+  },
+  {
     "skillId": "html-css",
     "task": "Build a responsive, semantic landing page with Flexbox and Grid that works from 320px to desktop, deploy it on GitHub Pages and share the link."
   },
   {
     "skillId": "hugging-face-transformers",
     "task": "Fine-tune a small pretrained model from the Hugging Face Hub on a public text classification dataset such as AG News in a free Colab notebook, report accuracy and F1 against a baseline, and share the notebook and model card."
+  },
+  {
+    "skillId": "hybrid-cloud-connectivity",
+    "task": "In a free cloud account, connect two VPCs or VNets and a simulated on-premises network (a VM running strongSwan) with a site-to-site VPN and BGP, test routes and failover, and share a diagram, the Terraform or CLI steps and test output."
   },
   {
     "skillId": "hyperledger-fabric",
@@ -548,6 +576,10 @@
     "task": "Build a Looker Studio report on a public Google Sheet or BigQuery public dataset with a date filter, 3 charts and a scorecard, and share the view-only link."
   },
   {
+    "skillId": "low-latency-programming",
+    "task": "Write a C++ single-producer single-consumer lock-free ring buffer, benchmark its latency against a mutex queue with percentiles (p50, p99), pin threads to cores, and share the code, benchmark results and what you tuned."
+  },
+  {
     "skillId": "lte-5g-nr-protocols",
     "task": "Draw the LTE attach and 5G NSA (EN-DC) addition call flows message by message with what each step does, then mark where each step shows up in a public sample signalling trace. Share the diagrams and notes."
   },
@@ -618,6 +650,10 @@
   {
     "skillId": "monitoring",
     "task": "Run Prometheus and Grafana with Docker, scrape a sample app, build a dashboard with 4 panels and one alert rule, and share screenshots and config files."
+  },
+  {
+    "skillId": "mpi-parallel-programming",
+    "task": "Parallelise a 2D heat-equation solver with MPI (halo exchange) and OpenMP, run it on 1 to 8 processes on a laptop or free cluster, plot speed-up, and share the code, results and a note on where scaling stops."
   },
   {
     "skillId": "mulesoft",
@@ -754,6 +790,14 @@
   {
     "skillId": "playwright-cypress",
     "task": "Write 5 end-to-end tests with Playwright or Cypress for a public demo site (login, search, checkout), run them in CI and share the report."
+  },
+  {
+    "skillId": "plc-iec-61131-programming",
+    "task": "In free CODESYS or a vendor trial, write a tank-filling sequence in ladder logic and structured text with start/stop, interlocks and alarms, simulate it and share the project export, screenshots and an I/O list."
+  },
+  {
+    "skillId": "post-silicon-validation",
+    "task": "Write a validation plan for a synthetic SoC's PCIe or DDR interface: features, test cases, pass/fail criteria and a debug flow, plus a Python script that parses a sample test log into a pass/fail report. Share both."
   },
   {
     "skillId": "postgis-spatial-sql",
@@ -896,6 +940,10 @@
     "task": "Build a Rails 7 app for a fictional library with models and associations, a REST JSON API, background jobs with Sidekiq or Active Job, and RSpec or Minitest tests. Share the repo with a README and a short screen recording."
   },
   {
+    "skillId": "saas-implementation-configuration",
+    "task": "Run a mock implementation of a free SaaS tool (such as a CRM or helpdesk trial) for a fictional 50-person company: requirements, configuration workbook, data migration template, test cases and a go-live checklist. Share them."
+  },
+  {
     "skillId": "salesforce-apex",
     "task": "In a free Salesforce Developer Edition org, write a bulk-safe Apex trigger with a handler class on a custom object, a SOQL query outside loops, and test classes with at least 85% coverage. Share the code and the test run."
   },
@@ -964,8 +1012,24 @@
     "task": "Using public SAP documentation, write the configuration steps for a two-level purchase order release strategy (characteristics, classes, release codes) for a synthetic company, with the test cases and expected results. Share the document."
   },
   {
+    "skillId": "sap-sd-configuration",
+    "task": "From public SAP documentation, write the configuration steps for a synthetic company's standard order-to-cash flow (sales area, order and delivery types, pricing procedure with a discount condition), with test cases. Share the document."
+  },
+  {
+    "skillId": "sap-successfactors-employee-central",
+    "task": "From SAP's public SuccessFactors documentation, design a synthetic Employee Central setup: foundation objects, a hire event with workflow, a business rule and a position hierarchy, written as a configuration workbook. Share it."
+  },
+  {
+    "skillId": "sap-successfactors-talent-modules",
+    "task": "From SAP's public SuccessFactors documentation, design a synthetic Recruiting or Performance and Goals setup: a requisition or form template, a route map with approvals and three test cases. Share the configuration workbook."
+  },
+  {
     "skillId": "sap-upgrades-migrations",
     "task": "For a fictional company on SAP ECC 6.0, write a one-page plan for the move to S/4HANA: the path you choose and why, the readiness checks, the custom-code review, the test cycles and the cutover steps. Share it with a timeline."
+  },
+  {
+    "skillId": "scada-hmi-platforms",
+    "task": "In the free Ignition Maker Edition or a SCADA trial, build an HMI for a simulated pump station with tags, alarms, a trend and a historian, and share screenshots, the project export and a short operator guide."
   },
   {
     "skillId": "scaled-agile",
@@ -1026,6 +1090,10 @@
   {
     "skillId": "servicenow-flow-designer",
     "task": "In a free ServiceNow developer instance, build a Flow Designer flow for a catalog request with an approval, a task and a REST step to a public test API, and document the trigger, steps and test runs with screenshots."
+  },
+  {
+    "skillId": "servicenow-platform-administration",
+    "task": "In a free ServiceNow Personal Developer Instance, create a catalog item with a workflow, an ACL for a new role, an SLA and a report, move them with an update set, and share screenshots and the update set XML."
   },
   {
     "skillId": "servicenow-scripting",
@@ -1152,8 +1220,16 @@
     "task": "In Talend Open Studio or a Qlik Talend Cloud trial, build a job that joins two synthetic CSV files, cleans dates and duplicates, loads a database table, and logs rejects. Share the job export and screenshots of a run."
   },
   {
+    "skillId": "teamcenter-customization",
+    "task": "From Siemens' public Teamcenter documentation, design a synthetic BMIDE extension: a custom item type with properties, a lifecycle and an ITK or SOA handler that checks a property on release, written up with pseudo-code. Share it."
+  },
+  {
     "skillId": "teams-phone-voice",
     "task": "In a free Microsoft 365 developer tenant, plan Teams Phone for a fictional 50-person office: number plan, call queues, an auto attendant and a Direct Routing design with an SBC. Share the PowerShell you would run and a diagram."
+  },
+  {
+    "skillId": "technical-account-management",
+    "task": "For a fictional enterprise customer of a cloud product, write an account plan with goals and risks, a health scorecard, an escalation for a made-up outage and a quarterly business review deck. Share the documents."
   },
   {
     "skillId": "technical-leadership",
@@ -1186,6 +1262,10 @@
   {
     "skillId": "threat-modeling",
     "task": "Threat-model a synthetic UPI-style payment feature with STRIDE: draw the data flow, list the threats per element and pick the top three mitigations."
+  },
+  {
+    "skillId": "trading-systems-market-data",
+    "task": "Write a program that replays a synthetic market data feed into an in-memory limit order book with add, modify, cancel and trade messages, check it with tests and share the code and per-message latency numbers."
   },
   {
     "skillId": "typescript",
@@ -1258,6 +1338,10 @@
   {
     "skillId": "web-performance",
     "task": "Measure Core Web Vitals on a page with Lighthouse, make 3 fixes (images, fonts, JavaScript) and document the before-and-after numbers."
+  },
+  {
+    "skillId": "windchill-customization",
+    "task": "From PTC's public Windchill documentation, design a synthetic change process: a change request type, a workflow with review and approval tasks and a Java or Info*Engine customisation that checks attributes, written up with pseudo-code. Share it."
   },
   {
     "skillId": "windows-server",
