@@ -1,0 +1,52 @@
+{
+  "id": "presales-engineer-from-cloud-engineer",
+  "roleSlug": "presales-engineer",
+  "persona": "AWS cloud engineer at a partner firm moving into presales",
+  "resumeText": "Rohan Mehta | Mumbai | rohan.mehta@example.com\n\nEXPERIENCE\nCloud Engineer, Arabian Sea Cloud Partners, Mumbai (2020 - present)\n- Run AWS environments for 12 mid-size customers across EC2, RDS and S3.\n- Joined sales calls to answer customers' technical questions on migration and security.\n- Built demo environments on AWS for two prospects evaluating managed Kubernetes.\n- Wrote the technical sections of three RFP responses for BFSI customers.\n- Gathered customer requirements in discovery workshops and turned them into solution documents.\n- Integrated customer ticketing tools with our monitoring platform through REST APIs.\n\nSKILLS\nAWS, Terraform, Kubernetes, Python, Presentation skills\n\nEDUCATION\nBE Computer Engineering, University of Mumbai, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "aws",
+        "quote": "Run AWS environments for 12 mid-size customers"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Joined sales calls to answer customers' technical questions"
+      },
+      {
+        "skillId": "solution-demos-poc",
+        "quote": "Built demo environments on AWS for two prospects"
+      },
+      {
+        "skillId": "presales-solutioning",
+        "quote": "technical sections of three RFP responses"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Gathered customer requirements in discovery workshops"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "with our monitoring platform through REST APIs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "business-case",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "gcp",
+      "azure",
+      "system-design",
+      "crm-tools"
+    ]
+  },
+  "reviewedBy": null
+}

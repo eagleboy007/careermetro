@@ -1,0 +1,56 @@
+{
+  "id": "fpga-engineer-from-radar-fpga",
+  "roleSlug": "fpga-engineer",
+  "persona": "Junior FPGA engineer at a defence radar firm",
+  "resumeText": "Arjun Reddy | Hyderabad | arjun.reddy@example.com\n\nEXPERIENCE\nFPGA Engineer, Deccan Radar Systems, Hyderabad (2021 - present)\n- Write Verilog RTL for radar signal-processing blocks on Xilinx Kintex UltraScale FPGAs.\n- Integrate Xilinx IP cores over AXI4-Stream and AXI4-Lite interfaces in Vivado.\n- Close timing at 250 MHz by adding pipeline stages and writing XDC constraints.\n- Debug designs on the lab bench with ChipScope ILA cores and JTAG.\n- Wrote Tcl scripts that run synthesis and implementation builds overnight.\n- Designed finite state machines for a UART-based control interface.\n\nGraduate Engineer Trainee, Godavari Electronics, Hyderabad (2020 - 2021)\n- Tested PCB assemblies and logged faults.\n\nSKILLS\nVerilog, VHDL, Vivado, MATLAB, Tcl, SerDes, Python\n\nEDUCATION\nBTech ECE, JNTU Hyderabad, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "verilog-rtl",
+        "quote": "Write Verilog RTL for radar signal-processing blocks"
+      },
+      {
+        "skillId": "fpga-design",
+        "quote": "on Xilinx Kintex UltraScale FPGAs"
+      },
+      {
+        "skillId": "amba-protocols",
+        "quote": "over AXI4-Stream and AXI4-Lite interfaces in Vivado"
+      },
+      {
+        "skillId": "synthesis-timing",
+        "quote": "Close timing at 250 MHz by adding pipeline stages"
+      },
+      {
+        "skillId": "embedded-debugging",
+        "quote": "Debug designs on the lab bench with ChipScope ILA cores and JTAG"
+      },
+      {
+        "skillId": "eda-scripting",
+        "quote": "Wrote Tcl scripts that run synthesis and implementation builds"
+      },
+      {
+        "skillId": "digital-logic-design",
+        "quote": "Designed finite state machines for a UART-based control interface"
+      },
+      {
+        "skillId": "fpga-high-speed-interfaces",
+        "quote": "SerDes"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "fpga-high-speed-interfaces",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "systemverilog-uvm",
+      "embedded-c",
+      "linux",
+      "rtl-lint-cdc"
+    ]
+  },
+  "reviewedBy": null
+}

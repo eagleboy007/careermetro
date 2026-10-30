@@ -1,0 +1,135 @@
+{
+  "slug": "euc-engineer",
+  "title": "End User Computing Engineer",
+  "summary": "An end user computing (EUC) engineer designs and runs the desktops, laptops and virtual desktops that staff use every day, using tools such as Citrix, Azure Virtual Desktop, Intune and SCCM. You sit in the infrastructure team above the service desk, building images, packaging apps and fixing problems the desk cannot solve.",
+  "dailyDuties": [
+    "Build and update golden images for laptops and virtual desktops",
+    "Package and deploy applications through Intune or SCCM",
+    "Fix Citrix or AVD login, profile and performance issues",
+    "Push Windows updates and compliance policies to devices",
+    "Resolve L2/L3 tickets escalated from the service desk",
+    "Script routine fixes and reports in PowerShell",
+    "Plan and test changes before monthly patch windows"
+  ],
+  "typicalTitles": [
+    "EUC Engineer",
+    "Citrix Engineer",
+    "VDI Engineer",
+    "Citrix Administrator",
+    "Intune Engineer",
+    "SCCM Engineer",
+    "Desktop Engineering Specialist",
+    "End User Computing (EUC) Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "vdi-platforms",
+      "importance": "required",
+      "expectation": "Build and support Citrix, Azure Virtual Desktop or Horizon desktops and published apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-management",
+      "importance": "required",
+      "expectation": "Deploy apps, policies and updates to laptops with Intune or SCCM",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-packaging",
+      "importance": "required",
+      "expectation": "Package and test applications as MSI, MSIX or Intune Win32 apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "required",
+      "expectation": "Manage Group Policy and the Windows servers behind the desktop estate",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Manage users, groups and access in Active Directory",
+      "postingShare": null
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "required",
+      "expectation": "Script desktop builds, fixes and reports in PowerShell",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Resolve L2/L3 incidents and run changes through ITIL processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "desktop-support",
+      "importance": "required",
+      "expectation": "Take escalations from the service desk and fix root causes on Windows devices",
+      "postingShare": null
+    },
+    {
+      "skillId": "entra-id-administration",
+      "importance": "nice_to_have",
+      "expectation": "Join devices to Entra ID and set conditional access",
+      "postingShare": null
+    },
+    {
+      "skillId": "m365-administration",
+      "importance": "nice_to_have",
+      "expectation": "Support Outlook, Teams and OneDrive on user devices",
+      "postingShare": null
+    },
+    {
+      "skillId": "virtualization",
+      "importance": "nice_to_have",
+      "expectation": "Run the hypervisor hosts that carry VDI workloads",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Host Azure Virtual Desktop and session hosts on Azure",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "nice_to_have",
+      "expectation": "Roll out Defender or other endpoint protection policies",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "nice_to_have",
+      "expectation": "Trace DNS, VPN and network issues on user sessions",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "azure-administrator",
+      "importance": "optional",
+      "why": "Base for Azure Virtual Desktop work"
+    },
+    {
+      "certId": "sc-300",
+      "importance": "optional",
+      "why": "Covers Entra ID device and access policies"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

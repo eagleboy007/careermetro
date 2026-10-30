@@ -1,0 +1,128 @@
+{
+  "slug": "fpga-engineer",
+  "title": "FPGA Engineer",
+  "summary": "FPGA engineers design digital logic that runs on FPGAs (chips that can be reprogrammed after manufacture) for radar, telecom, test equipment and chip prototyping. They work with hardware and software engineers, writing RTL, meeting timing and bringing designs up on real boards in the lab.",
+  "dailyDuties": [
+    "Write and simulate RTL in Verilog or VHDL",
+    "Integrate vendor IP over AXI in Vivado or Quartus",
+    "Write timing constraints and close timing",
+    "Bring up boards and debug with an internal logic analyser and JTAG",
+    "Script builds and regression runs in Tcl or Python",
+    "Write design documents and review peers' RTL"
+  ],
+  "typicalTitles": [
+    "FPGA Developer",
+    "FPGA Firmware Engineer",
+    "FPGA Hardware Engineer",
+    "FPGA RTL Engineer",
+    "Senior FPGA Engineer",
+    "FPGA Prototyping Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "fpga-design",
+      "importance": "required",
+      "expectation": "Take designs through the Vivado or Quartus flow onto real FPGA boards",
+      "postingShare": null
+    },
+    {
+      "skillId": "verilog-rtl",
+      "importance": "required",
+      "expectation": "Write and simulate RTL in Verilog or VHDL",
+      "postingShare": null
+    },
+    {
+      "skillId": "digital-logic-design",
+      "importance": "required",
+      "expectation": "Design state machines, pipelines and clocked logic",
+      "postingShare": null
+    },
+    {
+      "skillId": "synthesis-timing",
+      "importance": "required",
+      "expectation": "Write constraints and close timing on the target device",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpga-high-speed-interfaces",
+      "importance": "required",
+      "expectation": "Bring up high-speed interfaces such as transceivers, PCIe or DDR",
+      "postingShare": null
+    },
+    {
+      "skillId": "amba-protocols",
+      "importance": "required",
+      "expectation": "Connect vendor IP over AXI interfaces",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-debugging",
+      "importance": "required",
+      "expectation": "Debug designs in the lab with JTAG, logic analysers and an oscilloscope",
+      "postingShare": null
+    },
+    {
+      "skillId": "eda-scripting",
+      "importance": "required",
+      "expectation": "Script builds and tests in Tcl or Python",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Script builds and tests in Tcl or Python",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "systemverilog-uvm",
+      "importance": "nice_to_have",
+      "expectation": "Write SystemVerilog testbenches",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "nice_to_have",
+      "expectation": "Write C for soft or hard processors on SoC FPGAs",
+      "postingShare": null
+    },
+    {
+      "skillId": "rtl-lint-cdc",
+      "importance": "nice_to_have",
+      "expectation": "Check clock domain crossings",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Work in a Linux tool environment",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Version RTL and constraints",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "vlsi-scripting",
+      "label": "A flow scripting language (Tcl, Perl or Python)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

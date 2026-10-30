@@ -8,6 +8,10 @@
     "task": "Audit a page you built with Lighthouse and axe, fix the issues (labels, contrast, keyboard focus, alt text) and document before-and-after scores."
   },
   {
+    "skillId": "adobe-commerce-magento",
+    "task": "Install Magento Open Source 2.4 in Docker with sample data, build a small module that adds a delivery-date field to checkout and shows it on the order in admin, and share the module code and screenshots."
+  },
+  {
     "skillId": "agile-coaching",
     "task": "Run a retrospective for a real or volunteer team of at least 3 with a format you choose, write down what the team agreed, then coach one practice for 2 sprints and share a one-page note on what changed and what you would try next."
   },
@@ -22,6 +26,10 @@
   {
     "skillId": "ai-agents",
     "task": "Build a small agent with LangGraph or plain tool calling that uses 2 tools (a calculator and a search over local files) on 10 synthetic questions. Log each tool call and share the repo with a README on where it failed."
+  },
+  {
+    "skillId": "amba-protocols",
+    "task": "Write an AXI4-Lite slave with four registers in Verilog or SystemVerilog, test reads, writes and back-to-back transfers with a testbench in a free simulator (Icarus, Verilator or EDA Playground), and share the code and waveforms."
   },
   {
     "skillId": "android",
@@ -42,6 +50,14 @@
   {
     "skillId": "apm-tools",
     "task": "Instrument a small sample web app with a free tier of Dynatrace, New Relic or AppDynamics (or OpenTelemetry with Jaeger), put it under a short load, find the slowest transaction and share screenshots with a note on its cause."
+  },
+  {
+    "skillId": "appian-development",
+    "task": "In a free Appian Community Edition environment, build a leave-request app with a record type, a SAIL form, a process model with a manager approval step and a report of open requests. Share screenshots and the exported package."
+  },
+  {
+    "skillId": "application-packaging",
+    "task": "Package a free open-source desktop app (such as 7-Zip) as a silent MSI or MSIX with PSADT, with install, uninstall and detection rules, test it in a Windows VM and share the scripts and a short test log."
   },
   {
     "skillId": "application-security",
@@ -74,6 +90,10 @@
   {
     "skillId": "batch-scheduling",
     "task": "Design a nightly batch flow of 6 jobs for a fictional bank with dependencies, a file trigger and a restart point, in the free Control-M Workbench or as an Autosys JIL file, and write a runbook for when job 3 fails."
+  },
+  {
+    "skillId": "binary-reverse-engineering",
+    "task": "Solve a public crackme or a past CTF reverse-engineering challenge in Ghidra or x64dbg inside an isolated VM, and write up the key functions, the check you got past and how you found it."
   },
   {
     "skillId": "boomi",
@@ -292,6 +312,10 @@
     "task": "Map the end-to-end flow of a retail home loan in India (lead, KYC, credit check, sanction, disbursal, EMI) as a diagram with a short note on the systems and regulations at each step."
   },
   {
+    "skillId": "drive-test-analysis",
+    "task": "From a public or synthetic drive-test log (RSRP, SINR and cell IDs exported to CSV), map coverage, find three problem spots such as weak coverage or pilot pollution, and write a short report with plots and the fix you propose."
+  },
+  {
     "skillId": "dynamics-365-ce",
     "task": "In a free Dynamics 365 trial, set up a fictional support desk: a custom table, a model-driven app with forms and views, a business rule and a security role for agents. Share screenshots and a note on each design choice."
   },
@@ -320,8 +344,16 @@
     "task": "Read a temperature sensor over I2C or SPI on a development board and send the readings over UART to your laptop, capture one transaction with a logic analyser or a simulator trace, and explain each byte in a README."
   },
   {
+    "skillId": "endpoint-management",
+    "task": "In a free Microsoft 365 developer or Intune trial tenant, enrol a Windows VM, push a compliance policy, a configuration profile and one app, and share screenshots of the device report and a runbook for a failed enrolment."
+  },
+  {
     "skillId": "endpoint-security",
     "task": "Install Sysmon with a public config on a Windows VM, trigger 3 suspicious actions (e.g. encoded PowerShell), and document the events that captured each with screenshots."
+  },
+  {
+    "skillId": "entra-id-administration",
+    "task": "In a free Microsoft Entra ID or Microsoft 365 developer tenant, create synthetic users and groups, add a Conditional Access policy that asks for MFA outside a trusted location, test it in the sign-in logs and share screenshots and notes."
   },
   {
     "skillId": "etl",
@@ -362,6 +394,14 @@
   {
     "skillId": "forensic-tool-suites",
     "task": "Open a public practice disk image from NIST CFReDS or Digital Corpora in the free Autopsy or FTK Imager, recover deleted files, build a timeline of user activity, and share a short report with screenshots and your findings."
+  },
+  {
+    "skillId": "fpga-design",
+    "task": "Design a UART or PWM controller in Verilog or VHDL, simulate it with a testbench, build it in the free Vivado or Quartus edition for a low-cost board, meet timing at your target clock and share the code and timing report."
+  },
+  {
+    "skillId": "fpga-high-speed-interfaces",
+    "task": "In the free Vivado edition, generate a GTH/GTY transceiver or PCIe IP example design, run its loopback simulation, and write up the line rate, reference clock and constraint choices with screenshots of the IP setup and results."
   },
   {
     "skillId": "frontend-architecture",
@@ -460,6 +500,14 @@
     "task": "Run a local Mosquitto broker, write a Python publisher that sends synthetic sensor readings with QoS 1 and retained messages and a subscriber that flags out-of-range values, secure it with TLS, and share the code."
   },
   {
+    "skillId": "it-project-management",
+    "task": "Plan a synthetic office network refresh for 200 users: a project charter, a work breakdown structure, a Gantt schedule in a free tool such as ProjectLibre, a risk register and a one-page weekly status report. Share them all."
+  },
+  {
+    "skillId": "it-vendor-management",
+    "task": "For a fictional company outsourcing its service desk, write a statement of work with scope, SLAs and penalties, a scorecard comparing three made-up bidders and a quarterly service review deck. Share the documents."
+  },
+  {
     "skillId": "itsm",
     "task": "In a free ServiceNow developer instance or a spreadsheet, log 5 synthetic tickets (incident, request, problem, change), set each priority from impact and urgency, and write the change record for one server patch with its risk and backout plan."
   },
@@ -500,6 +548,10 @@
     "task": "Build a Looker Studio report on a public Google Sheet or BigQuery public dataset with a date filter, 3 charts and a scorecard, and share the view-only link."
   },
   {
+    "skillId": "lte-5g-nr-protocols",
+    "task": "Draw the LTE attach and 5G NSA (EN-DC) addition call flows message by message with what each step does, then mark where each step shows up in a public sample signalling trace. Share the diagrams and notes."
+  },
+  {
     "skillId": "m365-administration",
     "task": "In a free Microsoft 365 developer tenant or a Google Workspace trial, create 5 test users with licences and groups, set up a shared mailbox and one mail flow rule, and document the steps with screenshots and a rollback for each."
   },
@@ -520,6 +572,10 @@
     "task": "Write 20 test cases (positive, negative, boundary) for a public demo login and signup page, run them, and log results with pass/fail and evidence."
   },
   {
+    "skillId": "mendix-development",
+    "task": "In the free Mendix Studio Pro, build an asset-tracking app with a domain model, two pages, a microflow that checks and saves a checkout, and role-based access. Share the project export and screenshots of it running."
+  },
+  {
     "skillId": "messaging-queues",
     "task": "Run Kafka or RabbitMQ in Docker, write a producer and consumer for order events with retries, and document what happens when the consumer goes down."
   },
@@ -530,6 +586,10 @@
   {
     "skillId": "microservices",
     "task": "Split a small app into 2 services that talk over HTTP or events, add a timeout and retry or circuit breaker, and share a diagram and repo."
+  },
+  {
+    "skillId": "microsoft-graph-api",
+    "task": "Write a script or SPFx web part that calls Microsoft Graph to list a test user's recent files and calendar events in a free Microsoft 365 developer tenant, handling paging and throttling. Share the code and screenshots."
   },
   {
     "skillId": "mlops",
@@ -648,6 +708,10 @@
     "task": "For a fictional chemical plant, draw a Purdue model network with zones and conduits per IEC 62443, list 10 risks with the controls you would add, and write a one-page plan for safe monitoring. Use only made-up assets."
   },
   {
+    "skillId": "outsystems-development",
+    "task": "In a free OutSystems Personal Environment, build a ticket-tracking app with entities, list and detail screens, a server action that assigns tickets by category and a REST API for open tickets. Share screenshots and the module."
+  },
+  {
     "skillId": "pandas",
     "task": "In a pandas notebook, explore a public data.gov.in dataset using merge, groupby, pivot_table and date handling, and answer 5 questions with short written findings."
   },
@@ -720,6 +784,10 @@
     "task": "Write a one-page PRD for a 'save job for later' feature with a problem statement, success metric and five user stories, each with Given/When/Then acceptance criteria."
   },
   {
+    "skillId": "presales-solutioning",
+    "task": "For a fictional mid-size retailer moving its order system to the cloud, write a solution proposal with an architecture diagram, a bill of materials, a rough cost estimate and answers to five RFP questions. Share the document."
+  },
+  {
     "skillId": "privacy-program-management",
     "task": "Fill a data protection impact assessment for a synthetic feature that tracks delivery riders' locations: purpose, data, risks, mitigations and a go or no-go recommendation."
   },
@@ -764,6 +832,10 @@
     "task": "Generate a 1-million-row synthetic table in PostgreSQL, find a slow query with EXPLAIN ANALYZE, add the right index, and document before-and-after plans and timings."
   },
   {
+    "skillId": "ran-performance-optimization",
+    "task": "From a synthetic LTE or 5G KPI export (accessibility, retainability, throughput and handover success per cell), find the five worst cells, propose a parameter or tilt change for each and a plan to track the KPIs after. Share the sheet and report."
+  },
+  {
     "skillId": "react",
     "task": "Build a React app with 3 routes, a controlled form with validation and a custom hook that fetches data, and deploy it with a public link."
   },
@@ -778,6 +850,10 @@
   {
     "skillId": "requirements-gathering",
     "task": "Write a 2-page BRD for a fictional college canteen pre-order app: scope, stakeholders, 8 numbered functional requirements, non-functional requirements and open questions. Share it as a PDF."
+  },
+  {
+    "skillId": "research-synthesis",
+    "task": "Interview five friends or classmates about how they plan a trip (or use five public interview transcripts), code the notes, build an affinity map in a free tool such as Miro or FigJam and write three insights with quotes. Share both."
   },
   {
     "skillId": "rest-apis",
@@ -822,6 +898,10 @@
   {
     "skillId": "salesforce-apex",
     "task": "In a free Salesforce Developer Edition org, write a bulk-safe Apex trigger with a handler class on a custom object, a SOQL query outside loops, and test classes with at least 85% coverage. Share the code and the test run."
+  },
+  {
+    "skillId": "salesforce-b2c-commerce",
+    "task": "Clone Salesforce's open-source Storefront Reference Architecture (SFRA) from GitHub, write a cartridge that adds a recently viewed products controller and ISML template with unit tests, and share the code and a short write-up."
   },
   {
     "skillId": "salesforce-clouds",
@@ -878,6 +958,10 @@
   {
     "skillId": "sap-interfaces",
     "task": "In a free SAP ABAP trial, write a remote-enabled function module that returns sample flight bookings, call it from a test program or a BAPI wrapper with error handling, and document the parameters and test results."
+  },
+  {
+    "skillId": "sap-mm-configuration",
+    "task": "Using public SAP documentation, write the configuration steps for a two-level purchase order release strategy (characteristics, classes, release codes) for a synthetic company, with the test cases and expected results. Share the document."
   },
   {
     "skillId": "sap-upgrades-migrations",
@@ -952,6 +1036,10 @@
     "task": "In a free Microsoft 365 developer tenant, build a SharePoint Online team site with 2 lists, a document library with metadata and versioning, and permissions for 3 test groups. Document each step with screenshots."
   },
   {
+    "skillId": "shopify-development",
+    "task": "In a free Shopify Partner development store, build a theme section in Liquid that shows a product size chart from metafields, put the theme code on GitHub and share screenshots on desktop and mobile."
+  },
+  {
     "skillId": "siem",
     "task": "Using the free Splunk BOTS v3 dataset or a Sentinel free trial, write 3 searches that find suspicious logins or processes, and document each with a screenshot and what it detects."
   },
@@ -982,6 +1070,10 @@
   {
     "skillId": "solidity",
     "task": "Write an ERC-20 token and a simple escrow contract in Solidity with OpenZeppelin, test them with Hardhat or Foundry on a local chain, deploy to a public testnet such as Sepolia, and share the repo and test results."
+  },
+  {
+    "skillId": "solution-demos-poc",
+    "task": "Pick a free SaaS or cloud product, script and record a 15-minute demo for a made-up customer's three pain points, and write a one-page proof-of-concept plan with success criteria and a timeline. Share the recording and plan."
   },
   {
     "skillId": "spark",
@@ -1030,6 +1122,10 @@
   {
     "skillId": "support-ticketing-tools",
     "task": "In a free Zendesk, Freshdesk or Zoho Desk trial, set up 2 groups, SLA policies, 3 macros and one automation, run 10 synthetic tickets through it and share screenshots with a note on how each ticket was routed."
+  },
+  {
+    "skillId": "survey-research",
+    "task": "Design a 12-question survey in Google Forms on how students choose online courses, pilot it with five people, collect 30 or more responses, chart the results in a sheet and write the findings and the survey's limits. Share all three."
   },
   {
     "skillId": "swift-ios",
@@ -1124,6 +1220,10 @@
     "task": "Write a usability test plan with 5 tasks for a public website, run it with 3 people, and report the top issues with severity and suggested fixes."
   },
   {
+    "skillId": "vdi-platforms",
+    "task": "In an Azure free account, set up an Azure Virtual Desktop host pool with one session host, FSLogix profiles and a published app, test a sign-in, and share screenshots and a runbook for a user whose profile will not load."
+  },
+  {
     "skillId": "vector-search",
     "task": "Index 200 synthetic support answers with free embeddings in pgvector, Chroma or FAISS, try 2 chunk sizes, and report how many of 15 test questions find the right answer in the top 3, with the settings that worked best."
   },
@@ -1176,6 +1276,14 @@
     "task": "Build a custom WordPress theme and a small plugin with a custom post type, a shortcode and a settings page on a local install (LocalWP or XAMPP), escaping all output. Share the code and screenshots of the admin and site."
   },
   {
+    "skillId": "workday-hcm-configuration",
+    "task": "From Workday's public documentation, design a synthetic hire business process with approval steps, a calculated field for tenure band and a custom report of headcount by location, written up as a configuration workbook. Share it."
+  },
+  {
+    "skillId": "workday-integrations",
+    "task": "Write an EIB inbound template and an outbound worker file spec for a synthetic HR change feed, plus a Python script that turns a sample Workday-style XML extract into a vendor CSV with error handling. Share the specs and code."
+  },
+  {
     "skillId": "xr-development",
     "task": "Build a small AR or VR app in Unity with AR Foundation or the XR Interaction Toolkit that lets users place and move a 3D object at a steady frame rate, and share the repo with a video from a phone or the XR simulator."
   },
@@ -1186,5 +1294,9 @@
   {
     "skillId": "data-breach-response",
     "task": "For a synthetic incident where 40,000 customer phone numbers leaked from a misconfigured bucket, write the first 72 hours: who you notify (CERT-In within 6 hours, the Data Protection Board, affected users), what each notice says, and how you assess harm."
+  },
+  {
+    "skillId": "yara-rules",
+    "task": "Write five YARA rules for public malware families (samples from MalwareBazaar, inside an isolated VM), test them against the samples and a folder of clean files to show no false positives, and share the rules and test log."
   }
 ]

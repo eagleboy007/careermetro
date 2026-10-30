@@ -5075,5 +5075,542 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "hyperconverged-infrastructure",
+    "name": "Hyperconverged infrastructure (Nutanix, vSAN)",
+    "category": "cloud-devops",
+    "aliases": [
+      "hyperconverged infrastructure",
+      "hyper-converged infrastructure",
+      "nutanix",
+      "nutanix ahv",
+      "nutanix aos",
+      "nutanix prism",
+      "prism central",
+      "prism element",
+      "vmware vsan",
+      "vsan",
+      "vxrail",
+      "azure stack hci"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "virtualization"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "vdi-platforms",
+    "name": "Virtual desktops (Citrix, Azure Virtual Desktop, Horizon)",
+    "category": "cloud-devops",
+    "aliases": [
+      "vdi",
+      "virtual desktop infrastructure",
+      "citrix virtual apps and desktops",
+      "citrix cvad",
+      "citrix xenapp",
+      "xenapp",
+      "xendesktop",
+      "citrix xendesktop",
+      "citrix daas",
+      "citrix storefront",
+      "citrix netscaler gateway",
+      "citrix pvs",
+      "citrix provisioning services",
+      "machine creation services",
+      "azure virtual desktop",
+      "windows virtual desktop",
+      "vmware horizon",
+      "omnissa horizon",
+      "fslogix",
+      "windows 365",
+      "cloud pc"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "application-packaging",
+    "name": "Application packaging (MSI, MSIX, App-V)",
+    "category": "tools",
+    "aliases": [
+      "application packaging",
+      "app packaging",
+      "msi packaging",
+      "msix",
+      "msix packaging",
+      "app-v",
+      "microsoft app-v",
+      "installshield",
+      "adminstudio",
+      "psadt",
+      "powershell app deployment toolkit",
+      "win32 app packaging",
+      "intunewin"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "entra-id-administration",
+    "name": "Microsoft Entra ID (Azure AD) administration",
+    "category": "security",
+    "aliases": [
+      "entra id",
+      "microsoft entra id",
+      "azure ad",
+      "azure active directory",
+      "entra connect",
+      "azure ad connect",
+      "conditional access",
+      "conditional access policies",
+      "entra id governance",
+      "azure ad b2b"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "identity-access-management"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-mm-configuration",
+    "name": "SAP MM configuration (Materials Management)",
+    "category": "business",
+    "aliases": [
+      "sap mm",
+      "sap materials management",
+      "sap mm configuration",
+      "s/4hana mm",
+      "sap s/4hana mm",
+      "sap s/4hana sourcing and procurement",
+      "sap mm-im",
+      "pr/po release strategy",
+      "po release strategy",
+      "sap invoice verification",
+      "migo",
+      "miro transaction",
+      "me21n",
+      "stock transport orders",
+      "sap subcontracting",
+      "sap consignment",
+      "mm pricing procedure",
+      "sap vendor master"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "workday-hcm-configuration",
+    "name": "Workday HCM configuration and reporting",
+    "category": "tools",
+    "aliases": [
+      "workday hcm",
+      "workday core hcm",
+      "workday business processes",
+      "workday business process configuration",
+      "workday security groups",
+      "workday domain security",
+      "workday tenant configuration",
+      "workday calculated fields",
+      "workday report writer",
+      "workday advanced reports",
+      "workday custom reports",
+      "workday compensation",
+      "workday absence management"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "workday-integrations",
+    "name": "Workday integrations (EIB, Studio, Core Connectors)",
+    "category": "tools",
+    "aliases": [
+      "workday integrations",
+      "workday studio",
+      "workday eib",
+      "enterprise interface builder",
+      "eib",
+      "core connectors",
+      "workday core connectors",
+      "workday core connector",
+      "picof",
+      "peci",
+      "workday cloud connect",
+      "workday web services",
+      "workday document transformation",
+      "workday raas"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "workday-hcm-configuration"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "survey-research",
+    "name": "Survey design and analysis",
+    "category": "design",
+    "aliases": [
+      "survey design",
+      "questionnaire design",
+      "qualtrics",
+      "surveymonkey",
+      "typeform",
+      "likert scale",
+      "survey analysis",
+      "online surveys",
+      "intercept surveys"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "research-synthesis",
+    "name": "Qualitative research synthesis",
+    "category": "design",
+    "aliases": [
+      "research synthesis",
+      "affinity mapping",
+      "affinity diagram",
+      "affinity diagramming",
+      "thematic analysis",
+      "qualitative coding",
+      "qualitative data analysis",
+      "dovetail",
+      "research repository",
+      "insight synthesis"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "ux-research"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "it-project-management",
+    "name": "IT project management (scope, schedule, plan)",
+    "category": "product",
+    "aliases": [
+      "project management",
+      "it project management",
+      "project planning",
+      "project scheduling",
+      "ms project",
+      "microsoft project",
+      "work breakdown structure",
+      "wbs",
+      "gantt chart",
+      "gantt charts",
+      "project charter",
+      "waterfall",
+      "critical path method",
+      "smartsheet",
+      "scope management",
+      "project closure"
+    ],
+    "ambiguous": [
+      "waterfall"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "it-vendor-management",
+    "name": "IT vendor and contract management",
+    "category": "business",
+    "aliases": [
+      "vendor management",
+      "vendor coordination",
+      "vendor governance",
+      "statement of work",
+      "sow management",
+      "contract management",
+      "managed service provider management",
+      "supplier performance reviews"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "shopify-development",
+    "name": "Shopify theme and app development (Liquid)",
+    "category": "web",
+    "aliases": [
+      "shopify",
+      "shopify plus",
+      "shopify liquid",
+      "liquid templating",
+      "shopify theme development",
+      "shopify themes",
+      "shopify apps",
+      "shopify storefront api",
+      "online store 2.0",
+      "shopify hydrogen"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "html-css",
+      "javascript"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "adobe-commerce-magento",
+    "name": "Adobe Commerce (Magento 2) development",
+    "category": "web",
+    "aliases": [
+      "magento",
+      "magento 2",
+      "magento 2.x",
+      "adobe commerce",
+      "adobe commerce cloud",
+      "magento commerce",
+      "magento extensions"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "php"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "salesforce-b2c-commerce",
+    "name": "Salesforce B2C Commerce Cloud (SFCC) development",
+    "category": "web",
+    "aliases": [
+      "salesforce commerce cloud",
+      "sfcc",
+      "salesforce b2c commerce",
+      "b2c commerce cloud",
+      "sfra",
+      "storefront reference architecture",
+      "isml",
+      "demandware",
+      "sitegenesis"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "javascript"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "fpga-high-speed-interfaces",
+    "name": "FPGA high-speed interfaces (SerDes, PCIe IP, DDR, JESD204)",
+    "category": "programming",
+    "aliases": [
+      "high-speed serial interfaces",
+      "high speed interfaces",
+      "serdes",
+      "gty transceivers",
+      "gth transceivers",
+      "gigabit transceivers",
+      "jesd204b",
+      "jesd204c",
+      "pcie ip",
+      "pcie endpoint",
+      "mig ddr4",
+      "10g ethernet mac"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "fpga-design"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "ran-performance-optimization",
+    "name": "RAN performance optimisation (4G/5G KPIs)",
+    "category": "cloud-devops",
+    "aliases": [
+      "rf optimization",
+      "rf optimisation",
+      "ran optimization",
+      "ran optimisation",
+      "lte optimization",
+      "5g optimization",
+      "5g nr optimization",
+      "ran kpis",
+      "netact",
+      "nokia netact",
+      "ericsson enm",
+      "huawei u2020"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "drive-test-analysis",
+    "name": "Drive testing and log analysis (TEMS, Nemo, XCAL, Actix)",
+    "category": "tools",
+    "aliases": [
+      "drive test",
+      "drive tests",
+      "drive testing",
+      "cluster drive test",
+      "tems",
+      "tems investigation",
+      "tems discovery",
+      "nemo outdoor",
+      "nemo analyze",
+      "xcal",
+      "xcap",
+      "actix",
+      "single site verification"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "lte-5g-nr-protocols",
+    "name": "LTE and 5G NR radio protocols and call flows",
+    "category": "cloud-devops",
+    "aliases": [
+      "5g nr",
+      "3gpp",
+      "en-dc",
+      "endc",
+      "volte",
+      "5g sa",
+      "5g nsa",
+      "layer 3 messages",
+      "lte call flows",
+      "rrc signalling"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "binary-reverse-engineering",
+    "name": "Binary reverse engineering (x86/x64, IDA Pro, Ghidra)",
+    "category": "security",
+    "aliases": [
+      "ida pro",
+      "ghidra",
+      "x64dbg",
+      "ollydbg",
+      "binary ninja",
+      "x86 assembly",
+      "x64 assembly",
+      "binary analysis",
+      "pe file format",
+      "unpacking malware"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "yara-rules",
+    "name": "YARA and malware signature writing",
+    "category": "security",
+    "aliases": [
+      "yara",
+      "yara rules",
+      "yara signatures",
+      "antivirus signatures",
+      "av signatures",
+      "malware signatures"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "microsoft-graph-api",
+    "name": "Microsoft Graph and PnP libraries",
+    "category": "web",
+    "aliases": [
+      "microsoft graph",
+      "microsoft graph api",
+      "ms graph",
+      "ms graph api",
+      "pnpjs",
+      "pnp js",
+      "pnp/sp",
+      "pnp powershell"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "appian-development",
+    "name": "Appian development (SAIL, process models, records)",
+    "category": "programming",
+    "aliases": [
+      "appian",
+      "appian bpm",
+      "appian sail",
+      "sail interfaces",
+      "appian process models",
+      "appian records",
+      "appian developer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "outsystems-development",
+    "name": "OutSystems development",
+    "category": "programming",
+    "aliases": [
+      "outsystems",
+      "outsystems reactive",
+      "outsystems service studio",
+      "outsystems 11",
+      "outsystems odc",
+      "outsystems developer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mendix-development",
+    "name": "Mendix development (microflows, domain models)",
+    "category": "programming",
+    "aliases": [
+      "mendix",
+      "mendix studio pro",
+      "microflows",
+      "nanoflows",
+      "mendix microflows",
+      "mendix developer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "solution-demos-poc",
+    "name": "Product demos and customer proofs of concept",
+    "category": "business",
+    "aliases": [
+      "product demos",
+      "product demonstrations",
+      "technical demos",
+      "customer demos",
+      "demo environments",
+      "customer proofs of concept",
+      "customer poc",
+      "customer pocs"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

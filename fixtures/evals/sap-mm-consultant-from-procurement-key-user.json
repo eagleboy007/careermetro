@@ -1,0 +1,55 @@
+{
+  "id": "sap-mm-consultant-from-procurement-key-user",
+  "roleSlug": "sap-mm-consultant",
+  "persona": "Procurement executive and SAP MM key user moving into consulting",
+  "resumeText": "Priya Venkataraman | Bengaluru | priya.venkat@example.com\n\nEXPERIENCE\nSenior Procurement Executive and SAP MM Key User, Nandi Auto Components, Bengaluru (2019 - present)\n- Created purchase orders, scheduling agreements and stock transport orders in SAP MM daily.\n- Mapped the as-is purchase approval process with BPMN flowcharts for the S/4HANA project.\n- Wrote 60 UAT test cases for purchasing and goods receipt and signed off the test cycle.\n- Gathered requirements from plant buyers for the new PO release strategy.\n- Trained 25 buyers and stores staff on MIGO and MIRO after go-live.\n- Coordinated with finance, the SAP partner team and suppliers during cutover.\n\nPurchase Assistant, Kaveri Castings, Mysuru (2017 - 2019)\n- Maintained vendor price records in Excel and followed up on open orders.\n\nSKILLS\nSAP MM, MIGO, MIRO, Excel, BPMN\n\nEDUCATION\nBCom, Bangalore University, 2017\nMBA Operations, Christ University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 9,
+    "skills": [
+      {
+        "skillId": "sap-mm-configuration",
+        "quote": "purchase orders, scheduling agreements and stock transport orders in SAP MM"
+      },
+      {
+        "skillId": "process-mapping",
+        "quote": "Mapped the as-is purchase approval process with BPMN flowcharts"
+      },
+      {
+        "skillId": "uat",
+        "quote": "Wrote 60 UAT test cases for purchasing and goods receipt"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Gathered requirements from plant buyers for the new PO release strategy"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Trained 25 buyers and stores staff on MIGO and MIRO"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Coordinated with finance, the SAP partner team and suppliers"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Maintained vendor price records in Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-mm-configuration",
+        "status": "weak"
+      },
+      {
+        "skillId": "itsm",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-abap",
+      "sap-interfaces",
+      "sap-fi-configuration"
+    ]
+  },
+  "reviewedBy": null
+}

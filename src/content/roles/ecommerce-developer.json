@@ -1,0 +1,137 @@
+{
+  "slug": "ecommerce-developer",
+  "title": "E-commerce Developer",
+  "summary": "E-commerce developers build and maintain online stores on hosted or self-run commerce platforms, writing store themes, templates and add-ons. They sit in a brand's digital team or an agency, turning designs into store pages and connecting payments, stock and marketing tools.",
+  "dailyDuties": [
+    "Build and customise store themes and templates",
+    "Add features to product, cart and checkout pages",
+    "Connect payment gateways and ERP or stock systems through APIs",
+    "Fix bugs reported by the merchandising team",
+    "Speed up slow pages on mobile",
+    "Review code and deploy store releases"
+  ],
+  "typicalTitles": [
+    "Shopify Developer",
+    "Shopify Plus Developer",
+    "Shopify Theme Developer",
+    "Magento Developer",
+    "Adobe Commerce Developer",
+    "SFCC Developer",
+    "Salesforce Commerce Cloud Developer",
+    "Ecommerce Web Developer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "shopify-development",
+      "importance": "required",
+      "expectation": "Build and customise storefronts on at least one commerce platform",
+      "postingShare": null,
+      "oneOf": "commerce-platform"
+    },
+    {
+      "skillId": "adobe-commerce-magento",
+      "importance": "required",
+      "expectation": "Build and customise storefronts on at least one commerce platform",
+      "postingShare": null,
+      "oneOf": "commerce-platform"
+    },
+    {
+      "skillId": "salesforce-b2c-commerce",
+      "importance": "required",
+      "expectation": "Build and customise storefronts on at least one commerce platform",
+      "postingShare": null,
+      "oneOf": "commerce-platform"
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write front-end JavaScript for carts, product pages and checkout",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "required",
+      "expectation": "Turn designs into responsive, on-brand store pages",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Connect payment gateways, ERPs and marketing tools through APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-performance",
+      "importance": "required",
+      "expectation": "Keep store pages fast on mobile networks",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Manage theme and store code in version control",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain options and trade-offs to clients and merchandisers",
+      "postingShare": null
+    },
+    {
+      "skillId": "php",
+      "importance": "nice_to_have",
+      "expectation": "Write PHP modules for Magento or Adobe Commerce stores",
+      "postingShare": null
+    },
+    {
+      "skillId": "graphql",
+      "importance": "nice_to_have",
+      "expectation": "Use Storefront or Admin GraphQL APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "react",
+      "importance": "nice_to_have",
+      "expectation": "Build headless storefronts",
+      "postingShare": null
+    },
+    {
+      "skillId": "nodejs",
+      "importance": "nice_to_have",
+      "expectation": "Build custom apps and webhooks",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query order and catalogue data",
+      "postingShare": null
+    },
+    {
+      "skillId": "seo",
+      "importance": "nice_to_have",
+      "expectation": "Apply technical SEO to product and category pages",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "commerce-platform",
+      "label": "A commerce platform (Shopify, Adobe Commerce or Salesforce Commerce Cloud)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

@@ -1,0 +1,59 @@
+{
+  "id": "euc-engineer-from-desktop-support",
+  "roleSlug": "euc-engineer",
+  "persona": "Desktop support engineer who has started SCCM and Citrix work",
+  "resumeText": "Ananya Krishnan | Chennai | ananya.krishnan@example.com\n\nEXPERIENCE\nDesktop Support Engineer L2, Kaveri Global IT Services, Chennai (2020 - present)\n- Resolve escalated Windows 10 and 11 laptop issues from a 3,000-user service desk.\n- Deploy software and monthly patches to 2,500 laptops through SCCM collections.\n- Troubleshoot Citrix Workspace login and published app issues for remote users.\n- Manage user accounts and security groups in Active Directory.\n- Work incidents and service requests in ServiceNow within ITIL SLAs.\n- Edited Group Policy objects for drive mappings and printer deployment.\n\nIT Support Executive, Marina Tech Solutions, Chennai (2018 - 2020)\n- Imaged new laptops and set up Outlook and Teams for new joiners.\n\nSKILLS\nSCCM, Citrix, Active Directory, PowerShell, MSI packaging, ServiceNow\n\nEDUCATION\nBSc Computer Science, Madras Christian College, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "desktop-support",
+        "quote": "Resolve escalated Windows 10 and 11 laptop issues"
+      },
+      {
+        "skillId": "endpoint-management",
+        "quote": "Deploy software and monthly patches to 2,500 laptops through SCCM"
+      },
+      {
+        "skillId": "vdi-platforms",
+        "quote": "Troubleshoot Citrix Workspace login and published app issues"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Manage user accounts and security groups in Active Directory"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Work incidents and service requests in ServiceNow within ITIL SLAs"
+      },
+      {
+        "skillId": "windows-server",
+        "quote": "Edited Group Policy objects for drive mappings"
+      },
+      {
+        "skillId": "powershell-scripting",
+        "quote": "PowerShell"
+      },
+      {
+        "skillId": "application-packaging",
+        "quote": "MSI packaging"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "powershell-scripting",
+        "status": "weak"
+      },
+      {
+        "skillId": "application-packaging",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "azure",
+      "virtualization",
+      "entra-id-administration"
+    ]
+  },
+  "reviewedBy": null
+}

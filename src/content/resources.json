@@ -8421,17 +8421,6 @@
     "free": true
   },
   {
-    "title": "Tcl tutorial",
-    "url": "https://www.tcl-lang.org/man/tcl8.5/tutorial/Tcl0.html",
-    "provider": "Tcl Developer Xchange",
-    "kind": "docs",
-    "skillIds": [
-      "eda-scripting"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "Perl first steps",
     "url": "https://learn.perl.org/first_steps/",
     "provider": "Perl.org",
@@ -9808,6 +9797,734 @@
       "robot-navigation-planning"
     ],
     "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Introduction to Azure Local",
+    "url": "https://learn.microsoft.com/en-us/training/modules/azure-local",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "hyperconverged-infrastructure"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Azure Local as a hyperconverged infrastructure platform",
+    "url": "https://learn.microsoft.com/en-us/training/modules/hci-stack/1-introduction",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "hyperconverged-infrastructure"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Nutanix Hybrid Cloud Fundamentals (NHCF) course overview",
+    "url": "https://www.nutanix.com/en_gb/support-services/training-certification/training/course-details-nutanix-hybrid-cloud-fundamentals",
+    "provider": "Nutanix University",
+    "kind": "course",
+    "skillIds": [
+      "hyperconverged-infrastructure"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Deliver cloud-hosted desktops using Azure Virtual Desktop and Windows 365",
+    "url": "https://learn.microsoft.com/en-us/training/paths/deliver-cloud-hosted-desktops/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "vdi-platforms"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Citrix Virtual Apps and Desktops technical overview",
+    "url": "https://docs.citrix.com/en-us/citrix-virtual-apps-desktops/technical-overview",
+    "provider": "Citrix",
+    "kind": "docs",
+    "skillIds": [
+      "vdi-platforms"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "What is FSLogix?",
+    "url": "https://learn.microsoft.com/fslogix/overview-what-is-fslogix",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "vdi-platforms"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Windows Installer Guide (MSI)",
+    "url": "https://learn.microsoft.com/en-us/windows/win32/msi/windows-installer-guide",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "application-packaging"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "MSIX Packaging Tool overview",
+    "url": "https://learn.microsoft.com/en-us/windows/msix/mpt-overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "application-packaging"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "PSAppDeployToolkit documentation",
+    "url": "https://psappdeploytoolkit.com/docs/introduction",
+    "provider": "PSAppDeployToolkit",
+    "kind": "docs",
+    "skillIds": [
+      "application-packaging"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "SC-300: Implement an identity management solution",
+    "url": "https://learn.microsoft.com/training/paths/implement-manage-identity-access/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "entra-id-administration"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "SC-300: Implement an authentication and access management solution",
+    "url": "https://learn.microsoft.com/en-us/training/paths/implement-authentication-access-management-solution/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "entra-id-administration"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "What is Conditional Access?",
+    "url": "https://learn.microsoft.com/entra/identity/conditional-access/overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "entra-id-administration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Inventory Management and Physical Inventory in SAP S/4HANA",
+    "url": "https://learning.sap.com/courses/inventory-management-and-physical-inventory-in-sap-s-4hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-mm-configuration"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Releasing purchasing documents (Purchasing in SAP S/4HANA)",
+    "url": "https://learning.sap.com/courses/purchasing-in-sap-s-4hana/releasing-purchasing-documents",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-mm-configuration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Exploring Functions and Innovation in SAP S/4HANA Sourcing and Procurement",
+    "url": "https://learning.sap.com/learning-journeys/exploring-functions-and-innovation-in-sap-s-4hana-sourcing-and-procurement",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-mm-configuration"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Learn with Workday: an overview for customers and partners",
+    "url": "https://community-content.workday.com/en-us/public/learn/training/customer-training-coordinators/announcements.html",
+    "provider": "Workday Community",
+    "kind": "docs",
+    "skillIds": [
+      "workday-hcm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "The Next Level: Core Reporting",
+    "url": "https://community-content.workday.com/en-us/public/products/analytics-and-reporting/the-next-level-core-reporting.html",
+    "provider": "Workday Community",
+    "kind": "docs",
+    "skillIds": [
+      "workday-hcm-configuration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Concept: Business processes (Workday Administrator Guide)",
+    "url": "https://doc.workday.com/admin-guide/en-us/manage-workday/business-processes/business-process-framework-concepts/dan1370797198449.html",
+    "provider": "Workday",
+    "kind": "docs",
+    "skillIds": [
+      "workday-hcm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Workday SOAP API Reference (public web service operations)",
+    "url": "https://community-content.workday.com/en-us/public/products/platform-and-product-extensions/soap-api-reference.html",
+    "provider": "Workday Community",
+    "kind": "docs",
+    "skillIds": [
+      "workday-integrations"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Workday Studio (Workday Administrator Guide)",
+    "url": "https://doc.workday.com/admin-guide/en-us/workday-studio.html",
+    "provider": "Workday",
+    "kind": "docs",
+    "skillIds": [
+      "workday-integrations"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Qualitative surveys",
+    "url": "https://www.nngroup.com/articles/qualitative-surveys/",
+    "provider": "Nielsen Norman Group",
+    "kind": "docs",
+    "skillIds": [
+      "survey-research"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Writing survey questions",
+    "url": "https://www.pewresearch.org/our-methods/u-s-surveys/writing-survey-questions/",
+    "provider": "Pew Research Center",
+    "kind": "docs",
+    "skillIds": [
+      "survey-research"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Likert Scales 101",
+    "url": "https://www.nngroup.com/videos/likert-scales-101/",
+    "provider": "Nielsen Norman Group",
+    "kind": "video",
+    "skillIds": [
+      "survey-research"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Affinity diagramming: collaboratively sort UX findings and design ideas",
+    "url": "https://www.nngroup.com/articles/affinity-diagram/",
+    "provider": "Nielsen Norman Group",
+    "kind": "docs",
+    "skillIds": [
+      "research-synthesis"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Thematic analysis of qualitative user research data",
+    "url": "https://www.nngroup.com/videos/thematic-analysis-qualitative-user-research-data/",
+    "provider": "Nielsen Norman Group",
+    "kind": "video",
+    "skillIds": [
+      "research-synthesis"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Coding in thematic analysis",
+    "url": "https://www.nngroup.com/videos/coding-thematic-analysis/",
+    "provider": "Nielsen Norman Group",
+    "kind": "video",
+    "skillIds": [
+      "research-synthesis"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Project Management for Managers (IIT Roorkee)",
+    "url": "https://nptel.ac.in/courses/110107081",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "it-project-management"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Project management: the start of the project journey",
+    "url": "https://www.open.edu/openlearn/money-business/leadership-management/project-management-the-start-the-project-journey",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "it-project-management"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Advanced Contracts, Tendering and Public Procurement (NLSIU)",
+    "url": "https://nptel.ac.in/courses/129106006",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "it-vendor-management"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Contract Management MOOC: build relationships in business",
+    "url": "https://www.worldcc.foundation/How-we-help/Learning/Contract-Management-MOOC",
+    "provider": "World Commerce & Contracting Foundation",
+    "kind": "course",
+    "skillIds": [
+      "it-vendor-management"
+    ],
+    "minutes": 540,
+    "free": true
+  },
+  {
+    "title": "Build Shopify themes",
+    "url": "https://shopify.dev/docs/storefronts/themes/getting-started",
+    "provider": "Shopify.dev",
+    "kind": "docs",
+    "skillIds": [
+      "shopify-development"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Liquid reference",
+    "url": "https://shopify.dev/docs/api/liquid",
+    "provider": "Shopify.dev",
+    "kind": "docs",
+    "skillIds": [
+      "shopify-development"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Scaffold an app",
+    "url": "https://shopify.dev/apps/build/scaffold-app",
+    "provider": "Shopify.dev",
+    "kind": "practice",
+    "skillIds": [
+      "shopify-development"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Adobe Commerce PHP Developer Guide: development",
+    "url": "https://developer.adobe.com/commerce/php/development/",
+    "provider": "Adobe Developer",
+    "kind": "docs",
+    "skillIds": [
+      "adobe-commerce-magento"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Commerce videos and tutorials",
+    "url": "https://experienceleague.adobe.com/en/docs/commerce-learn/tutorials/overview",
+    "provider": "Adobe Experience League",
+    "kind": "video",
+    "skillIds": [
+      "adobe-commerce-magento"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Salesforce B2C Commerce for Developers",
+    "url": "https://trailhead.salesforce.com/modules/cc-digital-for-developers",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-b2c-commerce"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Tools & Resources for Salesforce B2C Commerce Developers",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/b2c-developer-resources-and-tools",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-b2c-commerce"
+    ],
+    "minutes": 80,
+    "free": true
+  },
+  {
+    "title": "Get Started with B2C Commerce",
+    "url": "https://developer.salesforce.com/docs/commerce/b2c-commerce/guide",
+    "provider": "Salesforce Developers",
+    "kind": "docs",
+    "skillIds": [
+      "salesforce-b2c-commerce"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "UltraScale Architecture GTY Transceivers User Guide (UG578)",
+    "url": "https://docs.amd.com/v/u/en-US/ug578-ultrascale-gty-transceivers",
+    "provider": "AMD",
+    "kind": "docs",
+    "skillIds": [
+      "fpga-high-speed-interfaces"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "JESD204C LogiCORE IP Product Guide (PG242)",
+    "url": "https://docs.amd.com/r/en-US/pg242-jesd204c",
+    "provider": "AMD",
+    "kind": "docs",
+    "skillIds": [
+      "fpga-high-speed-interfaces"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "UltraScale+ Devices Integrated Block for PCI Express (PG213)",
+    "url": "https://docs.amd.com/r/en-US/pg213-pcie4-ultrascale-plus/Introduction",
+    "provider": "AMD",
+    "kind": "docs",
+    "skillIds": [
+      "fpga-high-speed-interfaces"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "3GPP TS 32.450: KPIs for E-UTRAN, definitions",
+    "url": "https://3gpp.org/DynaReport/32450.htm",
+    "provider": "3GPP",
+    "kind": "docs",
+    "skillIds": [
+      "ran-performance-optimization"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "LTE RSRQ to SINR",
+    "url": "https://www.cablefree.net/wirelesstechnology/4glte/lte-rsrq-sinr/",
+    "provider": "CableFree",
+    "kind": "docs",
+    "skillIds": [
+      "ran-performance-optimization",
+      "drive-test-analysis"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "RSRP and RSRQ measurement in LTE",
+    "url": "https://cablefree.net/wirelesstechnology/4glte/rsrp-rsrq-measurement-lte",
+    "provider": "CableFree",
+    "kind": "docs",
+    "skillIds": [
+      "drive-test-analysis",
+      "ran-performance-optimization"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "NOC: 5G Wireless Standard Design (IIT Kanpur)",
+    "url": "https://nptel.ac.in/courses/117104484",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "lte-5g-nr-protocols"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Wireless communication: evolution of standards from 2G to 5G (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/108105134",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "lte-5g-nr-protocols"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "5G Explained video series",
+    "url": "https://www.mathworks.com/videos/5g-explained-about-the-series-1560845975844.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "lte-5g-nr-protocols"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Ghidra software reverse engineering suite",
+    "url": "https://nsa.gov/ghidra",
+    "provider": "NSA",
+    "kind": "docs",
+    "skillIds": [
+      "binary-reverse-engineering"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Ghidra source and documentation",
+    "url": "https://github.com/NationalSecurityAgency/ghidra",
+    "provider": "GitHub (NSA)",
+    "kind": "docs",
+    "skillIds": [
+      "binary-reverse-engineering"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "PE Format specification",
+    "url": "https://learn.microsoft.com/en-us/windows/win32/debug/pe-format",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "binary-reverse-engineering"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Writing YARA rules",
+    "url": "https://yara.readthedocs.io/en/stable/writingrules.html",
+    "provider": "YARA docs",
+    "kind": "docs",
+    "skillIds": [
+      "yara-rules"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "YARA-X: getting started",
+    "url": "https://virustotal.github.io/yara-x/docs/intro/getting-started",
+    "provider": "VirusTotal",
+    "kind": "docs",
+    "skillIds": [
+      "yara-rules"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "YARA-X: anatomy of a rule",
+    "url": "https://virustotal.github.io/yara-x/docs/writing_rules/anatomy-of-a-rule",
+    "provider": "VirusTotal",
+    "kind": "docs",
+    "skillIds": [
+      "yara-rules"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Microsoft Graph Fundamentals",
+    "url": "https://learn.microsoft.com/en-us/training/paths/m365-msgraph-associate",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "microsoft-graph-api"
+    ],
+    "minutes": 75,
+    "free": true
+  },
+  {
+    "title": "PnPjs documentation",
+    "url": "https://pnp.github.io/pnpjs/",
+    "provider": "Microsoft 365 & Power Platform Community (PnP)",
+    "kind": "docs",
+    "skillIds": [
+      "microsoft-graph-api"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "PnP PowerShell documentation",
+    "url": "https://pnp.github.io/powershell",
+    "provider": "Microsoft 365 & Power Platform Community (PnP)",
+    "kind": "docs",
+    "skillIds": [
+      "microsoft-graph-api"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Appian interfaces overview (SAIL)",
+    "url": "https://docs.appian.com/suite/help/26.6/interface_overview.html",
+    "provider": "Appian",
+    "kind": "docs",
+    "skillIds": [
+      "appian-development"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Learn OutSystems: guided paths and courses",
+    "url": "https://www.outsystems.com/learn",
+    "provider": "OutSystems",
+    "kind": "course",
+    "skillIds": [
+      "outsystems-development"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Becoming a Reactive Web Developer guided path",
+    "url": "https://www.outsystems.com/training/paths/18/becoming-a-reactive-web-developer/",
+    "provider": "OutSystems",
+    "kind": "course",
+    "skillIds": [
+      "outsystems-development"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Mendix Academy",
+    "url": "https://www.mendix.com/academy/",
+    "provider": "Mendix Academy",
+    "kind": "course",
+    "skillIds": [
+      "mendix-development"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Become a Rapid Developer learning path",
+    "url": "https://academy.mendix.com/link/paths/31/Become-a-Rapid-Developer",
+    "provider": "Mendix Academy",
+    "kind": "course",
+    "skillIds": [
+      "mendix-development"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Microflows (Studio Pro reference guide)",
+    "url": "https://docs.mendix.com/refguide/microflows/",
+    "provider": "Mendix",
+    "kind": "docs",
+    "skillIds": [
+      "mendix-development"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "7 habits for highly effective proofs of concept",
+    "url": "https://sales-engineering.org/7-habits-for-highly-effective-proof-of-concepts/",
+    "provider": "North American Association of Sales Engineers",
+    "kind": "docs",
+    "skillIds": [
+      "solution-demos-poc"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Financial Accounting (NPTEL)",
+    "url": "https://onlinecourses.nptel.ac.in/noc19_mg37/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "financial-accounting"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Financial Accounting (NPTEL, 2020 run)",
+    "url": "https://onlinecourses.nptel.ac.in/noc20_mg52/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "financial-accounting"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Case Management Foundation (Pega Academy mission)",
+    "url": "https://academy.pega.com/mission/case-management-foundation/v5",
+    "provider": "Pega Academy",
+    "kind": "course",
+    "skillIds": [
+      "pega-case-management"
+    ],
+    "minutes": 520,
     "free": true
   }
 ]

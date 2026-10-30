@@ -1,0 +1,117 @@
+{
+  "slug": "ux-researcher",
+  "title": "UX Researcher",
+  "summary": "A UX researcher studies how people use a product, through interviews, usability tests and surveys, so the team builds the right thing. You sit with product designers and product managers, plan studies, talk to users across India, and turn what you learn into clear findings the team acts on.",
+  "dailyDuties": [
+    "Plan studies with product managers and designers",
+    "Recruit participants and run user interviews",
+    "Run moderated and unmoderated usability tests",
+    "Write and analyse surveys",
+    "Synthesise notes into themes and insights",
+    "Present findings and track what the team changed",
+    "Keep the research repository up to date"
+  ],
+  "typicalTitles": [
+    "User Researcher",
+    "UX Research Lead",
+    "Design Researcher",
+    "Senior UX Researcher",
+    "User Experience Researcher",
+    "Product Researcher",
+    "Usability Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "ux-research",
+      "importance": "required",
+      "expectation": "Plan research studies that answer product and design questions",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-discovery",
+      "importance": "required",
+      "expectation": "Recruit and run one-to-one user interviews, including in Indian languages where needed",
+      "postingShare": null
+    },
+    {
+      "skillId": "usability-testing",
+      "importance": "required",
+      "expectation": "Run moderated and unmoderated usability tests on prototypes and live products",
+      "postingShare": null
+    },
+    {
+      "skillId": "survey-research",
+      "importance": "required",
+      "expectation": "Design and analyse surveys with tools such as Qualtrics",
+      "postingShare": null
+    },
+    {
+      "skillId": "research-synthesis",
+      "importance": "required",
+      "expectation": "Turn notes and recordings into themes and clear insights",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present findings as short reports and readouts that teams act on",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with product managers, designers and engineers to set research priorities",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "nice_to_have",
+      "expectation": "Use basic statistics to read survey and test results",
+      "postingShare": null
+    },
+    {
+      "skillId": "figma",
+      "importance": "nice_to_have",
+      "expectation": "Read and adjust designs and prototypes in Figma",
+      "postingShare": null
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "nice_to_have",
+      "expectation": "Pair qualitative findings with experiment results",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Use product analytics to pick who and what to study",
+      "postingShare": null
+    },
+    {
+      "skillId": "accessibility",
+      "importance": "nice_to_have",
+      "expectation": "Include users with disabilities and test with assistive technology",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "google-ux-design",
+      "importance": "optional",
+      "why": "Beginner course that covers research basics alongside design"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

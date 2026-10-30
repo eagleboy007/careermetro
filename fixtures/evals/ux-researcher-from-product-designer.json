@@ -1,0 +1,56 @@
+{
+  "id": "ux-researcher-from-product-designer",
+  "roleSlug": "ux-researcher",
+  "persona": "Product designer who runs most of the team's research",
+  "resumeText": "Meera Iyer | Bengaluru | meera.iyer@example.com\n\nEXPERIENCE\nProduct Designer, Kanakapura Fintech Labs, Bengaluru (2021 - present)\n- Designed loan application screens and prototypes in Figma for the mobile app.\n- Ran 24 moderated usability tests on the loan flow with first-time borrowers.\n- Conducted 30 user interviews in Kannada and Hindi with small shop owners.\n- Ran affinity mapping workshops to group interview notes into themes.\n- Presented research readouts to product managers and engineers every sprint.\n- Agreed the quarterly research plan with the product and engineering leads.\n\nJunior UI Designer, Lalbagh Digital Studio, Bengaluru (2020 - 2021)\n- Made marketing banners and app screens for retail clients.\n\nSKILLS\nFigma, user research, Qualtrics, Miro\n\nEDUCATION\nBDes Interaction Design, Srishti Institute, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "figma",
+        "quote": "Designed loan application screens and prototypes in Figma"
+      },
+      {
+        "skillId": "usability-testing",
+        "quote": "Ran 24 moderated usability tests on the loan flow"
+      },
+      {
+        "skillId": "product-discovery",
+        "quote": "Conducted 30 user interviews in Kannada and Hindi"
+      },
+      {
+        "skillId": "research-synthesis",
+        "quote": "Ran affinity mapping workshops to group interview notes"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented research readouts to product managers and engineers"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Agreed the quarterly research plan with the product and engineering leads"
+      },
+      {
+        "skillId": "ux-research",
+        "quote": "Conducted 30 user interviews in Kannada and Hindi with small shop owners"
+      },
+      {
+        "skillId": "survey-research",
+        "quote": "Qualtrics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "survey-research",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "statistics",
+      "ab-testing",
+      "web-analytics",
+      "accessibility"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -42,7 +42,8 @@
       "ot-security-engineer",
       "grc-manager",
       "privacy-analyst",
-      "digital-forensics-analyst"
+      "digital-forensics-analyst",
+      "malware-analyst"
     ],
     "infra-cloud": [
       "cloud-engineer",
@@ -60,7 +61,12 @@
       "application-support-engineer",
       "build-release-engineer",
       "noc-engineer",
-      "unified-communications-engineer"
+      "unified-communications-engineer",
+      "virtualization-engineer",
+      "euc-engineer",
+      "m365-administrator",
+      "telecom-ran-engineer",
+      "presales-engineer"
     ],
     "backend": [
       "software-engineer",
@@ -88,7 +94,9 @@
       "ios-developer",
       "cross-platform-mobile-developer",
       "game-developer",
-      "ar-vr-developer"
+      "ar-vr-developer",
+      "ux-researcher",
+      "ecommerce-developer"
     ],
     "enterprise-apps": [
       "salesforce-developer",
@@ -102,7 +110,11 @@
       "pega-developer",
       "salesforce-administrator",
       "sap-basis-administrator",
-      "sap-fico-consultant"
+      "sap-fico-consultant",
+      "sap-mm-consultant",
+      "workday-consultant",
+      "sharepoint-developer",
+      "low-code-developer"
     ],
     "quality": [
       "qa-automation-engineer",
@@ -114,7 +126,8 @@
       "embedded-software-engineer",
       "iot-engineer",
       "robotics-engineer",
-      "vlsi-design-engineer"
+      "vlsi-design-engineer",
+      "fpga-engineer"
     ],
     "delivery": [
       "business-analyst",
@@ -122,7 +135,8 @@
       "product-manager",
       "scrum-master",
       "technical-writer",
-      "technical-program-manager"
+      "technical-program-manager",
+      "it-project-manager"
     ],
     "marketing": [
       "digital-marketing-executive"
@@ -254,6 +268,10 @@
     [
       "salesforce-administrator",
       "bi-developer"
+    ],
+    [
+      "sharepoint-developer",
+      "frontend-developer"
     ]
   ]
 }

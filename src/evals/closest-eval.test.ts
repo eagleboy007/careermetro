@@ -28,26 +28,22 @@ describe("closest-role eval", () => {
     for (const [a, b] of data.alsoNear) expect([familyOf.has(a), familyOf.has(b)]).toEqual([true, true]);
   });
 
-  it("names a role from the same or a neighbouring family for each fixture resume", () => {
-    const misses: string[] = [];
-    for (const c of loadEvalCases()) {
-      const { lines, closest } = nearbyLinesFor({ profile: expectedProfile(c), targetSlug: c.roleSlug, now: NOW });
-      const top = lines[0]?.slug ?? closest?.slug;
-      if (!top) continue;
-      const want = familyOf.get(c.roleSlug) ?? "?";
-      const got = familyOf.get(top) ?? "?";
-      const reviewed = data.alsoNear.some(([from, to]) => from === c.roleSlug && to === top);
-      if (near(want, got) || reviewed) continue;
-      // The roles sharing most, so a miss shows what the ranking passed over.
-      const others = roleProfiles
-        .filter((r) => r.slug !== c.roleSlug)
-        .map((r) => ({ slug: r.slug, m: matchProfile(expectedProfile(c), r, NOW) }))
-        .sort((a, b) => b.m.met.length - a.m.met.length)
-        .slice(0, 4)
-        .map((o) => `${o.slug} ${o.m.met.length}/${o.m.readiness.requiredTotal}`);
-      misses.push(`${c.id}: ${c.roleSlug} (${want}) -> ${top} (${got}) ${lines.length ? "near" : "closest"}; most shared: ${others.join(", ")}`);
-    }
-    expect(misses).toEqual([]);
-    // Every fixture against every role: a few seconds, more as batches grow.
-  }, 30_000);
+  // One test per fixture resume, so each gets its own time budget as batches grow, and a miss names its case.
+  it.each(loadEvalCases().map((c) => [c.id, c] as const))("names a role from the same or a neighbouring family for %s", (_, c) => {
+    const { lines, closest } = nearbyLinesFor({ profile: expectedProfile(c), targetSlug: c.roleSlug, now: NOW });
+    const top = lines[0]?.slug ?? closest?.slug;
+    if (!top) return;
+    const want = familyOf.get(c.roleSlug) ?? "?";
+    const got = familyOf.get(top) ?? "?";
+    const reviewed = data.alsoNear.some(([from, to]) => from === c.roleSlug && to === top);
+    if (near(want, got) || reviewed) return;
+    // The roles sharing most, so a miss shows what the ranking passed over.
+    const others = roleProfiles
+      .filter((r) => r.slug !== c.roleSlug)
+      .map((r) => ({ slug: r.slug, m: matchProfile(expectedProfile(c), r, NOW) }))
+      .sort((a, b) => b.m.met.length - a.m.met.length)
+      .slice(0, 4)
+      .map((o) => `${o.slug} ${o.m.met.length}/${o.m.readiness.requiredTotal}`);
+    throw new Error(`${c.roleSlug} (${want}) -> ${top} (${got}) ${lines.length ? "near" : "closest"}; most shared: ${others.join(", ")}`);
+  });
 });

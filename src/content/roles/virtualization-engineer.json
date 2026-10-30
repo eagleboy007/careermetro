@@ -1,0 +1,146 @@
+{
+  "slug": "virtualization-engineer",
+  "title": "Virtualization Engineer",
+  "summary": "A virtualization engineer builds and runs the clusters where a company's virtual servers live, mostly on VMware vSphere, Microsoft Hyper-V or Nutanix. You sit in the infrastructure or data-centre team, keep hosts patched and healthy, and work with storage, network and backup engineers.",
+  "dailyDuties": [
+    "Build and patch ESXi or Hyper-V hosts and vCenter",
+    "Create, resize and migrate virtual machines on request",
+    "Troubleshoot slow or failed VMs, hosts and datastores",
+    "Check backups and run restore and failover tests",
+    "Automate reports and routine tasks with PowerCLI scripts",
+    "Plan capacity and raise changes for upgrades",
+    "Work tickets and join incident calls with the infra team"
+  ],
+  "typicalTitles": [
+    "Virtualisation Engineer",
+    "VMware Engineer",
+    "Hyper-V Engineer",
+    "Nutanix Engineer",
+    "VMware vSphere Administrator",
+    "Senior Virtualization Engineer",
+    "Virtualization Administrator"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "virtualization",
+      "importance": "required",
+      "expectation": "Build, patch and run VMware vSphere or Hyper-V clusters, including HA, DRS and vMotion",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Run and troubleshoot guest servers on Linux or Windows Server",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "windows-server",
+      "importance": "required",
+      "expectation": "Run and troubleshoot guest servers on Linux or Windows Server",
+      "postingShare": null,
+      "oneOf": "server-os"
+    },
+    {
+      "skillId": "san-storage",
+      "importance": "required",
+      "expectation": "Present and manage datastores from SAN or NAS storage",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "required",
+      "expectation": "Set up virtual switches, VLANs and port groups and fix connectivity",
+      "postingShare": null
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "required",
+      "expectation": "Automate builds, reports and checks with PowerCLI or PowerShell",
+      "postingShare": null
+    },
+    {
+      "skillId": "backup-software",
+      "importance": "required",
+      "expectation": "Back up and restore virtual machines with Veeam, Commvault or similar",
+      "postingShare": null
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "required",
+      "expectation": "Plan failover and disaster recovery for VMs, for example with SRM or Zerto",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Handle incidents and changes through ITIL processes and tickets",
+      "postingShare": null
+    },
+    {
+      "skillId": "hyperconverged-infrastructure",
+      "importance": "nice_to_have",
+      "expectation": "Run Nutanix AHV/Prism or vSAN clusters",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-migration",
+      "importance": "nice_to_have",
+      "expectation": "Move VMs to Azure, AWS or another hypervisor",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Provision VMs and clusters with Terraform or Ansible",
+      "postingShare": null
+    },
+    {
+      "skillId": "monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Watch cluster capacity and performance with monitoring tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Run hybrid workloads on Azure or Azure VMware Solution",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "server-os",
+      "label": "A server operating system (Linux or Windows Server)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "azure-administrator",
+      "importance": "optional",
+      "why": "Useful where VMs move to or run alongside Azure"
+    },
+    {
+      "certId": "rhcsa",
+      "importance": "optional",
+      "why": "Proves Linux administration for guest servers"
+    },
+    {
+      "certId": "ccna",
+      "importance": "optional",
+      "why": "Networking base for virtual switching and VLANs"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

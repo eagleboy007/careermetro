@@ -1,0 +1,55 @@
+{
+  "id": "m365-administrator-from-exchange-admin",
+  "roleSlug": "m365-administrator",
+  "persona": "On-premises Exchange administrator moving to Microsoft 365",
+  "resumeText": "Mohammed Arif Shaikh | Hyderabad | arif.shaikh@example.com\n\nEXPERIENCE\nMessaging Engineer, Golconda Tech Services, Hyderabad (2020 - present)\n- Administer Exchange Server 2019 for 6,000 mailboxes across three sites.\n- Migrated 1,200 mailboxes to Exchange Online in a hybrid deployment.\n- Manage users and distribution groups in Active Directory and sync them with Azure AD Connect.\n- Wrote PowerShell scripts for bulk mailbox permissions and monthly size reports.\n- Handle mail flow incidents and change requests in BMC Remedy under ITIL.\n- Trained 40 service desk staff on new Outlook and Teams features.\n\nIT Support Engineer, Charminar Systems, Hyderabad (2018 - 2020)\n- Set up Outlook profiles and Teams for users.\n\nSKILLS\nExchange, Microsoft 365, SharePoint Online, Intune, PowerShell\n\nEDUCATION\nBTech Information Technology, JNTU Hyderabad, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "m365-administration",
+        "quote": "Migrated 1,200 mailboxes to Exchange Online"
+      },
+      {
+        "skillId": "cloud-migration",
+        "quote": "Migrated 1,200 mailboxes to Exchange Online in a hybrid deployment"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Manage users and distribution groups in Active Directory"
+      },
+      {
+        "skillId": "entra-id-administration",
+        "quote": "sync them with Azure AD Connect"
+      },
+      {
+        "skillId": "powershell-scripting",
+        "quote": "Wrote PowerShell scripts for bulk mailbox permissions"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "change requests in BMC Remedy under ITIL"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Trained 40 service desk staff on new Outlook and Teams features"
+      },
+      {
+        "skillId": "sharepoint",
+        "quote": "SharePoint Online"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sharepoint",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "teams-phone-voice",
+      "power-automate",
+      "azure"
+    ]
+  },
+  "reviewedBy": null
+}

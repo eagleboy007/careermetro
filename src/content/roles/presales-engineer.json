@@ -1,0 +1,159 @@
+{
+  "slug": "presales-engineer",
+  "title": "Presales Engineer",
+  "summary": "Presales engineers help sell software and cloud products by understanding a customer's needs and showing how the product meets them. They pair with account managers, running discovery calls, demos and proofs of concept (short trial setups), and write the technical parts of proposals.",
+  "dailyDuties": [
+    "Run discovery calls with prospects",
+    "Give tailored product demos",
+    "Set up and run proofs of concept",
+    "Write technical answers for RFPs and proposals",
+    "Draw solution designs and build ROI cases",
+    "Pass customer feedback to the product team"
+  ],
+  "typicalTitles": [
+    "Pre-Sales Engineer",
+    "Presales Consultant",
+    "Solutions Consultant",
+    "Solutions Engineer",
+    "Sales Engineer",
+    "Technical Presales Consultant",
+    "Pre-Sales Solution Consultant",
+    "Presales Solution Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "presales-solutioning",
+      "importance": "required",
+      "expectation": "Shape solutions and write technical answers for RFPs and proposals",
+      "postingShare": null
+    },
+    {
+      "skillId": "solution-demos-poc",
+      "importance": "required",
+      "expectation": "Run tailored product demos and customer proofs of concept",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run discovery calls to learn the customer's needs and current setup",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present clearly to both technical and business buyers",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with sales, product and the customer's team through the deal",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-case",
+      "importance": "required",
+      "expectation": "Build ROI and value cases for the buyer",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Explain and show how the product integrates with other systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Know at least one major cloud well enough to design deployments",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Know at least one major cloud well enough to design deployments",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Know at least one major cloud well enough to design deployments",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Track opportunities in the CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "nice_to_have",
+      "expectation": "Draw solution architectures",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-migration",
+      "importance": "nice_to_have",
+      "expectation": "Scope migrations for cloud deals",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "nice_to_have",
+      "expectation": "Answer security questionnaires",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Prepare demo data",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script demos and small integrations",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-solutions-architect-associate",
+      "importance": "recommended",
+      "why": "Shows you can design on AWS, which most cloud deals need"
+    },
+    {
+      "certId": "azure-fundamentals",
+      "importance": "optional",
+      "why": "Basic Azure knowledge for Microsoft-led deals"
+    },
+    {
+      "certId": "gcp-associate-cloud-engineer",
+      "importance": "optional",
+      "why": "For Google Cloud partner presales"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}
