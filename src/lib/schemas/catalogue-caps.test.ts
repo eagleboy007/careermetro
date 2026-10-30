@@ -81,7 +81,8 @@ describe("catalogue caps", () => {
     };
     const list = matchListFor({ profile, targetSlug: roles2x[0].slug, resumeId: null, weeklyHours: 6, roles: roles2x, now: new Date("2026-10-29T00:00:00Z") });
     expect(list.roles.length).toBeLessThanOrEqual(roles2x.length);
-  });
+    // Every skill against every role twice: seconds on CI, more with each role batch.
+  }, 60_000);
 
   it("takes tracks for every role, twice over", () => {
     const tracks = roleTracks[0].tracks;
