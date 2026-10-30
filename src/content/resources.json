@@ -12952,17 +12952,6 @@
     "free": true
   },
   {
-    "title": "Standard Cadences for Sales Engagement",
-    "url": "https://trailhead.salesforce.com/content/learn/modules/standard-cadences-for-sales-engagement",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "sales-engagement-tools"
-    ],
-    "minutes": 40,
-    "free": true
-  },
-  {
     "title": "Prospecting to Improve Sales",
     "url": "https://trailhead.salesforce.com/content/learn/modules/prospecting-to-improve-sales",
     "provider": "Salesforce Trailhead",
@@ -13016,17 +13005,6 @@
       "product-positioning-messaging"
     ],
     "minutes": 1800,
-    "free": true
-  },
-  {
-    "title": "Market research and competitive analysis",
-    "url": "https://www.sba.gov/business-guide/plan-your-business/market-research-and-competitive-analysis",
-    "provider": "U.S. Small Business Administration",
-    "kind": "docs",
-    "skillIds": [
-      "competitive-intelligence"
-    ],
-    "minutes": 20,
     "free": true
   },
   {
@@ -13487,17 +13465,6 @@
     "free": true
   },
   {
-    "title": "Discover SAP Integrated Business Planning for Supply Chain (learning journey)",
-    "url": "https://learning.sap.com/learning-journeys/discover-sap-integrated-business-planning-for-supply-chain",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "supply-planning-tools"
-    ],
-    "minutes": 360,
-    "free": true
-  },
-  {
     "title": "Oracle Advanced Supply Chain Planning Implementation and User's Guide (Release 12.2)",
     "url": "https://docs.oracle.com/cd/E26401_01/doc.122/e48756/T309464T309466.htm",
     "provider": "Oracle Docs",
@@ -13506,17 +13473,6 @@
       "supply-planning-tools"
     ],
     "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Service Metrics",
-    "url": "https://trailhead.salesforce.com/content/learn/modules/service_metrics",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "contact-centre-metrics"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -13550,17 +13506,6 @@
       "cross-selling-upselling"
     ],
     "minutes": 10,
-    "free": true
-  },
-  {
-    "title": "Einstein Next Best Action",
-    "url": "https://trailhead.salesforce.com/content/learn/modules/einstein-next-best-action",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "cross-selling-upselling"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -13675,17 +13620,6 @@
     "free": true
   },
   {
-    "title": "Guidelines for the FMCG sector (distribution, beats, numeric and weighted distribution)",
-    "url": "https://www.icap.org.pk/paib/pdf/guidelines/fmcgsector.pdf",
-    "provider": "ICAP (Institute of Chartered Accountants of Pakistan)",
-    "kind": "docs",
-    "skillIds": [
-      "primary-secondary-sales"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "Inbound Sales Certification Course",
     "url": "https://academy.hubspot.com/courses/inbound-sales",
     "provider": "HubSpot Academy",
@@ -13752,17 +13686,6 @@
     "free": true
   },
   {
-    "title": "Management of New Products and Services",
-    "url": "https://archive.nptel.ac.in/noc/courses/noc20/SEM1/noc20-mg03",
-    "provider": "NPTEL (IIT Kanpur)",
-    "kind": "course",
-    "skillIds": [
-      "go-to-market-launches"
-    ],
-    "minutes": 480,
-    "free": true
-  },
-  {
     "title": "Understanding your customers",
     "url": "https://www.open.edu/openlearn/money-business/understanding-your-customers",
     "provider": "OpenLearn (The Open University)",
@@ -13793,28 +13716,6 @@
       "customer-market-research"
     ],
     "minutes": 24,
-    "free": true
-  },
-  {
-    "title": "Standard Costing and Variance Analysis modules (NPTEL course 110107127)",
-    "url": "https://archive.nptel.ac.in/courses/110107127",
-    "provider": "NPTEL",
-    "kind": "course",
-    "skillIds": [
-      "fpa-variance-reporting"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "Managerial Accounting (Module 15: Standard Costing and Variance Analysis)",
-    "url": "https://archive.nptel.ac.in/courses/110/101/110101003",
-    "provider": "NPTEL (IIT Kanpur)",
-    "kind": "course",
-    "skillIds": [
-      "fpa-variance-reporting"
-    ],
-    "minutes": 180,
     "free": true
   },
   {
@@ -14208,17 +14109,6 @@
     "free": true
   },
   {
-    "title": "Communication Skills for Customer Service Agents",
-    "url": "https://trailhead.salesforce.com/content/learn/modules/communication-skills-for-customer-service-agents",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "customer-query-resolution"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Inbound Service Fundamentals",
     "url": "https://academy.hubspot.com/lessons/inbound-service-fundamentals",
     "provider": "HubSpot Academy",
@@ -14228,28 +14118,6 @@
       "omnichannel-support"
     ],
     "minutes": 71,
-    "free": true
-  },
-  {
-    "title": "Principles of Good Complaint Handling",
-    "url": "https://www.ombudsman.org.uk/sites/default/files/page/0188-Principles-of-Good-Complaint-Handling-bookletweb.pdf",
-    "provider": "Parliamentary and Health Service Ombudsman (UK)",
-    "kind": "docs",
-    "skillIds": [
-      "customer-query-resolution"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Strategies for Difficult Conversations with Customers",
-    "url": "https://trailhead.salesforce.com/content/learn/modules/strategies-for-difficult-conversations-with-customers",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "escalation-handling"
-    ],
-    "minutes": 35,
     "free": true
   },
   {
@@ -14283,17 +14151,6 @@
       "kyc-verification"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Aadhaar Paperless Offline e-KYC",
-    "url": "https://www.uidai.gov.in/en/ecosystem/authentication-devices-documents/about-aadhaar-paperless-offline-e-kyc.html",
-    "provider": "UIDAI",
-    "kind": "docs",
-    "skillIds": [
-      "kyc-verification"
-    ],
-    "minutes": 15,
     "free": true
   },
   {
@@ -14807,18 +14664,6 @@
     "free": true
   },
   {
-    "title": "Zendesk Training Offerings Overview",
-    "url": "https://support.zendesk.com/hc/en-us/articles/4408843500058-Start-here-Zendesk-Training-Offerings-Overview",
-    "provider": "Zendesk",
-    "kind": "docs",
-    "skillIds": [
-      "omnichannel-support",
-      "case-documentation"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Discovering SAP IBP for S&OP",
     "url": "https://learning.sap.com/courses/discovering-sap-ibp-for-s-op",
     "provider": "SAP Learning",
@@ -14827,17 +14672,6 @@
       "sales-operations-planning"
     ],
     "minutes": 150,
-    "free": true
-  },
-  {
-    "title": "Operations Management (IIT Roorkee): aggregate production planning",
-    "url": "https://archive.nptel.ac.in/courses/112107238",
-    "provider": "NPTEL",
-    "kind": "video",
-    "skillIds": [
-      "sales-operations-planning"
-    ],
-    "minutes": 900,
     "free": true
   },
   {
@@ -14871,17 +14705,6 @@
       "order-returns-refunds"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Grow Your Career as a Customer Service Agent",
-    "url": "https://trailhead.salesforce.com/content/learn/trails/grow-your-career-as-a-customer-service-agent",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "omnichannel-support"
-    ],
-    "minutes": 180,
     "free": true
   },
   {
@@ -14937,17 +14760,6 @@
       "recruitment-metrics"
     ],
     "minutes": 1200,
-    "free": true
-  },
-  {
-    "title": "Time to Hire Overview (hiring milestones and metrics)",
-    "url": "https://help.usastaffing.gov/ResourceCenter/images/1/12/Time_to_Hire_Overview_-_June_2023.pdf",
-    "provider": "USA Staffing (US OPM)",
-    "kind": "docs",
-    "skillIds": [
-      "recruitment-metrics"
-    ],
-    "minutes": 20,
     "free": true
   },
   {
@@ -15014,17 +14826,6 @@
       "supply-chain-erp-reporting"
     ],
     "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Learning the Basics of SAP Fiori",
-    "url": "https://learning.sap.com/learning-journey/learn-the-basics-of-sap-fiori",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "supply-chain-erp-reporting"
-    ],
-    "minutes": 240,
     "free": true
   },
   {
