@@ -12,9 +12,11 @@ export const certification = z.object({
   proves: z.array(z.string()).default([]),
   partial: z.array(z.string()).default([]),
   /**
-   * True only for a certificate that never expires and needs no renewal (T156): ISTQB, Python Institute's PCEP and PCAP,
-   * Microsoft Office Specialist, Scrum.org's PSM I and PSPO I, Tableau Desktop Specialist and Coursera professional
-   * certificates. Only these offer "It never expires" on Add a certificate; any other needs its expiry date.
+   * True when a holder can have this certificate with no expiry date (T156; Data research's lifetime-check.tsv of
+   * 2026-10-30): it never expires (ISTQB, PSM I, PSPO I, Microsoft Fundamentals, ECBA, OSCP, CRTO), or some versions
+   * or earning dates never expire (PCEP, PCAP, MOS earned before 23 Sep 2025), or the issuer states no expiry (Google
+   * and Meta professional certificates). Only these offer "It never expires" on Add a certificate; any other needs
+   * its expiry date.
    */
   lifetime: z.literal(true).optional(),
   /** False while a batch awaits domain-expert review (docs/review/pack/certifications.csv). Left out on older entries. */

@@ -127,6 +127,7 @@
     "issuer": "Microsoft",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "az-900",
       "azure fundamentals"
@@ -345,6 +346,7 @@
     "issuer": "Google (Coursera)",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "google data analytics certificate",
       "google data analytics professional certificate"
@@ -356,8 +358,7 @@
       "data-visualization",
       "tableau",
       "excel"
-    ],
-    "lifetime": true
+    ]
   },
   {
     "id": "tableau-desktop-specialist",
@@ -373,8 +374,7 @@
     ],
     "partial": [
       "data-visualization"
-    ],
-    "lifetime": true
+    ]
   },
   {
     "id": "snowflake-snowpro-core",
@@ -507,6 +507,7 @@
     "issuer": "Meta (Coursera)",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "meta front-end developer"
     ],
@@ -515,8 +516,7 @@
       "html-css",
       "javascript",
       "react"
-    ],
-    "lifetime": true
+    ]
   },
   {
     "id": "istqb-foundation",
@@ -524,6 +524,7 @@
     "issuer": "ISTQB",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "istqb",
       "ctfl",
@@ -535,8 +536,7 @@
     ],
     "partial": [
       "bug-tracking"
-    ],
-    "lifetime": true
+    ]
   },
   {
     "id": "istqb-test-automation",
@@ -544,6 +544,7 @@
     "issuer": "ISTQB",
     "level": "advanced",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "ct-tae",
       "istqb test automation"
@@ -554,8 +555,7 @@
       "playwright-cypress",
       "api-testing",
       "test-planning"
-    ],
-    "lifetime": true
+    ]
   },
   {
     "id": "cspo",
@@ -578,6 +578,7 @@
     "issuer": "Scrum.org",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "pspo",
       "professional scrum product owner"
@@ -587,8 +588,7 @@
     ],
     "partial": [
       "roadmapping"
-    ],
-    "lifetime": true
+    ]
   },
   {
     "id": "csm",
@@ -630,6 +630,7 @@
     "issuer": "IIBA",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "ecba"
     ],
@@ -845,6 +846,7 @@
     "issuer": "OffSec",
     "level": "professional",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "oscp"
     ],
@@ -1014,6 +1016,7 @@
     "issuer": "Python Institute",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "pcep",
       "pcep-30-02",
@@ -1022,8 +1025,7 @@
     "proves": [
       "python"
     ],
-    "partial": [],
-    "lifetime": true
+    "partial": []
   },
   {
     "id": "pcap",
@@ -1031,6 +1033,7 @@
     "issuer": "Python Institute",
     "level": "associate",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "pcap",
       "pcap-31-03",
@@ -1041,8 +1044,7 @@
     ],
     "partial": [
       "oop"
-    ],
-    "lifetime": true
+    ]
   },
   {
     "id": "mos-excel-associate",
@@ -1050,6 +1052,7 @@
     "issuer": "Microsoft",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "mo-200",
       "mos excel associate",
@@ -1058,8 +1061,7 @@
     "proves": [
       "excel"
     ],
-    "partial": [],
-    "lifetime": true
+    "partial": []
   },
   {
     "id": "mos-excel-expert",
@@ -1067,6 +1069,7 @@
     "issuer": "Microsoft",
     "level": "associate",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "mo-201",
       "mos excel expert",
@@ -1076,8 +1079,7 @@
       "excel",
       "excel-pivot-lookup"
     ],
-    "partial": [],
-    "lifetime": true
+    "partial": []
   },
   {
     "id": "sc-200",
@@ -1122,6 +1124,7 @@
     "issuer": "Microsoft",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "sc-900",
       "security, compliance, and identity fundamentals"
@@ -1207,6 +1210,7 @@
     "issuer": "Google",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "google cybersecurity professional certificate",
       "google cybersecurity certificate"
@@ -1217,8 +1221,7 @@
       "linux",
       "networking-basics",
       "security-incident-response"
-    ],
-    "lifetime": true
+    ]
   },
   {
     "id": "comptia-pentest-plus",
@@ -1417,6 +1420,7 @@
     "issuer": "Google",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "google ux design professional certificate",
       "google ux design certificate"
@@ -1427,8 +1431,7 @@
       "figma",
       "ux-research",
       "prototyping"
-    ],
-    "lifetime": true
+    ]
   },
   {
     "id": "hubspot-seo",
@@ -1898,6 +1901,7 @@
     "issuer": "Microsoft",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "power platform fundamentals",
       "pl-900"
@@ -2466,6 +2470,7 @@
     "issuer": "Scrum.org",
     "level": "entry",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "professional scrum master i",
       "professional scrum master",
@@ -2480,7 +2485,6 @@
       "agile-coaching",
       "agile-metrics"
     ],
-    "lifetime": true,
     "reviewed": false
   },
   {
@@ -2545,6 +2549,7 @@
     "issuer": "ISTQB",
     "level": "professional",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "istqb advanced test manager",
       "istqb advanced level test management",
@@ -2558,7 +2563,6 @@
       "people-management",
       "stakeholder-management"
     ],
-    "lifetime": true,
     "reviewed": false
   },
   {
@@ -2567,6 +2571,7 @@
     "issuer": "ISTQB",
     "level": "associate",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "istqb performance testing",
       "istqb certified tester performance testing",
@@ -2577,7 +2582,6 @@
       "performance-testing",
       "test-planning"
     ],
-    "lifetime": true,
     "reviewed": false
   },
   {
@@ -3072,6 +3076,7 @@
     "issuer": "Zero-Point Security",
     "level": "associate",
     "cost": "paid",
+    "lifetime": true,
     "aliases": [
       "certified red team operator",
       "crto",
