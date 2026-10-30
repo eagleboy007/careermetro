@@ -11852,17 +11852,6 @@
     "free": true
   },
   {
-    "title": "Euro NCAP AEB Car-to-Car test protocol v4.3",
-    "url": "https://cdn.euroncap.com/media/79864/euro-ncap-aeb-c2c-test-protocol-v43.pdf",
-    "provider": "Euro NCAP",
-    "kind": "docs",
-    "skillIds": [
-      "adas-functions"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "Simulink Onramp",
     "url": "https://matlabacademy.mathworks.com/details/simulink-onramp/simulink",
     "provider": "MathWorks",
