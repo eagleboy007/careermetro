@@ -36,7 +36,7 @@ export function CorporateHome({
       {note}
       <div className="flex flex-wrap items-start gap-4">
         <span aria-hidden="true" className="grid size-12 shrink-0 place-items-center rounded-md bg-ink font-display text-xl font-semibold text-bg">
-          {org.name.trim()[0]?.toUpperCase() ?? "?"}
+          {Array.from(org.name.trim())[0]?.toUpperCase() ?? "?"}
         </span>
         <div className="min-w-0 flex-1">
           <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">Corporate · {ORG_TYPE_LABELS[org.type]}</span>

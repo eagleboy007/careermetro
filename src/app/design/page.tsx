@@ -418,6 +418,22 @@ const manySaved = Array.from({ length: 24 }, (_, i) => {
   const base = exampleLibrary.items[i % exampleLibrary.items.length];
   return { ...base, id: `${base.id}-long-${i}`, title: `${base.title} (${i + 1})` };
 });
+// Me and /u past one page (T150): 14 roles, education rows and stories each show 10, then "Show more".
+const manyMe = {
+  ...exampleMe,
+  experience: Array.from({ length: 14 }, (_, i) => {
+    const base = exampleMe.experience[i % exampleMe.experience.length];
+    return { ...base, id: `${base.id}-long-${i}`, added: undefined, employer: i === 0 ? "🚀📈 Rocket Analytics" : base.employer };
+  }),
+  education: Array.from({ length: 14 }, (_, i) => {
+    const base = exampleMe.education[i % exampleMe.education.length];
+    return { ...base, added: undefined, qualification: `${base.qualification} (${i + 1})` };
+  }),
+  stories: Array.from({ length: 14 }, (_, i) => {
+    const base = exampleMe.stories[i % exampleMe.stories.length];
+    return { ...base, id: `${base.id}-long-${i}`, title: `${base.title} (${i + 1})` };
+  }),
+};
 
 const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5", "elite", "elite-soft", "on-elite"] as const;
 
@@ -980,6 +996,12 @@ export default function DesignPage() {
         <InboxView threads={manyThreads} />
         <NetworkView data={{ ...exampleNetwork, connections: manyConnections }} example={exampleSearch} />
         <LibraryView view={{ ...exampleLibrary, items: [...exampleLibrary.items, ...manySaved], saved: manySaved.map((i) => i.id) }} shelf={exampleEliteShelf(false)} tab="saved" />
+        <p className="text-sm text-muted">
+          A profile (Me and /u) with 14 roles, 14 education rows and 14 stories: each shows 10, then &ldquo;Show more roles&rdquo;, &ldquo;Show more
+          education&rdquo; and &ldquo;Show more stories&rdquo; (T150). Stories page by story, in Board and List alike; a box whose stories are all on a
+          later page says so, and its count is the whole box&apos;s. The first role&apos;s company starts with an emoji, whose initial stays whole.
+        </p>
+        <MeView me={manyMe} mode="public" />
       </section>
 
       <section className="flex flex-col gap-4">

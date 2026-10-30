@@ -32,8 +32,10 @@ emoji and Hindi mixed through each list) and every growable list full, using the
 and goals (`e2e/max-data/seed.run.ts`, sizes in `e2e/max-data/data.ts`; local databases only). `oversize.mjs` then signs
 in as Max Data and opens Today, Map, My jobs, Me (Board and List), their /u profile, Library (three tabs), Practice, Mock,
 Inbox, Network, the resume editor and the builder at 390x844 and 1280x800 in light and dark. It fails on sideways spill
-(and lists the elements past the edge), on a page taller than its limit (`PAGES` in the script), or on the resume PDF
-taking more than 10 s, prints every page's height, saves `e2e/results/oversize/` (the `oversize-screenshots` artifact) and
+(and lists the elements past the edge), on a page taller than its limit (`PAGES` in the script, with the reason for
+each raised limit), on any page or console error (such as a hydration mismatch), or on the resume PDF taking more than
+10 s. The main resume has Hindi and emoji, so its PDF must be the designed "can't print" refusal (422); the PDF is timed
+on a second, Latin-only resume at the same caps. It prints every page's height, saves `e2e/results/oversize/` (the `oversize-screenshots` artifact) and
 removes the member. Locally, after the walk's set-up:
 
 ```sh

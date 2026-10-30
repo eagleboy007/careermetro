@@ -54,6 +54,15 @@ describe("max-data seed text", () => {
     expect(p.certifications).toHaveLength(SIZES.profileCertifications);
   });
 
+  it("gives a Latin-only profile at the same caps for timing the PDF, which refuses Hindi and emoji", () => {
+    const p = profile.parse(maxProfile([], true));
+    const texts = [p.headline ?? "", ...p.roles.flatMap((r) => [r.title, r.employer, ...r.highlights]), ...p.skills.flatMap((s) => [s.name, ...s.evidence])];
+    texts.push(...p.education.flatMap((e) => [e.qualification, e.institution, e.year ?? ""]), ...p.certifications.map((c) => c.name));
+    expect(texts.every((t) => /^[\x20-\x7e]*$/.test(t))).toBe(true);
+    expect(Math.max(...p.roles.flatMap((r) => r.highlights.map((h) => h.length)))).toBe(PROFILE_HIGHLIGHT_MAX);
+    expect(p.roles.some((r) => r.highlights.some((h) => /^[A-Za-z]{300}$/.test(h)))).toBe(true);
+  });
+
   it("keeps Me, My jobs, Inbox and builder text inside their caps and the tables' checks", () => {
     expect(maxHeadline().length).toBeLessThanOrEqual(HEADLINE_MAX);
     const roles = maxMeRoles();

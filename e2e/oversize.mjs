@@ -16,18 +16,24 @@ const seed = JSON.parse(readFileSync(new URL("./results/max-data.json", import.m
 /**
  * Page height limits in CSS px (the proposal starts every page at 12,000). A page over its limit grows without bound or
  * needs paging. Raised only where the page shows every row by design, at the seed's sizes (record changes here):
- * - /me and /u: 30 profile and added roles with 8 highlights of 300 characters, 24 education rows, 30 certificates and
- *   50 stories (Me's own caps), none of them paged. First estimate, 2026-10-30; tune from the first CI run's table.
- * - /resume: the profile editor lists every role, skill, education row and certificate as a field. Same.
+ * - My jobs, 16,000: the first CI run (2026-10-30) measured 13,586 at 390 px with its 20-row page (T147), each row with
+ *   a three-line note (T148) and 160-character title, company and city that wrap. Already paged, so the limit rises.
+ * - /me and /u: the first run measured /me at 53,777 (List) and 37,075 (Board) and /u at 20,075 at 390 px, with 30
+ *   roles (10 from the resume with 8 highlights of 300 characters), 24 education rows and 50 stories in up to six boxes
+ *   each. Roles, education and stories now show 10 each, then "Show more" (T150). What stays: 5 resume roles with their
+ *   highlights (about 1,400 px each at 390), 10 stories that answer every box (60 cards in List, 10 a column on the
+ *   Board), 30 skills, 30 interests and 30 certificates in the rail below. Expected about 28,000 (List), 21,000 (Board)
+ *   and 11,000 (/u); the limits leave about a quarter of headroom. Retune from the next run's table.
+ * - /resume: the profile editor lists every role, skill, education row and certificate as a field. First run: 35,231.
  */
 const DEFAULT_LIMIT = 12_000;
 const PAGES = [
   { name: "today", path: "/today" },
   { name: "map", path: "/map" },
-  { name: "my-jobs", path: "/departures?tab=mine" },
-  { name: "me-board", path: "/me", limit: 30_000 },
-  { name: "me-list", path: "/me", limit: 30_000, layout: "List" },
-  { name: "profile", path: `/u/${seed.username}`, limit: 30_000 },
+  { name: "my-jobs", path: "/departures?tab=mine", limit: 16_000 },
+  { name: "me-board", path: "/me", limit: 26_000 },
+  { name: "me-list", path: "/me", limit: 34_000, layout: "List" },
+  { name: "profile", path: `/u/${seed.username}`, limit: 15_000 },
   { name: "library", path: "/library" },
   { name: "library-saved", path: "/library?tab=saved" },
   { name: "library-finished", path: "/library?tab=finished" },
@@ -160,16 +166,22 @@ try {
           }
         }
       }
-      // The resume download at the caps (T146's PDF wrap), timed once, from the light run.
+      // The resume download at the caps (T146's PDF wrap), timed once, from the light run. The main resume has Hindi
+      // and emoji, which the PDF's font can't draw, so its PDF is refused by design (UnprintableTextError, 422, "use
+      // the Word file"): that refusal is checked, and the 10 s limit is timed on the seed's second resume, the same
+      // caps in Latin text only (long unbroken words, 300-character highlights).
       if (scheme === "light") {
-        at = "resume PDF";
+        at = "resume PDF (Hindi and emoji)";
+        const refused = await q.request.get(`${BASE}/api/resume/${seed.resumeId}/export?format=pdf`, { timeout: 60000 });
+        if (refused.status() !== 422 || !/can't print/.test(await refused.text())) fail(`${at}: HTTP ${refused.status()}, not the "can't print" refusal`);
+        at = "resume PDF (Latin)";
         const started = Date.now();
-        const pdf = await q.request.get(`${BASE}/api/resume/${seed.resumeId}/export?format=pdf`, { timeout: 60000 });
+        const pdf = await q.request.get(`${BASE}/api/resume/${seed.pdfResumeId}/export?format=pdf`, { timeout: 60000 });
         const ms = Date.now() - started;
         const body = await pdf.body();
         rows.push({ at, height: "-", limit: "-", width: "-", ms });
-        if (pdf.status() !== 200 || !body.subarray(0, 5).toString("latin1").startsWith("%PDF-")) fail(`resume PDF: HTTP ${pdf.status()}, not a PDF`);
-        else if (ms > PDF_LIMIT_MS) fail(`resume PDF took ${ms} ms, over ${PDF_LIMIT_MS} ms`);
+        if (pdf.status() !== 200 || !body.subarray(0, 5).toString("latin1").startsWith("%PDF-")) fail(`${at}: HTTP ${pdf.status()}, not a PDF`);
+        else if (ms > PDF_LIMIT_MS) fail(`${at} took ${ms} ms, over ${PDF_LIMIT_MS} ms`);
       }
     } finally {
       await ctx.close();

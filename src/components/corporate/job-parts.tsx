@@ -69,7 +69,7 @@ export function PostedJobCard({
     <article aria-labelledby={titleId} className="flex min-w-0 flex-col gap-3 rounded-lg border border-line bg-surface p-4 min-[760px]:p-5">
       <div className="flex flex-wrap items-center gap-2 text-[0.86rem]">
         <span aria-hidden="true" className="grid size-7 shrink-0 place-items-center rounded-sm bg-surface-2 text-[0.8rem] font-semibold">
-          {job.company.trim()[0]?.toUpperCase() ?? "?"}
+          {Array.from(job.company.trim())[0]?.toUpperCase() ?? "?"}
         </span>
         <span className="min-w-0 font-medium [overflow-wrap:anywhere]">{job.company}</span>
         <OrgStatusBadge status="verified" />

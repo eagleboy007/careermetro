@@ -108,33 +108,42 @@ export const labelled = (label: string, i: number, max: number): string => cutTe
 
 const month = (year: number, m: number) => `${year}-${String(m).padStart(2, "0")}`;
 
-/** The resume profile at the T146 caps (each text) and the sizes above (each list). */
-export function maxProfile(roleSkillNames: readonly string[]): Profile {
+/** The i-th Latin-only text: the long-word and unbroken kinds in turn, which the resume PDF's font can draw. */
+export const latinV = (i: number, max: number): string => textOf(i % 2 ? "unbroken" : "word", max);
+
+/**
+ * The resume profile at the T146 caps (each text) and the sizes above (each list). With `latin`, every text is
+ * Latin-only (long unbroken words, 300-character highlights): the PDF export refuses Hindi and emoji by design
+ * (UnprintableTextError, 422), so the oversize check times the PDF on this second resume.
+ */
+export function maxProfile(roleSkillNames: readonly string[], latin = false): Profile {
+  const t = latin ? latinV : v;
+  const tag = (label: string, i: number, max: number) => cutText(`${label} ${t(i, max)}`, max).trimEnd();
   const roles: Profile["roles"] = Array.from({ length: SIZES.profileRoles }, (_, i) => ({
-    title: v(i, PROFILE_TEXT_MAX),
-    employer: v(i + 1, PROFILE_TEXT_MAX),
+    title: t(i, PROFILE_TEXT_MAX),
+    employer: t(i + 1, PROFILE_TEXT_MAX),
     start: month(2014 + i, (i % 12) + 1),
     end: i === 0 ? null : month(2015 + i, (i % 12) + 1),
-    highlights: Array.from({ length: SIZES.highlightsPerRole }, (_, j) => v(i + j, PROFILE_HIGHLIGHT_MAX)),
+    highlights: Array.from({ length: SIZES.highlightsPerRole }, (_, j) => t(i + j, PROFILE_HIGHLIGHT_MAX)),
   }));
   // A few of the target role's own skills, so the analysis has met skills as well as gaps.
   const known = roleSkillNames.slice(0, 4);
   const skills: Profile["skills"] = Array.from({ length: SIZES.profileSkills }, (_, i) => ({
-    name: i < known.length ? known[i] : labelled(`Skill ${i + 1}`, i, PROFILE_SKILL_NAME_MAX),
+    name: i < known.length ? known[i] : tag(`Skill ${i + 1}`, i, PROFILE_SKILL_NAME_MAX),
     lastUsed: month(2025, (i % 12) + 1),
-    evidence: Array.from({ length: SIZES.evidencePerSkill }, (_, j) => v(i + j + 1, PROFILE_HIGHLIGHT_MAX)),
+    evidence: Array.from({ length: SIZES.evidencePerSkill }, (_, j) => t(i + j + 1, PROFILE_HIGHLIGHT_MAX)),
   }));
   const education: Profile["education"] = Array.from({ length: SIZES.profileEducation }, (_, i) => ({
-    qualification: v(i, ME_EDUCATION_TEXT_MAX),
-    institution: v(i + 2, ME_EDUCATION_TEXT_MAX),
-    year: v(i + 3, ME_EDUCATION_YEAR_MAX),
+    qualification: t(i, ME_EDUCATION_TEXT_MAX),
+    institution: t(i + 2, ME_EDUCATION_TEXT_MAX),
+    year: t(i + 3, ME_EDUCATION_YEAR_MAX),
   }));
   const certifications: Profile["certifications"] = Array.from({ length: SIZES.profileCertifications }, (_, i) => ({
-    name: v(i, PROFILE_CERTIFICATION_NAME_MAX),
+    name: t(i, PROFILE_CERTIFICATION_NAME_MAX),
     earned: month(2023, (i % 12) + 1),
     expires: i % 2 ? "none" : month(2028, (i % 12) + 1),
   }));
-  return { headline: v(0, PROFILE_TEXT_MAX), totalYearsExperience: 12, roles, skills, education, certifications };
+  return { headline: t(0, PROFILE_TEXT_MAX), totalYearsExperience: 12, roles, skills, education, certifications };
 }
 
 export const maxHeadline = () => v(3, HEADLINE_MAX);

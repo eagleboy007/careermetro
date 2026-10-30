@@ -123,6 +123,13 @@ async function seed() {
     .values({ userId, mimeType: "text/plain", sizeBytes: 20_000, status: "parsed" })
     .returning({ id: schema.resumes.id });
   await db.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: true });
+  // A second, Latin-only resume at the same caps, only for timing the PDF: the export refuses the first one's Hindi and
+  // emoji by design (422). A day older, so the first stays the current resume everywhere else.
+  const [pdfResume] = await db
+    .insert(schema.resumes)
+    .values({ userId, mimeType: "text/plain", sizeBytes: 20_000, status: "parsed", createdAt: new Date(now.getTime() - DAY) })
+    .returning({ id: schema.resumes.id });
+  await db.insert(schema.profiles).values({ resumeId: pdfResume.id, version: 1, data: profileSchema.parse(maxProfile([], true)), confirmedByUser: true });
   const owner = { userId };
   const limits = { explain: GAP_LIMITS.explainedPerOwnerPerDay, word: PATH_LIMITS.wordedPerOwnerPerDay };
   GAP_LIMITS.explainedPerOwnerPerDay = 0;
@@ -330,7 +337,7 @@ async function seed() {
   // Counts and ids only: no text.
   console.log("max-data seed:", JSON.stringify(counts));
   mkdirSync(OUT.replace(/\/[^/]*$/, ""), { recursive: true });
-  writeFileSync(OUT, JSON.stringify({ resumeId: resume.id, username: MAX_DATA_USERNAME, counts }, null, 2));
+  writeFileSync(OUT, JSON.stringify({ resumeId: resume.id, pdfResumeId: pdfResume.id, username: MAX_DATA_USERNAME, counts }, null, 2));
   return counts;
 }
 
