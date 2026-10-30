@@ -1,0 +1,63 @@
+{
+  "id": "sharepoint-developer-from-dotnet",
+  "roleSlug": "sharepoint-developer",
+  "persona": ".NET developer who builds the company intranet on SharePoint",
+  "resumeText": "Vikram Joshi | Pune | vikram.joshi@example.com\n\nEXPERIENCE\nSoftware Engineer, Sahyadri InfoSoft, Pune (2020 - present)\n- Built SharePoint Online intranet pages and document libraries for 3,000 employees.\n- Developed SPFx web parts in React and TypeScript for news, leave balances and policy search.\n- Styled web parts with SCSS modules to match the company brand.\n- Called Microsoft Graph API to show users' calendars and Teams memberships.\n- Built Power Automate flows to route approval requests from SharePoint lists.\n- Exposed leave data to the web parts through ASP.NET Web API REST endpoints.\n- Ran weekly review meetings with the HR team and wrote user guides for site owners.\n\nSKILLS\nSharePoint, SPFx, React, TypeScript, C#, Power Apps, PowerShell, Azure\n\nEDUCATION\nBE IT, Savitribai Phule Pune University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "sharepoint",
+        "quote": "Built SharePoint Online intranet pages and document libraries"
+      },
+      {
+        "skillId": "react",
+        "quote": "Developed SPFx web parts in React and TypeScript"
+      },
+      {
+        "skillId": "typescript",
+        "quote": "SPFx web parts in React and TypeScript"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "Styled web parts with SCSS modules"
+      },
+      {
+        "skillId": "microsoft-graph-api",
+        "quote": "Called Microsoft Graph API to show users' calendars"
+      },
+      {
+        "skillId": "power-automate",
+        "quote": "Built Power Automate flows to route approval requests"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "through ASP.NET Web API REST endpoints"
+      },
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Exposed leave data to the web parts through ASP.NET Web API"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Ran weekly review meetings with the HR team"
+      },
+      {
+        "skillId": "power-apps",
+        "quote": "Power Apps"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "power-apps",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "ci-cd",
+      "git",
+      "m365-administration"
+    ]
+  },
+  "reviewedBy": null
+}

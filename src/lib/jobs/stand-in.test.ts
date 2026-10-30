@@ -51,7 +51,7 @@ describe("the fixture posting", () => {
   it("maps to our skills, keeps unknown names and drops the invented quote", () => {
     expect(mapped.requiredSkillIds).toEqual(["sql", "excel", "data-cleaning", "statistics", "power-bi"]);
     expect(mapped.niceSkillIds).toEqual(["python", "tableau"]);
-    expect(mapped.unknownSkills).toEqual(["Demand forecasting", "SAP MM"]);
+    expect(mapped.unknownSkills).toEqual(["Demand forecasting", "SAP WM"]);
     expect(mapped.dropped).toBe(1);
   });
 });
@@ -69,7 +69,7 @@ describe("standInView", () => {
       ["excel", "met"],
     ]);
     expect(view.goodToHave.map((n) => n.skillId)).toEqual(["python", "tableau"]);
-    expect(view.unknown).toEqual(["Demand forecasting", "SAP MM"]);
+    expect(view.unknown).toEqual(["Demand forecasting", "SAP WM"]);
   });
 
   it("says readiness in words about this job, never a bare score", () => {

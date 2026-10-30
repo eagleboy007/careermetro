@@ -1,0 +1,47 @@
+{
+  "id": "telecom-ran-engineer-from-drive-test",
+  "roleSlug": "telecom-ran-engineer",
+  "persona": "Drive test engineer moving into RAN optimisation",
+  "resumeText": "Rahul Verma | Noida | rahul.verma@example.com\n\nEXPERIENCE\nRF Drive Test Engineer, Indus Signal Services, Noida (2021 - present)\n- Ran cluster drive tests for 4G and 5G NSA sites using TEMS Investigation and Nemo Outdoor.\n- Analysed drive logs in Actix to find call drops, poor SINR and missing neighbours.\n- Read Layer 3 messages to trace failed EN-DC additions and handover failures.\n- Prepared daily KPI reports in Excel with pivot tables for the operator's circle team.\n- Shared site audit findings with field teams and the client's optimisation lead each week.\n\nEDUCATION\nBTech ECE, AKTU, 2020\n\nSKILLS\nTEMS, Nemo, Actix, LTE, 5G NR, MS Excel, Atoll\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "drive-test-analysis",
+        "quote": "Ran cluster drive tests for 4G and 5G NSA sites"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Analysed drive logs in Actix to find call drops"
+      },
+      {
+        "skillId": "lte-5g-nr-protocols",
+        "quote": "Read Layer 3 messages to trace failed EN-DC additions"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Prepared daily KPI reports in Excel"
+      },
+      {
+        "skillId": "excel-pivot-lookup",
+        "quote": "daily KPI reports in Excel with pivot tables"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Shared site audit findings with field teams"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ran-performance-optimization",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "sql",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

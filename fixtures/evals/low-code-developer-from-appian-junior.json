@@ -1,0 +1,51 @@
+{
+  "id": "low-code-developer-from-appian-junior",
+  "roleSlug": "low-code-developer",
+  "persona": "Junior Appian developer at an insurance firm",
+  "resumeText": "Kavya Nair | Chennai | kavya.nair@example.com\n\nEXPERIENCE\nAssociate Appian Developer, Coromandel Insurtech, Chennai (2022 - present)\n- Build Appian process models for motor insurance claim approvals.\n- Design SAIL interfaces for claims handlers to review and approve claims.\n- Wrote SQL views in MySQL for monthly claim reports.\n- Integrated a payment status REST API through Appian connected systems.\n- Work in two-week Scrum sprints and demo stories to the product owner.\n\nTrainee Developer, Coromandel Insurtech, Chennai (2021 - 2022)\n- Fixed Java bugs in the legacy policy portal.\n\nSKILLS\nAppian, SAIL, SQL, REST, Java, BPMN, JavaScript\n\nEDUCATION\nBTech IT, Anna University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "appian-development",
+        "quote": "Build Appian process models for motor insurance claim approvals"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL views in MySQL for monthly claim reports"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Integrated a payment status REST API"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Work in two-week Scrum sprints"
+      },
+      {
+        "skillId": "communication",
+        "quote": "demo stories to the product owner"
+      },
+      {
+        "skillId": "java",
+        "quote": "Fixed Java bugs in the legacy policy portal"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-modeling",
+        "status": "missing"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "mendix-development",
+      "outsystems-development",
+      "soap-xml"
+    ]
+  },
+  "reviewedBy": null
+}

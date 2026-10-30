@@ -1,0 +1,51 @@
+{
+  "id": "it-project-manager-from-infra-team-lead",
+  "roleSlug": "it-project-manager",
+  "persona": "Infrastructure team lead who has led a data-centre move",
+  "resumeText": "Vikram Malhotra | Gurugram | vikram.malhotra@example.com\n\nEXPERIENCE\nInfrastructure Team Lead, Aravalli IT Services, Gurugram (2017 - present)\n- Led a team of 9 engineers running servers and networks for a retail client.\n- Planned the move of 220 servers to a new data centre with an MS Project schedule.\n- Kept a RAID log for the migration and escalated risks to the client sponsor.\n- Managed the hardware vendor and the cabling partner against the agreed statement of work.\n- Ran weekly steering meetings with the client IT head and business owners.\n- Sent weekly status reports to the account manager and client.\n- Ran the operations team in two-week sprints on Jira.\n\nNetwork Engineer, Yamuna Netcom, Delhi (2013 - 2017)\n- Configured Cisco switches and firewalls for branch offices.\n\nSKILLS\nProject management, MS Project, Jira, ITIL, Excel\n\nEDUCATION\nBTech Electronics, Delhi Technological University, 2013\n",
+  "expected": {
+    "totalYearsExperience": 13,
+    "skills": [
+      {
+        "skillId": "people-management",
+        "quote": "Led a team of 9 engineers"
+      },
+      {
+        "skillId": "it-project-management",
+        "quote": "Planned the move of 220 servers to a new data centre with an MS Project schedule"
+      },
+      {
+        "skillId": "program-management",
+        "quote": "Kept a RAID log for the migration"
+      },
+      {
+        "skillId": "it-vendor-management",
+        "quote": "Managed the hardware vendor and the cabling partner against the agreed statement of work"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Ran weekly steering meetings with the client IT head"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Sent weekly status reports to the account manager and client"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Ran the operations team in two-week sprints on Jira"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "spend-forecasting",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "scaled-agile",
+      "power-bi",
+      "requirements-gathering"
+    ]
+  },
+  "reviewedBy": null
+}

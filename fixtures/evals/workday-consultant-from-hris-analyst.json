@@ -1,0 +1,55 @@
+{
+  "id": "workday-consultant-from-hris-analyst",
+  "roleSlug": "workday-consultant",
+  "persona": "HRIS analyst who runs Workday reports and EIB loads",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nEXPERIENCE\nHRIS Analyst, Indrayani Global Services, Pune (2021 - present)\n- Load new hires and job changes into Workday with EIB templates every month.\n- Built 35 Workday custom reports with calculated fields for HR business partners.\n- Updated business process steps and security groups for the hire and termination flows.\n- Gathered requirements from the payroll team for a new monthly headcount file.\n- Tested Workday release changes in the sandbox tenant before production.\n- Presented monthly HR data quality findings to HR leadership.\n\nHR Operations Associate, Sinhagad Business Solutions, Pune (2019 - 2021)\n- Kept employee records and joining data in Excel trackers.\n\nSKILLS\nWorkday HCM, EIB, Excel, XML\n\nEDUCATION\nBBA, Symbiosis, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "workday-integrations",
+        "quote": "Load new hires and job changes into Workday with EIB templates"
+      },
+      {
+        "skillId": "workday-hcm-configuration",
+        "quote": "Built 35 Workday custom reports with calculated fields"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Gathered requirements from the payroll team"
+      },
+      {
+        "skillId": "uat",
+        "quote": "Tested Workday release changes in the sandbox tenant"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented monthly HR data quality findings to HR leadership"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Kept employee records and joining data in Excel trackers"
+      },
+      {
+        "skillId": "soap-xml",
+        "quote": "XML"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "soap-xml",
+        "status": "weak"
+      },
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "mulesoft",
+      "python",
+      "sql"
+    ]
+  },
+  "reviewedBy": null
+}

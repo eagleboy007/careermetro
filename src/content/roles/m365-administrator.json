@@ -1,0 +1,133 @@
+{
+  "slug": "m365-administrator",
+  "title": "Microsoft 365 Administrator",
+  "summary": "A Microsoft 365 administrator runs a company's email, Teams, SharePoint and user identities in the Microsoft cloud. You usually sit in the IT infrastructure or messaging team, handle user and licence changes, keep mail and sign-in secure, and fix issues the service desk passes on.",
+  "dailyDuties": [
+    "Create and change users, licences, mailboxes and groups",
+    "Fix mail flow, Teams and OneDrive issues raised by the service desk",
+    "Manage MFA and conditional access policies in Entra ID",
+    "Set up SharePoint sites and fix permission requests",
+    "Run PowerShell scripts for bulk changes and usage reports",
+    "Review security alerts and message trace results",
+    "Document changes and follow the change process"
+  ],
+  "typicalTitles": [
+    "Office 365 Administrator",
+    "M365 Administrator",
+    "Exchange Online Administrator",
+    "Messaging Administrator",
+    "Microsoft 365 Engineer",
+    "O365 Support Engineer",
+    "Collaboration Administrator"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "m365-administration",
+      "importance": "required",
+      "expectation": "Run Exchange Online, Teams and OneDrive: mailboxes, licences, policies and mail flow",
+      "postingShare": null
+    },
+    {
+      "skillId": "entra-id-administration",
+      "importance": "required",
+      "expectation": "Manage Entra ID users, groups, MFA and conditional access",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Look after on-premises Active Directory synced to the cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "sharepoint",
+      "importance": "required",
+      "expectation": "Manage SharePoint Online sites, permissions and storage",
+      "postingShare": null
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "required",
+      "expectation": "Do bulk changes and reports with Exchange and Graph PowerShell",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Work tickets and changes through ITIL processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain changes and fixes clearly to users and support teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-management",
+      "importance": "nice_to_have",
+      "expectation": "Enrol devices and set compliance policies in Intune",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-migration",
+      "importance": "nice_to_have",
+      "expectation": "Move mailboxes and files from on-premises or another tenant",
+      "postingShare": null
+    },
+    {
+      "skillId": "teams-phone-voice",
+      "importance": "nice_to_have",
+      "expectation": "Set up Teams calling and phone numbers",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "nice_to_have",
+      "expectation": "Manage Defender for Office 365 and endpoint protection settings",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-automate",
+      "importance": "nice_to_have",
+      "expectation": "Build simple flows to automate admin requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Apply retention, DLP and eDiscovery rules in Microsoft Purview",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "sc-300",
+      "importance": "recommended",
+      "why": "Covers Entra ID identity and access administration"
+    },
+    {
+      "certId": "sc-900",
+      "importance": "optional",
+      "why": "Entry-level view of Microsoft security, compliance and identity"
+    },
+    {
+      "certId": "azure-administrator",
+      "importance": "optional",
+      "why": "Useful when the role also covers Azure resources"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

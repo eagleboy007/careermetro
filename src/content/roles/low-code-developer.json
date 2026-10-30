@@ -1,0 +1,131 @@
+{
+  "slug": "low-code-developer",
+  "title": "Low-Code Developer",
+  "summary": "Low-code developers build business apps such as claims, onboarding or approval systems on visual low-code platforms (tools where you drag and configure most of the app), adding code only where needed. They sit in IT or consulting delivery teams and work closely with business analysts and product owners.",
+  "dailyDuties": [
+    "Build screens, workflows and data models on the platform",
+    "Write SQL and integrate other systems through APIs",
+    "Turn user stories into working features each sprint",
+    "Fix defects found in testing",
+    "Demo features to business users",
+    "Deploy apps between environments"
+  ],
+  "typicalTitles": [
+    "Appian Developer",
+    "Senior Appian Developer",
+    "OutSystems Developer",
+    "Mendix Developer",
+    "Low-Code Application Developer",
+    "OutSystems Reactive Developer",
+    "Mendix Rapid Developer",
+    "Appian Designer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "appian-development",
+      "importance": "required",
+      "expectation": "Build business apps on at least one low-code platform",
+      "postingShare": null,
+      "oneOf": "low-code-platform"
+    },
+    {
+      "skillId": "outsystems-development",
+      "importance": "required",
+      "expectation": "Build business apps on at least one low-code platform",
+      "postingShare": null,
+      "oneOf": "low-code-platform"
+    },
+    {
+      "skillId": "mendix-development",
+      "importance": "required",
+      "expectation": "Build business apps on at least one low-code platform",
+      "postingShare": null,
+      "oneOf": "low-code-platform"
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write queries and views on the app's relational database",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Integrate the app with other systems through APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "required",
+      "expectation": "Design the entities and relationships behind the app",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn business requests into user stories and screens",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Deliver in sprints with a product owner",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Demo work and explain trade-offs to business users",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "nice_to_have",
+      "expectation": "Model workflows in BPMN",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Add custom front-end logic",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Adjust screen layouts and styles",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Write custom Java actions or plug-ins",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "nice_to_have",
+      "expectation": "Integrate older SOAP services",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "low-code-platform",
+      "label": "A low-code platform (Appian, OutSystems or Mendix)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

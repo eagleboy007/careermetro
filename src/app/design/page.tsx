@@ -1558,7 +1558,7 @@ export default function DesignPage() {
               explanation: "This job posting asks for Statistics.",
             }}
           />
-          <UnknownSkills names={["Demand forecasting", "SAP MM"]} />
+          <UnknownSkills names={["Demand forecasting", "SAP WM"]} />
         </div>
       </section>
       <section className="grid gap-8 md:grid-cols-2">

@@ -1,0 +1,111 @@
+{
+  "slug": "workday-consultant",
+  "title": "Workday Consultant",
+  "summary": "A Workday consultant sets up, connects and supports Workday, the cloud system many companies use for HR, payroll data and talent. Technical consultants build the integrations and reports that move employee data to payroll, benefits and other systems, working with HR teams and a client's IT team.",
+  "dailyDuties": [
+    "Build EIB loads and Core Connector or Studio integrations",
+    "Write XSLT to reshape data for payroll and benefits vendors",
+    "Create calculated fields and custom reports for HR",
+    "Fix failed integrations and data errors in production",
+    "Test changes before each Workday release",
+    "Meet HR users to gather requirements and write specs"
+  ],
+  "typicalTitles": [
+    "Workday Integration Consultant",
+    "Workday Technical Consultant",
+    "Workday HCM Consultant",
+    "Workday Integration Developer",
+    "Workday Studio Developer",
+    "Workday HCM Technical Consultant",
+    "Workday Reporting Analyst",
+    "Senior Workday Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 9
+  },
+  "skills": [
+    {
+      "skillId": "workday-integrations",
+      "importance": "required",
+      "expectation": "Build and support Workday integrations with EIB, Core Connectors, Studio and web services",
+      "postingShare": null
+    },
+    {
+      "skillId": "workday-hcm-configuration",
+      "importance": "required",
+      "expectation": "Know HCM business processes, security groups, calculated fields and custom reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "required",
+      "expectation": "Transform data with XML, XSLT and XPath",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Call and expose REST and SOAP web services",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn HR and payroll needs into integration and report specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Test integrations end to end and support HR users in acceptance testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain designs and issues to HR teams and vendors",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Prepare and check EIB load sheets and data migration files",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "nice_to_have",
+      "expectation": "Handle production support tickets and Workday release changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "mulesoft",
+      "importance": "nice_to_have",
+      "expectation": "Connect Workday through middleware such as MuleSoft",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Deliver in Workday deployment phases or sprints",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate with payroll, benefits and third-party vendors",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

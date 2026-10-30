@@ -1,0 +1,127 @@
+{
+  "slug": "sharepoint-developer",
+  "title": "SharePoint Developer",
+  "summary": "SharePoint developers build intranets, team sites and document apps on SharePoint Online, a cloud platform for company sites and files. They sit in an IT or Microsoft 365 team and write SPFx web parts (custom page blocks built with React) linked to low-code forms, automated workflows and Microsoft 365 data.",
+  "dailyDuties": [
+    "Build SPFx web parts in React and TypeScript",
+    "Set up sites, lists, libraries and permissions",
+    "Pull Microsoft 365 data through Microsoft Graph",
+    "Build Power Automate flows and Power Apps forms around lists",
+    "Script site setup and migration with PowerShell",
+    "Meet business users to gather needs and demo changes"
+  ],
+  "typicalTitles": [
+    "SPFx Developer",
+    "SharePoint Online Developer",
+    "Senior SharePoint Developer",
+    "SharePoint Consultant",
+    "Microsoft 365 SharePoint Developer",
+    "M365 Developer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "sharepoint",
+      "importance": "required",
+      "expectation": "Build sites, lists and SPFx web parts on SharePoint Online",
+      "postingShare": null
+    },
+    {
+      "skillId": "typescript",
+      "importance": "required",
+      "expectation": "Write SPFx solutions in TypeScript",
+      "postingShare": null
+    },
+    {
+      "skillId": "react",
+      "importance": "required",
+      "expectation": "Build SPFx web parts with React",
+      "postingShare": null
+    },
+    {
+      "skillId": "microsoft-graph-api",
+      "importance": "required",
+      "expectation": "Read and write Microsoft 365 data through Microsoft Graph or PnPjs",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-automate",
+      "importance": "required",
+      "expectation": "Automate approvals and document flows around SharePoint",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-apps",
+      "importance": "required",
+      "expectation": "Build or embed Power Apps forms on SharePoint lists",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Call SharePoint REST and other web APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "required",
+      "expectation": "Style web parts and pages to match the brand",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Gather needs from business users and train site owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Script site provisioning and migration with PnP PowerShell",
+      "postingShare": null
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "nice_to_have",
+      "expectation": "Write Azure Functions or back-end services in C#",
+      "postingShare": null
+    },
+    {
+      "skillId": "azure",
+      "importance": "nice_to_have",
+      "expectation": "Host back-end pieces on Azure",
+      "postingShare": null
+    },
+    {
+      "skillId": "m365-administration",
+      "importance": "nice_to_have",
+      "expectation": "Understand Microsoft 365 admin settings and permissions",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Version SPFx code",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Package and deploy SPFx solutions with a pipeline",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

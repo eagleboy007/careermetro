@@ -1,0 +1,105 @@
+{
+  "slug": "telecom-ran-engineer",
+  "title": "Telecom RAN Engineer",
+  "summary": "Telecom RAN engineers keep the radio part of a 4G or 5G mobile network (the towers and the cells they serve) working well. They work for operators, equipment vendors or service partners, using drive tests and network KPIs (key performance indicators) to find and fix coverage, drop and speed problems.",
+  "dailyDuties": [
+    "Check daily KPI reports for worst cells and drops",
+    "Plan and analyse drive tests and site verifications",
+    "Trace failures through Layer 3 messages and logs",
+    "Propose parameter and neighbour changes",
+    "Validate new sites and upgrades after integration",
+    "Share findings with operator teams and field engineers"
+  ],
+  "typicalTitles": [
+    "RF Optimization Engineer",
+    "RAN Optimization Engineer",
+    "5G RAN Engineer",
+    "RF Performance Engineer",
+    "Drive Test Engineer",
+    "LTE RF Engineer",
+    "RAN Performance Engineer",
+    "RF Planning and Optimization Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "ran-performance-optimization",
+      "importance": "required",
+      "expectation": "Track 4G and 5G KPIs and tune parameters to fix drops, throughput and coverage",
+      "postingShare": null
+    },
+    {
+      "skillId": "drive-test-analysis",
+      "importance": "required",
+      "expectation": "Plan drive tests and analyse logs in TEMS, Nemo, XCAL or Actix",
+      "postingShare": null
+    },
+    {
+      "skillId": "lte-5g-nr-protocols",
+      "importance": "required",
+      "expectation": "Read Layer 3 messages and call flows to find the cause of failures",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build daily and weekly KPI reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "required",
+      "expectation": "Use pivots and lookups to slice KPI data by site and cell",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Report findings to operator teams and coordinate field engineers",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Work out root causes from KPIs, alarms and logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate KPI and log processing",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query performance counters from databases",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build KPI dashboards",
+      "postingShare": null
+    },
+    {
+      "skillId": "networking-basics",
+      "importance": "nice_to_have",
+      "expectation": "Understand IP transport between sites and the core",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

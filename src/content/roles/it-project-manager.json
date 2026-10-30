@@ -1,0 +1,140 @@
+{
+  "slug": "it-project-manager",
+  "title": "IT Project Manager",
+  "summary": "An IT project manager plans and runs technology projects such as system rollouts, upgrades and migrations, making sure they finish on time, within budget and to the agreed scope. You sit between business owners, the technical team and outside vendors, and report progress to sponsors or a PMO (project management office).",
+  "dailyDuties": [
+    "Build and update project plans, milestones and schedules",
+    "Run status meetings and send weekly status reports",
+    "Track risks, issues and dependencies and escalate blockers",
+    "Track budget and spend against forecast",
+    "Manage vendor deliverables against the statement of work",
+    "Handle change requests to scope, cost or timeline",
+    "Prepare go-live readiness and project closure reports"
+  ],
+  "typicalTitles": [
+    "IT Project Manager - Infrastructure",
+    "Project Manager - IT",
+    "IT Project Lead",
+    "Senior IT Project Manager",
+    "Project Manager - Application Delivery",
+    "IT PMO Manager",
+    "Project Manager - ERP Implementation"
+  ],
+  "experienceBand": {
+    "minYears": 6,
+    "maxYears": 14
+  },
+  "skills": [
+    {
+      "skillId": "it-project-management",
+      "importance": "required",
+      "expectation": "Plan scope, schedule and milestones for IT projects and drive them to closure",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Run projects in waterfall, agile or hybrid ways as the work needs",
+      "postingShare": null
+    },
+    {
+      "skillId": "program-management",
+      "importance": "required",
+      "expectation": "Track risks, issues and dependencies in a RAID log and escalate early",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "required",
+      "expectation": "Track the project budget, forecast spend and explain variances",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "required",
+      "expectation": "Manage vendors and partners against the SOW and contract",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Keep business owners and sponsors aligned and run steering meetings",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear status reports and run project meetings",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "nice_to_have",
+      "expectation": "Lead a cross-functional team of internal staff and contractors",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "nice_to_have",
+      "expectation": "Track tasks and defects in Jira or Azure DevOps",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "nice_to_have",
+      "expectation": "Help shape requirements and sign-off with business analysts",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "nice_to_have",
+      "expectation": "Plan user acceptance testing and go-live readiness",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "nice_to_have",
+      "expectation": "Hand projects over to operations through ITIL change and release",
+      "postingShare": null
+    },
+    {
+      "skillId": "scaled-agile",
+      "importance": "nice_to_have",
+      "expectation": "Work inside SAFe release trains on large programmes",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Build trackers, plans and budget sheets in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build project dashboards for the PMO",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "pmp",
+      "importance": "recommended",
+      "why": "The certification most often named in India IT project manager postings"
+    },
+    {
+      "certId": "csm",
+      "importance": "optional",
+      "why": "Shows agile delivery basics for hybrid projects"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}

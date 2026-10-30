@@ -1,0 +1,52 @@
+{
+  "id": "ecommerce-developer-from-shopify-themes",
+  "roleSlug": "ecommerce-developer",
+  "persona": "Shopify theme developer at a D2C agency",
+  "resumeText": "Sneha Patel | Ahmedabad | sneha.patel@example.com\n\nEXPERIENCE\nFront-end Developer, Kesar Commerce Studio, Ahmedabad (2022 - present)\n- Built and customised Shopify Online Store 2.0 themes in Liquid for 14 D2C brands.\n- Wrote vanilla JavaScript for cart drawers, product filters and variant pickers.\n- Converted Figma designs into responsive HTML and CSS sections with Tailwind.\n- Improved mobile Lighthouse scores from 38 to 81 by lazy-loading images and trimming apps.\n- Manage theme code in GitHub with a branch for each client store.\n\nJunior Web Designer, Sabarmati Pixels, Ahmedabad (2020 - 2022)\n- Designed landing pages and banners for local retailers.\n\nSKILLS\nShopify, Liquid, JavaScript, HTML, CSS, REST APIs, Klaviyo\n\nEDUCATION\nBCA, Gujarat University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "shopify-development",
+        "quote": "Built and customised Shopify Online Store 2.0 themes in Liquid"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Wrote vanilla JavaScript for cart drawers"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "responsive HTML and CSS sections with Tailwind"
+      },
+      {
+        "skillId": "web-performance",
+        "quote": "Improved mobile Lighthouse scores from 38 to 81"
+      },
+      {
+        "skillId": "git",
+        "quote": "Manage theme code in GitHub with a branch for each client store"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "REST APIs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rest-apis",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "php",
+      "react",
+      "sql",
+      "graphql"
+    ]
+  },
+  "reviewedBy": null
+}

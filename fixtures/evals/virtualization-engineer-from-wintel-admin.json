@@ -1,0 +1,56 @@
+{
+  "id": "virtualization-engineer-from-wintel-admin",
+  "roleSlug": "virtualization-engineer",
+  "persona": "Windows server admin who looks after the VMware estate part time",
+  "resumeText": "Rohit Deshpande | Pune | rohit.deshpande@example.com\n\nSUMMARY\nWintel administrator with 5 years in data-centre operations.\n\nEXPERIENCE\nServer Administrator, Sahyadri Infotech Services, Pune (2021 - present)\n- Manage 180 Windows Server 2016 and 2019 virtual machines for a manufacturing client.\n- Built and patched 12 ESXi hosts in vCenter and configured HA and DRS on two clusters.\n- Created port groups and VLAN tags on distributed switches with the network team.\n- Raise change requests and close incidents in ServiceNow under ITIL processes.\n- Run nightly Veeam backup jobs and tested VM restores every quarter.\n\nJunior System Administrator, Deccan Data Systems, Pune (2019 - 2021)\n- Handled Active Directory users, DNS and DHCP on Windows Server 2012 R2.\n- Extended datastores by adding LUNs from the Dell Unity array with the storage team.\n\nSKILLS\nVMware vSphere, Windows Server, PowerShell, Veeam, ServiceNow\n\nEDUCATION\nBE Computer Engineering, Pune University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "windows-server",
+        "quote": "Manage 180 Windows Server 2016 and 2019 virtual machines"
+      },
+      {
+        "skillId": "virtualization",
+        "quote": "Built and patched 12 ESXi hosts in vCenter"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Created port groups and VLAN tags on distributed switches"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "close incidents in ServiceNow under ITIL processes"
+      },
+      {
+        "skillId": "backup-software",
+        "quote": "Run nightly Veeam backup jobs"
+      },
+      {
+        "skillId": "san-storage",
+        "quote": "Extended datastores by adding LUNs from the Dell Unity array"
+      },
+      {
+        "skillId": "powershell-scripting",
+        "quote": "PowerShell"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "powershell-scripting",
+        "status": "weak"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "hyperconverged-infrastructure",
+      "terraform",
+      "azure",
+      "linux"
+    ]
+  },
+  "reviewedBy": null
+}

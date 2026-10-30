@@ -1,0 +1,117 @@
+{
+  "slug": "sap-mm-consultant",
+  "title": "SAP MM Consultant",
+  "summary": "An SAP MM (Materials Management) consultant sets up and supports the part of SAP that handles buying, stock and supplier invoices. You sit between the procurement and stores teams and the SAP project or support team, turning business needs into system settings and fixing issues users raise.",
+  "dailyDuties": [
+    "Configure purchasing, release strategies and pricing in SAP MM",
+    "Run workshops with procurement and stores users",
+    "Write functional specs for reports, forms and enhancements",
+    "Test changes and help users through acceptance testing",
+    "Resolve MM support tickets such as stuck POs or GR/IR issues",
+    "Prepare material and vendor data for migration",
+    "Coordinate MM-FI and MM-SD integration with other consultants"
+  ],
+  "typicalTitles": [
+    "SAP MM Functional Consultant",
+    "SAP S/4HANA MM Consultant",
+    "SAP MM Analyst",
+    "SAP Procurement Consultant",
+    "SAP S/4HANA Sourcing and Procurement Consultant",
+    "Senior SAP MM Consultant",
+    "SAP MM Support Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "sap-mm-configuration",
+      "importance": "required",
+      "expectation": "Configure and support SAP MM: purchasing, release strategy, inventory, valuation and invoice verification",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run workshops with procurement and stores teams and write functional specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map procure-to-pay processes as-is and to-be",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Write test scripts and run unit, integration and user acceptance testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Resolve support tickets within SLA on support projects",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Train key users and explain fixes in plain words",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with business users, FI and SD consultants and ABAP developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-fi-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Understand MM-FI integration such as account determination and GR/IR",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-interfaces",
+      "importance": "nice_to_have",
+      "expectation": "Support purchase order IDocs and EDI with vendors",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Read ABAP enough to debug and guide developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Prepare and check data migration templates and reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Work in SAP Activate or agile project phases",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "pmp",
+      "importance": "optional",
+      "why": "Helps senior consultants who lead workstreams"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}
