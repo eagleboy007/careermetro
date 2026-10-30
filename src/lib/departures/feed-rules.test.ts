@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import postgres from "postgres";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { boardProblem, boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, roleLine, summaryLines, unmatchedLine, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
+import { boardProblem, boardsToClose, collect, failureCode, getJson, loadBoards, placeLine, roleLine, summaryLines, unmatchedLine, unmatchedTsv, writeRollup, writeRun } from "../../../scripts/departures/fetch-feeds.mjs";
 import { capPosts, careersUrlOf, cityOf, classify, experienceNoteOf, FEED_LIMITS, feedUrl, FUTURE_SKEW_MS, htmlLines, postedAtOf, postRow, rawPost, ROLE_TITLES, skillMatchersFor, skillsOf, USER_AGENT, workTypeOf } from "./feed-rules.mjs";
 import { FEED_SCHEMAS, jobBoardsFile, jobPostRow } from "./feed-schemas.mjs";
 import { FEED_BAD_RUNS } from "@/lib/health";
@@ -1260,5 +1260,11 @@ describe("roleLine and unmatchedLine", () => {
     expect(unmatchedLine(rows)).toBe("Commonest titles with no role: sales manager 2; accountant 1.");
     expect(unmatchedLine(rows, 1)).toBe("Commonest titles with no role: sales manager 2.");
     expect(unmatchedLine(rows.slice(0, 3))).toBeNull();
+  });
+
+  it("writes the unmatched titles as a tab-separated file, commonest first", () => {
+    expect(unmatchedTsv(rows)).toBe("count\ttitle\n2\tsales manager\n1\taccountant\n");
+    expect(unmatchedTsv(rows, 1)).toBe("count\ttitle\n2\tsales manager\n");
+    expect(unmatchedTsv(rows.slice(0, 3))).toBe("count\ttitle\n");
   });
 });
