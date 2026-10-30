@@ -1,0 +1,119 @@
+{
+  "slug": "third-party-risk-analyst",
+  "title": "Third-Party Risk Analyst",
+  "summary": "A third-party risk analyst checks whether the vendors a company works with are safe to trust with its data and systems. They sit in the security or risk team, running security assessments of suppliers, chasing evidence and tracking the risks and gaps they find.",
+  "dailyDuties": [
+    "Run security assessments of new and existing vendors",
+    "Send and review questionnaires such as SIG and read SOC reports",
+    "Rate inherent and residual risk and record it in a register",
+    "Check vendors against ISO 27001, SOC 2 and PCI DSS",
+    "Chase remediation evidence and follow up on findings",
+    "Brief business owners on vendor risk and sign-off",
+    "Track vendors, findings and due dates in spreadsheets"
+  ],
+  "typicalTitles": [
+    "Vendor Risk Analyst",
+    "Third-Party Risk Management Analyst",
+    "TPRM Analyst",
+    "Vendor Security Assessor",
+    "Vendor Risk Management Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "third-party-risk",
+      "importance": "required",
+      "expectation": "Run vendor security assessments across the third-party lifecycle",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Rate inherent and residual risk and track it in a register",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Review vendors against ISO 27001, SOC 2 and PCI DSS",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-audits",
+      "importance": "required",
+      "expectation": "Read SOC reports and SIG questionnaires and spot control gaps",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-policies",
+      "importance": "required",
+      "expectation": "Apply the vendor risk policy and set control requirements",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "required",
+      "expectation": "Check vendors handling personal data against the DPDP Act and GDPR",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Track vendors, findings and due dates in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Chase evidence from vendors and brief business owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate contracts and vendor obligations",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Apply RBI and SEBI outsourcing expectations in financial services",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-continuity",
+      "importance": "nice_to_have",
+      "expectation": "Assess vendor resilience and recovery plans",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "crisc",
+      "importance": "optional",
+      "why": "IT risk and control knowledge"
+    },
+    {
+      "certId": "iso27001-lead-auditor",
+      "importance": "optional",
+      "why": "Auditing controls against ISO 27001"
+    },
+    {
+      "certId": "isc2-cc",
+      "importance": "optional",
+      "why": "Entry security fundamentals"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

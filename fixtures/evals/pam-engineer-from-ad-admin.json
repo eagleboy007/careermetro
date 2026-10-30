@@ -1,0 +1,47 @@
+{
+  "id": "pam-engineer-from-ad-admin",
+  "roleSlug": "pam-engineer",
+  "persona": "Active Directory administrator who became a CyberArk administrator",
+  "resumeText": "Rohan Deshpande | Pune | rohan.deshpande@example.com\n\nEXPERIENCE\nPAM Administrator, Sahyadri InfoSec Labs, Pune (2019 - present)\n- Administered CyberArk Privileged Access Management across 300 Windows servers.\n- Onboarded privileged accounts and managed Active Directory domain admin credentials.\n- Built CPM and PSM policies for password rotation and session recording.\n- Patched and hardened the Windows servers the vault ran on.\n- Wrote PowerShell scripts to automate privileged account onboarding.\n\nEDUCATION\nBE Computer Engineering, Pune Institute of Technology, 2019\n\nCERTIFICATIONS\nMicrosoft Certified: Windows Server (2021)\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "pam-platforms",
+        "quote": "Administered CyberArk Privileged Access Management across 300 Windows servers"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "managed Active Directory domain admin credentials"
+      },
+      {
+        "skillId": "windows-server",
+        "quote": "hardened the Windows servers the vault ran on"
+      },
+      {
+        "skillId": "powershell-scripting",
+        "quote": "Wrote PowerShell scripts to automate privileged account onboarding"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "identity-federation",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "adversary-emulation",
+      "data-loss-prevention",
+      "siem"
+    ]
+  },
+  "reviewedBy": null
+}

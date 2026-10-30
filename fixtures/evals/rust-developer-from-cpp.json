@@ -1,0 +1,68 @@
+{
+  "id": "rust-developer-from-cpp",
+  "roleSlug": "rust-developer",
+  "persona": "C++ developer who moved a security product's agent to Rust",
+  "resumeText": "Ishaan Mehta | Hyderabad | ishaan.mehta@example.com\n\nEXPERIENCE\nSoftware Engineer, Charminar Secure Systems, Hyderabad (2020 - present)\n- Rewrote the log ingestion agent from C++ to Rust, cutting memory use by 40%.\n- Built async TCP services in Rust with Tokio handling 30,000 concurrent connections.\n- Designed a sharded storage service for audit events with the team architect.\n- Expose agent configuration through REST APIs built with Axum.\n- Write unit and integration tests with cargo test for every crate.\n- Deploy services on Linux servers with systemd and Docker.\n\nC++ Developer, Banjara Software, Hyderabad (2018 - 2020)\n- Maintained a multithreaded C++ packet parser using the STL.\n\nSKILLS\nRust, C++, Tokio, Git, Linux, Data structures\n\nEDUCATION\nBTech Computer Science, JNTU Hyderabad, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "rust-programming",
+        "quote": "Rewrote the log ingestion agent from C++ to Rust"
+      },
+      {
+        "skillId": "concurrency-multithreading",
+        "quote": "Built async TCP services in Rust with Tokio"
+      },
+      {
+        "skillId": "system-design",
+        "quote": "Designed a sharded storage service for audit events"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Expose agent configuration through REST APIs"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Write unit and integration tests with cargo test"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Deploy services on Linux servers with systemd"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Linux servers with systemd and Docker"
+      },
+      {
+        "skillId": "cpp",
+        "quote": "Maintained a multithreaded C++ packet parser"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "quote": "Data structures"
+      },
+      {
+        "skillId": "git",
+        "quote": "Git"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-structures-algorithms",
+        "status": "weak"
+      },
+      {
+        "skillId": "git",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "grpc",
+      "kubernetes",
+      "aws",
+      "go"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,110 @@
+{
+  "slug": "sap-pp-consultant",
+  "title": "SAP PP Consultant",
+  "summary": "SAP PP consultants set up and support the production planning part of SAP, which plans what a factory makes, when, and with which materials. They sit in an SAP project or support team and work with plant planners, the SAP MM team and developers.",
+  "dailyDuties": [
+    "Configure MRP, BOMs, routings and work centers",
+    "Run workshops with plant planners on new processes",
+    "Write functional specs for reports and enhancements",
+    "Test PP-MM-SD integration scenarios",
+    "Resolve support tickets on planning and production orders",
+    "Train key users before go-live"
+  ],
+  "typicalTitles": [
+    "SAP PP Functional Consultant",
+    "SAP S/4HANA PP Consultant",
+    "SAP PP/QM Consultant",
+    "SAP Production Planning Consultant",
+    "SAP PP-PI Consultant",
+    "SAP PP Analyst",
+    "SAP Manufacturing Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 12
+  },
+  "skills": [
+    {
+      "skillId": "sap-pp-configuration",
+      "importance": "required",
+      "expectation": "Configure MRP, BOMs, routings, work centers and production orders",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-mm-configuration",
+      "importance": "required",
+      "expectation": "Handle PP-MM integration for materials and stock",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Gather planning requirements and write functional specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map as-is and to-be manufacturing processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Plan and run integration and user acceptance tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with plant, planning and finance teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Train key users and explain design choices",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-sd-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Link demand from sales orders",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-co-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Support product costing integration",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-interfaces",
+      "importance": "nice_to_have",
+      "expectation": "Work with IDocs to MES and other systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Write specs that ABAP developers can build from",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "nice_to_have",
+      "expectation": "Resolve support tickets after go-live",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

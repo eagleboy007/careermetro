@@ -1,0 +1,128 @@
+{
+  "slug": "oracle-ebs-consultant",
+  "title": "Oracle EBS Consultant",
+  "summary": "Oracle EBS consultants build and support customisations in Oracle E-Business Suite, an older on-premises ERP (software that runs finance and supply chain), using PL/SQL, Forms, Reports and Workflow. They sit in an ERP or managed-services team and work with business users on support tickets and enhancements.",
+  "dailyDuties": [
+    "Build reports, interfaces, conversions and extensions",
+    "Write and tune PL/SQL for data loads",
+    "Resolve production tickets within SLA",
+    "Turn functional specs into technical designs",
+    "Build BI Publisher reports for business users",
+    "Test changes and move them through instances"
+  ],
+  "typicalTitles": [
+    "Oracle EBS Technical Consultant",
+    "Oracle Apps Technical Consultant",
+    "Oracle EBS Techno-Functional Consultant",
+    "Oracle Apps Technical Developer",
+    "Oracle EBS Developer",
+    "Oracle E-Business Suite Consultant",
+    "Oracle R12 Technical Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 12
+  },
+  "skills": [
+    {
+      "skillId": "oracle-ebs-technical",
+      "importance": "required",
+      "expectation": "Build RICE components with Forms, Reports, Workflow and OAF in EBS R12",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-ebs-functional-modules",
+      "importance": "required",
+      "expectation": "Know the Financials or SCM module flows you support",
+      "postingShare": null
+    },
+    {
+      "skillId": "database-programming",
+      "importance": "required",
+      "expectation": "Write PL/SQL packages for interfaces and conversions",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write and tune SQL against EBS tables",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-bi-publisher-otbi",
+      "importance": "required",
+      "expectation": "Build BI or XML Publisher reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn business needs into functional and technical designs",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "required",
+      "expectation": "Fix L2 and L3 production tickets within SLA",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Work directly with business users and onsite teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "nice_to_have",
+      "expectation": "Write Unix shell scripts for file loads",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "nice_to_have",
+      "expectation": "Build SOAP or REST integrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-paas-extensions",
+      "importance": "nice_to_have",
+      "expectation": "Build APEX pages on top of EBS",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-database",
+      "importance": "nice_to_have",
+      "expectation": "Understand the database behind EBS",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Extend OAF pages in Java",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "nice_to_have",
+      "expectation": "Support user acceptance testing",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "oracle-sql-associate",
+      "importance": "optional",
+      "why": "SQL basics"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

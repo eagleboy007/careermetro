@@ -11122,5 +11122,379 @@
     ],
     "minutes": 90,
     "free": true
+  },
+  {
+    "title": "Introduction to CyberArk Privilege Cloud",
+    "url": "https://docs.cyberark.com/privilege-cloud-shared-services/latest/en/content/privilege%20cloud/privcloud-introduction.htm",
+    "provider": "CyberArk Docs",
+    "kind": "docs",
+    "skillIds": [
+      "pam-platforms"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "BeyondTrust Password Safe documentation (on-premises)",
+    "url": "https://docs.beyondtrust.com/bips/docs/on-prem-welcome-to-password-safe",
+    "provider": "BeyondTrust Docs",
+    "kind": "docs",
+    "skillIds": [
+      "pam-platforms"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Delinea Secret Server documentation and getting-started tutorial",
+    "url": "https://docs.delinea.com/online-help/secret-server/start.htm",
+    "provider": "Delinea Docs",
+    "kind": "docs",
+    "skillIds": [
+      "pam-platforms"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learn about Microsoft Purview Data Loss Prevention",
+    "url": "https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "data-loss-prevention"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Implement and manage Microsoft Purview Data Loss Prevention (SC-401)",
+    "url": "https://learn.microsoft.com/en-us/training/paths/purview-implement-manage-dlp/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "data-loss-prevention"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Learn about Endpoint data loss prevention",
+    "url": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "data-loss-prevention"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "MITRE Caldera documentation",
+    "url": "https://caldera.readthedocs.io/en/latest/",
+    "provider": "MITRE",
+    "kind": "docs",
+    "skillIds": [
+      "adversary-emulation"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "ATT&CK training: adversary emulation",
+    "url": "https://attack.mitre.org/resources/learn-more-about-attack/training/adversary-emulation",
+    "provider": "MITRE ATT&CK",
+    "kind": "course",
+    "skillIds": [
+      "adversary-emulation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Center for Threat-Informed Defense adversary emulation library",
+    "url": "https://github.com/center-for-threat-informed-defense/adversary_emulation_library",
+    "provider": "MITRE Center for Threat-Informed Defense",
+    "kind": "practice",
+    "skillIds": [
+      "adversary-emulation"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Solr Tutorials (Apache Solr Reference Guide)",
+    "url": "https://solr.apache.org/guide/solr/latest/getting-started/solr-tutorial.html",
+    "provider": "Apache Solr",
+    "kind": "practice",
+    "skillIds": [
+      "lucene-search-engines"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Exercise 0: Five Minutes to Searching! (Solr)",
+    "url": "https://solr.apache.org/guide/solr/latest/getting-started/tutorial-five-minutes.html",
+    "provider": "Apache Solr",
+    "kind": "practice",
+    "skillIds": [
+      "lucene-search-engines"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Getting started with OpenSearch",
+    "url": "https://docs.opensearch.org/latest/getting-started/",
+    "provider": "OpenSearch",
+    "kind": "docs",
+    "skillIds": [
+      "lucene-search-engines"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Learning to Rank (OpenSearch documentation)",
+    "url": "https://docs.opensearch.org/latest/search-plugins/ltr/index/",
+    "provider": "OpenSearch",
+    "kind": "docs",
+    "skillIds": [
+      "search-relevance-ranking"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Similarity and BM25 settings (OpenSearch documentation)",
+    "url": "https://docs.opensearch.org/latest/im-plugin/similarity/",
+    "provider": "OpenSearch",
+    "kind": "docs",
+    "skillIds": [
+      "search-relevance-ranking"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "A guide to the Kernel Development Process",
+    "url": "https://docs.kernel.org/process/development-process.html",
+    "provider": "kernel.org",
+    "kind": "docs",
+    "skillIds": [
+      "linux-kernel-development"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "KernelNewbies: First Kernel Patch tutorial",
+    "url": "https://kernelnewbies.org/FirstKernelPatch_draft",
+    "provider": "KernelNewbies",
+    "kind": "practice",
+    "skillIds": [
+      "linux-kernel-development"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "The Rust Programming Language (the Rust Book)",
+    "url": "https://doc.rust-lang.org/book/",
+    "provider": "Rust Project",
+    "kind": "docs",
+    "skillIds": [
+      "rust-programming"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Rustlings exercises",
+    "url": "https://github.com/rust-lang/rustlings",
+    "provider": "Rust Project",
+    "kind": "practice",
+    "skillIds": [
+      "rust-programming"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Tokio tutorial (async Rust)",
+    "url": "https://tokio.rs/tokio",
+    "provider": "Tokio",
+    "kind": "docs",
+    "skillIds": [
+      "rust-programming"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "GX Core overview (Great Expectations)",
+    "url": "https://docs.greatexpectations.io/docs/core/introduction/gx_overview/",
+    "provider": "Great Expectations",
+    "kind": "docs",
+    "skillIds": [
+      "data-testing-observability"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Add data tests to your DAG (dbt)",
+    "url": "https://docs.getdbt.com/docs/build/data-tests",
+    "provider": "dbt Labs",
+    "kind": "docs",
+    "skillIds": [
+      "data-testing-observability"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Oracle E-Business Suite Developer's Guide, Release 12.2",
+    "url": "https://docs.oracle.com/cd/E26401_01/doc.122/e22961/T302934T391729.htm",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-ebs-technical"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Oracle Application Framework Personalization Guide, Release 12.2",
+    "url": "https://docs.oracle.com/cd/E26401_01/doc.122/e22031/T406873T406875.htm",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-ebs-technical"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Oracle E-Business Suite 12.2 web library: Applications Technology",
+    "url": "https://docs.oracle.com/cd/E26401_01/nav/technology.htm",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-ebs-technical"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Oracle E-Business Suite 12.2 web library: Financials",
+    "url": "https://docs.oracle.com/cd/E26401_01/nav/financials.htm",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-ebs-functional-modules"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Oracle General Ledger Implementation Guide, Release 12.2",
+    "url": "https://docs.oracle.com/cd/E26401_01/doc.122/e48747/T450006T450008.htm",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-ebs-functional-modules"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Oracle Order Management User's Guide, Release 12.2",
+    "url": "https://docs.oracle.com/cd/E26401_01/doc.122/e48843/T335476T335432.htm",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-ebs-functional-modules"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Exploring Business Processes in SAP S/4HANA Production Planning",
+    "url": "https://learning.sap.com/courses/exploring-business-processes-in-sap-s-4hana-production-planning",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-pp-configuration"
+    ],
+    "minutes": 140,
+    "free": true
+  },
+  {
+    "title": "Exploring Production Planning in SAP S/4HANA",
+    "url": "https://learning.sap.com/courses/exploring-production-planning-in-sap-s-4hana",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-pp-configuration"
+    ],
+    "minutes": 408,
+    "free": true
+  },
+  {
+    "title": "Exploring Advanced Production Planning with SAP S/4HANA PP/DS",
+    "url": "https://learning.sap.com/courses/exploring-advanced-production-planning-with-sap-s-4hana-pp-ds",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-pp-configuration"
+    ],
+    "minutes": 889,
+    "free": true
+  },
+  {
+    "title": "AUTOSAR introduction, part 2 (official)",
+    "url": "https://www.autosar.org/fileadmin/user_upload/AUTOSAR_Introduction_PDF/AUTOSAR_EXP_Introduction_Part2.pdf",
+    "provider": "AUTOSAR",
+    "kind": "docs",
+    "skillIds": [
+      "autosar-classic"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Introduction to AUTOSAR (Simulink blog)",
+    "url": "https://blogs.mathworks.com/simulink/2020/02/11/introduction-to-autosar/",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "autosar-classic"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "UDS Explained: a simple intro",
+    "url": "https://www.csselectronics.com/pages/uds-protocol-tutorial-unified-diagnostic-services",
+    "provider": "CSS Electronics",
+    "kind": "docs",
+    "skillIds": [
+      "automotive-network-diagnostics"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "CAN Bus Protocol Explained",
+    "url": "https://www.instructables.com/CAN-Bus-Protocol-Explained",
+    "provider": "Instructables",
+    "kind": "docs",
+    "skillIds": [
+      "automotive-network-diagnostics"
+    ],
+    "minutes": 20,
+    "free": true
   }
 ]

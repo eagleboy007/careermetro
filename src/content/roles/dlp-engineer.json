@@ -1,0 +1,121 @@
+{
+  "slug": "dlp-engineer",
+  "title": "DLP Engineer",
+  "summary": "A DLP engineer stops sensitive data leaving the company by building and tuning data loss prevention rules (DLP). They sit in the security or data protection team, running tools like Microsoft Purview, Forcepoint or Symantec across email, endpoints and cloud apps and triaging the incidents these raise.",
+  "dailyDuties": [
+    "Build and tune DLP policies across email, endpoints and cloud",
+    "Deploy and manage endpoint DLP agents across the fleet",
+    "Set up sensitivity labels and classification rules",
+    "Triage DLP incidents and escalate confirmed data leaks",
+    "Reduce false positives without missing real leaks",
+    "Work with data owners to define what is sensitive",
+    "Report on incidents and policy coverage"
+  ],
+  "typicalTitles": [
+    "Data Loss Prevention Engineer",
+    "DLP Analyst",
+    "Information Protection Engineer",
+    "Microsoft Purview Engineer",
+    "Forcepoint DLP Engineer",
+    "DLP Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "data-loss-prevention",
+      "importance": "required",
+      "expectation": "Build and tune DLP policies in Purview, Forcepoint or Symantec",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-security",
+      "importance": "required",
+      "expectation": "Deploy and manage endpoint DLP agents across the fleet",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "required",
+      "expectation": "Protect regulated data in line with the DPDP Act and GDPR",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Map data protection controls to ISO 27001 and similar standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "m365-administration",
+      "importance": "required",
+      "expectation": "Configure sensitivity labels and policies in the Microsoft 365 estate",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Triage DLP incidents and escalate confirmed data leaks",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Reduce false positives without missing real leaks",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Work with data owners and report incidents clearly",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-policies",
+      "importance": "nice_to_have",
+      "expectation": "Align DLP rules with the data protection policy",
+      "postingShare": null
+    },
+    {
+      "skillId": "sase-ztna",
+      "importance": "nice_to_have",
+      "expectation": "Use CASB and web gateway controls for data in motion",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Extend DLP to cloud storage and SaaS apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "powershell-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Automate policy and reporting tasks with scripts",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "sc-900",
+      "importance": "optional",
+      "why": "Microsoft security and compliance fundamentals"
+    },
+    {
+      "certId": "comptia-security-plus",
+      "importance": "optional",
+      "why": "Security fundamentals for data protection roles"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

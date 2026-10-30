@@ -1,0 +1,52 @@
+{
+  "id": "search-engineer-from-backend",
+  "roleSlug": "search-engineer",
+  "persona": "Java backend engineer in e-commerce who owns product search and wants a search role",
+  "resumeText": "Ananya Rao | Bengaluru | ananya.rao@example.com\n\nEXPERIENCE\nSoftware Engineer, Kirana Basket Technologies, Bengaluru (2021 - present)\n- Built product search APIs in Java and Spring Boot serving 2,000 queries per second.\n- Maintain OpenSearch indices, custom analyzers and synonym lists for 4 lakh grocery products.\n- Tuned BM25 field boosts and query rewriting to cut no-result searches from 9% to 4%.\n- Stream catalogue price and stock updates to the index through Kafka consumers.\n- Added Redis caching for the most popular search queries.\n\nJunior Software Engineer, Deccan Retail Systems, Mysuru (2019 - 2021)\n- Wrote REST services in Java for order tracking.\n\nSKILLS\nJava, Spring Boot, OpenSearch, Kafka, Redis, A/B testing, Python\n\nEDUCATION\nBE Computer Science, Visvesvaraya Technological University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "java",
+        "quote": "Built product search APIs in Java and Spring Boot"
+      },
+      {
+        "skillId": "lucene-search-engines",
+        "quote": "Maintain OpenSearch indices, custom analyzers and synonym lists"
+      },
+      {
+        "skillId": "search-relevance-ranking",
+        "quote": "Tuned BM25 field boosts and query rewriting"
+      },
+      {
+        "skillId": "messaging-queues",
+        "quote": "Stream catalogue price and stock updates to the index through Kafka consumers"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Wrote REST services in Java for order tracking"
+      },
+      {
+        "skillId": "nosql",
+        "quote": "Added Redis caching for the most popular search queries"
+      },
+      {
+        "skillId": "ab-testing",
+        "quote": "A/B testing"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ab-testing",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "machine-learning",
+      "vector-search",
+      "kubernetes",
+      "go"
+    ]
+  },
+  "reviewedBy": null
+}

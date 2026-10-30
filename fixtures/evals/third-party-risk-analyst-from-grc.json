@@ -1,0 +1,51 @@
+{
+  "id": "third-party-risk-analyst-from-grc",
+  "roleSlug": "third-party-risk-analyst",
+  "persona": "GRC analyst focused on vendor security assessments",
+  "resumeText": "Sneha Reddy | Bengaluru | sneha.reddy@example.com\n\nEXPERIENCE\nThird-Party Risk Analyst, Cauvery Risk Advisory, Bengaluru (2021 - present)\n- Conducted security assessments of over 80 vendors.\n- Reviewed SOC 2 reports and SIG questionnaires for control gaps.\n- Rated inherent and residual risk in the risk register.\n- Checked vendors against ISO 27001 and PCI DSS.\n- Tracked findings and due dates in Excel.\n\nEDUCATION\nBCom and MBA Finance, Christ University, 2021\n\nCERTIFICATIONS\nISC2 Certified in Cybersecurity (2022)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "third-party-risk",
+        "quote": "Conducted security assessments of over 80 vendors"
+      },
+      {
+        "skillId": "security-audits",
+        "quote": "Reviewed SOC 2 reports and SIG questionnaires for control gaps"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Rated inherent and residual risk in the risk register"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "Checked vendors against ISO 27001 and PCI DSS"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Tracked findings and due dates in Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "security-policies",
+        "status": "missing"
+      },
+      {
+        "skillId": "data-privacy",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "adversary-emulation",
+      "siem",
+      "pam-platforms"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,72 @@
+{
+  "id": "ai-product-manager-from-fintech-pm",
+  "roleSlug": "ai-product-manager",
+  "persona": "Fintech product manager who shipped one GenAI feature",
+  "resumeText": "Neha Iyer | Mumbai | neha.iyer@example.com\n\nEXPERIENCE\nProduct Manager, Arabian Sea Fintech, Mumbai (2021 - present)\n- Launched a GenAI support assistant using an LLM with RAG over 3,000 help articles.\n- Wrote PRDs and user stories for the assistant and the loan dashboard.\n- Ran 25 customer interviews to find why users abandoned loan applications.\n- Own the quarterly roadmap and prioritised the backlog with engineering leads.\n- Track deflection rate, CSAT and weekly active users in product dashboards.\n- Present monthly product reviews to the risk, legal and operations heads.\n\nAssociate Product Manager, Powai Payments, Mumbai (2019 - 2021)\n- Ran A/B tests on the UPI onboarding flow with the growth team.\n\nSKILLS\nProduct roadmaps, SQL, Jira, Machine learning basics, LLM evaluation\n\nEDUCATION\nMBA, Narsee Monjee Institute of Management Studies, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "llm-apps",
+        "quote": "Launched a GenAI support assistant using an LLM"
+      },
+      {
+        "skillId": "vector-search",
+        "quote": "LLM with RAG over 3,000 help articles"
+      },
+      {
+        "skillId": "prd-writing",
+        "quote": "Wrote PRDs and user stories for the assistant"
+      },
+      {
+        "skillId": "product-discovery",
+        "quote": "Ran 25 customer interviews to find why users abandoned loan applications"
+      },
+      {
+        "skillId": "roadmapping",
+        "quote": "Own the quarterly roadmap and prioritised the backlog"
+      },
+      {
+        "skillId": "product-metrics",
+        "quote": "Track deflection rate, CSAT and weekly active users"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "to the risk, legal and operations heads"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present monthly product reviews"
+      },
+      {
+        "skillId": "ab-testing",
+        "quote": "Ran A/B tests on the UPI onboarding flow"
+      },
+      {
+        "skillId": "llm-evaluation",
+        "quote": "LLM evaluation"
+      },
+      {
+        "skillId": "machine-learning",
+        "quote": "Machine learning basics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "llm-evaluation",
+        "status": "weak"
+      },
+      {
+        "skillId": "machine-learning",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "ai-agents",
+      "data-privacy",
+      "python",
+      "figma"
+    ]
+  },
+  "reviewedBy": null
+}

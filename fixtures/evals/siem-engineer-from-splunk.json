@@ -1,0 +1,47 @@
+{
+  "id": "siem-engineer-from-splunk",
+  "roleSlug": "siem-engineer",
+  "persona": "Splunk administrator building SIEM detection content",
+  "resumeText": "Ananya Iyer | Bengaluru | ananya.iyer@example.com\n\nEXPERIENCE\nSIEM Engineer, Nilgiri Secure Systems, Bengaluru (2020 - present)\n- Built and administered Splunk Enterprise Security for the SOC.\n- Onboarded firewall, proxy and EDR log sources and normalised them to CIM.\n- Wrote and tuned detection rules mapped to MITRE ATT&CK.\n- Automated log onboarding with Python scripts and CI/CD.\n- Maintained Splunk indexers and forwarders on Linux.\n\nEDUCATION\nBTech Information Science, RV College of Engineering, 2020\n\nCERTIFICATIONS\nSplunk Core Certified User (2022)\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "siem",
+        "quote": "Built and administered Splunk Enterprise Security for the SOC"
+      },
+      {
+        "skillId": "network-security",
+        "quote": "Onboarded firewall, proxy and EDR log sources"
+      },
+      {
+        "skillId": "threat-detection",
+        "quote": "Wrote and tuned detection rules mapped to MITRE ATT&CK"
+      },
+      {
+        "skillId": "python",
+        "quote": "Automated log onboarding with Python scripts"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Maintained Splunk indexers and forwarders on Linux"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "security-incident-response",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "adversary-emulation",
+      "data-loss-prevention",
+      "pam-platforms"
+    ]
+  },
+  "reviewedBy": null
+}

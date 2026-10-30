@@ -1,0 +1,126 @@
+{
+  "slug": "it-auditor",
+  "title": "IT Auditor",
+  "summary": "An IT auditor checks that a company's systems have the right controls and follow the rules, then reports what is missing. They sit in an internal audit or risk team, or a consultancy, testing IT general controls against standards like ISO 27001 and SOX and regulators like the RBI and SEBI.",
+  "dailyDuties": [
+    "Plan audits and agree scope with control owners",
+    "Test IT general controls over access, change and operations",
+    "Sample evidence and document workpapers",
+    "Assess IT risk and rate control deficiencies",
+    "Check systems against ISO 27001, COBIT, SOX and RBI frameworks",
+    "Write audit reports and agree remediation actions",
+    "Follow up on open findings until they are closed"
+  ],
+  "typicalTitles": [
+    "Information Systems Auditor",
+    "IS Auditor",
+    "IT Audit Analyst",
+    "Technology Auditor",
+    "IT Risk and Audit Analyst",
+    "Information Security Auditor"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "security-audits",
+      "importance": "required",
+      "expectation": "Plan and run IT general controls and application control testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Audit against ISO 27001, SOC 2, COBIT and NIST CSF",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Assess IT risk and rate control deficiencies",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-policies",
+      "importance": "required",
+      "expectation": "Check controls against policy and governance standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Test access provisioning, reviews and segregation of duties",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build workpapers, samples and findings trackers",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write audit reports and discuss findings with control owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "required",
+      "expectation": "Apply RBI, SEBI and SOX expectations in financial services audits",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Audit personal data handling against the DPDP Act",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "nice_to_have",
+      "expectation": "Review outsourcing and vendor controls",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security",
+      "importance": "nice_to_have",
+      "expectation": "Test controls in cloud-hosted systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-continuity",
+      "importance": "nice_to_have",
+      "expectation": "Audit backup, DR and continuity arrangements",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "cisa",
+      "importance": "recommended",
+      "why": "The core information systems audit credential"
+    },
+    {
+      "certId": "iso27001-lead-auditor",
+      "importance": "recommended",
+      "why": "Auditing an ISMS against ISO 27001"
+    },
+    {
+      "certId": "crisc",
+      "importance": "optional",
+      "why": "IT risk and control depth"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

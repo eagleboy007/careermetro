@@ -1,0 +1,56 @@
+{
+  "id": "data-quality-engineer-from-etl-tester",
+  "roleSlug": "data-quality-engineer",
+  "persona": "ETL tester who automated warehouse checks",
+  "resumeText": "Karan Malhotra | Gurugram | karan.malhotra@example.com\n\nEXPERIENCE\nETL Test Engineer, Aravalli Analytics, Gurugram (2020 - present)\n- Wrote SQL reconciliation checks between source Oracle tables and the Snowflake warehouse.\n- Test daily ELT pipelines end to end for 120 finance tables.\n- Built a Python framework that runs data checks after each load.\n- Added Soda Core checks for freshness and null rates on critical tables.\n- Profiled customer data and defined data quality rules with the finance team.\n- Run the checks in Jenkins so failed data tests block releases.\n\nSKILLS\nSQL, Python, Snowflake, PySpark, Airflow\n\nEDUCATION\nBTech Information Technology, Guru Gobind Singh Indraprastha University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL reconciliation checks between source Oracle tables"
+      },
+      {
+        "skillId": "cloud-data-warehouse",
+        "quote": "source Oracle tables and the Snowflake warehouse"
+      },
+      {
+        "skillId": "etl",
+        "quote": "Test daily ELT pipelines end to end"
+      },
+      {
+        "skillId": "python",
+        "quote": "Built a Python framework that runs data checks"
+      },
+      {
+        "skillId": "data-testing-observability",
+        "quote": "Added Soda Core checks for freshness and null rates"
+      },
+      {
+        "skillId": "data-quality-management",
+        "quote": "Profiled customer data and defined data quality rules"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Run the checks in Jenkins so failed data tests block releases"
+      },
+      {
+        "skillId": "spark",
+        "quote": "PySpark"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "spark",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "dbt",
+      "aws",
+      "data-governance",
+      "streaming-data"
+    ]
+  },
+  "reviewedBy": null
+}

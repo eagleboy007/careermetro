@@ -1,0 +1,139 @@
+{
+  "slug": "ai-product-manager",
+  "title": "AI Product Manager",
+  "summary": "AI product managers decide what AI features to build, such as chat assistants or document tools built on large language models, and define how good they must be before launch. They sit between users, engineers, data scientists and business teams, and own the roadmap for those features.",
+  "dailyDuties": [
+    "Talk to users to find problems worth solving with AI",
+    "Write PRDs with clear quality bars and test cases",
+    "Review evaluation results with data scientists",
+    "Prioritise the roadmap against model cost and risk",
+    "Track adoption and quality metrics after launch",
+    "Explain model limits to sales, legal and support teams"
+  ],
+  "typicalTitles": [
+    "Product Manager - AI",
+    "GenAI Product Manager",
+    "AI/ML Product Manager",
+    "Product Manager - Generative AI",
+    "Technical Product Manager - AI/ML",
+    "AI Product Owner",
+    "Product Manager - LLM Platform"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "llm-apps",
+      "importance": "required",
+      "expectation": "Shape product features built on LLMs, RAG or agents",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-evaluation",
+      "importance": "required",
+      "expectation": "Define eval sets and quality bars before launch",
+      "postingShare": null
+    },
+    {
+      "skillId": "machine-learning",
+      "importance": "required",
+      "expectation": "Understand how models learn and where they fail",
+      "postingShare": null
+    },
+    {
+      "skillId": "prd-writing",
+      "importance": "required",
+      "expectation": "Write PRDs and user stories for AI features",
+      "postingShare": null
+    },
+    {
+      "skillId": "roadmapping",
+      "importance": "required",
+      "expectation": "Prioritise the AI roadmap against cost and risk",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-discovery",
+      "importance": "required",
+      "expectation": "Find user problems worth solving with AI",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-metrics",
+      "importance": "required",
+      "expectation": "Track adoption, quality and cost per use",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Align engineering, data science, legal and business teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain model limits and trade-offs in plain words",
+      "postingShare": null
+    },
+    {
+      "skillId": "ai-agents",
+      "importance": "nice_to_have",
+      "expectation": "Scope agent and tool-calling workflows",
+      "postingShare": null
+    },
+    {
+      "skillId": "vector-search",
+      "importance": "nice_to_have",
+      "expectation": "Understand retrieval for RAG features",
+      "postingShare": null
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "nice_to_have",
+      "expectation": "Run experiments on AI features",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Handle user data and responsible-AI checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull your own product data",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Run sprints with the team",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "cspo",
+      "importance": "optional",
+      "why": "Common product-owner credential"
+    },
+    {
+      "certId": "pspo",
+      "importance": "optional",
+      "why": "Common product-owner credential"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

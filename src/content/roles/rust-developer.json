@@ -1,0 +1,121 @@
+{
+  "slug": "rust-developer",
+  "title": "Rust Developer",
+  "summary": "Rust developers build fast, memory-safe software in Rust, a systems language that catches many bugs before the code runs. They work in backend, security, networking or infrastructure teams, often replacing older C or C++ components.",
+  "dailyDuties": [
+    "Write and review Rust code for services and libraries",
+    "Build async network services, often with Tokio",
+    "Profile and fix slow or memory-heavy code paths",
+    "Write unit and integration tests",
+    "Port parts of C or C++ code to Rust",
+    "Discuss designs with the team before building"
+  ],
+  "typicalTitles": [
+    "Rust Engineer",
+    "Rust Software Engineer",
+    "Rust Backend Developer",
+    "Software Engineer - Rust",
+    "Rust Systems Engineer",
+    "Rust Programmer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "rust-programming",
+      "importance": "required",
+      "expectation": "Write safe, idiomatic Rust in production",
+      "postingShare": null
+    },
+    {
+      "skillId": "concurrency-multithreading",
+      "importance": "required",
+      "expectation": "Write async and multithreaded code, often with Tokio",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-structures-algorithms",
+      "importance": "required",
+      "expectation": "Pick the right data structures for fast, memory-safe code",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Design services and components for scale and reliability",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Build, run and debug services on Linux",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build HTTP APIs for other teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "required",
+      "expectation": "Write unit and integration tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Work through pull requests and code review",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "nice_to_have",
+      "expectation": "Read or port existing C++ code",
+      "postingShare": null
+    },
+    {
+      "skillId": "grpc",
+      "importance": "nice_to_have",
+      "expectation": "Build gRPC services",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Package services in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "low-latency-programming",
+      "importance": "nice_to_have",
+      "expectation": "Tune hot paths for latency",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Run builds and tests in CI",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "nice_to_have",
+      "expectation": "Deploy to a cloud platform",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-30. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-05"
+}

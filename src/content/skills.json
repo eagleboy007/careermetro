@@ -285,8 +285,7 @@
       "redis",
       "dynamodb",
       "cassandra",
-      "nosql",
-      "elasticsearch"
+      "nosql"
     ]
   },
   {
@@ -2455,8 +2454,7 @@
       "device drivers",
       "linux device drivers",
       "board support package",
-      "u-boot",
-      "linux kernel"
+      "u-boot"
     ],
     "ambiguous": [],
     "implies": [
@@ -3818,7 +3816,8 @@
       "bip reports",
       "otbi",
       "otbi reports",
-      "oracle transactional business intelligence"
+      "oracle transactional business intelligence",
+      "xml publisher"
     ],
     "ambiguous": [],
     "implies": [],
@@ -6037,6 +6036,271 @@
       "info*engine",
       "windchill customization",
       "windchill workflows"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pam-platforms",
+    "name": "Privileged access management platforms (CyberArk, BeyondTrust, Delinea)",
+    "category": "security",
+    "aliases": [
+      "cyberark",
+      "cyberark pam",
+      "beyondtrust",
+      "delinea",
+      "password safe",
+      "secret server",
+      "privileged session management",
+      "privileged account management"
+    ],
+    "ambiguous": [
+      "password safe",
+      "secret server"
+    ],
+    "implies": [
+      "identity-access-management"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-loss-prevention",
+    "name": "Data loss prevention (DLP)",
+    "category": "security",
+    "aliases": [
+      "dlp",
+      "data loss prevention",
+      "forcepoint dlp",
+      "symantec dlp",
+      "microsoft purview dlp",
+      "endpoint dlp",
+      "sensitivity labels",
+      "data classification"
+    ],
+    "ambiguous": [
+      "data classification"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "adversary-emulation",
+    "name": "Adversary emulation and red team operations",
+    "category": "security",
+    "aliases": [
+      "adversary emulation",
+      "adversary simulation",
+      "cobalt strike",
+      "c2 infrastructure",
+      "red team operations",
+      "red teaming",
+      "kerberoasting",
+      "active directory attacks"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "penetration-testing"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "lucene-search-engines",
+    "name": "Search engines (Elasticsearch, Solr, OpenSearch, Lucene)",
+    "category": "data",
+    "aliases": [
+      "apache solr",
+      "solr",
+      "solrcloud",
+      "opensearch",
+      "amazon opensearch",
+      "apache lucene",
+      "lucene",
+      "elasticsearch query dsl",
+      "elasticsearch analyzers",
+      "vespa search engine",
+      "search indexing",
+      "elasticsearch"
+    ],
+    "ambiguous": [
+      "search indexing"
+    ],
+    "implies": [
+      "nosql"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "search-relevance-ranking",
+    "name": "Search relevance and ranking (BM25, learning to rank)",
+    "category": "ml",
+    "aliases": [
+      "search relevance",
+      "relevance tuning",
+      "relevancy tuning",
+      "learning to rank",
+      "learning-to-rank",
+      "bm25",
+      "ndcg",
+      "query understanding",
+      "query rewriting",
+      "hybrid search",
+      "search ranking",
+      "spell correction"
+    ],
+    "ambiguous": [
+      "query rewriting"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "linux-kernel-development",
+    "name": "Linux kernel development and upstreaming",
+    "category": "programming",
+    "aliases": [
+      "kernel development",
+      "linux kernel development",
+      "kernel programming",
+      "linux kernel internals",
+      "kernel internals",
+      "upstream kernel",
+      "kernel upstreaming",
+      "linux kernel mailing list",
+      "lkml",
+      "loadable kernel modules",
+      "ftrace",
+      "kdump",
+      "kgdb",
+      "kernel debugging",
+      "linux kernel"
+    ],
+    "ambiguous": [
+      "kernel development",
+      "kernel programming",
+      "kernel internals",
+      "kernel debugging"
+    ],
+    "implies": [
+      "linux",
+      "embedded-c"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "rust-programming",
+    "name": "Rust",
+    "category": "programming",
+    "aliases": [
+      "rust",
+      "rust lang",
+      "rust-lang",
+      "rustlang",
+      "rust programming",
+      "async rust",
+      "tokio",
+      "actix-web",
+      "axum",
+      "rust developer"
+    ],
+    "ambiguous": [
+      "rust"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-testing-observability",
+    "name": "Data testing and observability tools (Soda, Deequ, dbt tests, Monte Carlo)",
+    "category": "testing",
+    "aliases": [
+      "data observability",
+      "soda core",
+      "soda.io",
+      "deequ",
+      "pydeequ",
+      "dbt tests",
+      "monte carlo data observability",
+      "etl testing",
+      "data pipeline testing",
+      "data warehouse testing",
+      "data contracts"
+    ],
+    "ambiguous": [
+      "etl testing",
+      "data warehouse testing"
+    ],
+    "implies": [
+      "data-quality-management"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-ebs-technical",
+    "name": "Oracle E-Business Suite technical development (RICE, Forms, Reports, OAF, Workflow)",
+    "category": "tools",
+    "aliases": [
+      "oracle ebs",
+      "oracle e-business suite",
+      "oracle ebs r12",
+      "oracle apps r12",
+      "oracle apps technical",
+      "oracle forms",
+      "oracle reports",
+      "forms personalization",
+      "form personalization",
+      "oracle workflow",
+      "oracle application framework",
+      "oaf personalization",
+      "rice components",
+      "cemli",
+      "oracle aol",
+      "web adi"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-ebs-functional-modules",
+    "name": "Oracle EBS functional modules (Financials, SCM)",
+    "category": "business",
+    "aliases": [
+      "oracle ebs financials",
+      "oracle financials r12",
+      "oracle ebs scm",
+      "oracle ebs functional",
+      "oracle apps functional",
+      "oracle ebs order management",
+      "oracle ebs purchasing",
+      "oracle ebs inventory",
+      "oracle ebs payables",
+      "oracle ebs receivables",
+      "oracle ebs general ledger"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-pp-configuration",
+    "name": "SAP PP configuration (Production Planning)",
+    "category": "business",
+    "aliases": [
+      "sap pp",
+      "sap production planning",
+      "sap pp configuration",
+      "s/4hana pp",
+      "sap s/4hana pp",
+      "sap pp-pi",
+      "sap pp/ds",
+      "mrp live",
+      "sap mrp",
+      "sap production orders",
+      "sap process orders",
+      "sap work centers",
+      "sap routings",
+      "md04"
     ],
     "ambiguous": [],
     "implies": [],
