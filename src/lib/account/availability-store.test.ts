@@ -96,8 +96,8 @@ describe.skipIf(!db)("usually free store (database)", () => {
     const never = await person();
     await saveUsuallyFree(me, ["mon 17:00", "mon 18:00"], { db: db!, now });
     const data = (await exportAccountData(me, db!))!;
-    expect(EXPORT_VERSION).toBe(35);
-    expect(data.exportVersion).toBe(35);
+    expect(EXPORT_VERSION).toBe(36);
+    expect(data.exportVersion).toBe(36);
     expect(data.availability).toEqual({ usuallyFree: ["mon 17:00", "mon 18:00"] });
     expect(await exportAvailability(never, db!)).toEqual({ usuallyFree: [] });
     await db!.delete(schema.users).where(eq(schema.users.id, me));

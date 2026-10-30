@@ -89,8 +89,8 @@ describe.skipIf(!db)("elite store (database)", () => {
     await setElite(me, true, { db: db!, now: new Date("2026-10-19T06:00:00Z") });
     await setEliteBadge(me, true, { db: db! });
     const data = (await exportAccountData(me, db!))!;
-    expect(EXPORT_VERSION).toBe(35);
-    expect(data.exportVersion).toBe(35);
+    expect(EXPORT_VERSION).toBe(36);
+    expect(data.exportVersion).toBe(36);
     expect(data.plan).toMatchObject({ plan: "elite", eliteSince: new Date("2026-10-19T06:00:00Z"), badgeShown: true });
     expect((await exportAccountData(never, db!))!.plan).toBeNull();
     await db!.delete(schema.users).where(eq(schema.users.id, me));

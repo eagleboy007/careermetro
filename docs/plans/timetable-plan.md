@@ -1,6 +1,6 @@
 # Timetable: plan (events that match your goals and interests)
 
-Development 4, 2026-10-30. Source: handoff section 10 (`docs/design/post-login-handoff.md`), the `events`, `event_topics` and `event_rsvps` rows of handoff section 13, and prototype v2 (`prototype-v2/source/evt.html`, `evt.js`, `evt.css`). This plan changes the data model, so **nothing is migrated until the Project manager signs off on the data model** (under Milin's delegation). Sources come from Data research's review (section 6).
+Development 4, 2026-10-30. Source: handoff section 10 (`docs/design/post-login-handoff.md`), the `events`, `event_topics` and `event_rsvps` rows of handoff section 13, and prototype v2 (`prototype-v2/source/evt.html`, `evt.js`, `evt.css`). This plan changes the data model; the Project manager signed off on it under Milin's delegation (2026-10-30), and migration 0055 is in PR 1. Sources come from Data research's review (section 6).
 
 **The rules this keeps:**
 - Only events whose topic matches one of the person's goals or interests are shown. Nothing is sponsored, and there are no random tech talks.
@@ -23,7 +23,7 @@ Development 4, 2026-10-30. Source: handoff section 10 (`docs/design/post-login-h
 
 ## 1. Data model (needs sign-off)
 
-Migration 0054, all new tables. Zod schemas and tests come first, as usual.
+Migration 0055, all new tables. Zod schemas and tests come first, as usual.
 
 ### `events`
 
@@ -111,7 +111,7 @@ Turning the digest off is one tap, from the email (the same one-click token as t
 
 - Monday at 07:30 IST, from a new cron, `/api/cron/events-digest`. It runs before the weekly email (08:00 IST), and Tuesday picks up anyone a cap or the limit stopped.
 - It goes only to people with `events_digest` on and at least one matching event in the next 7 days. The message lists up to 5 events: title, organiser, day and time in IST, city or Online, and the source link. It names no other person.
-- **Budget:** Resend's free plan allows 100 emails a day, and sign-in codes need 60 of them. The digest and the weekly email share the other 40. The digest takes at most 20 a run, the weekly email keeps 40 on Monday and fills on Tuesday and Wednesday, and both stop at Resend's limit (T142). A `email_sends` count per day is not added; the existing limit handling is enough while the beta is small. The tech-stack register already lists Resend's paid plan as the upgrade.
+- **Budget:** Resend's free plan allows 100 emails a day, and sign-in codes keep 60 of them. App emails (the weekly email and this digest) share one budget of 40 per India day, counted in the database (built with the weekly-email fixes T151/T153, before this PR). The digest takes at most 20 of it; the weekly email takes what is left; both catch up on Tuesday and Wednesday and stop at Resend's limit (T142). The tech-stack register already lists Resend's paid plan as the upgrade.
 - A `events_digests` table (`user_id`, `week`, `sent_at`) keeps one send a week per person, the same way `weekly_emails` does.
 - One-click unsubscribe (RFC 8058), using the existing token.
 
@@ -129,7 +129,7 @@ Turning the digest off is one tap, from the email (the same one-click token as t
   - Meetup: the API needs Pro, and commercial use needs written consent.
   - Microsoft Reactor and Learn events: their terms allow non-commercial use only.
   - NASSCOM FutureSkills Prime: no reproduction without consent.
-  - Eventbrite only for organisers we name (title and link), since public search is gone.
+- **Eventbrite (amber, not red):** only events of organisers we name, title and link only, since public search is gone.
 - **Emails to organisers:** asking the 11 organisers on Data research's list for permission is Milin's call, since those emails leave the project.
 - **How feeds are read:** each feed goes in `src/content/event-feeds.json` with its terms link and the date the terms were read. A daily GitHub Actions job, like the Departures feed, reads each feed once, upserts events by `source_key`, marks events the feed no longer lists as `cancelled`, and logs counts only.
 - **Suggestions:** "Suggest an event" takes a link and the basic fields and saves them as `pending`. An admin checks each one on `/admin/reports` before it goes `live`. Members' suggestions need a grievance officer (pending item 15), so the first version takes suggestions from signed-in members but keeps them all `pending` until that is settled. Organisers suggest the same way.
@@ -150,7 +150,7 @@ Turning the digest off is one tap, from the email (the same one-click token as t
 
 ## 8. PRs
 
-1. Migration 0054 (`events`, `event_topics`, `event_rsvps`, `events_digests`, `user_settings` columns), Zod schemas, `city-centres.json` and `interest-topics.json`, the matcher with tests, and export v36. After sign-off.
+1. Migration 0055 (`events`, `event_topics`, `event_rsvps`, `events_digests`, `user_settings` columns), Zod schemas, `city-centres.json` and `interest-topics.json`, the matcher with tests, and export v36. After sign-off. **Done (2026-10-30)**: data model signed off by the Project manager under Milin's delegation; matcher in `src/lib/timetable/match.ts`, export in `src/lib/timetable/store.ts`.
 2. `/timetable` and the Today teaser over the example events, then live rows, Save, I'm going and Add to calendar.
 3. The prep task on the ride.
 4. The feed job, starting with FOSS United and confs.tech.

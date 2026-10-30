@@ -3,11 +3,11 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { inflections } from "@/lib/gaps/match";
 import { normalizeForMatch } from "@/lib/resume/verify";
-import { MAX_GAPS, requiredUnits, skillGroups } from "@/lib/schemas";
+import { MAX_GAPS, PERSON_CITIES, requiredUnits, skillGroups } from "@/lib/schemas";
 import { mentions } from "@/lib/mock/interview";
 import mockBankRaw from "./mock-bank.json";
 import { bankViewFor, followUpsOf, mockRoles } from "@/lib/mock/rules";
-import { certifications, eliteShelfEntries, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
+import { certifications, cityCentres, eliteShelfEntries, interestTopics, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
 
 describe("skill taxonomy", () => {
   it("has unique ids", () => {
@@ -344,5 +344,34 @@ describe("Elite shelf (FR-50 part 5, handoff 12l)", () => {
     const own = eliteShelfEntries.filter((e) => e.type === "own");
     expect(own.length).toBeGreaterThan(0);
     for (const e of own) if (e.type === "own") expect([e.id, e.skillIds.filter((id) => !known.has(id))]).toEqual([e.id, []]);
+  });
+});
+
+describe("timetable content", () => {
+  it("has one centre for every city a person may give", () => {
+    expect(cityCentres.map((c) => c.city).sort()).toEqual([...PERSON_CITIES].sort());
+    for (const c of cityCentres) {
+      expect(Math.round(c.lat * 10_000) / 10_000, c.city).toBe(c.lat);
+      expect(Math.round(c.lng * 10_000) / 10_000, c.city).toBe(c.lng);
+    }
+  });
+
+  it("never gives one interest word to two topics", () => {
+    const owner = new Map<string, string>();
+    const clashes: string[] = [];
+    for (const t of interestTopics) {
+      for (const term of new Set([t.key, t.label, ...t.aliases].map(normalizeSkillTerm))) {
+        const other = owner.get(term);
+        if (other && other !== t.key) clashes.push(`"${term}" → ${other} and ${t.key}`);
+        owner.set(term, t.key);
+      }
+    }
+    expect(clashes).toEqual([]);
+  });
+
+  it("has between 25 and 40 interest topics, each with its label among its aliases", () => {
+    expect(interestTopics.length).toBeGreaterThanOrEqual(25);
+    expect(interestTopics.length).toBeLessThanOrEqual(40);
+    for (const t of interestTopics) expect(t.aliases, t.key).toContain(t.label.toLowerCase());
   });
 });
