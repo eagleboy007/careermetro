@@ -11961,5 +11961,863 @@
     ],
     "minutes": 1800,
     "free": true
+  },
+  {
+    "title": "Product discovery: how the discovery phase works",
+    "url": "https://www.gov.uk/service-manual/agile-delivery/how-the-discovery-phase-works",
+    "provider": "GOV.UK Service Manual",
+    "kind": "docs",
+    "skillIds": [
+      "product-discovery"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Angular essentials",
+    "url": "https://angular.dev/essentials",
+    "provider": "Angular",
+    "kind": "docs",
+    "skillIds": [
+      "angular"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "The value of Liberating Structures for Scrum Masters",
+    "url": "https://www.scrum.org/resources/blog/value-liberating-structures-scrum-masters",
+    "provider": "Scrum.org",
+    "kind": "docs",
+    "skillIds": [
+      "agile-coaching"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Scrum and the Evidence-Based Management approach",
+    "url": "https://www.scrum.org/resources/blog/scrum-evidence-based-management-approach",
+    "provider": "Scrum.org",
+    "kind": "docs",
+    "skillIds": [
+      "agile-metrics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Agile Release Train",
+    "url": "https://framework.scaledagile.com/agile-release-train",
+    "provider": "Scaled Agile Framework",
+    "kind": "docs",
+    "skillIds": [
+      "scaled-agile"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Release Train Engineer",
+    "url": "https://scaledagileframework.com/release-train-engineer",
+    "provider": "Scaled Agile Framework",
+    "kind": "docs",
+    "skillIds": [
+      "scaled-agile"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Demystifying the Fibre Channel SAN protocol",
+    "url": "https://snia.org/blog/2021/demystifying-fibre-channel-san-protocol",
+    "provider": "SNIA",
+    "kind": "docs",
+    "skillIds": [
+      "san-storage"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Architect: sharing and visibility trailmix",
+    "url": "https://trailhead.salesforce.com/users/strailhead/trailmixes/architect-sharing-and-visibility",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-security-model"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Build Flows with Flow Builder (trail)",
+    "url": "https://trailhead.salesforce.com/content/learn/trails/build-flows-with-flow-builder",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-flows"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Flow concepts: quick look",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/flow-concepts-quick-look",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "salesforce-flows"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Symfony documentation: getting started",
+    "url": "https://symfony.com/doc/current/index.html",
+    "provider": "Symfony",
+    "kind": "docs",
+    "skillIds": [
+      "php-frameworks"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "ROS 2 basic concepts",
+    "url": "https://docs.ros.org/en/rolling/Concepts/Basic.html",
+    "provider": "Open Robotics",
+    "kind": "docs",
+    "skillIds": [
+      "ros"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Understanding Kalman Filters (video series)",
+    "url": "https://au.mathworks.com/videos/series/understanding-kalman-filters.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "sensor-fusion"
+    ],
+    "minutes": 50,
+    "free": true
+  },
+  {
+    "title": "Setting up a robot simulation with Gazebo (ROS 2 Jazzy)",
+    "url": "https://docs.ros.org/en/jazzy/Tutorials/Advanced/Simulators/Gazebo/Gazebo.html",
+    "provider": "Open Robotics",
+    "kind": "docs",
+    "skillIds": [
+      "robot-simulation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "GNU Bash manual",
+    "url": "https://www.gnu.org/s/bash/manual/",
+    "provider": "GNU Project",
+    "kind": "docs",
+    "skillIds": [
+      "scripting-bash"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Get started with ABAP development on-premise",
+    "url": "https://developers.sap.com/tutorials/mission-get-started-with-abap-development-on-premise",
+    "provider": "SAP Developers",
+    "kind": "course",
+    "skillIds": [
+      "sap-abap"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "KICKOFF: project management basics",
+    "url": "https://www.pmi.org/kickoff",
+    "provider": "Project Management Institute",
+    "kind": "course",
+    "skillIds": [
+      "it-project-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Getting started with single-spa (micro-frontends)",
+    "url": "https://single-spa.js.org/docs/getting-started-overview",
+    "provider": "single-spa",
+    "kind": "docs",
+    "skillIds": [
+      "frontend-architecture"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Google code review: the CL author's guide",
+    "url": "https://google.github.io/eng-practices/review/developer",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "code-review"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Strategic Sourcing (NPTEL, IIT Madras)",
+    "url": "https://nptel.ac.in/courses/110106435",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "it-vendor-management"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Oracle Dev Gym: PL/SQL quizzes, workouts and classes",
+    "url": "https://devgym.oracle.com/pls/apex/dg/competition/plsql",
+    "provider": "Oracle",
+    "kind": "practice",
+    "skillIds": [
+      "database-programming"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Create and modify analyses and dashboards (OTBI)",
+    "url": "https://docs.oracle.com/en/cloud/saas/sales/facaa/create-and-modify-analyses-and-dashboards.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-bi-publisher-otbi"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Low-Code App Builder mission",
+    "url": "https://academy.pega.com/mission/low-code-app-builder/v5",
+    "provider": "Pega Academy",
+    "kind": "course",
+    "skillIds": [
+      "pega-platform"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SAP SuccessFactors Employee Central Core Academy",
+    "url": "https://learning.sap.com/courses/sap-successfactors-employee-central-core-academy",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-successfactors-employee-central"
+    ],
+    "minutes": 540,
+    "free": true
+  },
+  {
+    "title": "ServiceNow Integration Hub available spokes",
+    "url": "https://docs.servicenow.com/bundle/washingtondc-integrate-applications/page/administer/integrationhub/reference/spokes-list.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-flow-designer"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "NowCommunity live stream: Flow Designer deep dive",
+    "url": "https://www.servicenow.com/community/developer-blog/video-nowcommunity-live-stream-topical-deep-dive-flow-designer/ba-p/2281073",
+    "provider": "ServiceNow Developer Program",
+    "kind": "video",
+    "skillIds": [
+      "servicenow-flow-designer"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Build your first automation with Studio",
+    "url": "https://academy.uipath.com/courses/build-your-first-automation-with-studio",
+    "provider": "UiPath Academy",
+    "kind": "course",
+    "skillIds": [
+      "uipath"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Creating your first bots",
+    "url": "https://developer.automationanywhere.com/learn/bot-developer-journey/creating-your-first-bots",
+    "provider": "Automation Anywhere",
+    "kind": "course",
+    "skillIds": [
+      "automation-anywhere"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Get started with Power Automate for desktop",
+    "url": "https://learn.microsoft.com/en-in/power-automate/desktop-flows/getting-started-freeorg",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "power-automate"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Using the Fabric test network",
+    "url": "https://github.com/hyperledger/fabric/blob/master/docs/source/test_network.md",
+    "provider": "Hyperledger Fabric",
+    "kind": "docs",
+    "skillIds": [
+      "hyperledger-fabric"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "The PLC standard IEC 61131-3",
+    "url": "https://infosys.beckhoff.com/content/1033/tcquickstart/5281654411.html",
+    "provider": "Beckhoff",
+    "kind": "docs",
+    "skillIds": [
+      "plc-iec-61131-programming"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Microsoft Dataverse documentation",
+    "url": "https://learn.microsoft.com/en-us/powerapps/maker/data-platform",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "dataverse"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "PAN-OS administrator's guide: getting started",
+    "url": "https://docs.paloaltonetworks.com/pan-os/10-0/pan-os-admin/getting-started",
+    "provider": "Palo Alto Networks",
+    "kind": "docs",
+    "skillIds": [
+      "firewall-platforms"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Computer Networks and Internet Protocol (NPTEL, IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/106105183",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "routing-switching"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Apex Developer Guide: writing Apex",
+    "url": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_writing.htm",
+    "provider": "Salesforce Developers",
+    "kind": "docs",
+    "skillIds": [
+      "salesforce-apex"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Getting started with MkDocs",
+    "url": "https://mkdocs.readthedocs.io/en/latest/getting-started/",
+    "provider": "MkDocs",
+    "kind": "docs",
+    "skillIds": [
+      "docs-as-code"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Create with VR",
+    "url": "https://learn.unity.com/course/create-with-vr",
+    "provider": "Unity Learn",
+    "kind": "course",
+    "skillIds": [
+      "xr-development"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Creative Core pathway",
+    "url": "https://learn.unity.com/pathway/creative-core",
+    "provider": "Unity Learn",
+    "kind": "course",
+    "skillIds": [
+      "unity-engine"
+    ],
+    "minutes": 3000,
+    "free": true
+  },
+  {
+    "title": "CPU flame graphs",
+    "url": "https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html",
+    "provider": "Brendan Gregg",
+    "kind": "docs",
+    "skillIds": [
+      "performance-profiling"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Scala online courses (Scala Center, EPFL)",
+    "url": "https://docs.scala-lang.org/online-courses.html",
+    "provider": "Scala Center",
+    "kind": "course",
+    "skillIds": [
+      "scala"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Govern data in Microsoft Fabric with Purview",
+    "url": "https://learn.microsoft.com/en-us/training/modules/fabric-data-governance-purview",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "data-quality-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "MITRE ATT&CK for ICS matrix",
+    "url": "https://attack.mitre.org/matrices/ics/",
+    "provider": "MITRE",
+    "kind": "docs",
+    "skillIds": [
+      "ot-ics-security"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "IT change management: ITIL framework and best practices",
+    "url": "https://www.atlassian.com/itsm/change-management",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "itsm"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Example: create an inbound EIB (Workday admin guide)",
+    "url": "https://doc.workday.com/admin-guide/en-us/student/student-financials/student-charges/student-charges-concepts-and-examples/common-eib-examples/example--create-eib-for-student-charges.html",
+    "provider": "Workday",
+    "kind": "docs",
+    "skillIds": [
+      "workday-integrations"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Programming with C++ in Unreal Engine",
+    "url": "https://dev.epicgames.com/documentation/unreal-engine/programming-with-cplusplus-in-unreal-engine?lang=en-US",
+    "provider": "Epic Games",
+    "kind": "docs",
+    "skillIds": [
+      "unreal-engine"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Learning to rank (LTR) in Elasticsearch",
+    "url": "https://www.elastic.co/docs/solutions/search/ranking/learning-to-rank-ltr",
+    "provider": "Elastic",
+    "kind": "docs",
+    "skillIds": [
+      "search-relevance-ranking"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Manage users, licenses, guests and contacts in Microsoft 365",
+    "url": "https://learn.microsoft.com/en-us/training/modules/manage-user-accounts-licenses-microsoft-365",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "m365-administration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Submitting patches: the essential guide",
+    "url": "https://docs.kernel.org/process/submitting-patches.html",
+    "provider": "The Linux Kernel",
+    "kind": "docs",
+    "skillIds": [
+      "linux-kernel-development"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "SAP S/4HANA System Administration",
+    "url": "https://learning.sap.com/courses/sap-s-4hana-system-administration",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-basis-administration"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Nasdaq TotalView-ITCH specification",
+    "url": "https://nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf",
+    "provider": "Nasdaq",
+    "kind": "docs",
+    "skillIds": [
+      "trading-systems-market-data"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Digital Circuits (NPTEL, IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc19_ee51/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "digital-logic-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Automated Driving Toolbox: ADAS applications",
+    "url": "https://se.mathworks.com/help/driving/automated-driving-applications.html",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "adas-functions"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "CCP and XCP on CAN explained",
+    "url": "https://csselectronics.com/pages/ccp-xcp-on-can-bus-calibration-protocol",
+    "provider": "CSS Electronics",
+    "kind": "docs",
+    "skillIds": [
+      "ecu-measurement-calibration"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Getting started with Data Integration Free Service",
+    "url": "https://success.informatica.com/videos/support-videos/D5Y1JR3cDeM.html",
+    "provider": "Informatica",
+    "kind": "video",
+    "skillIds": [
+      "informatica"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Deploy packages with SSIS (tutorial)",
+    "url": "https://learn.microsoft.com/en-us/sql/integration-services/deploy-packages-with-ssis?view=sql-server-ver17",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "ssis"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Creating your first Job in Talend Studio",
+    "url": "https://help.qlik.com/talend/en-US/studio-getting-started-guide-data-integration/8.0/creating-your-first-job",
+    "provider": "Qlik Talend",
+    "kind": "docs",
+    "skillIds": [
+      "talend"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Autopsy user documentation",
+    "url": "https://sleuthkit.org/autopsy/docs/user-docs/4.23.0/pages.html",
+    "provider": "Sleuth Kit",
+    "kind": "docs",
+    "skillIds": [
+      "forensic-tool-suites"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Bellingcat Online Investigations Toolkit",
+    "url": "https://bellingcat.gitbook.io/toolkit",
+    "provider": "Bellingcat",
+    "kind": "docs",
+    "skillIds": [
+      "osint"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Product demos: quick look",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/product-demos-quick-look",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "solution-demos-poc"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "A quick look at Teamcenter using Active Workspace",
+    "url": "https://blogs.sw.siemens.com/teamcenter/a-quick-look-at-teamcenter-using-active-workspace/",
+    "provider": "Siemens",
+    "kind": "docs",
+    "skillIds": [
+      "teamcenter-customization"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "PLM administration tools to deploy custom software",
+    "url": "https://blogs.sw.siemens.com/teamcenter/plm-administration-tools-to-deploy-custom-software-in-three-easy-steps/",
+    "provider": "Siemens",
+    "kind": "docs",
+    "skillIds": [
+      "teamcenter-customization"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Windchill user interface customization",
+    "url": "https://support.ptc.com/help/windchill/r12.1.2.0/en/Windchill_Help_Center/customization/CustomizersGuide_section_02_Intro.html",
+    "provider": "PTC",
+    "kind": "docs",
+    "skillIds": [
+      "windchill-customization"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Autotronics (NPTEL)",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_me101/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "vehicle-electrical-troubleshooting"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Getting started with AWS Glue Data Quality",
+    "url": "https://docs.aws.amazon.com/glue/latest/dg/data-quality-getting-started.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "data-testing-observability"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "What is CICS?",
+    "url": "https://ibm.com/support/pages/what-cics",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "cics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "HDLBits: Verilog practice problems",
+    "url": "https://hdlbits.01xz.net/wiki/Main_Page",
+    "provider": "HDLBits",
+    "kind": "practice",
+    "skillIds": [
+      "verilog-rtl"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Exercism Tcl track: how to learn Tcl",
+    "url": "https://exercism.org/docs/tracks/tcl/learning",
+    "provider": "Exercism",
+    "kind": "practice",
+    "skillIds": [
+      "eda-scripting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Oracle Fusion Cloud ERP: Common Features Fundamentals",
+    "url": "https://mylearn.oracle.com/course/~/165175",
+    "provider": "Oracle University",
+    "kind": "course",
+    "skillIds": [
+      "oracle-fusion-cloud"
+    ],
+    "minutes": 644,
+    "free": true
+  },
+  {
+    "title": "Build your second integration from scratch (Oracle Integration 3)",
+    "url": "https://docs.oracle.com/en/cloud/paas/application-integration/integrations-user/build-your-second-integration-from-scratch.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-integration-cloud"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Creating and loading files with HCM Data Loader",
+    "url": "https://www.oracle.com/webfolder/technetwork/tutorials/obe/fusionapps/HCM/CreateLoadHDLFile/index.html",
+    "provider": "Oracle",
+    "kind": "course",
+    "skillIds": [
+      "oracle-fusion-data-loads"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "LTE drive test: how to benefit from using a TSMW scanner",
+    "url": "https://www.rohde-schwarz.com/us/applications/lte-drive-test-how-to-benefit-from-using-a-r-s-tsmw-application-note_56280-15425.html",
+    "provider": "Rohde & Schwarz",
+    "kind": "docs",
+    "skillIds": [
+      "drive-test-analysis"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Get started with Adobe Commerce for developers",
+    "url": "https://experienceleague.adobe.com/en/playlists/commerce-get-started-for-developers",
+    "provider": "Adobe Experience League",
+    "kind": "video",
+    "skillIds": [
+      "adobe-commerce-magento"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "UVM 1.2 User's Guide",
+    "url": "https://www.accellera.org/images/downloads/standards/uvm/uvm_users_guide_1.2.pdf",
+    "provider": "Accellera",
+    "kind": "docs",
+    "skillIds": [
+      "systemverilog-uvm"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Record type tutorial (Appian)",
+    "url": "https://docs.appian.com/suite/help/26.3/Records_Tutorial.html",
+    "provider": "Appian",
+    "kind": "docs",
+    "skillIds": [
+      "appian-development"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Create your hello world app (ODC)",
+    "url": "https://success.outsystems.com/documentation/outsystems_developer_cloud/getting_started/create_your_hello_world_app/",
+    "provider": "OutSystems",
+    "kind": "docs",
+    "skillIds": [
+      "outsystems-development"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Introduction to service in Dynamics 365",
+    "url": "https://learn.microsoft.com/en-us/training/paths/introduction-service-dynamics-365/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "dynamics-365-ce"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Plan and implement an identity governance strategy",
+    "url": "https://learn.microsoft.com/en-us/training/paths/plan-implement-identity-governance-strategy/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "identity-governance"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Net revenue retention: how to calculate NRR",
+    "url": "https://www.gainsight.com/blog/net-revenue-retention/",
+    "provider": "Gainsight",
+    "kind": "docs",
+    "skillIds": [
+      "customer-retention-expansion"
+    ],
+    "minutes": 15,
+    "free": true
   }
 ]
