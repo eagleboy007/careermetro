@@ -10526,5 +10526,16 @@
     ],
     "minutes": 520,
     "free": true
+  },
+  {
+    "title": "Introduction to Presales",
+    "url": "https://www.presalescollective.com/academy/pre-sales",
+    "provider": "Presales Collective",
+    "kind": "course",
+    "skillIds": [
+      "solution-demos-poc"
+    ],
+    "minutes": 120,
+    "free": true
   }
 ]
