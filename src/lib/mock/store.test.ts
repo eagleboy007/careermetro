@@ -75,7 +75,8 @@ describe.skipIf(!db)("interview prep store (database)", () => {
 
   it("refuses a role without enough questions and one that doesn't exist", async () => {
     const me = await person();
-    expect(await startTimedTest(me, { roleSlug: "grc-manager" }, deps())).toEqual({ ok: false, error: "no_test" });
+    // Every role has draft multiple-choice questions now, so the refusal is the production one: none reviewed yet.
+    expect(await startTimedTest(me, { roleSlug: "accounts-executive" }, { ...deps(), allowUnreviewed: false })).toEqual({ ok: false, error: "no_test" });
     expect(await startTimedTest(me, { roleSlug: "astronaut" }, deps())).toEqual({ ok: false, error: "invalid" });
     expect(await startTimedTest(me, "data-analyst", deps())).toEqual({ ok: false, error: "invalid" });
   });

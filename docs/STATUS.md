@@ -52,4 +52,5 @@ The next migration is **0059**. `EXPORT_VERSION` is 39 (`src/lib/account/export.
 
 ## Recent
 
+- Draft Practice and timed-test questions (2026-10-31, branch `practice-drafts-2`, Development's own, awaiting expert review): 107 skills get 5 Practice questions (with open-bank twins and one follow-up) and 4 timed-test questions each, so every role has at least 15 Practice and 12 timed-test questions on its own skills (accounts and mechanical GET roles 20 and 16); all `reviewed: false` and dropped in production by `withoutDrafts` (`src/content/index.ts`); review pack regenerated (670 Practice, 486 timed-test lines).
 - Small fixes (2026-10-31): /design's React #418 came from dates written with Intl on both sides of hydration (Node's and the browser's ICU can differ, e.g. "Sept" against "Sep" on the example applicants); client-rendered dates now use `src/lib/day-words.ts`, guarded by a client-bundle test, and the walk's untick waits for hydration and the save. The `mapLineFor` test compares its two reads inside one repeatable-read snapshot. Dead boards ashby/cartesia and lever/employ removed (279). This page cut from 94k characters to the current state.

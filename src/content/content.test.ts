@@ -6,8 +6,8 @@ import { normalizeForMatch } from "@/lib/resume/verify";
 import { MAX_GAPS, PERSON_CITIES, requiredUnits, skillGroups } from "@/lib/schemas";
 import { mentions } from "@/lib/mock/interview";
 import mockBankRaw from "./mock-bank.json";
-import { bankViewFor, followUpsOf, mockRoles } from "@/lib/mock/rules";
-import { certifications, cityCentres, eliteShelfEntries, interestTopics, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills } from ".";
+import { ABOUT_SKILLS, bankViewFor, followUpsOf, mockRoles } from "@/lib/mock/rules";
+import { certifications, cityCentres, eliteShelfEntries, interestTopics, mockQuestions, normalizeSkillTerm, practiceQuestions, proofTasks, resources, roleProfiles, skillIdByTerm, skills, withoutDrafts } from ".";
 
 describe("skill taxonomy", () => {
   it("has unique ids", () => {
@@ -179,6 +179,9 @@ describe("resource catalog", () => {
 // The practice bank (handoff 12h) is v1: 15 skills from Data research and 4 data-analyst skills (statistics, data
 // cleaning, data visualization, Excel) written by Development, plus 6 software-engineering skills from Data research
 // (DSA, OOP, unit testing, Java, JavaScript, C++; T127, 2026-10-26). Self-checked only; no expert has reviewed it yet.
+// Then 107 skills drafted by Development (2026-10-31) so every role has at least 15 Practice questions on skills of its
+// own and 12 timed-test questions (the accounts and mechanical GET roles 20 and 16), each marked `reviewed: false` and
+// hidden in production until someone who works in the role checks it.
 describe("practice question bank", () => {
   const known = new Set(skills.map((s) => s.id));
 
@@ -186,8 +189,39 @@ describe("practice question bank", () => {
     expect(practiceQuestions.filter((q) => !known.has(q.skillId)).map((q) => q.id)).toEqual([]);
     const perSkill = new Map<string, number>();
     for (const q of practiceQuestions) perSkill.set(q.skillId, (perSkill.get(q.skillId) ?? 0) + 1);
-    expect(perSkill.size).toBe(27);
+    expect(perSkill.size).toBe(134);
     expect([...perSkill].filter(([, n]) => n !== 5)).toEqual([]);
+    // A skill's questions are all drafts or none are, so a review signs off a whole skill.
+    const drafts = new Set(practiceQuestions.filter((q) => q.reviewed === false).map((q) => q.skillId));
+    expect(drafts.size).toBe(107);
+    expect(practiceQuestions.filter((q) => drafts.has(q.skillId) && q.reviewed !== false).map((q) => q.id)).toEqual([]);
+  });
+
+  it("gives every role questions on a skill of its own, beyond the about-you ones", () => {
+    const asked = new Set(practiceQuestions.filter((q) => !ABOUT_SKILLS.has(q.skillId)).map((q) => q.skillId));
+    expect(roleProfiles.filter((r) => !r.skills.some((s) => asked.has(s.skillId))).map((r) => r.slug)).toEqual([]);
+  });
+
+  it("gives every role at least 15 Practice and 12 timed-test questions on its own skills, and the accounts and mechanical GET roles 20 and 16", () => {
+    const deeper = new Set(["accounts-executive", "article-assistant-ca", "audit-associate", "cost-accountant", "payroll-executive", "tax-associate", "graduate-engineer-trainee-mechanical"]);
+    const thin = roleProfiles.flatMap((r) => {
+      const own = new Set(r.skills.map((s) => s.skillId).filter((id) => !ABOUT_SKILLS.has(id)));
+      const p = practiceQuestions.filter((q) => own.has(q.skillId)).length;
+      const c = mockQuestions.filter((q) => q.kind === "choice" && own.has(q.skillId)).length;
+      const [floorP, floorC] = deeper.has(r.slug) ? [20, 16] : [15, 12];
+      return p < floorP || c < floorC ? [[r.slug, p, c]] : [];
+    });
+    expect(thin).toEqual([]);
+  });
+
+  it("leaves draft Practice and open bank questions out in production, and keeps multiple-choice ones for the rules to pick", () => {
+    expect(withoutDrafts(practiceQuestions, true)).toEqual(practiceQuestions);
+    const live = withoutDrafts(practiceQuestions, false);
+    expect(live.length).toBe(practiceQuestions.length - 535);
+    expect(live.some((q) => q.reviewed === false)).toBe(false);
+    const bank = withoutDrafts(mockQuestions, false);
+    expect(bank.some((q) => q.kind === "open" && q.reviewed === false)).toBe(false);
+    expect(bank.filter((q) => q.kind === "choice")).toEqual(mockQuestions.filter((q) => q.kind === "choice"));
   });
 
   it("has unique ids and no question twice", () => {
@@ -215,8 +249,13 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
     expect(open.map((q) => q.id).sort()).toEqual(practiceQuestions.map((q) => q.id).sort());
     for (const q of open) {
       const p = practiceQuestions.find((x) => x.id === q.id)!;
-      expect(q.kind === "open" && [q.skillId, q.question, q.strongCovers, q.level]).toEqual([p.skillId, p.question, p.lookFor, p.level]);
+      expect(q.kind === "open" && [q.skillId, q.question, q.strongCovers, q.level, q.reviewed]).toEqual([p.skillId, p.question, p.lookFor, p.level, p.reviewed]);
     }
+  });
+
+  it("gives every role multiple-choice questions on a skill of its own", () => {
+    const choice = mockQuestions.filter((q) => q.kind === "choice");
+    expect(roleProfiles.filter((r) => !choice.some((q) => q.roleSlugs.includes(r.slug))).map((r) => r.slug)).toEqual([]);
   });
 
   it("files each question under exactly the roles whose profile has its skill", () => {
@@ -267,7 +306,7 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
 
   it("gives every open question one or two follow-ups, numbered in order, each its own text", () => {
     const open = mockQuestions.filter((q) => q.kind === "open");
-    expect(open).toHaveLength(135);
+    expect(open).toHaveLength(670);
     for (const q of open) {
       const ups = followUpsOf(q, true);
       expect([q.id, ups.length >= 1 && ups.length <= 2]).toEqual([q.id, true]);
