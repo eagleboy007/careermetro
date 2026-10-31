@@ -67,8 +67,14 @@
     },
     {
       "skillId": "salesforce-clouds",
-      "importance": "nice_to_have",
+      "importance": "required",
       "expectation": "Know the data model of Sales Cloud, Service Cloud or Experience Cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "salesforce-security-model",
+      "importance": "required",
+      "expectation": "Respect profiles, permission sets and sharing rules in code, with sharing, CRUD and field-level security checks",
       "postingShare": null
     },
     {
@@ -121,5 +127,5 @@
     }
   ],
   "reviewedBy": null,
-  "updatedOn": "2026-10-30"
+  "updatedOn": "2026-10-31"
 }

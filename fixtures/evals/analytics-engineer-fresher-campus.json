@@ -1,0 +1,55 @@
+{
+  "id": "analytics-engineer-fresher-campus",
+  "roleSlug": "analytics-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni26@example.com | +91 98220 41xxx\n\nEDUCATION\nB.Tech Computer Engineering, Pune Institute of Computer Technology, Pune (2022 - 2026) | CGPA 8.4/10\nClass XII, Fergusson College, Pune (2022) | 89%\n\nINTERNSHIPS\nData Analyst Intern, Kaveri Retail Analytics, Pune (May 2025 - July 2025, 10 weeks)\n- Wrote SQL queries on PostgreSQL to pull weekly sales by store and category for the merchandising team.\n- Built dbt models that turned raw order and product tables into a clean sales mart.\n- Used ROW_NUMBER and LAG window functions to find repeat customers and days between orders.\n- Pushed all model changes through Git branches and pull requests reviewed by my mentor.\n\nPROJECTS\nCricket Stats Warehouse (personal project, 2025)\n- Designed a star schema with a match fact table and player, venue and season dimensions.\n- Loaded 15 seasons of IPL ball-by-ball data from CSV files into PostgreSQL.\n- Built a Metabase dashboard showing strike rate and economy trends by season.\n\nLibrary Management System (DBMS course project, 2024)\n- Built a normalised MySQL database for book issues and returns as part of the DBMS course.\n\nCOURSEWORK AND CERTIFICATIONS\nDatabase Management Systems, Data Warehousing and Mining, Probability and Statistics\ndbt Fundamentals (dbt Learn, 2025)\n\nSKILLS\nSQL, PostgreSQL, MySQL, dbt, Python (basics), Git, Metabase, BigQuery (sandbox), Excel\n\nACTIVITIES\nTreasurer, PICT Data Science Club (2024 - 2025)\nVolunteer, Pune Marathon 2024\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries on PostgreSQL to pull weekly sales"
+      },
+      {
+        "skillId": "dbt",
+        "quote": "Built dbt models that turned raw order and product tables"
+      },
+      {
+        "skillId": "sql-window-functions",
+        "quote": "Used ROW_NUMBER and LAG window functions to find repeat customers"
+      },
+      {
+        "skillId": "data-modeling",
+        "quote": "Designed a star schema with a match fact table"
+      },
+      {
+        "skillId": "git",
+        "quote": "Pushed all model changes through Git branches and pull requests"
+      },
+      {
+        "skillId": "cloud-data-warehouse",
+        "quote": "SQL, PostgreSQL, MySQL, dbt, Python (basics), Git, Metabase, BigQuery (sandbox), Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cloud-data-warehouse",
+        "status": "weak"
+      },
+      {
+        "skillId": "data-quality-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "semantic-layer",
+      "data-orchestration",
+      "ci-cd"
+    ]
+  },
+  "reviewedBy": null
+}

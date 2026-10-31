@@ -1,0 +1,55 @@
+{
+  "id": "ui-ux-designer-fresher-campus",
+  "roleSlug": "ui-ux-designer",
+  "persona": "fresher-campus",
+  "resumeText": "Meera Pillai | Bengaluru | meera.pillai@example.com | +91 99720 46318\n\nEDUCATION\nB.Des Interaction Design, Srishti Manipal Institute of Art, Design and Technology, Bengaluru, 2022 - 2026, CGPA 8.5/10\n\nINTERNSHIPS\nUI/UX Design Intern, Kadamba Product Studio, Bengaluru (May 2025 - July 2025, 10 weeks)\n- Designed screens in Figma for the checkout flow of a grocery delivery app.\n- Sketched low-fidelity wireframes for the order tracking and refund pages.\n- Built a clickable Figma prototype of the new checkout for stakeholder review.\n\nPROJECTS\n- Campus Canteen App: interviewed 10 students about ordering habits and turned the findings into personas and a journey map.\n- Redesigned the college library website and presented the redesign to the college IT committee.\n\nCOURSEWORK AND CERTIFICATIONS\nInteraction Design Studio, Visual Design, Design Research Methods\nGoogle UX Design Professional Certificate (Coursera, 2025)\n\nSKILLS\nFigma, Wireframing, Prototyping, User interviews, Usability testing, Micro-interactions, Adobe Illustrator\n\nACTIVITIES\nDesign lead, college cultural fest; made posters and the event microsite.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "figma",
+        "quote": "Designed screens in Figma for the checkout flow"
+      },
+      {
+        "skillId": "wireframing",
+        "quote": "Sketched low-fidelity wireframes for the order tracking and refund pages"
+      },
+      {
+        "skillId": "prototyping",
+        "quote": "Built a clickable Figma prototype of the new checkout"
+      },
+      {
+        "skillId": "ux-research",
+        "quote": "interviewed 10 students about ordering habits"
+      },
+      {
+        "skillId": "communication",
+        "quote": "presented the redesign to the college IT committee"
+      },
+      {
+        "skillId": "usability-testing",
+        "quote": "Figma, Wireframing, Prototyping, User interviews, Usability testing, Micro-interactions, Adobe Illustrator"
+      },
+      {
+        "skillId": "interaction-design",
+        "quote": "Figma, Wireframing, Prototyping, User interviews, Usability testing, Micro-interactions, Adobe Illustrator"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "usability-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "interaction-design",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "design-systems",
+      "accessibility",
+      "html-css"
+    ]
+  },
+  "reviewedBy": null
+}

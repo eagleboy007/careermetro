@@ -1,0 +1,51 @@
+{
+  "id": "procurement-executive-fresher-campus",
+  "roleSlug": "procurement-executive",
+  "persona": "fresher-campus",
+  "resumeText": "Aman Joshi | Pune | aman.joshi@example.com | +91 98500 63918\n\nEDUCATION\nBBA (Operations), Symbiosis Centre for Management Studies, Pune, 2023 - 2026, CGPA 7.9/10\n\nINTERNSHIPS\nPurchase Intern, Indrayani Auto Components, Chakan, Pune (May 2025 - July 2025, 8 weeks)\n- Raised 60 purchase orders for packaging and consumables after approval of requisitions.\n- Entered purchase requisitions and goods receipts in SAP MM.\n- Prepared comparison sheets of quotations from 4 vendors for corrugated boxes.\n- Built an Excel tracker of open purchase orders with VLOOKUP and conditional formatting.\n\nPROJECTS\n- Final-year project: study of vendor delivery delays at a Pune auto parts supplier.\n- Case study on make-or-buy decisions for a two-wheeler component (Operations Management course).\n\nCOURSEWORK AND CERTIFICATIONS\nSupply Chain Management, Materials Management, Business Law\nSAP MM fundamentals (NIIT, 2025)\n\nSKILLS\nSAP MM, MS Excel, Vendor sourcing, GST basics, Purchase orders, Marathi, Hindi, English\n\nACTIVITIES\nLogistics head, college fest \"Symbhav\"; managed purchase of stage and sound equipment within budget.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "purchase-order-processing",
+        "quote": "Raised 60 purchase orders for packaging and consumables"
+      },
+      {
+        "skillId": "erp-purchasing",
+        "quote": "Entered purchase requisitions and goods receipts in SAP MM"
+      },
+      {
+        "skillId": "rfq-quotation-comparison",
+        "quote": "Prepared comparison sheets of quotations from 4 vendors"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built an Excel tracker of open purchase orders"
+      },
+      {
+        "skillId": "vendor-sourcing-development",
+        "quote": "SAP MM, MS Excel, Vendor sourcing, GST basics, Purchase orders, Marathi, Hindi, English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "vendor-sourcing-development",
+        "status": "weak"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "status": "missing"
+      },
+      {
+        "skillId": "vendor-onboarding",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "procurement-analytics",
+      "inventory-planning-optimization",
+      "accounts-payable-receivable"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,63 @@
+{
+  "id": "salesforce-developer-fresher-campus",
+  "roleSlug": "salesforce-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Harsh Vardhan Singh | Indore | harsh.singh@example.com | +91 99260 31845\n\nEDUCATION\nB.Tech Computer Science, Shri Govindram Seksaria Institute of Technology and Science, Indore, 2022 - 2026, CGPA 8.0/10\n\nINTERNSHIPS\nSalesforce Developer Intern, Malwa CloudWorks, Indore (June 2025 - August 2025, 10 weeks)\n- Wrote Apex triggers to create follow-up tasks when an opportunity moved to Negotiation.\n- Built a Lightning Web Component that lists a customer's open cases on the account page.\n- Built a record-triggered flow to send an email alert when a high-priority case is created.\n\nPROJECTS\n- College Placement Tracker: custom objects, validation rules and reports in a Salesforce Developer Edition org.\n- Weather widget in HTML, CSS and JavaScript using a public weather API.\n\nCOURSEWORK AND CERTIFICATIONS\nSalesforce Certified Platform Developer I (2025)\nSalesforce Trailhead Ranger; Database Management Systems; Software Engineering\n\nSKILLS\nApex, SOQL, Lightning Web Components, Salesforce Flow, JavaScript, HTML, CSS, Git\n\nACTIVITIES\nVolunteer, Trailblazer Community student group, Indore.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "salesforce-apex",
+        "quote": "Wrote Apex triggers to create follow-up tasks"
+      },
+      {
+        "skillId": "salesforce-lwc",
+        "quote": "Built a Lightning Web Component that lists a customer's open cases"
+      },
+      {
+        "skillId": "salesforce-flows",
+        "quote": "Built a record-triggered flow to send an email alert"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Apex, SOQL, Lightning Web Components, Salesforce Flow, JavaScript, HTML, CSS, Git"
+      },
+      {
+        "skillId": "git",
+        "quote": "Apex, SOQL, Lightning Web Components, Salesforce Flow, JavaScript, HTML, CSS, Git"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "javascript",
+        "status": "weak"
+      },
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      },
+      {
+        "skillId": "git",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "salesforce-clouds",
+        "status": "missing"
+      },
+      {
+        "skillId": "salesforce-security-model",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "ci-cd",
+      "unit-testing",
+      "salesforce-clouds"
+    ]
+  },
+  "reviewedBy": null
+}

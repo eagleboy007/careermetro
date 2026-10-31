@@ -1,0 +1,60 @@
+{
+  "id": "technical-support-engineer-fresher-campus",
+  "roleSlug": "technical-support-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Kavya Sharma | Jaipur | kavya.sharma@example.com\n\nEDUCATION\nBCA, Manipal University Jaipur, 2026 | CGPA 8.1/10\n\nINTERNSHIPS\nTechnical Support Intern, Pinkcity SaaS Labs Pvt Ltd (billing software), Jaipur | Jan 2026 - Mar 2026 (10 weeks)\n- Answered 25 customer tickets a day in Freshdesk within the 4-hour response SLA.\n- Reproduced invoice export errors in the product and found that wrong GST settings caused most of them.\n- Wrote SQL queries to check customer invoice records before escalating data issues.\n- Used Postman to replay failed API calls and read HTTP status codes in the logs.\n- Wrote 8 knowledge base articles on common billing setup questions.\n\nCustomer Support Intern, Amer Telecom Services, Jaipur | June 2025 - July 2025 (6 weeks)\n- Handled broadband complaint calls and logged them in the CRM.\n\nPROJECTS\n- Helpdesk Ticket System: PHP and MySQL web app where students raise and track lab issues.\n- Home network setup guide: Wrote a step-by-step guide for router setup for the Computer Networks course.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Computer Networks, DBMS, Web Technologies, Operating Systems\n- Google IT Support Professional Certificate (Coursera), 2025\n\nSKILLS\nFreshdesk, SQL, MySQL, Postman, Jira, DNS and HTTP basics, Windows, HTML, English, Hindi\n\nACTIVITIES\n- Anchor for the college annual day, 2025.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "support-ticketing-tools",
+        "quote": "Answered 25 customer tickets a day in Freshdesk"
+      },
+      {
+        "skillId": "application-support",
+        "quote": "Reproduced invoice export errors in the product"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries to check customer invoice records"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Used Postman to replay failed API calls"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Wrote 8 knowledge base articles on common billing setup questions"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Freshdesk, SQL, MySQL, Postman, Jira, DNS and HTTP basics, Windows, HTML, English, Hindi"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Freshdesk, SQL, MySQL, Postman, Jira, DNS and HTTP basics, Windows, HTML, English, Hindi"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "networking-basics",
+        "status": "weak"
+      },
+      {
+        "skillId": "bug-tracking",
+        "status": "weak"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "aws",
+      "linux",
+      "api-testing"
+    ]
+  },
+  "reviewedBy": null
+}

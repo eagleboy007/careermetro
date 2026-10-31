@@ -1,0 +1,52 @@
+{
+  "id": "nodejs-developer-fresher-campus",
+  "roleSlug": "nodejs-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Vikram Singh | Noida, Uttar Pradesh | vikram.singh.node@example.com | github.com/vikrams-example\n\nEDUCATION\nB.Tech, Computer Science and Engineering, Sector 62 Institute of Information Technology, Noida (2022 - 2026) | CGPA 7.8/10\n\nINTERNSHIP\nBackend Developer Intern, Yamuna Logistics Tech, Noida (May 2025 - Jul 2025, 10 weeks)\n- Built Node.js and Express REST APIs for creating and tracking courier shipments.\n- Wrote PostgreSQL queries and migrations for the shipments and drivers tables.\n- Pushed features through Git feature branches and fixed review comments from the senior developer.\n\nPROJECTS\n- URL shortener (personal): Wrote a JavaScript backend with Express that generates short codes and counts clicks per link.\n- Hostel complaint API (academic, Software Engineering course): Built a REST API with JWT login for students to raise hostel complaints as part of the Software Engineering course.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Data Structures, DBMS, Computer Networks, Operating Systems, Software Engineering\n- Node.js course (online)\n\nSKILLS\nNode.js, Express, JavaScript, TypeScript (basics), PostgreSQL, Git, Postman, Linux basics\n\nACTIVITIES\n- Solved 250+ problems on Codeforces and LeetCode\n- Volunteer, college TEDx organising team\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "nodejs",
+        "quote": "Built Node.js and Express REST APIs for creating and tracking courier shipments"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Express REST APIs for creating and tracking courier shipments"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote PostgreSQL queries and migrations for the shipments and drivers tables"
+      },
+      {
+        "skillId": "git",
+        "quote": "Pushed features through Git feature branches"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Wrote a JavaScript backend with Express that generates short codes"
+      },
+      {
+        "skillId": "typescript",
+        "quote": "Node.js, Express, JavaScript, TypeScript (basics), PostgreSQL, Git, Postman, Linux basics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "typescript",
+        "status": "weak"
+      },
+      {
+        "skillId": "unit-testing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "nestjs",
+      "docker",
+      "microservices",
+      "messaging-queues"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,51 @@
+{
+  "id": "inside-sales-executive-fresher-campus",
+  "roleSlug": "inside-sales-executive",
+  "persona": "fresher-campus",
+  "resumeText": "Ishita Agarwal | Jaipur | ishita.agarwal@example.com | +91 94140 26893\n\nEDUCATION\nBBA (Marketing), Manipal University Jaipur, 2023 - 2026, CGPA 8.0/10\n\nINTERNSHIPS\nSales Development Intern, Ledgerly SaaS, Jaipur (Jan 2026 - Mar 2026, 10 weeks)\n- Researched and cold-called 40 small business prospects a day for an accounting software product.\n- Qualified inbound leads using BANT questions before passing them to account executives.\n- Logged every call, email and follow-up in Zoho CRM.\n\nMarketing Intern, Pink City Handicrafts, Jaipur (June 2025 - July 2025, 6 weeks)\n- Wrote Instagram posts and handled customer DMs for the online store.\n\nPROJECTS\n- Market survey of 120 Jaipur shop owners on billing software use (final-year project).\n- Sales role-play competition: placed second in the inter-college \"Pitch Perfect\" event.\n\nCOURSEWORK AND CERTIFICATIONS\nSales and Distribution Management, Consumer Behaviour, Business Communication\nHubSpot Inbound Sales Certification (2025)\n\nSKILLS\nCold calling, Lead qualification, Zoho CRM, Sales pipeline, MS Excel, English, Hindi\n\nACTIVITIES\nLed sponsorship pitches for the college marketing club, raising Rs 1.5 lakh from 9 local sponsors.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "b2b-prospecting",
+        "quote": "Researched and cold-called 40 small business prospects a day"
+      },
+      {
+        "skillId": "lead-qualification",
+        "quote": "Qualified inbound leads using BANT questions"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Logged every call, email and follow-up in Zoho CRM"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Led sponsorship pitches for the college marketing club"
+      },
+      {
+        "skillId": "pipeline-management",
+        "quote": "Cold calling, Lead qualification, Zoho CRM, Sales pipeline, MS Excel, English, Hindi"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "pipeline-management",
+        "status": "weak"
+      },
+      {
+        "skillId": "sales-engagement-tools",
+        "status": "missing"
+      },
+      {
+        "skillId": "solution-demos-poc",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "deal-closing",
+      "sales-forecasting",
+      "commercial-negotiation"
+    ]
+  },
+  "reviewedBy": null
+}

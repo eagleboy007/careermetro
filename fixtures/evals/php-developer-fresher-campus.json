@@ -1,0 +1,59 @@
+{
+  "id": "php-developer-fresher-campus",
+  "roleSlug": "php-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Harsh Patel | Ahmedabad | harsh.patel@example.com | github.com/harsh-php\n\nEDUCATION\nBCA, Gujarat University (L.J. Institute), Ahmedabad, 2026 | CGPA 8.0/10\n\nINTERNSHIPS\nPHP Developer Intern, Sabarmati Web Solutions Pvt Ltd, Ahmedabad | Dec 2025 - Mar 2026 (12 weeks)\n- Built order and invoice pages for a client's wholesale portal in Laravel.\n- Wrote MySQL queries and designed tables for products, orders and invoices.\n- Integrated the Razorpay REST API for online payments and handled payment callbacks.\n- Added AJAX search with JavaScript and jQuery on the product list page.\n- Turned Figma designs into responsive HTML and CSS pages with Bootstrap.\n\nWeb Intern, Navrang Digital, Ahmedabad | May 2025 - June 2025 (6 weeks)\n- Updated content and images on client WordPress websites.\n\nPROJECTS\n- College Event Portal: Core PHP and MySQL site where students register for events and download passes.\n- Hostel Complaint System: Laravel app with login for students and wardens for the final-year project.\n- Recipe blog: Static site with HTML, CSS and JavaScript.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Web Technologies, DBMS, Object Oriented Programming, Software Engineering\n- PHP with Laravel for beginners (Udemy), 2025\n\nSKILLS\nPHP, Laravel, CodeIgniter (basics), MySQL, JavaScript, jQuery, AJAX, HTML, CSS, Bootstrap, OOP, Git\n\nACTIVITIES\n- Built the website for the college cultural fest, 2025.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "php-frameworks",
+        "quote": "Built order and invoice pages for a client's wholesale portal in Laravel"
+      },
+      {
+        "skillId": "php",
+        "quote": "College Event Portal: Core PHP and MySQL site"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote MySQL queries and designed tables"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Integrated the Razorpay REST API for online payments"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Added AJAX search with JavaScript and jQuery"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "Turned Figma designs into responsive HTML and CSS pages"
+      },
+      {
+        "skillId": "oop",
+        "quote": "PHP, Laravel, CodeIgniter (basics), MySQL, JavaScript, jQuery, AJAX, HTML, CSS, Bootstrap, OOP, Git"
+      },
+      {
+        "skillId": "git",
+        "quote": "PHP, Laravel, CodeIgniter (basics), MySQL, JavaScript, jQuery, AJAX, HTML, CSS, Bootstrap, OOP, Git"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "oop",
+        "status": "weak"
+      },
+      {
+        "skillId": "git",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "unit-testing",
+      "seo",
+      "linux"
+    ]
+  },
+  "reviewedBy": null
+}

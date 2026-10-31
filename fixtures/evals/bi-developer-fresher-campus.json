@@ -1,0 +1,60 @@
+{
+  "id": "bi-developer-fresher-campus",
+  "roleSlug": "bi-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Sneha Iyer | Bengaluru, Karnataka | sneha.iyer.bi@example.com\n\nEDUCATION\nB.Tech, Information Technology, Dayananda Sagar Institute of Technology, Bengaluru (2022 - 2026) | CGPA 8.6/10\n\nINTERNSHIP\nData Analyst Intern (Power BI), Kaveri Retail Analytics, Bengaluru (May 2025 - Jul 2025, 12 weeks)\n- Built a Power BI sales dashboard for 40 stores showing daily revenue, footfall and top categories.\n- Cleaned and merged monthly Excel sales files with Power Query before loading them into the report.\n- Wrote SQL queries in MySQL to pull store-wise returns data for the dashboard.\n- Presented the dashboard to the regional sales manager and five store leads in a weekly review call.\n\nPROJECTS\n- IPL Analytics (personal): Designed an interactive Power BI report with bar charts, slicers and a map of match venues from ball-by-ball data.\n- Hospital Bed Tracker (academic, DBMS course): Designed tables for wards, beds and admissions and wrote SQL joins to report bed occupancy by ward.\n\nCERTIFICATIONS AND COURSEWORK\n- Microsoft PL-300 study path (in progress)\n- Coursework: DBMS, Data Warehousing and Mining, Probability and Statistics, Python Programming\n\nSKILLS\nPower BI, DAX basics, Power Query, SQL (MySQL), Star schema, ETL concepts, Excel, Python (pandas)\n\nACTIVITIES\n- Organised the department data hackathon with 200 participants\n- Classical dance (Bharatanatyam), performed at college annual day\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "power-bi",
+        "quote": "Built a Power BI sales dashboard for 40 stores"
+      },
+      {
+        "skillId": "power-query",
+        "quote": "Cleaned and merged monthly Excel sales files with Power Query"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries in MySQL to pull store-wise returns data"
+      },
+      {
+        "skillId": "data-visualization",
+        "quote": "Designed an interactive Power BI report with bar charts, slicers and a map"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented the dashboard to the regional sales manager and five store leads"
+      },
+      {
+        "skillId": "data-modeling",
+        "quote": "Power BI, DAX basics, Power Query, SQL (MySQL), Star schema, ETL concepts, Excel, Python (pandas)"
+      },
+      {
+        "skillId": "etl",
+        "quote": "Power BI, DAX basics, Power Query, SQL (MySQL), Star schema, ETL concepts, Excel, Python (pandas)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-modeling",
+        "status": "weak"
+      },
+      {
+        "skillId": "etl",
+        "status": "weak"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "tableau",
+      "azure",
+      "cloud-data-warehouse",
+      "sql-window-functions"
+    ]
+  },
+  "reviewedBy": null
+}

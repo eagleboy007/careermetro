@@ -1,0 +1,68 @@
+{
+  "id": "java-backend-developer-fresher-campus",
+  "roleSlug": "java-backend-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Pranav Iyer | Chennai | pranav.iyer@example.com | github.com/pranav-java\n\nEDUCATION\nB.Tech Information Technology, SRM Institute of Science and Technology, Chennai, 2026 | CGPA 8.7/10\n\nINTERNSHIPS\nJava Developer Intern, Adyar Software Solutions Pvt Ltd, Chennai | Jan 2026 - Apr 2026 (12 weeks)\n- Built REST endpoints in Spring Boot for a leave management module with validation and paging.\n- Wrote Java service classes using collections and streams to calculate leave balances.\n- Wrote MySQL queries and added an index that cut the leave report query from 3s to 300ms.\n- Raised pull requests in Git and fixed comments from code review.\n\nSoftware Intern, Velachery Tech Labs, Remote | June 2025 - July 2025 (6 weeks)\n- Fixed bugs in a JSP-based internal tool and wrote test cases in a spreadsheet.\n\nPROJECTS\n- Library Management System: Spring Boot and MySQL app with role-based login, designed with classes for books, members and loans following the repository pattern.\n- Online Quiz App: Java Swing desktop app for the OOP course.\n\nCOURSEWORK AND CERTIFICATIONS\n- Implemented AVL trees, heaps and graph algorithms in Java as part of the Data Structures course.\n- Oracle Certified Associate, Java SE 8 Programmer, 2025\n- Coursework: DBMS, Operating Systems, Computer Networks, Software Engineering\n\nSKILLS\nJava, Spring Boot, Hibernate, MySQL, REST APIs, Git, JUnit, Redis (basics), HTML, CSS\n\nACTIVITIES\n- 4-star on CodeChef; coordinator, college coding club.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "spring-boot",
+        "quote": "Built REST endpoints in Spring Boot for a leave management module"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Built REST endpoints in Spring Boot"
+      },
+      {
+        "skillId": "java",
+        "quote": "Wrote Java service classes using collections and streams"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote MySQL queries and added an index"
+      },
+      {
+        "skillId": "git",
+        "quote": "Raised pull requests in Git and fixed comments"
+      },
+      {
+        "skillId": "oop",
+        "quote": "designed with classes for books, members and loans following the repository pattern"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "quote": "Implemented AVL trees, heaps and graph algorithms in Java"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Java, Spring Boot, Hibernate, MySQL, REST APIs, Git, JUnit, Redis (basics), HTML, CSS"
+      },
+      {
+        "skillId": "nosql",
+        "quote": "Java, Spring Boot, Hibernate, MySQL, REST APIs, Git, JUnit, Redis (basics), HTML, CSS"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "unit-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "nosql",
+        "status": "weak"
+      },
+      {
+        "skillId": "system-design",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "microservices",
+      "messaging-queues",
+      "docker",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}

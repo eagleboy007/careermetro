@@ -1,0 +1,64 @@
+{
+  "id": "cyber-security-analyst-fresher-campus",
+  "roleSlug": "cyber-security-analyst",
+  "persona": "fresher-campus",
+  "resumeText": "Rahul Nair | Kochi, Kerala | rahul.nair.sec@example.com\n\nEDUCATION\nB.Tech, Computer Science and Engineering (Cyber Security), Rajagiri School of Engineering, Kochi (2022 - 2026) | CGPA 8.2/10\n\nINTERNSHIP\nSecurity Intern, Malabar InfoSec Services, Kochi (Jun 2025 - Jul 2025, 8 weeks)\n- Ran Nessus vulnerability scans on 30 lab servers and listed findings by CVSS score for the team lead.\n- Checked a client's test web app against the OWASP Top 10 and reported two stored XSS issues.\n\nPROJECTS\n- Home network scanner (personal): Wrote a Python script that uses nmap to find open ports on my home network and emails a daily summary.\n- Hardened lab server (academic, Network Security course): Configured an Ubuntu Linux server with firewall rules, SSH key login and fail2ban as part of the Network Security course.\n- Packet analysis (academic, Computer Networks course): Captured TCP/IP and DNS traffic in Wireshark and explained the three-way handshake in a lab report.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Computer Networks, Cryptography, Network Security, Operating Systems\n- Cisco Introduction to Cybersecurity; TryHackMe Pre-Security path\n\nSKILLS\nLinux, Python, Nmap, Wireshark, Burp Suite Community, Nessus, Splunk (basics), Networking\n\nACTIVITIES\n- Conducted a cyber hygiene workshop for 80 first-year students on phishing and passwords\n- CTF team member, college cyber club\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "vulnerability-management",
+        "quote": "Ran Nessus vulnerability scans on 30 lab servers"
+      },
+      {
+        "skillId": "application-security",
+        "quote": "Checked a client's test web app against the OWASP Top 10"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote a Python script that uses nmap to find open ports"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Configured an Ubuntu Linux server with firewall rules, SSH key login and fail2ban"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Captured TCP/IP and DNS traffic in Wireshark"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Conducted a cyber hygiene workshop for 80 first-year students"
+      },
+      {
+        "skillId": "siem",
+        "quote": "Linux, Python, Nmap, Wireshark, Burp Suite Community, Nessus, Splunk (basics), Networking"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "siem",
+        "status": "weak"
+      },
+      {
+        "skillId": "threat-detection",
+        "status": "missing"
+      },
+      {
+        "skillId": "security-incident-response",
+        "status": "missing"
+      },
+      {
+        "skillId": "aws",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "digital-forensics",
+      "malware-analysis",
+      "cloud-security",
+      "azure"
+    ]
+  },
+  "reviewedBy": null
+}

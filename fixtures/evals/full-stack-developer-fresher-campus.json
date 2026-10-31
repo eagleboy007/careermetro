@@ -1,0 +1,68 @@
+{
+  "id": "full-stack-developer-fresher-campus",
+  "roleSlug": "full-stack-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Arjun Patel | Ahmedabad, Gujarat | arjun.patel.mern@example.com | github.com/arjunp-example\n\nEDUCATION\nB.E., Computer Engineering, Sabarmati Institute of Engineering, Ahmedabad (2022 - 2026) | CGPA 8.3/10\n\nINTERNSHIP\nWeb Developer Intern, Sabarmati Web Studio, Ahmedabad (May 2025 - Jul 2025, 10 weeks)\n- Built React components for a restaurant booking site, including a date picker and booking form.\n- Added Express.js REST API endpoints in Node.js for creating and cancelling bookings.\n- Used Git branches and pull requests on GitHub for every feature with code review by the lead.\n\nPROJECTS\n- CampusKart (personal): Built a MERN marketplace where students sell used books; stored listings and users in MongoDB with Mongoose.\n- Portfolio site: Designed a responsive portfolio with HTML, CSS and Flexbox that scores 95 on Lighthouse.\n- Quiz app (academic, Web Technologies course): Wrote vanilla JavaScript for a timed quiz app with local scores as part of the Web Technologies course.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Data Structures and Algorithms, DBMS, Web Technologies, Operating Systems, Computer Networks\n- freeCodeCamp Responsive Web Design certification\n\nSKILLS\nJavaScript, React, Node.js, Express, MongoDB, HTML, CSS, Git, TypeScript (learning), Data Structures and Algorithms (C++)\n\nACTIVITIES\n- Solved 300+ problems on LeetCode\n- Organised the college hackathon website team\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "react",
+        "quote": "Built React components for a restaurant booking site"
+      },
+      {
+        "skillId": "nodejs",
+        "quote": "Added Express.js REST API endpoints in Node.js"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Added Express.js REST API endpoints in Node.js for creating and cancelling bookings"
+      },
+      {
+        "skillId": "git",
+        "quote": "Used Git branches and pull requests on GitHub for every feature"
+      },
+      {
+        "skillId": "nosql",
+        "quote": "stored listings and users in MongoDB with Mongoose"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "Designed a responsive portfolio with HTML, CSS and Flexbox"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Wrote vanilla JavaScript for a timed quiz app"
+      },
+      {
+        "skillId": "typescript",
+        "quote": "JavaScript, React, Node.js, Express, MongoDB, HTML, CSS, Git, TypeScript (learning), Data Structures and Algorithms (C++)"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "quote": "JavaScript, React, Node.js, Express, MongoDB, HTML, CSS, Git, TypeScript (learning), Data Structures and Algorithms (C++)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "typescript",
+        "status": "weak"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "status": "weak"
+      },
+      {
+        "skillId": "sql",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "docker",
+      "nextjs",
+      "graphql"
+    ]
+  },
+  "reviewedBy": null
+}

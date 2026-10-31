@@ -375,6 +375,18 @@ describe("matchProfile", () => {
     expect(statusOf(matchProfile(p, dataAnalyst, now), "python")).toBe("weak");
   });
 
+  it("reads a long skills line with a few four-word items and notes in brackets as a list (F0 fresher evals)", () => {
+    for (const line of [
+      "Tele-calling, MS Excel, Bucket-wise collections (0-30, 30+, 60+), RBI Fair Practices Code, CRM software, Hindi, English",
+      "Freshdesk, SQL, MySQL, Postman, Jira, DNS and HTTP basics, Windows, HTML, English, Hindi",
+      "Excel (financial modelling), PowerPoint, DCF, Comparables, IPO and QIP process (coursework), Capitaline, Bloomberg (basics)",
+    ])
+      expect(isListLine(line), line).toBe(true);
+    // Bullets stay use: they open with what the person did, or have fewer items.
+    expect(isListLine("Reconciled vendor ledgers, bank statements, GST returns and TDS entries, and filed monthly reports")).toBe(false);
+    expect(isListLine("Followed up with transporters on vehicle placement and delivery times")).toBe(false);
+  });
+
   it("reads present-tense bullets as use", () => {
     expect(statusOf(scan("data-analyst", ["Creating Power BI dashboards"]), "power-bi")).toBe("met");
     expect(statusOf(scan("data-analyst", ["Develop Power BI dashboards"]), "power-bi")).toBe("met");

@@ -1,0 +1,51 @@
+{
+  "id": "business-development-executive-fresher-campus",
+  "roleSlug": "business-development-executive",
+  "persona": "fresher-campus",
+  "resumeText": "Aditya Sharma | Jaipur | aditya.sharma.bba@example.com | +91 94140 77xxx\n\nEDUCATION\nBBA (Marketing), Manipal University Jaipur (2023 - 2026) | CGPA 7.6/10\nClass XII (Commerce), St. Anselm's School, Jaipur (2023) | 84%\n\nINTERNSHIPS\nSales Intern, LedgerLite Software, Jaipur (May 2025 - July 2025, 8 weeks)\n- Cold-called 300 small businesses from IndiaMART listings to offer our billing software.\n- Visited 35 retail shops and distributors in Jaipur with the area sales manager to give demos.\n- Logged every lead, call and follow-up in Zoho CRM.\n- Booked 22 demo meetings, 6 of which became paid subscriptions.\n\nMarketing Intern, Pink City Foods, Jaipur (December 2024 - January 2025, 6 weeks)\n- Ran a sampling stall in two malls and collected 400 customer feedback forms.\n\nPROJECTS\nMarket Study: Billing Software for Kirana Stores (final-year project, 2026)\n- Surveyed 60 kirana owners on what they pay for billing tools and why they switch.\n\nSponsorship Drive, college fest \"Elan\" (2025)\n- Pitched to 25 local brands and closed sponsorship deals worth Rs 2.4 lakh.\n\nCOURSEWORK\nSales and Distribution Management, Consumer Behaviour, Business Communication, Marketing Research\n\nSKILLS\nZoho CRM, Excel, Canva, proposal writing, cold calling, Hindi, English, Rajasthani\n\nACTIVITIES\nHead of Sponsorship, Elan fest committee (2024 - 2025)\nAnchored the freshers' welcome event for 600 students.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "b2b-prospecting",
+        "quote": "Cold-called 300 small businesses from IndiaMART listings"
+      },
+      {
+        "skillId": "field-sales-meetings",
+        "quote": "Visited 35 retail shops and distributors in Jaipur with the area sales manager"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Logged every lead, call and follow-up in Zoho CRM"
+      },
+      {
+        "skillId": "deal-closing",
+        "quote": "closed sponsorship deals worth Rs 2.4 lakh"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Anchored the freshers' welcome event for 600 students"
+      },
+      {
+        "skillId": "sales-proposals-quotations",
+        "quote": "Zoho CRM, Excel, Canva, proposal writing, cold calling, Hindi, English, Rajasthani"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sales-proposals-quotations",
+        "status": "weak"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sales-forecasting",
+      "pipeline-management",
+      "lead-qualification"
+    ]
+  },
+  "reviewedBy": null
+}

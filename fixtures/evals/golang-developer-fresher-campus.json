@@ -1,0 +1,55 @@
+{
+  "id": "golang-developer-fresher-campus",
+  "roleSlug": "golang-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Ananya Srivastava | Noida | ananya.srivastava@example.com | github.com/ananya-go\n\nEDUCATION\nB.Tech Computer Science and Engineering, Jaypee Institute of Information Technology, Noida, 2026 | CGPA 8.2/10\n\nINTERNSHIPS\nBackend Intern, Yamuna Pay Technologies Pvt Ltd, Gurugram | Jan 2026 - Apr 2026 (12 weeks)\n- Wrote REST endpoints in Go with the Gin framework for a merchant settlement report.\n- Used goroutines and channels to fetch settlement files from three banks in parallel.\n- Wrote SQL queries in PostgreSQL to aggregate settlements by merchant and date.\n- Packaged the report service as a Docker image for the staging cluster.\n- Worked in Git with code review from two senior engineers.\n\nWeb Intern, Codeleaf Labs, Remote | June 2025 - July 2025 (6 weeks)\n- Built admin pages in React for an internal tool.\n\nPROJECTS\n- URL Shortener in Go: REST API with PostgreSQL storage and rate limiting.\n- Log Tail Worker Pool: Concurrent log parser in Go that processes 1 GB of logs with a worker pool.\n- Chat app: WebSocket chat server in Node.js for the Computer Networks course.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Operating Systems, DBMS, Computer Networks, Data Structures and Algorithms\n- Go: The Complete Developer's Guide (Udemy), 2025\n\nSKILLS\nGo, Gin, PostgreSQL, Docker, Git, Go testing package, Linux, JavaScript, C++\n\nACTIVITIES\n- Solved 300+ problems on LeetCode; coordinator, college coding club.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "go",
+        "quote": "Wrote REST endpoints in Go with the Gin framework"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Wrote REST endpoints in Go with the Gin framework"
+      },
+      {
+        "skillId": "go-concurrency",
+        "quote": "Used goroutines and channels to fetch settlement files"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries in PostgreSQL to aggregate settlements"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Packaged the report service as a Docker image"
+      },
+      {
+        "skillId": "git",
+        "quote": "Worked in Git with code review"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Go, Gin, PostgreSQL, Docker, Git, Go testing package, Linux, JavaScript, C++"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "unit-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "microservices",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "kubernetes",
+      "grpc",
+      "messaging-queues"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,60 @@
+{
+  "id": "data-scientist-fresher-campus",
+  "roleSlug": "data-scientist",
+  "persona": "fresher-campus",
+  "resumeText": "Arjun Reddy | Bengaluru | arjun.reddy.ds@example.com | +91 99000 12xxx\n\nEDUCATION\nB.Tech Computer Science (AI and ML), RV College of Engineering, Bengaluru (2022 - 2026) | CGPA 8.8/10\nClass XII, Narayana PU College, Bengaluru (2022) | 94%\n\nINTERNSHIPS\nMachine Learning Intern, Nandi Fintech Labs, Bengaluru (May 2025 - July 2025, 10 weeks)\n- Wrote Python and pandas scripts to clean 2 lakh loan application records.\n- Pulled training data from the loans database with SQL joins across four tables.\n- Created features such as debt-to-income ratio and months since last default.\n- Trained a gradient boosting model with scikit-learn to predict loan default.\n- Compared models on ROC-AUC and precision at the top 10% of risk scores.\n\nPROJECTS\nCrop Yield Prediction (final-year project, 2026)\n- Built a random forest regression model on Karnataka district rainfall and soil data.\n\nMovie Recommender (personal project, 2024)\n- Built a collaborative filtering recommender on the MovieLens dataset.\n\nCOURSEWORK AND CERTIFICATIONS\nProbability and Statistics, Machine Learning, Linear Algebra, Database Systems\nMachine Learning Specialization (online, 2024); Kaggle Learn: Intro to Machine Learning\n\nSKILLS\nPython, pandas, NumPy, scikit-learn, SQL, Matplotlib, statistics, hypothesis testing, Git, Jupyter\n\nACTIVITIES\nPresented our crop yield project at the RVCE tech fest \"8th Mile\" to a panel of faculty and industry judges.\nKaggle: top 20% in two playground competitions\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "python",
+        "quote": "Wrote Python and pandas scripts to clean 2 lakh loan application records"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Pulled training data from the loans database with SQL joins"
+      },
+      {
+        "skillId": "feature-engineering",
+        "quote": "Created features such as debt-to-income ratio"
+      },
+      {
+        "skillId": "scikit-learn",
+        "quote": "Trained a gradient boosting model with scikit-learn"
+      },
+      {
+        "skillId": "machine-learning",
+        "quote": "Built a random forest regression model on Karnataka district rainfall"
+      },
+      {
+        "skillId": "model-evaluation",
+        "quote": "Compared models on ROC-AUC and precision"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented our crop yield project at the RVCE tech fest"
+      },
+      {
+        "skillId": "statistics",
+        "quote": "Python, pandas, NumPy, scikit-learn, SQL, Matplotlib, statistics, hypothesis testing, Git, Jupyter"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "statistics",
+        "status": "weak"
+      },
+      {
+        "skillId": "ab-testing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "spark",
+      "mlops",
+      "llm-apps",
+      "deep-learning"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -44,6 +44,15 @@ In the certifications file, **Proves** lists skills that holding the certificate
 
 201 role profiles await review in all.
 
+## Changed since the draft, awaiting sign-off
+
+Development changed these lines after a test showed a problem. Their **Detail** ends with a note that begins "Changed since the draft". Please say yes, or what it should be.
+
+- `export-import-executive#years`: Starts at 1 year (was 2): EXIM and export documentation executives are commonly hired at 0-2 years.
+- `it-auditor#skill:domain-bfsi`: Nice to have (was Required): IT auditors work in every sector, not only banking and insurance.
+- `salesforce-developer#skill:salesforce-clouds`: Required (was Nice to have): developers build on Sales or Service Cloud from day one.
+- `salesforce-developer#skill:salesforce-security-model`: New Required skill: profiles, permission sets, sharing, and CRUD/FLS checks in code.
+
 ## How answers flow back into the app
 
 1. Save the returned file in `/mnt/project-files/careermetro/review/returned/`, with the reviewer's name and the date in the file name.

@@ -21,6 +21,10 @@
       {
         "skillId": "salesforce-apex",
         "quote": "Apex triggers (Trailhead)"
+      },
+      {
+        "skillId": "salesforce-security-model",
+        "quote": "Created validation rules, page layouts and permission sets for 400 users"
       }
     ],
     "gaps": [

@@ -1,0 +1,64 @@
+{
+  "id": "qa-automation-engineer-fresher-campus",
+  "roleSlug": "qa-automation-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Divya Nair | Thiruvananthapuram | divya.nair.qa@example.com | +91 98950 72xxx\n\nEDUCATION\nB.Tech Information Technology, College of Engineering Trivandrum (2022 - 2026) | CGPA 8.1/10\nClass XII, Kendriya Vidyalaya Pattom, Thiruvananthapuram (2022) | 90%\n\nINTERNSHIPS\nQA Intern, Technopark Apps, Thiruvananthapuram (June 2025 - August 2025, 10 weeks)\n- Wrote and ran 120 manual test cases for the login, search and checkout flows.\n- Wrote a test plan for the checkout release with scope, test data and exit criteria.\n- Logged 45 bugs in Jira with steps to reproduce and screenshots.\n- Automated 30 regression tests with Selenium WebDriver and Python.\n\nPROJECTS\nTest Framework for a Demo Store (personal project, 2025)\n- Built a pytest and Selenium framework using the page object model.\n- Kept the framework in Git with separate branches for each test suite.\n\nOnline Quiz App (mini project, 2024)\n- Built a Flask quiz app with a SQLite database.\n\nCOURSEWORK AND CERTIFICATIONS\nSoftware Testing, Software Engineering, Database Management Systems\nISTQB Foundation Level (2025)\n\nSKILLS\nManual testing, Selenium, Python, pytest, Jira, Git, Postman (basic), SQL, Linux (basic)\n\nACTIVITIES\nVolunteer, college IEEE women in engineering chapter\nMember, college music club\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "manual-testing",
+        "quote": "Wrote and ran 120 manual test cases"
+      },
+      {
+        "skillId": "test-planning",
+        "quote": "Wrote a test plan for the checkout release"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Logged 45 bugs in Jira with steps to reproduce"
+      },
+      {
+        "skillId": "selenium",
+        "quote": "Automated 30 regression tests with Selenium WebDriver and Python"
+      },
+      {
+        "skillId": "python",
+        "quote": "Built a pytest and Selenium framework using the page object model"
+      },
+      {
+        "skillId": "git",
+        "quote": "Kept the framework in Git with separate branches"
+      },
+      {
+        "skillId": "api-testing",
+        "quote": "Manual testing, Selenium, Python, pytest, Jira, Git, Postman (basic), SQL, Linux (basic)"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Manual testing, Selenium, Python, pytest, Jira, Git, Postman (basic), SQL, Linux (basic)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "api-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "sql",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "playwright-cypress",
+      "performance-testing",
+      "ci-cd",
+      "java"
+    ]
+  },
+  "reviewedBy": null
+}

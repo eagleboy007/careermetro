@@ -1,0 +1,51 @@
+{
+  "id": "content-writer-fresher-campus",
+  "roleSlug": "content-writer",
+  "persona": "fresher-campus",
+  "resumeText": "Ananya Bose | Kolkata | ananya.bose@example.com | +91 98310 77452\n\nEDUCATION\nBA (Hons) English, Jadavpur University, Kolkata, 2023 - 2026, CGPA 8.6/10\n\nINTERNSHIPS\nContent Writing Intern, Inkwell Digital, Kolkata (remote, June 2025 - August 2025, 10 weeks)\n- Wrote 24 blog posts for a D2C skincare brand's monthly content calendar.\n- Researched target keywords and optimised each post's headings and meta description with Yoast SEO.\n- Published articles on WordPress with images, alt text and internal links.\n\nEditorial Intern, Kolkata Weekend Review (Dec 2024 - Jan 2025, 6 weeks)\n- Proofread and edited 40 reader-submitted articles for grammar, style and length.\n\nPROJECTS\n- Personal blog on Bengali food history; 30 posts and about 2,000 monthly readers.\n- Wrote product descriptions for 50 handloom sarees for a family friend's Instagram store.\n\nCOURSEWORK AND CERTIFICATIONS\nHubSpot Content Marketing Certification (2025)\nGoogle Digital Garage - Fundamentals of Digital Marketing\n\nSKILLS\nBlog writing, SEO, WordPress, Grammarly, Canva, Google Docs, Social media captions\n\nACTIVITIES\nEditor, department magazine \"Kathan\"; led a team of six student writers and presented each issue at the launch event.\nDebate society member.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "content-marketing",
+        "quote": "Wrote 24 blog posts for a D2C skincare brand's monthly content calendar"
+      },
+      {
+        "skillId": "seo-content-writing",
+        "quote": "Researched target keywords and optimised each post's headings and meta description"
+      },
+      {
+        "skillId": "cms-content-publishing",
+        "quote": "Published articles on WordPress with images, alt text and internal links"
+      },
+      {
+        "skillId": "editing-proofreading",
+        "quote": "Proofread and edited 40 reader-submitted articles"
+      },
+      {
+        "skillId": "communication",
+        "quote": "led a team of six student writers and presented each issue"
+      },
+      {
+        "skillId": "seo",
+        "quote": "Blog writing, SEO, WordPress, Grammarly, Canva, Google Docs, Social media captions"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "seo",
+        "status": "weak"
+      },
+      {
+        "skillId": "content-briefs-outlines",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "web-analytics",
+      "email-marketing",
+      "customer-market-research"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,59 @@
+{
+  "id": "data-engineer-fresher-campus",
+  "roleSlug": "data-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Sai Teja Reddy | Hyderabad | saiteja.reddy@example.com | github.com/saiteja-de\n\nEDUCATION\nB.Tech Computer Science (Data Science), CVR College of Engineering, Hyderabad, 2026 | CGPA 8.3/10\n\nINTERNSHIPS\nData Engineering Intern, Charminar Analytics Pvt Ltd, Hyderabad | Jan 2026 - Apr 2026 (12 weeks)\n- Wrote Python scripts to pull daily sales CSVs from an SFTP folder and load them into PostgreSQL.\n- Wrote SQL with joins and window functions to build daily and weekly sales summary tables.\n- Moved raw files to an AWS S3 bucket and read them with a Glue job set up by the team.\n- Kept all pipeline code in Git and raised pull requests for review.\n\nData Analyst Intern, Deccan Retail Mart, Remote | June 2025 - July 2025 (8 weeks)\n- Cleaned store-level sales data in pandas and shared weekly reports with the category team.\n\nPROJECTS\n- NYC Taxi Pipeline: Built an ETL pipeline that cleans 10 million taxi trip rows with PySpark and writes Parquet files partitioned by date.\n- Cricket Stats Warehouse: Designed a star schema with match, player and venue dimensions for IPL ball-by-ball data in PostgreSQL.\n- Stock Price Tracker: Python script that fetches daily prices from a public API into SQLite.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: DBMS, Big Data Analytics, Distributed Systems, Data Warehousing and Mining\n- AWS Certified Cloud Practitioner, 2025\n\nSKILLS\nPython, SQL, PostgreSQL, PySpark, pandas, AWS (S3, Glue), Apache Airflow, Git, Linux, Excel\n\nACTIVITIES\n- Volunteer, Data Science Club workshops on SQL for juniors.\n- College cricket team.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "python",
+        "quote": "Wrote Python scripts to pull daily sales CSVs"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL with joins and window functions"
+      },
+      {
+        "skillId": "aws",
+        "quote": "Moved raw files to an AWS S3 bucket"
+      },
+      {
+        "skillId": "git",
+        "quote": "Kept all pipeline code in Git"
+      },
+      {
+        "skillId": "etl",
+        "quote": "Built an ETL pipeline that cleans 10 million taxi trip rows"
+      },
+      {
+        "skillId": "spark",
+        "quote": "cleans 10 million taxi trip rows with PySpark"
+      },
+      {
+        "skillId": "data-modeling",
+        "quote": "Designed a star schema with match, player and venue dimensions"
+      },
+      {
+        "skillId": "data-orchestration",
+        "quote": "Python, SQL, PostgreSQL, PySpark, pandas, AWS (S3, Glue), Apache Airflow, Git, Linux, Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-orchestration",
+        "status": "weak"
+      },
+      {
+        "skillId": "cloud-data-warehouse",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "streaming-data",
+      "dbt",
+      "azure"
+    ]
+  },
+  "reviewedBy": null
+}

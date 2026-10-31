@@ -1,0 +1,52 @@
+{
+  "id": "salesforce-administrator-fresher-campus",
+  "roleSlug": "salesforce-administrator",
+  "persona": "fresher-campus",
+  "resumeText": "Nikhil Joshi | Jaipur, Rajasthan | nikhil.joshi.sfdc@example.com\n\nEDUCATION\nB.Tech, Information Technology, Amber College of Engineering, Jaipur (2022 - 2026) | CGPA 7.9/10\n\nINTERNSHIP\nSalesforce Admin Intern, Aravalli CRM Consulting, Jaipur (Jan 2026 - Mar 2026, 10 weeks)\n- Built a record-triggered flow that assigns new leads to sales reps by city.\n- Imported 2,000 lead records from Excel using Data Loader and fixed duplicate entries.\n- Created reports and dashboards showing leads by source and stage for the client's sales head.\n- Configured Sales Cloud lead statuses and opportunity stages in a sandbox for an education client.\n\nPROJECTS\n- Hostel maintenance app (personal Developer Edition org): Built custom objects, page layouts and a screen flow for raising room maintenance requests.\n- Trailhead Superbadges: Business Administration Specialist and Lightning Experience Reports and Dashboards.\n\nCOURSEWORK AND CERTIFICATIONS\n- Salesforce Certified Platform Administrator (2025)\n- Trailhead Ranger rank\n- Coursework: DBMS, Software Engineering, Cloud Computing\n\nSKILLS\nSalesforce administration, Flows, Reports and dashboards, Data Loader, Profiles and permission sets, Sales Cloud, Excel\n\nACTIVITIES\n- Hosted a Trailhead study circle for 30 juniors and walked them through admin basics\n- Volunteer, college cultural fest\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "salesforce-flows",
+        "quote": "Built a record-triggered flow that assigns new leads to sales reps"
+      },
+      {
+        "skillId": "salesforce-data-management",
+        "quote": "Imported 2,000 lead records from Excel using Data Loader"
+      },
+      {
+        "skillId": "data-visualization",
+        "quote": "Created reports and dashboards showing leads by source and stage"
+      },
+      {
+        "skillId": "salesforce-clouds",
+        "quote": "Configured Sales Cloud lead statuses and opportunity stages"
+      },
+      {
+        "skillId": "salesforce-security-model",
+        "quote": "Salesforce administration, Flows, Reports and dashboards, Data Loader, Profiles and permission sets, Sales Cloud, Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "salesforce-security-model",
+        "status": "weak"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "salesforce-apex",
+      "salesforce-lwc",
+      "uat",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

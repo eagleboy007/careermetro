@@ -1,0 +1,51 @@
+{
+  "id": "penetration-tester-fresher-campus",
+  "roleSlug": "penetration-tester",
+  "persona": "fresher-campus",
+  "resumeText": "Siddharth Rao | Bengaluru | siddharth.rao@example.com | +91 99800 14527\n\nEDUCATION\nB.E. Computer Science, RV College of Engineering, Bengaluru, 2022 - 2026, CGPA 8.1/10\n\nINTERNSHIPS\nSecurity Intern (VAPT), Kavach Cyber Labs, Bengaluru (May 2025 - July 2025, 10 weeks)\n- Ran Nessus scans on the lab network and wrote a findings report ranked by CVSS score.\n- Tested a demo banking web app with Burp Suite and reported IDOR and SQL injection issues.\n- Used Kali Linux tools like Nmap, Nikto and Gobuster during internal test engagements.\n\nPROJECTS\n- Rooted 15 Hack The Box machines and wrote privilege escalation walkthroughs for each.\n- Wrote a Python port scanner with banner grabbing using sockets and threading.\n- Found and responsibly reported a stored XSS bug in the college event registration portal.\n\nCOURSEWORK AND CERTIFICATIONS\nComputer Networks, Cryptography and Network Security, Operating Systems\neJPT - eLearnSecurity Junior Penetration Tester (2025)\n\nSKILLS\nBurp Suite, Nmap, Metasploit, Kali Linux, OWASP Top 10, Python, Bash, TCP/IP\n\nACTIVITIES\nPresented an OWASP Top 10 talk to 100 students at the college cyber security club.\nTop 5% in a national CTF (team of 4).\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "vulnerability-management",
+        "quote": "Ran Nessus scans on the lab network and wrote a findings report"
+      },
+      {
+        "skillId": "application-security",
+        "quote": "reported IDOR and SQL injection issues"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Used Kali Linux tools like Nmap, Nikto and Gobuster"
+      },
+      {
+        "skillId": "penetration-testing",
+        "quote": "Rooted 15 Hack The Box machines and wrote privilege escalation walkthroughs"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote a Python port scanner with banner grabbing"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented an OWASP Top 10 talk to 100 students"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Burp Suite, Nmap, Metasploit, Kali Linux, OWASP Top 10, Python, Bash, TCP/IP"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "networking-basics",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "cloud-security",
+      "windows-server",
+      "java"
+    ]
+  },
+  "reviewedBy": null
+}

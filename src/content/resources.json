@@ -20189,5 +20189,61 @@
     ],
     "minutes": 45,
     "free": true
+  },
+  {
+    "title": "Key Features and State-wise Implementation of the Real Estate (Regulation and Development) Act, 2016",
+    "url": "https://tealindia.github.io/research/TEAL%20White%20Paper%207-%20Key%20Features%20and%20State-wise%20Implementation%20of%20the%20Real%20Estate%20(Regulation%20and%20Development)%20Act%20(2016).pdf",
+    "provider": "TEAL India",
+    "kind": "docs",
+    "skillIds": [
+      "rera-compliance-basics"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Real Estate Agent Registration under RERA",
+    "url": "https://taxguru.in/corporate-law/real-estate-agent-registration-rera.html",
+    "provider": "Taxguru",
+    "kind": "docs",
+    "skillIds": [
+      "rera-compliance-basics",
+      "real-estate-channel-partners"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Companies (Cost Records and Audit) Rules, 2014: rule-by-rule text",
+    "url": "https://ca2013.com/rule/g-s-r-425-e/",
+    "provider": "ca2013.com",
+    "kind": "docs",
+    "skillIds": [
+      "cost-records-audit-compliance"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "MCA issues amended Companies (Cost Records and Audit) Rules, 2014",
+    "url": "https://taxguru.in/company-law/mca-issues-amended-companies-cost-records-audit-rules-2014.html",
+    "provider": "Taxguru",
+    "kind": "docs",
+    "skillIds": [
+      "cost-records-audit-compliance"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "ICEGATE bill of entry procedure",
+    "url": "https://razorpay.com/blog/icegate-bill-of-entry-procedure/",
+    "provider": "Razorpay",
+    "kind": "docs",
+    "skillIds": [
+      "customs-clearance-compliance"
+    ],
+    "minutes": 10,
+    "free": true
   }
 ]

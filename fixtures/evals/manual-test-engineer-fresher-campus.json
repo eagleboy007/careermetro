@@ -1,0 +1,56 @@
+{
+  "id": "manual-test-engineer-fresher-campus",
+  "roleSlug": "manual-test-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Pooja Deshmukh | Nagpur, Maharashtra | pooja.deshmukh.qa@example.com\n\nEDUCATION\nBCA, Vidarbha College of Computer Applications, Nagpur (2023 - 2026) | CGPA 8.2/10\n\nINTERNSHIP\nQA Intern, Orange City Softlabs, Nagpur (Jan 2026 - Mar 2026, 10 weeks)\n- Wrote and executed 120 test cases for the checkout and payment screens of a food ordering web app.\n- Logged 35 defects in Jira with steps to reproduce, screenshots and severity.\n- Tested order and login REST endpoints in Postman and checked status codes and response fields.\n- Attended daily stand-ups and sprint reviews in two-week sprints with the development team.\n\nPROJECTS\n- Test suite for college library portal (academic, Software Testing course): Wrote boundary value and equivalence class test cases for the issue and return forms as part of the Software Testing course.\n- Bug bash: Tested a classmate's Android expense app and reported 12 usability bugs in a shared sheet.\n\nCOURSEWORK AND CERTIFICATIONS\n- ISTQB Certified Tester Foundation Level (2025)\n- Coursework: Software Engineering, Software Testing, DBMS, Web Technologies\n\nSKILLS\nManual testing, Test case design, Test planning, Jira, Postman, SQL (basic SELECT queries), MS Excel\n\nACTIVITIES\n- Event coordinator, BCA department tech fest\n- Kho-kho, inter-college team\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "manual-testing",
+        "quote": "Wrote and executed 120 test cases for the checkout and payment screens"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Logged 35 defects in Jira with steps to reproduce"
+      },
+      {
+        "skillId": "api-testing",
+        "quote": "Tested order and login REST endpoints in Postman"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Attended daily stand-ups and sprint reviews in two-week sprints"
+      },
+      {
+        "skillId": "test-planning",
+        "quote": "Manual testing, Test case design, Test planning, Jira, Postman, SQL (basic SELECT queries), MS Excel"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Manual testing, Test case design, Test planning, Jira, Postman, SQL (basic SELECT queries), MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "test-planning",
+        "status": "weak"
+      },
+      {
+        "skillId": "sql",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "selenium",
+      "performance-testing",
+      "accessibility",
+      "java"
+    ]
+  },
+  "reviewedBy": null
+}

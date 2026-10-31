@@ -1,0 +1,51 @@
+{
+  "id": "database-developer-fresher-campus",
+  "roleSlug": "database-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Vikram Reddy | Hyderabad | vikram.reddy@example.com | +91 90000 52819\n\nEDUCATION\nB.Tech Information Technology, CVR College of Engineering, Hyderabad, 2022 - 2026, CGPA 7.9/10\n\nINTERNSHIPS\nDatabase Intern, Deccan Ledger Systems, Hyderabad (May 2025 - July 2025, 10 weeks)\n- Wrote PL/SQL procedures in Oracle to load daily branch transaction files into staging tables.\n- Wrote SQL reports joining accounts, branches and transactions for the operations team.\n- Used EXPLAIN PLAN to find a full table scan and added an index that cut a report from 40s to 6s.\n\nPROJECTS\n- Built PL/SQL stored procedures, cursors and triggers for a library management system as part of the DBMS course.\n- Designed an ER diagram for a hospital appointments system and normalised the tables to 3NF.\n\nCOURSEWORK AND CERTIFICATIONS\nDatabase Management Systems, Data Structures, Operating Systems\nOracle Database SQL Certified Associate (1Z0-071), 2025\n\nSKILLS\nOracle SQL, PL/SQL, MySQL, Window functions, ER modelling, Git, Python (basics)\n\nACTIVITIES\nCoordinator, college technical fest \"Kshitij\"; NCC cadet.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "database-programming",
+        "quote": "Wrote PL/SQL procedures in Oracle to load daily branch transaction files"
+      },
+      {
+        "skillId": "oracle-database",
+        "quote": "PL/SQL procedures in Oracle to load daily branch transaction files"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL reports joining accounts, branches and transactions"
+      },
+      {
+        "skillId": "query-optimization",
+        "quote": "Used EXPLAIN PLAN to find a full table scan and added an index"
+      },
+      {
+        "skillId": "data-modeling",
+        "quote": "Designed an ER diagram for a hospital appointments system and normalised the tables to 3NF"
+      },
+      {
+        "skillId": "sql-window-functions",
+        "quote": "Oracle SQL, PL/SQL, MySQL, Window functions, ER modelling, Git, Python (basics)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sql-window-functions",
+        "status": "weak"
+      },
+      {
+        "skillId": "scripting-bash",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "etl",
+      "batch-scheduling",
+      "domain-bfsi"
+    ]
+  },
+  "reviewedBy": null
+}

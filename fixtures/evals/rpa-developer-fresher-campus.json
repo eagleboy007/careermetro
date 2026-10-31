@@ -1,0 +1,51 @@
+{
+  "id": "rpa-developer-fresher-campus",
+  "roleSlug": "rpa-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Karan Mehta | Ahmedabad | karan.mehta.rpa@example.com | +91 99250 18xxx\n\nEDUCATION\nBCA, Gujarat University (L.J. Institute of Computer Applications), Ahmedabad (2023 - 2026) | CGPA 8.3/10\nClass XII (Science), Udgam School for Children, Ahmedabad (2023) | 82%\n\nINTERNSHIPS\nRPA Intern, Narmada Business Automation, Ahmedabad (May 2025 - July 2025, 10 weeks)\n- Built UiPath bots that read invoice data from Excel and entered it into the client's accounts portal.\n- Mapped the as-is invoice entry process with the accounts team and drew the steps in Visio.\n- Added exception handling and retry logic so bots logged failed records instead of stopping.\n\nPROJECTS\nEmail Attachment Sorter (personal project, 2025)\n- Wrote a Python script that downloads email attachments and files them by sender.\n\nCollege Fee Reminder Bot (UiPath project, 2025)\n- Built a UiPath bot that reads a fee sheet and sends reminder emails to students.\n\nCOURSEWORK AND CERTIFICATIONS\nDatabase Management Systems, Software Engineering, Python Programming\nUiPath Automation Developer Associate training (UiPath Academy, 2025)\n\nSKILLS\nUiPath Studio, UiPath Orchestrator (basic), Python, SQL, Excel, MS Visio, Power Automate (basic)\n\nACTIVITIES\nPresented the fee reminder bot to the college management committee, which now uses it every term.\nMember, college Google Developer Student Club\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "robotic-process-automation",
+        "quote": "Added exception handling and retry logic so bots logged failed records"
+      },
+      {
+        "skillId": "uipath",
+        "quote": "Built UiPath bots that read invoice data from Excel"
+      },
+      {
+        "skillId": "process-mapping",
+        "quote": "Mapped the as-is invoice entry process with the accounts team"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote a Python script that downloads email attachments"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented the fee reminder bot to the college management committee"
+      },
+      {
+        "skillId": "sql",
+        "quote": "UiPath Studio, UiPath Orchestrator (basic), Python, SQL, Excel, MS Visio, Power Automate (basic)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sql",
+        "status": "weak"
+      },
+      {
+        "skillId": "rest-apis",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "intelligent-document-processing",
+      "automation-anywhere",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

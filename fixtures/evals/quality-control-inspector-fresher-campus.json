@@ -1,0 +1,56 @@
+{
+  "id": "quality-control-inspector-fresher-campus",
+  "roleSlug": "quality-control-inspector",
+  "persona": "fresher-campus",
+  "resumeText": "Suresh Yadav | Pune (Chakan), Maharashtra | suresh.yadav.qc@example.com\n\nEDUCATION\nB.E., Mechanical Engineering, Indrayani College of Engineering, Pune (2022 - 2026) | CGPA 7.6/10\nDiploma in Mechanical Engineering, Government Polytechnic, Nashik (2019 - 2022) | 82%\n\nINTERNSHIP\nQuality Intern, Chakan Precision Components, Pune (Jun 2025 - Aug 2025, 8 weeks)\n- Measured shaft and bush dimensions with vernier calipers, micrometers and bore gauges on the machining line.\n- Carried out in-process inspection and final inspection of turned parts before dispatch.\n- Read engineering drawings with GD&T callouts to check tolerances on brackets.\n\nPROJECTS\n- Reducing burr defects (final-year project): Used a fishbone diagram and 5 whys to find causes of burr defects on drilled flanges with the shop-floor team.\n- Jig design (academic, Machine Design course): Designed a drilling jig in SolidWorks and made its 2D drawing.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Metrology and Quality Control, Manufacturing Processes, Engineering Drawing, Industrial Engineering\n- Certificate in Quality Management Basics (NPTEL)\n\nSKILLS\nVernier caliper, Micrometer, Height gauge, Engineering drawing, AQL sampling, SolidWorks, AutoCAD, MS Excel\n\nACTIVITIES\n- SAE BAJA team, manufacturing subsystem\n- Blood donation camp volunteer\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "dimensional-inspection-instruments",
+        "quote": "Measured shaft and bush dimensions with vernier calipers, micrometers and bore gauges"
+      },
+      {
+        "skillId": "product-inspection-stages",
+        "quote": "Carried out in-process inspection and final inspection of turned parts"
+      },
+      {
+        "skillId": "engineering-drawing-reading",
+        "quote": "Read engineering drawings with GD&T callouts"
+      },
+      {
+        "skillId": "root-cause-analysis-tools",
+        "quote": "Used a fishbone diagram and 5 whys to find causes of burr defects"
+      },
+      {
+        "skillId": "sampling-plans-aql",
+        "quote": "Vernier caliper, Micrometer, Height gauge, Engineering drawing, AQL sampling, SolidWorks, AutoCAD, MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sampling-plans-aql",
+        "status": "weak"
+      },
+      {
+        "skillId": "non-conformance-capa",
+        "status": "missing"
+      },
+      {
+        "skillId": "iso-9001-qms-documentation",
+        "status": "missing"
+      },
+      {
+        "skillId": "gauge-calibration-control",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "cmm-inspection",
+      "statistical-process-analysis",
+      "dmaic-six-sigma",
+      "lean-waste-elimination"
+    ]
+  },
+  "reviewedBy": null
+}

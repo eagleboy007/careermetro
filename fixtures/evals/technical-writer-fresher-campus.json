@@ -1,0 +1,51 @@
+{
+  "id": "technical-writer-fresher-campus",
+  "roleSlug": "technical-writer",
+  "persona": "fresher-campus",
+  "resumeText": "Meera Krishnan | Bengaluru | meera.krishnan.writes@example.com | +91 96630 27xxx\n\nEDUCATION\nB.Tech Information Science, BMS College of Engineering, Bengaluru (2022 - 2026) | CGPA 7.9/10\nClass XII, Kendriya Vidyalaya Hebbal, Bengaluru (2022) | 88%\n\nINTERNSHIPS\nDocumentation Intern, Cubbon Cloud Software, Bengaluru (June 2025 - August 2025, 10 weeks)\n- Wrote installation and getting-started guides for the company's CLI tool.\n- Documented 12 REST endpoints with request and response examples.\n- Wrote docs in Markdown and built the site with MkDocs from the product repo.\n- Submitted doc changes as pull requests in Git and handled reviewer comments.\n\nPROJECTS\nOpen Source Docs Contributions (2024 - 2025)\n- Fixed and expanded the contributor guide of an open source Python library.\n\nCampus Wi-Fi Help Pages (club project, 2024)\n- Wrote step-by-step Wi-Fi setup pages for Android, iOS and Windows users.\n\nCOURSEWORK AND CERTIFICATIONS\nTechnical Communication, Software Engineering, Web Programming\nGoogle Technical Writing One and Two (online, 2024)\n\nSKILLS\nMarkdown, MkDocs, Git, GitHub, HTML, CSS, Postman (basic), Python (basic), Canva\n\nACTIVITIES\nEditor, college magazine \"Spandana\"; led a team of six student writers for the 2025 issue.\nMember, Toastmasters campus club\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "technical-writing",
+        "quote": "Wrote installation and getting-started guides for the company's CLI tool"
+      },
+      {
+        "skillId": "api-documentation",
+        "quote": "Documented 12 REST endpoints with request and response examples"
+      },
+      {
+        "skillId": "docs-as-code",
+        "quote": "Wrote docs in Markdown and built the site with MkDocs"
+      },
+      {
+        "skillId": "git",
+        "quote": "Submitted doc changes as pull requests in Git"
+      },
+      {
+        "skillId": "communication",
+        "quote": "led a team of six student writers"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "Markdown, MkDocs, Git, GitHub, HTML, CSS, Postman (basic), Python (basic), Canva"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "html-css",
+        "status": "weak"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "api-testing",
+      "agile-scrum",
+      "bug-tracking"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,52 @@
+{
+  "id": "information-security-analyst-fresher-campus",
+  "roleSlug": "information-security-analyst",
+  "persona": "fresher-campus",
+  "resumeText": "Ishita Banerjee | Kolkata, West Bengal | ishita.banerjee.grc@example.com\n\nEDUCATION\nB.Tech, Information Technology, Salt Lake Institute of Technology, Kolkata (2022 - 2026) | CGPA 8.5/10\n\nINTERNSHIP\nGRC Intern, Hooghly Risk Advisors, Kolkata (Jun 2025 - Aug 2025, 10 weeks)\n- Mapped 40 ISO 27001 Annex A controls to evidence shared by a mid-size software client.\n- Drafted an acceptable use policy and a password policy for the client from the firm's templates.\n- Collected screenshots and logs as audit evidence for the internal audit of the client's HR systems.\n\nPROJECTS\n- Department lab risk register (academic, Information Security course): Prepared a risk register for the college computer lab with likelihood and impact scores for 18 risks.\n- Phishing awareness survey: Surveyed 150 students on phishing habits and wrote a short report with recommendations.\n\nCOURSEWORK AND CERTIFICATIONS\n- ISO/IEC 27001 Foundation (online, 2025)\n- Coursework: Information Security, Computer Networks, Cyber Law, Software Engineering\n\nSKILLS\nISO 27001, Risk assessment, Policy writing, Identity and access management basics, MS Excel, PowerPoint\n\nACTIVITIES\n- Presented the risk register findings to the head of department and lab staff\n- Secretary, college debating society\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "Mapped 40 ISO 27001 Annex A controls to evidence"
+      },
+      {
+        "skillId": "security-policies",
+        "quote": "Drafted an acceptable use policy and a password policy"
+      },
+      {
+        "skillId": "security-audits",
+        "quote": "Collected screenshots and logs as audit evidence for the internal audit"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Prepared a risk register for the college computer lab with likelihood and impact scores"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented the risk register findings to the head of department and lab staff"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "ISO 27001, Risk assessment, Policy writing, Identity and access management basics, MS Excel, PowerPoint"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "identity-access-management",
+        "status": "weak"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "penetration-testing",
+      "cloud-security",
+      "python",
+      "security-incident-response"
+    ]
+  },
+  "reviewedBy": null
+}
