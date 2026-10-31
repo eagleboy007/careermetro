@@ -7,7 +7,9 @@ and phone width), path (hours, mark a step done), the test sign-in that
 claims the anonymous resume, Today (own goals, hours saved, tick to Returning with a streak, untick), the loading
 frame, Map, Me, Departures, Corporate (a fresh account sets up a company on an example domain with the test-mode
 code and lands on "Waiting for verification"), company review (signed out and a non-admin get the not-found page with a 404; the local test admin `admin@careermetro.test` tries Suspend, cancels, and verifies that company), then phone size in dark mode with a horizontal-overflow check, confirming a missing keyword, which stays a weak gap, the `hardening:` steps spread through the walk (keyboard, axe light and dark after a reload, and a 390 px fit on the screens from #175 to #193), and last `smoke 6` (`docs/launch/prod-smoke.md` 6.1 to 6.3: the settings Download link's file name, Sign out from the avatar menu, and signing in again straight to Today). It fails on any failed
-step, browser console error, page error or 5xx response, and saves screenshots to `e2e/results/`.
+step, browser console error, page error or 5xx response, and saves screenshots to `e2e/results/`. Its direct requests
+(`q.request.get` and the like) go through `api()`, which sends one again once on a reset socket (ECONNRESET or "socket
+hang up", T171) and never on an HTTP status; `oversize.mjs` does the same.
 
 `scripts/smoke/staging-dry-run.mjs` reuses this walk's selectors to run `docs/launch/prod-smoke.md` sections 3 to 6 and 8 on staging with the real API (`.github/workflows/smoke-staging.yml`, by hand only). `scripts/smoke/staging-screens.mjs` does the same for Network, the bell, the builder, Library, Mock, Departures and the live Market (its pay check is the walk's `marketIsLive` one, plus `/market`'s data), then reuses the Corporate, company review, applications, reports and library review steps' selectors for Arrivals, Offers and the admin pages (those need the `SMOKE_ADMIN_EMAIL` admin test account, `admin@careermetro.test` in the workflow, and are skipped without it).
 
@@ -34,7 +36,9 @@ in as Max Data and opens Today, Map, My jobs, Me (Board and List), their /u prof
 Inbox, Network, the resume editor and the builder at 390x844 and 1280x800 in light and dark. It fails on sideways spill
 (and lists the elements past the edge), on a page taller than its limit (`PAGES` in the script, with the reason for
 each raised limit), on any page or console error (such as a hydration mismatch), or on the resume PDF taking more than
-10 s. The main resume has Hindi and emoji, so its PDF must be the designed "can't print" refusal (422); the PDF is timed
+10 s. The seed also adds the most pitstops of the member's own the store allows (30: 3 a goal, the last three goals one
+each so their spurs show a 40-letter word, Hindi and emoji), and on the Map the check fails when a spur label's
+`getBBox` leaves the SVG's viewBox. The main resume has Hindi and emoji, so its PDF must be the designed "can't print" refusal (422); the PDF is timed
 on a second, Latin-only resume at the same caps. It prints every page's height, saves `e2e/results/oversize/` (the `oversize-screenshots` artifact) and
 removes the member. Locally, after the walk's set-up:
 

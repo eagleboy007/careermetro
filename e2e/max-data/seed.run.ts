@@ -19,14 +19,16 @@ import * as schema from "@/db/schema";
 import { mockQuestions, practiceQuestions, roleProfiles, skills as contentSkills } from "@/content";
 import { ACCOUNT_POLICY_VERSION } from "@/lib/account/store";
 import { GAP_LIMITS, getGapsForOwner } from "@/lib/gaps/store";
-import { syncCurrentGoals } from "@/lib/goals/store";
+import { goalsOf, syncCurrentGoals } from "@/lib/goals/store";
 import { interestKey } from "@/lib/me/text";
 import { getPathForOwner, PATH_LIMITS } from "@/lib/path/store";
+import { addOwnPitstop, learningSkill, pitstopOptionsFor } from "@/lib/pitstops/store";
 import { builderAnswers } from "@/lib/schemas/builder";
-import { EVENT_RSVP_STATES, EVENT_TOPICS_MAX } from "@/lib/schemas/constants";
+import { EVENT_RSVP_STATES, EVENT_TOPICS_MAX, OWN_PITSTOPS_MAX, OWN_PITSTOPS_PER_GOAL } from "@/lib/schemas/constants";
 import { profile as profileSchema } from "@/lib/schemas/profile";
 import { assertLocalDatabase, cleanMaxData, MAX_DATA_EMAIL, peerEmail } from "./clean.mjs";
 import {
+  LONE_PITSTOPS,
   MAX_DATA_NAME,
   MAX_DATA_USERNAME,
   maxBuilderAnswers,
@@ -37,8 +39,10 @@ import {
   maxMeEducation,
   maxMeRoles,
   maxMessage,
+  maxOwnPitstops,
   maxProfile,
   maxStories,
+  OWN_PITSTOP_GOALS,
   peerName,
   SIZES,
   v,
@@ -158,6 +162,29 @@ async function seed() {
   const last = Math.max(0, ...goals.map((g) => g.position));
   await db.insert(schema.userGoals).values(choice.map((skillId, i) => ({ userId, skillId, source: "user" as const, status: "active" as const, position: last + 1 + i })));
   const practiceSkill = [...goals.map((g) => g.skillId), ...choice].find((id) => withQuestions.includes(id)) ?? null;
+
+  // ---- Own pitstops on the Map (FR-58, T172), through the app's store so its name check and limits apply ---------
+  // OWN_PITSTOPS_MAX in all: OWN_PITSTOPS_PER_GOAL on each open goal in turn, gap goals first (they are the Map's line
+  // and draw spurs), then the lone names one a goal so their spurs show the name. The first has a free course if the
+  // catalog offers one for its goal.
+  const open = (await goalsOf(userId, db))
+    .filter((g) => learningSkill(g))
+    .sort((a, b) => Number(a.source !== "gap") - Number(b.source !== "gap") || a.position - b.position)
+    .slice(0, OWN_PITSTOP_GOALS);
+  const names = maxOwnPitstops();
+  let ownPitstops = 0;
+  let ownCourse = false;
+  for (const goal of open) {
+    const take = ownPitstops < names.length - LONE_PITSTOPS ? OWN_PITSTOPS_PER_GOAL : 1;
+    for (const title of names.slice(ownPitstops, ownPitstops + take)) {
+      const offered = ownPitstops === 0 ? (await pitstopOptionsFor([{ goalId: goal.id, skillId: learningSkill(goal)!, used: [] }], db)).get(goal.id) : undefined;
+      const resourceId = offered?.[0]?.id ?? null;
+      const added = await addOwnPitstop(userId, { goalId: goal.id, title, resourceId }, { db, now });
+      if (!added.ok) throw new Error(`own pitstop ${ownPitstops + 1}: ${added.error}`);
+      ownCourse ||= Boolean(resourceId);
+      ownPitstops++;
+    }
+  }
 
   // ---- Me: added roles, education, stories, interests --------------------------------------------------------------
   await db.insert(schema.meRoles).values(maxMeRoles().map((r) => ({ userId, ...r })));
@@ -350,6 +377,9 @@ async function seed() {
   const counts = {
     role: role.slug,
     goals: goals.length + choice.length,
+    ownPitstops,
+    ownPitstopGoals: open.length,
+    ownCourse,
     profileRoles: profile.roles.length,
     meRoles: SIZES.meRoles,
     stories: storyRows.length,
@@ -386,6 +416,7 @@ describe("max-data member", () => {
       const counts = await seed();
       expect(counts.myJobs).toBe(SIZES.myJobs);
       expect(counts.goals).toBeGreaterThan(SIZES.choiceGoals);
+      expect(counts.ownPitstops).toBe(OWN_PITSTOPS_MAX);
     } catch (error) {
       // Leave nothing half-written behind.
       await cleanMaxData(sqlClient);
