@@ -138,8 +138,8 @@ describe.skipIf(!db)("event suggestions (database)", () => {
     expect(mine.map((s) => [s.title, s.status])).toEqual([["Mine", "pending"]]);
     for (const s of mine) expect(eventSuggestionExport.safeParse(s).error).toBeUndefined();
     const data = await exportAccountData(me, d());
-    expect(EXPORT_VERSION).toBe(39);
-    expect(data!.exportVersion).toBe(39);
+    expect(EXPORT_VERSION).toBe(40);
+    expect(data!.exportVersion).toBe(40);
     expect(data!.timetable.suggestions).toEqual(mine);
     await db!.delete(schema.users).where(eq(schema.users.id, me));
     expect(await rowsOf(me)).toEqual([]);

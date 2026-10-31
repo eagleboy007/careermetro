@@ -140,6 +140,12 @@ const GRANDFATHERED: Record<string, string> = {
     "widens the focus check by 'job'; old code writes only the four it knew",
   "0056_events_cleanup.sql: adds a constraint to an existing table: ALTER TABLE \"events\" ADD CONSTRAINT \"events_place\"":
     "events is empty until the feed job (Timetable PR 4), and the Zod schema already refuses an in-person event with no city",
+  // Checked by hand (Junction part 1): both checks only widen. Old code writes the six kinds it knew, each with exactly
+  // the one reference it always set, and never the four reference columns new in 0059, so every row it writes passes.
+  "0059_junction.sql: adds a constraint to an existing table: ALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_kind\"":
+    "widens the kind check by six new kinds; old code writes only the six it knew",
+  "0059_junction.sql: adds a constraint to an existing table: ALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_refs\"":
+    "old kinds keep exactly their one reference; the new reference columns are null on every row old code writes",
 };
 
 describe("migrations", () => {

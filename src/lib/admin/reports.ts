@@ -4,7 +4,9 @@ import { getDb } from "@/db";
 import { auditLogs, conversationMembers, conversations, jobs, messages, organizations, reports, users } from "@/db/schema";
 import { shortName } from "@/lib/account/name";
 import { REPORT_REASON_LABELS } from "@/lib/inbox/types";
+import { afterReportClosed, junctionContexts } from "@/lib/junction/moderation";
 import { logEvent } from "@/lib/log";
+import { JUNCTION_REPORT_REASON_LABELS, type JunctionReportReason } from "@/lib/schemas/constants";
 import { reportReviewInput, reportReviewView, type ReportReviewResult, type ReportReviewView } from "@/lib/schemas/admin";
 import type { ReportReason } from "@/lib/schemas/inbox";
 import { removalStates } from "./removals";
@@ -12,7 +14,8 @@ import { reportDeadlines } from "./report-deadlines";
 
 /*
  * The report review page's data (/admin/reports; FR-45, docs/plans/reports-review-plan.md). Open reports from the
- * Inbox and from job pages, oldest first, with the deadlines the Grievances page promises. The caller has already
+ * Inbox, job pages and Junction (FR-61), held posts and comments first and then the nearest deadline, with the
+ * deadlines the Grievances page promises (a report's stored `decide_by` when it has one: complaints and orders). The caller has already
  * checked the person is an admin (src/lib/admin/server.ts); these functions take the admin's user id for the audit
  * line. The admin sees what they need to decide: the reason, the reporter's note and the reported message or job.
  * Never an email or phone; people are first name and last initial. Logs and audit lines carry ids and outcomes only.
@@ -23,7 +26,7 @@ export type ReportAdminDeps = { db?: Db; now?: Date };
 /** `adminUserId`: the admin looking, who may not suspend their own account (FR-46). */
 export type ReportListDeps = ReportAdminDeps & { adminUserId?: string; env?: Record<string, string | undefined> };
 
-const WHAT = { message: "A message", person: "A person", chat: "A chat", job: "A job" } as const;
+const WHAT = { message: "A message", person: "A person", chat: "A chat", job: "A job", post: "A post", comment: "A comment" } as const;
 const GONE = "A deleted account";
 
 type Name = { name: string | null; firstName: string | null; lastName: string | null };
@@ -91,8 +94,9 @@ async function contexts(rows: { target: string; targetId: string; reporterId: st
 }
 
 /**
- * Open reports, oldest first, at most 200, with their deadlines, what was reported, and the reported message and
- * account with whether they are hidden or suspended (FR-46).
+ * Open reports, at most 200 (the oldest), with their deadlines, what was reported, and the reported message, post or
+ * comment and account with whether they are hidden or suspended (FR-46). Held posts and comments come first (they are
+ * out of every feed until an admin decides), then the nearest deadline to decide.
  */
 export async function reportsForReview(deps: ReportListDeps = {}): Promise<ReportReviewView[]> {
   const db = deps.db ?? getDb();
@@ -105,6 +109,7 @@ export async function reportsForReview(deps: ReportListDeps = {}): Promise<Repor
       note: reports.note,
       createdAt: reports.createdAt,
       acknowledgedAt: reports.acknowledgedAt,
+      decideBy: reports.decideBy,
       reporterId: reports.reporterId,
       ...nameColumns,
     })
@@ -113,12 +118,20 @@ export async function reportsForReview(deps: ReportListDeps = {}): Promise<Repor
     .where(eq(reports.status, "open"))
     .orderBy(asc(reports.createdAt), asc(reports.id))
     .limit(200);
-  const [found, removals] = await Promise.all([contexts(rows, db), removalStates(rows, deps.adminUserId ?? null, { db, env: deps.env })]);
-  return rows.map((r) => {
-    const { acknowledgeBy, decideBy } = reportDeadlines(r.reason as ReportReason, r.createdAt);
+  const [found, removals, junction] = await Promise.all([
+    contexts(rows, db),
+    removalStates(rows, deps.adminUserId ?? null, { db, env: deps.env }),
+    junctionContexts(rows, db),
+  ]);
+  const views = rows.map((r) => {
+    const { acknowledgeBy, decideBy } = reportDeadlines(r.reason as ReportReason, r.createdAt, r.decideBy);
+    const onJunction = r.target === "post" || r.target === "comment" ? junction.get(r.targetId) : undefined;
+    const reason =
+      (r.target === "post" || r.target === "comment" ? JUNCTION_REPORT_REASON_LABELS[r.reason as JunctionReportReason] : undefined) ??
+      REPORT_REASON_LABELS[r.reason as ReportReason];
     return reportReviewView.parse({
       id: r.id,
-      reason: REPORT_REASON_LABELS[r.reason as ReportReason],
+      reason,
       what: WHAT[r.target],
       reportedAt: r.createdAt.toISOString(),
       acknowledgedAt: r.acknowledgedAt?.toISOString() ?? null,
@@ -126,11 +139,13 @@ export async function reportsForReview(deps: ReportListDeps = {}): Promise<Repor
       decideBy: decideBy.toISOString(),
       reporter: r.reporterId ? nameOf(r) : GONE,
       note: r.note,
-      context: found.get(r.targetId) ?? null,
+      context: onJunction ? { label: onJunction.label, text: onJunction.text } : (found.get(r.targetId) ?? null),
       message: removals.get(r.id)?.message ?? null,
       account: removals.get(r.id)?.account ?? null,
+      ...(onJunction ? { junction: onJunction.junction, held: onJunction.junction.status === "held" } : {}),
     });
   });
+  return views.sort((a, b) => Number(!!b.held) - Number(!!a.held) || a.decideBy.localeCompare(b.decideBy) || a.reportedAt.localeCompare(b.reportedAt));
 }
 
 export const REPORT_REVIEW_TEXT = {
@@ -144,7 +159,9 @@ export const REPORT_REVIEW_TEXT = {
 
 /**
  * Acknowledges, closes as action taken, or dismisses one open report for the admin with this user id. Closing also
- * acknowledges it if that hadn't happened. One audit line: admin:<id>, report_<decision> and report:<id>.
+ * acknowledges it if that hadn't happened, tells the reporter it was looked at (report_decided, naming no admin) and,
+ * for a dismissed report on a held post or comment, lifts the hold unless other open reports still call for it. One
+ * audit line: admin:<id>, report_<decision> and report:<id>.
  */
 export async function reviewReport(adminUserId: string, input: unknown, deps: ReportAdminDeps = {}): Promise<ReportReviewResult> {
   const parsed = reportReviewInput.safeParse(input);
@@ -154,7 +171,7 @@ export async function reviewReport(adminUserId: string, input: unknown, deps: Re
   const now = deps.now ?? new Date();
   const result = await db.transaction(async (tx): Promise<ReportReviewResult & { changed?: boolean }> => {
     const [open] = await tx
-      .select({ acknowledgedAt: reports.acknowledgedAt })
+      .select({ acknowledgedAt: reports.acknowledgedAt, target: reports.target, targetId: reports.targetId, reporterId: reports.reporterId })
       .from(reports)
       .where(and(eq(reports.id, reportId), eq(reports.status, "open")))
       .for("update");
@@ -167,6 +184,7 @@ export async function reviewReport(adminUserId: string, input: unknown, deps: Re
         .update(reports)
         .set({ status: decision, resolvedAt: now, acknowledgedAt: open.acknowledgedAt ?? now })
         .where(eq(reports.id, reportId));
+      await afterReportClosed(tx, { id: reportId, target: open.target, targetId: open.targetId, reporterId: open.reporterId }, decision, now);
     }
     await tx.insert(auditLogs).values({ actor: `admin:${adminUserId}`, action: decision === "acknowledge" ? "report_acknowledged" : `report_${decision}`, target: `report:${reportId}` });
     return { ok: true, message: REPORT_REVIEW_TEXT[decision], changed: true };

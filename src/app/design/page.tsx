@@ -151,8 +151,21 @@ import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
 import { JobCheckReview } from "@/components/admin/job-check-review";
 import { BrokenLinkCard, LibraryReview, SuggestionCard } from "@/components/admin/library-review";
-import { exampleHeldProofs, exampleInForce, exampleJobChecks, exampleLibraryQueue, exampleOpenMessageReport, exampleReports, exampleReportsNow, exampleReviewCompanies } from "@/components/admin/fixtures";
-import { HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "@/components/admin/report-review";
+import {
+  exampleAppeals,
+  exampleHeldProofs,
+  exampleHiddenJunction,
+  exampleInForce,
+  exampleJobChecks,
+  exampleJunctionReport,
+  exampleLibraryQueue,
+  exampleOpenMessageReport,
+  exampleReports,
+  exampleReportsNow,
+  exampleReviewCompanies,
+} from "@/components/admin/fixtures";
+import { AppealRow, IntakeForm, JunctionModeration } from "@/components/admin/junction-moderation";
+import { HiddenJunctionRow, HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "@/components/admin/report-review";
 import { SuspendedNotice } from "@/components/account/suspended-notice";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
@@ -1291,9 +1304,24 @@ export default function DesignPage() {
         <ReportRow report={exampleOpenMessageReport} now={exampleReportsNow} pending={false} />
         <HiddenMessageRow message={{ ...exampleInForce.messages[0]!, id: "4c3b2a1f-0e9d-4c8b-9a7f-6e5d4c3b2a17" }} off={false} />
         <SuspendedAccountRow account={{ ...exampleInForce.accounts[0]!, id: "5d4c3b2a-1f0e-4d9c-8b8a-7f6e5d4c3b28" }} off={false} />
+        <p className="text-sm text-muted">
+          Junction (FR-61): a reported post held for review after reports. It says so in words and comes first; Hide post asks for the reason (admins
+          only) and the rule it broke (the author&apos;s notice names the rule, and they can appeal). Below it, a hidden comment in force with Unhide and
+          the removal record&apos;s legal hold.
+        </p>
+        <ReportRow report={{ ...exampleJunctionReport, id: "5e4d3c2b-1a0f-4e9d-8c7b-6a5f4e3d2c1c" }} now={exampleReportsNow} pending={false} />
+        <HiddenJunctionRow item={{ ...exampleHiddenJunction[0]!, id: "6f5e4d3c-2b1a-4f0e-9d8c-7b6a5f4e3d2d" }} off={false} />
+        <p className="text-sm text-muted">
+          An open appeal with the removed text, the author&apos;s note and its 15-day deadline (Keep hidden or Show again, with a reason; a line says
+          when the admin looking hid it), and &quot;Log a complaint or order&quot;, which puts an emailed complaint, a court order or a government notice
+          into the queue with its clock from when it reached us.
+        </p>
+        <AppealRow appeal={{ ...exampleAppeals[0]!, id: "4d3c2b1a-0f9e-4d8c-9b7a-6f5e4d3c2b1a" }} now={exampleReportsNow} off={false} />
+        <IntakeForm off={false} />
         <p className="text-sm text-muted">The whole page, and the list with nothing open.</p>
         <div className="rounded-lg border border-line p-4">
-          <ReportReview reports={exampleReports} now={exampleReportsNow} inForce={exampleInForce} />
+          <ReportReview reports={[exampleJunctionReport, ...exampleReports]} now={exampleReportsNow} inForce={{ ...exampleInForce, junction: exampleHiddenJunction }} />
+          <JunctionModeration appeals={exampleAppeals} now={exampleReportsNow} />
         </div>
         <div className="rounded-lg border border-line p-4">
           <ReportReview reports={[]} now={exampleReportsNow} inForce={{ messages: [], accounts: [] }} />

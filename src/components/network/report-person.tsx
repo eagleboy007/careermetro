@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { REPORT_REASON_LABELS } from "@/lib/inbox/types";
+import { CHAT_REPORT_REASON_LABELS, REPORT_REASON_LABELS } from "@/lib/inbox/types";
 import { REPORT_NOTE_MAX_CHARS } from "@/lib/schemas/constants";
 import type { ReportReason } from "@/lib/schemas/inbox";
 
@@ -40,7 +40,7 @@ export function ReportPerson({ name, busy, onSend, onCancel }: { name: string; b
     >
       <fieldset className="flex flex-col">
         <legend className="mb-1 text-[0.86rem] font-semibold">Report {name}?</legend>
-        {(Object.keys(REPORT_REASON_LABELS) as ReportReason[]).map((key, i) => (
+        {(Object.keys(CHAT_REPORT_REASON_LABELS) as ReportReason[]).map((key, i) => (
           <label key={key} className="flex min-h-11 items-center gap-2 text-[0.84rem]">
             <input ref={i === 0 ? firstRef : undefined} type="radio" name={`${ids}-reason`} value={key} checked={reason === key} onChange={() => setReason(key)} className="accent-ink" />
             {REPORT_REASON_LABELS[key]}

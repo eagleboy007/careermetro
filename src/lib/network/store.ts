@@ -724,6 +724,18 @@ async function viewerOf(userId: string, db: Db) {
   return { roleSlug: mine && !mine.sample ? mine.roleSlug : null };
 }
 
+/**
+ * The person's own target role slug, or null: the role of their newest analysis, as "Aiming for my role" reads it (a
+ * current sample resume aims at nothing). Junction's My route uses the same rule (docs/plans/junction-plan.md).
+ */
+export async function targetRoleSlugOf(userId: string, db: Db | Tx = getDb()): Promise<string | null> {
+  const mine = (await analysesOf([userId], userId, db)).get(userId);
+  return mine && !mine.sample ? mine.roleSlug : null;
+}
+
+/** A role slug's title, or null for one no longer in the catalog. */
+export const roleTitleOf = (slug: string | null): string | null => (slug ? (roleTitles.get(slug) ?? null) : null);
+
 /** The person's own target role (its title), to label Find people's filter; a filter they can't use isn't offered. */
 export async function networkFiltersFor(userId: string, db: Db = getDb()): Promise<{ role: string | null }> {
   const me = await viewerOf(userId, db);

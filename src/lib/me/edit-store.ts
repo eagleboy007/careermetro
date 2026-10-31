@@ -25,6 +25,7 @@ import { LIMITS, takeShared } from "@/lib/shared-limit";
 import type { AddedRole, AddedStory, MeAdditions } from "./build";
 import { jobKeyOf, type JobKey } from "./job-check-rules";
 import { interestKey, oneLine } from "./text";
+import { linkUserInterest } from "@/lib/junction/interests";
 
 /*
  * Me editing (docs/plans/me-editing-plan.md, v44 gap item 23): roles, education, stories and interests the person adds
@@ -252,7 +253,10 @@ export async function addInterest(userId: string, raw: unknown, deps: Deps = {})
     const [{ n }] = await tx.select({ n: count() }).from(userInterests).where(eq(userInterests.userId, userId));
     if (n >= INTERESTS_MAX) return { ok: false, error: "full", message: FULL_MESSAGES.interests };
     const added = await tx.insert(userInterests).values({ userId, name, nameKey, createdAt: now }).onConflictDoNothing().returning({ key: userInterests.nameKey });
-    return added.length ? { ok: true } : { ok: false, error: "duplicate", message: ME_EDIT_MESSAGES.duplicate, field: "name" };
+    if (!added.length) return { ok: false, error: "duplicate", message: ME_EDIT_MESSAGES.duplicate, field: "name" };
+    // Junction's shared interests (migration 0059): the row points at the shared tag from the start.
+    await linkUserInterest(userId, name, tx, now);
+    return { ok: true };
   });
 }
 

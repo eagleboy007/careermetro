@@ -4,6 +4,7 @@ import { getDb } from "@/db";
 import { auditLogs, consents, users, waitlistEntries } from "@/db/schema";
 import { purgeFoundChats } from "@/lib/corporate/find-store";
 import { keepCompanyMessages, removeEmptyChats } from "@/lib/inbox/store";
+import { beforeAccountPurge, recountAfterPurge } from "@/lib/junction/moderation";
 import { errorFields, logEvent } from "@/lib/log";
 
 type Db = ReturnType<typeof getDb>;
@@ -50,7 +51,9 @@ export const restoreUntil = (deletionRequestedAt: Date | null): Date | null =>
  * The daily job: removes accounts deleted more than DELETE_GRACE_DAYS ago, for good. Deleting the user row removes
  * everything that hangs off it (resumes, profiles, analyses, paths, goals, proofs, ride days, consents, their messages
  * except those written for a company in its application chats, which stay from "the company team",
- * chat memberships and blocks; chats nobody is left in go too, and reports they filed stay without their name); a waitlist
+ * chat memberships and blocks; chats nobody is left in go too, and reports they filed stay without their name; their
+ * Junction posts, comments, votes, saves, reshares and pins, after a removal record is kept for any of their posts or
+ * comments with an open report, and the counts on others' posts they touched are recomputed); a waitlist
  * sign-up with the same email goes too. The sign-in identity goes when the database has Supabase's auth schema; if
  * that step fails, our data is still removed and the failure is logged. One audit line per account, with no personal
  * data.
@@ -76,6 +79,8 @@ export async function purgeDeletedAccounts(db: Db = getDb(), now = new Date()): 
         await keepCompanyMessages(tx, user.id);
         // Let companies find me: chats companies started with this person go; their own messages in a company's found chats stay as the company's.
         await purgeFoundChats(tx, user.id);
+        // Junction (FR-61): reported content keeps its removal record; the posts whose counts they touched are recounted below.
+        const touched = await beforeAccountPurge(tx, user.id, now);
         const gone = await tx
           .delete(users)
           .where(and(eq(users.id, user.id), lt(users.deletionRequestedAt, graceEnds(now))))
@@ -83,6 +88,7 @@ export async function purgeDeletedAccounts(db: Db = getDb(), now = new Date()): 
         // Restored in the meantime.
         if (!gone.length) return;
         await removeEmptyChats(tx);
+        await recountAfterPurge(tx, touched, now);
         const email = user.email.toLowerCase();
         await tx.delete(waitlistEntries).where(sql`lower(${waitlistEntries.email}) = ${email}`);
         await tx.delete(consents).where(and(isNull(consents.userId), sql`lower(${consents.email}) = ${email}`));

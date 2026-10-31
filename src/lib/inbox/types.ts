@@ -1,4 +1,4 @@
-import type { ReportReason } from "@/lib/schemas/inbox";
+import type { ChatReportReason, ReportReason } from "@/lib/schemas/inbox";
 
 /**
  * What everyone in a chat sees in place of a message a CareerMetro admin hid after a report (FR-46). The text itself
@@ -102,13 +102,30 @@ export const initialsOf = (name: string) =>
     .map((w) => Array.from(w)[0]!.toUpperCase())
     .join("");
 
-/** Report reasons as the Report panel lists them, in this order (keys: REPORT_REASONS in lib/schemas/inbox). */
-export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
+/**
+ * Report reasons as the Inbox, Network and job Report panels list them, in this order (keys: CHAT_REPORT_REASONS in
+ * lib/schemas/inbox). Those panels are unchanged by Junction.
+ */
+export const CHAT_REPORT_REASON_LABELS: Record<ChatReportReason, string> = {
   money_or_otp: "Asked for money, an OTP or bank details",
   fake_or_spam: "Fake job, scam or spam",
   harassment: "Harassment or abuse",
   intimate_or_impersonation: "Sexual content, or pretending to be someone",
   other: "Something else",
+};
+
+/**
+ * Every reason's label, as /admin/reports and the reporter's notice word it. The reasons Junction added (docs/plans/
+ * junction-plan.md section 2.3) use the plan's words; Junction's own Report panel lists them in JUNCTION_REPORT_REASONS
+ * order (src/lib/junction/rules.ts).
+ */
+export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
+  ...CHAT_REPORT_REASON_LABELS,
+  child_safety: "Harmful to a child, or sexual content involving a child",
+  hate: "Hate or attacks on religion, caste, gender, race or region",
+  privacy: "Someone's personal details (phone, address, documents)",
+  misleading: "False or misleading information",
+  copyright: "Copies someone else's work",
 };
 
 /** What the Inbox screen can do on real chats. Each returns an error to show, or null when it worked. */

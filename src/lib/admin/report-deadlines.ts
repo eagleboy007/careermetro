@@ -1,25 +1,20 @@
 import type { ReportReason } from "@/lib/schemas/inbox";
+import { ACKNOWLEDGE_WITHIN_HOURS, DECIDE_WITHIN_HOURS, deadlinesFor, ORDER_DEADLINE_HOURS, orderDecideBy } from "@/lib/schemas/legal-timings";
 
 /*
  * The deadlines a report starts, as the Grievances page promises them (IT Rules 2021, rule 3(2)): every report is
- * acknowledged within 24 hours; sexual content or impersonation is acted on within 24 hours; a report asking us to
- * act on something that breaks the rules (money or OTP asks, harassment, fake jobs and spam) within 72 hours; anything
- * else gets a decision within 15 days. Decided by Development 2026-10-15 (docs/plans/reports-review-plan.md).
+ * acknowledged within 24 hours; sexual content or impersonation, and anything harmful to a child, is acted on within
+ * 24 hours; a report asking us to act on something that breaks the rules within 72 hours; anything else gets a decision
+ * within 15 days. Decided by Development 2026-10-15 (docs/plans/reports-review-plan.md); Junction's reasons added
+ * 2026-10-31 (docs/plans/junction-plan.md section 2.3). The hours themselves live in src/lib/schemas/legal-timings.ts.
+ *
+ * From migration 0059 a report stores its decide-by time when it is filed (reports.decide_by), so a logged court order's
+ * shorter clock and a later change to these numbers don't move old reports. Older rows have none and use these.
  */
 
-const HOUR = 3_600_000;
+export { ACKNOWLEDGE_WITHIN_HOURS, DECIDE_WITHIN_HOURS, ORDER_DEADLINE_HOURS, orderDecideBy };
 
-export const DECIDE_WITHIN_HOURS: Record<ReportReason, number> = {
-  intimate_or_impersonation: 24,
-  money_or_otp: 72,
-  harassment: 72,
-  fake_or_spam: 72,
-  other: 15 * 24,
-};
-
-export const ACKNOWLEDGE_WITHIN_HOURS = 24;
-
-export function reportDeadlines(reason: ReportReason, reportedAt: Date): { acknowledgeBy: Date; decideBy: Date } {
-  const at = reportedAt.getTime();
-  return { acknowledgeBy: new Date(at + ACKNOWLEDGE_WITHIN_HOURS * HOUR), decideBy: new Date(at + DECIDE_WITHIN_HOURS[reason] * HOUR) };
+export function reportDeadlines(reason: ReportReason, reportedAt: Date, storedDecideBy?: Date | null): { acknowledgeBy: Date; decideBy: Date } {
+  const d = deadlinesFor(reason, reportedAt);
+  return { acknowledgeBy: d.acknowledgeBy, decideBy: storedDecideBy ?? d.decideBy };
 }

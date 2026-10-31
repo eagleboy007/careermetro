@@ -414,6 +414,13 @@
       "when": 1792615200000,
       "tag": "0058_show_on_map",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1792701600000,
+      "tag": "0059_junction",
+      "breakpoints": true
     }
   ]
 }
