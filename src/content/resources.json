@@ -20202,17 +20202,6 @@
     "free": true
   },
   {
-    "title": "Provisions of RERA and its Impact",
-    "url": "https://old.wirc-icai.org/images/material/Provisions_of_RERA_and_its_Impact.pdf",
-    "provider": "WIRC of ICAI",
-    "kind": "docs",
-    "skillIds": [
-      "rera-compliance-basics"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "Real Estate Agent Registration under RERA",
     "url": "https://taxguru.in/corporate-law/real-estate-agent-registration-rera.html",
     "provider": "Taxguru",
@@ -20222,17 +20211,6 @@
       "real-estate-channel-partners"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Companies (Cost Records and Audit) Rules, 2014 (as amended)",
-    "url": "https://icmai.in/upload/Students/Circulars/Companies-Rules-2014.pdf",
-    "provider": "Institute of Cost Accountants of India",
-    "kind": "docs",
-    "skillIds": [
-      "cost-records-audit-compliance"
-    ],
-    "minutes": 60,
     "free": true
   },
   {
@@ -20255,28 +20233,6 @@
       "cost-records-audit-compliance"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Customs Manual 2023 (CBIC), mirrored copy",
-    "url": "https://www.caalley.com/csacts/Customs_Manual_2023.pdf",
-    "provider": "CBIC (copy on CAalley)",
-    "kind": "docs",
-    "skillIds": [
-      "customs-clearance-compliance"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Types of bills of entry",
-    "url": "https://www.dhl.com/discover/en-in/logistics-advice/logistics-insights/types-of-bills-of-entry",
-    "provider": "DHL",
-    "kind": "docs",
-    "skillIds": [
-      "customs-clearance-compliance"
-    ],
-    "minutes": 10,
     "free": true
   },
   {
