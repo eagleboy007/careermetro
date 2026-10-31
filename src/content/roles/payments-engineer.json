@@ -1,0 +1,153 @@
+{
+  "slug": "payments-engineer",
+  "title": "Payments Engineer",
+  "summary": "Builds the backend systems that move money: UPI, card and net banking payments, payment gateways, settlement and reconciliation. Works in a fintech, bank or card network engineering team, where correctness, security rules such as PCI DSS and high volumes matter more than features.",
+  "dailyDuties": [
+    "Build and change payment APIs and services",
+    "Integrate with banks, card networks or the UPI switch",
+    "Fix failed or stuck transactions and reversals",
+    "Improve reconciliation and settlement jobs",
+    "Review designs for idempotency, retries and data safety",
+    "Support audits and security reviews of payment flows"
+  ],
+  "typicalTitles": [
+    "Payment Systems Engineer",
+    "Software Engineer - Payments",
+    "Payments Backend Engineer",
+    "UPI Developer",
+    "Payment Gateway Developer",
+    "Card Payments Developer",
+    "Payment Switch Developer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Build payment services in Java, Go or Node.js",
+      "postingShare": null,
+      "oneOf": "payments-language"
+    },
+    {
+      "skillId": "go",
+      "importance": "required",
+      "expectation": "Build payment services in Java, Go or Node.js",
+      "postingShare": null,
+      "oneOf": "payments-language"
+    },
+    {
+      "skillId": "nodejs",
+      "importance": "required",
+      "expectation": "Build payment services in Java, Go or Node.js",
+      "postingShare": null,
+      "oneOf": "payments-language"
+    },
+    {
+      "skillId": "payment-systems-domain",
+      "importance": "required",
+      "expectation": "Know how UPI, cards, net banking and wallets work end to end",
+      "postingShare": null
+    },
+    {
+      "skillId": "payment-switch-integration",
+      "importance": "required",
+      "expectation": "Integrate with banks, networks and the UPI switch using ISO 8583, ISO 20022 or gateway APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "payment-reconciliation-settlement",
+      "importance": "required",
+      "expectation": "Build reconciliation and settlement jobs that match transactions with bank and network files",
+      "postingShare": null
+    },
+    {
+      "skillId": "microservices",
+      "importance": "required",
+      "expectation": "Build and run payment microservices with clear ownership",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Design payment APIs with idempotency keys, retries and reversals",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Design transaction tables and write safe, consistent SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "required",
+      "expectation": "Use Kafka or a similar queue for payment events",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Design high-volume payment flows that stay correct under failure",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Build within PCI DSS and RBI rules for card data, logs and audit trails",
+      "postingShare": null
+    },
+    {
+      "skillId": "spring-boot",
+      "importance": "nice_to_have",
+      "expectation": "Build Java services with Spring Boot",
+      "postingShare": null
+    },
+    {
+      "skillId": "cryptography-basics",
+      "importance": "nice_to_have",
+      "expectation": "Use encryption, tokenisation and HSM-backed key management",
+      "postingShare": null
+    },
+    {
+      "skillId": "nosql",
+      "importance": "nice_to_have",
+      "expectation": "Use Redis or similar for caching and locks",
+      "postingShare": null
+    },
+    {
+      "skillId": "observability",
+      "importance": "nice_to_have",
+      "expectation": "Track payment success rates with metrics, logs and traces",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "payments-language",
+      "label": "A payments backend language (Java, Go or Node.js)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "oracle-java-professional",
+      "importance": "optional",
+      "why": "Shows Java depth for Java-heavy bank and fintech teams"
+    },
+    {
+      "certId": "confluent-ccdak",
+      "importance": "optional",
+      "why": "Shows Kafka skill for event-driven payment systems"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

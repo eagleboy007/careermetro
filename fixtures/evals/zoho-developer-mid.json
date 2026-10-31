@@ -1,0 +1,56 @@
+{
+  "id": "zoho-developer-mid",
+  "roleSlug": "zoho-developer",
+  "persona": "mid",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.k@example.com\n\nEXPERIENCE\nZoho Developer, Sahyadri Cloud Solutions, Pune (2021 - present)\n- Built 12 Zoho Creator apps for order tracking, field service and vendor onboarding for small business clients.\n- Wrote Deluge custom functions and scheduled scripts to sync invoices between Zoho CRM and Zoho Books.\n- Configured Zoho CRM blueprints, custom modules and workflow rules for a 60-person sales team.\n- Integrated Zoho apps with a courier platform and an online store through REST APIs and webhooks.\n- Migrated 40,000 customer records from spreadsheets into Zoho CRM with field mapping and duplicate checks.\n\nSKILLS\nZoho Creator, Deluge, Zoho CRM, Zoho Books, Requirement gathering, REST APIs\n\nEDUCATION\nBCA, Savitribai Phule Pune University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "zoho-creator-development",
+        "quote": "Built 12 Zoho Creator apps for order tracking"
+      },
+      {
+        "skillId": "zoho-deluge-scripting",
+        "quote": "Wrote Deluge custom functions and scheduled scripts"
+      },
+      {
+        "skillId": "zoho-crm-customization",
+        "quote": "Configured Zoho CRM blueprints, custom modules and workflow rules"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "through REST APIs and webhooks"
+      },
+      {
+        "skillId": "data-migration",
+        "quote": "Migrated 40,000 customer records from spreadsheets into Zoho CRM"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Zoho Creator, Deluge, Zoho CRM, Zoho Books, Requirement gathering, REST APIs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "requirements-gathering",
+        "status": "weak"
+      },
+      {
+        "skillId": "process-mapping",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "javascript",
+      "sql",
+      "salesforce-apex",
+      "appian-development"
+    ]
+  },
+  "reviewedBy": null
+}

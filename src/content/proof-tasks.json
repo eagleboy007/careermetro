@@ -3446,5 +3446,129 @@
   {
     "skillId": "video-editing-nle",
     "task": "Edit a 60-second promo for a synthetic brand from free stock footage in DaVinci Resolve or another editor: story cut, music, titles and a 9:16 version. Share both exports and a short note on the edit choices."
+  },
+  {
+    "skillId": "3d-modelling-dcc",
+    "task": "Model a game-ready prop (a crate, lantern or sci-fi door) in Blender or a student copy of Maya to a stated poly budget, with clean topology and real-world scale. Share the .blend or .fbx, wireframe renders and a short breakdown."
+  },
+  {
+    "skillId": "calypso-platform",
+    "task": "Using Calypso's public material, write a design note for a synthetic change: a new trade workflow rule and a scheduled task that sends confirmations, with the trade states, triggers, test trades and expected results. Share it."
+  },
+  {
+    "skillId": "capital-markets-trade-lifecycle",
+    "task": "Trace a synthetic interest rate swap from booking to maturity: trade capture, confirmation, cash flows, fixings, valuation, settlement and accounting events, as a lifecycle diagram and a table of events and systems. Share it."
+  },
+  {
+    "skillId": "digital-sculpting",
+    "task": "Sculpt a high-poly stylised rock, creature bust or prop in Blender's sculpt mode or ZBrushCoreMini, then bake its normal and AO maps onto a low-poly version. Share turntable renders and the baked maps."
+  },
+  {
+    "skillId": "ev-powertrain-integration",
+    "task": "Write a DVP&R for the e-drive of a synthetic electric two-wheeler: requirements (torque, range, thermal limits), test cases at component and vehicle level, acceptance criteria and a sample results table with one failure and its next step. Share it."
+  },
+  {
+    "skillId": "game-asset-optimisation",
+    "task": "Take a high-poly model, retopologise it, lay out clean UVs, make three LODs to stated triangle budgets and import it into Unity or Unreal with correct scale and pivot. Share the files, a polycount table and in-engine screenshots."
+  },
+  {
+    "skillId": "lottie-ui-animation",
+    "task": "Design and animate three in-app moments for a synthetic app (loading, success, empty state) in After Effects with Bodymovin or a free tool (LottieFiles Creator), export them as Lottie JSON and show them playing in a simple web page. Share it."
+  },
+  {
+    "skillId": "murex-platform",
+    "task": "Using Murex's public material and your own notes, write a design note for a synthetic MX.3 change: a new datamart report on FX forwards with its extraction, filters, batch schedule and checks against front office figures. Share it."
+  },
+  {
+    "skillId": "odoo-functional-apps",
+    "task": "On a free Odoo Community or trial database, configure a synthetic trading firm: products, a sales-to-delivery-to-invoice flow and stock valuation, then walk one order end to end. Share screenshots and a one-page process note."
+  },
+  {
+    "skillId": "odoo-module-development",
+    "task": "Write an Odoo Community module for a synthetic equipment rental: models with the ORM, list and form views, a QWeb report, access rights and a unit test, running in Docker. Share the repository and screenshots."
+  },
+  {
+    "skillId": "oracle-service-bus",
+    "task": "In the free SOA Suite quick start, build an OSB pipeline that exposes a REST service, transforms the request with XQuery to a SOAP back end, adds a route and error handler, and logs each call. Share the project and test calls."
+  },
+  {
+    "skillId": "oracle-soa-suite",
+    "task": "In the free Oracle SOA Suite quick start, build a BPEL process that takes a synthetic order, calls a mock credit check web service, routes on the result and writes to a database adapter, with a fault policy. Share the composite and test run screenshots."
+  },
+  {
+    "skillId": "payment-reconciliation-settlement",
+    "task": "Build a reconciliation job over synthetic files (your transaction ledger, a switch settlement file and a bank statement): match on keys, flag mismatches, timeouts and duplicates, and print a settlement summary. Share the code, test data and output."
+  },
+  {
+    "skillId": "payment-switch-integration",
+    "task": "Write a small service in Java, Go or Node.js that builds and parses ISO 8583 authorisation messages (with jPOS or a library of your choice) and maps one to an ISO 20022 pain.001 payment, with tests. Share the code and a short note."
+  },
+  {
+    "skillId": "pbr-texturing",
+    "task": "Texture your own game prop with PBR maps (base colour, roughness, metallic, normal) in Substance 3D Painter (student licence) or Blender, with one worn and one clean variant, and show it under two lighting set-ups. Share renders and texture sheets."
+  },
+  {
+    "skillId": "powertrain-dyno-testing",
+    "task": "Plan a motor dyno test for a synthetic 5 kW traction motor: torque-speed and efficiency map sweep, thermal soak, channels to log and sample rates, then plot an efficiency map from a synthetic or public data set in Python. Share the plan and plot."
+  },
+  {
+    "skillId": "rf-em-simulation",
+    "task": "Model an on-chip spiral inductor or a microstrip line in a free EM solver such as openEMS, extract L, Q or S-parameters across frequency, and compare with a closed-form estimate. Share the model, plots and a short note."
+  },
+  {
+    "skillId": "rf-ic-circuit-design",
+    "task": "Design a 2.4 GHz inductively degenerated LNA in an open PDK (SkyWater 130 or GF180) with ngspice or Qucs-S: size it for a stated gain, noise figure and input match, and show S-parameter and noise plots. Share the schematic, netlist and a one-page design note."
+  },
+  {
+    "skillId": "rf-lab-characterisation",
+    "task": "Write a lab test plan for a synthetic RF amplifier board: VNA calibration and S-parameters, gain compression and noise figure set-ups, with equipment list, connection diagrams and a results template filled with sample numbers. Share it."
+  },
+  {
+    "skillId": "rf-performance-analysis",
+    "task": "Simulate your own LNA or mixer in ngspice or Qucs-S: noise figure, 1 dB compression, IIP3 from a two-tone test and S11 across the band, tabulated against a target spec, with a note on which spec limits the design. Share the plots and table."
+  },
+  {
+    "skillId": "sap-pm-configuration",
+    "task": "Using public SAP documentation, write the configuration and master data for a synthetic plant's maintenance: functional locations, equipment, a maintenance plan with strategy, order types and notification types, with test cases. Share the document."
+  },
+  {
+    "skillId": "sap-pm-maintenance",
+    "task": "Write a step-by-step user guide for a synthetic breakdown in SAP PM: raise a notification (IW21), convert it to an order, plan parts and labour, confirm time and close it (TECO), with sample field values and a one-page flow. Share it."
+  },
+  {
+    "skillId": "sap-qm-configuration",
+    "task": "Using public SAP documentation, write the configuration steps for goods receipt inspection of a synthetic raw material: inspection type, master inspection characteristics, inspection plan, sampling procedure and usage decision, with test cases. Share it."
+  },
+  {
+    "skillId": "siebel-crm-configuration",
+    "task": "Using Oracle's Siebel bookshelf, write the Siebel Tools steps to add a field to the Service Request business component, show it in an Open UI applet with a validation, and deploy it through a workspace. Share it."
+  },
+  {
+    "skillId": "siebel-eai-eim",
+    "task": "Design an EIM load of 1,000 synthetic contacts into Siebel (EIM table mapping, .ifb file, batch plan and error checks) and an EAI integration object with a web service for contact updates. Share the mapping sheet, files and a short note."
+  },
+  {
+    "skillId": "siebel-escript-workflows",
+    "task": "Write a Siebel workflow and an eScript business service for a synthetic rule (escalate a service request open over 48 hours): the steps, the script with error handling, and test cases with expected results. Share the design and script."
+  },
+  {
+    "skillId": "storyboarding-styleframes",
+    "task": "Storyboard a 20-second product explainer for a synthetic fintech app: eight to twelve frames with timing, camera notes and script, plus two finished style frames that set colour and type. Share the boards and frames."
+  },
+  {
+    "skillId": "vehicle-energy-simulation",
+    "task": "Build a backward-facing vehicle energy model in Python or Simulink (or NREL FASTSim) for a synthetic EV: road load, drivetrain losses and regen over the MIDC or WLTC cycle, then report range and Wh/km and one sensitivity. Share the model and a note."
+  },
+  {
+    "skillId": "zoho-creator-development",
+    "task": "Build a Zoho Creator app on the free plan for a synthetic clinic's appointments: forms, a report, a workflow that sends a reminder, and a role with limited access. Share screenshots and a one-page app guide."
+  },
+  {
+    "skillId": "zoho-crm-customization",
+    "task": "In a free Zoho CRM account, customise a synthetic B2B sales process: a custom module, a blueprint with three stages and mandatory fields, an assignment rule and a workflow alert. Share screenshots and a one-page configuration note."
+  },
+  {
+    "skillId": "zoho-deluge-scripting",
+    "task": "On a free Zoho account, write Deluge functions for a synthetic sales flow: when a deal is won, create an invoice record, post a message to a webhook and log errors. Share the scripts, screenshots of a test run and a short note."
   }
 ]

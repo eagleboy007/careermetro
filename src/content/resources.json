@@ -11876,7 +11876,8 @@
     "provider": "NPTEL (IIT Guwahati)",
     "kind": "course",
     "skillIds": [
-      "ev-hev-systems"
+      "ev-hev-systems",
+      "ev-powertrain-integration"
     ],
     "minutes": 1800,
     "free": true
@@ -11888,7 +11889,8 @@
     "kind": "course",
     "skillIds": [
       "ev-hev-systems",
-      "electrical-machines-transformers"
+      "electrical-machines-transformers",
+      "ev-powertrain-integration"
     ],
     "minutes": 1800,
     "free": true
@@ -32023,6 +32025,1542 @@
     "kind": "docs",
     "skillIds": [
       "lead-scoring"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "RF Integrated Circuits (NPTEL, IIT Delhi)",
+    "url": "https://nptel.ac.in/courses/117102012",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "rf-ic-circuit-design",
+      "rf-performance-analysis"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "IC Design for Wireless Systems (NPTEL)",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_ee08/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "rf-ic-circuit-design"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "RF Transceiver Design (NPTEL, IIT Roorkee)",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_ee91/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "rf-ic-circuit-design",
+      "rf-performance-analysis"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Intro to RF and Wireless Technology, Lecture 1 (Prof. Razavi, UCLA EE164)",
+    "url": "https://www.youtube.com/watch?v=viGGHPsP1BM",
+    "provider": "UCLA (YouTube)",
+    "kind": "video",
+    "skillIds": [
+      "rf-ic-circuit-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Low Noise Amplifier Design in RF System (free course)",
+    "url": "https://innovationspace.ansys.com/product/low-noise-amplifier-design-in-rf-system/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "rf-ic-circuit-design",
+      "rf-performance-analysis"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Mixer Design in RF System (free course)",
+    "url": "https://innovationspace.ansys.com/product/mixer-design-in-rf-system/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "rf-ic-circuit-design"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Understand Wireless Data Sheet Specifications, Part 1 (noise figure, IP3)",
+    "url": "https://www.analog.com/en/resources/technical-articles/understand-wireless-data-sheet-specifications--part-1.html",
+    "provider": "Analog Devices",
+    "kind": "docs",
+    "skillIds": [
+      "rf-performance-analysis"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "MT-012: Intermodulation Distortion Considerations (IP2, IP3)",
+    "url": "https://www.analog.com/media/en/training-seminars/tutorials/MT-012.pdf",
+    "provider": "Analog Devices",
+    "kind": "docs",
+    "skillIds": [
+      "rf-performance-analysis"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Design Principles of RF and Microwave Filters and Amplifiers (NPTEL)",
+    "url": "https://nptel.ac.in/courses/117105138",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "rf-performance-analysis"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Microwave Integrated Circuits (NPTEL, IIT Bombay)",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_ee20/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "rf-performance-analysis"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of RF and Microwave Noise Figure Measurements (AN 57-1)",
+    "url": "https://www.keysight.com/at/de/assets/7018-06808/application-notes/5952-8255.pdf",
+    "provider": "Keysight",
+    "kind": "docs",
+    "skillIds": [
+      "rf-performance-analysis",
+      "rf-lab-characterisation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to Ansys HFSS (free course)",
+    "url": "https://innovationspace.ansys.com/product/intro-to-ansys-hfss/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "rf-em-simulation"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "openEMS tutorials (microstrip, stripline, filters)",
+    "url": "https://wiki.openems.de/index.php/Tutorials.html",
+    "provider": "openEMS",
+    "kind": "practice",
+    "skillIds": [
+      "rf-em-simulation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Sonnet Lite: free planar EM simulator with tutorials and examples",
+    "url": "https://www.sonnetsoftware.com/lite",
+    "provider": "Sonnet Software",
+    "kind": "practice",
+    "skillIds": [
+      "rf-em-simulation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Training insights: electromagnetic simulations using the EMX solver",
+    "url": "https://community.cadence.com/cadence_blogs_8/b/cic/posts/training-insights-electromagnetic-simulations-using-the-emx-solver",
+    "provider": "Cadence",
+    "kind": "docs",
+    "skillIds": [
+      "rf-em-simulation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Getting Started with Vector Network Analyzers",
+    "url": "https://www.rohde-schwarz.com/us/_253352.html",
+    "provider": "Rohde & Schwarz",
+    "kind": "docs",
+    "skillIds": [
+      "rf-lab-characterisation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Understanding basic spectrum analyzer operation",
+    "url": "https://www.rohde-schwarz.com/us/knowledge-center/videos/understanding-basic-spectrum-analyzer-operation_251220-1513228.html",
+    "provider": "Rohde & Schwarz",
+    "kind": "video",
+    "skillIds": [
+      "rf-lab-characterisation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "VNA for Smarties: measurement capabilities and calibration",
+    "url": "https://copper-mountain-technologies.gitbooks.io/vna-for-smarties/content/general_overview/measurement_capabilities.html",
+    "provider": "Copper Mountain Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "rf-lab-characterisation"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Design Verification Plan and Report (DVP&R) explained",
+    "url": "https://element.com/nucleus/2019/design-verification-plan-and-report",
+    "provider": "Element",
+    "kind": "docs",
+    "skillIds": [
+      "ev-powertrain-integration"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "AIS-039 Rev.1: electrical energy consumption of electric power train vehicles",
+    "url": "https://emobility.araiindia.com/wp-content/uploads/2018/06/AIS_039_Rev_1.pdf",
+    "provider": "ARAI",
+    "kind": "docs",
+    "skillIds": [
+      "ev-powertrain-integration",
+      "powertrain-dyno-testing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "EV: Vehicle Dynamics and Electric Motor Drives (NPTEL, IIT Delhi)",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_ee33/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "ev-powertrain-integration",
+      "vehicle-energy-simulation"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Dynos for Dummies: dynamometer motor testing basics",
+    "url": "https://evt.mit.edu/textbooks/Dynos_for_Dummies.pdf",
+    "provider": "MIT Electric Vehicle Team",
+    "kind": "docs",
+    "skillIds": [
+      "powertrain-dyno-testing"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Electric powertrain testing: drivetrain efficiency for automotive",
+    "url": "https://www.hbkworld.com/en/knowledge/resource-center/articles/electric-powertrain-testing-drivetrain-efficiency-for-automotive",
+    "provider": "HBK",
+    "kind": "docs",
+    "skillIds": [
+      "powertrain-dyno-testing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "CANape video tutorials (measurement and data logging)",
+    "url": "https://www.vector.com/en/business-unit/measurement-calibration/resources/video-tutorials/canape-tutorials/",
+    "provider": "Vector",
+    "kind": "video",
+    "skillIds": [
+      "powertrain-dyno-testing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "AIS-040 Rev.1 Amendments 1 and 2: range test for battery-operated vehicles",
+    "url": "https://emobility.araiindia.com/wp-content/uploads/2022/05/AIS_040_Rev1_Amd_1_n_-2.pdf",
+    "provider": "ARAI",
+    "kind": "docs",
+    "skillIds": [
+      "powertrain-dyno-testing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Simulate five-cycle energy consumption tests using Virtual Vehicle Composer",
+    "url": "https://www.mathworks.com/help/autoblks/ug/simulate-five-cycle-energy-consumption-tests-using-vvc.html",
+    "provider": "MathWorks",
+    "kind": "practice",
+    "skillIds": [
+      "vehicle-energy-simulation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "FASTSim documentation (NREL vehicle energy simulator)",
+    "url": "https://nrel.github.io/fastsim/print.html",
+    "provider": "NREL",
+    "kind": "docs",
+    "skillIds": [
+      "vehicle-energy-simulation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Road vehicle model: energy use over a drive cycle",
+    "url": "https://www.batterydesign.net/system/electric-vehicle/road-vehicle-model/",
+    "provider": "Battery Design",
+    "kind": "docs",
+    "skillIds": [
+      "vehicle-energy-simulation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Design and analyze a battery electric vehicle with thermal management",
+    "url": "https://in.mathworks.com/videos/design-and-analyze-a-battery-electric-vehicle-with-thermal-management--1717503205366.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "vehicle-energy-simulation"
+    ],
+    "minutes": 18,
+    "free": true
+  },
+  {
+    "title": "Blender Fundamentals 4.5 LTS: Modeling chapter",
+    "url": "https://studio.blender.org/training/blender-fundamentals-45-lts/chapter/blender_4-5_lts_modeling/",
+    "provider": "Blender Studio",
+    "kind": "video",
+    "skillIds": [
+      "3d-modelling-dcc"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Maya Help: Polygonal modeling",
+    "url": "https://help.autodesk.com/view/MAYAUL/2026/ENU/?guid=GUID-7941F97A-36E8-47FE-95D1-71412A3B3017",
+    "provider": "Autodesk",
+    "kind": "docs",
+    "skillIds": [
+      "3d-modelling-dcc"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Maya intro course: Modeling basics",
+    "url": "https://area.autodesk.com/learn/courses/maya-intro/03-modeling-basics/",
+    "provider": "Autodesk AREA",
+    "kind": "course",
+    "skillIds": [
+      "3d-modelling-dcc"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Modeling Mode Quick Start in Unreal Engine",
+    "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/modeling-mode-quick-start-in-unreal-engine",
+    "provider": "Epic Games",
+    "kind": "practice",
+    "skillIds": [
+      "3d-modelling-dcc"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Blender Manual: Sculpting",
+    "url": "https://docs.blender.org/manual/en/latest/sculpt_paint/sculpting/index.html",
+    "provider": "Blender",
+    "kind": "docs",
+    "skillIds": [
+      "digital-sculpting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Blender Fundamentals 4.5 LTS: Sculpting chapter",
+    "url": "https://studio.blender.org/training/blender-fundamentals-45-lts/chapter/blender_4-5_lts_sculpting/",
+    "provider": "Blender Studio",
+    "kind": "video",
+    "skillIds": [
+      "digital-sculpting"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Sculpting Fundamentals (Stylized Character Workflow, free lesson)",
+    "url": "https://studio.blender.org/training/stylized-character-workflow/5d5e6141b01c790d39b7ed4e/",
+    "provider": "Blender Studio",
+    "kind": "video",
+    "skillIds": [
+      "digital-sculpting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "ZBrush Getting Started (Sculpting a Head, First Creature tutorials)",
+    "url": "https://help.maxon.net/zbr/en-us/Content/html/getting-started/getting-started.html",
+    "provider": "Maxon",
+    "kind": "docs",
+    "skillIds": [
+      "digital-sculpting"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Mudbox Help: Sculpting overview",
+    "url": "https://help.autodesk.com/view/MBXPRO/ENU/?guid=GUID-7A2A01A6-D498-4961-918B-024D422B23DB",
+    "provider": "Autodesk",
+    "kind": "docs",
+    "skillIds": [
+      "digital-sculpting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Substance 3D Painter: Getting started",
+    "url": "https://helpx.adobe.com/substance-3d-painter/getting-started.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "pbr-texturing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "First Steps with Substance 3D Painter",
+    "url": "https://substance3d.adobe.com/tutorials/courses/First-Steps-with-Substance-3D-Painter",
+    "provider": "Adobe",
+    "kind": "video",
+    "skillIds": [
+      "pbr-texturing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Substance 3D Designer: Getting started",
+    "url": "https://experienceleague.adobe.com/en/docs/substance-3d-designer/using/getting-started/getting-started",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "pbr-texturing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "The PBR Guide, Part 2 (practical texturing, metal/roughness)",
+    "url": "https://www.adobe.com/learn/substance-3d-designer/web/the-pbr-guide-part-2",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "pbr-texturing"
+    ],
+    "minutes": 65,
+    "free": true
+  },
+  {
+    "title": "Blender Manual: Remeshing and retopology",
+    "url": "https://docs.blender.org/manual/en/latest/modeling/meshes/retopology.html",
+    "provider": "Blender",
+    "kind": "docs",
+    "skillIds": [
+      "game-asset-optimisation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Blender Manual: UV unwrapping introduction",
+    "url": "https://docs.blender.org/manual/en/latest/modeling/meshes/uv/unwrapping/introduction.html",
+    "provider": "Blender",
+    "kind": "docs",
+    "skillIds": [
+      "game-asset-optimisation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Static Mesh Automatic LOD Generation in Unreal Engine",
+    "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/static-mesh-automatic-lod-generation-in-unreal-engine",
+    "provider": "Epic Games",
+    "kind": "docs",
+    "skillIds": [
+      "game-asset-optimisation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Level of Detail (Unity Learn)",
+    "url": "https://learn.unity.com/tutorial/level-of-detail-3653",
+    "provider": "Unity Learn",
+    "kind": "course",
+    "skillIds": [
+      "game-asset-optimisation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Art optimization tips for mobile game developers, part 1",
+    "url": "https://unity.com/how-to/mobile-game-optimization-tips-part-1",
+    "provider": "Unity",
+    "kind": "docs",
+    "skillIds": [
+      "game-asset-optimisation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "LottieFiles plugin for After Effects: get started",
+    "url": "https://lottiefiles.com/plugins/after-effects/get-started",
+    "provider": "LottieFiles",
+    "kind": "docs",
+    "skillIds": [
+      "lottie-ui-animation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "dotLottie runtimes quick start (web, React, iOS, Android)",
+    "url": "https://docs.lottiefiles.com/en/runtimes/overview/quick-start",
+    "provider": "LottieFiles",
+    "kind": "docs",
+    "skillIds": [
+      "lottie-ui-animation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Learn Rive: Rive 101 video series and beginner tutorials",
+    "url": "https://rive.app/docs/tutorials/learn-rive",
+    "provider": "Rive",
+    "kind": "video",
+    "skillIds": [
+      "lottie-ui-animation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Rive State Machine overview",
+    "url": "https://rive.app/docs/editor/state-machine/state-machine",
+    "provider": "Rive",
+    "kind": "docs",
+    "skillIds": [
+      "lottie-ui-animation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Rive web runtime: getting started",
+    "url": "https://rive.app/docs/runtimes/web/web-js",
+    "provider": "Rive",
+    "kind": "practice",
+    "skillIds": [
+      "lottie-ui-animation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Storyboard Pro: How to create an animatic",
+    "url": "https://docs.toonboom.com/help/storyboard-pro-20/storyboard/getting-started/animatic.html",
+    "provider": "Toon Boom",
+    "kind": "docs",
+    "skillIds": [
+      "storyboarding-styleframes"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Blender Manual: Storyboarding app template",
+    "url": "https://docs.blender.org/manual/en/latest/video_editing/storyboarding/app_template.html",
+    "provider": "Blender",
+    "kind": "docs",
+    "skillIds": [
+      "storyboarding-styleframes"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "What are animatics and how can I make them?",
+    "url": "https://www.adobe.com/uk/creativecloud/animation/discover/animatics.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "storyboarding-styleframes"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Motion graphic animatic (teaching resource)",
+    "url": "https://edex.adobe.com/teaching-resources/motion-graphic-animatic",
+    "provider": "Adobe Education Exchange",
+    "kind": "practice",
+    "skillIds": [
+      "storyboarding-styleframes"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Getting Started with Cinema 4D, Part 09: Introduction to MoGraph",
+    "url": "https://www.cineversity.com/vidplaylist/getting_started_with_cinema_4d_r20/getting_started_with_cinema_4d_part_09_introduction_to_the_mograph_module",
+    "provider": "Maxon Cineversity",
+    "kind": "video",
+    "skillIds": [
+      "3d-motion-design"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Cinema 4D MoGraph basics",
+    "url": "https://www.maxon.net/en/cinema-4d/features/mograph-basics",
+    "provider": "Maxon",
+    "kind": "docs",
+    "skillIds": [
+      "3d-motion-design"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Redshift: Getting started with Cinema 4D",
+    "url": "https://help.maxon.net/r3d/cinema/en-us/Content/html/Getting+Started+with+Cinema+4D.html",
+    "provider": "Maxon",
+    "kind": "docs",
+    "skillIds": [
+      "3d-motion-design"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "OctaneRender for Cinema 4D: Getting started",
+    "url": "https://docs.otoy.com/cinema4d/GettingStarted.html",
+    "provider": "OTOY",
+    "kind": "docs",
+    "skillIds": [
+      "3d-motion-design"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Geometry Nodes from Scratch: Theory basics (free lesson)",
+    "url": "https://studio.blender.org/training/geometry-nodes-from-scratch/theory-basics/",
+    "provider": "Blender Studio",
+    "kind": "video",
+    "skillIds": [
+      "3d-motion-design"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Applying SAP S/4HANA Quality Management",
+    "url": "https://learning.sap.com/courses/applying-sap-s-4hana-quality-management",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-qm-configuration"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Quality Management in SAP S/4HANA EWM",
+    "url": "https://learning.sap.com/courses/quality-management-in-sap-s-4hana-ewm",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-qm-configuration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Mapping Quality Inspection Processes (EWM and QIE)",
+    "url": "https://learning.sap.com/courses/processes-in-sap-s-4hana-ewm/mapping-quality-inspection-processes",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-qm-configuration"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "3 Steps to Streamline your SAP QM Solution (master inspection characteristics)",
+    "url": "https://community.sap.com/t5/enterprise-resource-planning-blog-posts-by-members/3-steps-to-streamline-your-sap-qm-solution/ba-p/13401098",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-qm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Inspection Plans and Inspection Characteristics (SAP Help, QM)",
+    "url": "https://help.sap.com/saphelp_erp60_sp/helpdata/en/f6/5cbd534f22b44ce10000000a174cb4/content.htm",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-qm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Exploring Business Processes in SAP S/4HANA Asset Management",
+    "url": "https://learning.sap.com/courses/exploring-business-processes-in-sap-s-4hana-asset-management",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-pm-configuration"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Exploring Advanced Functions in Maintenance Processing",
+    "url": "https://learning.sap.com/courses/exploring-advanced-functions-in-maintenance-processing",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-pm-configuration"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Describing Maintenance Plans (Preventive Maintenance in SAP S/4HANA Asset Management)",
+    "url": "https://learning.sap.com/courses/exploring-preventive-maintenance-in-sap-s-4hana-asset-management/describing-maintenance-plans",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-pm-configuration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Customizing Notification Types and Assigning Order Types (SAP Help, PM)",
+    "url": "https://help.sap.com/saphelp_erp60_sp/helpdata/en/5d/30ba538c95b54ce10000000a174cb4/content.htm",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-pm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Developing SOA Applications with Oracle SOA Suite 12.2.1.4",
+    "url": "https://docs.oracle.com/en/middleware/soa-suite/soa/12.2.1.4/develop/index.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-soa-suite"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Getting Started with Oracle SOA Suite (14.1.2)",
+    "url": "https://docs.oracle.com/en/middleware/soa-suite/soa/14.1.2/develop/getting-started-oracle-soa-suite.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-soa-suite"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Creating Oracle Mediator Routing Rules (SOA Suite 14.1.2)",
+    "url": "https://docs.oracle.com/en/middleware/soa-suite/soa/14.1.2/develop/creating-routing-rules.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-soa-suite"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Understanding Technology Adapters (SOA Suite 12.2.1.4)",
+    "url": "https://docs.oracle.com/cd/F17744_01/integration-adapters/12.2.1.4/develop-soa-adapters/understanding-technology-adapters.pdf",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-soa-suite",
+      "oracle-service-bus"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Adapter Integration with Oracle Application Server Components",
+    "url": "https://docs.oracle.com/en/middleware/soa-suite/integration-adapters/12.2.1.4/develop-soa-adapters/adapter-integration-components.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-soa-suite"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Developing Services with Oracle Service Bus 14.1.2",
+    "url": "https://docs.oracle.com/en/middleware/soa-suite/service-bus/14.1.2/develop/index.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-service-bus"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Oracle Service Bus 14.1.2: Develop and Deploy",
+    "url": "https://docs.oracle.com/en/middleware/soa-suite/service-bus/14.1.2/develop-and-deploy.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-service-bus"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Creating an Oracle Service Bus Application with Oracle JDeveloper 12c",
+    "url": "https://www.oracle.com/webfolder/technetwork/tutorials/obe/cloud/sscs/CreatingOSBApp/creating-a-service-bus-app.html",
+    "provider": "Oracle Learning",
+    "kind": "practice",
+    "skillIds": [
+      "oracle-service-bus"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Developing Services with Oracle Service Bus 12.1.3",
+    "url": "https://docs.oracle.com/cd/E60665_01/soa121300/OSBDV/title.htm",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-service-bus"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Configuring a Siebel Application (Configuring Siebel Business Applications)",
+    "url": "https://docs.oracle.com/cd/F26413_09/books/ConfigApps/configuring-a-siebel-application.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-crm-configuration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Configuring Siebel Open UI Guide",
+    "url": "https://docs.oracle.com/cd/G26828_01/books/ConfigOpenUI/configuring-siebel-open-ui-guide.pdf",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-crm-configuration"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Siebel CRM 25.12 Documentation Library (Using Siebel Tools, Object Types)",
+    "url": "https://docs.oracle.com/cd/G30562_01/portalres/pages/doccat_consector.htm",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-crm-configuration",
+      "siebel-escript-workflows",
+      "siebel-eai-eim"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Setting Up the Siebel Development Environment (Configuring Siebel Applications roadmap)",
+    "url": "https://docs.oracle.com/cd/B40099_02/books/ConfigApps/ConfigApps_RoadMap10.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-crm-configuration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Siebel eScript Quick Reference: Business Service Methods",
+    "url": "https://docs.oracle.com/cd/E95904_01/books/OIRef/Siebel_eScript_Quick_Reference9.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-escript-workflows"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Siebel eScript Language Reference",
+    "url": "https://docs.oracle.com/cd/E88140_01/books/PDF/eScript.pdf",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-escript-workflows"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Siebel Business Process Framework: Workflow Guide",
+    "url": "https://docs.oracle.com/cd/E95904_01/books/BPFWorkflow/BPFWorkflowTOC.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-escript-workflows"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Siebel Task UI Guide: Overview of Siebel Task UI",
+    "url": "https://docs.oracle.com/cd/E95904_01/books/BusProcFramework/Overview6.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-escript-workflows"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Siebel Enterprise Integration Manager Administration Guide",
+    "url": "https://docs.oracle.com/cd/E95904_01/books/EIMAdm/EIMAdmTOC.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-eai-eim"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Siebel EAI: About the Structure of Integration Objects",
+    "url": "https://docs.oracle.com/cd/E95904_01/books/EAI2/EAI2_IntObjs_Understanding3.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-eai-eim"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Siebel CRM Web Services: Inbound and Outbound Web Services",
+    "url": "https://docs.oracle.com/cd/G26828_02/books/CRMWeb/c-Inbound-and-Outbound-Web-Services-bo1009685.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-eai-eim"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Overview: Siebel EAI - About Web Services",
+    "url": "https://docs.oracle.com/cd/E95904_01/books/EAI1/EAI1_Overview14.html",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "siebel-eai-eim"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Deluge Overview",
+    "url": "https://www.zoho.com/deluge/help/overview.html",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-deluge-scripting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Deluge Data Types (Deluge guide for Zoho Creator)",
+    "url": "https://help.zoho.com/portal/en/kb/zoho-crm-platform/deluge-guide-for-zoho-creator/data-types/articles/data-type",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-deluge-scripting",
+      "zoho-creator-development"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "invokeUrl task for API calls (Deluge)",
+    "url": "https://www.zoho.com/deluge/help/deluge-invoke-url.html",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-deluge-scripting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Deluge Language Guide for Zoho CRM Functions",
+    "url": "https://www.zoho.com/crm/developer/docs/functions/language-guide/deluge.html",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-deluge-scripting",
+      "zoho-crm-customization"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Get Familiar with Deluge Workflows (Zoho Creator e-book)",
+    "url": "https://www.zoho.com/creator/ebooks/deluge-workflows.html",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-deluge-scripting",
+      "zoho-creator-development"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Zoho Creator Tutorial Series: Getting Started",
+    "url": "https://www.zoho.com/creator/videos/getting-started-zoho-creator.html",
+    "provider": "Zoho",
+    "kind": "video",
+    "skillIds": [
+      "zoho-creator-development"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Create Forms, Reports, Pages and Workflows in your Application (Zoho Creator)",
+    "url": "https://help.zoho.com/portal/en/kb/creator/developer-guide/applications/articles/create-forms-reports-pages-and-workflows-in-your-application",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-creator-development"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Understanding Report Workflows (Zoho Creator)",
+    "url": "https://help.zoho.com/portal/en/kb/creator/developer-guide/workflows/understand-report-workflows/articles/understand-report-workflows",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-creator-development"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Blueprint: An Overview (Zoho CRM)",
+    "url": "https://help.zoho.com/portal/en/kb/crm/automate-business-processes/blueprint/articles/blueprint-an-overview",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-crm-customization"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Associate Functions in Workflow Rules (Zoho CRM)",
+    "url": "https://help.zoho.com/portal/en/kb/crm/automate-business-processes/actions/articles/associate-functions-workflow-rules",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-crm-customization",
+      "zoho-deluge-scripting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Creating Custom Modules (Zoho CRM)",
+    "url": "https://help.zoho.com/portal/kb/articles/customize-modules",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-crm-customization"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Zoho CRM Customization Overview",
+    "url": "https://www.zoho.com/crm/help/customization/",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "zoho-crm-customization"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Server Framework 101 (Odoo 18.0 developer tutorial)",
+    "url": "https://www.odoo.com/documentation/18.0/developer/tutorials/server_framework_101.html",
+    "provider": "Odoo",
+    "kind": "practice",
+    "skillIds": [
+      "odoo-module-development"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Odoo Developer Tutorials (web framework, Owl, server framework)",
+    "url": "https://www.odoo.com/documentation/master/developer/tutorials.html",
+    "provider": "Odoo",
+    "kind": "practice",
+    "skillIds": [
+      "odoo-module-development"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Odoo Developer Reference: ORM API, Views, QWeb, Security",
+    "url": "https://www.odoo.com/documentation/saas-15.1/developer/reference.html",
+    "provider": "Odoo",
+    "kind": "docs",
+    "skillIds": [
+      "odoo-module-development"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Odoo 18.0 ORM Changelog",
+    "url": "https://www.odoo.com/documentation/18.0/developer/reference/backend/orm/changelog.html",
+    "provider": "Odoo",
+    "kind": "docs",
+    "skillIds": [
+      "odoo-module-development"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Odoo Tutorials: Accounting and Invoicing",
+    "url": "https://www.odoo.com/slides/accounting-19",
+    "provider": "Odoo eLearning",
+    "kind": "course",
+    "skillIds": [
+      "odoo-functional-apps"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Odoo Tutorials: Inventory",
+    "url": "https://www.odoo.com/slides/inventory-24",
+    "provider": "Odoo eLearning",
+    "kind": "course",
+    "skillIds": [
+      "odoo-functional-apps"
+    ],
+    "minutes": 270,
+    "free": true
+  },
+  {
+    "title": "Odoo Tutorials: MRP - Manufacturing and Shop Floor",
+    "url": "https://www.odoo.com/slides/mrp-29",
+    "provider": "Odoo eLearning",
+    "kind": "course",
+    "skillIds": [
+      "odoo-functional-apps"
+    ],
+    "minutes": 356,
+    "free": true
+  },
+  {
+    "title": "Odoo Tutorials: CRM",
+    "url": "https://www.odoo.com/slides/crm-16",
+    "provider": "Odoo eLearning",
+    "kind": "course",
+    "skillIds": [
+      "odoo-functional-apps"
+    ],
+    "minutes": 160,
+    "free": true
+  },
+  {
+    "title": "MX.3: Integrated Capital Markets Solution",
+    "url": "https://www.murex.com/en/solutions/mx3-leading-integrated-capital-markets-solution",
+    "provider": "Murex",
+    "kind": "docs",
+    "skillIds": [
+      "murex-platform"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Smart Technology for Capital Markets (MX.3 platform architecture)",
+    "url": "https://murex.com/en/solutions/smart-technology-capital-markets",
+    "provider": "Murex",
+    "kind": "docs",
+    "skillIds": [
+      "murex-platform"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "MX.3 Enterprise Risk and Regulatory Suite",
+    "url": "https://murex.com/en/insights/mx3-enterprise-risk-and-regulatory-suite",
+    "provider": "Murex",
+    "kind": "docs",
+    "skillIds": [
+      "murex-platform",
+      "market-risk-pnl"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "MX.3 for FRTB Compliance",
+    "url": "https://www.murex.com/en/frtbsolution",
+    "provider": "Murex",
+    "kind": "docs",
+    "skillIds": [
+      "murex-platform",
+      "market-risk-pnl"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Nasdaq Calypso: Capital Markets and Treasury Platform",
+    "url": "https://www.nasdaq.com/products/fintech/calypso",
+    "provider": "Nasdaq",
+    "kind": "docs",
+    "skillIds": [
+      "calypso-platform"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Nasdaq Calypso: Middle Office and Trading Risk",
+    "url": "https://www.nasdaq.com/products/fintech/calypso/middle-office-trading-risk",
+    "provider": "Nasdaq",
+    "kind": "docs",
+    "skillIds": [
+      "calypso-platform",
+      "market-risk-pnl"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Nasdaq Calypso Treasury",
+    "url": "https://www.nasdaq.com/solutions/fintech/nasdaq-calypso/treasury",
+    "provider": "Nasdaq",
+    "kind": "docs",
+    "skillIds": [
+      "calypso-platform"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Simplifying Complexity: How Nasdaq Calypso Unlocks Efficiency and Innovation",
+    "url": "https://www.nasdaq.com/videos/simplifying-complexity-how-nasdaq-calypso-unlocks-efficiency-and-innovation",
+    "provider": "Nasdaq",
+    "kind": "video",
+    "skillIds": [
+      "calypso-platform"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Nasdaq Calypso Resources (case studies, guides)",
+    "url": "https://www.nasdaq.com/solutions/fintech/nasdaq-calypso/resources",
+    "provider": "Nasdaq",
+    "kind": "docs",
+    "skillIds": [
+      "calypso-platform"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "CDM Event Model: Trade Lifecycle Events",
+    "url": "https://cdm.finos.org/docs/event-model",
+    "provider": "FINOS",
+    "kind": "docs",
+    "skillIds": [
+      "capital-markets-trade-lifecycle"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "CDM Overview (Common Domain Model)",
+    "url": "https://www.finos.org/hubfs/Projects%20%2B%20SIGs/CDM%20-%20Common%20Domain%20Model/CDM%20Overview.pdf",
+    "provider": "FINOS",
+    "kind": "docs",
+    "skillIds": [
+      "capital-markets-trade-lifecycle"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Financial Derivatives and Risk Management (IIT Roorkee)",
+    "url": "https://nptel.ac.in/courses/110107128",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "capital-markets-trade-lifecycle",
+      "market-risk-pnl"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "FpML 5.2 Introduction: Confirmation View and Post-Trade Events",
+    "url": "https://www.fpml.org/spec/fpml-5-2-6-rec-2/html/confirmation/fpml-5-2-intro.html",
+    "provider": "FpML (ISDA)",
+    "kind": "docs",
+    "skillIds": [
+      "capital-markets-trade-lifecycle"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Explanatory Note on the Minimum Capital Requirements for Market Risk (FRTB)",
+    "url": "https://www.bis.org/bcbs/publ/d457_note.pdf",
+    "provider": "BIS",
+    "kind": "docs",
+    "skillIds": [
+      "market-risk-pnl"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Minimum Capital Requirements for Market Risk (Basel standard, January 2019)",
+    "url": "https://bis.org/bcbs/publ/d457.htm",
+    "provider": "BIS",
+    "kind": "docs",
+    "skillIds": [
+      "market-risk-pnl"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Measuring and Managing Market Risk (CFA Institute refresher reading)",
+    "url": "https://www.cfainstitute.org/insights/professional-learning/refresher-readings/2026/measuring-managing-market-risk",
+    "provider": "CFA Institute",
+    "kind": "course",
+    "skillIds": [
+      "market-risk-pnl"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "FRTB P&L Attribution Tests and Backtesting",
+    "url": "https://docs.activeviam.com/products/solutions/frtb/m1/online-help/interpret-impl/pl-attribution-tests-and-backtesting/pl-attribtion-tests-and-backtesting.html",
+    "provider": "ActiveViam",
+    "kind": "docs",
+    "skillIds": [
+      "market-risk-pnl"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "ISO 20022 Message Definitions (pain, pacs, camt)",
+    "url": "https://www.iso20022.org/iso-20022-message-definitions",
+    "provider": "ISO 20022",
+    "kind": "docs",
+    "skillIds": [
+      "payment-switch-integration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "jPOS Documentation (ISO 8583 framework)",
+    "url": "https://jpos.org/docs/welcome",
+    "provider": "jPOS",
+    "kind": "docs",
+    "skillIds": [
+      "payment-switch-integration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "How to Understand the Basics of ISO 8583 Message Structure",
+    "url": "https://kodejava.org/how-to-understand-the-basics-of-iso-8583-message-structure/",
+    "provider": "Kode Java",
+    "kind": "docs",
+    "skillIds": [
+      "payment-switch-integration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "NPCI Circular: Guidelines on Usage of UPI APIs",
+    "url": "https://www.npci.org.in/PDF/npci/upi/circular/2020/OC95-GuidelineonUsageofUPIAPIs.pdf",
+    "provider": "NPCI",
+    "kind": "docs",
+    "skillIds": [
+      "payment-switch-integration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "ISO 20022: What You Need to Know (FedNow)",
+    "url": "https://www.frbservices.org/financial-services/fednow/iso-20022-what-you-need-to-know.html",
+    "provider": "Federal Reserve Financial Services",
+    "kind": "docs",
+    "skillIds": [
+      "payment-switch-integration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Harmonisation of TAT and Customer Compensation for Failed Transactions (RBI)",
+    "url": "https://rbi.org.in/Scripts/NotificationUser.aspx?Id=11693",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "payment-reconciliation-settlement"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "UPI Settlement Process",
+    "url": "https://www.npci.org.in/PDF/npci/others/UPI-Settlement-Process.pdf",
+    "provider": "NPCI",
+    "kind": "docs",
+    "skillIds": [
+      "payment-reconciliation-settlement",
+      "payment-switch-integration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Principles for Financial Market Infrastructures",
+    "url": "https://www.bis.org/cpmi/publ/d101.htm",
+    "provider": "BIS CPMI",
+    "kind": "docs",
+    "skillIds": [
+      "payment-reconciliation-settlement"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "FSI Summary: Principles for Financial Market Infrastructures",
+    "url": "https://www.bis.org/fsi/fsisummaries/pfmi.pdf",
+    "provider": "BIS",
+    "kind": "docs",
+    "skillIds": [
+      "payment-reconciliation-settlement"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "RTGS / NEFT Return Transactions: Information for Account Statement (RBI)",
+    "url": "https://website.rbi.org.in/web/rbi/-/notifications/rtgs-neft-return-transactions-information-for-account-statement-5945",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "payment-reconciliation-settlement"
     ],
     "minutes": 10,
     "free": true

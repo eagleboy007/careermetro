@@ -1,0 +1,133 @@
+{
+  "slug": "oracle-soa-developer",
+  "title": "Oracle SOA Developer",
+  "summary": "Builds and runs the integrations that move data between business systems using Oracle's middleware: SOA Suite, Oracle Service Bus (OSB) and, more and more, Oracle Integration Cloud (OIC). Sits in an integration or middleware team and works with the owners of the systems on both ends of each interface.",
+  "dailyDuties": [
+    "Build BPEL and Mediator composites with database, file and FTP adapters",
+    "Build OSB proxy and business services and their transformations",
+    "Write XSLT and XQuery mappings for SOAP and REST messages",
+    "Deploy composites and configure JMS and data sources on WebLogic",
+    "Migrate older SOA and OSB flows to OIC",
+    "Monitor failed instances and fix production errors"
+  ],
+  "typicalTitles": [
+    "Oracle SOA Consultant",
+    "Oracle SOA/OSB Developer",
+    "Oracle OSB Developer",
+    "Oracle SOA Suite Developer",
+    "Oracle BPEL Developer",
+    "Oracle Fusion Middleware Developer",
+    "Oracle SOA/OIC Developer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 9
+  },
+  "skills": [
+    {
+      "skillId": "oracle-soa-suite",
+      "importance": "required",
+      "expectation": "Build SOA composites with BPEL, Mediator and DB, File, FTP and JMS adapters",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-service-bus",
+      "importance": "required",
+      "expectation": "Build OSB proxy and business services, pipelines and transformations",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "required",
+      "expectation": "Work with WSDL, XSD, XSLT and XPath in mappings and fault handling",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Expose and consume REST services from SOA, OSB and OIC",
+      "postingShare": null
+    },
+    {
+      "skillId": "weblogic-administration",
+      "importance": "required",
+      "expectation": "Deploy composites and set up data sources and JMS resources on WebLogic",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query Oracle tables used by DB adapters and for checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-integration-cloud",
+      "importance": "required",
+      "expectation": "Build OIC integrations or migrate SOA and OSB flows to OIC",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Agree interface designs with source and target system teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "database-programming",
+      "importance": "nice_to_have",
+      "expectation": "Write PL/SQL procedures called from integrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Write Java callouts and embedded code when needed",
+      "postingShare": null
+    },
+    {
+      "skillId": "messaging-queues",
+      "importance": "nice_to_have",
+      "expectation": "Use JMS or AQ queues for asynchronous flows",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Build and deploy with Maven and Jenkins or similar pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-federation",
+      "importance": "nice_to_have",
+      "expectation": "Secure services with OWSM policies and OAuth 2.0",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "nice_to_have",
+      "expectation": "Monitor failed instances and fix production integration errors",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "oracle-oci-application-integration-professional",
+      "importance": "recommended",
+      "why": "Oracle's current exam for OIC and application integration"
+    },
+    {
+      "certId": "oracle-sql-associate",
+      "importance": "optional",
+      "why": "Shows SQL basics used with DB adapters"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

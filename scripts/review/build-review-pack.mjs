@@ -30,7 +30,7 @@ const IMPORTANCE = { required: "Required", nice_to_have: "Nice to have" };
 
 /**
  * Changes Development made to a drafted role after an eval showed a problem, or when a new profile took over some of its
- * titles (F0, F1, TG1, B5, TG2 and TG3, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
+ * titles (F0, F1, TG1, B5, TG2, TG3 and TG4, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
  */
 export const SIGN_OFF = [
   { ref: "export-import-executive#years", note: "Starts at 1 year (was 2): EXIM and export documentation executives are commonly hired at 0-2 years." },
@@ -51,6 +51,8 @@ export const SIGN_OFF = [
   { ref: "actuarial-analyst#skill:sql", note: "Nice to have (was Required): one of the three posts the draft cites asks for SQL (Munich Re) and one lists it as preferred (WTW). As required, it made Actuarial Analyst a Nearby line for the e2e walk's data analyst resume (on SQL, Excel and Python) and for the data scientist switcher persona." },
   { ref: "game-designer#title", note: "Grouped with delivery roles (drafted under frontend-mobile, next to game developer): it shares no programming skill with game developer, and its resume's nearest roles share A/B tests and spreadsheets, as product roles do." },
   { ref: "marketing-automation-specialist#title", note: "Grouped with data and analytics roles (drafted under marketing): no live marketing role asks for its CRM, segmentation and SQL skills, so its resume's nearest roles are data scientist and analytics roles." },
+  { ref: "ev-powertrain-engineer#skill:electrical-machines-transformers", note: "The live Electrical machines and transformers skill (drafted as Traction and drive motors, electric-machines, which TG3 folded into the live skill): it already holds the PMSM, BLDC and IPM motor phrases." },
+  { ref: "ev-powertrain-engineer#skill:powertrain-dyno-testing", note: "Skill name shortened to Powertrain dyno and vehicle testing (drafted Powertrain dynamometer and vehicle testing, 83 characters): skill names show in fields capped at 80 characters." },
 ];
 const signOffNote = new Map(SIGN_OFF.map((c) => [c.ref, c.note]));
 

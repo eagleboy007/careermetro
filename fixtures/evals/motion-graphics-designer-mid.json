@@ -1,0 +1,52 @@
+{
+  "id": "motion-graphics-designer-mid",
+  "roleSlug": "motion-graphics-designer",
+  "persona": "mid",
+  "resumeText": "Neha Iyer | Bengaluru | neha.iyer@example.com\n\nEXPERIENCE\nMotion Designer, Indigo Byte Fintech, Bengaluru (2022 - present)\n- Animated onboarding screens and payment success states in After Effects for the mobile app.\n- Exported the animations as Lottie files with Bodymovin and checked them with app developers.\n- Drew storyboards and style frames for three product launch explainer videos.\n- Prepared layered vector assets in Adobe Illustrator for every animation.\n- Applied typography and colour theory to kinetic type for festive brand campaigns.\n- Presented motion concepts to product managers and brand leads in sprint reviews.\n\nJunior Graphic Designer, Brightline Studio, Bengaluru (2020 - 2022)\n- Designed social media creatives and print brochures for retail clients.\n\nEDUCATION\nBDes Communication Design, Srishti Manipal Institute, Bengaluru, 2020\n\nSKILLS\nAfter Effects, Lottie, Illustrator, Photoshop, Figma\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "motion-graphics",
+        "quote": "Animated onboarding screens and payment success states in After Effects"
+      },
+      {
+        "skillId": "lottie-ui-animation",
+        "quote": "Exported the animations as Lottie files with Bodymovin"
+      },
+      {
+        "skillId": "storyboarding-styleframes",
+        "quote": "Drew storyboards and style frames for three product launch explainer videos"
+      },
+      {
+        "skillId": "adobe-illustrator",
+        "quote": "Prepared layered vector assets in Adobe Illustrator"
+      },
+      {
+        "skillId": "graphic-design-fundamentals",
+        "quote": "Applied typography and colour theory to kinetic type"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented motion concepts to product managers and brand leads"
+      },
+      {
+        "skillId": "figma",
+        "quote": "Figma"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "figma",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "3d-motion-design",
+      "video-editing-nle",
+      "audio-post-production",
+      "prototyping"
+    ]
+  },
+  "reviewedBy": null
+}

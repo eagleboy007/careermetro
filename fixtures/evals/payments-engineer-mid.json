@@ -1,0 +1,68 @@
+{
+  "id": "payments-engineer-mid",
+  "roleSlug": "payments-engineer",
+  "persona": "mid",
+  "resumeText": "Vikram Reddy | Hyderabad | vikram.reddy@example.com\n\nEXPERIENCE\nSoftware Engineer, Deccan Pay Technologies, Hyderabad (2021 - present)\n- Built Java Spring Boot microservices for UPI collect and intent payments handling 2 million transactions a day.\n- Integrated the UPI switch with partner bank APIs over REST, using idempotency keys and retry handling.\n- Wrote the daily reconciliation job that matches NPCI settlement files against the internal ledger.\n- Published payment status events to Kafka for notifications and refunds.\n- Designed MySQL schemas and indexes for the transaction store.\n- Removed card numbers from logs and moved to tokenised references during a PCI DSS audit.\n\nSKILLS\nJava, Spring Boot, Kafka, MySQL, UPI, HLD\n\nEDUCATION\nBTech Computer Science, JNTU Hyderabad, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "java",
+        "quote": "Built Java Spring Boot microservices for UPI collect"
+      },
+      {
+        "skillId": "spring-boot",
+        "quote": "Built Java Spring Boot microservices"
+      },
+      {
+        "skillId": "microservices",
+        "quote": "Spring Boot microservices for UPI collect and intent payments"
+      },
+      {
+        "skillId": "payment-systems-domain",
+        "quote": "UPI collect and intent payments handling 2 million transactions a day"
+      },
+      {
+        "skillId": "payment-switch-integration",
+        "quote": "Integrated the UPI switch with partner bank APIs"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "partner bank APIs over REST, using idempotency keys"
+      },
+      {
+        "skillId": "payment-reconciliation-settlement",
+        "quote": "Wrote the daily reconciliation job that matches NPCI settlement files"
+      },
+      {
+        "skillId": "messaging-queues",
+        "quote": "Published payment status events to Kafka"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Designed MySQL schemas and indexes for the transaction store"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "moved to tokenised references during a PCI DSS audit"
+      },
+      {
+        "skillId": "system-design",
+        "quote": "HLD"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "system-design",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "go",
+      "cryptography-basics",
+      "observability",
+      "nosql"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,48 @@
+{
+  "id": "game-artist-3d-mid",
+  "roleSlug": "game-artist-3d",
+  "persona": "mid",
+  "resumeText": "Aditi Joshi | Pune | aditi.joshi@example.com\n\nEXPERIENCE\n3D Artist, Sahyadri Pixel Studios, Pune (2022 - present)\n- Modelled 120 hard surface props in 3ds Max for a third-person action game.\n- Sculpted high poly rocks and ruins in ZBrush and baked them to low poly meshes.\n- Textured props in Substance Painter with a PBR metal-roughness workflow.\n- Unwrapped UVs, kept texel density consistent and built three LODs per asset.\n- Imported assets into Unreal Engine 5 and set up material instances and collision.\n- Painted decals and trim sheets in Photoshop for the city environment.\n\nJunior 3D Modeller, Lotus Frame Animation, Pune (2021 - 2022)\n- Modelled furniture and vehicles for animated kids' series episodes.\n\nEDUCATION\nBDes Animation and Game Design, MIT Institute of Design, Pune, 2021\n\nSKILLS\n3ds Max, ZBrush, Substance Painter, Marmoset Toolbag, Unreal Engine 5, Photoshop\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "3d-modelling-dcc",
+        "quote": "Modelled 120 hard surface props in 3ds Max"
+      },
+      {
+        "skillId": "digital-sculpting",
+        "quote": "Sculpted high poly rocks and ruins in ZBrush"
+      },
+      {
+        "skillId": "pbr-texturing",
+        "quote": "Textured props in Substance Painter with a PBR metal-roughness workflow"
+      },
+      {
+        "skillId": "game-asset-optimisation",
+        "quote": "kept texel density consistent and built three LODs per asset"
+      },
+      {
+        "skillId": "unreal-engine",
+        "quote": "Imported assets into Unreal Engine 5 and set up material instances"
+      },
+      {
+        "skillId": "adobe-photoshop",
+        "quote": "Painted decals and trim sheets in Photoshop"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "level-design",
+      "xr-development",
+      "motion-graphics",
+      "csharp-dotnet"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -28,9 +28,9 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | Cloud and infrastructure | `roles-cloud.csv` | 29 |
 | Security | `roles-security.csv` | 26 |
 | Data, analytics and AI | `roles-data.csv` | 31 |
-| Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 34 |
+| Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 41 |
 | Testing and quality | `roles-testing.csv` | 5 |
-| Software, hardware, delivery and marketing | `roles-other.csv` | 77 |
+| Software, hardware, delivery and marketing | `roles-other.csv` | 82 |
 | Sales, finance, HR and operations | `roles-business.csv` | 46 |
 | Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
 | Legal and compliance | `roles-legal.csv` | 4 |
@@ -46,7 +46,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
 
-267 role profiles await review in all.
+279 role profiles await review in all.
 
 ## Changed since the draft, awaiting sign-off
 
@@ -70,6 +70,8 @@ Development changed these lines after a test showed a problem. Their **Detail** 
 - `actuarial-analyst#skill:sql`: Nice to have (was Required): one of the three posts the draft cites asks for SQL (Munich Re) and one lists it as preferred (WTW). As required, it made Actuarial Analyst a Nearby line for the e2e walk's data analyst resume (on SQL, Excel and Python) and for the data scientist switcher persona.
 - `game-designer#title`: Grouped with delivery roles (drafted under frontend-mobile, next to game developer): it shares no programming skill with game developer, and its resume's nearest roles share A/B tests and spreadsheets, as product roles do.
 - `marketing-automation-specialist#title`: Grouped with data and analytics roles (drafted under marketing): no live marketing role asks for its CRM, segmentation and SQL skills, so its resume's nearest roles are data scientist and analytics roles.
+- `ev-powertrain-engineer#skill:electrical-machines-transformers`: The live Electrical machines and transformers skill (drafted as Traction and drive motors, electric-machines, which TG3 folded into the live skill): it already holds the PMSM, BLDC and IPM motor phrases.
+- `ev-powertrain-engineer#skill:powertrain-dyno-testing`: Skill name shortened to Powertrain dyno and vehicle testing (drafted Powertrain dynamometer and vehicle testing, 83 characters): skill names show in fields capped at 80 characters.
 
 ## How answers flow back into the app
 

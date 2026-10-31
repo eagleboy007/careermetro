@@ -1,0 +1,135 @@
+{
+  "slug": "murex-consultant",
+  "title": "Murex Consultant",
+  "summary": "Configures, integrates and supports Murex or Calypso, the trading and risk platforms banks use for derivatives, FX and bond trades. Works in a bank's technology team or an IT services firm, between trading desks, operations and the platform vendor.",
+  "dailyDuties": [
+    "Build and fix MxML or Calypso interfaces with upstream and downstream systems",
+    "Set up datamart extractions and reports for risk and finance users",
+    "Investigate trade and end-of-day batch issues with SQL and Unix tools",
+    "Gather requirements from desk and operations users and write specs",
+    "Test platform upgrades and changes with business users",
+    "Support releases and end-of-day processing"
+  ],
+  "typicalTitles": [
+    "Murex Developer",
+    "Murex MxML Developer",
+    "Murex Datamart Consultant",
+    "Murex Technical Consultant",
+    "Murex Integration Consultant",
+    "Calypso Developer",
+    "Calypso Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "murex-platform",
+      "importance": "required",
+      "expectation": "Configure and support Murex MX.3, such as MxML interfaces, datamart reports or trade workflows",
+      "postingShare": null,
+      "oneOf": "capital-markets-platform"
+    },
+    {
+      "skillId": "calypso-platform",
+      "importance": "required",
+      "expectation": "Configure and customise Calypso engines, workflows and trade processing",
+      "postingShare": null,
+      "oneOf": "capital-markets-platform"
+    },
+    {
+      "skillId": "capital-markets-trade-lifecycle",
+      "importance": "required",
+      "expectation": "Know how derivatives, FX and fixed income trades move from capture to settlement",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "required",
+      "expectation": "Understand bank treasury, front-office and back-office operations",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL on Oracle or Sybase to investigate trades and build reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Work on Unix or Linux servers where the platform runs",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "required",
+      "expectation": "Read and transform XML messages with XSLT for platform interfaces",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Gather requirements from trading, risk and operations users and write functional specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with desk users, operations and vendor teams on changes and upgrades",
+      "postingShare": null
+    },
+    {
+      "skillId": "market-risk-pnl",
+      "importance": "nice_to_have",
+      "expectation": "Understand VaR, sensitivities and P&L reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "nice_to_have",
+      "expectation": "Automate end-of-day checks with shell scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "batch-scheduling",
+      "importance": "nice_to_have",
+      "expectation": "Run end-of-day batches in Control-M or similar",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Write Java extensions, mainly for Calypso",
+      "postingShare": null
+    },
+    {
+      "skillId": "database-programming",
+      "importance": "nice_to_have",
+      "expectation": "Write PL/SQL procedures for reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "nice_to_have",
+      "expectation": "Test changes with business users before release",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "capital-markets-platform",
+      "label": "A capital markets platform (Murex or Calypso)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,56 @@
+{
+  "id": "sap-qm-consultant-mid",
+  "roleSlug": "sap-qm-consultant",
+  "persona": "Mid-level SAP QM consultant with procurement-side depth",
+  "resumeText": "Snehal Kulkarni | Pune | snehal.kulkarni@example.com\n\nSUMMARY\nSAP QM consultant with 5 years on S/4HANA implementation and support projects for automotive and pharma plants.\n\nEXPERIENCE\nSAP QM Consultant, Sahyadri Digital Consulting, Pune (2021 - present)\n- Configured QM in procurement for goods receipt inspection, quality info records and vendor quality scores.\n- Set up master inspection characteristics, sampling procedures and inspection plans for 1,200 purchased materials.\n- Configured quality notifications for customer complaints and supplier defects with task and action catalogs.\n- Ran fit-gap workshops with plant quality heads and wrote functional specs for 14 enhancements.\n- Wrote test scripts and ran integration and user acceptance testing for two plant rollouts.\n- Trained 40 key users and presented design decisions to the plant steering committee.\n\nSAP QM Analyst, Deccan Auto Components, Chakan (2019 - 2021)\n- Supported inspection lot processing and usage decision errors raised by the receiving lab.\n- Worked with MM consultants on goods receipt postings and stock in quality inspection.\n\nSKILLS\nSAP QM, SAP MM, SAP PP, S/4HANA, Fiori apps, Excel\n\nEDUCATION\nBE Mechanical Engineering, Pune University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "sap-qm-configuration",
+        "quote": "Configured quality notifications for customer complaints and supplier defects"
+      },
+      {
+        "skillId": "sap-mm-configuration",
+        "quote": "Configured QM in procurement for goods receipt inspection"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Ran fit-gap workshops with plant quality heads and wrote functional specs"
+      },
+      {
+        "skillId": "uat",
+        "quote": "ran integration and user acceptance testing for two plant rollouts"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Trained 40 key users and presented design decisions"
+      },
+      {
+        "skillId": "sap-pp-configuration",
+        "quote": "SAP PP"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-pp-configuration",
+        "status": "weak"
+      },
+      {
+        "skillId": "process-mapping",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-abap",
+      "sap-co-configuration",
+      "data-migration",
+      "statistical-process-analysis"
+    ]
+  },
+  "reviewedBy": null
+}

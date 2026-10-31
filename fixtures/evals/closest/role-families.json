@@ -118,7 +118,8 @@
       "developer-advocate",
       "search-engineer",
       "rust-developer",
-      "forward-deployed-engineer"
+      "forward-deployed-engineer",
+      "payments-engineer"
     ],
     "frontend-mobile": [
       "frontend-developer",
@@ -131,7 +132,9 @@
       "ar-vr-developer",
       "ux-researcher",
       "ecommerce-developer",
-      "graphic-designer"
+      "graphic-designer",
+      "game-artist-3d",
+      "motion-graphics-designer"
     ],
     "enterprise-apps": [
       "salesforce-developer",
@@ -167,7 +170,14 @@
       "sap-hcm-consultant",
       "oracle-hcm-cloud-consultant",
       "sap-bw-consultant",
-      "duck-creek-developer"
+      "duck-creek-developer",
+      "sap-qm-consultant",
+      "sap-pm-consultant",
+      "oracle-soa-developer",
+      "siebel-crm-developer",
+      "zoho-developer",
+      "odoo-developer",
+      "murex-consultant"
     ],
     "quality": [
       "qa-automation-engineer",
@@ -199,7 +209,9 @@
       "bms-engineer",
       "analog-ic-design-engineer",
       "motor-control-engineer",
-      "cae-simulation-engineer"
+      "cae-simulation-engineer",
+      "rf-ic-design-engineer",
+      "ev-powertrain-engineer"
     ],
     "delivery": [
       "business-analyst",

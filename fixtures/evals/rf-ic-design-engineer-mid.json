@@ -1,0 +1,64 @@
+{
+  "id": "rf-ic-design-engineer-mid",
+  "roleSlug": "rf-ic-design-engineer",
+  "persona": "mid",
+  "resumeText": "Sneha Raghavan | Bengaluru | sneha.raghavan@example.com\n\nEXPERIENCE\nRFIC Design Engineer, Kaveri Silicon Labs, Bengaluru (2022 - present)\n- Designed a 2.4 GHz LNA and down-conversion mixer for a Wi-Fi 6 receiver in 28nm CMOS.\n- Met a 2.1 dB noise figure and +5 dBm IIP3 target across PVT corners and Monte Carlo runs.\n- Ran Cadence Spectre and SpectreRF PSS and Pnoise simulations for the full receiver chain.\n- Modelled on-chip inductors and baluns in EMX and used the models in schematic simulation.\n- Ran post-layout extraction with Quantus and fixed gain and match shifts with the layout team.\n- Wrote Python scripts to automate corner sweeps and plot results.\n\nAnalog Design Engineer, Nandi Microsystems, Bengaluru (2020 - 2022)\n- Designed a bandgap reference and LDO for a sensor interface chip.\n- Supported tape-out checks for two mixed-signal test chips.\n\nEDUCATION\nMTech VLSI Design, NIT Tiruchirappalli, 2020\n\nSKILLS\nCadence Virtuoso, Spectre, SpectreRF, EMX, Spectrum analyzer, Python\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "rf-ic-circuit-design",
+        "quote": "Designed a 2.4 GHz LNA and down-conversion mixer"
+      },
+      {
+        "skillId": "rf-performance-analysis",
+        "quote": "Met a 2.1 dB noise figure and +5 dBm IIP3 target"
+      },
+      {
+        "skillId": "pvt-monte-carlo-analysis",
+        "quote": "across PVT corners and Monte Carlo runs"
+      },
+      {
+        "skillId": "ic-spice-simulation",
+        "quote": "Ran Cadence Spectre and SpectreRF PSS and Pnoise simulations"
+      },
+      {
+        "skillId": "rf-em-simulation",
+        "quote": "Modelled on-chip inductors and baluns in EMX"
+      },
+      {
+        "skillId": "parasitic-extraction",
+        "quote": "Ran post-layout extraction with Quantus"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python scripts to automate corner sweeps"
+      },
+      {
+        "skillId": "analog-ic-circuit-design",
+        "quote": "Designed a bandgap reference and LDO for a sensor interface chip"
+      },
+      {
+        "skillId": "rf-lab-characterisation",
+        "quote": "Cadence Virtuoso, Spectre, SpectreRF, EMX, Spectrum analyzer, Python"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rf-lab-characterisation",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "pll-clocking-design",
+      "analog-custom-layout",
+      "verilog-rtl",
+      "lte-5g-nr-protocols"
+    ]
+  },
+  "reviewedBy": null
+}

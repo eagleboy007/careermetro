@@ -1,0 +1,56 @@
+{
+  "id": "murex-consultant-mid",
+  "roleSlug": "murex-consultant",
+  "persona": "mid",
+  "resumeText": "Pooja Iyer | Bengaluru | pooja.iyer@example.com\n\nEXPERIENCE\nMurex Technical Consultant, Cauvery Capital Technologies, Bengaluru (2020 - present)\n- Built MxML Exchange workflows to import trades from upstream booking systems into Murex MX.3.\n- Wrote XSLT transformations to map upstream trade messages into the Murex format.\n- Supported the trade lifecycle for interest rate swaps and FX forwards from capture to settlement.\n- Delivered interface changes for a private sector bank's treasury operations.\n- Wrote SQL queries on Oracle to reconcile datamart extracts with front-office positions.\n- Automated end-of-day checks with Unix shell scripts on Linux servers.\n- Gathered requirements from the treasury desk and wrote functional specifications for new interfaces.\n\nSKILLS\nMurex MX.3, MxML, Datamart, Oracle SQL, Unix, XSLT\n\nEDUCATION\nBE Information Science, RV College of Engineering, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "murex-platform",
+        "quote": "Built MxML Exchange workflows to import trades"
+      },
+      {
+        "skillId": "soap-xml",
+        "quote": "Wrote XSLT transformations to map upstream trade messages"
+      },
+      {
+        "skillId": "capital-markets-trade-lifecycle",
+        "quote": "Supported the trade lifecycle for interest rate swaps and FX forwards"
+      },
+      {
+        "skillId": "domain-bfsi",
+        "quote": "Delivered interface changes for a private sector bank's treasury operations"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries on Oracle to reconcile datamart extracts"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Automated end-of-day checks with Unix shell scripts on Linux servers"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Automated end-of-day checks with Unix shell scripts"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Gathered requirements from the treasury desk"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "calypso-platform",
+      "java",
+      "market-risk-pnl",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

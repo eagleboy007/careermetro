@@ -16287,5 +16287,622 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "rf-ic-circuit-design",
+    "name": "RF and mmWave IC circuit design (LNA, PA, mixer)",
+    "category": "programming",
+    "aliases": [
+      "rfic design",
+      "rf ic design",
+      "rfic circuit design",
+      "mmwave ic design",
+      "mmwave rfic",
+      "lna design",
+      "low noise amplifier design",
+      "power amplifier design",
+      "rf mixer design",
+      "rf transceiver design",
+      "rf front-end design",
+      "mmic design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rf-performance-analysis",
+    "name": "RF performance analysis and simulation (noise figure, linearity, matching)",
+    "category": "programming",
+    "aliases": [
+      "noise figure",
+      "iip3",
+      "p1db",
+      "s-parameters",
+      "s-parameter analysis",
+      "harmonic balance simulation",
+      "spectrerf",
+      "spectre rf",
+      "keysight ads",
+      "pss and pnoise"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rf-em-simulation",
+    "name": "RF electromagnetic simulation of passives (EMX, HFSS, Momentum)",
+    "category": "tools",
+    "aliases": [
+      "emx",
+      "cadence emx",
+      "hfss",
+      "ansys hfss",
+      "keysight momentum",
+      "on-chip inductor design",
+      "balun design",
+      "rf passive modelling",
+      "sonnet em"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rf-lab-characterisation",
+    "name": "RF lab characterisation (VNA, spectrum analyser, load-pull)",
+    "category": "testing",
+    "aliases": [
+      "vector network analyzer",
+      "vector network analyser",
+      "vna measurements",
+      "load-pull measurements",
+      "load pull",
+      "rf characterization",
+      "rf characterisation",
+      "rf bench validation",
+      "noise figure measurement"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ev-powertrain-integration",
+    "name": "EV powertrain integration and vehicle-level validation (DVP&R)",
+    "category": "testing",
+    "aliases": [
+      "ev powertrain integration",
+      "e-axle integration",
+      "e-drive integration",
+      "edrive integration",
+      "electric drive unit validation",
+      "ev powertrain validation",
+      "powertrain system integration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "powertrain-dyno-testing",
+    "name": "Powertrain dyno and vehicle testing (motor dyno, chassis dyno, data loggers)",
+    "category": "testing",
+    "aliases": [
+      "motor dynamometer",
+      "motor dyno",
+      "chassis dynamometer",
+      "chassis dyno",
+      "dyno testing",
+      "dynamometer testing",
+      "powertrain test bench",
+      "vehicle data logging",
+      "on-road vehicle testing",
+      "drive cycle testing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "vehicle-energy-simulation",
+    "name": "Vehicle performance and range simulation (AVL Cruise, GT-Suite, Amesim)",
+    "category": "tools",
+    "aliases": [
+      "range simulation",
+      "vehicle range estimation",
+      "vehicle performance simulation",
+      "energy consumption simulation",
+      "powertrain sizing",
+      "avl cruise",
+      "avl cruise m",
+      "gt-suite",
+      "gt suite",
+      "simcenter amesim",
+      "amesim",
+      "midc drive cycle",
+      "wltp drive cycle"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "3d-modelling-dcc",
+    "name": "3D modelling for games (Maya, 3ds Max, Blender)",
+    "category": "design",
+    "aliases": [
+      "autodesk maya",
+      "maya modelling",
+      "maya modeling",
+      "3ds max",
+      "3dsmax",
+      "autodesk 3ds max",
+      "blender 3d",
+      "blender modelling",
+      "blender modeling",
+      "hard surface modelling",
+      "hard surface modeling",
+      "low poly modelling",
+      "low poly modeling",
+      "high poly modelling",
+      "polygon modelling",
+      "3d game art"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "digital-sculpting",
+    "name": "Digital sculpting (ZBrush, Mudbox)",
+    "category": "design",
+    "aliases": [
+      "zbrush",
+      "pixologic zbrush",
+      "maxon zbrush",
+      "digital sculpting",
+      "mudbox",
+      "autodesk mudbox",
+      "high poly sculpting",
+      "blender sculpting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pbr-texturing",
+    "name": "PBR texturing (Substance 3D Painter and Designer)",
+    "category": "design",
+    "aliases": [
+      "substance painter",
+      "substance 3d painter",
+      "adobe substance painter",
+      "substance designer",
+      "substance 3d designer",
+      "pbr texturing",
+      "pbr materials",
+      "pbr workflow",
+      "texture painting",
+      "hand-painted textures",
+      "texture baking",
+      "normal map baking",
+      "marmoset toolbag",
+      "quixel mixer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "game-asset-optimisation",
+    "name": "Game-ready asset optimisation (retopology, UVs, LODs, poly budgets)",
+    "category": "design",
+    "aliases": [
+      "retopology",
+      "uv unwrapping",
+      "uv mapping",
+      "uv layout",
+      "lod creation",
+      "poly budget",
+      "polycount optimisation",
+      "polycount optimization",
+      "game-ready assets",
+      "game ready assets",
+      "texel density",
+      "rizomuv",
+      "topogun"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "lottie-ui-animation",
+    "name": "Lottie and in-app UI animation (Bodymovin, Rive)",
+    "category": "design",
+    "aliases": [
+      "lottie",
+      "lottie animation",
+      "lottie animations",
+      "lottiefiles",
+      "bodymovin",
+      "rive animation",
+      "rive animations",
+      "rive app"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "storyboarding-styleframes",
+    "name": "Storyboards, style frames and animatics",
+    "category": "design",
+    "aliases": [
+      "storyboarding",
+      "storyboards",
+      "storyboard creation",
+      "style frames",
+      "styleframes",
+      "animatics",
+      "animatic"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "3d-motion-design",
+    "name": "3D motion design (Cinema 4D, Redshift, Octane)",
+    "category": "design",
+    "aliases": [
+      "cinema 4d",
+      "c4d",
+      "maxon cinema 4d",
+      "redshift render",
+      "octane render",
+      "element 3d",
+      "3d motion graphics",
+      "3d motion design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-qm-configuration",
+    "name": "SAP QM configuration (Quality Management)",
+    "category": "business",
+    "aliases": [
+      "sap qm",
+      "sap quality management",
+      "sap qm configuration",
+      "s/4hana qm",
+      "sap s/4hana qm",
+      "sap s/4hana quality management",
+      "qm in procurement",
+      "qm in production",
+      "qm inspection plans",
+      "inspection lot processing",
+      "sap inspection lots",
+      "quality notifications",
+      "master inspection characteristics",
+      "quality info records",
+      "usage decision"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-pm-configuration",
+    "name": "SAP PM / EAM configuration (Plant Maintenance)",
+    "category": "business",
+    "aliases": [
+      "sap pm configuration",
+      "sap eam",
+      "sap enterprise asset management",
+      "s/4hana asset management",
+      "sap s/4hana asset management",
+      "s/4hana eam",
+      "sap s/4hana pm",
+      "s/4hana pm",
+      "sap equipment master",
+      "sap maintenance plans",
+      "measuring points and counters",
+      "maintenance order types",
+      "sap pm functional"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "sap-pm-maintenance"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-soa-suite",
+    "name": "Oracle SOA Suite (BPEL, Mediator, adapters)",
+    "category": "tools",
+    "aliases": [
+      "oracle soa suite",
+      "oracle soa",
+      "soa suite 12c",
+      "soa suite 11g",
+      "bpel",
+      "oracle bpel",
+      "bpel process manager",
+      "oracle mediator",
+      "soa composites",
+      "oracle jca adapters"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-service-bus",
+    "name": "Oracle Service Bus (OSB)",
+    "category": "tools",
+    "aliases": [
+      "oracle service bus",
+      "osb",
+      "oracle osb",
+      "osb 12c",
+      "osb 11g",
+      "osb proxy services",
+      "osb pipelines",
+      "aqualogic service bus"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "siebel-crm-configuration",
+    "name": "Oracle Siebel CRM configuration (Siebel Tools, Open UI)",
+    "category": "tools",
+    "aliases": [
+      "siebel crm",
+      "oracle siebel",
+      "siebel tools",
+      "siebel configuration",
+      "siebel open ui",
+      "siebel 8.1",
+      "siebel ip17",
+      "siebel applets",
+      "siebel business components"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "siebel-escript-workflows",
+    "name": "Siebel eScript, workflows and business services",
+    "category": "programming",
+    "aliases": [
+      "siebel escript",
+      "escript",
+      "siebel workflows",
+      "siebel workflow processes",
+      "siebel workflow policies",
+      "siebel business services",
+      "siebel runtime events",
+      "siebel browser script"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "siebel-eai-eim",
+    "name": "Siebel EAI and EIM (integration objects, web services, data loads)",
+    "category": "tools",
+    "aliases": [
+      "siebel eai",
+      "siebel eim",
+      "siebel integration objects",
+      "siebel web services",
+      "siebel data maps",
+      "eai data mapper",
+      "eim tables",
+      "siebel inbound web services"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "zoho-deluge-scripting",
+    "name": "Zoho Deluge scripting",
+    "category": "programming",
+    "aliases": [
+      "deluge scripting",
+      "deluge script",
+      "zoho deluge",
+      "deluge custom functions",
+      "deluge functions"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "zoho-creator-development",
+    "name": "Zoho Creator app development",
+    "category": "tools",
+    "aliases": [
+      "zoho creator",
+      "zoho creator development",
+      "zoho creator apps",
+      "zoho creator applications",
+      "zoho creator developer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "zoho-crm-customization",
+    "name": "Zoho CRM and Zoho One customisation (modules, blueprints, workflows)",
+    "category": "tools",
+    "aliases": [
+      "zoho crm customization",
+      "zoho crm customisation",
+      "zoho crm blueprint",
+      "zoho crm blueprints",
+      "zoho crm workflows",
+      "zoho crm client script",
+      "zoho one",
+      "zoho crm developer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "odoo-module-development",
+    "name": "Odoo module development (ORM, views, QWeb)",
+    "category": "programming",
+    "aliases": [
+      "odoo development",
+      "odoo orm",
+      "odoo modules",
+      "odoo module development",
+      "odoo customization",
+      "odoo customisation",
+      "openerp",
+      "qweb",
+      "qweb reports",
+      "odoo owl"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "python"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "odoo-functional-apps",
+    "name": "Odoo business apps configuration (Accounting, Sales, Inventory, MRP)",
+    "category": "business",
+    "aliases": [
+      "odoo accounting",
+      "odoo inventory",
+      "odoo sales",
+      "odoo purchase",
+      "odoo manufacturing",
+      "odoo mrp",
+      "odoo functional",
+      "odoo implementation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "murex-platform",
+    "name": "Murex MX.3 platform (MxML, datamart, configuration)",
+    "category": "tools",
+    "aliases": [
+      "murex",
+      "murex mx.3",
+      "mx.3",
+      "mxml",
+      "mxml exchange",
+      "murex mxml",
+      "murex datamart",
+      "mxtest",
+      "murex mx.3 configuration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "calypso-platform",
+    "name": "Calypso capital-markets platform (engines, workflows, customisation)",
+    "category": "tools",
+    "aliases": [
+      "calypso",
+      "calypso technology",
+      "adenza calypso",
+      "calypso engines",
+      "calypso customization",
+      "calypso customisation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "capital-markets-trade-lifecycle",
+    "name": "Capital markets products and trade lifecycle (derivatives, FX, fixed income)",
+    "category": "business",
+    "aliases": [
+      "trade lifecycle",
+      "trade life cycle",
+      "otc derivatives",
+      "interest rate derivatives",
+      "fx derivatives",
+      "fixed income derivatives",
+      "front to back trade flow",
+      "trade capture"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "market-risk-pnl",
+    "name": "Market risk and P&L (VaR, sensitivities, P&L explain)",
+    "category": "business",
+    "aliases": [
+      "value at risk",
+      "var calculation",
+      "pnl explain",
+      "p&l explain",
+      "p&l attribution",
+      "frtb"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "payment-switch-integration",
+    "name": "Payment switch and gateway integration (ISO 8583, ISO 20022, UPI switch)",
+    "category": "web",
+    "aliases": [
+      "iso 8583",
+      "iso8583",
+      "iso 20022",
+      "iso20022",
+      "emv",
+      "payment switch",
+      "card switch",
+      "upi switch",
+      "npci integration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "payment-reconciliation-settlement",
+    "name": "Payment reconciliation and settlement systems",
+    "category": "business",
+    "aliases": [
+      "transaction reconciliation",
+      "settlement reconciliation",
+      "settlement engine",
+      "npci settlement"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]
