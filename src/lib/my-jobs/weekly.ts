@@ -1,3 +1,4 @@
+import { EMAIL_TOKENS, escapeHtml } from "@/lib/email/look";
 import { indiaDay, mondayOf } from "@/lib/ride/days";
 import { MY_JOB_STATUS_LABELS } from "@/lib/schemas/constants";
 import { prepareHref, type MyJobStatus } from "./rules";
@@ -130,10 +131,9 @@ function dayOf(view: WeeklyView, short: string): Date {
 
 export type WeeklyEmail = { subject: string; preheader: string; text: string; html: string };
 
-const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-
-/** Light-mode token values (src/app/globals.css), inline: email clients ignore CSS variables. */
-const T = { bg: "#f4f5f8", surface: "#ffffff", surface2: "#eceff4", ink: "#12151c", muted: "#586072", line: "#dce0e8" };
+const escape = escapeHtml;
+/** Light-mode token values (src/lib/email/look.ts), inline: email clients ignore CSS variables. */
+const T = EMAIL_TOKENS;
 
 /**
  * The email for a week's view: plain text and HTML with the same words. `site` is the app's address; `offUrl` turns

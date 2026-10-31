@@ -3,11 +3,13 @@
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
 import type { EventRsvpState } from "@/lib/schemas";
+import { setEventsDigest } from "@/lib/timetable/digest-store";
 import { setEventPrep, setEventRsvp, TIMETABLE_MESSAGES } from "@/lib/timetable/store";
 
 /*
- * The Timetable's actions (docs/plans/timetable-plan.md section 4): Save, I'm going and the prep task. The account is
- * checked here; the store checks the input with Zod and that the event is live, and writes only the person's own row.
+ * The Timetable's actions (docs/plans/timetable-plan.md sections 4 and 5): Save, I'm going, the prep task and the
+ * Monday digest switch. The account is checked here; the store checks the input with Zod (and that an event is live),
+ * and writes only the person's own row.
  * The screen already shows the change, so nothing refreshes. Nothing logs the event: the event name and error code only.
  */
 
@@ -22,6 +24,22 @@ export async function eventRsvpAction(eventId: string, state: EventRsvpState | n
     return result.ok ? null : TIMETABLE_MESSAGES[result.error];
   } catch (error) {
     logEvent("error", "timetable_rsvp_failed", errorFields(error));
+    return TIMETABLE_MESSAGES.invalid;
+  }
+}
+
+/**
+ * "Send me this week's events" on or off (Timetable PR 5), from /timetable or Settings > Notifications. Changes only the
+ * person's own switch and sends nothing. Null when it worked, or the words to show.
+ */
+export async function eventsDigestAction(on: boolean): Promise<string | null> {
+  const account = await currentAccount();
+  if (!account) return SIGN_IN;
+  try {
+    const result = await setEventsDigest(account.id, { on });
+    return result.ok ? null : TIMETABLE_MESSAGES.invalid;
+  } catch (error) {
+    logEvent("error", "events_digest_switch_failed", errorFields(error));
     return TIMETABLE_MESSAGES.invalid;
   }
 }

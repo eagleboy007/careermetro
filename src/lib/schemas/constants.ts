@@ -827,9 +827,15 @@ export const EVENT_FEED_LENGTH_MAX_DAYS = 14;
 /** Why the feed dropped an event it read; the log carries these as counts only. */
 export const EVENT_FEED_DROPS = ["invalid", "cancelled", "past", "too_far", "too_long", "no_place", "no_topic", "capped"] as const;
 /**
- * App emails (the weekly My jobs email, and later the Monday events digest) sent a day across the whole app, counted
- * per India day in app_email_days (T151, T153). Resend's free plan allows 100 a day; sign-in codes keep the other 60.
+ * App emails (the weekly My jobs email and the Monday events digest) sent a day across the whole app, counted per India
+ * day in app_email_days (T151, T153). Resend's free plan allows 100 a day; sign-in codes keep the other 60.
  */
 export const APP_EMAIL_DAILY_BUDGET = 40;
-/** Most of APP_EMAIL_DAILY_BUDGET the Monday events digest may take (Timetable PR 5, not built yet); the weekly email gets the rest. */
+/**
+ * Most of APP_EMAIL_DAILY_BUDGET the Monday events digest may take an India day (Timetable PR 5): it never brings the
+ * day's count past this, and one run never sends more. The weekly email, which runs after it, gets the rest.
+ */
 export const APP_EMAIL_DIGEST_SHARE = 20;
+/** The Monday events digest (Timetable PR 5): events in the next this-many days, at most this many listed in one email. */
+export const EVENTS_DIGEST_DAYS = 7;
+export const EVENTS_DIGEST_EVENTS_MAX = 5;

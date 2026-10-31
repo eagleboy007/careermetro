@@ -7,6 +7,7 @@ import { SettingsJobSearch } from "@/components/job-search/settings-job-search";
 import { exampleSettings } from "@/components/settings/fixtures";
 import { SettingsView, type SettingsData } from "@/components/settings/settings-view";
 import { WeeklyPreview } from "@/components/settings/weekly-preview";
+import { EventsDigestSwitch } from "@/components/timetable/events-digest-switch";
 import { splitName } from "@/lib/account/name";
 import { readAccountSettings } from "@/lib/account/settings-store";
 import { nameLocked } from "@/lib/account/store";
@@ -21,9 +22,11 @@ import type { WeeklyView } from "@/lib/my-jobs/weekly";
 import { blockedPeople, networkSettingsFor } from "@/lib/network/store";
 import { indiaDay } from "@/lib/ride/days";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
+import { eventsDigestOn } from "@/lib/timetable/digest-store";
 import { switchElite, switchEliteBadge } from "../elite/actions";
 import { setFindMe, unblockFromNetwork } from "../network/actions";
 import { blockCompanyAction, unblockCompanyAction } from "./actions";
+import { eventsDigestAction } from "../timetable/actions";
 import { saveNotice, switchJobSearch } from "./job-search-actions";
 
 export const metadata: Metadata = { title: "Account settings · CareerMetro", robots: { index: false } };
@@ -46,7 +49,7 @@ async function SettingsScreen() {
   const [account, identity] = await Promise.all([currentAccount(), currentIdentity()]);
   if (!account) return <SettingsView data={exampleSettings} />;
   const now = new Date();
-  const [saved, discovery, network, plan, blocked, search, week] = await Promise.all([
+  const [saved, discovery, network, plan, blocked, search, week, digestOn] = await Promise.all([
     readAccountSettings(account.id, now),
     discoveryFor(account.id, { now }),
     networkSettingsFor(account.id),
@@ -54,6 +57,7 @@ async function SettingsScreen() {
     blockedPeople(account.id),
     jobSearchFor(account.id),
     weeklyPreviewFor(account.id, now),
+    eventsDigestOn(account.id),
   ]);
   // An account saved before first and last name were asked for starts from its full name.
   const names = account.firstName ? { first: account.firstName, last: account.lastName ?? "" } : splitName(account.name);
@@ -90,6 +94,7 @@ async function SettingsScreen() {
       planActions={{ switchElite, switchBadge: switchEliteBadge }}
       jobSearch={<SettingsJobSearch view={search} today={indiaDay(now)} actions={{ jobSearch: switchJobSearch, notice: saveNotice }} />}
       weekly={week === undefined ? undefined : <WeeklyPreview view={week} name={names.first || null} />}
+      digest={<EventsDigestSwitch initial={digestOn} action={eventsDigestAction} />}
     />
   );
 }
