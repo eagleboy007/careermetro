@@ -1,4 +1,5 @@
 import { readiness } from "@/lib/departures/filter";
+import { istClock, istDate, istDayWords } from "@/lib/day-words";
 import { isClosed } from "@/lib/my-jobs/rules";
 import { MY_JOB_STATUS_LABELS } from "@/lib/schemas/constants";
 import type { JobCheckView } from "@/lib/jobs/groups";
@@ -51,13 +52,13 @@ export const newestChange = (a: Pick<MyJobView, "updatedAt" | "key">, b: Pick<My
 /** "28 Oct" in IST, as the row's dates show. */
 export function shortDay(iso: string | null): string | null {
   if (!iso) return null;
-  return new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" }).format(new Date(iso));
+  return istDayWords(iso);
 }
 
 /** "2026-10-28" in IST, for a date field. */
 export function dayValue(iso: string | null): string {
   if (!iso) return "";
-  return new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Kolkata" }).format(new Date(iso));
+  return istDate(iso);
 }
 
 const IST_MS = 5.5 * 3600_000;
@@ -70,9 +71,7 @@ export function minuteValue(iso: string | null): string {
 
 /** "Fri 30 Oct, 10:30" in IST, as the row and Today show the interview. */
 export function interviewWhen(iso: string): string {
-  const parts = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Kolkata" }).formatToParts(new Date(iso));
-  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? "";
-  return `${part("weekday")} ${part("day")} ${part("month")}, ${part("hour")}:${part("minute")}`;
+  return `${istDayWords(iso, { weekday: true })}, ${istClock(iso)}`;
 }
 
 /**

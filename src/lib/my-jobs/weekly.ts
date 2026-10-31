@@ -1,4 +1,5 @@
 import { EMAIL_TOKENS, escapeHtml } from "@/lib/email/look";
+import { longWeekday } from "@/lib/day-words";
 import { indiaDay, mondayOf } from "@/lib/ride/days";
 import { MY_JOB_STATUS_LABELS } from "@/lib/schemas/constants";
 import { prepareHref, type MyJobStatus } from "./rules";
@@ -113,21 +114,12 @@ export function weeklySubject(view: WeeklyView): string {
   if (view.waiting.length) parts.push(`${plural(view.waiting.length, "job")} waiting on a reply`);
   if (view.interviews.length) {
     const days = new Set(view.interviews.map((i) => i.when.split(" ")[0]));
-    const day = days.size === 1 ? new Intl.DateTimeFormat("en-GB", { weekday: "long", timeZone: "Asia/Kolkata" }).format(dayOf(view, [...days][0]!)) : "this week";
+    const day = days.size === 1 ? longWeekday([...days][0]!) : "this week";
     parts.push(`${plural(view.interviews.length, "interview")} ${day}`);
   }
   return parts.join(", ");
 }
 
-/** A date on the view's week for a short weekday name ("Thu"), for its long name. */
-function dayOf(view: WeeklyView, short: string): Date {
-  const monday = indiaMidnight(view.week).getTime();
-  for (let i = 0; i < 7; i++) {
-    const at = new Date(monday + i * DAY_MS + 12 * 3600_000);
-    if (new Intl.DateTimeFormat("en-GB", { weekday: "short", timeZone: "Asia/Kolkata" }).format(at) === short) return at;
-  }
-  return new Date(monday);
-}
 
 export type WeeklyEmail = { subject: string; preheader: string; text: string; html: string };
 

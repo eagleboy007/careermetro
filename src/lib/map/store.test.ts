@@ -129,7 +129,16 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     const read = await currentAnalysis(userId, db!);
     const at = new Date("2026-10-10T12:00:00Z");
     expect(read).not.toBeNull();
-    expect(await mapLineFor(userId, db!, at, read)).toEqual(await mapLineFor(userId, db!, at));
+    // Both reads in one snapshot: the line's courses and pitstop options come from the shared catalog, which other test
+    // files (path, pitstops, library, admin library) fill, hide and empty in the same database while this file runs.
+    const [handed, readHere] = await db!.transaction(
+      async (tx) => {
+        const snap = tx as unknown as NonNullable<typeof db>;
+        return [await mapLineFor(userId, snap, at, read), await mapLineFor(userId, snap, at)];
+      },
+      { isolationLevel: "repeatable read" },
+    );
+    expect(handed).toEqual(readHere);
     expect(await lifeLineFor(userId, at, db!, read)).toEqual(await lifeLineFor(userId, at, db!));
     expect(await mapLineFor(userId, db!, at, null)).toBeNull();
     expect(await lifeLineFor(userId, at, db!, null)).toBeNull();

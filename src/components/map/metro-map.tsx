@@ -18,6 +18,7 @@ import { PitstopPeople } from "./pitstop-people";
 import { layoutLine, pitstopLabel, type EarlierBranch, type EarlierStub, type Layout, type PitstopKind, type Spur, type Station } from "@/lib/map/layout";
 import { defaultZoom, layoutLife, type LifeZoom } from "@/lib/map/life-layout";
 import { ridersAt } from "@/lib/map/riders-text";
+import { istDayWords } from "@/lib/day-words";
 import type { LifeLine, MapLine, PitstopRiders } from "@/lib/schemas";
 // The Life line shows only after "Life line" is picked, so it loads then, not with the map.
 const LifeSvg = dynamic(() => import("./life-line").then((m) => m.LifeSvg));
@@ -546,7 +547,7 @@ function SpurMark({ sp, selected, ...props }: { sp: Spur; selected: boolean } & 
 export const earlierName = (title: string) => `${title} · earlier line · closed end`;
 
 /** A date as the Map shows it, in India time, so the server and the browser agree: "20 Oct". */
-export const shortDate = (iso: string) => new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" }).format(new Date(iso));
+export const shortDate = (iso: string) => istDayWords(iso);
 
 /**
  * The earlier line's stops, each labelled "Left here" and the goal's name, its short end bar and its mono name (handoff

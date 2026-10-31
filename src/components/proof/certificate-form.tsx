@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
+import { istDate } from "@/lib/day-words";
 
 const input =
   "min-w-0 rounded-md border border-line-strong bg-bg px-3 py-[9px] text-[0.9rem] text-ink focus:outline-2 focus:outline-offset-1 focus:outline-accent disabled:opacity-70";
@@ -198,11 +199,7 @@ export function CertificateForm({
             type="date"
             required
             // Today in India, like the server, read when the field is used: the page can be prerendered, where reading the clock isn't allowed.
-            onFocus={(e) =>
-              (e.currentTarget.max = new Date().toLocaleDateString("en-CA", {
-                timeZone: "Asia/Kolkata",
-              }))
-            }
+            onFocus={(e) => (e.currentTarget.max = istDate(new Date()))}
             value={issued}
             onChange={(e) => setIssued(e.target.value)}
             className={input}

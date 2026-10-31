@@ -3,10 +3,10 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ConfirmKeyword, KeywordAnnouncer } from "@/components/resume/confirm-keyword";
 import { StatusChip } from "@/components/ui/status-chip";
+import { istDayWords } from "@/lib/day-words";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import { AddGoal, RemoveCheck, type GoalState } from "./job-check-actions";
 
-const checkedOn = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 
 /** The heading id of a saved check, so the form can move focus to a new result. */
 export const jobCheckHeadingId = (id: string) => `job-check-${id}`;
@@ -93,7 +93,7 @@ export function JobCheckResult({
         <h3 id={jobCheckHeadingId(check.id)} tabIndex={-1} className="font-sans text-base font-semibold tracking-normal focus:outline-2 focus:outline-offset-2 focus:outline-ink">
           {check.title} <span className="font-normal text-muted">at</span> {check.company}
         </h3>
-        <p className="font-mono text-xs text-muted">Checked {checkedOn.format(new Date(check.createdAt))}</p>
+        <p className="font-mono text-xs text-muted">Checked {istDayWords(check.createdAt, { year: true })}</p>
         <p className="text-sm">
           {asked === 0
             ? "This posting asks for no skills we can check yet."

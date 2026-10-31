@@ -280,14 +280,6 @@
     "addedOn": "2026-10-20"
   },
   {
-    "company": "Employ Inc",
-    "ats": "lever",
-    "token": "employ",
-    "careersUrl": "https://jobs.lever.co/employ",
-    "addedBy": "Data research (checked by the board check)",
-    "addedOn": "2026-10-20"
-  },
-  {
     "company": "ValGenesis",
     "ats": "lever",
     "token": "valgenesis",
@@ -468,14 +460,6 @@
     "ats": "ashby",
     "token": "g2",
     "careersUrl": "https://jobs.ashbyhq.com/g2",
-    "addedBy": "Data research (checked by the board check)",
-    "addedOn": "2026-10-20"
-  },
-  {
-    "company": "Cartesia",
-    "ats": "ashby",
-    "token": "cartesia",
-    "careersUrl": "https://jobs.ashbyhq.com/cartesia",
     "addedBy": "Data research (checked by the board check)",
     "addedOn": "2026-10-20"
   },

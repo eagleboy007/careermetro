@@ -3,6 +3,7 @@
 import { Check, Eye, EyeOff, Lock, LockOpen, X } from "lucide-react";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { REMOVAL_REASON_MAX } from "@/lib/schemas/constants";
+import { istClock, istDayWords } from "@/lib/day-words";
 import type {
   HiddenMessageView,
   RemovalState,
@@ -40,10 +41,7 @@ const ghost = `${button} border-line bg-surface text-ink hover:bg-surface-2`;
 
 /** "15 Oct, 10:00" in India time. */
 export function formatWhen(iso: string): string {
-  const d = new Date(iso);
-  const day = d.toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
-  const time = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kolkata" });
-  return `${day}, ${time}`;
+  return `${istDayWords(iso)}, ${istClock(iso)}`;
 }
 
 function Due({ by, now, done }: { by: string; now: string; done?: string | null }) {
@@ -53,7 +51,7 @@ function Due({ by, now, done }: { by: string; now: string; done?: string | null 
 }
 
 /** "15 Oct" in India time. */
-const formatDay = (iso: string) => new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
+const formatDay = (iso: string) => istDayWords(iso);
 
 /** "Message hidden 15 Oct by Asha V. Reason: Asked for an OTP." */
 export function removalLine(what: "Message hidden" | "Account suspended", state: RemovalState): string {

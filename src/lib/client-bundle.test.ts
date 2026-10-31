@@ -139,4 +139,28 @@ describe("client bundle", () => {
     for (const c of clients) walk(c, []);
     expect(problems).toEqual([]);
   });
+
+  // A client component renders on the server (Node) and again in the browser, and the two can carry different ICU data:
+  // one writes "28 Sep 2026", the other "28 Sept 2026", and hydration fails (React #418, seen on /design locally while CI
+  // agreed). So nothing the browser loads writes a date with Intl or toLocale*: src/lib/day-words.ts does it from fixed
+  // names. Numbers may still use toLocaleString("en-IN"), whose grouping doesn't vary.
+  it("writes dates with day-words, never Intl or toLocale*, in everything client components import", () => {
+    const DATE_INTL = /Intl\.DateTimeFormat|\.toLocaleDateString\(|\.toLocaleTimeString\(/;
+    const clients = files(SRC).filter((f) => directives(readFileSync(f, "utf8")).includes("use client"));
+    const problems = new Set<string>();
+    const seen = new Set<string>();
+    const walk = (file: string) => {
+      if (seen.has(file)) return;
+      seen.add(file);
+      const source = readFileSync(file, "utf8");
+      if (directives(source).includes("use server")) return;
+      if (DATE_INTL.test(source)) problems.add(relative(SRC, file));
+      for (const spec of runtimeImports(source)) {
+        const next = resolveLocal(spec, file);
+        if (next) walk(next);
+      }
+    };
+    for (const c of clients) walk(c);
+    expect([...problems].sort()).toEqual([]);
+  });
 });
