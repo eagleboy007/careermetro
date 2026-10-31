@@ -1,0 +1,51 @@
+{
+  "id": "tax-associate-from-ca-firm-gst-executive",
+  "roleSlug": "tax-associate",
+  "persona": "GST and accounts executive at a small CA firm moving to a tax associate role",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nEXPERIENCE\nTax and Accounts Executive, Kulkarni Patil & Associates, Chartered Accountants, Pune (2022 - present)\n- Filed monthly GSTR-1 and GSTR-3B returns for 30 trading and manufacturing clients.\n- Prepared quarterly TDS returns (24Q and 26Q) and issued Form 16A to deductees.\n- Computed income tax and filed income tax returns for 120 individuals and 15 partnership firms.\n- Ran monthly GSTR-2B reconciliation against purchase registers and followed up with suppliers on missing credits.\n- Prepared tax audit schedules for Form 3CD for 12 audit clients.\n- Built Excel templates for advance tax computation used across the firm.\n\nEDUCATION\nB.Com, Savitribai Phule Pune University, 2021\nCA Intermediate (both groups), 2023\n\nSKILLS\nTallyPrime, MS Excel, GST portal, TRACES, Assessment proceedings\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "gst-tds-compliance",
+        "quote": "Filed monthly GSTR-1 and GSTR-3B returns for 30 trading and manufacturing clients"
+      },
+      {
+        "skillId": "income-tax-compliance",
+        "quote": "Computed income tax and filed income tax returns"
+      },
+      {
+        "skillId": "account-reconciliations",
+        "quote": "Ran monthly GSTR-2B reconciliation against purchase registers"
+      },
+      {
+        "skillId": "statutory-audit-support",
+        "quote": "Prepared tax audit schedules for Form 3CD"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built Excel templates for advance tax computation"
+      },
+      {
+        "skillId": "tax-assessments-litigation",
+        "quote": "Assessment proceedings"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "tax-assessments-litigation",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "transfer-pricing-documentation",
+      "sap-fi-configuration",
+      "financial-modelling"
+    ]
+  },
+  "reviewedBy": null
+}

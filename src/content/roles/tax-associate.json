@@ -1,0 +1,111 @@
+{
+  "slug": "tax-associate",
+  "title": "Tax Associate",
+  "summary": "A tax associate prepares and files a business's or client's direct and indirect tax work: income tax returns, TDS returns and GST (goods and services tax) returns, with the reconciliations behind them. You sit in a CA firm's tax team or a company's finance team, reporting to a tax manager and helping with tax audits and replies to tax notices.",
+  "dailyDuties": [
+    "File GSTR-1 and GSTR-3B returns and track due dates",
+    "Reconcile GSTR-2B input credit with the purchase register",
+    "Prepare and file quarterly TDS returns",
+    "Compute income tax and advance tax and file returns",
+    "Prepare schedules for the tax audit report",
+    "Draft replies to GST and income tax notices",
+    "Coordinate with clients and auditors on data requests"
+  ],
+  "typicalTitles": [
+    "Tax Associate - Direct Tax",
+    "Indirect Tax Associate - GST",
+    "Direct Tax Executive",
+    "GST and TDS Compliance Executive",
+    "Taxation Executive",
+    "Associate - Business Tax",
+    "Tax Analyst - India GST"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "income-tax-compliance",
+      "importance": "required",
+      "expectation": "Compute income tax and advance tax and prepare and file income tax returns",
+      "postingShare": null
+    },
+    {
+      "skillId": "gst-tds-compliance",
+      "importance": "required",
+      "expectation": "Prepare and file GST returns (GSTR-1, GSTR-3B, GSTR-9) and TDS returns on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "account-reconciliations",
+      "importance": "required",
+      "expectation": "Reconcile GSTR-2B with books and 26AS with TDS records and chase mismatches",
+      "postingShare": null
+    },
+    {
+      "skillId": "tax-assessments-litigation",
+      "importance": "required",
+      "expectation": "Draft replies to tax notices and support assessments and appeals",
+      "postingShare": null
+    },
+    {
+      "skillId": "statutory-audit-support",
+      "importance": "required",
+      "expectation": "Prepare tax audit schedules and support tax and statutory audits",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build tax computations and reconciliations in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear notes to clients and explain tax positions to finance teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "transfer-pricing-documentation",
+      "importance": "nice_to_have",
+      "expectation": "Help prepare transfer pricing documentation and Form 3CEB",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-accounting",
+      "importance": "nice_to_have",
+      "expectation": "Read the books well enough to tie tax numbers to the accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "tally-accounting-software",
+      "importance": "nice_to_have",
+      "expectation": "Pull ledgers and GST reports from Tally or a similar package",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-fi-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Extract tax data from SAP in corporate tax teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate with clients, consultants and tax authorities",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions (employer careers pages and ATS boards) and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

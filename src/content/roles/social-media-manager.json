@@ -1,0 +1,121 @@
+{
+  "slug": "social-media-manager",
+  "title": "Social Media Manager",
+  "summary": "A social media manager runs a brand's Instagram, LinkedIn, YouTube and other social pages: planning what to post, talking with followers, working with creators and reporting results. The role sits in a brand's marketing team or an agency and differs from a general digital marketer by focusing on organic content and community more than search or paid ads.",
+  "dailyDuties": [
+    "Plan the weekly and monthly social content calendar",
+    "Brief designers and editors on posts, carousels and Reels",
+    "Reply to comments and messages and flag complaints",
+    "Shortlist and brief influencers and creators for campaigns",
+    "Boost top posts and run small paid social campaigns",
+    "Report reach, engagement and follower growth each month"
+  ],
+  "typicalTitles": [
+    "Social Media Lead",
+    "Social Media Strategist",
+    "Community Manager - Social Media",
+    "Social Media and Community Manager",
+    "Influencer and Social Media Manager",
+    "Brand Social Media Manager"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "social-media-calendar-planning",
+      "importance": "required",
+      "expectation": "Plan the monthly social media strategy and content calendar across platforms",
+      "postingShare": null
+    },
+    {
+      "skillId": "community-management",
+      "importance": "required",
+      "expectation": "Reply to comments and messages, moderate the community and watch brand mentions",
+      "postingShare": null
+    },
+    {
+      "skillId": "short-form-video-content",
+      "importance": "required",
+      "expectation": "Plan and brief Reels and Shorts with designers and video editors",
+      "postingShare": null
+    },
+    {
+      "skillId": "influencer-creator-marketing",
+      "importance": "required",
+      "expectation": "Find, brief and manage influencers and creators for campaigns",
+      "postingShare": null
+    },
+    {
+      "skillId": "social-media-marketing",
+      "importance": "required",
+      "expectation": "Boost posts and run basic paid social campaigns on Meta and LinkedIn",
+      "postingShare": null
+    },
+    {
+      "skillId": "social-media-analytics",
+      "importance": "required",
+      "expectation": "Track reach, engagement and follower growth and report what worked",
+      "postingShare": null
+    },
+    {
+      "skillId": "content-marketing",
+      "importance": "required",
+      "expectation": "Write captions and post copy that fit the brand voice",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Brief agencies and designers and present monthly results to the marketing head",
+      "postingShare": null
+    },
+    {
+      "skillId": "social-media-management-tools",
+      "importance": "nice_to_have",
+      "expectation": "Schedule and monitor posts in a tool such as Hootsuite, Sprout Social or Sprinklr",
+      "postingShare": null
+    },
+    {
+      "skillId": "social-creative-design",
+      "importance": "nice_to_have",
+      "expectation": "Make quick social creatives in Canva or Adobe Express",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Read paid social results such as cost per result and ROAS",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Track traffic from social channels in GA4",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate approvals with brand, legal and product teams",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "meta-digital-marketing-associate",
+      "importance": "optional",
+      "why": "Covers Facebook and Instagram pages, content and basic paid campaigns"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

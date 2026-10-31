@@ -1,0 +1,111 @@
+{
+  "slug": "relationship-manager-banking",
+  "title": "Relationship Manager - Banking",
+  "summary": "A banking relationship manager looks after a group of a bank's customers, from regular savers to wealthy (HNI) clients, growing their deposits and selling suitable investments and insurance. The role sits in a bank branch or priority banking team, reports to the branch or cluster head, and needs exam certificates to sell mutual funds and insurance.",
+  "dailyDuties": [
+    "Call and meet mapped customers to review their accounts and investments",
+    "Open new savings, current and fixed deposit accounts with complete KYC",
+    "Pitch mutual funds, SIPs and insurance after risk profiling the customer",
+    "Cross-sell cards, loans and lockers to existing customers",
+    "Resolve customer requests with branch operations",
+    "Update leads and meetings in the CRM and track monthly targets"
+  ],
+  "typicalTitles": [
+    "Relationship Manager - Retail Banking",
+    "Relationship Manager - Branch Banking",
+    "Priority Relationship Manager",
+    "Premier Relationship Manager",
+    "Wealth Relationship Manager",
+    "Relationship Manager - CASA",
+    "Personal Banker",
+    "Relationship Manager - HNI"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "banking-client-portfolio-management",
+      "importance": "required",
+      "expectation": "Manage a mapped book of retail, affluent or HNI customers and grow their balances and AUM",
+      "postingShare": null
+    },
+    {
+      "skillId": "casa-deposit-acquisition",
+      "importance": "required",
+      "expectation": "Bring in new savings, current account and fixed deposit customers and grow CASA balances",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-product-distribution",
+      "importance": "required",
+      "expectation": "Sell mutual funds, SIPs and insurance to customers as a certified distributor",
+      "postingShare": null
+    },
+    {
+      "skillId": "cross-selling-upselling",
+      "importance": "required",
+      "expectation": "Cross-sell cards, loans, lockers and other bank products to existing customers",
+      "postingShare": null
+    },
+    {
+      "skillId": "kyc-verification",
+      "importance": "required",
+      "expectation": "Complete KYC and account-opening documents correctly and on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "investment-suitability-compliance",
+      "importance": "required",
+      "expectation": "Risk-profile customers and follow SEBI, AMFI and IRDAI rules so products suit them",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-query-resolution",
+      "importance": "required",
+      "expectation": "Resolve customer service requests and complaints quickly with branch operations",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain products clearly to customers and hold regular portfolio review meetings",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Log leads, calls and customer meetings in the bank's CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Understand retail banking products, rates and charges",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-retention-expansion",
+      "importance": "nice_to_have",
+      "expectation": "Keep customers from closing accounts and win back lost balances",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Track targets, balances and pipeline in a spreadsheet",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

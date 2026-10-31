@@ -1,0 +1,111 @@
+{
+  "slug": "procurement-executive",
+  "title": "Procurement Executive",
+  "summary": "A Procurement Executive buys the materials and services a company needs, turning internal requests into purchase orders at the right price, quality and delivery date. They sit in the purchase or procurement team and work with vendors, stores, user departments and accounts.",
+  "dailyDuties": [
+    "Review purchase requisitions from user departments",
+    "Send RFQs and compare vendor quotations",
+    "Negotiate price, delivery and payment terms with vendors",
+    "Raise purchase orders in the ERP and get approvals",
+    "Follow up with vendors on pending deliveries",
+    "Onboard new vendors and update vendor master data",
+    "Coordinate invoice and payment issues with accounts"
+  ],
+  "typicalTitles": [
+    "Purchase Executive",
+    "Purchase Officer",
+    "Executive - Purchase",
+    "Procurement Specialist",
+    "Sourcing Executive",
+    "Vendor Development Executive",
+    "Buyer - Indirect Procurement"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "purchase-order-processing",
+      "importance": "required",
+      "expectation": "Turn purchase requisitions into purchase orders and follow up deliveries",
+      "postingShare": null
+    },
+    {
+      "skillId": "vendor-sourcing-development",
+      "importance": "required",
+      "expectation": "Find and develop new and alternate vendors",
+      "postingShare": null
+    },
+    {
+      "skillId": "rfq-quotation-comparison",
+      "importance": "required",
+      "expectation": "Float RFQs and prepare quotation comparisons",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "required",
+      "expectation": "Negotiate price, delivery and payment terms with vendors",
+      "postingShare": null
+    },
+    {
+      "skillId": "vendor-onboarding",
+      "importance": "required",
+      "expectation": "Onboard vendors and maintain vendor master data",
+      "postingShare": null
+    },
+    {
+      "skillId": "erp-purchasing",
+      "importance": "required",
+      "expectation": "Raise and track purchase documents in an ERP or e-procurement tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Track open orders and vendor data in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "procurement-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Analyse spend and supplier performance",
+      "postingShare": null
+    },
+    {
+      "skillId": "gst-tds-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Check GST details on vendor quotes and invoices",
+      "postingShare": null
+    },
+    {
+      "skillId": "accounts-payable-receivable",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate invoice matching and vendor payments with accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "inventory-planning-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Understand reorder levels behind requisitions",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate clearly with vendors and user departments",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

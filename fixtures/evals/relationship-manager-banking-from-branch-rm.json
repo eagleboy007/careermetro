@@ -1,0 +1,56 @@
+{
+  "id": "relationship-manager-banking-from-branch-rm",
+  "roleSlug": "relationship-manager-banking",
+  "persona": "Branch relationship manager with four years in retail liabilities and investment sales",
+  "resumeText": "Karthik Iyer | Chennai | karthik.iyer@example.com\n\nEXPERIENCE\nRelationship Manager - Branch Banking, Coromandel Bank Ltd, Chennai (2023 - present)\n- Handle client portfolio management for 320 mapped savings and affluent customers at the Adyar branch.\n- Drive CASA acquisition through society camps, builder tie-ups and walk-in customers.\n- Grew mutual fund sales and SIP book by pitching equity and hybrid funds to existing customers.\n- Sold term and health policies through bancassurance with the bank's insurance partner.\n- Cross-selling credit cards, personal loans and lockers to customers during account reviews.\n- Complete KYC documentation and account opening forms and clear branch audit queries.\n- Resolve customer complaints and service requests with branch operations within the turnaround time.\n\nPersonal Banker, Coromandel Bank Ltd, Chennai (2021 - 2023)\n- Opened savings and fixed deposit accounts for walk-in customers and completed KYC checks.\n\nEDUCATION\nB.Com, University of Madras, 2021\n\nCERTIFICATIONS\nNISM-Series-V-A Mutual Fund Distributors; IRDAI IC-38\n\nSKILLS\nInvestor risk profiling, Finacle, Excel\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "banking-client-portfolio-management",
+        "quote": "Handle client portfolio management for 320 mapped savings and affluent customers"
+      },
+      {
+        "skillId": "casa-deposit-acquisition",
+        "quote": "Drive CASA acquisition through society camps, builder tie-ups"
+      },
+      {
+        "skillId": "third-party-product-distribution",
+        "quote": "Grew mutual fund sales and SIP book"
+      },
+      {
+        "skillId": "cross-selling-upselling",
+        "quote": "Cross-selling credit cards, personal loans and lockers"
+      },
+      {
+        "skillId": "kyc-verification",
+        "quote": "Complete KYC documentation and account opening forms"
+      },
+      {
+        "skillId": "customer-query-resolution",
+        "quote": "Resolve customer complaints and service requests with branch operations"
+      },
+      {
+        "skillId": "investment-suitability-compliance",
+        "quote": "Investor risk profiling"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "investment-suitability-compliance",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "credit-appraisal",
+      "aml-transaction-monitoring",
+      "financial-modelling",
+      "commercial-negotiation"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -177,26 +177,38 @@
     ],
     "marketing": [
       "digital-marketing-executive",
-      "product-marketing-manager"
+      "product-marketing-manager",
+      "content-writer",
+      "social-media-manager"
     ],
     "sales": [
       "key-account-manager",
       "area-sales-manager",
-      "inside-sales-executive"
+      "inside-sales-executive",
+      "relationship-manager-banking",
+      "business-development-executive"
     ],
     "finance": [
       "financial-analyst",
       "accounts-executive",
       "credit-risk-analyst",
-      "aml-kyc-analyst"
+      "aml-kyc-analyst",
+      "tax-associate",
+      "audit-associate",
+      "collections-officer",
+      "treasury-analyst"
     ],
     "hr": [
       "hr-generalist",
-      "talent-acquisition-specialist"
+      "talent-acquisition-specialist",
+      "hr-business-partner",
+      "payroll-executive"
     ],
     "operations": [
       "supply-chain-analyst",
-      "customer-support-executive"
+      "customer-support-executive",
+      "procurement-executive",
+      "logistics-coordinator"
     ]
   },
   "neighbours": [
@@ -353,6 +365,10 @@
     [
       "hil-test-engineer",
       "qa-automation-engineer"
+    ],
+    [
+      "customer-support-executive",
+      "relationship-manager-banking"
     ]
   ]
 }

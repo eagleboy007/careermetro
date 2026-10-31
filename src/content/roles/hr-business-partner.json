@@ -1,0 +1,128 @@
+{
+  "slug": "hr-business-partner",
+  "title": "HR Business Partner",
+  "summary": "An HR Business Partner is the main people adviser to a business head, helping them plan headcount, structure teams, grow talent and handle serious employee issues. They sit in the HR team but work day to day with one business unit, drawing on specialists in hiring, pay and learning.",
+  "dailyDuties": [
+    "Meet business leaders to review headcount, hiring and attrition",
+    "Prepare people dashboards on attrition and engagement",
+    "Run talent review and succession discussions",
+    "Guide managers through performance calibration and difficult conversations",
+    "Investigate escalated grievances and disciplinary cases",
+    "Advise on team structure changes and restructuring",
+    "Coordinate with rewards, hiring and learning teams on business needs"
+  ],
+  "typicalTitles": [
+    "HRBP",
+    "People Partner",
+    "Business HR Partner",
+    "Senior HR Business Partner",
+    "Strategic HR Business Partner",
+    "HR Business Partner - Plant"
+  ],
+  "experienceBand": {
+    "minYears": 6,
+    "maxYears": 12
+  },
+  "skills": [
+    {
+      "skillId": "hr-business-partnering",
+      "importance": "required",
+      "expectation": "Act as the people adviser to a business head and their leadership team",
+      "postingShare": null
+    },
+    {
+      "skillId": "workforce-planning",
+      "importance": "required",
+      "expectation": "Build the annual headcount and manpower plan with business and finance",
+      "postingShare": null
+    },
+    {
+      "skillId": "talent-review-succession",
+      "importance": "required",
+      "expectation": "Run talent reviews and keep succession plans for critical roles",
+      "postingShare": null
+    },
+    {
+      "skillId": "organisation-design",
+      "importance": "required",
+      "expectation": "Shape team structures and support restructuring decisions",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-appraisal-administration",
+      "importance": "required",
+      "expectation": "Drive the performance cycle, goal setting and rating calibration",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-relations",
+      "importance": "required",
+      "expectation": "Handle escalated grievances, investigations and disciplinary cases",
+      "postingShare": null
+    },
+    {
+      "skillId": "hr-analytics",
+      "importance": "required",
+      "expectation": "Track attrition, headcount and engagement data and turn it into actions",
+      "postingShare": null
+    },
+    {
+      "skillId": "indian-labour-law-compliance",
+      "importance": "required",
+      "expectation": "Keep people decisions compliant with Indian labour law and POSH",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Influence senior leaders and work across HR centres of excellence",
+      "postingShare": null
+    },
+    {
+      "skillId": "compensation-planning",
+      "importance": "nice_to_have",
+      "expectation": "Support increment cycles and pay benchmarking with the rewards team",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-engagement",
+      "importance": "nice_to_have",
+      "expectation": "Act on engagement survey results with managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "hrms-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use the HRMS for people data and workflows",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build simple HR dashboards",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Analyse people data in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Present people updates clearly to leaders and employees",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

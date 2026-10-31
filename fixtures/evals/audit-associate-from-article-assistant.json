@@ -1,0 +1,51 @@
+{
+  "id": "audit-associate-from-article-assistant",
+  "roleSlug": "audit-associate",
+  "persona": "CA article assistant finishing articleship and moving to an audit associate role",
+  "resumeText": "Karan Mehta | Ahmedabad | karan.mehta@example.com\n\nEXPERIENCE\nArticle Assistant, Shah Desai & Co., Chartered Accountants, Ahmedabad (2023 - 2026)\n- Performed vouching and verification of purchases, sales and expenses for statutory audits of 10 private companies.\n- Tested internal financial controls over procure-to-pay and payroll through walkthroughs and sample testing.\n- Prepared audit working papers and lead schedules for fixed assets, inventory and receivables.\n- Checked financial statements against Ind AS and Schedule III disclosure requirements.\n- Verified GST and TDS compliance and reconciled GST returns with books during tax audits.\n\nEDUCATION\nB.Com, Gujarat University, 2023\nCA Final (appearing), ICAI\n\nSKILLS\nAdvanced Excel, Tally ERP 9\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "statutory-audit-execution",
+        "quote": "Performed vouching and verification of purchases, sales and expenses for statutory audits"
+      },
+      {
+        "skillId": "internal-controls-testing",
+        "quote": "Tested internal financial controls over procure-to-pay and payroll"
+      },
+      {
+        "skillId": "audit-documentation",
+        "quote": "Prepared audit working papers and lead schedules"
+      },
+      {
+        "skillId": "financial-accounting",
+        "quote": "Checked financial statements against Ind AS and Schedule III"
+      },
+      {
+        "skillId": "gst-tds-compliance",
+        "quote": "Verified GST and TDS compliance"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Advanced Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "excel",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "audit-software",
+      "sap-fi-configuration",
+      "security-audits"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -104,6 +104,10 @@
     "task": "Run the free Sonatype Nexus Repository Community Edition or JFrog Artifactory OSS in Docker, publish versioned builds of a sample Java or npm library from a CI job, set a cleanup policy, and share the config and screenshots."
   },
   {
+    "skillId": "audit-documentation",
+    "task": "For one synthetic audit area (such as trade receivables), prepare a working paper: objective, lead schedule, sample selected, tests done, exceptions found, conclusion and a cross-reference to the trial balance. Share the working paper."
+  },
+  {
     "skillId": "automation-anywhere",
     "task": "In the free Automation Anywhere Community Edition, build a bot that reads a synthetic invoice Excel file, enters each row into a demo web form, logs failures to a CSV and emails a summary. Share the bot export and screenshots."
   },
@@ -134,6 +138,14 @@
   {
     "skillId": "backup-software",
     "task": "In a home lab with the free Veeam Community Edition, back up 2 test VMs on a schedule, restore one file and one whole VM, and write a runbook with the retention you set and how long each restore took."
+  },
+  {
+    "skillId": "bank-relationship-management",
+    "task": "For a synthetic mid-size company, list its bank accounts, working capital limits and renewal dates in Excel, draft the document checklist for a limit renewal and a short note comparing two banks' charges. Share the sheet and the note."
+  },
+  {
+    "skillId": "banking-client-portfolio-management",
+    "task": "For a synthetic book of 30 bank customers (balances, products held, last contact), segment them by value and potential, set a call plan for the month and pick three to grow, with the product you would offer each. Share the sheet and plan."
   },
   {
     "skillId": "batch-scheduling",
@@ -168,8 +180,20 @@
     "task": "For a synthetic role (such as a regional sales manager in Pune), write three Boolean search strings for LinkedIn or Google X-ray, a sourcing plan across channels and a short outreach message. Share the strings, plan and message."
   },
   {
+    "skillId": "casa-deposit-acquisition",
+    "task": "For a synthetic branch catchment (shops, offices, housing societies), build a one-month CASA acquisition plan: target segments, lead sources, daily calls and visits, and the documents each account type needs. Share the plan and the tracker."
+  },
+  {
     "skillId": "case-documentation",
     "task": "For five synthetic customer calls or chats (written as short transcripts), write the case note for each: issue, steps taken, outcome, next action and the call disposition code. Share the notes with a one-line rule you followed for each field."
+  },
+  {
+    "skillId": "cash-flow-forecasting",
+    "task": "From a synthetic company's receivables, payables, payroll and loan dates, build a 13-week cash flow forecast in Excel, flag the weeks with a shortfall and write how you would fund them. Share the sheet and a short note."
+  },
+  {
+    "skillId": "cash-management",
+    "task": "For a synthetic company with four bank accounts, build a daily cash position sheet (opening balance, expected receipts and payments, closing balance) for two weeks and write the sweep or transfer you would make each day. Share the sheet."
   },
   {
     "skillId": "ccaas-ivr-development",
@@ -232,12 +256,28 @@
     "task": "Given a list of 10 synthetic cloud misconfigurations (open storage bucket, wildcard IAM policy, unencrypted disk, etc.), rank them by risk and write the fix for each."
   },
   {
+    "skillId": "cms-content-publishing",
+    "task": "Publish two of your own articles on a free WordPress.com or other free CMS site with headings, images with alt text, categories, tags, a meta description and internal links. Share the live links and a screenshot of the editor settings."
+  },
+  {
     "skillId": "cobol",
     "task": "Write a COBOL batch program (GnuCOBOL on your laptop or IBM Z Xplore) that reads a synthetic transactions file, validates each record, writes totals and an error report, and share the code with sample input and output."
   },
   {
     "skillId": "code-review",
     "task": "Open a pull request of about 200 lines in a practice repo of your own, then review it as if a teammate wrote it: leave 8 or more comments on bugs, naming and tests, and write a one-page note on what you would block and why."
+  },
+  {
+    "skillId": "collection-agency-oversight",
+    "task": "For three synthetic collection agencies (cases allotted, amount collected, complaints, audit scores), build a monthly agency scorecard in Excel, rank them and write how you would reallocate cases next month. Share the sheet and note."
+  },
+  {
+    "skillId": "collections-portfolio-management",
+    "task": "For a synthetic loan book of 300 overdue accounts by DPD bucket over three months, compute bucket resolution, roll forward and roll back rates in Excel, and write an action plan for the worst bucket. Share the sheet and plan."
+  },
+  {
+    "skillId": "collections-regulatory-conduct",
+    "task": "Write a one-page calling and visit checklist for collection staff based on the RBI Fair Practices Code and recovery agent guidelines: calling hours, identity, language, privacy and escalation. Share the checklist with section references."
   },
   {
     "skillId": "commercial-negotiation",
@@ -250,6 +290,10 @@
   {
     "skillId": "communication",
     "task": "Write a 200-word status email for a delayed project (what slipped, why, the new date, the ask) and a 3-slide summary for a senior manager. Share both as a PDF."
+  },
+  {
+    "skillId": "community-management",
+    "task": "For a brand you follow, write a community guidelines page, reply templates for five comment types (praise, complaint, question, troll, crisis) and a weekly social listening report from its public comments. Share the documents."
   },
   {
     "skillId": "competitive-intelligence",
@@ -274,6 +318,10 @@
   {
     "skillId": "container-security",
     "task": "Scan a sample Docker image with Trivy or Grype, fix the critical findings with a slimmer base image and a non-root user, add the scan to a GitHub Actions build that fails on criticals, and share the before and after reports."
+  },
+  {
+    "skillId": "content-briefs-outlines",
+    "task": "For a synthetic blog, write a one-month editorial calendar with eight topics, and full briefs for two of them: target reader, keyword, angle, outline with headings, sources and word count. Share the calendar and briefs."
   },
   {
     "skillId": "content-marketing",
@@ -302,6 +350,10 @@
   {
     "skillId": "crm-tools",
     "task": "In a free HubSpot or Salesforce Developer account, set up a sales pipeline with 5 stages, import 20 synthetic leads and build a simple report. Share screenshots."
+  },
+  {
+    "skillId": "cross-selling-upselling",
+    "task": "For a synthetic list of 25 existing customers with the products they hold, pick the next best product for each, write the pitch for three of them and a one-page note on how you would track conversion. Share the sheet and pitches."
   },
   {
     "skillId": "cryptography-basics",
@@ -400,6 +452,10 @@
     "task": "Build a small dbt project on DuckDB or BigQuery with staging and mart models, 4 tests and generated docs, and publish it as a GitHub repo."
   },
   {
+    "skillId": "deal-closing",
+    "task": "For a synthetic B2B deal in its last stage, write the closing plan: open objections and your answers, the decision makers, the concessions you can give, a mutual timeline and the closing email. Share the plan and email."
+  },
+  {
     "skillId": "deep-learning",
     "task": "Train a small image or text classifier in PyTorch or TensorFlow on a public dataset, plot training curves, and note what you changed to reduce overfitting."
   },
@@ -468,6 +524,10 @@
     "task": "Write a Tcl or Perl script that parses a sample timing report or log from an open-source flow such as OpenROAD's examples, lists the 10 worst paths or errors, and writes a CSV summary. Share the script and its output."
   },
   {
+    "skillId": "editing-proofreading",
+    "task": "Take a 1,000-word synthetic or public-domain draft with errors, edit it against a style guide you name (such as Google's developer style guide or a house style), track changes and list the ten main fixes. Share the before and after."
+  },
+  {
     "skillId": "email-marketing",
     "task": "Design a 3-email welcome sequence for a fictional online course with subject lines, copy, send timing and the metrics you would track. Share as a doc or screenshots."
   },
@@ -512,12 +572,20 @@
     "task": "In a free Microsoft Entra ID or Microsoft 365 developer tenant, create synthetic users and groups, add a Conditional Access policy that asks for MFA outside a trusted location, test it in the sign-in logs and share screenshots and notes."
   },
   {
+    "skillId": "erp-purchasing",
+    "task": "Using a free ERP trial or training system (such as Odoo's free tier), create a vendor, a purchase requisition, a purchase order and a goods receipt for a synthetic item, and export the open PO report. Share screenshots and the report."
+  },
+  {
     "skillId": "escalation-handling",
     "task": "For three synthetic escalated customer cases, write how you would handle each: the first reply to the customer, who you escalate to internally, the timeline you commit to and the closing message. Share the replies and an escalation matrix."
   },
   {
     "skillId": "etl",
     "task": "Build a small pipeline that pulls a public API or data.gov.in CSV daily, cleans it and loads it into a database, with logging and a check that fails on missing data."
+  },
+  {
+    "skillId": "eway-bill-compliance",
+    "task": "For three synthetic dispatches (intra-state, inter-state and a job-work transfer), list the documents each needs (tax invoice, delivery challan, e-way bill, LR), fill sample e-way bill fields and note the validity rules. Share the sheet."
   },
   {
     "skillId": "excel",
@@ -528,8 +596,20 @@
     "task": "In a synthetic sales workbook, build two pivot tables (by region and month) and join a product price sheet with XLOOKUP or INDEX-MATCH. Share the file."
   },
   {
+    "skillId": "exim-documentation",
+    "task": "For a synthetic export shipment from India, prepare a document set checklist (invoice, packing list, shipping bill, bill of lading, certificate of origin), pick the Incoterm and explain who pays for what. Share the checklist and note."
+  },
+  {
     "skillId": "feature-engineering",
     "task": "On a public tabular dataset, create 5 new features, show their effect on validation score, and point out one feature you dropped because it leaked the target."
+  },
+  {
+    "skillId": "field-sales-meetings",
+    "task": "Plan a week of field visits for a synthetic territory: 20 prospects, route by area, the aim of each meeting, a call report template and the follow-up you would send after two sample meetings. Share the plan and reports."
+  },
+  {
+    "skillId": "field-tele-collections",
+    "task": "Write a tele-calling script for overdue EMI customers in the 1-30 DPD bucket (opening, reason for delay, promise to pay, objections, closing) and a call log for ten synthetic calls with PTP dates and outcomes. Share both."
   },
   {
     "skillId": "figma",
@@ -564,6 +644,10 @@
     "task": "Open a public practice disk image from NIST CFReDS or Digital Corpora in the free Autopsy or FTK Imager, recover deleted files, build a timeline of user activity, and share a short report with screenshots and your findings."
   },
   {
+    "skillId": "forex-risk-hedging",
+    "task": "For a synthetic importer with USD payables over six months, list the exposure by month, compare leaving it open with a forward contract at a sample rate, and write a simple hedging policy. Share the sheet and policy."
+  },
+  {
     "skillId": "fpa-variance-reporting",
     "task": "From a synthetic budget and actuals for a business unit (12 cost and revenue lines), build a monthly budget-versus-actual report with variances and write the commentary a CFO would read. Share the sheet and commentary."
   },
@@ -574,6 +658,10 @@
   {
     "skillId": "fpga-high-speed-interfaces",
     "task": "In the free Vivado edition, generate a GTH/GTY transceiver or PCIe IP example design, run its loopback simulation, and write up the line rate, reference clock and constraint choices with screenshots of the IP setup and results."
+  },
+  {
+    "skillId": "freight-billing-control",
+    "task": "For a synthetic month of 30 freight bills, check each against the agreed rate card (rate, weight, detention, extra points), list the over-charges and total savings, and draft the dispute note to one transporter. Share the sheet."
   },
   {
     "skillId": "frontend-architecture",
@@ -636,6 +724,14 @@
     "task": "Build a small Slurm cluster from three VMs or containers, set up two partitions and fair-share, submit array and multi-node MPI jobs, and share the config files, job scripts and squeue and sacct output."
   },
   {
+    "skillId": "hr-analytics",
+    "task": "From a synthetic employee dataset (200 rows: department, tenure, rating, exits), build an attrition and headcount dashboard in Excel or Power BI and write three findings with the action you would suggest. Share the file."
+  },
+  {
+    "skillId": "hr-business-partnering",
+    "task": "For a synthetic business unit with rising attrition and a hiring plan, write a one-page HR plan for the unit head: top three people issues, the data behind them, actions, owners and how you will measure progress. Share the plan."
+  },
+  {
     "skillId": "hr-policy-administration",
     "task": "Draft two HR policies for a synthetic 200-person company (such as leave and work from home) with eligibility, process and approvals, and an appointment letter template. Share the documents."
   },
@@ -676,6 +772,10 @@
     "task": "Write a blameless postmortem for a synthetic 40-minute outage (timeline given): impact, root cause, what went well, and five action items with owners."
   },
   {
+    "skillId": "income-tax-compliance",
+    "task": "For a synthetic individual with salary, interest and capital gains, compute taxable income and tax under the old and new regimes, pick the ITR form and list the documents needed. Share the computation sheet."
+  },
+  {
     "skillId": "indian-labour-law-compliance",
     "task": "Build a monthly statutory compliance calendar for a synthetic company in your state: PF, ESI, professional tax, LWF, shops and establishments and POSH, with due dates, forms and owners. Compute PF and ESI for three synthetic salaries. Share the sheet."
   },
@@ -684,12 +784,20 @@
     "task": "In OpenPLC and a free HMI or SCADA simulator, build a tank-fill control loop with ladder logic, read its values over Modbus TCP, and share the ladder diagram, HMI screenshots and a note on each tag. Never touch a live plant."
   },
   {
+    "skillId": "influencer-creator-marketing",
+    "task": "For a product you know, plan a small influencer campaign: shortlist eight creators from public profiles with reach and fit, a brief, deliverables, an ASCI disclosure rule and how you would measure results. Share the plan."
+  },
+  {
     "skillId": "informatica",
     "task": "In a free Informatica Cloud Data Integration trial, build a mapping that loads a synthetic sales CSV into a staging table with a lookup, a reject file and an incremental load, then share screenshots of the mapping and a run."
   },
   {
     "skillId": "interaction-design",
     "task": "Redesign one cluttered screen from a public Indian app: show before and after, and explain the hierarchy, spacing and state changes you made."
+  },
+  {
+    "skillId": "internal-controls-testing",
+    "task": "For a synthetic purchase-to-pay process, write a risk control matrix (risks, controls, owners), test two controls on a synthetic sample of 15 transactions and record exceptions. Share the matrix and test sheet."
   },
   {
     "skillId": "internal-developer-platform",
@@ -702,6 +810,10 @@
   {
     "skillId": "inventory-planning-optimization",
     "task": "For a synthetic list of 30 items with demand, lead time and cost, run an ABC analysis, compute safety stock and reorder points in Excel, and flag slow-moving stock. Share the sheet and a short note on what you would change."
+  },
+  {
+    "skillId": "investment-suitability-compliance",
+    "task": "Write a short risk-profiling questionnaire for a bank customer, score two synthetic customers with it and match each to suitable mutual fund categories, noting the AMFI and SEBI rules that guide the advice. Share the questionnaire and notes."
   },
   {
     "skillId": "iot-cloud-platforms",
@@ -754,6 +866,10 @@
   {
     "skillId": "kyc-due-diligence",
     "task": "For three synthetic customers (an individual, a proprietorship and a private company), list the KYC documents and checks needed, find the beneficial owners for the company and assign a risk category with reasons. Share the checklist and the risk notes."
+  },
+  {
+    "skillId": "kyc-verification",
+    "task": "For three synthetic customer files (an individual, a proprietorship and a company), list the KYC documents each needs under the RBI KYC Master Direction, check sample documents for gaps and write what is missing. Share the checklist."
   },
   {
     "skillId": "lead-qualification",
@@ -920,6 +1036,10 @@
     "task": "Model a product catalogue with reviews in MongoDB, write 5 queries and one aggregation, and explain in a short note when you would choose a relational design instead."
   },
   {
+    "skillId": "npa-recovery-legal",
+    "task": "For three synthetic NPA accounts (secured home loan, vehicle loan, unsecured personal loan), recommend a recovery route for each (SARFAESI, repossession, Section 138, Lok Adalat or OTS), with the steps and timelines. Share the note."
+  },
+  {
     "skillId": "observability",
     "task": "Define SLIs and SLOs for a synthetic checkout API, set an error budget, and write two alert rules that page only when the budget is burning fast."
   },
@@ -968,6 +1088,10 @@
     "task": "In a free Oracle Cloud trial, build an OIC integration that takes a synthetic order over REST, maps it, writes it to a file or database and sends a notification on a fault. Share screenshots of the flow and a test run."
   },
   {
+    "skillId": "organisation-design",
+    "task": "For a synthetic 60-person sales team with unclear reporting lines, draw the current and proposed structure, show spans of control and layers, and write the reasons and the change plan. Share the charts and the note."
+  },
+  {
     "skillId": "orm-databases",
     "task": "Normalise a flat synthetic spreadsheet of student enrolments to 3NF, then write the PostgreSQL DDL with primary keys, foreign keys, unique and check constraints."
   },
@@ -996,6 +1120,10 @@
     "task": "For a synthetic team of 10 employees, prepare a month's payroll inputs in Excel (attendance, leave, overtime, joiners and leavers) and compute gross pay, PF, ESI, professional tax and net pay. Share the sheet with your checks."
   },
   {
+    "skillId": "payroll-statutory-filings",
+    "task": "For a synthetic payroll of 20 employees, compute PF, ESI, professional tax and LWF deductions for one month in Excel, prepare a sample ECR file layout and list the due dates. Share the sheet."
+  },
+  {
     "skillId": "pcb-schematic-design",
     "task": "Design a small microcontroller board in KiCad (power input, regulator, MCU, USB or CAN and a few connectors): schematic, part choices, a 2- or 4-layer layout and design rule checks. Share the KiCad project, the BOM and Gerber files."
   },
@@ -1014,6 +1142,10 @@
   {
     "skillId": "people-management",
     "task": "Write how you would handle a synthetic case: a strong engineer missing deadlines for a month. Cover the one-to-one, the plan, and how you would measure progress."
+  },
+  {
+    "skillId": "performance-appraisal-administration",
+    "task": "Design an appraisal cycle for a synthetic 100-person company: timeline, KRA template, rating scale, normalisation step and a tracker for completion, and fill it for five sample employees. Share the templates and tracker."
   },
   {
     "skillId": "performance-marketing",
@@ -1124,6 +1256,10 @@
     "task": "Build a clickable Figma prototype of a three-step sign-up flow with an error state, and record a one-minute walkthrough."
   },
   {
+    "skillId": "purchase-order-processing",
+    "task": "For five synthetic purchase requisitions, raise purchase orders with item, quantity, rate, tax, delivery date and terms in a sheet or free ERP, then build a PO follow-up tracker with pending deliveries. Share both."
+  },
+  {
     "skillId": "python",
     "task": "Write a Python script that reads a sample log or CSV file, counts events by type and hour, and writes a summary CSV. Include a README and one test."
   },
@@ -1180,6 +1316,10 @@
     "task": "Design and document a small REST API (5 endpoints, status codes, error format) with an OpenAPI file, and build a client page that handles loading and errors."
   },
   {
+    "skillId": "rfq-quotation-comparison",
+    "task": "For a synthetic purchase of an item from three vendors, write the RFQ, then build a comparative statement of their quotes (price, taxes, freight, payment terms, delivery) and recommend one vendor. Share the RFQ and the sheet."
+  },
+  {
     "skillId": "risk-assessment",
     "task": "Run a risk assessment for a fictional SaaS vendor: list 10 risks with likelihood, impact and treatment in a register, plus a 10-question vendor security questionnaire."
   },
@@ -1224,6 +1364,10 @@
     "task": "Run a mock implementation of a free SaaS tool (such as a CRM or helpdesk trial) for a fictional 50-person company: requirements, configuration workbook, data migration template, test cases and a go-live checklist. Share them."
   },
   {
+    "skillId": "salary-tds-computation",
+    "task": "For three synthetic employees with different salaries and investment declarations, compute TDS on salary under the old and new regimes for a year in Excel and show the monthly deduction. Share the sheet."
+  },
+  {
     "skillId": "sales-enablement",
     "task": "For a product you know, create a sales one-pager, a short objection-handling guide (five objections) and a demo talk track. Share the three pieces."
   },
@@ -1234,6 +1378,10 @@
   {
     "skillId": "sales-forecasting",
     "task": "From a synthetic 12-month sales history by product and region, build next quarter's sales forecast and targets in Excel, explain your method and the assumptions, and compare it with a simple trend line. Share the sheet."
+  },
+  {
+    "skillId": "sales-proposals-quotations",
+    "task": "For a synthetic client need, write a two-page proposal (problem, solution, scope, price, terms, timeline) and a matching quotation with taxes and validity. Share the proposal and quotation."
   },
   {
     "skillId": "salesforce-apex",
@@ -1396,6 +1544,10 @@
     "task": "Do keyword research for a small local business site, then write an on-page SEO audit of one page covering title, headings, internal links, speed and schema, with fixes."
   },
   {
+    "skillId": "seo-content-writing",
+    "task": "Pick a topic, do keyword research with free tools (Google Search Console data, Google Trends or a free keyword tool), choose a main and three related keywords, and write a 1,000-word optimised article with meta title and description. Share it."
+  },
+  {
     "skillId": "servicenow-flow-designer",
     "task": "In a free ServiceNow developer instance, build a Flow Designer flow for a catalog request with an approval, a task and a REST step to a public test API, and document the trigger, steps and test runs with screenshots."
   },
@@ -1412,8 +1564,16 @@
     "task": "In a free Microsoft 365 developer tenant, build a SharePoint Online team site with 2 lists, a document library with metadata and versioning, and permissions for 3 test groups. Document each step with screenshots."
   },
   {
+    "skillId": "shipment-dispatch-planning",
+    "task": "For a synthetic day of 15 orders across four cities, plan dispatches: group orders into loads, pick vehicle sizes, set loading times and build a tracking sheet with POD status. Share the plan and sheet."
+  },
+  {
     "skillId": "shopify-development",
     "task": "In a free Shopify Partner development store, build a theme section in Liquid that shows a product size chart from metafields, put the theme code on GitHub and share screenshots on desktop and mobile."
+  },
+  {
+    "skillId": "short-form-video-content",
+    "task": "Script, shoot on a phone and edit three short vertical videos (under 30 seconds) for a brand or topic you choose, with hooks, captions and on-screen text. Share the videos or links and a note on what each is meant to do."
   },
   {
     "skillId": "siem",
@@ -1434,6 +1594,14 @@
   {
     "skillId": "soar",
     "task": "In the free Shuffle or Tines community edition, build a playbook that takes a phishing alert, looks up its URL and sender in a threat feed, and opens a ticket with the verdict. Share the playbook export and a run screenshot."
+  },
+  {
+    "skillId": "social-media-analytics",
+    "task": "From a public brand page or a synthetic export of 30 posts (reach, likes, comments, shares, saves), compute engagement rates by format and day in Excel, and write three changes for next month. Share the sheet and the note."
+  },
+  {
+    "skillId": "social-media-calendar-planning",
+    "task": "For a brand you choose, write a one-month social media calendar across two platforms: goals, content pillars, 20 posts with format, caption and date, and the metric for each pillar. Share the calendar."
   },
   {
     "skillId": "social-media-marketing",
@@ -1492,6 +1660,14 @@
     "task": "Using a public data.gov.in dataset, compute summary statistics, plot a distribution and run one hypothesis test, then explain the result in 150 plain-English words for a manager."
   },
   {
+    "skillId": "statutory-audit-execution",
+    "task": "For a synthetic company's purchase ledger of 40 entries, select a sample, vouch it against made-up invoices and GRNs, list exceptions and write the audit observation you would raise. Share the sheet and observation."
+  },
+  {
+    "skillId": "statutory-audit-support",
+    "task": "For a synthetic year-end close, prepare the schedules an auditor asks for (fixed assets, receivables ageing, payables, bank reconciliation) and a list of open audit queries with your replies. Share the schedules."
+  },
+  {
     "skillId": "str-regulatory-reporting",
     "task": "From a synthetic case of suspicious activity on one account, write the grounds of suspicion as you would for a suspicious transaction report (STR) to FIU-IND: customer profile, transactions, red flags and why they are unusual. Share the write-up."
   },
@@ -1510,6 +1686,10 @@
   {
     "skillId": "support-ticketing-tools",
     "task": "In a free Zendesk, Freshdesk or Zoho Desk trial, set up 2 groups, SLA policies, 3 macros and one automation, run 10 synthetic tickets through it and share screenshots with a note on how each ticket was routed."
+  },
+  {
+    "skillId": "surplus-fund-investments",
+    "task": "For a synthetic company with surplus cash for three, six and twelve months, compare bank fixed deposits, liquid funds and commercial paper on return, risk and liquidity, and write an investment policy note. Share the sheet and note."
   },
   {
     "skillId": "survey-research",
@@ -1540,8 +1720,16 @@
     "task": "In Talend Open Studio or a Qlik Talend Cloud trial, build a job that joins two synthetic CSV files, cleans dates and duplicates, loads a database table, and logs rejects. Share the job export and screenshots of a run."
   },
   {
+    "skillId": "talent-review-succession",
+    "task": "For a synthetic team of 12 managers with ratings and potential notes, place them on a 9-box grid, name successors for three key roles with readiness and write development actions for each. Share the grid and plan."
+  },
+  {
     "skillId": "tally-accounting-software",
     "task": "In TallyPrime's free educational mode (or Zoho Books' free plan), create a synthetic company, record 15 vouchers (sales, purchase, payment, receipt, journal with GST) and print the trial balance and GST report. Share screenshots or exports."
+  },
+  {
+    "skillId": "tax-assessments-litigation",
+    "task": "For a synthetic GST or income tax notice (such as a mismatch between returns), write a reply: facts, the issue raised, legal provisions, your submission and the documents attached. Share the draft reply."
   },
   {
     "skillId": "teamcenter-customization",
@@ -1576,6 +1764,10 @@
     "task": "Write a test plan for a fictional mobile banking release: scope, approach, environments, entry and exit criteria, risks and schedule. Share as a 2-page doc."
   },
   {
+    "skillId": "third-party-product-distribution",
+    "task": "For two synthetic bank customers with different goals, compare three mutual fund or insurance options from public factsheets, recommend one each with the reasons and risks, and draft the disclosure you would give. Share the notes."
+  },
+  {
     "skillId": "third-party-risk",
     "task": "Review a synthetic vendor's security questionnaire answers, rate the vendor's risk, and list the contract clauses and evidence you would require."
   },
@@ -1598,6 +1790,10 @@
   {
     "skillId": "trading-systems-market-data",
     "task": "Write a program that replays a synthetic market data feed into an in-memory limit order book with add, modify, cancel and trade messages, check it with tests and share the code and per-message latency numbers."
+  },
+  {
+    "skillId": "transporter-3pl-management",
+    "task": "For three synthetic transporters, build a scorecard (on-time delivery, damages, rates, placement failures) in Excel, rank them and write the terms you would negotiate with the weakest. Share the sheet and note."
   },
   {
     "skillId": "typescript",
@@ -1644,6 +1840,14 @@
     "task": "From a public wiring diagram (such as a common car's headlamp or starter circuit), write a guided troubleshooting procedure for one fault and its trouble codes: checks in order, expected meter readings and the repair. Share the procedure with the marked diagram."
   },
   {
+    "skillId": "vendor-onboarding",
+    "task": "Write a vendor onboarding checklist (PAN, GST, bank details, MSME status, KYC, agreements) and fill a vendor master form for two synthetic suppliers, noting the checks before a vendor code is created. Share both."
+  },
+  {
+    "skillId": "vendor-sourcing-development",
+    "task": "For a synthetic item with one supplier, find three alternate vendors from public directories, compare them on capability, location, certifications and likely cost, and write a development plan for the best one. Share the sheet and plan."
+  },
+  {
     "skillId": "verilog-rtl",
     "task": "Write a UART transmitter and receiver in Verilog or VHDL with a self-checking testbench in the free Icarus Verilog or GHDL that sends 20 bytes and checks each one. Share the code, waveforms and a short design note."
   },
@@ -1662,6 +1866,10 @@
   {
     "skillId": "vulnerability-management",
     "task": "Scan a deliberately vulnerable VM or container you own (e.g. Metasploitable) with a free scanner, prioritise the top 10 findings using CVSS and the CISA KEV list, and write a fix plan."
+  },
+  {
+    "skillId": "warehouse-coordination",
+    "task": "For a synthetic warehouse day with five inbound trucks and eight outbound orders, plan dock slots, goods receipt checks and loading order, and build a tracker for exceptions (short, damaged, delayed). Share the plan and tracker."
   },
   {
     "skillId": "web-analytics",
@@ -1702,6 +1910,10 @@
   {
     "skillId": "workday-integrations",
     "task": "Write an EIB inbound template and an outbound worker file spec for a synthetic HR change feed, plus a Python script that turns a sample Workday-style XML extract into a vendor CSV with error handling. Share the specs and code."
+  },
+  {
+    "skillId": "workforce-planning",
+    "task": "For a synthetic business unit growing 20% next year, build a manpower plan in Excel: current headcount by role, attrition assumption, new roles, hiring timeline and cost. Share the sheet and a one-page summary."
   },
   {
     "skillId": "xr-development",

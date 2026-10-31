@@ -1,0 +1,116 @@
+{
+  "slug": "treasury-analyst",
+  "title": "Treasury Analyst",
+  "summary": "A treasury analyst makes sure a company has the cash it needs each day, forecasts cash flows, and manages bank relationships, forex (foreign currency) risk and the investment of surplus cash. You sit in the corporate finance team under a treasury manager, working closely with accounts and the company's banks.",
+  "dailyDuties": [
+    "Prepare the daily cash position across bank accounts",
+    "Update the weekly cash flow forecast and explain variances",
+    "Coordinate with banks on accounts, mandates and limits",
+    "Track forex exposure and book forward contracts",
+    "Place surplus cash in deposits or debt funds",
+    "Process letters of credit and bank guarantees",
+    "Report liquidity and investments to finance leadership"
+  ],
+  "typicalTitles": [
+    "Treasury Executive",
+    "Treasury Associate",
+    "Cash Management Analyst",
+    "Analyst - Corporate Treasury",
+    "Forex and Treasury Executive",
+    "Corporate Treasury Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "cash-management",
+      "importance": "required",
+      "expectation": "Prepare the daily cash position and manage liquidity across bank accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "cash-flow-forecasting",
+      "importance": "required",
+      "expectation": "Build weekly and monthly cash flow forecasts and explain variances",
+      "postingShare": null
+    },
+    {
+      "skillId": "bank-relationship-management",
+      "importance": "required",
+      "expectation": "Handle bank accounts, mandates, limits and day-to-day bank coordination",
+      "postingShare": null
+    },
+    {
+      "skillId": "forex-risk-hedging",
+      "importance": "required",
+      "expectation": "Track forex exposure and support hedging with forward contracts",
+      "postingShare": null
+    },
+    {
+      "skillId": "surplus-fund-investments",
+      "importance": "required",
+      "expectation": "Place surplus funds in deposits and debt funds within policy limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build cash, investment and exposure reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with accounts, procurement, sales and banks on fund flows",
+      "postingShare": null
+    },
+    {
+      "skillId": "trade-finance-instruments",
+      "importance": "nice_to_have",
+      "expectation": "Process letters of credit and bank guarantees and follow FEMA rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "treasury-management-systems",
+      "importance": "nice_to_have",
+      "expectation": "Use a treasury management system or SAP treasury",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-accounting",
+      "importance": "nice_to_have",
+      "expectation": "Do bank reconciliations and treasury accounting entries",
+      "postingShare": null
+    },
+    {
+      "skillId": "account-reconciliations",
+      "importance": "nice_to_have",
+      "expectation": "Reconcile intercompany and investment balances",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-modelling",
+      "importance": "nice_to_have",
+      "expectation": "Model funding and interest scenarios",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Write clear treasury reports for finance leadership",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions (employer careers pages and ATS boards) and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

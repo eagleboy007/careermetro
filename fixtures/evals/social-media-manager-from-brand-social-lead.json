@@ -1,0 +1,56 @@
+{
+  "id": "social-media-manager-from-brand-social-lead",
+  "roleSlug": "social-media-manager",
+  "persona": "Brand social media lead with five years running Instagram and creator programmes for a D2C food brand",
+  "resumeText": "Meera Nair | Bengaluru | meera.nair@example.com\n\nEXPERIENCE\nSocial Media Lead, Kappa Foods Pvt Ltd, Bengaluru (2022 - present)\n- Own the monthly social media content calendar for Instagram, YouTube and LinkedIn with a team of two designers.\n- Run community management for 1.2 lakh followers, replying to DMs and moderating comments daily.\n- Plan instagram reels and YouTube Shorts with the video editor, two to three every week.\n- Manage influencer campaigns with 40 food creators a quarter, from shortlisting to briefs and payments.\n- Write captions and copywriting for posts, carousels and festive campaigns in the brand voice.\n- Share monthly social media reporting on reach, saves and engagement rate with the marketing head.\n- Brief the design agency every week and present campaign results to the founders.\n\nSocial Media Executive, Pepper Lane Agency, Kochi (2020 - 2022)\n- Posted daily content for restaurant and cafe clients and replied to customer comments.\n\nEDUCATION\nBA Mass Communication, Mahatma Gandhi University, 2020\n\nSKILLS\nMeta Ads, Canva, Hootsuite\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "social-media-calendar-planning",
+        "quote": "Own the monthly social media content calendar for Instagram"
+      },
+      {
+        "skillId": "community-management",
+        "quote": "Run community management for 1.2 lakh followers"
+      },
+      {
+        "skillId": "short-form-video-content",
+        "quote": "Plan instagram reels and YouTube Shorts with the video editor"
+      },
+      {
+        "skillId": "influencer-creator-marketing",
+        "quote": "Manage influencer campaigns with 40 food creators a quarter"
+      },
+      {
+        "skillId": "content-marketing",
+        "quote": "Write captions and copywriting for posts, carousels and festive campaigns"
+      },
+      {
+        "skillId": "social-media-analytics",
+        "quote": "Share monthly social media reporting on reach, saves and engagement rate"
+      },
+      {
+        "skillId": "communication",
+        "quote": "present campaign results to the founders"
+      },
+      {
+        "skillId": "social-media-marketing",
+        "quote": "Meta Ads"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "social-media-marketing",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "sem-google-ads",
+      "seo",
+      "email-marketing",
+      "web-analytics"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,103 @@
+{
+  "slug": "payroll-executive",
+  "title": "Payroll Executive",
+  "summary": "A Payroll Executive makes sure every employee is paid correctly and on time each month, with PF, ESI, professional tax and income tax (TDS) deducted and deposited as the law requires. They sit in HR operations or finance and work with HR, accounts and payroll software vendors.",
+  "dailyDuties": [
+    "Collect attendance, leave and salary change inputs",
+    "Run and check the monthly payroll in the payroll tool",
+    "Deposit PF, ESI and professional tax and file returns",
+    "Compute TDS on salary and verify investment proofs",
+    "Calculate full and final settlements for leavers",
+    "Reconcile payroll with accounts and answer salary queries"
+  ],
+  "typicalTitles": [
+    "Payroll Specialist",
+    "Payroll Officer",
+    "Senior Payroll Executive",
+    "Payroll & Statutory Compliance Executive",
+    "Executive - Payroll & Compliance",
+    "Payroll Analyst - India Payroll"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "payroll-inputs-processing",
+      "importance": "required",
+      "expectation": "Run monthly payroll from attendance, leave and change inputs, and reconcile it",
+      "postingShare": null
+    },
+    {
+      "skillId": "payroll-statutory-filings",
+      "importance": "required",
+      "expectation": "Compute and deposit PF, ESI, professional tax and LWF and file monthly returns",
+      "postingShare": null
+    },
+    {
+      "skillId": "salary-tds-computation",
+      "importance": "required",
+      "expectation": "Compute TDS on salary, verify investment proofs and issue Form 16",
+      "postingShare": null
+    },
+    {
+      "skillId": "indian-labour-law-compliance",
+      "importance": "required",
+      "expectation": "Apply wage, bonus, gratuity and PF/ESI rules correctly",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-onboarding-exits",
+      "importance": "required",
+      "expectation": "Calculate full and final settlements for exiting employees",
+      "postingShare": null
+    },
+    {
+      "skillId": "hrms-tools",
+      "importance": "required",
+      "expectation": "Process payroll in a payroll or HRMS tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Prepare payroll registers, variance checks and reconciliations in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "nice_to_have",
+      "expectation": "Use lookups and pivot tables for payroll checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "account-reconciliations",
+      "importance": "nice_to_have",
+      "expectation": "Reconcile payroll ledgers with finance",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-accounting",
+      "importance": "nice_to_have",
+      "expectation": "Understand payroll journal entries and provisions",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Answer employee salary and tax queries clearly",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

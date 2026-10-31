@@ -378,9 +378,12 @@ export const ROLE_TITLES = {
   "devops-engineer": /\b(devops|infrastructure engineer|(ci\/cd|infrastructure automation|kubernetes) engineer)\b|\bsoftware (engineer|developer)\b.*\binfra(structure)?\b/i,
   // Last of the engineering roles: a plain "Software Engineer" or "SDE", never a test, embedded or hardware one.
   "software-engineer": /^(?!.*\b(in test|qa|embedded|firmware|hardware|silicon|asic|mechanical|electrical)\b).*\b(software (engineer|developer|development engineer)|sde|programmer analyst|application developer|member of technical staff|back[- ]?end (engineer|developer))\b|^((senior|sr\.?) )?mts\b/i,
+  // Social media managers, leads and strategists (batch B2) before digital marketing; a "Social Media Executive" stays
+  // digital marketing, and a community manager only when the title says social media.
+  "social-media-manager": /^((senior|sr\.?|lead|associate|assistant|deputy|brand) )*((influencer (and|&) )?social media( (and|&) (community|influencer))?( marketing)? (manager|lead|strategist)|social media strategy (manager|lead))\b|^((senior|sr\.?) )?community manager\b.*\bsocial media\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email|online) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search|social media) (specialist|executive|manager|associate)\b/i,
-  // Business roles (batch B1), last, each read only from the titles it is built for. A plain "Account Executive",
-  // "Sales Manager", "Business Development Executive", "Account Manager" or "HR Business Partner" has no rule.
+  // Business roles (batches B1 and B2), last, each read only from the titles it is built for. A plain "Account
+  // Executive", "Sales Manager", "Sales Executive", "Account Manager" or "Relationship Manager" has no rule.
   "product-marketing-manager": /\bproduct marketing (manager|lead|specialist|associate|executive)\b|^manager,? ?[-–]? ?product marketing\b/i,
   "key-account-manager": /^((senior|sr\.?|national|regional|zonal|corporate|associate|deputy|assistant) )*key accounts? (manager|executive|lead|specialist)\b|^((senior|sr\.?|deputy|assistant) )?modern trade (manager|executive|lead)\b/i,
   "area-sales-manager": /^((senior|sr\.?|deputy|assistant) )?((area|territory) sales (manager|officer|executive|lead)|area manager\b.*\bsales|area business manager)\b/i,
@@ -395,10 +398,34 @@ export const ROLE_TITLES = {
   // Recruiter and talent acquisition titles; an SAP or SuccessFactors recruiting one stays with those rules above.
   "talent-acquisition-specialist": /^((senior|sr\.?|junior|jr\.?|associate|lead|corporate|campus|non-it|it|technical|tech) )*((talent acquisition|recruitment) (specialist|executive|partner|associate|consultant|coordinator|lead)|recruiter)\b/i,
   "supply-chain-analyst": /^(?!.*\b(engineer|developer|data|software|sap|consultant)\b)((senior|sr\.?|junior|jr\.?|associate|lead) )?((supply chain( planning)?|supply planning|demand planning|inventory( control| planning)?|procurement|logistics|sourcing|s&op) analyst|(demand|supply) planner)\b/i,
+  // Batch B2. A banking relationship manager only when the title names retail, branch, priority or wealth banking,
+  // never a corporate, SME or insurance one.
+  "relationship-manager-banking": /^(?!.*\b(corporate|commercial|business banking|sme|msme|wholesale|insurance)\b)((senior|sr\.?|deputy|assistant|associate) )*(((priority|premier|preferred|privilege|wealth|personal|hni|branch|retail|liabilities|casa)( banking)? )+relationship manager|relationship manager\b.*\b(retail|branch|priority|premier|wealth|hni|casa|liabilities|banking)\b|personal banker)\b/i,
+  // Field and new business sales executives; a "Business Development Representative" stays inside sales (above), and a
+  // plain "Sales Executive" or "Business Development Manager" has no rule.
+  "business-development-executive": /^((senior|sr\.?|junior|jr\.?|associate|field|corporate|b2b) )*(business development (executive|officer|associate)|bde)\b|^((senior|sr\.?) )?(corporate|field|b2b) sales (executive|officer)\b|^sales executive\b.*\bnew business\b/i,
+  // Content and SEO writers and copy editors, never a technical, API or documentation one.
+  "content-writer": /^(?!.*\b(technical|api|documentation|docs|medical|legal)\b)((senior|sr\.?|junior|jr\.?|associate|freelance) )?((seo|web|website|blog|digital|marketing|b2b) )?(content writer|content editor|blog writer|copy editor)\b|^((senior|sr\.?) )?content specialist\b.*\bseo\b/i,
+  // Direct and indirect tax (GST, TDS) executives and associates; an "Accounts and Taxation Executive" stays accounts
+  // (above), and a tax technology one has no rule.
+  "tax-associate": /^(?!.*\b(technology|engineer|developer|software|systems?|data|sap|consultant)\b)((senior|sr\.?|junior|jr\.?|assistant) )?(associate,? ?[-–]? ?(business |direct |indirect )?tax\b|((direct|indirect|business|corporate|income) )?(tax|taxation)( (and|&) (compliance|audit))? (associate|executive|analyst|officer|assistant)\b|gst( (and|&) tds)?( compliance)? (executive|associate|analyst)\b)/i,
+  // Statutory, internal and assurance audit staff; an IT, quality or clinical audit title is not one.
+  "audit-associate": /^(?!.*\b(it|is|information|cyber|security|technology|data|clinical|quality|safety|energy|software|sox it)\b)((senior|sr\.?|junior|jr\.?|assistant|statutory|internal|external) )*((audit( (and|&) assurance)?|assurance) (associate|executive|assistant|officer|senior assistant)|internal auditor|audit senior)\b/i,
+  // Loan and card collections and recoveries; never a sample, data or other kind of collection.
+  "collections-officer": /^((senior|sr\.?|deputy|assistant|area|field|tele|telecalling|credit card|retail|loan) )*(collections?( (and|&) recover(y|ies))?|recover(y|ies)) (officer|executive|associate|agent|manager|specialist)\b|^debt (manager|collection officer|recovery officer)\b.*\brecover/i,
+  "treasury-analyst": /^(?!.*\b(systems?|technology|developer|engineer|software|data|it)\b)((senior|sr\.?|junior|jr\.?|associate) )?(((corporate|forex (and|&)) )?treasury (analyst|executive|associate|officer)|cash management analyst|analyst,? ?[-–]? ?(corporate )?treasury)\b/i,
+  "hr-business-partner": /^((senior|sr\.?|lead|associate|strategic|plant|regional|corporate) )*((hr|human resources?|people) business partner|business hr partner|people partner|hrbp)\b/i,
+  // Payroll staff, never an SAP, Workday or other payroll systems one.
+  "payroll-executive": /^(?!.*\b(sap|workday|oracle|developer|engineer|systems?|software|consultant|implementation)\b)((senior|sr\.?|junior|jr\.?|associate|assistant|lead) )?(payroll( (and|&) (statutory )?compliance)?|payroll operations) (executive|officer|specialist|analyst|associate|administrator|coordinator)\b|^executive,? ?[-–]? ?payroll\b/i,
+  // Purchase and sourcing staff; a "Procurement Analyst" stays supply chain analyst (above), and a talent sourcing title
+  // is not one.
+  "procurement-executive": /^(?!.*\b(engineer|developer|software|data|sap|consultant)\b)((senior|sr\.?|junior|jr\.?|assistant|indirect|direct|strategic) )*((purchase|purchasing|procurement|sourcing|vendor development|supplier development) (executive|officer|specialist|associate|coordinator|assistant)|buyer\b.*\b(procurement|purchase|purchasing|sourcing))\b|^executive,? ?[-–]? ?(purchase|procurement)\b/i,
+  // Logistics, dispatch and shipping coordinators; a "Logistics Analyst" stays supply chain analyst (above).
+  "logistics-coordinator": /^(?!.*\b(engineer|developer|software|data|sap|analyst)\b)((senior|sr\.?|junior|jr\.?|assistant|exim|export|import|inbound|outbound) )*(logistics|dispatch|shipping|transport(ation)?|shipment|exim|export|import)( (and|&) (dispatch|warehouse|exim|logistics|shipping|import|export))?( operations)? (executive|coordinator|officer|associate|assistant|specialist)\b|^executive,? ?[-–]? ?(logistics|dispatch)\b/i,
 };
-const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager"]);
+const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer"]);
 /** The business rules that may read a sales or recruiting title, which NOT_IN_SCOPE drops for every other rule. */
-const SALES_OK = new Set(["key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist"]);
+const SALES_OK = new Set(["key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;
