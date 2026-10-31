@@ -2781,7 +2781,7 @@
   },
   {
     "skillId": "delivery-pnl-management",
-    "task": "For a synthetic IT services account of 60 people (onsite and offshore, four grades), build a one-quarter P&L in a spreadsheet: billing rates, cost rates, utilisation and gross margin, then show two moves (pyramid or onsite-offshore mix) that lift margin by 3 points and what each risks. Share the sheet and a one-page note."
+    "task": "For a synthetic IT services account of 60 people (onsite and offshore, four grades), build a one-quarter P&L in a spreadsheet: billing and cost rates, utilisation and gross margin, then show two moves (pyramid or onsite-offshore mix) that lift margin 3 points and their risks. Share it."
   },
   {
     "skillId": "it-portfolio-governance",
@@ -2793,7 +2793,7 @@
   },
   {
     "skillId": "quality-metrics-reporting",
-    "task": "From a synthetic release's defect and test-run data (write 100 rows), work out defect leakage, defect removal efficiency, defect density and test coverage, build a one-page release readiness dashboard in a spreadsheet or Power BI, and write a go/no-go recommendation. Share the data, dashboard and note."
+    "task": "From a synthetic release's defect and test-run data (write 100 rows), work out defect leakage, defect removal efficiency, defect density and test coverage, build a one-page release readiness dashboard in a spreadsheet or Power BI, and write a go/no-go note. Share them."
   },
   {
     "skillId": "test-automation-strategy",
