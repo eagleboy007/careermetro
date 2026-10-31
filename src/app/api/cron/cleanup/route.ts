@@ -18,6 +18,10 @@ import { errorFields, logEvent, type LogFields } from "@/lib/log";
 import { hasBearer } from "@/lib/secret";
 import { clearOldRateLimits } from "@/lib/shared-limit";
 
+// Set, not left to Vercel's default, which on Hobby is 10 s without Fluid compute: at 10,000 members the jobs here
+// can delete thousands of rows in one run, and the scale check needs a known limit to time it against (docs/scale-check.md). 60 s is the most Hobby allows without Fluid compute.
+export const maxDuration = 60;
+
 /**
  * Daily job (vercel.json): deletes anonymous resumes and their profiles after 24 hours (FR-2), and accounts deleted
  * more than 30 days ago, for good. It also turns goals whose certificate expired to "renew" (dev/proof-plan.md rule 4), reopens goals still met by a
