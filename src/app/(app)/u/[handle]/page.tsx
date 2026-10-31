@@ -5,6 +5,10 @@ import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
+import { PinnedPosts } from "@/components/junction/profile";
+import { pinnedForProfile } from "@/lib/junction/feed";
+import { errorFields, logEvent } from "@/lib/log";
+import { junctionEnabled } from "@/lib/preview";
 import { MeView } from "@/components/me/me-view";
 import { ProfileConnect } from "@/components/network/profile-connect";
 import { resolveProfile } from "@/lib/account/settings-store";
@@ -52,6 +56,14 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
     interestsInCommonWith(viewer.id, owner.id),
   ]);
   if (!me) notFound();
+  // "On Junction" (FR-61, part 4): only while Junction is on and the owner shows their Junction posts; the posts are the
+  // ones this viewer may read. A side section: if it can't be read, the profile still shows.
+  const junction = junctionEnabled()
+    ? await pinnedForProfile(viewer.id, owner.id, { now }).catch((error: unknown) => {
+        logEvent("error", "junction_pins_read_failed", errorFields(error));
+        return null;
+      })
+    : null;
   // Gaps follow the owner's gaps choice (FR-49): a connection sees gaps shared with connections. The owner's own view
   // here is "as others see it", so it never counts as a connection.
   const connected = !yours && state === "connected";
@@ -96,6 +108,7 @@ async function Profile({ params }: { params: PageProps<"/u/[handle]">["params"] 
         eliteBadge={eliteBadge}
         gapsNote={connected && network.gapsVisibleTo === "connections" ? "Gaps shown because you are connected. They share them with connections only." : undefined}
       />
+      {junction && <PinnedPosts name={me.name.split(/\s+/)[0] || me.name} posts={junction.posts} total={junction.total} now={now.toISOString()} />}
     </div>
   );
 }

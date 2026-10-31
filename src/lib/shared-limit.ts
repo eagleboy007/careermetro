@@ -14,7 +14,15 @@ import {
   DIRECT_MESSAGES_PER_DAY,
   ELITE_CHANGES_PER_DAY,
   EVENT_SUGGESTIONS_PER_DAY,
+  INTAKE_PER_ADMIN_DAY,
   JOB_SEARCH_CHANGES_PER_DAY,
+  JUNCTION_APPEALS_PER_DAY,
+  JUNCTION_COMMENTS_PER_DAY,
+  JUNCTION_NEW_INTERESTS_PER_DAY,
+  JUNCTION_POSTS_PER_DAY,
+  JUNCTION_RESHARES_PER_DAY,
+  JUNCTION_SAVES_PER_DAY,
+  JUNCTION_VOTES_PER_DAY,
   LIBRARY_CHANGES_PER_DAY,
   MAP_SHARE_CHANGES_PER_DAY,
   ME_EDITS_PER_DAY,
@@ -171,6 +179,22 @@ export const LIMITS = {
   mapShareChangesPerUserDay: { bucket: "map-share-change", max: MAP_SHARE_CHANGES_PER_DAY, windowMs: 24 * HOUR },
   /** Unblocks from Settings > Privacy a day per person, each try counted, so a block and unblock loop can't be scripted. */
   unblocksPerUserDay: { bucket: "unblock", max: 50, windowMs: 24 * HOUR },
+  /*
+   * Junction (docs/plans/junction-plan.md section 4), each try counted. Reports from Junction share inboxReportsPerUser,
+   * so the grievance queue can't be flooded from there either.
+   */
+  junctionPostsPerUserDay: { bucket: "junction-post", max: JUNCTION_POSTS_PER_DAY, windowMs: 24 * HOUR },
+  junctionCommentsPerUserDay: { bucket: "junction-comment", max: JUNCTION_COMMENTS_PER_DAY, windowMs: 24 * HOUR },
+  /** Post and comment votes together. */
+  junctionVotesPerUserDay: { bucket: "junction-vote", max: JUNCTION_VOTES_PER_DAY, windowMs: 24 * HOUR },
+  junctionResharesPerUserDay: { bucket: "junction-reshare", max: JUNCTION_RESHARES_PER_DAY, windowMs: 24 * HOUR },
+  /** Saves and pins together. */
+  junctionSavesPerUserDay: { bucket: "junction-save", max: JUNCTION_SAVES_PER_DAY, windowMs: 24 * HOUR },
+  junctionAppealsPerUserDay: { bucket: "junction-appeal", max: JUNCTION_APPEALS_PER_DAY, windowMs: 24 * HOUR },
+  /** Interests a person creates in the shared table a day, on top of the 30 per person cap. */
+  junctionNewInterestsPerUserDay: { bucket: "junction-new-interest", max: JUNCTION_NEW_INTERESTS_PER_DAY, windowMs: 24 * HOUR },
+  /** Complaints and orders one admin logs on /admin/reports a day. */
+  intakePerAdminDay: { bucket: "grievance-intake", max: INTAKE_PER_ADMIN_DAY, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;
 
 /** Rows this much older than their window are deleted by the daily cleanup (clearOldRateLimits). */

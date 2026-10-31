@@ -1,12 +1,24 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site/site-header";
 import { GRIEVANCE_OFFICER } from "@/lib/grievance";
+import { CHAT_REPORT_REASON_LABELS } from "@/lib/inbox/types";
+import { junctionEnabled } from "@/lib/preview";
+import { JUNCTION_REPORT_REASON_LABELS, JUNCTION_REPORT_REASONS } from "@/lib/schemas/constants";
+import { ACKNOWLEDGE_WITHIN_HOURS, APPEAL_DECIDE_DAYS, APPEAL_WITHIN_DAYS, DECIDE_WITHIN_HOURS, GAC_APPEAL_DAYS } from "@/lib/legal-timings";
 
 export const metadata: Metadata = { title: "Grievances · CareerMetro" };
 
-/** Who handles complaints and how fast (India's IT Rules 2021). The contact lives in src/lib/grievance.ts. */
+/** Hours as the page says them: "72 hours", or whole days from a week up ("15 days"). */
+const inWords = (hours: number) => (hours >= 168 && hours % 24 === 0 ? `${hours / 24} days` : `${hours} hours`);
+
+/**
+ * Who handles complaints and how fast (India's IT Rules 2021). The contact lives in src/lib/grievance.ts and every
+ * deadline in src/lib/legal-timings.ts. The lines about Junction's posts and comments (FR-61: the reasons, the
+ * author's appeal) show only while JUNCTION_ENABLED is "1"; they are drafts until the lawyer signs off.
+ */
 export default function GrievancesPage() {
   const officer = GRIEVANCE_OFFICER;
+  const junction = junctionEnabled();
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-20">
       <SiteHeader />
@@ -30,7 +42,7 @@ export default function GrievancesPage() {
           </p>
           {officer.placeholder && (
             <p className="rounded-md bg-surface-2 px-3 py-2 text-[0.8rem] text-muted">
-              This is a placeholder contact while we test. The officer&apos;s name goes here before members can message each other or post.
+              We are still setting up this contact while we test. It is confirmed here before members can message each other or post.
             </p>
           )}
         </section>
@@ -40,22 +52,45 @@ export default function GrievancesPage() {
             What happens to a complaint
           </h2>
           <ul className="flex list-disc flex-col gap-2 pl-5 text-muted">
-            <li>We confirm we have your complaint within 24 hours.</li>
-            <li>If you ask us to remove something that breaks our rules or the law, we act on it within 72 hours.</li>
+            <li>We confirm we have your complaint within {inWords(ACKNOWLEDGE_WITHIN_HOURS)}.</li>
+            <li>If you ask us to remove something that breaks our rules or the law, we act on it within {inWords(DECIDE_WITHIN_HOURS.harassment)}.</li>
             <li>
               If you, or someone acting for you, report content that shows you nude, partly nude or in a sexual act, or that impersonates you (including edited
-              or morphed images), we remove or disable it within 24 hours.
+              or morphed images), we remove or disable it within {inWords(DECIDE_WITHIN_HOURS.intimate_or_impersonation)}.
             </li>
-            <li>Any other complaint gets a decision within 15 days, and we tell you what we did.</li>
+            {junction && <li>Anything harmful to a child, or sexual content involving a child, is removed within {inWords(DECIDE_WITHIN_HOURS.child_safety)}.</li>}
+            <li>Any other complaint gets a decision within {inWords(DECIDE_WITHIN_HOURS.other)}, and we tell you what we did.</li>
             <li>The person you report is not told who reported them.</li>
+            {junction && (
+              <li>
+                If we hide your post or comment, you see why and can appeal from Junction within {APPEAL_WITHIN_DAYS} days. We decide an appeal within{" "}
+                {APPEAL_DECIDE_DAYS} days.
+              </li>
+            )}
             <li>
-              If you disagree with the decision, you can appeal to the Government&apos;s Grievance Appellate Committee within 30 days, at{" "}
+              If you disagree with the decision, you can appeal to the Government&apos;s Grievance Appellate Committee within {GAC_APPEAL_DAYS} days, at{" "}
               <a href="https://gac.gov.in" className="underline underline-offset-2" rel="noopener noreferrer">
                 gac.gov.in
               </a>
               .
             </li>
           </ul>
+        </section>
+
+        <section aria-labelledby="reasons-h" className="flex flex-col gap-3">
+          <h2 id="reasons-h" className="text-xl font-semibold">
+            What you can report
+          </h2>
+          <p className="text-muted">Pick the closest reason when you use Report, or name it when you write to us:</p>
+          <ul className="flex list-disc flex-col gap-1.5 pl-5 text-muted">
+            {(junction ? JUNCTION_REPORT_REASONS.map((r) => JUNCTION_REPORT_REASON_LABELS[r]) : Object.values(CHAT_REPORT_REASON_LABELS)).map((label) => (
+              <li key={label}>{label}</li>
+            ))}
+          </ul>
+          <p className="text-muted">
+            When you write, say what it is (a link to the message, profile{junction ? ", post or comment" : " or job"} helps), why it worries you, and how
+            we can reach you.
+          </p>
         </section>
       </div>
     </main>

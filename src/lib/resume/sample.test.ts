@@ -182,8 +182,8 @@ describe.skipIf(!db)("createSampleResume (database)", () => {
       const tried = await createSampleResume({ owner: { userId: u.id }, clientHash: `h-${session}-export` }, { db: db! });
       if (!tried.ok) throw new Error("sample failed");
       const data = await exportAccountData(u.id, db!);
-      expect(EXPORT_VERSION).toBe(39);
-      expect(data!.exportVersion).toBe(39);
+      expect(EXPORT_VERSION).toBe(40);
+      expect(data!.exportVersion).toBe(40);
       expect(data!.resumes).toEqual([expect.objectContaining({ id: tried.resumeId, sample: true })]);
     } finally {
       await db!.delete(schema.users).where(eq(schema.users.id, u.id));

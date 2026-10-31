@@ -37,5 +37,12 @@ export const TOP_NAV = (["today", "map", "departures", "arrivals", "timetable", 
 /** Phone tab bar; Network, Library, Market and Timetable move to the avatar menu. */
 export const TAB_NAV = (["today", "map", "departures", "arrivals", "junction"] as const).map((k) => NAV[k]);
 export const MENU_NAV = (["inbox", "corporate", "library", "practice", "mock", "builder", "match", "market", "network", "timetable"] as const).map((k): NavItem => NAV[k]);
+/**
+ * Junction (FR-61) shows as built only while JUNCTION_ENABLED is on, decided on the server per request and passed down
+ * (src/lib/preview.ts `junctionEnabled`); otherwise it keeps "Soon" exactly as before. Every other item is unchanged.
+ */
+export const withJunction = <T extends NavItem>(items: readonly T[], junction: boolean): T[] =>
+  items.map((item) => (item.key === "junction" ? { ...item, built: junction } : item));
+
 /** CareerMetro's own company review page. In the avatar menu only for admins, decided on the server (src/lib/admin). */
 export const ADMIN_LINK = { label: "Admin", href: "/admin/companies", Icon: Shield } as const;

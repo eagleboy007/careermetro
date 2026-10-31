@@ -2,7 +2,7 @@
 
 This page is the current state only: read it first, then the one plan file the task needs. At the end of every task, change it in 2–3 lines in the same PR. Facts carry a PR or doc link. Everything this page held up to 2026-10-31 (each merged feature, test-run fix and feed change, word for word) is in [`docs/plans/status-history-2026-10.md`](plans/status-history-2026-10.md). How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (tech gap batches TG2 to TG4: 36 roles with feed rules; drafted lines awaiting sign-off are marked SIGN_OFF)
+Last updated: 2026-10-31 (Junction parts 1–4 behind JUNCTION_ENABLED; TG2 to TG4 roles merged in #309)
 
 ## Live (https://careermetro.vercel.app)
 
@@ -19,6 +19,7 @@ Last updated: 2026-10-31 (tech gap batches TG2 to TG4: 36 roles with feed rules;
 - Scale check (`docs/scale-check.md`, `.github/workflows/scale.yml`, CI Postgres only): 10,000 synthetic members, page p95 budget 2.5 s, crons at 80% of maxDuration. Open: the events digest may never reach people behind opted-in members with no event that week.
 - CSP: the host allow-list policy is report-only (`src/proxy.ts`, `src/lib/csp.ts`); the walk prints `CSP: none` or each violation. Enforcing waits on the log drain and on Milin (`docs/dev/security-sweep-2026-10-20.md`).
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/`; every role, certificate and question above waits on it.
+- Junction (FR-61, `docs/plans/junction-plan.md`), parts 1–4: data, rules, moderation and admin rows, `/junction`, post detail, Your posts, the rail, pins and the "Junction posts" switch on Me and `/u`, and the Today tip. All behind `JUNCTION_ENABLED` (off in production; on only for CI's e2e app server). Grievance officer Milin Shah, still `placeholder: true`. Part 5 (launch switch) waits on a backup officer, the lawyer and the grievance mailbox.
 - Departures boards: 279 boards. The last two candidates (RISA Labs, Currencies Direct, Greenhouse EU) failed the 2026-10-31 board check with network errors (#308), so none were added; new boards wait on Research.
 
 ## Queue (all waiting on someone else)
@@ -36,7 +37,7 @@ Last updated: 2026-10-31 (tech gap batches TG2 to TG4: 36 roles with feed rules;
 
 ## Numbers
 
-The next migration is **0059**. `EXPORT_VERSION` is 39 (`src/lib/account/export.ts`). The latest FR is FR-60.
+The next migration is **0060**. `EXPORT_VERSION` is 40 (`src/lib/account/export.ts`). The latest FR is FR-61 (Junction; the plan's "FR-57" was already Timetable's).
 
 ## Standing rules for a fresh thread
 

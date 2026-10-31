@@ -79,12 +79,14 @@ jobs:
           # The walk calls the daily clean-up the way Vercel Cron does (corporate build step 7). Test-only value.
           CRON_SECRET: e2e-only-cron-secret
           BASE: http://localhost:3211
+        # Junction (FR-61) is switched on for this app server only, and the walk is told so it walks Junction's steps; the
+        # build, the other jobs and production keep JUNCTION_ENABLED unset (off).
         run: |
           node e2e/mock-ai.mjs > e2e-mock-ai.log 2>&1 &
-          npx next start -p 3211 > e2e-server.log 2>&1 &
+          JUNCTION_ENABLED=1 npx next start -p 3211 > e2e-server.log 2>&1 &
           for i in $(seq 60); do curl -sf "$BASE/api/health" > /dev/null && break; sleep 1; done
           curl -sf "$BASE/api/health" > /dev/null || { echo "The app did not start"; cat e2e-server.log; exit 1; }
-          node e2e/walk.mjs
+          JUNCTION_ENABLED=1 node e2e/walk.mjs
       # T150: one synthetic member with every list full and every text at its cap (e2e/max-data/seed.run.ts), then each
       # signed-in page at 390 and 1280 px in light and dark (e2e/oversize.mjs): sideways spill, page height, PDF time.
       # Runs when the walk ran, pass or fail, so a broken walk step doesn't hide a spill. About 3 minutes.
@@ -106,7 +108,7 @@ jobs:
           # The walk step's app keeps running into this step; start it again only if it stopped.
           if ! curl -sf "$BASE/api/health" > /dev/null; then
             node e2e/mock-ai.mjs >> e2e-mock-ai.log 2>&1 &
-            npx next start -p 3211 >> e2e-server.log 2>&1 &
+            JUNCTION_ENABLED=1 npx next start -p 3211 >> e2e-server.log 2>&1 &
             for i in $(seq 60); do curl -sf "$BASE/api/health" > /dev/null && break; sleep 1; done
             curl -sf "$BASE/api/health" > /dev/null || { echo "The app did not start"; tail -50 e2e-server.log; exit 1; }
           fi

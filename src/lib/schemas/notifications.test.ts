@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NOTIFICATION_KINDS } from "./constants";
+import { NOTIFICATION_KINDS, SYSTEM_NOTIFICATION_KINDS } from "./constants";
 import { notificationExport, notificationView, notifyInput, openNotificationsInput } from "./notifications";
 import { NOTIFICATION_REF } from "@/lib/notifications/rules";
 
@@ -11,8 +11,17 @@ describe("notifyInput", () => {
   it("takes each kind with exactly the reference it needs", () => {
     for (const kind of NOTIFICATION_KINDS) {
       const ref = NOTIFICATION_REF[kind];
-      expect(notifyInput.safeParse({ kind, userId: A, actorId: B, [ref]: R }).success).toBe(true);
+      const system = (SYSTEM_NOTIFICATION_KINDS as readonly string[]).includes(kind);
+      expect(notifyInput.safeParse({ kind, userId: A, ...(system ? {} : { actorId: B }), [ref]: R }).success).toBe(true);
+      // CareerMetro's own notices never carry an actor, so no admin or reporter is ever named.
+      if (system) expect(notifyInput.safeParse({ kind, userId: A, actorId: B, [ref]: R }).success).toBe(false);
     }
+  });
+
+  it("holds Junction's references only on Junction's kinds", () => {
+    expect(notifyInput.safeParse({ kind: "junction_comment", userId: A, actorId: B }).success).toBe(false);
+    expect(notifyInput.safeParse({ kind: "junction_post_hidden", userId: A, commentId: R }).success).toBe(false);
+    expect(notifyInput.safeParse({ kind: "connection_request", userId: A, actorId: B, connectionRequestId: R, postId: R }).success).toBe(false);
   });
 
   it("refuses a missing, wrong or extra reference, and an unknown kind", () => {

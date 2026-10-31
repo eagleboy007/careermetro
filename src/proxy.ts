@@ -4,12 +4,15 @@ import { authConfig } from "@/lib/auth/config";
 import { cspReportOnly, vercelToolbarAllowed } from "@/lib/csp";
 import { refreshSession } from "@/lib/auth/proxy-session";
 import { TEST_USER_COOKIE, testSignInEnabled, testUserIdentity } from "@/lib/auth/test-user";
-import { signedInPreviewEnabled } from "@/lib/preview";
+import { junctionEnabled, signedInPreviewEnabled } from "@/lib/preview";
 
 /** Signed-in screens and the sign-in flow. Add new signed-in routes here. */
-const SIGNED_IN_PREFIXES = ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/library", "/timetable", "/builder", "/elite", "/mock", "/corporate", "/grievances", "/privacy", "/terms", "/me", "/settings", "/u", "/account", "/sign-in", "/sign-up", "/auth"];
+const SIGNED_IN_PREFIXES = ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/library", "/timetable", "/builder", "/elite", "/mock", "/corporate", "/junction", "/grievances", "/privacy", "/terms", "/me", "/settings", "/u", "/account", "/sign-in", "/sign-up", "/auth"];
 /** Screens that need someone signed in once sign-in is set up. */
-const NEEDS_SIGN_IN = ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/library", "/timetable", "/builder", "/elite", "/mock", "/corporate", "/me", "/settings", "/u", "/account/restore", "/account/suspended"];
+const NEEDS_SIGN_IN = ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/library", "/timetable", "/builder", "/elite", "/mock", "/corporate", "/junction", "/me", "/settings", "/u", "/account/restore", "/account/suspended"];
+
+/** Junction (FR-61): off everywhere, previews included, unless JUNCTION_ENABLED is "1" (production runs TODAY_PREVIEW=1). */
+const JUNCTION_PREFIXES = ["/junction"];
 
 /** CareerMetro's own admin pages: anyone who isn't an admin gets the normal not-found page, with a 404. */
 const ADMIN_PREFIXES = ["/admin"];
@@ -46,6 +49,7 @@ function notFoundKeeping(request: NextRequest, response?: NextResponse): NextRes
  *   already have sent a 200 with the page's data. Production does no auth work at all until sign-in launches.
  * - Elsewhere it refreshes the sign-in session (the only place a refresh can be saved), sends signed-out visitors
  *   from signed-in screens to /sign-in and signed-in visitors from the home page to /today.
+ * - Junction answers not-found, before any auth work, unless JUNCTION_ENABLED is "1" (src/lib/preview.ts).
  * - The admin pages answer not-found to everyone but an admin (src/lib/admin/access.ts): signed out included, so the
  *   page never shows it exists. The page and its actions check again themselves.
  */
@@ -72,6 +76,7 @@ async function route(request: NextRequest): Promise<NextResponse> {
     if (adminPage) return notFoundKeeping(request);
     return under(path, SIGNED_IN_PREFIXES) ? new NextResponse(null, { status: 404 }) : NextResponse.next();
   }
+  if (under(path, JUNCTION_PREFIXES) && !junctionEnabled()) return notFoundKeeping(request);
   const { response, signedIn: withProvider, identity: providerIdentity } = await refreshSession(request);
   // Until the real sign-in has its keys, previews use the stand-in test user instead.
   if (!authConfig() && !testSignInEnabled()) return adminPage ? notFoundKeeping(request, response) : response;

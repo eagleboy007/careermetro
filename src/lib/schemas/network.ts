@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { CONNECTION_HOWS, GAPS_VISIBLE_TO, NETWORK_QUERY_MAX, REQUESTS_FROM } from "./constants";
-import { REPORT_NOTE_MAX_CHARS, REPORT_REASONS } from "./inbox";
+import { CHAT_REPORT_REASONS, REPORT_NOTE_MAX_CHARS } from "./inbox";
 
 /*
  * Network (FR-49, handoff 12j, docs/plans/network-plan.md): two-way connections, requests and name search. What a
@@ -62,7 +62,7 @@ export const DEFAULT_NETWORK_SETTINGS: NetworkSettings = { peopleCanFind: false,
  */
 export const personReportInput = z.object({
   personId: z.uuid(),
-  reason: z.enum(REPORT_REASONS),
+  reason: z.enum(CHAT_REPORT_REASONS),
   note: z.string().trim().max(REPORT_NOTE_MAX_CHARS).optional(),
 });
 export type PersonReportInput = z.input<typeof personReportInput>;

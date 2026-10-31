@@ -5,6 +5,7 @@ import { clearOldProfileViews } from "@/lib/corporate/find-store";
 import { clearExpiredCodes } from "@/lib/corporate/store";
 import { clearOldDepartures } from "@/lib/departures/store";
 import { renewExpiredGoals, reopenUnconfirmedGoals } from "@/lib/goals/store";
+import { clearJunctionRecords } from "@/lib/junction/moderation";
 import { clearOldLibraryRecords } from "@/lib/library/store";
 import { clearOldMockAnswers } from "@/lib/mock/interview-store";
 import { clearOldSharedJobs } from "@/lib/my-jobs/share";
@@ -39,7 +40,9 @@ export const maxDuration = 60;
  * opened within the hour (section 5 of that plan), and the weekly email's sent rows over 90 days old (section 6), and
  * the Monday events digest's sent rows over 90 days old (docs/plans/timetable-plan.md section 5), and Timetable events
  * 90 days after they end, with their topics and everyone's Save and I'm going rows (T164), and event suggestions 90 days
- * after their event ends (Timetable PR 6).
+ * after their event ends (Timetable PR 6). For Junction (FR-61, docs/plans/junction-plan.md) it deletes removal records
+ * past their 180 days without a legal hold, and posts and comments their authors deleted more than 30 days ago, and
+ * rechecks the counts and Top points of the last 8 days' posts (src/lib/legal-timings.ts holds each period).
  */
 export async function GET(request: Request) {
   // Vercel Cron sends this header when CRON_SECRET is set in the project.
@@ -74,6 +77,7 @@ export async function GET(request: Request) {
     eventsDigests: clearOldEventsDigests(),
     events: clearEndedEvents(),
     eventSuggestions: clearEndedEventSuggestions(),
+    junction: clearJunctionRecords(),
   };
   const empty: Record<string, Record<string, null>> = {
     anonymous: { anonymousResumesDeleted: null },
@@ -98,6 +102,7 @@ export async function GET(request: Request) {
     eventsDigests: { eventsDigestRowsCleared: null },
     events: { endedEventsDeleted: null },
     eventSuggestions: { endedSuggestionsDeleted: null },
+    junction: { removalRecordsDeleted: null, junctionPostsDeleted: null, junctionCommentsDeleted: null, junctionCountsFixed: null },
   };
   const names = Object.keys(jobs);
   const settled = await Promise.allSettled(Object.values(jobs));

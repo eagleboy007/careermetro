@@ -17,6 +17,12 @@ export const notifyInput = z.discriminatedUnion("kind", [
   z.strictObject({ kind: z.enum(["connection_request", "connection_accepted"]), userId: z.uuid(), actorId: z.uuid(), connectionRequestId: z.uuid() }),
   z.strictObject({ kind: z.enum(["application_moved", "application_closed"]), userId: z.uuid(), actorId: z.uuid(), applicationId: z.uuid() }),
   z.strictObject({ kind: z.enum(["interview_scheduled", "interview_cancelled"]), userId: z.uuid(), actorId: z.uuid(), interviewId: z.uuid() }),
+  // Junction and reports (migration 0059). Only a comment has an actor; the rest come from CareerMetro and name nobody.
+  z.strictObject({ kind: z.literal("junction_comment"), userId: z.uuid(), actorId: z.uuid(), postId: z.uuid() }),
+  z.strictObject({ kind: z.literal("junction_post_hidden"), userId: z.uuid(), postId: z.uuid() }),
+  z.strictObject({ kind: z.literal("junction_comment_hidden"), userId: z.uuid(), commentId: z.uuid() }),
+  z.strictObject({ kind: z.literal("junction_appeal_decided"), userId: z.uuid(), appealId: z.uuid() }),
+  z.strictObject({ kind: z.enum(["report_decided", "report_filed"]), userId: z.uuid(), reportId: z.uuid() }),
 ]);
 export type NotifyInput = z.infer<typeof notifyInput>;
 

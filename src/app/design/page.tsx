@@ -151,8 +151,39 @@ import { AntiScamLine, OrgStatusBadge, SecondAdminBanner, TestCodeBox } from "@/
 import { AdminCompanyRow, CompanyReview } from "@/components/admin/company-review";
 import { JobCheckReview } from "@/components/admin/job-check-review";
 import { BrokenLinkCard, LibraryReview, SuggestionCard } from "@/components/admin/library-review";
-import { exampleHeldProofs, exampleInForce, exampleJobChecks, exampleLibraryQueue, exampleOpenMessageReport, exampleReports, exampleReportsNow, exampleReviewCompanies } from "@/components/admin/fixtures";
-import { HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "@/components/admin/report-review";
+import {
+  exampleAppeals,
+  exampleHeldProofs,
+  exampleHiddenJunction,
+  exampleInForce,
+  exampleJobChecks,
+  exampleJunctionReport,
+  exampleLibraryQueue,
+  exampleOpenMessageReport,
+  exampleReports,
+  exampleReportsNow,
+  exampleReviewCompanies,
+} from "@/components/admin/fixtures";
+import { AppealRow, IntakeForm, JunctionModeration } from "@/components/admin/junction-moderation";
+import { CommentBox, CommentList } from "@/components/junction/comments";
+import { JunctionComposer, JunctionRulesGate } from "@/components/junction/composer";
+import { EMPTY_TEXT, FeedTabs, PostList } from "@/components/junction/feed";
+import {
+  exampleComposer,
+  exampleComposerNoRoute,
+  exampleHeldPost,
+  exampleHiddenPost,
+  exampleJunctionComments,
+  exampleJunctionNow,
+  exampleJunctionPosts,
+  exampleNotices,
+  exampleRail,
+} from "@/components/junction/fixtures";
+import { MineTabs, RemovalNotices } from "@/components/junction/mine";
+import { CatalogCard, GoalLine, JunctionReportPanel, PostCard } from "@/components/junction/post-card";
+import { PinnedPosts } from "@/components/junction/profile";
+import { JunctionRail } from "@/components/junction/rail";
+import { HiddenJunctionRow, HiddenMessageRow, ReportReview, ReportRow, SuspendedAccountRow } from "@/components/admin/report-review";
 import { SuspendedNotice } from "@/components/account/suspended-notice";
 import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
@@ -1291,9 +1322,24 @@ export default function DesignPage() {
         <ReportRow report={exampleOpenMessageReport} now={exampleReportsNow} pending={false} />
         <HiddenMessageRow message={{ ...exampleInForce.messages[0]!, id: "4c3b2a1f-0e9d-4c8b-9a7f-6e5d4c3b2a17" }} off={false} />
         <SuspendedAccountRow account={{ ...exampleInForce.accounts[0]!, id: "5d4c3b2a-1f0e-4d9c-8b8a-7f6e5d4c3b28" }} off={false} />
+        <p className="text-sm text-muted">
+          Junction (FR-61): a reported post held for review after reports. It says so in words and comes first; Hide post asks for the reason (admins
+          only) and the rule it broke (the author&apos;s notice names the rule, and they can appeal). Below it, a hidden comment in force with Unhide and
+          the removal record&apos;s legal hold.
+        </p>
+        <ReportRow report={{ ...exampleJunctionReport, id: "5e4d3c2b-1a0f-4e9d-8c7b-6a5f4e3d2c1c" }} now={exampleReportsNow} pending={false} />
+        <HiddenJunctionRow item={{ ...exampleHiddenJunction[0]!, id: "6f5e4d3c-2b1a-4f0e-9d8c-7b6a5f4e3d2d" }} off={false} />
+        <p className="text-sm text-muted">
+          An open appeal with the removed text, the author&apos;s note and its 15-day deadline (Keep hidden or Show again, with a reason; a line says
+          when the admin looking hid it), and &quot;Log a complaint or order&quot;, which puts an emailed complaint, a court order or a government notice
+          into the queue with its clock from when it reached us.
+        </p>
+        <AppealRow appeal={{ ...exampleAppeals[0]!, id: "4d3c2b1a-0f9e-4d8c-9b7a-6f5e4d3c2b1a" }} now={exampleReportsNow} off={false} />
+        <IntakeForm off={false} />
         <p className="text-sm text-muted">The whole page, and the list with nothing open.</p>
         <div className="rounded-lg border border-line p-4">
-          <ReportReview reports={exampleReports} now={exampleReportsNow} inForce={exampleInForce} />
+          <ReportReview reports={[exampleJunctionReport, ...exampleReports]} now={exampleReportsNow} inForce={{ ...exampleInForce, junction: exampleHiddenJunction }} />
+          <JunctionModeration appeals={exampleAppeals} now={exampleReportsNow} />
         </div>
         <div className="rounded-lg border border-line p-4">
           <ReportReview reports={[]} now={exampleReportsNow} inForce={{ messages: [], accounts: [] }} />
@@ -1803,6 +1849,75 @@ export default function DesignPage() {
           <ScreeningCheck view={exampleScreeningOld} resumeId="example" demo />
           <p className="text-sm text-muted">The sample resume: no download, since it is a made-up person&apos;s.</p>
           <ScreeningCheck view={{ ...exampleScreeningPasted, sample: true }} resumeId="example" demo />
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Junction (signed in)</h2>
+        <p className="text-sm text-muted">
+          The community board (FR-61), behind JUNCTION_ENABLED. The composer: four kinds, a title and an optional body with their counts, one link (a
+          Library link shows its card), Post to My route and up to 3 interests, and &ldquo;Show where I am on my line&rdquo;, off by default and
+          drawn live from the goal. Post is ink, not cobalt. Then the composer without a resume (My route can&apos;t be picked) and the house rules
+          asked once before the first post. Example data, so nothing is sent.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <JunctionComposer data={exampleComposer} />
+          <div className="flex flex-col gap-4">
+            <JunctionComposer data={exampleComposerNoRoute} />
+            <JunctionRulesGate />
+          </div>
+        </div>
+        <p className="text-sm text-muted">
+          The feed tabs as links (the open one says so), and My interests with its chip row. Then a page of posts: a Win with the goal line, a
+          Resource with its Library card that a connection reshared (Following), and your own Question inside its 30-minute edit window (Edit,
+          Delete). Upvote, Reshare and Save are toggles that say their state in words.
+        </p>
+        <FeedTabs feed="top" />
+        <FeedTabs feed="interests" interests={exampleComposer.interests} interestId={exampleComposer.interests[0]!.id} />
+        <PostList page={{ posts: exampleJunctionPosts, nextCursor: null }} now={exampleJunctionNow} empty={EMPTY_TEXT.top} />
+        <p className="text-sm text-muted">Your own posts as only you see them: held for review after reports, and hidden with the way to appeal (Your posts offers Pin to profile).</p>
+        <PostList page={{ posts: [exampleHeldPost, exampleHiddenPost], nextCursor: null }} now={exampleJunctionNow} empty="" pins={{ [exampleHeldPost.id]: 1 }} />
+        <p className="text-sm text-muted">Each tab&apos;s empty state, and the Library card and goal line on their own.</p>
+        <div className="grid gap-3 md:grid-cols-2">
+          <PostList page={{ posts: [], nextCursor: null }} now={exampleJunctionNow} empty={EMPTY_TEXT.route} />
+          <PostList page={{ posts: [], nextCursor: null }} now={exampleJunctionNow} empty={EMPTY_TEXT.following} />
+          <CatalogCard item={exampleJunctionPosts[1]!.catalog!} href={exampleJunctionPosts[1]!.link!.url} />
+          <GoalLine goal={exampleJunctionPosts[0]!.goal!} />
+        </div>
+        <p className="text-sm text-muted">
+          A post&apos;s page: the post, its comments (upvote someone else&apos;s, Report it inline, Delete your own) and the comment box. Below it,
+          the report panel open, with Junction&apos;s reasons; sending shows the reference and the time we act by.
+        </p>
+        <div className="flex max-w-[760px] flex-col gap-3">
+          <PostCard post={exampleJunctionPosts[0]!} now={exampleJunctionNow} detail />
+          <section aria-label="Comments, example" className="flex flex-col gap-3 rounded-[18px] border border-line bg-surface p-4">
+            <CommentList comments={exampleJunctionComments} now={exampleJunctionNow} />
+            <CommentBox postId={exampleJunctionPosts[0]!.id} />
+            <CommentList comments={[]} now={exampleJunctionNow} />
+          </section>
+          <JunctionReportPanel target="post" targetId={exampleJunctionPosts[0]!.id} focusOnOpen={false} />
+        </div>
+        <p className="text-sm text-muted">
+          Your Junction (/junction/mine): notices on your hidden post and comment, one with Appeal (30 days) and one already appealed, then the tabs.
+        </p>
+        <div className="flex max-w-[760px] flex-col gap-3">
+          <RemovalNotices notices={exampleNotices} />
+          <MineTabs tab="posts" />
+        </div>
+        <p className="text-sm text-muted">
+          The rail: Your posts, Your interests (the same rows as Me, through Me&apos;s editor), On your route this week, and the house rules with
+          the Grievances page.
+        </p>
+        <div className="max-w-[340px]">
+          <JunctionRail data={exampleRail} />
+        </div>
+        <p className="text-sm text-muted">
+          On Junction on a profile: pinned posts (up to 3) for someone who may open it, and on your own Me with the &ldquo;Junction posts&rdquo;
+          switch. Then Today&apos;s On your line card with a tip from a Junction post and &ldquo;Ask on Junction&rdquo; as a link.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <PinnedPosts name="Arjun" posts={exampleJunctionPosts.slice(0, 2)} total={7} now={exampleJunctionNow} />
+          <PinnedPosts name="Priya" posts={[exampleJunctionPosts[2]!]} total={3} now={exampleJunctionNow} own />
+          <OnYourLineCard line={exampleOnYourLine} junction label="On your line, with Junction on" />
         </div>
       </section>
       <p className="font-mono text-xs text-muted">All names, numbers and dates on this page are examples.</p>

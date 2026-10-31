@@ -29,6 +29,32 @@ describe("sentenceFor and hrefFor", () => {
   });
 });
 
+describe("Junction and report notices", () => {
+  const post = "00000000-0000-4000-8000-0000000000a1";
+  it("words a comment, a hide and an appeal as the plan does, naming no admin", () => {
+    const comment = { ...base, kind: "junction_comment" as const, postId: post, postTitle: "How do I read Splunk alerts?" };
+    expect(sentenceFor(comment)).toBe('Ravi Menon commented on your post "How do I read Splunk alerts?".');
+    expect(hrefFor(comment)).toBe(`/junction/p/${post}`);
+    const hidden = { ...base, actorName: "", kind: "junction_post_hidden" as const, postTitle: "My post", rule: "Harassment, threats or bullying" };
+    expect(sentenceFor(hidden)).toBe('Your post "My post" was hidden after a report. Reason: Harassment, threats or bullying.');
+    expect(hrefFor(hidden)).toBe("/junction/mine");
+    expect(sentenceFor({ ...hidden, kind: "junction_comment_hidden" })).toBe("Your comment was hidden after a report. Reason: Harassment, threats or bullying.");
+    expect(sentenceFor({ ...base, kind: "junction_appeal_decided", appealStatus: "reversed" })).toBe("We looked at your appeal. It is back for everyone to see.");
+    expect(sentenceFor({ ...base, kind: "junction_appeal_decided", appealStatus: "upheld" })).toContain("gac.gov.in within 30 days");
+  });
+
+  it("tells the reporter what came of their report, and an admin what to act on by when", () => {
+    const at = new Date("2026-10-21T06:00:00Z");
+    expect(sentenceFor({ ...base, kind: "report_decided", reportStatus: "actioned", reportedAt: at })).toBe("We looked at your report from 21 Oct. We acted on it.");
+    expect(sentenceFor({ ...base, kind: "report_decided", reportStatus: "dismissed", reportedAt: at })).toBe("We looked at your report from 21 Oct. We didn't find a rule break.");
+    expect(hrefFor({ ...base, kind: "report_decided" })).toBe("/grievances");
+    expect(sentenceFor({ ...base, kind: "report_filed", reportReason: "Harassment or abuse", decideBy: new Date("2026-10-24T06:00:00Z") })).toBe(
+      "New report: Harassment or abuse. Act by 24 Oct, 11:30 IST.",
+    );
+    expect(hrefFor({ ...base, kind: "report_filed" })).toBe("/admin/reports");
+  });
+});
+
 describe("relativeTime", () => {
   // 20 October 2026, 15:30 India time.
   const now = new Date("2026-10-20T10:00:00Z");

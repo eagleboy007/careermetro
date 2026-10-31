@@ -124,6 +124,29 @@ describe("proxy", () => {
     expect(rewrittenTo(await proxy(req("/admin/companies")))).toBeNull();
   });
 
+  it("answers Junction with the normal not-found page unless JUNCTION_ENABLED is 1, even behind the preview flag", async () => {
+    const rewrittenTo = (r: Response) => r.headers.get("x-middleware-rewrite");
+    const notFound = `https://careermetro.test${NOT_FOUND_PATH}`;
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("TODAY_PREVIEW", "");
+    expect((await proxy(req("/junction"))).status).toBe(404);
+    // Production runs the preview flag, so it alone must not open Junction.
+    vi.stubEnv("TODAY_PREVIEW", "1");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
+    vi.stubEnv("JUNCTION_ENABLED", "");
+    refresh.mockResolvedValue({ response: NextResponse.next(), signedIn: false });
+    const cookie = testUserCookie({ email: "asha@example.com", name: "Asha" });
+    for (const p of ["/junction", "/junction/p/x", "/junction/mine"]) expect(rewrittenTo(await proxy(req(p, cookie)))).toBe(notFound);
+    vi.stubEnv("JUNCTION_ENABLED", "true");
+    expect(rewrittenTo(await proxy(req("/junction", cookie)))).toBe(notFound);
+    expect(refresh).not.toHaveBeenCalled();
+    // On: signed out goes to sign-in, signed in gets the page.
+    vi.stubEnv("VERCEL_ENV", "preview");
+    vi.stubEnv("JUNCTION_ENABLED", "1");
+    expect((await proxy(req("/junction"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fjunction");
+    expect((await proxy(req("/junction", cookie))).headers.get("x-middleware-next")).toBe("1");
+  });
+
   it("sends the report-only CSP on every answer, with the Vercel Toolbar's hosts only on a preview's own hosts, decided per request (T118)", async () => {
     const policy = (r: Response) => r.headers.get("Content-Security-Policy-Report-Only");
     const onPreview = (host: string, path = "/start") => new NextRequest(new URL(path, `https://${host}`));

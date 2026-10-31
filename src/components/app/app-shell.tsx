@@ -8,7 +8,7 @@ import { StreakChip } from "@/components/today/streak-chip";
 import { Logo } from "@/components/ui/logo";
 import type { OpenNotifications } from "@/lib/notifications/types";
 import { NotificationsBell } from "./notifications-bell";
-import { ADMIN_LINK, MENU_NAV, TAB_NAV, TOP_NAV, type NavItem } from "./nav-items";
+import { ADMIN_LINK, MENU_NAV, TAB_NAV as TABS, TOP_NAV as TOP, withJunction, type NavItem } from "./nav-items";
 
 export type ShellUser = {
   name: string;
@@ -49,13 +49,18 @@ export function AppShell({
   children,
   embedded = false,
   openNotifications,
+  junction = false,
 }: {
   user: ShellUser | null;
   children: ReactNode;
   embedded?: boolean;
   /** The server action that opens the bell's panel; without it (example data, /design) the panel shows examples. */
   openNotifications?: OpenNotifications;
+  /** JUNCTION_ENABLED, read on the server: Junction is a link only while it is on, and "Soon" otherwise. */
+  junction?: boolean;
 }) {
+  const TOP_NAV = withJunction(TOP, junction);
+  const TAB_NAV = withJunction(TABS, junction);
   const path = usePathname();
   const active = (item: NavItem) => path === item.href || path.startsWith(`${item.href}/`);
   return (

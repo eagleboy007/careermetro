@@ -13,3 +13,13 @@ export function signedInPreviewEnabled(env: Record<string, string | undefined> =
 export function designGalleryEnabled(env: Record<string, string | undefined> = process.env): boolean {
   return env.VERCEL_ENV !== "production";
 }
+
+/**
+ * Junction, the community board (docs/plans/junction-plan.md, FR-61): off everywhere, previews and production alike,
+ * unless JUNCTION_ENABLED is exactly "1". Production runs with TODAY_PREVIEW=1, so the preview gate alone would open it.
+ * Every Junction screen, action, nav entry and legal-page section checks this; the admin side of moderation doesn't, so
+ * it can be tried before anyone can post. Read at request time on the server.
+ */
+export function junctionEnabled(env: Record<string, string | undefined> = process.env): boolean {
+  return env.JUNCTION_ENABLED?.trim() === "1";
+}

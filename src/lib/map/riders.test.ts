@@ -189,8 +189,8 @@ describe.skipIf(!db)("On your line store (database)", () => {
     const me = await rider(skill, { name: "Export Person" });
     for (let i = 0; i < 3; i++) await rider(skill, { name: "Neha Shah" });
     const data = await exportAccountData(me, db!);
-    expect(EXPORT_VERSION).toBe(39);
-    expect(data!.exportVersion).toBe(39);
+    expect(EXPORT_VERSION).toBe(40);
+    expect(data!.exportVersion).toBe(40);
     expect(data!.settings).toMatchObject({ showOnMap: true });
     expect(JSON.stringify(data)).not.toMatch(/Neha/);
     const fresh = await exportAccountData(await person("Fresh Person"), db!);

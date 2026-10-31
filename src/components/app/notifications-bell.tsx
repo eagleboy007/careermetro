@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, CalendarCheck, CalendarX, CircleX, MoveRight, UserCheck, UserPlus, X, type LucideIcon } from "lucide-react";
+import { Bell, CalendarCheck, CalendarX, CircleX, EyeOff, Flag, MessageSquare, MoveRight, Scale, UserCheck, UserPlus, X, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { NOTIFICATIONS_EMPTY, type NotificationKind } from "@/lib/schemas/constants";
@@ -15,6 +15,12 @@ const ICONS: Record<NotificationKind, LucideIcon> = {
   application_closed: CircleX,
   interview_scheduled: CalendarCheck,
   interview_cancelled: CalendarX,
+  junction_comment: MessageSquare,
+  junction_post_hidden: EyeOff,
+  junction_comment_hidden: EyeOff,
+  junction_appeal_decided: Scale,
+  report_decided: Flag,
+  report_filed: Flag,
 };
 
 /** Example data, for the example shell and /design: nothing is read or marked. */

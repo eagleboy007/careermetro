@@ -1,8 +1,8 @@
 "use client";
 
-import { Check, Eye, EyeOff, Lock, LockOpen, X } from "lucide-react";
+import { Archive, ArchiveRestore, Check, Eye, EyeOff, Lock, LockOpen, X } from "lucide-react";
 import { useEffect, useId, useRef, useState, useTransition } from "react";
-import { REMOVAL_REASON_MAX } from "@/lib/schemas/constants";
+import { JUNCTION_REPORT_REASON_LABELS, JUNCTION_REPORT_REASONS, REMOVAL_REASON_MAX, type JunctionReportReason } from "@/lib/schemas/constants";
 import { istClock, istDayWords } from "@/lib/day-words";
 import type {
   HiddenMessageView,
@@ -14,10 +14,12 @@ import type {
   ReportReviewView,
   SuspendedAccountView,
 } from "@/lib/schemas/admin";
+import type { HiddenJunctionView, LegalHoldInput } from "@/lib/schemas/junction";
+import { REMOVAL_KEEP_DAYS } from "@/lib/legal-timings";
 
 /*
  * Reports (/admin/reports, FR-45; docs/plans/reports-review-plan.md): open reports from the Inbox and job pages,
- * oldest first, with the deadlines the Grievances page promises. Each row: the reason, what was reported and the
+ * nearest deadline first, with the deadlines the Grievances page promises. Each row: the reason, what was reported and the
  * reported message or job, the reporter's note, the times, and Acknowledge, Action taken and Dismiss. People are first
  * name and last initial; never an email or phone. Neutral colours, as on the other admin pages: a passed deadline says
  * "Overdue" in words and weight, not in red. Results are announced in a polite live region. After a row leaves the
@@ -30,6 +32,11 @@ import type {
  * words ("Message hidden 15 Oct by Asha V."), never in a status colour. Focus moves into the form when it opens and
  * back to its button when it closes. Below the open reports, hidden messages and suspended accounts stay listed until
  * they are undone, whatever became of their report. Without `remove` (the /design page) these do nothing either.
+ *
+ * Junction (FR-61, migration 0059): a row about a post or comment says whether it is held for review (out of every feed
+ * until an admin decides; held rows come first) and offers Hide post or Hide comment, which needs the reason (admins
+ * only) and the rule it broke (the author's notice quotes the rule). Hidden posts and comments stay listed below with
+ * Unhide and the removal record's legal hold.
  */
 
 const ICON = { size: 16, strokeWidth: 1.75, "aria-hidden": true } as const;
@@ -54,10 +61,12 @@ function Due({ by, now, done }: { by: string; now: string; done?: string | null 
 const formatDay = (iso: string) => istDayWords(iso);
 
 /** "Message hidden 15 Oct by Asha V. Reason: Asked for an OTP." */
-export function removalLine(what: "Message hidden" | "Account suspended", state: RemovalState): string {
+export function removalLine(what: "Message hidden" | "Account suspended" | "Post hidden" | "Comment hidden", state: RemovalState & { rule?: string }): string {
   const reason = state.reason.trim().replace(/[.\s]+$/, "");
-  return `${what} ${formatDay(state.at)} by ${state.by}. Reason: ${reason}.`;
+  return `${what} ${formatDay(state.at)} by ${state.by}.${state.rule ? ` Rule: ${state.rule}.` : ""} Reason: ${reason}.`;
 }
+
+const RULE_OPTIONS = JUNCTION_REPORT_REASONS.map((value) => ({ value, label: JUNCTION_REPORT_REASON_LABELS[value] }));
 
 /** Runs a removal and says whether it worked, so the form can close. */
 type Remove = (input: ReportRemovalInput) => Promise<boolean>;
@@ -74,6 +83,8 @@ function RemovalControl({
   icon,
   prompt,
   reason: reasonHint,
+  rules,
+  initialRule,
   off,
   onConfirm,
 }: {
@@ -83,11 +94,15 @@ function RemovalControl({
   prompt: string;
   /** The hint under a required reason field; no field when absent. */
   reason?: string;
+  /** A required "Rule it broke" picker (Junction's hide); none when absent. */
+  rules?: { value: JunctionReportReason; label: string }[];
+  initialRule?: JunctionReportReason;
   off: boolean;
-  onConfirm?: (reason: string) => Promise<boolean>;
+  onConfirm?: (reason: string, rule: JunctionReportReason) => Promise<boolean>;
 }) {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+  const [rule, setRule] = useState<JunctionReportReason>(initialRule ?? "other");
   const [error, setError] = useState("");
   const [focusTo, setFocusTo] = useState<{ to: "form" | "button"; n: number }>({ to: "button", n: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -117,7 +132,7 @@ function RemovalControl({
       fieldRef.current?.focus();
       return;
     }
-    if (await onConfirm?.(text.trim())) close();
+    if (await onConfirm?.(text.trim(), rule)) close();
   };
 
   if (!open) {
@@ -144,6 +159,23 @@ function RemovalControl({
       <p id={`${ids}-prompt`} className="text-[0.86rem] font-medium">
         {prompt}
       </p>
+      {rules && (
+        <div className="flex flex-col gap-1">
+          <label htmlFor={`${ids}-rule`} className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">
+            Rule it broke
+          </label>
+          <select id={`${ids}-rule`} value={rule} onChange={(e) => setRule(e.target.value as JunctionReportReason)} aria-describedby={`${ids}-rule-hint`} className={field}>
+            {rules.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+          <span id={`${ids}-rule-hint`} className="text-[0.78rem] text-muted">
+            The author&apos;s notice names this rule.
+          </span>
+        </div>
+      )}
       {reasonHint !== undefined && (
         <div className="flex flex-col gap-1">
           <label htmlFor={`${ids}-reason`} className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">
@@ -187,16 +219,48 @@ function RemovalControl({
 
 /** The removal tools of one report row, with what is in force said in words. */
 function RowRemovals({ report: r, off, onRemove }: { report: ReportReviewView; off: boolean; onRemove?: Remove }) {
-  if (!r.message && !r.account) return null;
+  if (!r.message && !r.account && !r.junction) return null;
   const about = `${r.reason}, reported by ${r.reporter}`;
   const m = r.message;
   const a = r.account;
+  const j = r.junction;
+  const noun = j?.target === "comment" ? "comment" : "post";
+  const reportedRule = JUNCTION_REPORT_REASONS.find((x) => JUNCTION_REPORT_REASON_LABELS[x] === r.reason);
   return (
     <div className="flex flex-col gap-2.5 border-t border-line pt-3">
+      {j?.hidden && <p className="text-[0.86rem] font-medium [overflow-wrap:anywhere]">{removalLine(j.target === "comment" ? "Comment hidden" : "Post hidden", j.hidden)}</p>}
       {m?.hidden && <p className="text-[0.86rem] font-medium [overflow-wrap:anywhere]">{removalLine("Message hidden", m.hidden)}</p>}
       {a?.suspended && <p className="text-[0.86rem] font-medium [overflow-wrap:anywhere]">{removalLine("Account suspended", a.suspended)}</p>}
       {a && !a.suspended && !a.canSuspend && <p className="text-[0.86rem] text-muted">{a.name} is an admin, so the account can&apos;t be suspended here.</p>}
       <div className="flex flex-wrap gap-2">
+        {j && (
+          <RemovalControl
+            key="junction"
+            label={j.hidden ? `Unhide ${noun}` : `Hide ${noun}`}
+            ariaLabel={`${j.hidden ? `Unhide ${noun}` : `Hide ${noun}`}: ${about}`}
+            icon={j.hidden ? <Eye {...ICON} /> : <EyeOff {...ICON} />}
+            prompt={
+              j.hidden
+                ? `Show this ${noun} to everyone again? The removal record stays.`
+                : `Hide this ${noun}? It leaves every feed, its author sees a notice naming the rule and can appeal. A copy is kept as the removal record.`
+            }
+            reason={j.hidden ? undefined : "Only admins see this reason."}
+            rules={j.hidden ? undefined : RULE_OPTIONS}
+            initialRule={reportedRule}
+            off={off}
+            onConfirm={
+              onRemove &&
+              ((reason: string, rule: JunctionReportReason) =>
+                onRemove(
+                  j.hidden
+                    ? j.target === "post"
+                      ? { action: "unhide_post", postId: j.id }
+                      : { action: "unhide_comment", commentId: j.id }
+                    : { action: j.target === "post" ? "hide_post" : "hide_comment", reportId: r.id, reason, rule },
+                ))
+            }
+          />
+        )}
         {m && (
           <RemovalControl
             key="message"
@@ -256,6 +320,12 @@ export function ReportRow({
           {r.reason}
         </h3>
         <p className="text-[0.86rem]">{r.context ? r.context.label : `${r.what}, no longer on CareerMetro`}.</p>
+        {r.held && <p className="text-[0.86rem] font-semibold">Held for review: out of every feed until you hide it or dismiss the report.</p>}
+        {r.junction && r.junction.target === "post" && (
+          <p className="text-[0.82rem] text-muted">
+            {r.junction.upvotes} upvotes · {r.junction.comments} comments{r.junction.tags.length ? ` · ${r.junction.tags.join(", ")}` : ""}
+          </p>
+        )}
         {r.context?.text && <blockquote className="whitespace-pre-line rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.86rem] [overflow-wrap:anywhere]">{r.context.text}</blockquote>}
         <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 text-[0.86rem] min-[560px]:grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
           <Item label="Reported by">{r.reporter}</Item>
@@ -335,6 +405,63 @@ export function HiddenMessageRow({ message: m, off, onRemove }: { message: Hidde
   );
 }
 
+/** A hidden post or comment in force, with Unhide and the removal record's legal hold. */
+export function HiddenJunctionRow({
+  item: h,
+  off,
+  onRemove,
+  onHold,
+}: {
+  item: HiddenJunctionView;
+  off: boolean;
+  onRemove?: Remove;
+  onHold?: (input: LegalHoldInput) => Promise<boolean>;
+}) {
+  const titleId = `hidden-${h.what}-${h.id}`;
+  const noun = h.what === "comment" ? "comment" : "post";
+  return (
+    <article aria-labelledby={titleId} className="flex flex-col gap-2.5 rounded-lg border border-line bg-surface p-4 min-[760px]:p-5">
+      <h3 id={titleId} className="text-[1rem] font-semibold [overflow-wrap:anywhere]">
+        {h.label}
+      </h3>
+      <blockquote className="whitespace-pre-line rounded-md bg-surface-2 px-3.5 py-2.5 text-[0.86rem] [overflow-wrap:anywhere]">
+        {h.title && <strong className="block font-semibold">{h.title}</strong>}
+        {h.text}
+      </blockquote>
+      <p className="text-[0.86rem] font-medium [overflow-wrap:anywhere]">{removalLine(h.what === "comment" ? "Comment hidden" : "Post hidden", h.hidden)}</p>
+      {h.removalId && (
+        <p className="text-[0.82rem] text-muted">
+          {h.legalHold ? "Removal record kept under a legal hold until you lift it." : h.purgeAfter ? `Removal record kept until ${formatDay(h.purgeAfter)}.` : null}
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        <RemovalControl
+          label={`Unhide ${noun}`}
+          ariaLabel={`Unhide ${noun}: ${h.label}`}
+          icon={<Eye {...ICON} />}
+          prompt={`Show this ${noun} to everyone again? The removal record stays.`}
+          off={off}
+          onConfirm={onRemove && (() => onRemove(h.what === "post" ? { action: "unhide_post", postId: h.id } : { action: "unhide_comment", commentId: h.id }))}
+        />
+        {h.removalId && (
+          <RemovalControl
+            label={h.legalHold ? "Lift legal hold" : "Keep under legal hold"}
+            ariaLabel={`${h.legalHold ? "Lift legal hold" : "Keep under legal hold"}: ${h.label}`}
+            icon={h.legalHold ? <ArchiveRestore {...ICON} /> : <Archive {...ICON} />}
+            prompt={
+              h.legalHold
+                ? `Lift the legal hold? The record is deleted at the end of its ${REMOVAL_KEEP_DAYS} days, or at the next cleanup if they have passed.`
+                : `Keep this removal record past its ${REMOVAL_KEEP_DAYS} days, because an order or an investigation asks for it?`
+            }
+            off={off}
+            onConfirm={onHold && (() => onHold({ removalId: h.removalId!, hold: !h.legalHold }))}
+          />
+        )}
+      </div>
+    </article>
+  );
+}
+
 /** A suspended account in force, with Lift suspension. */
 export function SuspendedAccountRow({ account: a, off, onRemove }: { account: SuspendedAccountView; off: boolean; onRemove?: Remove }) {
   const titleId = `suspended-${a.id}`;
@@ -367,13 +494,16 @@ export function ReportReview({
   now,
   review,
   remove,
+  hold,
   inForce,
 }: {
   reports: ReportReviewView[];
   now: string;
   review?: ReportReviewAction;
   remove?: ReportRemovalAct;
-  inForce?: { messages: HiddenMessageView[]; accounts: SuspendedAccountView[] };
+  /** Junction's legal hold on a removal record. */
+  hold?: (input: LegalHoldInput) => Promise<{ ok: boolean; message: string }>;
+  inForce?: { messages: HiddenMessageView[]; accounts: SuspendedAccountView[]; junction?: HiddenJunctionView[] };
 }) {
   const [message, setMessage] = useState("");
   const [pending, start] = useTransition();
@@ -400,7 +530,7 @@ export function ReportReview({
   const undone = useRef<string | null>(null);
   useEffect(() => {
     const id = undone.current;
-    if (!id || !inForce || inForce.messages.some((m) => m.id === id) || inForce.accounts.some((a) => a.id === id)) return;
+    if (!id || !inForce || inForce.messages.some((m) => m.id === id) || inForce.accounts.some((a) => a.id === id) || inForce.junction?.some((h) => h.id === id)) return;
     undone.current = null;
     inForceRef.current?.focus();
   }, [inForce, message]);
@@ -420,7 +550,22 @@ export function ReportReview({
         resolve(result.ok);
       });
     });
-  const inForceCount = (inForce?.messages.length ?? 0) + (inForce?.accounts.length ?? 0);
+  const inForceCount = (inForce?.messages.length ?? 0) + (inForce?.accounts.length ?? 0) + (inForce?.junction?.length ?? 0);
+
+  /** Sets or lifts a legal hold and announces the result. */
+  const keep = (input: LegalHoldInput) =>
+    new Promise<boolean>((resolve) => {
+      if (!hold) {
+        resolve(false);
+        return;
+      }
+      start(async () => {
+        setMessage("");
+        const result = await hold(input);
+        setMessage(result.message);
+        resolve(result.ok);
+      });
+    });
 
   const decide = (r: ReportReviewView, index: number, decision: ReportDecision) =>
     review &&
@@ -437,9 +582,10 @@ export function ReportReview({
         <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">Admin</span>
         <h1 className="text-[clamp(1.6rem,3.5vw,2.2rem)] font-semibold leading-[1.1]">Reports</h1>
         <p className="text-[0.9rem] text-muted">
-          Open reports from chats and job pages, oldest first. Acknowledge each within 24 hours. Act on sexual content or impersonation within 24
+          Open reports from chats, job pages and Junction: held posts and comments first, then the nearest deadline. Acknowledge each within 24 hours. Act on sexual content or impersonation within 24
           hours, other rule breaks within 72 hours, and decide anything else within 15 days. Hide a reported message or suspend a reported person&apos;s
-          account from its row, with a reason; both can be undone, and neither closes the report. Suspend a company from Company review. Action taken
+          account from its row, with a reason; both can be undone, and neither closes the report. Hide a reported post or comment with a reason and
+          the rule it broke; its author can appeal. Suspend a company from Company review. Action taken
           and Dismiss close the report.
         </p>
       </div>
@@ -470,12 +616,17 @@ export function ReportReview({
             Hidden and suspended · {inForceCount}
           </h2>
           {inForceCount === 0 ? (
-            <p className="rounded-lg border border-line bg-surface px-4 py-6 text-center text-[0.9rem] text-muted">No message is hidden and no account is suspended.</p>
+            <p className="rounded-lg border border-line bg-surface px-4 py-6 text-center text-[0.9rem] text-muted">Nothing is hidden and no account is suspended.</p>
           ) : (
             <ul className="flex flex-col gap-3">
               {inForce.messages.map((m) => (
                 <li key={m.id}>
                   <HiddenMessageRow message={m} off={pending} onRemove={remove ? (input) => act(input, m.id) : undefined} />
+                </li>
+              ))}
+              {inForce.junction?.map((h) => (
+                <li key={`${h.what}-${h.id}`}>
+                  <HiddenJunctionRow item={h} off={pending} onRemove={remove ? (input) => act(input, h.id) : undefined} onHold={hold ? keep : undefined} />
                 </li>
               ))}
               {inForce.accounts.map((a) => (

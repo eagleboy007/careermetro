@@ -13,6 +13,7 @@ import {
   INBOX_FILTERS,
   initialsOf,
   lastMessage,
+  CHAT_REPORT_REASON_LABELS,
   REPORT_REASON_LABELS,
   type InboxActions,
   type InboxAsk,
@@ -938,7 +939,7 @@ function ReportPanel({
     >
       <fieldset className="flex flex-col" aria-describedby={missing ? "report-missing" : undefined}>
         <legend className="mb-1 text-[0.86rem] font-semibold">What happened?</legend>
-        {(Object.keys(REPORT_REASON_LABELS) as ReportReason[]).map((key, i) => (
+        {(Object.keys(CHAT_REPORT_REASON_LABELS) as ReportReason[]).map((key, i) => (
           <label key={key} className={row}>
             <input
               ref={i === 0 ? firstReason : undefined}

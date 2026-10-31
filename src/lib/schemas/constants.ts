@@ -720,7 +720,17 @@ export const NOTIFICATION_KINDS = [
   "application_closed",
   "interview_scheduled",
   "interview_cancelled",
+  // Junction and reports (docs/plans/junction-plan.md section 4, migration 0059). Only junction_comment has an actor;
+  // the rest come from CareerMetro, so no admin or reporter is ever named.
+  "junction_comment",
+  "junction_post_hidden",
+  "junction_comment_hidden",
+  "junction_appeal_decided",
+  "report_decided",
+  "report_filed",
 ] as const;
+/** The kinds that come from CareerMetro itself: no actor, so the row never names an admin or a reporter. */
+export const SYSTEM_NOTIFICATION_KINDS = ["junction_post_hidden", "junction_comment_hidden", "junction_appeal_decided", "report_decided", "report_filed"] as const;
 export type NotificationKind = (typeof NOTIFICATION_KINDS)[number];
 /** The panel lists at most this many, from the last NOTIFICATION_SHOWN_DAYS days. */
 export const NOTIFICATIONS_SHOWN = 20;
@@ -914,3 +924,111 @@ export const PITSTOP_MIN_PEOPLE = 3;
 export const PITSTOP_NAMES_SHOWN = 3;
 /** "Show my pitstop on the map" changes one person makes a day, each try counted. */
 export const MAP_SHARE_CHANGES_PER_DAY = 20;
+
+/* Junction, the community board (docs/plans/junction-plan.md, FR-61, migration 0059) ---------------------------------
+ * Lengths, caps and daily limits. Every deadline and retention period (IT Rules 2021, lawyer to confirm) is in
+ * ./legal-timings.ts instead, so a correction is one line there. */
+
+/** The four kinds of post, as the composer's type buttons. */
+export const JUNCTION_POST_KINDS = ["idea", "question", "win", "resource"] as const;
+export type JunctionPostKind = (typeof JUNCTION_POST_KINDS)[number];
+export const JUNCTION_POST_KIND_LABELS: Record<JunctionPostKind, string> = { idea: "Idea", question: "Question", win: "Win", resource: "Resource" };
+/**
+ * visible; pending (pre-moderation, unused: Milin's decision is no pre-moderation, kept so the column needs no change
+ * if that changes); held (auto-hold until an admin decides); hidden (by an admin).
+ */
+export const JUNCTION_STATUSES = ["visible", "pending", "held", "hidden"] as const;
+export type JunctionStatus = (typeof JUNCTION_STATUSES)[number];
+/** A comment is never pending. */
+export const JUNCTION_COMMENT_STATUSES = ["visible", "held", "hidden"] as const;
+export type JunctionCommentStatus = (typeof JUNCTION_COMMENT_STATUSES)[number];
+export const JUNCTION_TITLE_MIN = 5;
+export const JUNCTION_TITLE_MAX = 140;
+export const JUNCTION_BODY_MAX = 2000;
+export const JUNCTION_COMMENT_MAX = 1000;
+export const JUNCTION_LINK_MAX = 500;
+/** Interest tags on one post (picked and new together). */
+export const JUNCTION_TAGS_MAX = 3;
+/** Pins on one profile. */
+export const JUNCTION_PINS_MAX = 3;
+export const JUNCTION_PAGE_SIZE = 20;
+export const JUNCTION_APPEAL_NOTE_MAX = 1000;
+export const JUNCTION_ORDER_REF_MAX = 200;
+export const JUNCTION_FROM_LABEL_MAX = 200;
+/** The feed tabs on /junction. */
+export const JUNCTION_FEEDS = ["top", "new", "route", "following", "interests"] as const;
+export type JunctionFeed = (typeof JUNCTION_FEEDS)[number];
+/** Daily limits, shared by every server (LIMITS in src/lib/shared-limit.ts). Reports use the app-wide 20 a day. */
+export const JUNCTION_POSTS_PER_DAY = 5;
+export const JUNCTION_COMMENTS_PER_DAY = 50;
+export const JUNCTION_VOTES_PER_DAY = 300;
+export const JUNCTION_RESHARES_PER_DAY = 30;
+export const JUNCTION_SAVES_PER_DAY = 300;
+export const JUNCTION_APPEALS_PER_DAY = 5;
+export const JUNCTION_NEW_INTERESTS_PER_DAY = 10;
+/** Complaints and orders one admin logs a day, so a slip can't flood the queue. */
+export const INTAKE_PER_ADMIN_DAY = 100;
+/** The Junction rules a member accepts before posting (consents purpose junction_rules); a new version asks again. */
+export const JUNCTION_RULES_VERSION = "2026-10-31";
+export const JUNCTION_RULES_PURPOSE = "junction_rules";
+/** Where a logged complaint or order came from (grievance_intake.source). */
+export const INTAKE_SOURCES = ["email", "court_order", "government_notice", "other"] as const;
+export type IntakeSource = (typeof INTAKE_SOURCES)[number];
+export const INTAKE_SOURCE_LABELS: Record<IntakeSource, string> = {
+  email: "An emailed complaint",
+  court_order: "A court order",
+  government_notice: "A government notice",
+  other: "Something else",
+};
+/** Why content was removed (junction_removals.cause). */
+export const REMOVAL_CAUSES = ["report", "order", "author_deleted_reported"] as const;
+export type RemovalCause = (typeof REMOVAL_CAUSES)[number];
+export const APPEAL_STATUSES = ["open", "upheld", "reversed"] as const;
+export type AppealStatus = (typeof APPEAL_STATUSES)[number];
+/**
+ * The interests the shared table starts with (migration 0059 inserts the same names), so the picker isn't empty. New
+ * ones come from people typing them, with Me's rules.
+ */
+export const SEED_INTERESTS = [
+  "AI", "Data", "Design", "Marketing", "Public speaking", "Writing", "Finance", "Product", "Photography", "Cloud",
+  "Cyber security", "Open source", "Career change", "Interviews", "Resumes", "Freelancing", "Startups", "Leadership",
+  "Excel", "SQL", "Python", "JavaScript", "Machine learning", "UX research", "Sales", "Customer success", "HR",
+  "Operations", "Project management", "Accounting", "Healthcare", "Teaching", "Content creation", "Video editing",
+  "Networking", "Certifications", "Higher studies", "Remote work", "Mental health", "Productivity",
+] as const;
+/**
+ * The reasons Junction's Report panel offers on a post or comment, in this order, with the plan's words (section 2.3).
+ * Each is a value of the report_reason enum; its deadline is in ./legal-timings.ts.
+ */
+export const JUNCTION_REPORT_REASONS = [
+  "intimate_or_impersonation",
+  "child_safety",
+  "harassment",
+  "hate",
+  "privacy",
+  "money_or_otp",
+  "fake_or_spam",
+  "misleading",
+  "copyright",
+  "other",
+] as const;
+export type JunctionReportReason = (typeof JUNCTION_REPORT_REASONS)[number];
+export const JUNCTION_REPORT_REASON_LABELS: Record<JunctionReportReason, string> = {
+  intimate_or_impersonation: "Nudity or sexual content of a person, or someone pretending to be someone",
+  child_safety: "Harmful to a child, or sexual content involving a child",
+  harassment: "Harassment, threats or bullying",
+  hate: "Hate or attacks on religion, caste, gender, race or region",
+  privacy: "Someone's personal details (phone, address, documents)",
+  money_or_otp: "Asking for money, OTP or payment",
+  fake_or_spam: "Fake job, scam or spam",
+  misleading: "False or misleading information",
+  copyright: "Copies someone else's work",
+  other: "Something else",
+};
+
+/** Every thing the report queue can hold (`job` from Departures; `post` and `comment` from Junction, FR-61). Here, not in inbox.ts, so client components can import it. */
+export const REPORT_TARGETS = ["message", "person", "chat", "job", "post", "comment"] as const;
+/** Every reason the report queue knows; the last five came with Junction (plan section 2.3). */
+export const REPORT_REASONS = ["money_or_otp", "harassment", "intimate_or_impersonation", "fake_or_spam", "other", "child_safety", "hate", "privacy", "misleading", "copyright"] as const;
+export type ReportTarget = (typeof REPORT_TARGETS)[number];
+export type ReportReason = (typeof REPORT_REASONS)[number];
