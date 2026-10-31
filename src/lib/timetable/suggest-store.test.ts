@@ -27,7 +27,7 @@ it("has a /design example queue the schema takes", () => {
 it("refuses a bad form before it reaches the database or the daily count", async () => {
   // No db: a refusal here never opens a transaction, so the tries aren't counted.
   const now = new Date("2026-10-30T06:30:00Z");
-  const form = { url: "https://events.example.org/x", title: "SIEM night", organiser: "Example Circle", kind: "meetup", startsAt: "2026-11-07T18:00", endsAt: "2026-11-07T20:00", online: false, city: "Pune", venue: null, cost: "" };
+  const form = { url: "https://events.example.org/x", title: "SIEM night", organiser: "Example Circle", kind: "meetup", startsAt: "2026-11-07T18:00", endsAt: "2026-11-07T20:00", online: false, city: "Pune", venue: "", cost: "" };
   const deps = { now, db: undefined as never };
   expect(await suggestEvent("u", { ...form, url: "http://events.example.org/x" }, deps)).toEqual({ ok: false, error: "bad_link" });
   expect(await suggestEvent("u", { ...form, url: "https://tinyurl.com/x" }, deps)).toEqual({ ok: false, error: "bad_link" });
