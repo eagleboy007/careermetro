@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (business role batch B3: 12 roles, 74 skills, 151 new links)
+Last updated: 2026-10-31 (T176: the max-data member has an earlier line and opted-in riders; oversize measures both Map panels)
 
 ## Built and live (https://careermetro.vercel.app)
 
