@@ -16,6 +16,7 @@ import {
   EVENT_SUGGESTIONS_PER_DAY,
   JOB_SEARCH_CHANGES_PER_DAY,
   LIBRARY_CHANGES_PER_DAY,
+  MAP_SHARE_CHANGES_PER_DAY,
   ME_EDITS_PER_DAY,
   MOCK_FEEDBACK_PER_DAY,
   MOCK_SESSIONS_PER_DAY,
@@ -166,6 +167,8 @@ export const LIMITS = {
   settingsSavesPerUserDay: { bucket: "settings-save", max: 100, windowMs: 24 * HOUR },
   /** Adds, edits and removals of the person's own pitstops on the Map (FR-58), each try counted. */
   ownPitstopChangesPerUserDay: { bucket: "own-pitstop-change", max: OWN_PITSTOP_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /** "Show my pitstop on the map" (On your line, C13) switched a day per person, from Settings or Me, each try counted. */
+  mapShareChangesPerUserDay: { bucket: "map-share-change", max: MAP_SHARE_CHANGES_PER_DAY, windowMs: 24 * HOUR },
   /** Unblocks from Settings > Privacy a day per person, each try counted, so a block and unblock loop can't be scripted. */
   unblocksPerUserDay: { bucket: "unblock", max: 50, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;

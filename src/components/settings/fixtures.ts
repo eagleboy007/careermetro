@@ -34,6 +34,7 @@ export const exampleSettings: SettingsData = {
   },
   usernameLockedUntil: null,
   peopleCanFind: false,
+  showOnMap: false,
   blockedPeople: [{ id: "00000000-0000-4000-8000-0000000000b1", name: "Example Person", since: "8 Oct 2026" }],
   plan: { elite: false, badgeShown: false, since: null },
   discovery: {

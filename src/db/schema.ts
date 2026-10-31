@@ -261,6 +261,12 @@ export const userSettings = pgTable("user_settings", {
   eventsRadiusKm: integer("events_radius_km").notNull().default(25),
   eventsOnline: boolean("events_online").notNull().default(true),
   eventsDigest: boolean("events_digest").notNull().default(false),
+  /**
+   * "Show my pitstop on the map" (On your line, C13, docs/plans/on-your-line-plan.md, migration 0058): off until the
+   * person turns it on. On, people with an active goal on the same skill count them (shown only at 3 or more) and their
+   * connections may see their name. Never read by company code, public profiles or email.
+   */
+  showOnMap: boolean("show_on_map").notNull().default(false),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 },
   (t) => [

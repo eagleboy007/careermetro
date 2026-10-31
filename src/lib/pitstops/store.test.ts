@@ -139,7 +139,7 @@ describe.skipIf(!db)("own pitstops (database)", () => {
 
     // Download your data lists it apart from the path's own steps.
     const data = await exportAccountData(userId, db!);
-    expect(data!.exportVersion).toBe(38);
+    expect(data!.exportVersion).toBe(39);
     expect(data!.ownPitstops).toEqual([{ goalSkill: goal.skillId, name: "Detection labs", resourceId: null }]);
     const steps = data!.resumes.flatMap((r) => r.profiles.flatMap((p) => p.gapAnalyses.flatMap((a) => a.paths.flatMap((x) => x.steps))));
     expect(steps.some((s) => s.reason === "Detection labs")).toBe(false);

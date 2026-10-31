@@ -1,4 +1,4 @@
-import type { LifeLine, LifeMoment, MapGoal, MapLine } from "@/lib/schemas";
+import type { LifeLine, LifeMoment, MapGoal, MapLine, PitstopRiders } from "@/lib/schemas";
 import { exampleNearby } from "@/lib/nearby/fixtures";
 import { otherLines } from "./other-lines";
 import { earlierLine } from "./previous";
@@ -53,6 +53,28 @@ export const exampleMapLine: MapLine = {
   nearby: exampleNearby,
   otherLines: otherLines("data-analyst", exampleGoals, exampleNearby),
 };
+
+/**
+ * On your line (C13): people on the example line's pitstops who turned on "Show my pitstop on the map", made up. The
+ * current goal has three connections named and two more; Power BI only a count; each crossing goal a count, so the
+ * Other line panel shows it too. Goals with fewer than 3 opted-in people have no entry, as the server sends them.
+ */
+export const exampleRiders: PitstopRiders[] = [
+  {
+    skillId: "sql-window-functions",
+    count: 14,
+    names: [
+      { name: "Asha Kulkarni", handle: "asha-k" },
+      { name: "Ravi Menon", handle: null },
+      { name: "Neha Shah", handle: "neha-shah" },
+    ],
+    more: 2,
+  },
+  { skillId: "power-bi", count: 4, names: [], more: 0 },
+  ...exampleMapLine.otherLines
+    .filter((o) => o.skillId !== "sql-window-functions" && o.skillId !== "power-bi")
+    .map((o) => ({ skillId: o.skillId, count: 7, names: [], more: 0 })),
+];
 
 /**
  * The same line with pitstops the person added (FR-58): two on the current goal and one on a weak one, drawn as spurs

@@ -16,6 +16,7 @@ import { currentAccount, currentIdentity } from "@/lib/auth/server";
 import { discoveryFor } from "@/lib/corporate/find-store";
 import { planFor } from "@/lib/elite/store";
 import { jobSearchFor } from "@/lib/job-search/store";
+import { showOnMapFor } from "@/lib/map/riders";
 import { errorFields, logEvent } from "@/lib/log";
 import { weeklyFor } from "@/lib/my-jobs/weekly-store";
 import type { WeeklyView } from "@/lib/my-jobs/weekly";
@@ -28,6 +29,7 @@ import { setFindMe, unblockFromNetwork } from "../network/actions";
 import { blockCompanyAction, unblockCompanyAction } from "./actions";
 import { eventsDigestAction } from "../timetable/actions";
 import { saveNotice, switchJobSearch } from "./job-search-actions";
+import { switchShowOnMap } from "./map-share-actions";
 
 export const metadata: Metadata = { title: "Account settings · CareerMetro", robots: { index: false } };
 
@@ -49,7 +51,7 @@ async function SettingsScreen() {
   const [account, identity] = await Promise.all([currentAccount(), currentIdentity()]);
   if (!account) return <SettingsView data={exampleSettings} />;
   const now = new Date();
-  const [saved, discovery, network, plan, blocked, search, week, digestOn] = await Promise.all([
+  const [saved, discovery, network, plan, blocked, search, week, digestOn, onMap] = await Promise.all([
     readAccountSettings(account.id, now),
     discoveryFor(account.id, { now }),
     networkSettingsFor(account.id),
@@ -58,6 +60,7 @@ async function SettingsScreen() {
     jobSearchFor(account.id),
     weeklyPreviewFor(account.id, now),
     eventsDigestOn(account.id),
+    showOnMapFor(account.id),
   ]);
   // An account saved before first and last name were asked for starts from its full name.
   const names = account.firstName ? { first: account.firstName, last: account.lastName ?? "" } : splitName(account.name);
@@ -82,6 +85,7 @@ async function SettingsScreen() {
     usernameLockedUntil: saved?.usernameLockedUntil ? dateText(saved.usernameLockedUntil) : null,
     discovery,
     peopleCanFind: network.peopleCanFind,
+    showOnMap: onMap,
     blockedPeople: blocked.map((p) => ({ id: p.id, name: p.name, since: dateText(p.since) })),
     plan,
   };
@@ -90,6 +94,7 @@ async function SettingsScreen() {
       data={data}
       discoveryActions={{ block: blockCompanyAction, unblock: unblockCompanyAction }}
       findMe={setFindMe}
+      mapShare={switchShowOnMap}
       unblockPerson={unblockFromNetwork}
       planActions={{ switchElite, switchBadge: switchEliteBadge }}
       jobSearch={<SettingsJobSearch view={search} today={indiaDay(now)} actions={{ jobSearch: switchJobSearch, notice: saveNotice }} />}

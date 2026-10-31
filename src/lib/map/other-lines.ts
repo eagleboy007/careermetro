@@ -8,7 +8,7 @@ const MAX_OTHER_LINES = 2;
  * lines come first, as interchanges (dev/nearby-lines-plan.md): each crosses at the latest goal on the line that it
  * also needs. Free places then go to other roles that need one of the line's gap skills, the roles sharing the most
  * gaps first. A Nearby line that finds no free goal is not drawn as a plain other line. Plain code, no database, so the
- * example data uses it too. People counts come with opted-in profiles (build step 11).
+ * example data uses it too. The people at a crossing come from On your line (src/lib/map/riders.ts), in its panel only.
  */
 export function otherLines(
   roleSlug: string,

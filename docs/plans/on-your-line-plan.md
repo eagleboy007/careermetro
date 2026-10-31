@@ -1,6 +1,6 @@
 # On your line (C13): opt-in pitstop sharing — plan
 
-Status: PLAN, for the Project manager's review before any build. No code yet. Touches the data model (one column), so it needs approval first (CLAUDE.md working agreements).
+Status: BUILT 2026-10-31 (FR-60), as section 10 decided: migration 0058, export version 39. The plan was approved by the Project manager under Milin's delegation before any code (CLAUDE.md working agreements: it touches the data model).
 
 Sources: handoff section 5 ("On your line": count of people on the same goal, opted-in profiles only, `docs/design/post-login-handoff.md:196`), section 7 ("Rider counts come from opted-in users", `:293`), 12j/C13 (`:411`, `:654`, "Later"); FR-52 ("Show my pitstop on the map" stays a disabled switch marked soon, it needs rider counts, `docs/REQUIREMENTS.md:128`); FR-49 (Today's "On your line right now", `docs/REQUIREMENTS.md:124`).
 
@@ -78,3 +78,13 @@ P is **named** to V only when also: P and V are connected (`connections`), and P
 3. "Pitstop" = any active goal on the skill (cheap, this plan) or only the person's current pitstop (needs a stored current-goal column and a second migration)?
 4. Named connections when their gaps are set to Nobody: leave them out (this plan) or let the switch override that choice?
 5. Show the count on the SVG itself (a small chip at the pitstop) or only in the side panel (this plan)?
+
+## 10. Decisions (Project manager, under Milin's delegation, 2026-10-31) and how they were built
+
+1. Only people who turned the switch on are counted, never anyone else, not even anonymously. The count shows from 3. Built in `pitstopRidersFor` (`src/lib/map/riders.ts`).
+2. Today's "On your line right now" moves from "Let people find me" to the new switch, so there is one rule (`countedBy` in `src/lib/today/live.ts`; its other rules stay). Counts start at zero at launch.
+3. "Pitstop" means any active goal on the skill; no second migration. Goals waiting on an earlier line after a change of destination don't count (`goalOnCurrentLine`, the SQL form of `leftOnEarlierLine` in `src/lib/gaps/destination.ts`).
+4. Connections whose gaps show to "Nobody", or whose profile is "Only you", are left out of the names; they stay in the count. Blocks either way, suspended, deleting and nameless accounts are left out of both.
+5. The count shows in the side panels only (goal pitstops and the Other line crossing), never on the SVG.
+
+As built: migration `drizzle/0058_show_on_map.sql` with its snapshot and journal entry; `showOnMapInput` and `pitstopRiders` Zod schemas; `setShowOnMap` (signed-in action `switchShowOnMap` in `src/app/(app)/settings/map-share-actions.ts`, 20 a day, bucket `map-share-change`); `MapShareSwitch` in Settings > Privacy and on Me; `PitstopPeople` in the Map panels (names shortened to "Asha K.", linked to `/u/<username>` when there is one); the Map is left without counts on the sample resume's line and when the read fails (`map_riders_failed`). Logs: `map_share_on`, `map_share_off`, `map_share_limit`, `map_share_failed`, `map_share_read_failed`, `map_riders_failed`, names only. `src/lib/map/riders-privacy.test.ts` keeps company, public profile and email code from reading the column or the riders. The walk's step covers section 7 except step 8 (company search), which the grep test covers; A turns the switch on in Settings and D on Me.
