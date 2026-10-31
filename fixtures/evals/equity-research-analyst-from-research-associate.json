@@ -1,0 +1,60 @@
+{
+  "id": "equity-research-analyst-from-research-associate",
+  "roleSlug": "equity-research-analyst",
+  "persona": "from-research-associate",
+  "resumeText": "Rohan Mehta\nMumbai, Maharashtra | rohan.mehta@example.com\n\nEquity Research Associate, Kesar Capital Securities, Mumbai (Jul 2022 - Present)\n- Built and maintained financial modelling templates for 14 auto ancillary companies, updating forecasts after each quarterly result\n- Wrote quarterly results update notes and co-authored an initiating coverage report on the auto components sector\n- Derived target prices using relative valuation on EV/EBITDA and P/E multiples, cross-checked with a DCF\n- Performed ratio analysis on annual reports to flag working capital and cash conversion trends\n- Tracked sector coverage of 14 listed stocks with monthly channel checks with dealers\n\nJunior Research Analyst, Vridhi Investment Advisors, Pune (Jun 2021 - Jun 2022)\n- Prepared stock screens in advanced Excel with pivot tables for the portfolio manager\n\nEducation: MBA (Finance), B.Com. CFA Level I cleared.\nSkills: Bloomberg Terminal, Capitaline, Excel\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "financial-modelling",
+        "quote": "Built and maintained financial modelling templates for 14 auto ancillary companies"
+      },
+      {
+        "skillId": "equity-research-reports",
+        "quote": "co-authored an initiating coverage report on the auto components sector"
+      },
+      {
+        "skillId": "equity-valuation",
+        "quote": "Derived target prices using relative valuation on EV/EBITDA and P/E multiples"
+      },
+      {
+        "skillId": "financial-statement-analysis",
+        "quote": "Performed ratio analysis on annual reports"
+      },
+      {
+        "skillId": "sector-industry-research",
+        "quote": "Tracked sector coverage of 14 listed stocks with monthly channel checks"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Prepared stock screens in advanced Excel with pivot tables"
+      },
+      {
+        "skillId": "market-data-terminals",
+        "quote": "Bloomberg Terminal"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "market-data-terminals",
+        "status": "weak"
+      },
+      {
+        "skillId": "company-management-interactions",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "sebi-research-analyst-compliance",
+      "credit-appraisal",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

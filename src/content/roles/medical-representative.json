@@ -1,0 +1,109 @@
+{
+  "slug": "medical-representative",
+  "title": "Medical Representative",
+  "summary": "A medical representative visits doctors, chemists and stockists in a territory to explain a pharma company's medicines and grow prescriptions and sales. The role sits in the field sales team of a therapy division and reports to an area or district manager.",
+  "dailyDuties": [
+    "Call on doctors from the master call list and detail key brands",
+    "Visit chemists to check stock and prescription uptake",
+    "Collect orders and stock statements from stockists",
+    "Plan the week's tour across headquarter and outstation towns",
+    "File the daily call report and expenses in the company app",
+    "Attend cycle meetings to learn new products and campaigns"
+  ],
+  "typicalTitles": [
+    "Medical Sales Representative",
+    "Pharmaceutical Sales Representative",
+    "Professional Service Representative",
+    "Medical Sales Officer",
+    "Therapy Business Executive",
+    "MR - Pharma Sales"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "medical-detailing",
+      "importance": "required",
+      "expectation": "Call on doctors on the master call list and detail products with scientific literature",
+      "postingShare": null
+    },
+    {
+      "skillId": "prescription-generation",
+      "importance": "required",
+      "expectation": "Convert doctors to prescribe the brands and check uptake through chemist prescription audits",
+      "postingShare": null
+    },
+    {
+      "skillId": "chemist-stockist-coverage",
+      "importance": "required",
+      "expectation": "Visit chemists and stockists so the brands are stocked and orders are booked",
+      "postingShare": null
+    },
+    {
+      "skillId": "therapy-product-knowledge",
+      "importance": "required",
+      "expectation": "Explain composition, dosage, benefits and side effects for the assigned therapy area",
+      "postingShare": null
+    },
+    {
+      "skillId": "territory-sales-planning",
+      "importance": "required",
+      "expectation": "Plan the headquarter and outstation territory so every listed doctor is covered each month",
+      "postingShare": null
+    },
+    {
+      "skillId": "primary-secondary-sales",
+      "importance": "required",
+      "expectation": "Meet monthly primary and secondary sales targets for the territory",
+      "postingShare": null
+    },
+    {
+      "skillId": "field-call-reporting",
+      "importance": "required",
+      "expectation": "File daily call reports, tour programmes and expenses in the company app on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Hold short, clear product conversations with busy doctors and chemists",
+      "postingShare": null
+    },
+    {
+      "skillId": "ucpmp-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Follow the pharma marketing code on samples, gifts and medical events",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use a pharma CRM to log calls and plan visits",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Estimate monthly territory sales by brand",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Keep a simple sheet of doctor coverage and brand sales",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

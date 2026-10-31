@@ -1,0 +1,60 @@
+{
+  "id": "compensation-benefits-analyst-from-rewards-executive",
+  "roleSlug": "compensation-benefits-analyst",
+  "persona": "from-rewards-executive",
+  "resumeText": "Karan Malhotra\nGurugram, Haryana | karan.malhotra@example.com\n\nExecutive - Compensation & Benefits, Northfield Pharma Ltd, Gurugram (Jun 2023 - Present)\n- Ran salary benchmarking for 300 sales and plant roles against two external market surveys\n- Revised pay bands for field sales grades and tracked compa-ratio by grade each quarter\n- Supported the annual increment cycle and did the bonus calculation for 2,400 employees\n- Managed the group mediclaim renewal and GPA and GTL policies with the insurance broker\n- Modelled increment budgets in Excel using pivot tables and XLOOKUP for the CHRO\n- Updated revised salaries and grades in the Darwinbox HRMS after each increment cycle\n- Checked gratuity and statutory bonus payouts against the Payment of Gratuity Act and the Payment of Bonus Act\n- Worked through cross-functional collaboration with finance and HRBPs on budget sign-off\n\nHR Analyst, Meridian Retail Pvt Ltd, Noida (Jul 2022 - May 2023)\n- Built attrition dashboards and monthly HR MIS reporting for store leadership\n\nEducation: MBA (HR), BBA.\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "compensation-planning",
+        "quote": "Ran salary benchmarking for 300 sales and plant roles"
+      },
+      {
+        "skillId": "pay-structure-design",
+        "quote": "Revised pay bands for field sales grades and tracked compa-ratio by grade"
+      },
+      {
+        "skillId": "bonus-incentive-plans",
+        "quote": "did the bonus calculation for 2,400 employees"
+      },
+      {
+        "skillId": "employee-benefits-administration",
+        "quote": "Managed the group mediclaim renewal and GPA and GTL policies"
+      },
+      {
+        "skillId": "excel-pivot-lookup",
+        "quote": "Modelled increment budgets in Excel using pivot tables and XLOOKUP"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "cross-functional collaboration with finance and HRBPs on budget sign-off"
+      },
+      {
+        "skillId": "hr-analytics",
+        "quote": "Built attrition dashboards and monthly HR MIS reporting"
+      },
+      {
+        "skillId": "hrms-tools",
+        "quote": "Updated revised salaries and grades in the Darwinbox HRMS"
+      },
+      {
+        "skillId": "indian-labour-law-compliance",
+        "quote": "Checked gratuity and statutory bonus payouts against the Payment of Gratuity Act"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "job-evaluation-levelling",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "pay-equity-analysis",
+      "power-bi",
+      "full-cycle-recruitment",
+      "payroll-statutory-filings"
+    ]
+  },
+  "reviewedBy": null
+}

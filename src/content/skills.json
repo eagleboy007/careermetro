@@ -8890,5 +8890,1309 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "medical-detailing",
+    "name": "Doctor calls and product detailing",
+    "category": "business",
+    "aliases": [
+      "doctor detailing",
+      "medical detailing",
+      "doctor calls",
+      "detailing to doctors",
+      "product detailing to doctors",
+      "doctor call average",
+      "mcl coverage"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "prescription-generation",
+    "name": "Prescription generation and RCPA",
+    "category": "business",
+    "aliases": [
+      "prescription generation",
+      "rcpa",
+      "retail chemist prescription audit",
+      "prescription audit",
+      "rx generation",
+      "prescriber conversion"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "chemist-stockist-coverage",
+    "name": "Chemist and stockist coverage",
+    "category": "business",
+    "aliases": [
+      "chemist calls",
+      "chemist coverage",
+      "stockist coverage",
+      "stockist calls",
+      "chemist and stockist management",
+      "stockist stock statements"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "therapy-product-knowledge",
+    "name": "Therapy area and pharma product knowledge",
+    "category": "business",
+    "aliases": [
+      "therapy area knowledge",
+      "therapeutic area knowledge",
+      "molecule knowledge",
+      "pharmacology knowledge",
+      "therapy segment knowledge"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "field-call-reporting",
+    "name": "Daily call reporting and tour planning",
+    "category": "business",
+    "aliases": [
+      "daily call report",
+      "daily call reports",
+      "dcr reporting",
+      "dcr submission",
+      "tour programme",
+      "tour program planning"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ucpmp-compliance",
+    "name": "Pharma marketing code compliance (UCPMP)",
+    "category": "business",
+    "aliases": [
+      "ucpmp",
+      "uniform code for pharmaceutical marketing practices",
+      "pharma marketing code compliance"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "distributor-economics",
+    "name": "Distributor ROI and channel economics",
+    "category": "business",
+    "aliases": [
+      "distributor profitability",
+      "dealer profitability",
+      "channel economics",
+      "distribution economics",
+      "dealer roi",
+      "distributor margin analysis",
+      "channel margin structure"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "channel-incentive-programs",
+    "name": "Channel incentive and loyalty programmes",
+    "category": "business",
+    "aliases": [
+      "channel incentive programmes",
+      "channel incentive programs",
+      "dealer incentive schemes",
+      "dealer loyalty programme",
+      "dealer loyalty program",
+      "retailer loyalty programme",
+      "retailer loyalty program",
+      "channel partner incentives"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "distribution-network-expansion",
+    "name": "Distribution network expansion and retail reach",
+    "category": "business",
+    "aliases": [
+      "distribution expansion",
+      "dealer network expansion",
+      "channel network expansion",
+      "new dealer appointments",
+      "retail reach expansion",
+      "white space mapping",
+      "rural distribution expansion"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "brand-pnl-management",
+    "name": "Brand P&L and A&P budget ownership",
+    "category": "marketing",
+    "aliases": [
+      "brand p&l",
+      "brand p&l management",
+      "brand profitability",
+      "brand budget management",
+      "a&p budget",
+      "advertising and promotion budget"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "brand-strategy-planning",
+    "name": "Brand strategy and annual brand plans",
+    "category": "marketing",
+    "aliases": [
+      "brand strategy",
+      "annual brand plan",
+      "brand plans",
+      "brand positioning",
+      "brand architecture",
+      "brand equity building"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "consumer-insights",
+    "name": "Consumer insights and brand research",
+    "category": "marketing",
+    "aliases": [
+      "consumer insights",
+      "consumer research",
+      "u&a study",
+      "usage and attitude study",
+      "brand health tracking",
+      "brand track",
+      "consumer immersions",
+      "concept testing"
+    ],
+    "ambiguous": [
+      "consumer research",
+      "concept testing"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "atl-btl-campaigns",
+    "name": "ATL and BTL campaign management",
+    "category": "marketing",
+    "aliases": [
+      "atl campaigns",
+      "btl activations",
+      "atl and btl",
+      "atl/btl",
+      "360-degree campaigns",
+      "integrated marketing campaigns",
+      "tv campaigns"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "agency-management",
+    "name": "Creative and media agency management",
+    "category": "marketing",
+    "aliases": [
+      "creative agency management",
+      "media agency management",
+      "agency briefing",
+      "creative briefs to agencies",
+      "advertising agency management"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "market-share-tracking",
+    "name": "Market share and retail audit tracking",
+    "category": "marketing",
+    "aliases": [
+      "market share tracking",
+      "nielsen retail audit",
+      "nielsen data",
+      "kantar worldpanel",
+      "retail audit data",
+      "household panel data"
+    ],
+    "ambiguous": [
+      "nielsen data"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "technical-seo-audits",
+    "name": "Technical SEO audits",
+    "category": "marketing",
+    "aliases": [
+      "seo audits",
+      "seo audit",
+      "technical seo audit",
+      "crawl and indexation",
+      "xml sitemaps",
+      "schema markup",
+      "canonical tags"
+    ],
+    "ambiguous": [
+      "xml sitemaps",
+      "schema markup",
+      "canonical tags"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "keyword-strategy",
+    "name": "Keyword strategy and mapping",
+    "category": "marketing",
+    "aliases": [
+      "keyword mapping",
+      "keyword strategy",
+      "keyword gap analysis",
+      "search intent mapping",
+      "keyword clustering"
+    ],
+    "ambiguous": [
+      "keyword clustering"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "link-building",
+    "name": "Link building and backlink analysis",
+    "category": "marketing",
+    "aliases": [
+      "link building",
+      "backlink building",
+      "backlink analysis",
+      "backlink audit",
+      "guest posting",
+      "digital pr outreach",
+      "disavow file"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "seo-tools-search-console",
+    "name": "SEO tools and Google Search Console",
+    "category": "marketing",
+    "aliases": [
+      "google search console",
+      "bing webmaster tools",
+      "ahrefs",
+      "semrush",
+      "screaming frog",
+      "moz pro",
+      "sitebulb"
+    ],
+    "ambiguous": [
+      "google search console"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "seo-performance-reporting",
+    "name": "Rankings and organic traffic reporting",
+    "category": "marketing",
+    "aliases": [
+      "rank tracking",
+      "keyword rankings",
+      "organic traffic reporting",
+      "seo reporting",
+      "seo dashboards"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "equity-valuation",
+    "name": "Equity valuation (DCF, relative and SOTP)",
+    "category": "business",
+    "aliases": [
+      "equity valuation",
+      "relative valuation",
+      "comparable company analysis",
+      "trading comps",
+      "sum of the parts valuation",
+      "sotp valuation",
+      "target price derivation",
+      "ev/ebitda valuation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "equity-research-reports",
+    "name": "Equity research reports and earnings notes",
+    "category": "business",
+    "aliases": [
+      "equity research reports",
+      "initiating coverage",
+      "initiation of coverage",
+      "earnings update notes",
+      "quarterly results update",
+      "earnings previews",
+      "results preview notes",
+      "stock recommendation reports"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sector-industry-research",
+    "name": "Sector and industry research for stock coverage",
+    "category": "business",
+    "aliases": [
+      "sector coverage",
+      "sector deep dive",
+      "industry deep dives",
+      "channel checks",
+      "sector thematic reports",
+      "industry research reports"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "company-management-interactions",
+    "name": "Management meetings and earnings call analysis",
+    "category": "business",
+    "aliases": [
+      "management meetings",
+      "earnings call analysis",
+      "earnings call notes",
+      "conference call notes",
+      "concall notes",
+      "investor conferences",
+      "corporate access meetings",
+      "plant visits and management meetings"
+    ],
+    "ambiguous": [
+      "management meetings",
+      "investor conferences"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "market-data-terminals",
+    "name": "Market data terminals and financial databases",
+    "category": "tools",
+    "aliases": [
+      "bloomberg terminal",
+      "factset",
+      "capital iq",
+      "s&p capital iq",
+      "capitaline",
+      "ace equity",
+      "cmie prowess",
+      "refinitiv eikon"
+    ],
+    "ambiguous": [
+      "bloomberg terminal",
+      "factset",
+      "refinitiv eikon"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sebi-research-analyst-compliance",
+    "name": "SEBI research analyst regulations and disclosures",
+    "category": "business",
+    "aliases": [
+      "sebi research analyst regulations",
+      "sebi (research analysts) regulations",
+      "research analyst regulations 2014",
+      "research report disclosures",
+      "research compliance disclosures"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "insurance-risk-assessment",
+    "name": "Insurance underwriting risk assessment",
+    "category": "business",
+    "aliases": [
+      "insurance underwriting",
+      "underwriting decisions",
+      "proposal underwriting",
+      "underwriting risk assessment",
+      "risk selection",
+      "underwriting of proposals",
+      "non-standard risk acceptance"
+    ],
+    "ambiguous": [
+      "insurance underwriting",
+      "risk selection"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "medical-underwriting",
+    "name": "Medical underwriting for life and health insurance",
+    "category": "business",
+    "aliases": [
+      "medical underwriting",
+      "pre-policy medical check-up",
+      "ppmc reports",
+      "medical reports review",
+      "tele-medical underwriting",
+      "non-medical limits",
+      "pre-existing disease assessment"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "property-casualty-underwriting",
+    "name": "Property, motor, marine and liability underwriting",
+    "category": "business",
+    "aliases": [
+      "fire underwriting",
+      "property underwriting",
+      "marine cargo underwriting",
+      "motor underwriting",
+      "engineering insurance underwriting",
+      "liability underwriting",
+      "commercial lines underwriting",
+      "risk inspection reports"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "insurance-pricing-rating",
+    "name": "Insurance premium rating and loadings",
+    "category": "business",
+    "aliases": [
+      "premium rating",
+      "premium loading",
+      "underwriting loadings",
+      "rating grid",
+      "burning cost analysis",
+      "premium computation",
+      "rate quotation for insurance"
+    ],
+    "ambiguous": [
+      "premium rating",
+      "premium computation",
+      "rating grid"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "policy-terms-wordings",
+    "name": "Insurance policy terms, wordings and endorsements",
+    "category": "business",
+    "aliases": [
+      "policy wordings",
+      "policy terms and conditions",
+      "policy endorsements",
+      "exclusions and endorsements",
+      "deductibles and warranties",
+      "policy wording review"
+    ],
+    "ambiguous": [
+      "policy endorsements"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "irdai-regulations",
+    "name": "IRDAI regulations and underwriting guidelines",
+    "category": "business",
+    "aliases": [
+      "irdai regulations",
+      "irdai guidelines",
+      "irda guidelines",
+      "irdai master circular",
+      "board approved underwriting policy",
+      "irdai compliance"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "loss-ratio-analysis",
+    "name": "Claims experience and loss ratio analysis",
+    "category": "business",
+    "aliases": [
+      "loss ratio analysis",
+      "claims experience analysis",
+      "claims ratio analysis",
+      "incurred claims ratio",
+      "claims experience review",
+      "portfolio loss ratio"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "reinsurance-basics",
+    "name": "Reinsurance treaty and facultative basics",
+    "category": "business",
+    "aliases": [
+      "reinsurance",
+      "treaty reinsurance",
+      "facultative reinsurance",
+      "facultative placement",
+      "reinsurance treaties",
+      "retention limits"
+    ],
+    "ambiguous": [
+      "reinsurance"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "financial-underwriting",
+    "name": "Financial underwriting for life insurance",
+    "category": "business",
+    "aliases": [
+      "financial underwriting",
+      "income-based underwriting",
+      "sum assured justification",
+      "income proof assessment",
+      "financial underwriting guidelines"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "companies-act-compliance",
+    "name": "Companies Act 2013 compliance",
+    "category": "business",
+    "aliases": [
+      "companies act 2013",
+      "companies act compliance",
+      "companies act, 2013",
+      "corporate law compliance",
+      "secretarial compliance",
+      "secretarial compliances"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "board-meeting-administration",
+    "name": "Board and general meeting administration and minutes",
+    "category": "business",
+    "aliases": [
+      "board meeting minutes",
+      "minutes of board meetings",
+      "drafting board resolutions",
+      "board and committee meetings",
+      "agm and egm",
+      "notices and agendas",
+      "secretarial standards",
+      "general meeting minutes"
+    ],
+    "ambiguous": [
+      "board and committee meetings",
+      "notices and agendas"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "roc-mca-filings",
+    "name": "ROC and MCA e-filings",
+    "category": "business",
+    "aliases": [
+      "roc filings",
+      "mca filings",
+      "mca21",
+      "mca v3 portal",
+      "mgt-7",
+      "aoc-4",
+      "dir-12",
+      "roc e-forms"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sebi-lodr-compliance",
+    "name": "SEBI LODR compliance for listed companies",
+    "category": "business",
+    "aliases": [
+      "sebi lodr",
+      "listing obligations and disclosure requirements",
+      "regulation 30 disclosures",
+      "stock exchange filings",
+      "corporate governance report",
+      "shareholding pattern filing",
+      "nse neaps",
+      "bse listing centre"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "statutory-registers",
+    "name": "Statutory registers and records",
+    "category": "business",
+    "aliases": [
+      "statutory registers",
+      "register of members",
+      "maintenance of statutory registers",
+      "minutes books",
+      "register of charges"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "secretarial-audit-support",
+    "name": "Secretarial audit support",
+    "category": "business",
+    "aliases": [
+      "secretarial audit",
+      "secretarial audit report",
+      "form mr-3",
+      "annual secretarial compliance report",
+      "secretarial audit support"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sebi-insider-trading-compliance",
+    "name": "SEBI insider trading (PIT) compliance",
+    "category": "business",
+    "aliases": [
+      "sebi pit regulations",
+      "insider trading compliance",
+      "prohibition of insider trading",
+      "trading window closure",
+      "structured digital database"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fema-rbi-filings",
+    "name": "FEMA and RBI corporate filings",
+    "category": "business",
+    "aliases": [
+      "fema corporate filings",
+      "fc-gpr",
+      "fla return",
+      "odi reporting",
+      "fema filings",
+      "rbi firms portal"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "share-capital-transactions",
+    "name": "Share allotment, transfers and ESOP secretarial work",
+    "category": "business",
+    "aliases": [
+      "share allotment",
+      "allotment of shares",
+      "esop allotment",
+      "rights issue compliance",
+      "share transfer formalities",
+      "private placement compliance"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pay-structure-design",
+    "name": "Pay structures and salary bands",
+    "category": "business",
+    "aliases": [
+      "salary bands",
+      "pay bands",
+      "pay structures",
+      "salary structure design",
+      "pay ranges",
+      "compa-ratio",
+      "range penetration",
+      "grade-wise pay ranges"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "job-evaluation-levelling",
+    "name": "Job evaluation, grading and job architecture",
+    "category": "business",
+    "aliases": [
+      "job evaluation",
+      "job architecture",
+      "job levelling",
+      "job leveling",
+      "hay job evaluation",
+      "mercer ipe",
+      "job grading",
+      "role levelling framework"
+    ],
+    "ambiguous": [
+      "job architecture"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bonus-incentive-plans",
+    "name": "Bonus and incentive plan administration",
+    "category": "business",
+    "aliases": [
+      "bonus calculation",
+      "variable pay plans",
+      "annual bonus cycle",
+      "sales incentive plans",
+      "incentive plan design",
+      "performance bonus payout",
+      "variable pay payout"
+    ],
+    "ambiguous": [
+      "sales incentive plans",
+      "variable pay plans"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "employee-benefits-administration",
+    "name": "Employee benefits and group insurance programmes",
+    "category": "business",
+    "aliases": [
+      "employee benefits administration",
+      "group health insurance",
+      "group mediclaim",
+      "gmc policy",
+      "gpa and gtl",
+      "benefits renewal",
+      "flexible benefits plan",
+      "employee benefits programmes"
+    ],
+    "ambiguous": [
+      "employee benefits administration",
+      "flexible benefits plan"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "compensation-survey-tools",
+    "name": "Compensation survey providers and tools",
+    "category": "tools",
+    "aliases": [
+      "aon salary survey",
+      "mercer total remuneration survey",
+      "mercer trs",
+      "radford survey",
+      "aon radford",
+      "wtw salary survey",
+      "compensation surveys participation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pay-equity-analysis",
+    "name": "Pay equity and internal parity analysis",
+    "category": "business",
+    "aliases": [
+      "pay equity analysis",
+      "gender pay gap analysis",
+      "internal pay parity",
+      "pay parity analysis",
+      "pay equity review"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "training-needs-analysis",
+    "name": "Training needs analysis",
+    "category": "business",
+    "aliases": [
+      "training needs analysis",
+      "training need analysis",
+      "training needs assessment",
+      "learning needs analysis",
+      "competency gap analysis",
+      "training needs identification"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "instructional-design",
+    "name": "Instructional design and training content development",
+    "category": "business",
+    "aliases": [
+      "instructional design",
+      "addie model",
+      "training content development",
+      "e-learning module development",
+      "e-learning storyboarding",
+      "articulate storyline",
+      "articulate rise",
+      "training curriculum design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "training-delivery-facilitation",
+    "name": "Training delivery and facilitation",
+    "category": "business",
+    "aliases": [
+      "classroom training delivery",
+      "training facilitation",
+      "virtual instructor-led training",
+      "vilt sessions",
+      "instructor-led training",
+      "train the trainer",
+      "workshop facilitation"
+    ],
+    "ambiguous": [
+      "workshop facilitation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "lms-administration",
+    "name": "Learning management system (LMS) administration",
+    "category": "tools",
+    "aliases": [
+      "lms administration",
+      "learning management system",
+      "lms admin",
+      "cornerstone ondemand",
+      "docebo",
+      "moodle lms",
+      "skilljar",
+      "lms reporting"
+    ],
+    "ambiguous": [
+      "learning management system",
+      "moodle lms"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "training-effectiveness-evaluation",
+    "name": "Training effectiveness measurement",
+    "category": "business",
+    "aliases": [
+      "training effectiveness",
+      "kirkpatrick model",
+      "kirkpatrick evaluation",
+      "training evaluation",
+      "training roi",
+      "post-training assessments",
+      "training effectiveness measurement"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "leadership-development-programmes",
+    "name": "Leadership and manager development programmes",
+    "category": "business",
+    "aliases": [
+      "leadership development programmes",
+      "leadership development programme",
+      "leadership development programs",
+      "leadership development program",
+      "first-time manager programme",
+      "manager development programme",
+      "emerging leaders programme"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "inbound-receiving-putaway",
+    "name": "Inbound receiving, GRN and put-away",
+    "category": "business",
+    "aliases": [
+      "goods receiving",
+      "grn creation",
+      "grn posting",
+      "inbound receiving",
+      "put-away",
+      "putaway",
+      "unloading and put-away"
+    ],
+    "ambiguous": [
+      "grn creation",
+      "grn posting"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "order-picking-packing",
+    "name": "Order picking and packing",
+    "category": "business",
+    "aliases": [
+      "picking and packing",
+      "pick and pack",
+      "order picking",
+      "wave picking",
+      "pick-pack-ship",
+      "packing station",
+      "picking productivity"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "wms-tools",
+    "name": "Warehouse management system (WMS) software",
+    "category": "tools",
+    "aliases": [
+      "warehouse management system",
+      "wms software",
+      "wms operations",
+      "sap ewm",
+      "sap wm",
+      "manhattan wms",
+      "oracle wms",
+      "increff wms",
+      "unicommerce"
+    ],
+    "ambiguous": [
+      "warehouse management system",
+      "sap ewm",
+      "sap wm",
+      "manhattan wms",
+      "oracle wms"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "inventory-cycle-counting",
+    "name": "Cycle counts and inventory accuracy",
+    "category": "business",
+    "aliases": [
+      "cycle counts",
+      "cycle count",
+      "cycle counting",
+      "inventory accuracy",
+      "physical stock verification",
+      "bin audits",
+      "perpetual inventory counts"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "warehouse-safety-5s",
+    "name": "Warehouse safety, EHS and 5S",
+    "category": "business",
+    "aliases": [
+      "5s implementation",
+      "5s audits",
+      "warehouse safety",
+      "ehs compliance",
+      "mhe safety",
+      "forklift safety",
+      "ppe compliance"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "warehouse-shift-manpower",
+    "name": "Warehouse shift and manpower management",
+    "category": "business",
+    "aliases": [
+      "shift manpower planning",
+      "warehouse manpower management",
+      "contract manpower management",
+      "manpower vendor management",
+      "shift supervision",
+      "loaders and pickers"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dmaic-six-sigma",
+    "name": "Six Sigma and DMAIC projects",
+    "category": "business",
+    "aliases": [
+      "six sigma",
+      "lean six sigma",
+      "dmaic",
+      "dmaic projects",
+      "six sigma green belt",
+      "lean six sigma green belt",
+      "six sigma black belt",
+      "green belt project"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "lean-waste-elimination",
+    "name": "Lean tools (value stream mapping, kaizen, waste elimination)",
+    "category": "business",
+    "aliases": [
+      "value stream mapping",
+      "kaizen",
+      "kaizen events",
+      "waste elimination",
+      "poka-yoke",
+      "lean management",
+      "lean principles"
+    ],
+    "ambiguous": [
+      "lean principles",
+      "lean management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "root-cause-analysis-tools",
+    "name": "Root cause analysis tools",
+    "category": "business",
+    "aliases": [
+      "fishbone diagram",
+      "fishbone analysis",
+      "ishikawa diagram",
+      "5 whys",
+      "why-why analysis",
+      "pareto analysis",
+      "8d problem solving"
+    ],
+    "ambiguous": [
+      "5 whys",
+      "pareto analysis"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "statistical-process-analysis",
+    "name": "Statistical process analysis (Minitab, SPC)",
+    "category": "business",
+    "aliases": [
+      "minitab",
+      "control charts",
+      "spc charts",
+      "statistical process control",
+      "process capability analysis",
+      "measurement system analysis",
+      "gage r&r"
+    ],
+    "ambiguous": [
+      "control charts"
+    ],
+    "implies": [
+      "statistics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "automation-opportunity-assessment",
+    "name": "Automation opportunity identification",
+    "category": "business",
+    "aliases": [
+      "automation opportunity assessment",
+      "automation opportunities",
+      "automation opportunity identification",
+      "automation pipeline",
+      "process automation assessment",
+      "automation feasibility assessment"
+    ],
+    "ambiguous": [
+      "automation pipeline",
+      "automation opportunities"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "retail-store-sales",
+    "name": "Store sales targets and retail KPIs",
+    "category": "business",
+    "aliases": [
+      "store sales targets",
+      "like-for-like sales",
+      "store conversion rate",
+      "average transaction value",
+      "units per transaction",
+      "sales per square foot",
+      "store sales growth"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "store-pnl-management",
+    "name": "Store P&L and cost control",
+    "category": "business",
+    "aliases": [
+      "store p&l",
+      "store p&l management",
+      "store profitability",
+      "store operating expenses",
+      "store budget",
+      "store ebitda"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "visual-merchandising",
+    "name": "Visual merchandising",
+    "category": "marketing",
+    "aliases": [
+      "visual merchandising",
+      "planogram execution",
+      "window displays",
+      "vm guidelines",
+      "store displays",
+      "in-store displays"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "store-team-rostering-training",
+    "name": "Store staff rostering and training",
+    "category": "business",
+    "aliases": [
+      "staff rostering",
+      "store rostering",
+      "staff scheduling",
+      "store staff scheduling",
+      "store staff training",
+      "retail staff training"
+    ],
+    "ambiguous": [
+      "staff scheduling"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "retail-shrinkage-inventory",
+    "name": "Store inventory and shrinkage control",
+    "category": "business",
+    "aliases": [
+      "shrinkage control",
+      "shrinkage reduction",
+      "loss prevention",
+      "pilferage control",
+      "store inventory audits",
+      "store stock replenishment"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "retail-customer-experience",
+    "name": "In-store customer experience",
+    "category": "business",
+    "aliases": [
+      "in-store customer experience",
+      "mystery shopper scores",
+      "mystery audit",
+      "store nps",
+      "customer service standards",
+      "retail customer experience"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pos-store-operations",
+    "name": "POS and store cash operations",
+    "category": "tools",
+    "aliases": [
+      "pos billing",
+      "point of sale billing",
+      "pos system",
+      "store cash handling",
+      "end of day cash reconciliation",
+      "store opening and closing"
+    ],
+    "ambiguous": [
+      "pos system",
+      "pos billing",
+      "point of sale billing"
+    ],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

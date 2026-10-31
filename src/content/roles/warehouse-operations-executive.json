@@ -1,0 +1,116 @@
+{
+  "slug": "warehouse-operations-executive",
+  "title": "Warehouse Operations Executive",
+  "summary": "A warehouse operations executive runs the daily floor work of a warehouse: receiving goods, putting them away, picking and packing orders and keeping stock counts accurate in the WMS (warehouse management system). The role sits in the warehouse or contract logistics team and leads a shift of associates and contract staff.",
+  "dailyDuties": [
+    "Receive inbound trucks, check goods and post GRNs in the WMS",
+    "Plan and supervise picking, packing and outbound loading",
+    "Run daily cycle counts and resolve stock discrepancies",
+    "Plan shift manpower and allocate pickers and loaders",
+    "Carry out 5S and safety checks on the floor",
+    "Share daily warehouse MIS on TAT, productivity and stock"
+  ],
+  "typicalTitles": [
+    "Warehouse Executive",
+    "Executive - Warehouse Operations",
+    "Warehouse Supervisor",
+    "Warehouse Shift Incharge",
+    "Inventory and Warehouse Executive",
+    "Floor Lead - Warehouse Operations",
+    "Senior Executive - Warehouse Operations"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "inbound-receiving-putaway",
+      "importance": "required",
+      "expectation": "Receive inbound loads, check quantity and quality, post GRNs and put stock away",
+      "postingShare": null
+    },
+    {
+      "skillId": "order-picking-packing",
+      "importance": "required",
+      "expectation": "Plan and supervise picking and packing so orders leave on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "warehouse-coordination",
+      "importance": "required",
+      "expectation": "Supervise loading and outbound dispatch and coordinate with transport",
+      "postingShare": null
+    },
+    {
+      "skillId": "wms-tools",
+      "importance": "required",
+      "expectation": "Record every receipt, movement and dispatch accurately in the WMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "inventory-cycle-counting",
+      "importance": "required",
+      "expectation": "Run cycle counts, reconcile stock and investigate discrepancies",
+      "postingShare": null
+    },
+    {
+      "skillId": "warehouse-shift-manpower",
+      "importance": "required",
+      "expectation": "Plan shifts and supervise loaders, pickers and contract manpower",
+      "postingShare": null
+    },
+    {
+      "skillId": "warehouse-safety-5s",
+      "importance": "required",
+      "expectation": "Keep the floor safe and in 5S order, with PPE and MHE rules followed",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Prepare daily warehouse MIS and stock reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead a shift team of associates and supervisors",
+      "postingShare": null
+    },
+    {
+      "skillId": "logistics-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Track warehouse KPIs such as productivity, TAT and order fill rate",
+      "postingShare": null
+    },
+    {
+      "skillId": "supply-chain-erp-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Pull stock and order reports from SAP or another ERP",
+      "postingShare": null
+    },
+    {
+      "skillId": "eway-bill-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Check e-way bills and delivery challans before dispatch",
+      "postingShare": null
+    },
+    {
+      "skillId": "lean-waste-elimination",
+      "importance": "nice_to_have",
+      "expectation": "Suggest layout and process changes that cut walking and rework",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

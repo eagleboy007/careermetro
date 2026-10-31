@@ -1,0 +1,56 @@
+{
+  "id": "medical-representative-from-cardio-diabetic-mr",
+  "roleSlug": "medical-representative",
+  "persona": "Medical representative with four years in a cardio-diabetic division",
+  "resumeText": "Rohit Yadav | Lucknow | rohit.yadav@example.com\n\nEXPERIENCE\nMedical Representative, Avadh Lifecare Pvt Ltd (cardio-diabetic division), Lucknow (2022 - present)\n- Call on 180 doctors on the master call list with a doctor call average of 11 per day.\n- Detailed three diabetes brands to physicians and cardiologists using visual aids and clinical papers.\n- Generated new prescriptions from 40 doctors for the lead metformin combination brand.\n- Run a monthly RCPA at 25 chemists to check prescription uptake by brand.\n- Visit 6 chemists a day to check stock and book orders for the stockist.\n- Collect monthly stock statements from two stockists and flag near-expiry returns.\n- Cover the Lucknow headquarter and the Barabanki and Sitapur outstation territory every month.\n- Submit daily call reports and the monthly tour programme in the company app.\n- Achieved 108% of the annual primary sales target and grew secondary sales by 15% in 2025.\n\nMedical Sales Trainee, Gomti Healthcare, Lucknow (2021 - 2022)\n- Joined senior representatives on doctor calls and chemist visits in Lucknow city.\n\nSKILLS\nTherapy area knowledge (diabetes, hypertension), Excel\n\nEDUCATION\nBSc Biotechnology, University of Lucknow, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "medical-detailing",
+        "quote": "Detailed three diabetes brands to physicians and cardiologists"
+      },
+      {
+        "skillId": "prescription-generation",
+        "quote": "Generated new prescriptions from 40 doctors"
+      },
+      {
+        "skillId": "chemist-stockist-coverage",
+        "quote": "Visit 6 chemists a day to check stock and book orders"
+      },
+      {
+        "skillId": "territory-sales-planning",
+        "quote": "Cover the Lucknow headquarter and the Barabanki and Sitapur outstation territory"
+      },
+      {
+        "skillId": "field-call-reporting",
+        "quote": "Submit daily call reports and the monthly tour programme"
+      },
+      {
+        "skillId": "primary-secondary-sales",
+        "quote": "Achieved 108% of the annual primary sales target and grew secondary sales"
+      },
+      {
+        "skillId": "therapy-product-knowledge",
+        "quote": "Therapy area knowledge"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "therapy-product-knowledge",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "ucpmp-compliance",
+      "crm-tools",
+      "people-management",
+      "distributor-economics"
+    ]
+  },
+  "reviewedBy": null
+}

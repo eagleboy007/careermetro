@@ -1,0 +1,123 @@
+{
+  "slug": "learning-development-specialist",
+  "title": "Learning & Development Specialist",
+  "summary": "A learning and development (L&D) specialist finds where employees lack skills, then designs, runs and measures training to close those gaps, from new-joiner induction to programmes for new managers. The role sits in the HR team and works with HR business partners and business heads.",
+  "dailyDuties": [
+    "Run training needs analysis with managers and HR business partners",
+    "Design training content and short e-learning modules",
+    "Deliver classroom and virtual training sessions",
+    "Enrol learners and pull completion reports from the LMS",
+    "Run induction for new joiners",
+    "Collect feedback and assessment scores to measure training effectiveness",
+    "Update the training calendar and monthly L&D MIS"
+  ],
+  "typicalTitles": [
+    "L&D Specialist",
+    "Learning and Development Executive",
+    "Training and Development Executive",
+    "Senior Executive - Learning & Development",
+    "Corporate Trainer - Learning & Development",
+    "L&D Consultant",
+    "Training Specialist - Learning & Development"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "training-needs-analysis",
+      "importance": "required",
+      "expectation": "Find skill gaps through surveys, interviews and manager inputs and turn them into a training plan",
+      "postingShare": null
+    },
+    {
+      "skillId": "instructional-design",
+      "importance": "required",
+      "expectation": "Design programmes and build content, from classroom decks to short e-learning modules",
+      "postingShare": null
+    },
+    {
+      "skillId": "training-delivery-facilitation",
+      "importance": "required",
+      "expectation": "Run classroom and virtual training sessions and workshops",
+      "postingShare": null
+    },
+    {
+      "skillId": "lms-administration",
+      "importance": "required",
+      "expectation": "Set up courses, enrol learners and pull completion reports from the LMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "training-effectiveness-evaluation",
+      "importance": "required",
+      "expectation": "Measure training with feedback, assessments and business results, often using the Kirkpatrick levels",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-onboarding-exits",
+      "importance": "required",
+      "expectation": "Run induction and onboarding programmes for new joiners",
+      "postingShare": null
+    },
+    {
+      "skillId": "leadership-development-programmes",
+      "importance": "required",
+      "expectation": "Coordinate programmes for first-time managers and emerging leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep the training calendar, attendance and MIS in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree priorities with HR business partners and business leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present confidently to groups and write clear learning material",
+      "postingShare": null
+    },
+    {
+      "skillId": "hr-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Build L&D dashboards on hours, completion and impact",
+      "postingShare": null
+    },
+    {
+      "skillId": "talent-review-succession",
+      "importance": "nice_to_have",
+      "expectation": "Link development plans to talent reviews and succession",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-engagement",
+      "importance": "nice_to_have",
+      "expectation": "Support engagement and learning-culture initiatives",
+      "postingShare": null
+    },
+    {
+      "skillId": "hrms-tools",
+      "importance": "nice_to_have",
+      "expectation": "Pull employee data from the HRMS for targeting and reports",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

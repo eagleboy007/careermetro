@@ -1,0 +1,59 @@
+{
+  "id": "warehouse-operations-executive-from-inventory-associate",
+  "roleSlug": "warehouse-operations-executive",
+  "persona": "Inventory controller at a 3PL warehouse moving up to shift-level warehouse operations",
+  "resumeText": "Ramesh Yadav | Bhiwandi, Maharashtra | ramesh.yadav@example.com\n\nEXPERIENCE\nInventory Controller, Konkan Warehousing & Logistics Pvt Ltd, Bhiwandi (2022 - present)\n- Ran daily cycle counts across 4,000 bin locations and reconciled variances with the client.\n- Raised inventory accuracy from 97.2% to 99.4% through bin audits and root-cause checks.\n- Received inbound containers, checked quantity against the ASN and completed GRN creation and put-away in the WMS.\n- Recorded stock transfers and adjustments daily in Increff WMS for an apparel client.\n- Supervised a team of 14 pickers and packers on the B2C pick and pack line during sale events.\n- Prepared the daily stock and TAT report in Excel for the site manager.\n\nWarehouse Associate, Shree Ganesh Logistics, Thane (2020 - 2022)\n- Handled loading and unloading and labelled cartons for dispatch.\n\nSKILLS\n5S, warehouse safety, MS Excel, Increff WMS, forklift basics\n\nEDUCATION\nB.Com, University of Mumbai, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "inventory-cycle-counting",
+        "quote": "Ran daily cycle counts across 4,000 bin locations"
+      },
+      {
+        "skillId": "inbound-receiving-putaway",
+        "quote": "completed GRN creation and put-away in the WMS"
+      },
+      {
+        "skillId": "wms-tools",
+        "quote": "Recorded stock transfers and adjustments daily in Increff WMS"
+      },
+      {
+        "skillId": "order-picking-packing",
+        "quote": "Supervised a team of 14 pickers and packers on the B2C pick and pack line"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Supervised a team of 14 pickers and packers"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Prepared the daily stock and TAT report in Excel"
+      },
+      {
+        "skillId": "warehouse-safety-5s",
+        "quote": "warehouse safety"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "warehouse-safety-5s",
+        "status": "weak"
+      },
+      {
+        "skillId": "warehouse-shift-manpower",
+        "status": "missing"
+      },
+      {
+        "skillId": "warehouse-coordination",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "eway-bill-compliance",
+      "supply-chain-erp-reporting",
+      "lean-waste-elimination"
+    ]
+  },
+  "reviewedBy": null
+}

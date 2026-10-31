@@ -1,0 +1,56 @@
+{
+  "id": "insurance-underwriter-from-health-underwriting-executive",
+  "roleSlug": "insurance-underwriter",
+  "persona": "from-health-underwriting-executive",
+  "resumeText": "Sneha Iyer\nChennai, Tamil Nadu | sneha.iyer@example.com\n\nUnderwriting Executive - Retail Health, Suraksha Health Insurance Ltd, Chennai (Aug 2022 - Present)\n- Took underwriting decisions to accept, load, exclude or decline about 40 retail health proposals a day\n- Reviewed proposal forms, pre-policy medical check-up reports and hospitalisation history for applicants above 45\n- Applied premium loading for diabetes and hypertension as per the insurer's rating grid\n- Ensured every decision followed IRDAI guidelines and the board approved underwriting policy\n- Maintained the daily underwriting turnaround MIS in MS Excel for the underwriting head\n\nMedical Officer, Arogya Multispeciality Clinic, Chennai (Jul 2021 - Jul 2022)\n- Handled outpatient consultations and patient records\n\nEducation: BAMS. Licentiate, Insurance Institute of India.\nSkills: Policy wordings, Underwriting workflow system\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "insurance-risk-assessment",
+        "quote": "Took underwriting decisions to accept, load, exclude or decline"
+      },
+      {
+        "skillId": "medical-underwriting",
+        "quote": "Reviewed proposal forms, pre-policy medical check-up reports and hospitalisation history"
+      },
+      {
+        "skillId": "insurance-pricing-rating",
+        "quote": "Applied premium loading for diabetes and hypertension as per the insurer's rating grid"
+      },
+      {
+        "skillId": "irdai-regulations",
+        "quote": "followed IRDAI guidelines and the board approved underwriting policy"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Maintained the daily underwriting turnaround MIS in MS Excel"
+      },
+      {
+        "skillId": "policy-terms-wordings",
+        "quote": "Policy wordings"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "policy-terms-wordings",
+        "status": "weak"
+      },
+      {
+        "skillId": "loss-ratio-analysis",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "reinsurance-basics",
+      "property-casualty-underwriting",
+      "financial-underwriting",
+      "equity-valuation"
+    ]
+  },
+  "reviewedBy": null
+}

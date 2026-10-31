@@ -1,0 +1,64 @@
+{
+  "id": "channel-sales-manager-from-channel-sales-executive",
+  "roleSlug": "channel-sales-manager",
+  "persona": "Senior channel sales executive in consumer durables ready to manage a region's channel",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nEXPERIENCE\nSenior Channel Sales Executive, Sahyadri Appliances Ltd (fans, mixers and water heaters), Pune (2020 - present)\n- Manage 9 distributors and 140 dealers across Pune, Satara and Kolhapur.\n- Appointed 3 new distributors and 45 new dealers in uncovered talukas after white space mapping.\n- Track primary billing and secondary sales by dealer every week.\n- Ran a quarterly dealer loyalty programme with slab-based gift points for 120 dealers.\n- Settled scheme claims within 30 days and halved distributor outstanding beyond 45 days.\n- Negotiate credit terms and scheme payouts with distributors before each season.\n- Prepare the monthly sales forecast by product and distributor for the regional manager.\n\nSales Officer, Deccan Electricals Pvt Ltd, Pune (2018 - 2020)\n- Covered 60 electrical retailers on a fixed beat and booked orders for the distributor.\n\nSKILLS\nExcel, DMS, SFA app\n\nEDUCATION\nMBA Marketing, Symbiosis Institute of Business Management, Pune, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "distributor-management",
+        "quote": "Manage 9 distributors and 140 dealers"
+      },
+      {
+        "skillId": "distribution-network-expansion",
+        "quote": "Appointed 3 new distributors and 45 new dealers in uncovered talukas"
+      },
+      {
+        "skillId": "primary-secondary-sales",
+        "quote": "Track primary billing and secondary sales by dealer"
+      },
+      {
+        "skillId": "channel-incentive-programs",
+        "quote": "Ran a quarterly dealer loyalty programme"
+      },
+      {
+        "skillId": "channel-credit-collections",
+        "quote": "Settled scheme claims within 30 days"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "quote": "Negotiate credit terms and scheme payouts with distributors"
+      },
+      {
+        "skillId": "sales-forecasting",
+        "quote": "Prepare the monthly sales forecast by product and distributor"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Excel, DMS"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "distributor-economics",
+        "status": "missing"
+      },
+      {
+        "skillId": "people-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "excel",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "power-bi",
+      "modern-trade-retail",
+      "brand-pnl-management",
+      "medical-detailing"
+    ]
+  },
+  "reviewedBy": null
+}

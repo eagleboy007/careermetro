@@ -1,0 +1,116 @@
+{
+  "slug": "retail-store-manager",
+  "title": "Retail Store Manager",
+  "summary": "A retail store manager runs one shop and is answerable for its sales, profit, stock and customer service. They lead the store team, plan staff rosters, keep displays to brand standards and report to an area or cluster manager.",
+  "dailyDuties": [
+    "Review yesterday's sales against target and set today's goals",
+    "Brief the team and plan the staff roster",
+    "Check displays, planograms and store hygiene",
+    "Run stock audits and follow up on replenishment",
+    "Handle escalated customer issues on the floor",
+    "Track store expenses against budget",
+    "Train new staff on product and service standards"
+  ],
+  "typicalTitles": [
+    "Store Manager - Retail",
+    "Assistant Store Manager",
+    "Retail Store Incharge",
+    "Showroom Manager",
+    "Boutique Manager",
+    "Store Operations Manager - Retail"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "retail-store-sales",
+      "importance": "required",
+      "expectation": "Hit monthly store sales targets and track conversion, ATV and UPT",
+      "postingShare": null
+    },
+    {
+      "skillId": "store-pnl-management",
+      "importance": "required",
+      "expectation": "Own the store P&L and control payroll, rent-linked costs and other expenses",
+      "postingShare": null
+    },
+    {
+      "skillId": "visual-merchandising",
+      "importance": "required",
+      "expectation": "Keep displays, planograms and the store look to brand guidelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "store-team-rostering-training",
+      "importance": "required",
+      "expectation": "Roster and train store staff to match footfall and the budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "retail-shrinkage-inventory",
+      "importance": "required",
+      "expectation": "Run stock audits and replenishment and keep shrinkage low",
+      "postingShare": null
+    },
+    {
+      "skillId": "retail-customer-experience",
+      "importance": "required",
+      "expectation": "Keep service standards high and act on mystery shopper and NPS results",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Read daily sales reports and keep store MIS in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Hire, coach and lead a store team",
+      "postingShare": null
+    },
+    {
+      "skillId": "pos-store-operations",
+      "importance": "nice_to_have",
+      "expectation": "Oversee POS billing, cash handling and store opening and closing",
+      "postingShare": null
+    },
+    {
+      "skillId": "cross-selling-upselling",
+      "importance": "nice_to_have",
+      "expectation": "Coach staff to add-on sell and lift basket size",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "nice_to_have",
+      "expectation": "Handle escalated customer complaints on the floor",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Plan monthly targets and staffing from sales trends",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Brief the team daily and report to the area manager",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
