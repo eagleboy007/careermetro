@@ -49,6 +49,10 @@ describe("the panel's words", () => {
     expect(shortName("  ravi   kumar menon ")).toBe("ravi M.");
     expect(shortName("Priya")).toBe("Priya");
     expect(shortName("Dev (Ops)")).toBe("Dev O.");
+    // Never half an emoji, which the server would write as U+FFFD and fail hydration (T176).
+    const cut = shortName(`a${"😀".repeat(20)} Kumar`);
+    expect(cut).toBe(`a${"😀".repeat(19)} K.`);
+    expect(cut.isWellFormed()).toBe(true);
   });
 
   it("says the count in words, and how many more connections", () => {

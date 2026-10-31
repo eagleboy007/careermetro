@@ -1,3 +1,4 @@
+import { cutText } from "@/lib/cut-text";
 import type { PitstopRiders } from "@/lib/schemas";
 
 /*
@@ -8,9 +9,9 @@ import type { PitstopRiders } from "@/lib/schemas";
 /** "Asha K." for "Asha Kulkarni": the first word and the first letter of the last one; a one-word name as it is. */
 export function shortName(name: string): string {
   const words = name.trim().split(/\s+/).filter(Boolean);
-  if (words.length < 2) return (words[0] ?? "").slice(0, 40);
+  if (words.length < 2) return cutText(words[0] ?? "", 40);
   const initial = Array.from(words[words.length - 1]).find((c) => /\p{L}/u.test(c));
-  return initial ? `${words[0].slice(0, 40)} ${initial.toUpperCase()}.` : words[0].slice(0, 40);
+  return initial ? `${cutText(words[0], 40)} ${initial.toUpperCase()}.` : cutText(words[0], 40);
 }
 
 /** "14 people on this pitstop". The server never sends fewer than 3. */
