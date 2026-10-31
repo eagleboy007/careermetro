@@ -212,16 +212,37 @@ describe("nearbyLinesFor", () => {
     expect(nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, senior], now: NOW }).closest?.slug).toBe("senior-wide-role");
   });
 
-  it("names a closest role the resume's years are not far past before a campus-entry one (fresher batch F1)", () => {
+  it("leaves a role the resume is more than two years past out of the lines and the closest role (T179)", () => {
     const wide = role("wide-role", ["sql", "excel", "machine-learning", "statistics", "aws", "linux"], { experienceBand: { minYears: 2, maxYears: 8 } }); // 2 of 6
     const entry = role("entry-role", ["sql", "excel", "python", "machine-learning", "statistics", "aws", "linux"], {
       experienceBand: { minYears: 0, maxYears: 2 },
     }); // 3 of 7, but built for 0 to 2 years
     const senior = { ...analyst, totalYearsExperience: 5 };
     expect(nearbyLinesFor({ profile: senior, targetSlug: "target-role", roles: [target, entry, wide], now: NOW }).closest?.slug).toBe("wide-role");
-    // Within two years of its band, or with nothing else, the campus-entry role is still named.
+    // Within two years of its band the campus-entry role is still named; past that, no closest beats a trainee role.
     expect(nearbyLinesFor({ profile: { ...analyst, totalYearsExperience: 4 }, targetSlug: "target-role", roles: [target, entry, wide], now: NOW }).closest?.slug).toBe("entry-role");
-    expect(nearbyLinesFor({ profile: senior, targetSlug: "target-role", roles: [target, entry], now: NOW }).closest?.slug).toBe("entry-role");
+    expect(nearbyLinesFor({ profile: senior, targetSlug: "target-role", roles: [target, entry], now: NOW })).toEqual({ lines: [], closest: null });
+    // Near on skills but built for 0 to 2 years: not a line for 5 years either, while the same role is one at 2 years.
+    const entryNear = { ...near, experienceBand: { minYears: 0, maxYears: 2 } };
+    expect(nearbyLinesFor({ profile: senior, targetSlug: "target-role", roles: [target, entryNear], now: NOW }).lines).toEqual([]);
+    expect(nearbyLinesFor({ profile: { ...analyst, totalYearsExperience: 2 }, targetSlug: "target-role", roles: [target, entryNear], now: NOW }).lines.map((l) => l.slug)).toEqual(["near-role"]);
+  });
+
+  it("never offers an 11-year plant engineer a core-engineering trainee role, as a line or as closest (T179)", () => {
+    const ids = ["3d-cad-modelling", "autocad-2d-drafting", "engineering-drawing-reading", "materials-manufacturing-processes",
+      "dimensional-inspection-instruments", "industrial-safety-practices", "preventive-maintenance", "hydraulics-pneumatics",
+      "mechanical-equipment-maintenance", "root-cause-analysis-tools", "excel"];
+    const names = new Map(skills.map((s) => [s.id, s.name]));
+    const plant = profile({
+      headline: "Senior Plant Engineer",
+      totalYearsExperience: 11,
+      skills: ids.map((id) => used(names.get(id)!, `Used ${names.get(id)} on the press shop line for 11 years`)),
+    });
+    const res = nearbyLinesFor({ profile: plant, targetSlug: "data-analyst", now: NOW });
+    const entry = new Set(roleProfiles.filter((r) => r.experienceBand.minYears === 0 && r.experienceBand.maxYears + 2 < 11).map((r) => r.slug));
+    expect(entry.has("graduate-engineer-trainee-mechanical")).toBe(true);
+    expect(res.lines.filter((l) => entry.has(l.slug))).toEqual([]);
+    expect(res.closest ? entry.has(res.closest.slug) : false).toBe(false);
   });
 
   it("names where each line can cross the person's own line: its unshared skills that are gaps there, in line order", () => {

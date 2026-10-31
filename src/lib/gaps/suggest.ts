@@ -1,5 +1,5 @@
 import type { Profile, RoleProfile } from "@/lib/schemas";
-import { formatExperience } from "@/lib/role-view";
+import { formatExperience, wellPastBand } from "@/lib/role-view";
 import { countAbilities } from "./implies";
 import { profileMatcher } from "./match";
 
@@ -30,6 +30,7 @@ export function suggestRoles(profile: Profile, roles: RoleProfile[], now = new D
   const years = profile.totalYearsExperience ?? 0;
   const matchRole = profileMatcher(profile, now);
   return roles
+    .filter((role) => !wellPastBand(years, role.experienceBand))
     .map((role) => {
       const match = matchRole(role);
       const { requiredMet, requiredTotal, estimatedHours } = match.readiness;

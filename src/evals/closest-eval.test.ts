@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
 import { matchProfile } from "@/lib/gaps/match";
 import { nearbyLinesFor } from "@/lib/nearby/build";
+import { wellPastBand } from "@/lib/role-view";
 import { loadEvalCases } from "./cases";
 import { expectedProfile } from "./matcher-eval";
 
@@ -28,9 +29,20 @@ describe("closest-role eval", () => {
     for (const [a, b] of data.alsoNear) expect([familyOf.has(a), familyOf.has(b)]).toEqual([true, true]);
   });
 
+  // T179: nobody is offered a role they are more than two years past, as a line or as the closest role (checked in
+  // each case below). The older resumes (11 years and more) would otherwise meet the 0 to 2 year trainee roles.
+  it("has senior eval resumes for the more-than-two-years-past check", () => {
+    expect(loadEvalCases().some((c) => (expectedProfile(c).totalYearsExperience ?? 0) >= 11)).toBe(true);
+  });
+
   // One test per fixture resume, so each gets its own time budget as batches grow, and a miss names its case.
   it.each(loadEvalCases().map((c) => [c.id, c] as const))("names a role from the same or a neighbouring family for %s", (_, c) => {
-    const { lines, closest } = nearbyLinesFor({ profile: expectedProfile(c), targetSlug: c.roleSlug, now: NOW });
+    const profile = expectedProfile(c);
+    const { lines, closest } = nearbyLinesFor({ profile, targetSlug: c.roleSlug, now: NOW });
+    const past = [...lines.map((l) => l.slug), ...(closest ? [closest.slug] : [])].filter((slug) =>
+      wellPastBand(profile.totalYearsExperience, roleProfiles.find((r) => r.slug === slug)!.experienceBand),
+    );
+    expect(past, "offered a role it is more than two years past (T179)").toEqual([]);
     const top = lines[0]?.slug ?? closest?.slug;
     if (!top) return;
     const want = familyOf.get(c.roleSlug) ?? "?";

@@ -119,6 +119,14 @@ describe("matchListFor", () => {
     expect(res.roles.find((r) => r.slug === "far-role")).toMatchObject({ onLine: true, met: 1, required: 5 });
   });
 
+  it("leaves off a role the person is more than two years past, unless it is their target role (T179)", () => {
+    const trainee = role("trainee-role", ["sql", "excel", "python"], { experienceBand: { minYears: 0, maxYears: 2 } }); // 3 of 3
+    const senior = { ...analyst, totalYearsExperience: 5 };
+    expect(matchListFor({ ...base, roles: [target, trainee] }).roles.map((r) => r.slug)).toContain("trainee-role");
+    expect(matchListFor({ ...base, profile: senior, roles: [target, trainee] }).roles.map((r) => r.slug)).toEqual(["target-role"]);
+    expect(matchListFor({ ...base, profile: senior, roles: [target, trainee], targetSlug: "trainee-role" }).roles.map((r) => r.slug)).toContain("trainee-role");
+  });
+
   it("gives each role its open jobs in Departures, none when it has none, and null when they couldn't be read", () => {
     expect(out.roles.every((r) => r.jobs === 0)).toBe(true);
     const res = matchListFor({ ...base, openJobs: new Map([["ready-role", 3]]) });

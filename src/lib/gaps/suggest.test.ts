@@ -90,6 +90,15 @@ describe("suggestRoles", () => {
     expect(suggestRoles(all, [office], now).map((s) => [s.slug, s.met, s.total])).toEqual([["office-role", 3, 8]]);
   });
 
+  it("never suggests a role the person is more than two years past (T179)", () => {
+    const senior = { ...fresher, totalYearsExperience: 11 };
+    const out = suggestRoles(senior, roleProfiles, now, 50);
+    const past = new Set(roleProfiles.filter((r) => r.experienceBand.maxYears + 2 < 11).map((r) => r.slug));
+    expect(past.size).toBeGreaterThan(0);
+    expect(out.filter((s) => past.has(s.slug))).toEqual([]);
+    expect(suggestRoles(fresher, roleProfiles, now, 50).some((s) => past.has(s.slug))).toBe(true);
+  });
+
   it("suggests nothing when no role is covered enough", () => {
     expect(suggestRoles(profile({ skills: [skill("Cooking", "Cooked for a family of four")] }), roleProfiles, now)).toEqual([]);
   });

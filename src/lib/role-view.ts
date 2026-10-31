@@ -41,6 +41,17 @@ const contextSkills = new Set(skills.filter((s) => s.scoring === "context").map(
 export const scoredSkills = (role: Pick<RoleView, "required">) => role.required.filter((s) => !s.context);
 const certsById = new Map(certifications.map((c) => [c.id, c]));
 
+/**
+ * Years past a role's band that still allow suggesting it. Someone more than this past a role's band is never offered
+ * it on any suggestion surface: role suggestions, Match, Nearby lines or the closest role (T179). An 11-year engineer
+ * never sees a 0 to 2 year trainee role. The person's own target role is never hidden.
+ */
+export const PAST_BAND_GRACE = 2;
+
+export function wellPastBand(years: number | null | undefined, { maxYears }: RoleProfile["experienceBand"]): boolean {
+  return (years ?? 0) > maxYears + PAST_BAND_GRACE;
+}
+
 export function formatExperience({ minYears, maxYears }: RoleProfile["experienceBand"]): string {
   return minYears === 0 ? `Up to ${maxYears} years` : `${minYears} to ${maxYears} years`;
 }
