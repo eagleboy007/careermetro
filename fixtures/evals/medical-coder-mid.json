@@ -1,0 +1,60 @@
+{
+  "id": "medical-coder-mid",
+  "roleSlug": "medical-coder",
+  "persona": "mid",
+  "resumeText": "Priya Raghavan | Chennai | priya.raghavan@example.com\n\nEXPERIENCE\nMedical Coder - ED Profee, Kaveripattinam Health Services (fictional), Chennai (2021 - present)\n- Assign ICD-10-CM diagnosis codes and CPT codes for emergency department profee charts of a US hospital client.\n- Code E/M levels for ED visits using the current E/M guidelines.\n- Apply modifier 25 and modifier 59 where documentation supports it and clear NCCI edits before sign-off.\n- Use anatomy and medical terminology knowledge to code fracture, burn and injury cases to the highest specificity.\n- Use the 3M encoder to validate code selection and HCPCS supply codes.\n- Maintain 96% coding accuracy and 80 charts per day against client accuracy targets.\n\nEDUCATION\nBSc Microbiology, Madras Christian College, 2020\n\nCERTIFICATIONS\nCPC, AAPC (2021)\n\nSKILLS\nICD-10-CM, CPT, HCPCS, PHI handling, MS Excel\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "icd-10-cm-coding",
+        "quote": "Assign ICD-10-CM diagnosis codes"
+      },
+      {
+        "skillId": "cpt-hcpcs-coding",
+        "quote": "CPT codes for emergency department profee charts"
+      },
+      {
+        "skillId": "em-coding",
+        "quote": "Code E/M levels for ED visits"
+      },
+      {
+        "skillId": "coding-guidelines-compliance",
+        "quote": "clear NCCI edits before sign-off"
+      },
+      {
+        "skillId": "medical-terminology-anatomy",
+        "quote": "Use anatomy and medical terminology knowledge"
+      },
+      {
+        "skillId": "encoder-tools",
+        "quote": "Use the 3M encoder to validate code selection"
+      },
+      {
+        "skillId": "process-tat-accuracy",
+        "quote": "Maintain 96% coding accuracy and 80 charts per day"
+      },
+      {
+        "skillId": "hipaa-phi-handling",
+        "quote": "PHI handling"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "coding-audit-qa",
+        "status": "missing"
+      },
+      {
+        "skillId": "hipaa-phi-handling",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "icd-10-pcs-coding",
+      "risk-adjustment-hcc-coding",
+      "ar-follow-up-rcm",
+      "denial-management"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,56 @@
+{
+  "id": "front-office-executive-hotel-mid",
+  "roleSlug": "front-office-executive-hotel",
+  "persona": "mid",
+  "resumeText": "Pooja Nair | Kochi | pooja.nair@example.com\n\nSUMMARY\nHotel front office professional with 4 years at the front desk of 4-star and 5-star properties.\n\nEXPERIENCE\nFront Office Executive, Backwater Bay Resort and Spa, Kochi (2023 - present)\n- Handle guest check-in and check-out for a 180-room resort, about 60 arrivals a day.\n- Update guest profiles, room moves and billing instructions in Opera PMS.\n- Post charges and settle guest folios at the front desk cashier counter at shift end.\n- Submit C-Form for every foreign guest on the FRRO portal within 24 hours of arrival.\n- Resolve guest complaints about rooms and billing and log them for the duty manager.\n- Brief guests and the night shift clearly in English, Hindi and Malayalam.\n\nGuest Service Associate - Front Office, Harbourline Hotel, Kochi (2022 - 2023)\n- Took phone and email room reservations and managed group rooming lists for tour operators.\n- Coordinated with housekeeping on room readiness for early arrivals.\n\nSKILLS\nOpera PMS, Night audit, MS Excel, Guest relations\n\nEDUCATION\nDiploma in Hotel Management and Catering Technology, Kochi (2022)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "guest-check-in-check-out",
+        "quote": "Handle guest check-in and check-out for a 180-room resort"
+      },
+      {
+        "skillId": "hotel-pms-operations",
+        "quote": "room moves and billing instructions in Opera PMS"
+      },
+      {
+        "skillId": "front-office-cashiering",
+        "quote": "settle guest folios at the front desk cashier counter"
+      },
+      {
+        "skillId": "frro-c-form-compliance",
+        "quote": "Submit C-Form for every foreign guest on the FRRO portal"
+      },
+      {
+        "skillId": "customer-query-resolution",
+        "quote": "Resolve guest complaints about rooms and billing"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Brief guests and the night shift clearly in English, Hindi and Malayalam"
+      },
+      {
+        "skillId": "hotel-reservations-handling",
+        "quote": "Took phone and email room reservations and managed group rooming lists"
+      },
+      {
+        "skillId": "night-audit",
+        "quote": "Night audit"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "night-audit",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "hotel-revenue-pricing",
+      "restaurant-pos-systems",
+      "ota-channel-distribution",
+      "cross-selling-upselling"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,59 @@
+{
+  "id": "hospital-operations-executive-mid",
+  "roleSlug": "hospital-operations-executive",
+  "persona": "mid",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nEXPERIENCE\nOperations Executive, Nilgiri Crest Hospital (fictional, 250 beds), Pune (2023 - present)\n- Coordinated IP admissions and discharges with ward nurses and reduced average discharge time by 40 minutes.\n- Prepare the morning bed status report and allot beds to emergency and planned admissions.\n- Work with nursing, billing, pharmacy and housekeeping teams to clear beds before noon.\n- Prepare a daily MIS report on admissions, discharges and occupancy for the GM Operations.\n- Resolved patient and attendant complaints at the floor help desk within the same shift.\n\nFront Office Executive, Nilgiri Crest Hospital (fictional), Pune (2021 - 2023)\n- Managed OPD registration and doctor appointment scheduling for 12 consultants.\n- Entered registrations, admissions and transfers in the hospital information system.\n\nEDUCATION\nBBA (Hospital Administration), Savitribai Phule Pune University, 2021\n\nSKILLS\nNABH standards, MS Excel, MS Word\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "patient-admission-discharge",
+        "quote": "Coordinated IP admissions and discharges with ward nurses"
+      },
+      {
+        "skillId": "hospital-bed-management",
+        "quote": "Prepare the morning bed status report and allot beds"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Work with nursing, billing, pharmacy and housekeeping teams"
+      },
+      {
+        "skillId": "operations-mis-reporting",
+        "quote": "Prepare a daily MIS report on admissions, discharges and occupancy"
+      },
+      {
+        "skillId": "customer-query-resolution",
+        "quote": "Resolved patient and attendant complaints at the floor help desk"
+      },
+      {
+        "skillId": "opd-front-office-operations",
+        "quote": "Managed OPD registration and doctor appointment scheduling"
+      },
+      {
+        "skillId": "his-software",
+        "quote": "Entered registrations, admissions and transfers in the hospital information system"
+      },
+      {
+        "skillId": "nabh-accreditation",
+        "quote": "NABH standards"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "nabh-accreditation",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "cashless-preauthorisation",
+      "ar-follow-up-rcm",
+      "icd-10-cm-coding"
+    ]
+  },
+  "reviewedBy": null
+}

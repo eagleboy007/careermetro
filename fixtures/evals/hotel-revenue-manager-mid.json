@@ -1,0 +1,60 @@
+{
+  "id": "hotel-revenue-manager-mid",
+  "roleSlug": "hotel-revenue-manager",
+  "persona": "mid",
+  "resumeText": "Ananya Sharma | Gurugram | ananya.sharma@example.com\n\nSUMMARY\nHotel revenue professional with 6 years across reservations and rooms revenue for business hotels.\n\nEXPERIENCE\nAssistant Revenue Manager, Aravali Business Hotel, Gurugram (2022 - present)\n- Set daily room rates and length of stay restrictions for a 250-room business hotel.\n- Load rates and inventory on OTAs through the STAAH channel manager and check rate parity every morning.\n- Build the 90-day rooms forecast using pickup and pace reports from Opera.\n- Review the weekly STR report and compset rate shopping with the sales team.\n- Built Excel dashboards to track daily revenue, ADR and RevPAR.\n- Present the weekly revenue meeting to the general manager, director of sales and front office manager.\n\nReservations Executive, Cyber City Suites, Gurugram (2020 - 2022)\n- Handled corporate and group room reservations and room blocks for events.\n\nSKILLS\nIDeaS G3 (training only), Opera PMS, MS Excel, PowerPoint\n\nEDUCATION\nBBA in Hospitality Management, New Delhi (2020)\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "hotel-revenue-pricing",
+        "quote": "Set daily room rates and length of stay restrictions"
+      },
+      {
+        "skillId": "ota-channel-distribution",
+        "quote": "Load rates and inventory on OTAs through the STAAH channel manager"
+      },
+      {
+        "skillId": "hotel-demand-forecasting",
+        "quote": "Build the 90-day rooms forecast using pickup and pace reports"
+      },
+      {
+        "skillId": "hotel-pms-operations",
+        "quote": "using pickup and pace reports from Opera"
+      },
+      {
+        "skillId": "str-compset-benchmarking",
+        "quote": "Review the weekly STR report and compset rate shopping"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built Excel dashboards to track daily revenue"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Present the weekly revenue meeting to the general manager, director of sales and front office manager"
+      },
+      {
+        "skillId": "hotel-reservations-handling",
+        "quote": "Handled corporate and group room reservations and room blocks"
+      },
+      {
+        "skillId": "revenue-management-systems",
+        "quote": "IDeaS G3 (training only)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "revenue-management-systems",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "banquet-event-operations",
+      "night-audit",
+      "power-bi",
+      "room-inspection-standards"
+    ]
+  },
+  "reviewedBy": null
+}

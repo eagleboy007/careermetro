@@ -1,0 +1,117 @@
+{
+  "slug": "food-beverage-executive",
+  "title": "Food and Beverage Executive",
+  "summary": "Supervises food and beverage service in a hotel's restaurants, bars, in-room dining and banquets. Sits in the F&B service team under the outlet or banquet manager and leads stewards and captains on each shift.",
+  "dailyDuties": [
+    "Supervise service in the restaurant, bar and in-room dining",
+    "Set up and run banquets from the banquet event order",
+    "Brief the team on menu changes, allergens and upselling",
+    "Prepare weekly duty rosters for stewards and captains",
+    "Check hygiene and FSSAI compliance in service areas",
+    "Close outlet sales and billing in the POS",
+    "Resolve guest feedback at tables"
+  ],
+  "typicalTitles": [
+    "F&B Supervisor",
+    "Food and Beverage Supervisor",
+    "Restaurant Supervisor - Hotel",
+    "Banquet Supervisor",
+    "F&B Service Executive",
+    "Captain - F&B Service",
+    "Assistant Restaurant Manager - Hotel"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "fnb-service-operations",
+      "importance": "required",
+      "expectation": "Supervise restaurant, bar and in-room dining service to brand standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "banquet-event-operations",
+      "importance": "required",
+      "expectation": "Read banquet event orders and run set-up and service for functions",
+      "postingShare": null
+    },
+    {
+      "skillId": "menu-knowledge-food-pairing",
+      "importance": "required",
+      "expectation": "Know the menu, allergens and beverage pairings and brief the team on them",
+      "postingShare": null
+    },
+    {
+      "skillId": "restaurant-pos-systems",
+      "importance": "required",
+      "expectation": "Run outlet billing and day-end closing in a POS such as Micros",
+      "postingShare": null
+    },
+    {
+      "skillId": "fssai-food-safety-hygiene",
+      "importance": "required",
+      "expectation": "Keep service areas compliant with FSSAI hygiene and HACCP practices",
+      "postingShare": null
+    },
+    {
+      "skillId": "cross-selling-upselling",
+      "importance": "required",
+      "expectation": "Drive upselling of beverages, specials and desserts to meet outlet revenue",
+      "postingShare": null
+    },
+    {
+      "skillId": "store-team-rostering-training",
+      "importance": "required",
+      "expectation": "Prepare duty rosters and train stewards and captains on service steps",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-query-resolution",
+      "importance": "required",
+      "expectation": "Handle guest feedback at the table and fix service complaints",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead a shift team of associates and captains",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "nice_to_have",
+      "expectation": "Handle difficult guest situations before they reach the manager",
+      "postingShare": null
+    },
+    {
+      "skillId": "hotel-pms-operations",
+      "importance": "nice_to_have",
+      "expectation": "Post room charges for in-house guests through the PMS interface",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Track covers, sales and inventory in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "training-delivery-facilitation",
+      "importance": "nice_to_have",
+      "expectation": "Run short on-the-job training sessions for new associates",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions (hotel group careers pages) and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
