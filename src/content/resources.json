@@ -20736,17 +20736,6 @@
     "free": true
   },
   {
-    "title": "CEA (Measures relating to Safety and Electric Supply) Regulations, 2023",
-    "url": "https://cea.nic.in/regulations/central-electricity-authority-measures-relating-to-safety-and-electric-supply-regulations-2023/?lang=en",
-    "provider": "Central Electricity Authority",
-    "kind": "docs",
-    "skillIds": [
-      "electrical-safety-ie-rules"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Lockout/Tagout eTool tutorial",
     "url": "https://www.osha.gov/etools/lockout-tagout/tutorial",
     "provider": "OSHA",
@@ -20789,17 +20778,6 @@
       "electrical-cad-tools"
     ],
     "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "Schematic Creation Part 1 (video)",
-    "url": "https://knowledge.autodesk.com/support/autocad-electrical/learn-explore/caas/CloudHelp/cloudhelp/2021/ENU/AutoCAD-Electrical/files/GUID-E4F1546A-17E5-404D-A643-97B4AA4951C4-htm.html",
-    "provider": "Autodesk",
-    "kind": "video",
-    "skillIds": [
-      "electrical-cad-tools"
-    ],
-    "minutes": 15,
     "free": true
   },
   {
@@ -20925,17 +20903,6 @@
     "free": true
   },
   {
-    "title": "Drawing and Detailing with SolidWorks",
-    "url": "https://files.solidworks.com/partners/pdfs/solidworksdrawinganddetailingbook.pdf",
-    "provider": "SOLIDWORKS",
-    "kind": "docs",
-    "skillIds": [
-      "mechanical-2d-drafting"
-    ],
-    "minutes": 480,
-    "free": true
-  },
-  {
     "title": "IS 919-1 (1993): ISO Systems of Limits and Fits, Part 1",
     "url": "https://law.resource.org/pub/in/bis/S01/is.919.1.1993.pdf",
     "provider": "Bureau of Indian Standards (via law.resource.org)",
@@ -21005,17 +20972,6 @@
     "title": "Elements of Mechanical Design (2.72)",
     "url": "https://ocw.mit.edu/courses/2-72-elements-of-mechanical-design-spring-2009/",
     "provider": "MIT OpenCourseWare",
-    "kind": "course",
-    "skillIds": [
-      "mechanical-design-calculations"
-    ],
-    "minutes": 2400,
-    "free": true
-  },
-  {
-    "title": "Design of Machine Elements I",
-    "url": "https://archive.nptel.ac.in/courses/112/105/112105124/",
-    "provider": "NPTEL",
     "kind": "course",
     "skillIds": [
       "mechanical-design-calculations"
@@ -21198,17 +21154,6 @@
       "civil-drawing-reading"
     ],
     "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "CPWD Specifications 2019, Volume 1",
-    "url": "https://cpwd.gov.in/Publication/Specs2019V1.pdf",
-    "provider": "Central Public Works Department",
-    "kind": "docs",
-    "skillIds": [
-      "site-execution-supervision"
-    ],
-    "minutes": 180,
     "free": true
   },
   {
@@ -21435,17 +21380,6 @@
     "free": true
   },
   {
-    "title": "Construction Inspector Training 2019: diaries and documentation",
-    "url": "https://www.maine.gov/mdot/contractors/docs/presentations/2019/2019-Construction-Inspector-Training.pdf",
-    "provider": "Maine Department of Transportation",
-    "kind": "docs",
-    "skillIds": [
-      "site-progress-reporting"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "Safety in Construction",
     "url": "https://onlinecourses.nptel.ac.in/noc21_ce16/preview",
     "provider": "NPTEL (IIT Delhi)",
@@ -21512,79 +21446,6 @@
     "free": true
   },
   {
-    "title": "Delhi Schedule of Rates (DSR) 2021, Volume II",
-    "url": "https://cpwd.gov.in/Publication/DSR_2021_Vol_II_ENGLISH_Dir.pdf",
-    "provider": "Central Public Works Department",
-    "kind": "docs",
-    "skillIds": [
-      "boq-rate-analysis",
-      "material-reconciliation"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Delhi Analysis of Rates (Civil) 2016, Volume 1",
-    "url": "https://www.cpwd.gov.in/Publication/DAR(Civil)I.pdf",
-    "provider": "Central Public Works Department",
-    "kind": "docs",
-    "skillIds": [
-      "boq-rate-analysis"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "General Conditions of Contract 2019: Construction Works",
-    "url": "https://www.cpwd.gov.in/Publication/GCC_Construction_2019.pdf",
-    "provider": "Central Public Works Department",
-    "kind": "docs",
-    "skillIds": [
-      "construction-contract-conditions",
-      "ra-subcontractor-billing",
-      "material-reconciliation",
-      "measurement-book-records"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "CPWD Works Manual 2019",
-    "url": "https://www.cpwd.gov.in/Publication/Work_Manual_2019_20032019.pdf",
-    "provider": "Central Public Works Department",
-    "kind": "docs",
-    "skillIds": [
-      "ra-subcontractor-billing",
-      "construction-contract-conditions",
-      "measurement-book-records"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "SOPs to CPWD Works Manual 2019",
-    "url": "https://www.cpwd.gov.in/Publication/SOPs_to_Work_Maunal_2019_20_March_2019.pdf",
-    "provider": "Central Public Works Department",
-    "kind": "docs",
-    "skillIds": [
-      "measurement-book-records",
-      "ra-subcontractor-billing"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "CPWD Works Manual 2003, Volume 2 (measurement books)",
-    "url": "https://www.cpwd.gov.in/Publication/manualvolume2.pdf",
-    "provider": "Central Public Works Department",
-    "kind": "docs",
-    "skillIds": [
-      "measurement-book-records"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
     "title": "IS 1200 series: Methods of Measurement of Building and Civil Engineering Works (index of parts)",
     "url": "https://law.resource.org/pub/in/bis/manifest.ced.44.html",
     "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
@@ -21602,7 +21463,9 @@
     "kind": "docs",
     "skillIds": [
       "is-1200-measurement-rules",
-      "quantity-takeoff"
+      "quantity-takeoff",
+      "measurement-book-records",
+      "ra-subcontractor-billing"
     ],
     "minutes": 45,
     "free": true
@@ -21619,23 +21482,13 @@
     "free": true
   },
   {
-    "title": "General Conditions of Contract 2019: EPC Projects",
-    "url": "https://cpwd.gov.in/Publication/GCC_EPC_Contracts_2019.pdf",
-    "provider": "Central Public Works Department",
-    "kind": "docs",
-    "skillIds": [
-      "construction-contract-conditions"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "Advanced Contracts, Tendering and Public Procurement",
     "url": "https://onlinecourses.nptel.ac.in/noc22_lw06/preview",
     "provider": "NPTEL",
     "kind": "course",
     "skillIds": [
-      "construction-contract-conditions"
+      "construction-contract-conditions",
+      "ra-subcontractor-billing"
     ],
     "minutes": 720,
     "free": true
