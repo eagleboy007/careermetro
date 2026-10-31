@@ -24540,28 +24540,6 @@
     "free": true
   },
   {
-    "title": "India Law Research guide (Harvard Law School Library)",
-    "url": "https://guides.library.harvard.edu/law/indian-law-research",
-    "provider": "Harvard Law School Library",
-    "kind": "docs",
-    "skillIds": [
-      "legal-research"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Indian Law Guide (Harvard Library)",
-    "url": "https://guides.library.harvard.edu/india",
-    "provider": "Harvard Library",
-    "kind": "docs",
-    "skillIds": [
-      "legal-research"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "Researching the Law of India (Yale Law Library)",
     "url": "https://library.law.yale.edu/news/researching-law-india",
     "provider": "Yale Law Library",
@@ -25013,40 +24991,6 @@
     "free": true
   },
   {
-    "title": "Supreme Court e-Filing video tutorials",
-    "url": "https://efiling3.sci.gov.in/resources/video_tutorial/view",
-    "provider": "Supreme Court of India",
-    "kind": "video",
-    "skillIds": [
-      "court-efiling-registry"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "Step-by-step guide for e-filing at High Courts and District Courts (Patna High Court)",
-    "url": "https://patnahighcourt.gov.in/efiling/docs/Step_by_step_guide_for_efiling_at_High_Courts_and_District_Courts.pdf",
-    "provider": "Patna High Court",
-    "kind": "docs",
-    "skillIds": [
-      "court-efiling-registry",
-      "litigation-case-file-management"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "eFiling 3.0 manual (Jharkhand High Court)",
-    "url": "https://jharkhandhighcourt.nic.in/efiling-guide/3.0/files/eFiling_manual.pdf",
-    "provider": "Jharkhand High Court",
-    "kind": "docs",
-    "skillIds": [
-      "court-efiling-registry"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "SOP for eFiling 3.0 (Tripura High Court)",
     "url": "https://thc.nic.in/user%20manual/SOP%20pdf%20eFiling%203.0.pdf",
     "provider": "Tripura High Court",
@@ -25091,40 +25035,6 @@
       "litigation-case-file-management"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "e-Courts mobile application guide (English)",
-    "url": "https://kohimahighcourt.gov.in/downloads/e-Courts_Mobile_Application_(English).pdf",
-    "provider": "Kohima Bench, Gauhati High Court",
-    "kind": "docs",
-    "skillIds": [
-      "cause-list-tracking"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "Check cause lists of all courts in India",
-    "url": "https://services.india.gov.in/service/detail/check-cause-lists-of-all-courts-in-india",
-    "provider": "National Portal of India",
-    "kind": "practice",
-    "skillIds": [
-      "cause-list-tracking"
-    ],
-    "minutes": 10,
-    "free": true
-  },
-  {
-    "title": "Check online case status of district courts of India",
-    "url": "https://services.india.gov.in/service/detail/check-online-case-status-of-district-courts-of-india",
-    "provider": "National Portal of India",
-    "kind": "practice",
-    "skillIds": [
-      "cause-list-tracking",
-      "litigation-case-file-management"
-    ],
-    "minutes": 10,
     "free": true
   },
   {
@@ -25354,18 +25264,6 @@
       "icd-10-cm-coding"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "ICD-10-CM Browser Tool",
-    "url": "https://www.cdc.gov/nchs/icd/icd10cm_browsertool.htm",
-    "provider": "CDC NCHS",
-    "kind": "practice",
-    "skillIds": [
-      "icd-10-cm-coding",
-      "encoder-tools"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -26082,42 +25980,6 @@
     "free": true
   },
   {
-    "title": "About e-Hospital@NIC",
-    "url": "https://ehospital.nic.in/ehospitalsso/aboutus",
-    "provider": "NIC, Government of India",
-    "kind": "docs",
-    "skillIds": [
-      "his-software",
-      "opd-front-office-operations",
-      "patient-admission-discharge"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "NextGen ORS: online OPD registration",
-    "url": "https://informaticsweb.nic.in/appscape/nextgen-ors",
-    "provider": "NIC Informatics",
-    "kind": "docs",
-    "skillIds": [
-      "opd-front-office-operations",
-      "his-software"
-    ],
-    "minutes": 10,
-    "free": true
-  },
-  {
-    "title": "e-Health and Telemedicine (MoHFW)",
-    "url": "https://main.mohfw.gov.in/Organisation/departments-health-and-family-welfare/e-Health-Telemedicine",
-    "provider": "MoHFW",
-    "kind": "docs",
-    "skillIds": [
-      "his-software"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
     "title": "Notification: NABH Accreditation Programme HCO 5th Edition Guidebook",
     "url": "https://portal.nabh.co/Announcement/Notification%20for%20NABH-Accreditation%20Program_HCO%205th%20Edition%20Guidebook.pdf",
     "provider": "NABH",
@@ -26180,19 +26042,6 @@
     "free": true
   },
   {
-    "title": "BSKY claim adjudication manual (based on AB PM-JAY Claim Adjudication Manual 2.0)",
-    "url": "https://bsky.odisha.gov.in/application/storage/app/uploads/655af2b2189b71700459186.pdf",
-    "provider": "Government of Odisha (BSKY)",
-    "kind": "docs",
-    "skillIds": [
-      "reimbursement-claim-processing",
-      "medical-document-scrutiny",
-      "health-claims-fraud-detection"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
     "title": "PM-JAY performance audit, Chapter V (CAG)",
     "url": "https://cag.gov.in/uploads/download_audit_report/2023/09_Chapter-V-064d22bab412c53.02505839.pdf",
     "provider": "Comptroller and Auditor General of India",
@@ -26228,29 +26077,6 @@
     "free": true
   },
   {
-    "title": "PM-JAY Anti-Fraud Guidelines",
-    "url": "https://cmhis.nagaland.gov.in/storage/pageFiles/1739357573_260.pdf",
-    "provider": "NHA (hosted by Nagaland CMHIS)",
-    "kind": "docs",
-    "skillIds": [
-      "health-claims-fraud-detection",
-      "medical-document-scrutiny"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "Guidelines for actions post fraud detection (PM-JAY)",
-    "url": "https://sha.uk.gov.in/ScannedDocs/WebSite/Uploads/FRAUD_ABUSE/Guidelines%20for%20Actions%20post%20Fraud%20Detecion.pdf",
-    "provider": "State Health Agency Uttarakhand",
-    "kind": "docs",
-    "skillIds": [
-      "health-claims-fraud-detection"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "IRDAI Insurance Fraud Monitoring Framework (JSA Prism, Oct 2025)",
     "url": "https://www.jsalaw.com/wp-content/uploads/2025/10/JSA-Prism-Insurance-October-2025-Fraud-Monitoring-Framework.Final_.pdf",
     "provider": "JSA Advocates and Solicitors",
@@ -26270,20 +26096,6 @@
       "health-claims-fraud-detection"
     ],
     "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "Diploma in Food and Beverage Operations (NIOS course 726)",
-    "url": "https://nios.ac.in/media/documents/vocational/726_Food_and_Beverage_Operations.pdf",
-    "provider": "NIOS",
-    "kind": "course",
-    "skillIds": [
-      "fnb-service-operations",
-      "banquet-event-operations",
-      "menu-knowledge-food-pairing",
-      "restaurant-pos-systems"
-    ],
-    "minutes": 600,
     "free": true
   },
   {
@@ -26320,34 +26132,6 @@
       "hotel-revenue-pricing"
     ],
     "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "Diploma in Housekeeping and Maintenance (NIOS course 727)",
-    "url": "https://nios.ac.in/media/documents/vocational/727_Housekeeping_and_Maintenance.pdf",
-    "provider": "NIOS",
-    "kind": "course",
-    "skillIds": [
-      "room-inspection-standards",
-      "linen-inventory-control",
-      "public-area-cleaning",
-      "housekeeping-chemical-safety",
-      "lost-and-found-handling"
-    ],
-    "minutes": 600,
-    "free": true
-  },
-  {
-    "title": "NIOS Housekeeping vocational course: syllabus and structure",
-    "url": "https://nios.ac.in/departmentsunits/vocational-education/stand-alone-courses/housekeeping.aspx",
-    "provider": "NIOS",
-    "kind": "docs",
-    "skillIds": [
-      "room-inspection-standards",
-      "linen-inventory-control",
-      "public-area-cleaning"
-    ],
-    "minutes": 20,
     "free": true
   },
   {
@@ -26458,18 +26242,6 @@
       "front-office-cashiering"
     ],
     "minutes": 10,
-    "free": true
-  },
-  {
-    "title": "OPERA Cloud: Group Rooming Lists",
-    "url": "https://docs.oracle.com/cd/F18689_01/doc.193/f23597/c_rooming_lists_group_rooming_lists_ch.htm",
-    "provider": "Oracle Hospitality",
-    "kind": "docs",
-    "skillIds": [
-      "hotel-reservations-handling",
-      "hotel-pms-operations"
-    ],
-    "minutes": 20,
     "free": true
   },
   {
@@ -26757,18 +26529,6 @@
     "free": true
   },
   {
-    "title": "Food Safety Management System guidance for catering (draft, HACCP plans)",
-    "url": "https://foodregulatory.fssai.gov.in/All%20Docs/Safe%20Food%20Practices/draft_catering_FSMS.pdf",
-    "provider": "FSSAI",
-    "kind": "docs",
-    "skillIds": [
-      "fssai-food-safety-hygiene",
-      "fnb-service-operations"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Food safety requirements of food businesses",
     "url": "https://en.vikaspedia.in/viewcontent/health/sanitation-and-hygiene/food-safety/food-safety-requirements-of-food-businesses",
     "provider": "Vikaspedia (Government of India)",
@@ -26777,18 +26537,6 @@
       "fssai-food-safety-hygiene"
     ],
     "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "FSSAI Guidance Note on Labelling and Display (incl. menu and allergen display)",
-    "url": "https://mail.fssai.gov.in/upload/uploadfiles/files/Guidance_Note_Labelling_23_02_2022.pdf",
-    "provider": "FSSAI",
-    "kind": "docs",
-    "skillIds": [
-      "menu-knowledge-food-pairing",
-      "fssai-food-safety-hygiene"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
