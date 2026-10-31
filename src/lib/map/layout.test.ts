@@ -1,7 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { mapLine, type MapGoal } from "@/lib/schemas";
 import { exampleMapLine, exampleSwitchedMapLine } from "./fixtures";
-import { EARLIER_STOPS_MAX, layoutLine, MAP_HEIGHT, pitstopLabel, pitstopsFor } from "./layout";
+import { EARLIER_NAME_MAX, EARLIER_STOPS_MAX, layoutLine, MAP_HEIGHT, pitstopLabel, pitstopsFor } from "./layout";
+
+/** An earlier line with these goals left on it, for layout tests. */
+const earlierWith = (left: { skillId: string; name: string; proved: boolean; ownPitstops: number }[]) => ({
+  role: { slug: "x", title: "X" },
+  analysisId: null,
+  left,
+  shared: 0,
+  came: [],
+  changedAt: null,
+});
 
 const goal = (skillId: string, status: MapGoal["status"], extra: Partial<MapGoal> = {}): MapGoal => ({
   skillId,
@@ -207,8 +217,32 @@ describe("layoutLine with an earlier line", () => {
     expect(l.earlier!.stops).toHaveLength(exampleSwitchedMapLine.previous!.left.length);
     for (const st of l.earlier!.stops) expect(st.x > l.earlier!.start.x && st.x < l.earlier!.end.x).toBe(true);
     const left = Array.from({ length: 12 }, (_, i) => ({ skillId: `s${i}`, name: `S${i}`, proved: false, ownPitstops: 0 }));
-    const many = layoutLine({ ...exampleMapLine, previous: { role: { slug: "x", title: "X" }, left, shared: 0 } });
+    const many = layoutLine({ ...exampleMapLine, previous: earlierWith(left) });
     expect(many.earlier!.stops).toHaveLength(EARLIER_STOPS_MAX);
+  });
+
+  it("names each stop with room for its Left here label, clipped, and ends inside the map (C25)", () => {
+    const left = Array.from({ length: 8 }, (_, i) => ({ skillId: `s${i}`, name: `Stakeholder management ${i}`, proved: false, ownPitstops: 0 }));
+    const l = layoutLine({ ...exampleMapLine, previous: earlierWith(left) });
+    const stops = l.earlier!.stops;
+    for (let i = 1; i < stops.length; i++) expect(stops[i].x - stops[i - 1].x).toBeGreaterThanOrEqual(110);
+    for (const st of stops) expect(st.name.length).toBeLessThanOrEqual(EARLIER_NAME_MAX);
+    expect(stops[0].name.endsWith("…")).toBe(true);
+    expect(l.earlier!.label.y).toBeGreaterThan(stops[0].y + 40);
+    expect(l.earlier!.end.x + 30).toBeLessThan(l.width);
+    expect(l.earlierStub).toBeNull();
+  });
+
+  it("leaves only a dotted stub at Gaps when hidden, and never moves the new line (C25)", () => {
+    const shown = layoutLine(exampleSwitchedMapLine);
+    const hidden = layoutLine(exampleSwitchedMapLine, { hideEarlier: true });
+    const gaps = hidden.stations.find((s) => s.id === "gaps")!;
+    expect(hidden.earlier).toBeNull();
+    expect(hidden.earlierStub!.d.startsWith(`M${gaps.x} ${gaps.y}`)).toBe(true);
+    expect(hidden.earlierStub!.label.y).toBeLessThan(hidden.height);
+    expect(hidden.stations).toEqual(shown.stations);
+    expect(hidden.train).toEqual(shown.train);
+    expect(layoutLine(exampleMapLine, { hideEarlier: true }).earlierStub).toBeNull();
   });
 
   it("never moves the new line: the same stations, train, counts and crossings", () => {
@@ -222,7 +256,7 @@ describe("layoutLine with an earlier line", () => {
   });
 
   it("widens a short line so the earlier line and its label fit", () => {
-    const l = layoutLine({ goals: [], otherLines: [], previous: { role: { slug: "x", title: "X" }, left: [], shared: 0 } });
+    const l = layoutLine({ goals: [], otherLines: [], previous: earlierWith([]) });
     expect(l.earlier!.end.x + 30).toBeLessThan(l.width);
   });
 });

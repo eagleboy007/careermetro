@@ -12,6 +12,8 @@ import { SHOWN_GAPS } from "./analysis";
 import type { ExplainClient } from "./explain";
 import { MATCHER_VERSION } from "./match";
 import { currentAnalysis, previousAnalysis } from "./current";
+import { DESTINATION_CHANGES_PER_DAY } from "@/lib/schemas/constants";
+import { makeDestination } from "./choose";
 import { GAP_LIMITS, getGapsForOwner, keepChoices, rateAnalysis } from "./store";
 
 // Runs against a real Postgres with migrations applied, like ingest.test.ts.
@@ -367,9 +369,10 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     expect(await rateAnalysis(r.analysisId, { sessionId: session }, 3, db!)).toBe(false);
   });
 
-  // Change of destination (docs/plans/change-destination-plan.md): opening a role's Gaps page makes it the destination,
-  // also when the person comes back to a role they picked before; the role they leave is the earlier one.
-  it("makes a role the person comes back to their destination again, and the one they leave the earlier one", async () => {
+  // Change of destination (docs/plans/change-destination-plan.md; C25, Project manager approved on Milin's behalf,
+  // 2026-10-31): the first analysis becomes the destination; opening another role's Gaps page shows its gaps and
+  // "Make this my destination", and only pressing it switches. Switching back reuses the stored analysis.
+  it("switches the destination only on Make this my destination, and the role left becomes the earlier one", async () => {
     const [user] = await db!.insert(schema.users).values({ email: `gaps-switch-${Date.now()}@example.test`, name: "Test User" }).returning({ id: schema.users.id });
     try {
       const [resume] = await db!.insert(schema.resumes).values({ userId: user.id, mimeType: "text/plain", sizeBytes: 10, status: "parsed" }).returning();
@@ -378,29 +381,100 @@ describe.skipIf(!db)("gap analyses (database)", () => {
       const other = roleProfiles.find((r) => r.slug === "data-analyst")!;
       const { client } = explainClient();
       const a = await getGapsForOwner(resume.id, owner, role, { db: db!, client });
-      const b = await getGapsForOwner(resume.id, owner, other, { db: db!, client });
-      if (!a.ok || !b.ok) throw new Error("no analysis");
-      expect((await currentAnalysis(user.id, db!))?.id).toBe(b.analysisId);
-      expect((await previousAnalysis(user.id, { id: b.analysisId, result: b.analysis }, db!))?.id).toBe(a.analysisId);
+      if (!a.ok) throw new Error(a.reason);
+      // The first analysis is the destination at once, with no button.
+      expect(a.choosable).toBe(false);
+      expect(a.analysis.notChosen).toBeUndefined();
+      expect((await currentAnalysis(user.id, db!))?.id).toBe(a.analysisId);
 
-      // Back to the first role: the same stored analysis (same id, no model call), marked picked, and current again.
+      // Another role: its gaps, marked waiting, and the destination stays.
+      const b = await getGapsForOwner(resume.id, owner, other, { db: db!, client });
+      if (!b.ok) throw new Error(b.reason);
+      expect(b.choosable).toBe(true);
+      expect(b.analysis.notChosen).toBe(true);
+      expect((await currentAnalysis(user.id, db!))?.id).toBe(a.analysisId);
+      expect(await previousAnalysis(user.id, { id: a.analysisId, result: a.analysis }, db!)).toBeNull();
+      // Opening it again still switches nothing and writes nothing.
+      const [waiting] = await db!.select({ result: schema.gapAnalyses.result }).from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, b.analysisId));
+      const again = await getGapsForOwner(resume.id, owner, other, { db: db!, client });
+      expect(again.ok && again.choosable).toBe(true);
+      const [still] = await db!.select({ result: schema.gapAnalyses.result }).from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, b.analysisId));
+      expect(still.result).toEqual(waiting.result);
+      expect((await currentAnalysis(user.id, db!))?.id).toBe(a.analysisId);
+
+      // Make this my destination: B is current, A the earlier line.
+      expect(await makeDestination(user.id, { analysisId: b.analysisId }, { db: db! })).toEqual({ ok: true, changed: true });
+      const current = await currentAnalysis(user.id, db!);
+      expect(current?.id).toBe(b.analysisId);
+      expect(current?.result.notChosen).toBeUndefined();
+      expect(current?.result.chosenAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect((await previousAnalysis(user.id, { id: b.analysisId, result: b.analysis }, db!))?.id).toBe(a.analysisId);
+      // Pressing it again changes nothing.
+      expect(await makeDestination(user.id, { analysisId: b.analysisId }, { db: db! })).toEqual({ ok: true, changed: false });
+
+      // The first role's page now offers the button too, reusing its analysis (same id, no model call).
       const calls = client.beta.messages.create as unknown as { mock: { calls: unknown[] } };
       const before = calls.mock.calls.length;
       const back = await getGapsForOwner(resume.id, owner, role, { db: db!, client });
       if (!back.ok) throw new Error(back.reason);
       expect(back.analysisId).toBe(a.analysisId);
-      expect(back.analysis.chosenAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(back.choosable).toBe(true);
       expect(calls.mock.calls.length).toBe(before);
+      expect((await currentAnalysis(user.id, db!))?.id).toBe(b.analysisId);
+      // Switch back: A is current again, B the earlier line.
+      expect(await makeDestination(user.id, { analysisId: a.analysisId }, { db: db! })).toEqual({ ok: true, changed: true });
       expect((await currentAnalysis(user.id, db!))?.id).toBe(a.analysisId);
       expect((await previousAnalysis(user.id, { id: a.analysisId, result: a.analysis }, db!))?.id).toBe(b.analysisId);
 
       // Opening the current role again writes nothing.
       const [row] = await db!.select({ result: schema.gapAnalyses.result }).from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, a.analysisId));
-      await getGapsForOwner(resume.id, owner, role, { db: db!, client });
-      const [same] = await db!.select({ result: schema.gapAnalyses.result }).from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, a.analysisId));
-      expect(same.result).toEqual(row.result);
+      const same = await getGapsForOwner(resume.id, owner, role, { db: db!, client });
+      expect(same.ok && same.choosable).toBe(false);
+      const [after] = await db!.select({ result: schema.gapAnalyses.result }).from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, a.analysisId));
+      expect(after.result).toEqual(row.result);
     } finally {
       await db!.delete(schema.users).where(eq(schema.users.id, user.id));
+    }
+  });
+
+  it("takes Make this my destination only for the person's own, latest, non-sample analysis, and counts every try", async () => {
+    const [me, them] = await db!
+      .insert(schema.users)
+      .values([
+        { email: `gaps-own-${Date.now()}@example.test`, name: "Test User" },
+        { email: `gaps-other-${Date.now()}@example.test`, name: "Other User" },
+      ])
+      .returning({ id: schema.users.id });
+    try {
+      const { client } = explainClient();
+      const mine = await db!.insert(schema.resumes).values({ userId: me.id, mimeType: "text/plain", sizeBytes: 10, status: "parsed" }).returning();
+      await db!.insert(schema.profiles).values({ resumeId: mine[0].id, version: 1, data: profile, confirmedByUser: true });
+      const theirs = await db!.insert(schema.resumes).values({ userId: them.id, mimeType: "text/plain", sizeBytes: 10, status: "parsed" }).returning();
+      await db!.insert(schema.profiles).values({ resumeId: theirs[0].id, version: 1, data: profile, confirmedByUser: true });
+      const own = await getGapsForOwner(mine[0].id, { userId: me.id }, role, { db: db!, client });
+      const other = await getGapsForOwner(theirs[0].id, { userId: them.id }, role, { db: db!, client });
+      if (!own.ok || !other.ok) throw new Error("no analysis");
+      // Someone else's analysis, a malformed id and extra fields are refused, and nothing changes.
+      expect(await makeDestination(me.id, { analysisId: other.analysisId }, { db: db! })).toEqual({ ok: false, error: "invalid" });
+      expect(await makeDestination(me.id, { analysisId: "nope" }, { db: db! })).toEqual({ ok: false, error: "invalid" });
+      expect(await makeDestination(me.id, { analysisId: own.analysisId, userId: them.id }, { db: db! })).toEqual({ ok: false, error: "invalid" });
+      expect((await currentAnalysis(them.id, db!))?.id).toBe(other.analysisId);
+      // An analysis of an older version of the profile can't be current.
+      await db!.insert(schema.profiles).values({ resumeId: mine[0].id, version: 2, data: profile, confirmedByUser: true });
+      expect(await makeDestination(me.id, { analysisId: own.analysisId }, { db: db! })).toEqual({ ok: false, error: "invalid" });
+      // The sample resume's analysis never becomes the destination this way.
+      const [sample] = await db!.insert(schema.resumes).values({ userId: me.id, mimeType: SAMPLE_MIME, sizeBytes: 10, status: "parsed" }).returning();
+      const [sampleProfile] = await db!.insert(schema.profiles).values({ resumeId: sample.id, version: 1, data: profile, confirmedByUser: true }).returning();
+      const [sampleRow] = await db!
+        .insert(schema.gapAnalyses)
+        .values({ profileId: sampleProfile.id, result: own.analysis, matcherVersion: MATCHER_VERSION })
+        .returning({ id: schema.gapAnalyses.id });
+      expect(await makeDestination(me.id, { analysisId: sampleRow.id }, { db: db! })).toEqual({ ok: false, error: "invalid" });
+      // Every well-formed try counts, refused or not: past the day's limit, any one is refused as over it.
+      for (let i = 0; i < DESTINATION_CHANGES_PER_DAY; i++) await makeDestination(me.id, { analysisId: other.analysisId }, { db: db! });
+      expect(await makeDestination(me.id, { analysisId: sampleRow.id }, { db: db! })).toEqual({ ok: false, error: "limit" });
+    } finally {
+      await db!.delete(schema.users).where(inArray(schema.users.id, [me.id, them.id]));
     }
   });
 
@@ -422,5 +496,8 @@ describe("keepChoices", () => {
     expect(keepChoices(base, { ...base, trackId: null })).toEqual({ ...base, trackId: null });
     expect(keepChoices(base, base)).toEqual(base);
     expect("chosenAt" in keepChoices(base, base)).toBe(false);
+    // An analysis still waiting for "Make this my destination" keeps waiting when rebuilt.
+    expect(keepChoices(base, { ...base, notChosen: true })).toEqual({ ...base, notChosen: true });
+    expect("notChosen" in keepChoices(base, base)).toBe(false);
   });
 });

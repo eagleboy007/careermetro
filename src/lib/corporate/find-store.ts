@@ -22,6 +22,7 @@ import {
 } from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
+import { pickedAt, pickedOnly } from "@/lib/gaps/current";
 import { shownBody } from "@/lib/inbox/hidden";
 import { COMPANY_TEAM, formatAt, MESSAGES_PER_CHAT } from "@/lib/inbox/store";
 import { logEvent } from "@/lib/log";
@@ -205,8 +206,9 @@ async function currentResumes(userIds: string[], db: Db | Tx): Promise<Map<strin
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-    .where(and(inArray(resumes.userId, userIds), sql`${profiles.version} = (select max(p2.version) from profiles p2 where p2.resume_id = ${profiles.resumeId})`))
-    .orderBy(resumes.userId, desc(gapAnalyses.createdAt));
+    // As currentAnalysis: the analysis picked last, never one waiting for "Make this my destination".
+    .where(and(inArray(resumes.userId, userIds), sql`${profiles.version} = (select max(p2.version) from profiles p2 where p2.resume_id = ${profiles.resumeId})`, pickedOnly))
+    .orderBy(resumes.userId, desc(pickedAt), desc(gapAnalyses.createdAt));
   for (const r of rows) {
     // A current sample resume ("Try a sample resume") is a made-up person's: they aren't found until they add their own,
     // and never by an older resume instead.

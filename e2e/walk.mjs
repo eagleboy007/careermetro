@@ -5418,20 +5418,26 @@ await step("hardening: the Life line by keyboard, light, dark and phone", async 
     await p.emulateMedia({ colorScheme: "light" });
   }
 });
-// Change of destination (handoff section 14, open decision 5; docs/plans/change-destination-plan.md): another role
-// picked on the role step works the gaps out again and the Map draws its line, with the earlier line greyed out below
-// it. The earlier line opens with Enter; its panel says the gaps were worked out again and proof carries over, passes
-// axe in light and in dark (after a reload) and fits at 390 px. Switch back makes the walk's role the destination again,
-// with the other role as the earlier line. The walk's role is put back in `finally`, whatever failed.
-await step("change of destination: the earlier line greys out on the Map, and Switch back puts the role back", async () => {
+// Change of destination (handoff section 7, C25, Project manager approved on Milin's behalf, 2026-10-31;
+// docs/plans/change-destination-plan.md). Opening another role's Gaps page from the role step switches nothing: the Map
+// stays on the walk's role, and the page ends on "Make this your destination?". Pressing "Make this my destination"
+// switches it: the Map draws Cloud Engineer, and the walk's role is the earlier line, named "{role} · earlier line ·
+// closed end". The card and the earlier line's panel pass axe in light, in dark (after a reload) and at 390 px with no
+// sideways scroll. "Hide earlier line" in the map head leaves a dotted stub at Gaps, which shows the line again, and the
+// choice is gone after a reload (kept for the visit only). "Switch back to Data Analyst" in the panel switches at once,
+// with no dialog, and Cloud Engineer becomes the earlier line. `finally` makes the walk's role the destination again.
+await step("change of destination: Make this my destination, the earlier line, Hide earlier line and Switch back", async () => {
   const gapsUrl = pathUrl.replace("/path/", "/gaps/");
   const earlier = p.locator('main svg g[data-earlier][role="button"]');
+  const stub = p.locator('main svg g[data-earlier-stub][role="button"]');
   const panel = p.getByRole("complementary", { name: "Pitstop details" });
+  const hideInHead = p.locator("main").getByRole("button", { name: "Hide earlier line" }).first();
+  const card = p.getByRole("region", { name: "Make this your destination?" });
   const openEarlier = async (title) => {
     await earlier.waitFor({ timeout: 10000 });
     await earlier.focus();
     await p.keyboard.press("Enter");
-    await panel.getByRole("heading", { name: `${title} line`, level: 3 }).waitFor({ timeout: 5000 });
+    await panel.getByRole("heading", { name: title, level: 3, exact: true }).waitFor({ timeout: 5000 });
   };
   try {
     await p.setViewportSize({ width: 1280, height: 900 });
@@ -5442,15 +5448,49 @@ await step("change of destination: the earlier line greys out on the Map, and Sw
     await p.waitForURL(/\/gaps\/cloud-engineer$/, { timeout: 60000 });
     await settled();
     await p.getByRole("heading", { level: 1, name: "Your gaps" }).waitFor({ timeout: 30000 });
+    await card.waitFor({ timeout: 10000 });
+    await card.getByText("Looking from Match never switches on its own.").waitFor();
+    await card.scrollIntoViewIfNeeded();
+    await shot("gaps-make-destination");
+    await a11y("gaps-make-destination");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    await card.waitFor({ timeout: 30000 });
+    await a11y("gaps-make-destination-dark");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.reload();
+    await settled();
+    await card.waitFor({ timeout: 30000 });
+    await fitsPhone(p, "the Gaps page with Make this your destination? (dark)");
+    await a11y("gaps-make-destination-phone-dark");
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+
+    // Opening the page switched nothing: the Map is still on the walk's role, with no earlier line.
+    await p.goto(BASE + "/map");
+    await settled();
+    await p.locator("main").getByText(/^Data Analyst · /).first().waitFor({ timeout: 10000 });
+    if (await earlier.count()) throw new Error("opening another role's Gaps page drew an earlier line");
+    if (await hideInHead.count()) throw new Error("Hide earlier line shows with no earlier line");
+
+    // Make this my destination: the card says so, and the Map follows.
+    await p.goto(gapsUrl.replace(/\/gaps\/[^/]+$/, "/gaps/cloud-engineer"));
+    await settled();
+    await card.getByRole("button", { name: "Make this my destination" }).click();
+    await p.getByRole("region", { name: "Cloud Engineer is your destination" }).waitFor({ timeout: 15000 });
     await p.goto(BASE + "/map");
     await settled();
     await p.locator("main").getByText(/^Cloud Engineer · /).first().waitFor({ timeout: 10000 });
-    await earlier.waitFor({ timeout: 10000 });
+    await p.locator("main svg").getByText(/^NEXT DESTINATION · CHANGED /).waitFor({ timeout: 5000 });
     const named = await earlier.getAttribute("aria-label");
-    if (!/^EARLIER LINE · DATA ANALYST, /.test(named ?? "")) throw new Error(`the earlier line is named "${named}"`);
+    if (!/^Data Analyst · earlier line · closed end, /.test(named ?? "")) throw new Error(`the earlier line is named "${named}"`);
+    await p.getByRole("list", { name: "Key" }).getByText("Earlier line: the role you switched from").waitFor();
     await openEarlier("Data Analyst");
-    await panel.getByText(/^Your destination is now Cloud Engineer\. Your gaps were worked out again for it/).waitFor({ timeout: 5000 });
-    await panel.getByText(/Proof counts for every role that asks for the skill\./).waitFor();
+    await panel.getByText("Earlier line · closed end").waitFor({ timeout: 5000 });
+    await panel.getByText(/^You switched to Cloud Engineer on .+\. Nothing you proved is lost\.$/).waitFor();
+    await panel.getByText("Came along to the new line").waitFor();
+    await panel.getByText("Stayed on this line").waitFor();
     await shot("map-earlier-line");
     await a11y("map-earlier-line");
     await p.emulateMedia({ colorScheme: "dark" });
@@ -5466,26 +5506,42 @@ await step("change of destination: the earlier line greys out on the Map, and Sw
     await a11y("map-earlier-line-phone-dark");
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
-    // Switch back: the walk's role is the destination again, and Cloud Engineer is now the earlier line.
+
+    // Hide earlier line: a dotted stub at Gaps shows it again; nothing is kept after a reload.
     await p.reload();
     await settled();
+    await hideInHead.click();
+    if ((await hideInHead.getAttribute("aria-pressed")) !== "true") throw new Error("Hide earlier line isn't pressed after hiding");
+    await stub.waitFor({ timeout: 5000 });
+    if (await earlier.count()) throw new Error("the earlier line still shows when hidden");
+    await a11y("map-earlier-line-hidden");
+    await stub.focus();
+    await p.keyboard.press("Enter");
+    await earlier.waitFor({ timeout: 5000 });
+    await hideInHead.click();
+    await stub.waitFor({ timeout: 5000 });
+    await p.reload();
+    await settled();
+    await earlier.waitFor({ timeout: 10000 });
+
+    // Switch back: at once, no dialog; the walk's role is the destination and Cloud Engineer the earlier line.
     await openEarlier("Data Analyst");
-    await Promise.all([
-      p.waitForURL(/\/gaps\/data-analyst$/, { timeout: 60000 }),
-      panel.getByRole("link", { name: "Switch back to Data Analyst" }).click(),
-    ]);
-    await settled();
-    await p.goto(BASE + "/map");
-    await settled();
-    await p.locator("main").getByText(/^Data Analyst · /).first().waitFor({ timeout: 10000 });
+    await panel.getByRole("button", { name: "Switch back to Data Analyst" }).click();
+    await p.locator("main").getByText(/^Data Analyst · /).first().waitFor({ timeout: 15000 });
+    await panel.getByRole("heading", { name: "Cloud Engineer", level: 3, exact: true }).waitFor({ timeout: 10000 });
     const back = await earlier.getAttribute("aria-label");
-    if (!/^EARLIER LINE · CLOUD ENGINEER, /.test(back ?? "")) throw new Error(`after Switch back the earlier line is named "${back}"`);
+    if (!/^Cloud Engineer · earlier line · closed end, /.test(back ?? "")) throw new Error(`after Switch back the earlier line is named "${back}"`);
   } finally {
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });
-    // Opening the walk's role's Gaps page makes it the destination again, so the steps after see the same line.
+    // Make the walk's role the destination again, whatever failed, so the steps after see the same line.
     await p.goto(gapsUrl);
     await settled();
+    const press = p.getByRole("region", { name: "Make this your destination?" }).getByRole("button", { name: "Make this my destination" });
+    if (await press.count()) {
+      await press.click();
+      await p.getByRole("region", { name: "Data Analyst is your destination" }).waitFor({ timeout: 15000 });
+    }
   }
 });
 await step("hardening: Report and Connect on a profile by keyboard, Cancel gives focus back, light, dark and phone", async () => {

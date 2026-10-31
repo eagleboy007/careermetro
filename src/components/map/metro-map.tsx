@@ -5,7 +5,7 @@ import { NotConfirmedNote } from "@/components/proof/not-confirmed-note";
 import { ChoiceTag } from "@/components/ui/choice-tag";
 import { SampleTag } from "@/components/ui/sample-tag";
 import type { CertificateInput, CertificateResult } from "@/lib/proofs/result";
-import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleDashed, CircleHelp, Map as MapIcon, Pencil, Play, Plus, TriangleAlert } from "lucide-react";
+import { ArrowLeft, Award, BookOpen, BriefcaseBusiness, CircleDashed, CircleHelp, EyeOff, Map as MapIcon, Pencil, Play, Plus, TriangleAlert, Undo2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,7 @@ import { RemoveGoal } from "@/components/gaps/job-check-actions";
 import { NotForMe } from "./not-for-me";
 import { addableGoals, AddPitstopPanel, goalKey, OwnPitstopsPanel } from "./own-pitstops";
 import { Cta, ghost, ICON, Key, Label, List, Panel, plural, seg, Soon, type Item } from "./map-parts";
-import { layoutLine, pitstopLabel, type EarlierBranch, type Layout, type PitstopKind, type Spur, type Station } from "@/lib/map/layout";
+import { layoutLine, pitstopLabel, type EarlierBranch, type EarlierStub, type Layout, type PitstopKind, type Spur, type Station } from "@/lib/map/layout";
 import { defaultZoom, layoutLife, type LifeZoom } from "@/lib/map/life-layout";
 import type { LifeLine, MapLine } from "@/lib/schemas";
 // The Life line shows only after "Life line" is picked, so it loads then, not with the map.
@@ -36,6 +36,7 @@ export function MetroMap({
   line,
   life = null,
   onAddCertificate,
+  onChooseDestination,
   initialMode = "role",
   sample = false,
 }: {
@@ -47,8 +48,12 @@ export function MetroMap({
   sample?: boolean;
   /** Saves a certificate for a prove pitstop; without it the form only says nothing is saved. */
   onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
+  /** "Switch back to {role}" on the earlier line (C25); without it nothing is saved. */
+  onChooseDestination?: (input: { analysisId: string }) => Promise<string | null>;
 }) {
-  const layout = useMemo(() => (line ? layoutLine(line) : null), [line]);
+  // "Hide earlier line" (C25): for this visit only, never stored. Hidden, a dotted stub stays at Gaps.
+  const [earlierHidden, setEarlierHidden] = useState(false);
+  const layout = useMemo(() => (line ? layoutLine(line, { hideEarlier: earlierHidden }) : null), [line, earlierHidden]);
   const [mode, setMode] = useState<"role" | "life">(initialMode);
   const [zoom, setZoom] = useState<LifeZoom>(() => (life ? defaultZoom(life) : "all"));
   const lifeLayout = useMemo(() => (life ? layoutLife(life, zoom) : null), [life, zoom]);
@@ -140,6 +145,13 @@ export function MetroMap({
                 <Play size={16} {...ICON} />
                 Replay my ride
               </button>
+              {line.previous && (
+                // C25: only when there is an earlier line. Hiding changes nothing but the drawing, for this visit.
+                <button type="button" aria-pressed={earlierHidden} className={`${ghost} aria-pressed:bg-surface-2`} onClick={() => setEarlierHidden((h) => !h)}>
+                  <EyeOff size={16} {...ICON} />
+                  Hide earlier line
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -170,7 +182,7 @@ export function MetroMap({
               <LifeSvg layout={lifeLayout} selected={lifeSelected} onSelect={setLifeSelected} />
             </Suspense>
           ) : layout && line ? (
-            <MapSvg layout={layout} line={line} selected={selected} onSelect={select} replay={replay} />
+            <MapSvg layout={layout} line={line} selected={selected} onSelect={select} replay={replay} onShowEarlier={() => setEarlierHidden(false)} />
           ) : (
             <LockedMap />
           )}
@@ -187,7 +199,7 @@ export function MetroMap({
             <Key swatch="bg-[repeating-linear-gradient(90deg,var(--accent)_0_5px,transparent_5px_10px)]">Getting ready (prep)</Key>
             <Key swatch="bg-line">Still ahead</Key>
             {layout && layout.spurs.length > 0 && <Key swatch="bg-[repeating-linear-gradient(90deg,var(--muted)_0_4px,transparent_4px_8px)]">Added by you (never moves the train)</Key>}
-            {layout?.earlier && line.previous && <Key swatch="bg-muted opacity-50">Your earlier line, to {line.previous.role.title} (greyed out)</Key>}
+            {line.previous && <Key swatch="bg-muted opacity-50">Earlier line: the role you switched from</Key>}
             <Key swatch="bg-muted opacity-30">Other people&apos;s lines</Key>
             {layout?.crossings.some((c) => c.nearby) && (
               <li className="inline-flex items-center gap-[7px]">
@@ -251,6 +263,9 @@ export function MetroMap({
               demo={demo}
               onShow={show}
               onChanged={changed}
+              earlierHidden={earlierHidden}
+              onToggleEarlier={() => setEarlierHidden((h) => !h)}
+              onChooseDestination={onChooseDestination}
             />
           )}
         </aside>
@@ -265,13 +280,18 @@ function MapSvg({
   selected,
   onSelect,
   replay,
+  onShowEarlier,
 }: {
   layout: Layout;
   line: MapLine;
   selected: string | null;
   onSelect: (id: string) => void;
   replay: number;
+  /** The stub's tap while the earlier line is hidden (C25): shows it again. */
+  onShowEarlier: () => void;
 }) {
+  // C25: "Next destination · changed {date}" once the person has switched destination.
+  const changed = line.previous?.changedAt ? `NEXT DESTINATION · CHANGED ${shortDate(line.previous.changedAt).toUpperCase()}` : null;
   const keyed = (id: string) => ({
     tabIndex: 0,
     role: "button",
@@ -334,7 +354,7 @@ function MapSvg({
           {line.role.title}
         </text>
         <text x={layout.width - 25} y={82} textAnchor="end" className="fill-muted font-mono text-[13px] tracking-[0.06em]">
-          NEXT DESTINATION · NOT YOUR LAST
+          {changed ?? "NEXT DESTINATION · NOT YOUR LAST"}
         </text>
       </g>
 
@@ -363,6 +383,7 @@ function MapSvg({
       {layout.earlier && line.previous && (
         <EarlierMark branch={layout.earlier} previous={line.previous} selected={selected === "earlier"} {...keyed("earlier")} />
       )}
+      {layout.earlierStub && <EarlierStubMark stub={layout.earlierStub} onShow={onShowEarlier} />}
 
       {layout.crossings.map((c) => {
         const labelX = c.station.x + (c.labelAtTop ? -14 : 14);
@@ -512,9 +533,16 @@ function SpurMark({ sp, selected, ...props }: { sp: Spur; selected: boolean } & 
   );
 }
 
+/** The earlier line's mono name (C25): "{role} · earlier line · closed end". */
+export const earlierName = (title: string) => `${title} · earlier line · closed end`;
+
+/** A date as the Map shows it, in India time, so the server and the browser agree: "20 Oct". */
+export const shortDate = (iso: string) => new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" }).format(new Date(iso));
+
 /**
- * The earlier line's stops and closed end, and its label "EARLIER LINE · title" (handoff section 14). One button for
- * the whole line, whose accessible name starts with the text it shows (WCAG 2.5.3); its panel lists what waits there.
+ * The earlier line's stops, each labelled "Left here" and the goal's name, its short end bar and its mono name (handoff
+ * section 7, C25). Muted grey, never cobalt or a status colour, and the focus ring is ink. One button for the whole
+ * line, whose accessible name starts with the text it shows (WCAG 2.5.3); its panel lists what came along and what stayed.
  */
 function EarlierMark({
   branch,
@@ -522,33 +550,77 @@ function EarlierMark({
   selected,
   ...props
 }: { branch: EarlierBranch; previous: NonNullable<MapLine["previous"]>; selected: boolean } & React.SVGProps<SVGGElement>) {
-  const shown = `EARLIER LINE · ${previous.role.title.toUpperCase()}`;
+  const shown = earlierName(previous.role.title);
   const left = previous.left.length;
   return (
     <g
       data-earlier=""
       className="group cursor-pointer outline-none"
       pointerEvents="bounding-box"
-      aria-label={`${shown}, ${left === 0 ? "no goals" : plural(left, "goal")} left there. Greyed out: it never moves your train`}
+      aria-label={`${shown}, ${left === 0 ? "no goals" : plural(left, "goal")} left here. Greyed out: it never moves your train`}
       {...props}
     >
-      {/* A wide, invisible strip along the level run, so it is easy to tap. */}
-      <rect x={branch.start.x} y={branch.start.y - 18} width={branch.end.x - branch.start.x + 30} height={56} className="fill-transparent" />
+      {/* A wide, invisible strip along the level run and its labels, so it is easy to tap. */}
+      <rect x={branch.start.x} y={branch.start.y - 18} width={branch.end.x - branch.start.x + 30} height={92} className="fill-transparent" />
       <rect
         x={branch.start.x - 8}
         y={branch.start.y - 22}
         width={branch.end.x - branch.start.x + 46}
-        height={64}
+        height={100}
         rx={14}
-        className={`fill-none stroke-accent opacity-0 transition-opacity group-focus-visible:opacity-100 ${selected ? "opacity-100" : ""}`}
+        className={`fill-none stroke-ink opacity-0 transition-opacity group-focus-visible:opacity-100 ${selected ? "opacity-100" : ""}`}
         strokeWidth={2}
       />
       {branch.stops.map((st, i) => (
-        <circle key={i} cx={st.x} cy={st.y} r={6} className="fill-surface stroke-muted" strokeWidth={3} />
+        <g key={i} aria-hidden="true">
+          <circle cx={st.x} cy={st.y} r={6} className="fill-surface stroke-muted" strokeWidth={3} />
+          <text x={st.x} y={st.y + 24} textAnchor="middle" className="fill-muted font-mono text-[10px] tracking-[0.06em]">
+            LEFT HERE
+          </text>
+          <text x={st.x} y={st.y + 40} textAnchor="middle" className="fill-muted font-sans text-[12px]">
+            {st.name}
+          </text>
+        </g>
       ))}
-      <rect x={branch.end.x - 8} y={branch.end.y - 10} width={30} height={20} rx={10} className="fill-surface stroke-muted" strokeWidth={3} />
+      {/* The closed end: a short bar across the line. */}
+      <rect x={branch.end.x - 3} y={branch.end.y - 14} width={6} height={28} rx={3} className="fill-muted opacity-50" />
       <text x={branch.label.x} y={branch.label.y} className="fill-muted font-mono text-[11px] tracking-[0.06em]">
         {shown}
+      </text>
+    </g>
+  );
+}
+
+/** "Earlier line hidden" (C25): the dotted stub left at Gaps for this visit. Tapping it shows the earlier line again. */
+function EarlierStubMark({ stub, onShow }: { stub: EarlierStub; onShow: () => void }) {
+  return (
+    <g
+      data-earlier-stub=""
+      tabIndex={0}
+      role="button"
+      className="group cursor-pointer outline-none"
+      pointerEvents="bounding-box"
+      aria-label="Earlier line hidden. Show the earlier line"
+      onClick={onShow}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onShow();
+        }
+      }}
+    >
+      <path d={stub.d} aria-hidden="true" className="fill-none stroke-muted opacity-50" strokeWidth={6} strokeLinecap="round" strokeDasharray="2 12" />
+      <rect
+        x={stub.label.x - 8}
+        y={stub.label.y - 18}
+        width={160}
+        height={28}
+        rx={10}
+        className="fill-transparent stroke-ink opacity-0 transition-opacity group-focus-visible:opacity-100"
+        strokeWidth={2}
+      />
+      <text x={stub.label.x} y={stub.label.y} className="fill-muted font-mono text-[11px] tracking-[0.06em]">
+        Earlier line hidden
       </text>
     </g>
   );
@@ -639,44 +711,86 @@ function AddCertificate({ goal, onSave }: { goal: MapLine["goals"][number]; onSa
   );
 }
 
+/** A quiet button (C25's "Hide earlier line"): text only, underlined while pressed. */
+const quiet =
+  "inline-flex items-center gap-2 rounded-full px-1.5 py-2 text-[0.84rem] font-medium text-muted hover:text-ink aria-pressed:text-ink aria-pressed:underline aria-pressed:underline-offset-2";
+
 /**
- * The earlier line's panel (handoff section 14, open decision 5): the gaps were worked out again for the new role, the
- * proof carried over, and what waits on the earlier line for a switch back. Opening the earlier role's Gaps page
- * makes it the destination again (docs/plans/change-destination-plan.md).
+ * The earlier line's panel (handoff section 7, C25, Project manager approved on Milin's behalf, 2026-10-31): kicker
+ * "Earlier line · closed end", the earlier role, when the switch happened and that nothing proved is lost, then "Came
+ * along to the new line" and "Stayed on this line", then "Switch back to {role}" (ghost) and "Hide earlier line"
+ * (quiet). Switching back makes that analysis current at once, with no confirmation, and parks this line the same way.
+ * `onSwitchBack` is the server action; without it, or in example data, nothing is saved.
  */
-function EarlierPanel({ line, previous }: { line: MapLine; previous: NonNullable<MapLine["previous"]> }) {
-  const items: Item[] = previous.left.map((g) => ({
+function EarlierPanel({
+  line,
+  previous,
+  hidden,
+  onToggleHidden,
+  onSwitchBack,
+  onSwitched,
+}: {
+  line: MapLine;
+  previous: NonNullable<MapLine["previous"]>;
+  hidden: boolean;
+  onToggleHidden: () => void;
+  onSwitchBack?: (input: { analysisId: string }) => Promise<string | null>;
+  onSwitched: (words: string) => void;
+}) {
+  const [pending, start] = useTransition();
+  const [error, setError] = useState("");
+  const came: Item[] = previous.came.map((g) => ({
+    Icon: g.proved ? Award : g.learnDone ? BookOpen : CircleDashed,
+    title: g.name,
+    detail: g.proved ? "proof kept" : g.learnDone ? "progress kept" : "kept",
+  }));
+  const stayed: Item[] = previous.left.map((g) => ({
     Icon: g.proved ? Award : CircleDashed,
     title: g.name,
-    detail: g.proved ? "proved" : g.ownPitstops > 0 ? `${plural(g.ownPitstops, "pitstop")} added by you, kept` : "kept",
+    detail: g.proved ? "proved, kept" : g.ownPitstops > 0 ? `${plural(g.ownPitstops, "pitstop")} added by you, kept` : "its pitstops kept",
   }));
+  const switchBack = () => {
+    if (pending) return;
+    setError("");
+    const analysisId = previous.analysisId;
+    if (!onSwitchBack || !analysisId || !line.resumeId) {
+      setError("This is example data, so nothing is saved.");
+      return;
+    }
+    start(async () => {
+      const words = await onSwitchBack({ analysisId });
+      if (words) setError(words);
+      else onSwitched(`${previous.role.title} is your destination again. ${line.role.title} is now your earlier line.`);
+    });
+  };
   return (
-    <Panel kicker="Earlier line · greyed out" title={`${previous.role.title} line`}>
+    <Panel kicker="Earlier line · closed end" title={previous.role.title}>
       <p>
-        Your destination is now {line.role.title}. Your gaps were worked out again for it, and your new line branches off at Gaps. Nothing on this line
-        moves your train.
+        You switched to {line.role.title}
+        {previous.changedAt ? ` on ${shortDate(previous.changedAt)}` : ""}. Nothing you proved is lost.
       </p>
+      <Label>Came along to the new line</Label>
+      {came.length > 0 ? <List items={came} /> : <p>No goals are on both lines.</p>}
+      <Label>Stayed on this line</Label>
+      {stayed.length > 0 ? <List items={stayed} /> : <p>Every goal of this line came along.</p>}
       <p>
-        {previous.shared === 0
-          ? "No goals are on both lines."
-          : `${plural(previous.shared, "goal")} ${previous.shared === 1 ? "is" : "are"} on both lines, so the proof, learn ticks and pitstops you added there came with you.`}{" "}
-        Proof counts for every role that asks for the skill.
+        Proved goals keep their place and proof. The pitstop you are on keeps its progress, so your train doesn&apos;t move. Goals the new role also asks
+        for stay, and its new goals take the freed pitstops.
       </p>
-      {items.length > 0 ? (
-        <>
-          <Label>Left on this line</Label>
-          <List items={items} />
-        </>
-      ) : (
-        <p>Every goal of this line is on your new one.</p>
-      )}
-      {line.resumeId && (
-        <>
-          <p>Switching back makes {previous.role.title} your destination again, with everything on this line.</p>
-          <Cta href={`/resume/${line.resumeId}/gaps/${previous.role.slug}`} ghost>
-            Switch back to {previous.role.title}
-          </Cta>
-        </>
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" className={ghost} aria-disabled={pending || undefined} onClick={switchBack}>
+          <Undo2 size={16} {...ICON} />
+          Switch back to {previous.role.title}
+        </button>
+        <button type="button" aria-pressed={hidden} className={quiet} onClick={onToggleHidden}>
+          <EyeOff size={16} {...ICON} />
+          Hide earlier line
+        </button>
+      </div>
+      {error && (
+        <p role="alert" className="text-ink">
+          {error}
+        </p>
       )}
     </Panel>
   );
@@ -691,6 +805,9 @@ function Sheet({
   demo,
   onShow,
   onChanged,
+  earlierHidden,
+  onToggleEarlier,
+  onChooseDestination,
 }: {
   id: string | null;
   layout: Layout;
@@ -702,6 +819,11 @@ function Sheet({
   onShow: (id: string) => void;
   /** After an own pitstop is saved or removed: the panel to show next (or null to stay) and what to say. */
   onChanged: (next: string | null, words: string) => void;
+  /** "Hide earlier line" (C25), kept for this visit only. */
+  earlierHidden: boolean;
+  onToggleEarlier: () => void;
+  /** "Switch back to {role}": makes the earlier line's analysis the destination. */
+  onChooseDestination?: (input: { analysisId: string }) => Promise<string | null>;
 }) {
   // Add a pitstop (FR-58): "add", or "add:<skill>" with that goal picked; "own-<skill>" is one goal's own pitstops.
   if (id && (id === "add" || id.startsWith("add:"))) {
@@ -727,7 +849,18 @@ function Sheet({
     }
   }
 
-  if (id === "earlier" && line.previous) return <EarlierPanel line={line} previous={line.previous} />;
+  if (id === "earlier" && line.previous) {
+    return (
+      <EarlierPanel
+        line={line}
+        previous={line.previous}
+        hidden={earlierHidden}
+        onToggleHidden={onToggleEarlier}
+        onSwitchBack={onChooseDestination}
+        onSwitched={(words) => onChanged("earlier", words)}
+      />
+    );
+  }
 
   const station = layout.stations.find((s) => s.id === id);
   const crossing = layout.crossings.find((c) => `x-${c.slug}` === id);

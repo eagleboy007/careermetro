@@ -10,6 +10,7 @@ import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { eliteOn } from "@/lib/elite/store";
 import { currentAnalysis, type Db as AnalysisDb } from "@/lib/gaps/current";
 import { swappedSkill } from "@/lib/goals/not-for-me";
+import { gapSkillsOf, leftOnEarlierLine } from "@/lib/gaps/destination";
 import { goalsOf } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
 import { jobLabel, jobPrep } from "@/lib/my-jobs/store";
@@ -100,10 +101,16 @@ type AnswerRow = { position: number; answer: string; whatWorked: string | null; 
 const answersOf = async (db: Db | Tx, sessionId: string): Promise<AnswerRow[]> =>
   db.select(answerColumns).from(mockAnswers).where(eq(mockAnswers.sessionId, sessionId)).orderBy(asc(mockAnswers.position));
 
-/** The skills of the person's open goals (not met, not proved, not skipped), as "Your gaps" asks about them. */
+/**
+ * The skills of the person's open goals (not met, not proved, not skipped), as "Your gaps" asks about them. Goals left
+ * on the earlier line after a change of destination wait there.
+ */
 async function openGoalSkills(userId: string, db: Db | Tx): Promise<string[]> {
-  const goals = await goalsOf(userId, db);
-  return goals.filter((g) => g.status !== "met" && g.status !== "skipped" && !g.proved).map((g) => swappedSkill(g, skillGroupMembers) ?? g.skillId);
+  const [goals, analysis] = await Promise.all([goalsOf(userId, db), currentAnalysis(userId, db as unknown as AnalysisDb)]);
+  const gapSkills = gapSkillsOf(analysis);
+  return goals
+    .filter((g) => g.status !== "met" && g.status !== "skipped" && !g.proved && !leftOnEarlierLine(g, gapSkills))
+    .map((g) => swappedSkill(g, skillGroupMembers) ?? g.skillId);
 }
 
 /** The person's latest session that hasn't ended and is still within its time, for /mock to carry on with. */
