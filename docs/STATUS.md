@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (Hand-entered Timetable events (9 from organisers' pages))
+Last updated: 2026-10-31 (Plan for review: On your line (C13), opt-in pitstop sharing, `docs/plans/on-your-line-plan.md`)
 
 ## Built and live (https://careermetro.vercel.app)
 
