@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (B1 link refills loaded)
+Last updated: 2026-10-31 (T170: walk covers the Timetable)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -126,6 +126,7 @@ Last updated: 2026-10-31 (B1 link refills loaded)
   - PR 4, no migration: the daily event feed (`/api/cron/events-feed`, Vercel Cron 05:30 IST; `src/lib/timetable/feed.ts`, `feed-store.ts`) reads each feed in `src/content/event-feeds.json` that is on (iCalendar or confs.tech JSON, 10 s, 2 MB, no redirects), keeps India-city or online events with a topic and an https link, upserts by source key and cancels events still ahead that a complete feed dropped; counts only in logs. FOSS United and confs.tech ship **off**: their terms could not be reached from the build session (`docs/timetable-sources.md`). Next: read both terms and turn them on, then PR 5, the Monday digest.
   - PR 5, no migration: the Monday digest (`/api/cron/events-digest`, Vercel Cron 07:00 IST Monday to Wednesday, the hour before the weekly email; `src/lib/timetable/digest.ts`, `digest-store.ts`) sends people who turned on "Send me this week's events" (now live on `/timetable` and in Settings > Notifications) the soonest 5 matches in the next 7 days, once an India week (`events_digests`), from the shared app-email budget with a cap of 20 a day; one-click off with the weekly email's token (`&k=events`); counts only in logs; privacy page updated. Next: PR 6, Suggest an event.
   - PR 6, migration 0057: "Suggest an event" on the `/timetable` rail (`src/components/timetable/suggest-event-form.tsx`, `src/lib/timetable/suggest-store.ts`) keeps a signed-in member's link and basic fields in `event_suggestions`, whose only allowed status is `pending` (grievance officer, pending item 15): never in `events`, the screen, the teaser or the digest, and nothing publishes it; admins see a read-only queue on `/admin/reports`. https links only (cleaned like Library suggestions, never fetched), 5 tries a day (`event-suggestion`), 20 waiting for events still ahead, nothing typed in logs; export v37 (`timetable.suggestions`), deleted with the account and 90 days after the event ends; privacy page updated.
+  - T170: the e2e walk covers the Timetable (`e2e/walk.mjs`, after the library review step): three seeded synthetic events on the walk account's open goal, Save, I'm going with the prep task (Yes, add it, after a reload, Take it off), the Monday events switch on `/timetable` and in Settings, the `&k=events` off link leaving the weekly My jobs email on, Suggest an event (kept, and a link in the name refused) and the admin's read-only queue; axe on desktop and at 390 px dark; everything seeded is removed after.
 
 - Departures boards: Data research's Mumbai and Pune batch went through the board check (84 asked: 69 passing, 1 404, 2 timeouts, 12 with no India post). The 69 that pass are in `src/content/job-boards.json`, which now holds 281 of the 300 allowed. The feed now maps "service desk agent" to it-support-engineer and "hardware architect" to hardware-design-engineer.
 
