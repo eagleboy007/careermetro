@@ -360,9 +360,21 @@ function PrivateNote({ note }: { note: string }) {
   );
 }
 
+/** Arrow keys, Home and End move focus between a menu's items; any other key is left alone. */
+function moveIn(e: KeyboardEvent, found: NodeListOf<HTMLElement> | undefined) {
+  const items = [...(found ?? [])];
+  if (!items.length) return;
+  const at = items.indexOf(document.activeElement as HTMLElement);
+  const steps: Record<string, number> = { ArrowDown: (at + 1) % items.length, ArrowUp: (at + items.length - 1) % items.length, Home: 0, End: items.length - 1 };
+  if (!(e.key in steps)) return;
+  e.preventDefault();
+  items[steps[e.key]]?.focus();
+}
+
 /**
  * The status chip and its menu: all seven in order, a rule before the two closed ones, "sets 28 Oct" on each and "now"
- * on the current one. Arrow keys move between items; Escape and a click outside close it, with focus back on the chip.
+ * on the current one. Arrow keys, Home and End move between items; Escape, Tab and a click outside close it, with focus
+ * back on the chip.
  * `end` opens the menu from the right edge, for the chip at the right of a folded phone row (C24).
  */
 function StatusMenu({ job, onPick, end = false }: { job: MyJobView; onPick: (s: MyJobStatus) => void; end?: boolean }) {
@@ -382,12 +394,10 @@ function StatusMenu({ job, onPick, end = false }: { job: MyJobView; onPick: (s: 
     chip.current?.focus();
   };
   const keys = (e: KeyboardEvent) => {
-    if (e.key === "Escape") return close();
-    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
-    e.preventDefault();
-    const items = [...(wrap.current?.querySelectorAll<HTMLElement>('[role="menuitemradio"]') ?? [])];
-    const at = items.indexOf(document.activeElement as HTMLElement);
-    items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus();
+    // Tab leaves the menu and closes it too: focus goes back to the chip first and Tab moves on from there, since the
+    // items are out of the Tab order (the arrow keys move between them).
+    if (e.key === "Escape" || e.key === "Tab") return close();
+    moveIn(e, wrap.current?.querySelectorAll<HTMLElement>('[role="menuitemradio"]'));
   };
   return (
     <div ref={wrap} className="relative" onKeyDown={open ? keys : undefined}>
@@ -422,6 +432,7 @@ function StatusMenu({ job, onPick, end = false }: { job: MyJobView; onPick: (s: 
                   close();
                   if (s !== job.status) onPick(s);
                 }}
+                tabIndex={-1}
                 className="flex items-center justify-between gap-3 rounded-[9px] px-2.5 py-2 text-left text-[0.86rem] text-ink outline-none hover:bg-surface-2 focus-visible:bg-surface-2 aria-checked:font-semibold"
               >
                 <span className="inline-flex items-center gap-2">
@@ -457,16 +468,13 @@ function PrepareMenu({ job }: { job: MyJobView }) {
     return () => document.removeEventListener("pointerdown", away);
   }, [open]);
   const keys = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
+    // Escape and Tab close it with focus on the button; Tab then moves on from there, as in the status menu.
+    if (e.key === "Escape" || e.key === "Tab") {
       setOpen(false);
       button.current?.focus();
       return;
     }
-    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
-    e.preventDefault();
-    const items = [...(wrap.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [])];
-    const at = items.indexOf(document.activeElement as HTMLElement);
-    items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus();
+    moveIn(e, wrap.current?.querySelectorAll<HTMLElement>('[role="menuitem"]'));
   };
   const item = "flex flex-col items-start gap-0.5 rounded-[9px] px-2.5 py-2 text-left text-[0.86rem] text-ink outline-none hover:bg-surface-2 focus-visible:bg-surface-2";
   return (
@@ -490,11 +498,11 @@ function PrepareMenu({ job }: { job: MyJobView }) {
           aria-label={`Prepare for ${job.title}`}
           className="absolute left-0 top-[calc(100%+6px)] z-20 flex min-w-[280px] flex-col rounded-[14px] border border-line bg-surface p-1.5 shadow-[0_14px_40px_-20px_var(--shadow)] min-[760px]:left-auto min-[760px]:right-0"
         >
-          <Link role="menuitem" href={prepareHref(job.ref, "practice")} className={item}>
+          <Link role="menuitem" tabIndex={-1} href={prepareHref(job.ref, "practice")} className={item}>
             Practice on this job&apos;s skills
             <span className="text-[0.76rem] text-muted">Still-open goals first, then what only this job asks for. Free.</span>
           </Link>
-          <Link role="menuitem" href={prepareHref(job.ref, "mock")} className={item}>
+          <Link role="menuitem" tabIndex={-1} href={prepareHref(job.ref, "mock")} className={item}>
             <span className="inline-flex items-center gap-1.5">
               Mock interview for this job
               <span className="rounded-full bg-elite px-1.5 py-px font-mono text-[0.6rem] font-medium uppercase tracking-[0.06em] text-on-elite">Elite</span>
@@ -549,9 +557,17 @@ export function EditSheet({
   const set = (patch: Partial<typeof values>) => setValues((v) => ({ ...v, ...patch }));
   useEffect(() => {
     const d = dialog.current;
+    // The control that opened the sheet (Edit, or the status chip for Interview with no date). The sheet leaves the
+    // page with the list's state rather than by close(), so the browser can't give focus back itself: Escape, Cancel,
+    // Save and a click outside all return it here, never to the page.
+    const active = document.activeElement;
+    const opener = active instanceof HTMLElement && !d?.contains(active) ? active : null;
     if (d && !d.open) d.showModal();
     if (focus === "interview") interviewField.current?.focus();
-    return () => d?.close();
+    return () => {
+      d?.close();
+      if (opener?.isConnected) opener.focus();
+    };
   }, [focus]);
   const run = async (call: () => Promise<string | null>) => {
     if (busy) return;
@@ -921,6 +937,8 @@ export function AddJobBox({
                   reset();
                   setError(null);
                   setSaid("");
+                  // Clear goes away with the banner, so focus moves to the emptied box, never to the page.
+                  document.getElementById(`${ids}-text`)?.focus();
                 }}
                 className={`${btn} ${small} text-ink hover:bg-surface-2`}
               >

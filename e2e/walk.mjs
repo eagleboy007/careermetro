@@ -661,6 +661,136 @@ await step("add a pitstop: add, edit and remove one of your own on the Map", asy
   if (removed.ownPitstops?.length) throw new Error("a removed pitstop is still in the download");
   if (analyses(removed) !== analyses(before)) throw new Error("removing a pitstop changed the gap analysis");
 });
+// Hardening pass since PR 240 (docs/STATUS.md): keyboard paths and focus, and axe in dark at 390 px after a reload,
+// for what was built from My jobs on. Each `hardening:` step sits right after the step that sets up its screen, as the
+// Library's does, since it needs the state that step leaves, and puts back what it changes. These helpers serve them
+// (the end-of-walk hardening steps keep their own).
+/** The focused element's name as a check sees it: its aria-label, else its text, spaces collapsed. */
+const activeName = (q) =>
+  q.evaluate(() => {
+    const el = document.activeElement;
+    return (el?.getAttribute("aria-label") ?? el?.textContent ?? "").replace(/\s+/g, " ").trim();
+  });
+/** Waits until the focused element's name matches `name`. */
+const focusIs = async (q, name, what) => {
+  const ok = await q
+    .waitForFunction(
+      ([source, flags]) => {
+        const el = document.activeElement;
+        return new RegExp(source, flags).test((el?.getAttribute("aria-label") ?? el?.textContent ?? "").replace(/\s+/g, " ").trim());
+      },
+      [name.source, name.flags],
+      { timeout: 5000 },
+    )
+    .then(
+      () => true,
+      () => false,
+    );
+  if (!ok) throw new Error(`${what}: focus is on "${await activeName(q)}", not ${name}`);
+};
+/** Waits until `locator` has focus. */
+const focusOn = async (q, locator, what) => {
+  const el = await locator.elementHandle({ timeout: 5000 });
+  const ok = await q.waitForFunction((e) => e === document.activeElement, el, { timeout: 5000 }).then(
+    () => true,
+    () => false,
+  );
+  if (!ok) throw new Error(`${what}: focus is on "${await activeName(q)}"`);
+};
+/** Presses Tab until the focused element's name matches, at most `max` times. */
+const tabTo = async (q, name, what, max = 40) => {
+  for (let k = 0; k < max; k++) {
+    await q.keyboard.press("Tab");
+    if (name.test(await activeName(q))) return;
+  }
+  throw new Error(`${what}: ${max} presses of Tab never reached ${name}`);
+};
+/** The focused element draws a focus ring (the outline from :focus-visible in globals.css). */
+const ringShows = async (q, what) => {
+  if ((await q.evaluate(() => getComputedStyle(document.activeElement).outlineStyle)) === "none") throw new Error(`${what} shows no focus ring`);
+};
+const noSideScroll = async (q, what) => {
+  const over = await q.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  if (over > 1) throw new Error(`${what} scrolls sideways at 390px (${over}px)`);
+};
+// Add a pitstop by keyboard: Enter on the button puts focus in Name, Enter in Name adds it and focus goes to the panel's
+// heading; Escape or Cancel on a change gives focus back to its Edit button. In dark at 390 px after a reload the spur
+// opens with Enter, the panel passes axe and fits, and Remove by keyboard puts focus on the heading again.
+await step("hardening: Add a pitstop by keyboard, Escape on a change gives focus back, dark at 390 px", async () => {
+  const NAME = "Hardening labs";
+  const onEdit = new RegExp(`^Edit pitstop: ${NAME}$`);
+  const onHeading = () => p.waitForFunction(() => document.activeElement?.textContent?.trim().startsWith("Your pitstops on "), null, { timeout: 15000 });
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/map");
+    await settled();
+    const panel = p.getByRole("complementary", { name: "Pitstop details" });
+    const add = p.getByRole("button", { name: "Add a pitstop", exact: true });
+    await add.waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    await add.focus();
+    await p.keyboard.press("Enter");
+    await panel.getByRole("heading", { name: "Where do you want to halt?" }).waitFor({ timeout: 10000 });
+    await focusOn(p, panel.getByLabel("Name", { exact: true }), "Add a pitstop");
+    await ringShows(p, "the pitstop's Name box");
+    await p.keyboard.type(NAME);
+    await Promise.all([
+      p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/api/pitstops")),
+      p.keyboard.press("Enter"),
+    ]);
+    await panel.getByRole("status").filter({ hasText: `Pitstop added: ${NAME}.` }).waitFor({ timeout: 15000 });
+    await onHeading();
+    // From the heading, Tab reaches Edit; Enter opens the change on Name; Escape closes it, focus back on Edit.
+    await tabTo(p, onEdit, "the panel of your own pitstops", 6);
+    await p.keyboard.press("Enter");
+    await focusOn(p, panel.getByLabel("Name", { exact: true }), "Edit pitstop");
+    await p.keyboard.press("Escape");
+    await panel.getByRole("button", { name: "Save pitstop", exact: true }).waitFor({ state: "detached", timeout: 5000 });
+    await focusIs(p, onEdit, "Escape on a pitstop change");
+    // Cancel by keyboard does the same.
+    await p.keyboard.press("Enter");
+    await panel.getByRole("button", { name: "Save pitstop", exact: true }).waitFor({ timeout: 5000 });
+    await tabTo(p, /^Cancel$/, "a pitstop change", 12);
+    await p.keyboard.press("Enter");
+    await panel.getByRole("button", { name: "Save pitstop", exact: true }).waitFor({ state: "detached", timeout: 5000 });
+    await focusIs(p, onEdit, "Cancel on a pitstop change");
+
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    const spur = p.locator(`svg g[role="button"][aria-label^="Added by you ${NAME},"]`);
+    await spur.waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    await spur.focus();
+    await p.keyboard.press("Enter");
+    await panel.getByRole("heading", { name: /^Your pitstops on / }).waitFor({ timeout: 5000 });
+    await noSideScroll(p, "the Map with your own pitstop open (dark)");
+    await a11y("hardening-map-own-pitstop-phone-dark");
+    await panel.getByRole("button", { name: `Remove this pitstop: ${NAME}` }).focus();
+    await Promise.all([
+      p.waitForResponse((r) => r.request().method() === "DELETE" && r.url().includes("/api/pitstops/")),
+      p.keyboard.press("Enter"),
+    ]);
+    await panel.getByRole("status").filter({ hasText: "Removed. Your line is shorter again." }).waitFor({ timeout: 15000 });
+    await onHeading();
+  } finally {
+    // A pitstop a failed check left behind goes, so the steps after see the line as it was.
+    if (process.env.DATABASE_URL) {
+      const { default: postgres } = await import("postgres");
+      const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+      try {
+        await sql`delete from path_steps where source = 'user' and reason = ${NAME}
+          and goal_id in (select g.id from user_goals g join users u on u.id = g.user_id where u.email like ${testEmail + "%"})`;
+      } finally {
+        await sql.end();
+      }
+    }
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
+});
 // Today's live cards (v44 gap items 8 to 10): no example data for a signed-in person. The signal check, when the bank
 // has a question for today's goal or the next, is checked on the server and ticks the ride's signal task (a ride day);
 // the board shows live rows or says why it has none; On your line shows only with three people who can be counted.
@@ -1304,6 +1434,231 @@ await step("weekly My jobs email: Settings preview, and the one-tap turn-off wit
   } finally {
     if (madeFor) await sql`delete from user_settings where user_id = ${madeFor}`;
     await sql.end();
+  }
+});
+// Hardening (since PR 240): My jobs by keyboard only. The status menu opens on the current status, the arrow keys move in
+// it, Escape gives focus back to the chip and Tab leaves it closed; Prepare does the same; the edit sheet gives focus back
+// to Edit on Escape and on Save. Then, in dark at 390 px after a reload: Today's interview card (C20) by Tab, a folded
+// row (C24) opened and closed by keyboard, the shared-from-phone banner's Clear, and "See this week's" in Settings.
+// The stand-in job's status and interview date are put back in `finally`.
+await step("hardening: My jobs, Today's interview card and the shared banner by keyboard, dark at 390 px", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to put the job back");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  let kept = null;
+  try {
+    const [me] = await sql`select id from users where email like ${testEmail + "%"} order by created_at desc limit 1`;
+    if (!me) throw new Error("the walk account isn't in the database");
+    [kept] = await sql`select s.id, s.stage, s.applied_at, s.interview_at, s.status_at from job_saves s join job_checks c on c.id = s.job_check_id
+      where s.user_id = ${me.id} and c.title = 'Fleet Planning Analyst' order by s.saved_at desc nulls last limit 1`;
+    if (!kept) throw new Error("the stand-in job isn't in My jobs");
+
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/departures?tab=mine");
+    await settled();
+    const list = p.getByRole("region", { name: "My jobs" });
+    const row = list.getByRole("listitem").filter({ hasText: "Fleet Planning Analyst" }).filter({ hasText: "Example Freight Pvt Ltd" });
+    // One chip shows at each width: the full row's at 760 px and wider, the folded head's below.
+    const chip = row.getByRole("button", { name: /^Status: / });
+    await chip.waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    const status = /^Status: (.+)\. Change it$/.exec((await chip.getAttribute("aria-label")) ?? "")?.[1];
+    if (status !== "Saved") throw new Error(`the stand-in job is ${status}, not Saved`);
+    const onChip = new RegExp(`^Status: ${status}\\. Change it$`);
+    const menu = row.getByRole("menu", { name: /^Status of / });
+    const onItem = (checked) =>
+      p.waitForFunction((c) => document.activeElement?.getAttribute("role") === "menuitemradio" && document.activeElement.getAttribute("aria-checked") === c, String(checked), {
+        timeout: 5000,
+      });
+    await chip.focus();
+    await p.keyboard.press("Enter");
+    await menu.waitFor({ timeout: 5000 });
+    await onItem(true);
+    await ringShows(p, "the status menu's current item");
+    await p.keyboard.press("ArrowDown");
+    await onItem(false);
+    await p.keyboard.press("End");
+    await focusIs(p, /^Withdrawn/, "End in the status menu");
+    await p.keyboard.press("Escape");
+    await menu.waitFor({ state: "detached", timeout: 5000 });
+    await focusIs(p, onChip, "Escape on the status menu");
+    // Tab leaves an open menu closed, and goes on past the chip rather than through the seven items.
+    await p.keyboard.press("Enter");
+    await menu.waitFor({ timeout: 5000 });
+    await p.keyboard.press("Tab");
+    await menu.waitFor({ state: "detached", timeout: 5000 });
+    await focusIs(p, /^Prepare for this job$/, "Tab out of the status menu");
+
+    // Prepare: Enter opens it on its first link, ArrowDown reaches the second, Escape gives focus back to the button.
+    const prepare = row.getByRole("menu", { name: /^Prepare for / });
+    await p.keyboard.press("Enter");
+    await prepare.waitFor({ timeout: 5000 });
+    await focusIs(p, /^Practice on this job's skills/, "Prepare for this job");
+    await ringShows(p, "Prepare's first link");
+    await p.keyboard.press("ArrowDown");
+    await focusIs(p, /^Mock interview for this job/, "ArrowDown in Prepare");
+    await p.keyboard.press("Escape");
+    await prepare.waitFor({ state: "detached", timeout: 5000 });
+    await focusIs(p, /^Prepare for this job$/, "Escape on Prepare");
+
+    // The edit sheet: Enter on Edit opens it with focus inside; Escape closes it with focus back on Edit.
+    const onEdit = /^Edit Fleet Planning Analyst at /;
+    const sheet = p.getByRole("dialog", { name: /^Fleet Planning Analyst/ });
+    await p.keyboard.press("Tab");
+    await focusIs(p, onEdit, "Tab after Prepare");
+    await p.keyboard.press("Enter");
+    await sheet.waitFor({ timeout: 5000 });
+    await p.waitForFunction(() => document.activeElement?.closest("dialog[open]") != null, null, { timeout: 5000 });
+    await p.keyboard.press("Escape");
+    await sheet.waitFor({ state: "detached", timeout: 5000 });
+    await focusIs(p, onEdit, "Escape on the edit sheet");
+    // An interview two India days out, saved with Enter on Save: focus is back on Edit and the row says Interview.
+    await p.keyboard.press("Enter");
+    await sheet.waitFor({ timeout: 5000 });
+    const interview = sheet.getByLabel("Interview · date and time, IST");
+    await interview.focus();
+    await ringShows(p, "the interview field's box");
+    const inTwo = new Date(Date.now() + 5.5 * 3600_000 + 2 * 86_400_000).toISOString().slice(0, 10);
+    await interview.fill(`${inTwo}T11:00`);
+    await sheet.getByRole("button", { name: "Save", exact: true }).focus();
+    await p.keyboard.press("Enter");
+    await sheet.waitFor({ state: "detached", timeout: 10000 });
+    await focusIs(p, onEdit, "Save on the edit sheet");
+    await row.getByRole("button", { name: /^Status: Interview/ }).waitFor({ timeout: 10000 });
+
+    // Today's interview card in dark at 390 px, after a reload: its three links in order by Tab, each with a ring.
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.goto(BASE + "/today");
+    await settled();
+    await p.reload();
+    await settled();
+    const card = p.getByRole("region", { name: "Next interview" });
+    await card.getByRole("heading", { name: "Interview in 2 days" }).waitFor({ timeout: 15000 });
+    await noSideScroll(p, "Today with the interview card (dark)");
+    await a11y("hardening-today-interview-phone-dark");
+    await card.getByRole("link", { name: "Practise its skills" }).focus();
+    await p.keyboard.press("Tab");
+    await focusIs(p, /^Mock interview$/, "Tab on Today's interview card");
+    await ringShows(p, "the interview card's Mock interview link");
+    await p.keyboard.press("Tab");
+    await focusIs(p, /^My jobs$/, "Tab on Today's interview card");
+
+    // A folded row (C24): Enter opens it with focus kept on it, Tab reaches its chip and then Edit, Space folds it again.
+    await p.goto(BASE + "/departures?tab=mine");
+    await settled();
+    const fold = (expanded) => row.getByRole("button", { name: /^Fleet Planning Analyst/, expanded });
+    await fold(false).waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    await fold(false).focus();
+    await p.keyboard.press("Enter");
+    await fold(true).waitFor({ timeout: 5000 });
+    await p.waitForFunction(() => document.activeElement?.getAttribute("aria-expanded") === "true" && document.activeElement.closest("[data-my-job]") != null, null, {
+      timeout: 5000,
+    });
+    await p.keyboard.press("Tab");
+    await focusIs(p, /^Status: Interview\. Change it$/, "Tab from a folded row's head");
+    await tabTo(p, onEdit, "an open folded row", 6);
+    await ringShows(p, "Edit on an open folded row");
+    await noSideScroll(p, "an open folded My jobs row (dark)");
+    await a11y("hardening-my-jobs-row-open-phone-dark");
+    await fold(true).focus();
+    await p.keyboard.press("Space");
+    await fold(false).waitFor({ timeout: 5000 });
+
+    // Shared from the phone, too short to check at once: the banner fits, and Clear by keyboard puts focus in the box.
+    await p.goto(BASE + "/today");
+    await settled();
+    await Promise.all([
+      p.waitForURL(/\/departures\?tab=mine/, { timeout: 15000 }),
+      p.evaluate(
+        ({ text, url }) => {
+          const form = Object.assign(document.createElement("form"), { method: "post", action: "/share" });
+          for (const [name, value] of Object.entries({ title: "", text, url })) form.append(Object.assign(document.createElement("input"), { type: "hidden", name, value }));
+          document.body.append(form);
+          form.submit();
+        },
+        { text: "Analyst role, details to follow (e2e hardening)", url: "https://careers.example.com/hardening" },
+      ),
+    ]);
+    const box = p.getByRole("region", { name: "Add a job you found" });
+    const banner = box.getByText("Shared from your phone.", { exact: false });
+    await banner.waitFor({ timeout: 15000 });
+    await noSideScroll(p, "the shared-from-phone banner (dark)");
+    await a11y("hardening-my-jobs-shared-phone-dark");
+    await box.getByRole("button", { name: "Clear", exact: true }).focus();
+    await p.keyboard.press("Enter");
+    await banner.waitFor({ state: "detached", timeout: 5000 });
+    await focusOn(p, box.getByLabel("Job description"), "Clear on the shared banner");
+
+    // Settings: "See this week's" opens by Enter with focus kept on it, and Space closes it.
+    await p.goto(BASE + "/settings#acc-notif");
+    await settled();
+    const notif = p.getByRole("region", { name: "Notifications" });
+    await notif.getByRole("button", { name: "See this week's" }).waitFor({ timeout: 10000 });
+    await notif.getByRole("button", { name: "See this week's" }).focus();
+    await p.keyboard.press("Enter");
+    await notif.getByRole("button", { name: "Hide this week's", expanded: true }).waitFor({ timeout: 5000 });
+    await focusIs(p, /^Hide this week's$/, "Enter on See this week's");
+    await noSideScroll(p, "Settings with this week's email open (dark)");
+    await a11y("hardening-settings-weekly-preview-phone-dark");
+    await p.keyboard.press("Space");
+    await notif.getByRole("button", { name: "See this week's", expanded: false }).waitFor({ timeout: 5000 });
+  } finally {
+    if (kept)
+      await sql`update job_saves set stage = ${kept.stage}, applied_at = ${kept.applied_at}, interview_at = ${kept.interview_at}, status_at = ${kept.status_at}
+        where id = ${kept.id}`;
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await sql.end();
+  }
+});
+// Hardening (since PR 240): a business role page from batch B1 and the email off page, signed out, by keyboard, in light
+// and dark (each after a reload) at 390 px. Nothing is pressed that changes anything.
+await step("hardening: a business role page and the email off page by keyboard, signed out, light and dark at 390 px", async () => {
+  const out = await b.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const q = await out.newPage();
+  q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+  q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+  try {
+    // The roles list reaches Key Account Manager by keyboard; its page has A normal day; Tab reaches All roles.
+    await q.goto(BASE + "/roles");
+    await q.getByRole("heading", { name: "What each role asks for", level: 1 }).waitFor({ timeout: 15000 });
+    await q.getByRole("link", { name: /^Key Account Manager\b/ }).focus();
+    await q.keyboard.press("Enter");
+    await q.waitForURL(/\/roles\/key-account-manager$/, { timeout: 15000 });
+    const role = q.getByRole("heading", { name: "Key Account Manager", level: 1 });
+    for (const scheme of ["light", "dark"]) {
+      await q.emulateMedia({ colorScheme: scheme });
+      await q.reload();
+      await role.waitFor({ timeout: 15000 });
+      await q.getByRole("heading", { name: "A normal day", level: 2 }).waitFor();
+      await noSideScroll(q, `a business role page (${scheme})`);
+      await axeOn(q, `hardening-role-business-phone-${scheme}`);
+    }
+    await tabTo(q, /^All roles$/, "a business role page");
+    await ringShows(q, "All roles");
+    await q.keyboard.press("Enter");
+    await q.waitForURL(/\/roles$/, { timeout: 15000 });
+
+    // The email off page, in dark after a reload: Tab reaches Turn it off, with a ring; it isn't pressed. Then the page
+    // it leads to (the Monday events email's here), whose Open Settings Tab reaches too.
+    await q.goto(`${BASE}/email/off?t=${"h".repeat(43)}`);
+    await q.reload();
+    await q.getByRole("heading", { name: "Turn off the weekly My jobs email?" }).waitFor({ timeout: 10000 });
+    await noSideScroll(q, "the email off page (dark)");
+    await axeOn(q, "hardening-email-off-phone-dark");
+    await tabTo(q, /^Turn it off$/, "the email off page");
+    await ringShows(q, "Turn it off");
+    await q.goto(`${BASE}/email/off?done=1&k=events`);
+    await q.reload();
+    await q.getByRole("heading", { name: "The Monday events email is off" }).waitFor({ timeout: 10000 });
+    await noSideScroll(q, "the email off page once done (dark)");
+    await axeOn(q, "hardening-email-off-done-phone-dark");
+    await tabTo(q, /^Open Settings$/, "the email off page once done");
+  } finally {
+    await out.close();
   }
 });
 // Job search switch and notice period (docs/plans/job-search-plan.md, handoff 6). "Looking for a job" off on Departures
@@ -2057,6 +2412,110 @@ await step("me editing: add, edit and delete a role, education, a story and inte
   await shot("me-editing-phone");
   await p.setViewportSize({ width: 1280, height: 900 });
   if (overflow) throw new Error("/me scrolls sideways at 360px with the story form open");
+});
+// Hardening (since PR 240): folded sections (C23) by keyboard. On Me, three interests added with Enter fold the list past
+// three; Enter on "Show 1 more" opens it with focus kept on the button, Space folds it again. View as others opens and
+// closes by keyboard with focus moved to the control that undoes it, and folds its own copy. The resume editor opens one
+// section at a time from its heading buttons. Light, then dark at 390 px after a reload. The interests go in `finally`.
+await step("hardening: folded sections by keyboard on Me, View as others and the resume editor, dark at 390 px", async () => {
+  const ADDED = ["Hardening chess", "Hardening trekking", "Hardening sketching"];
+  const main = p.locator("main").first();
+  const more = (expanded) => main.getByRole("button", { name: expanded ? /^Show less interests$/ : /^Show \d+ more interests$/, expanded });
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/me");
+    await settled();
+    const box = main.getByLabel("Add an interest");
+    await box.waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    for (const name of ADDED) {
+      await box.focus();
+      await p.keyboard.type(name);
+      await p.keyboard.press("Enter");
+      await main.getByRole("button", { name: `Remove ${name}`, exact: true }).waitFor({ timeout: 15000 });
+      await focusOn(p, box, `adding ${name}`);
+    }
+    // The fold: Enter opens it and focus stays on the button; Space folds it again.
+    await more(false).focus();
+    await p.keyboard.press("Enter");
+    await more(true).waitFor({ timeout: 5000 });
+    await focusIs(p, /^Show less interests$/, "Enter on Show more interests");
+    await ringShows(p, "Show less interests");
+    await p.keyboard.press("Space");
+    await more(false).waitFor({ timeout: 5000 });
+    await focusIs(p, /^Show \d+ more interests$/, "Space on Show less interests");
+
+    // View as others and back by keyboard, each moving focus to the control that undoes it.
+    const view = main.getByRole("button", { name: "View as others", exact: true });
+    const openOthers = async () => {
+      await view.focus();
+      await p.keyboard.press("Enter");
+      await focusIs(p, /^Back to editing$/, "Enter on View as others");
+    };
+    const closeOthers = async () => {
+      await p.keyboard.press("Enter");
+      await focusIs(p, /^View as others$/, "Enter on Back to editing");
+    };
+    await openOthers();
+    await more(false).focus();
+    await p.keyboard.press("Enter");
+    await more(true).waitFor({ timeout: 5000 });
+    await focusIs(p, /^Show less interests$/, "Enter on Show more interests in View as others");
+    await main.getByRole("button", { name: "Back to editing", exact: true }).focus();
+    await closeOthers();
+
+    // Dark at 390 px after a reload: Me, then View as others, fit and pass axe.
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    await more(false).waitFor({ timeout: 10000 });
+    await noSideScroll(p, "Me with folded sections (dark)");
+    await a11y("hardening-me-folded-phone-dark");
+    await openOthers();
+    await noSideScroll(p, "View as others (dark)");
+    await a11y("hardening-me-as-others-phone-dark");
+    await closeOthers();
+
+    // The resume editor: Enter on Work opens it and folds About you; focus stays on Work, and Tab goes into its fields.
+    const resumeId = /\/resume\/([^/]+)\//.exec(pathUrl)?.[1];
+    if (!resumeId) throw new Error("no resume id from the path step");
+    await p.goto(`${BASE}/resume/${resumeId}`);
+    await settled();
+    const about = (expanded) => main.getByRole("button", { name: /^About you/, expanded });
+    const work = (expanded) => main.getByRole("button", { name: /^Work/, expanded });
+    await about(true).waitFor({ timeout: 10000 });
+    await p.waitForLoadState("networkidle");
+    await work(false).focus();
+    await p.keyboard.press("Enter");
+    await work(true).waitFor({ timeout: 5000 });
+    await about(false).waitFor({ timeout: 5000 });
+    await p.waitForFunction(() => document.activeElement?.getAttribute("aria-expanded") === "true" && document.activeElement.textContent?.trim().startsWith("Work"), null, {
+      timeout: 5000,
+    });
+    await ringShows(p, "the Work section's heading button");
+    await p.keyboard.press("Tab");
+    if (!["INPUT", "BUTTON"].includes(await p.evaluate(() => document.activeElement?.tagName))) throw new Error("Tab from an open section's heading doesn't reach its fields");
+    await noSideScroll(p, "the resume editor with Work open (dark)");
+    await a11y("hardening-resume-editor-phone-dark");
+    await work(true).focus();
+    await p.keyboard.press("Space");
+    await work(false).waitFor({ timeout: 5000 });
+  } finally {
+    if (process.env.DATABASE_URL) {
+      const { default: postgres } = await import("postgres");
+      const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+      try {
+        await sql`delete from user_interests where name in ${sql(ADDED)}
+          and user_id in (select id from users where email like ${testEmail + "%"})`;
+      } finally {
+        await sql.end();
+      }
+    }
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+  }
 });
 await step("delete account, then restore it by signing in again", async () => {
   await p.goto(BASE + "/settings");
@@ -3551,6 +4010,115 @@ await step("timetable: matched events, Save, I'm going with a prep task, the Mon
       if (before)
         await sql`update user_settings set email_weekly_summary = ${before.email_weekly_summary}, email_off_token = ${before.email_off_token},
           events_digest = ${before.events_digest} where user_id = ${me.id}`;
+      else await sql`delete from user_settings where user_id = ${me.id}`;
+    }
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await sql.end();
+  }
+});
+// Hardening (since PR 240): the Timetable by keyboard only. The step above already runs axe on it in light and dark at
+// 390 px, so this one checks keys and focus: the prep question's buttons and Take it off give focus back to Going, the
+// Monday switch answers to Space, and Escape or Cancel closes Suggest an event with focus back on its button and
+// nothing sent. Its own event, the marks and the switch are put back in `finally`.
+await step("hardening: the Timetable by keyboard, focus back to Going and to Suggest an event", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to seed an event");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const run = `e2e-hardening-${Date.now()}`;
+  const TITLE = `Synthetic hardening online meetup ${run.slice(-6)}`;
+  const LINK = `https://example.org/events/${run}-suggested`;
+  let me = null;
+  let before = undefined;
+  try {
+    [me] = await sql`select id from users where email like ${testEmail + "%"} order by created_at desc limit 1`;
+    if (!me) throw new Error("the walk account isn't in the database");
+    [before] = await sql`select events_digest from user_settings where user_id = ${me.id}`;
+    const [goal] = await sql`select coalesce(swapped_to, skill_id) as skill from user_goals
+      where user_id = ${me.id} and status in ('active', 'renew') order by position, skill_id limit 1`;
+    if (!goal) throw new Error("the walk account has no open goal for an event to match");
+    const startsAt = new Date(Date.now() + 2 * 86_400_000 + 2 * 3600_000);
+    const [row] = await sql`insert into events (source, source_key, source_url, title, organiser, kind, starts_at, ends_at, online, city, venue, cost, status, checked_at)
+      values ('feed', ${`${run}-a`}, ${`https://example.org/events/${run}-a`}, ${TITLE}, 'Example Community (synthetic)', 'online',
+        ${startsAt}, ${new Date(startsAt.getTime() + 2 * 3600_000)}, true, null, null, 'Free', 'live', now())
+      returning id`;
+    await sql`insert into event_topics (event_id, kind, topic) values (${row.id}, 'skill', ${goal.skill})`;
+
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/timetable");
+    await settled();
+    const card = p.getByRole("article", { name: TITLE, exact: true });
+    await card.waitFor({ timeout: 15000 });
+    await p.waitForLoadState("networkidle");
+    const ask = card.getByRole("group", { name: "Prep task" });
+    const inAsk = () => p.waitForFunction(() => document.activeElement?.closest('[aria-label="Prep task"]') != null, null, { timeout: 5000 });
+
+    // Enter on I'm going moves focus into the prep question; No thanks closes it with focus back on Going.
+    await card.getByRole("button", { name: "I'm going", exact: true }).focus();
+    await p.keyboard.press("Enter");
+    await ask.waitFor({ timeout: 10000 });
+    await inAsk();
+    await tabTo(p, /^No thanks$/, "the prep question", 4);
+    await p.keyboard.press("Enter");
+    await ask.waitFor({ state: "detached", timeout: 5000 });
+    await focusIs(p, /^Going$/, "No thanks on the prep question");
+    // Enter again takes the mark off, and focus stays; Enter once more asks again, and Yes, add it gives focus back to Going.
+    await p.keyboard.press("Enter");
+    await card.getByRole("status").filter({ hasText: "Removed from your plans." }).waitFor({ timeout: 10000 });
+    await focusIs(p, /^I'm going$/, "Going pressed again");
+    await p.keyboard.press("Enter");
+    await ask.waitFor({ timeout: 10000 });
+    await inAsk();
+    await focusIs(p, /^Yes, add it$/, "the prep question's first button");
+    await p.keyboard.press("Enter");
+    await card.getByRole("status").filter({ hasText: /^Added\. It shows on your ride on the day/ }).waitFor({ timeout: 10000 });
+    await focusIs(p, /^Going$/, "Yes, add it");
+    await ringShows(p, "Going");
+    // Take it off goes away once pressed, so focus goes back to Going as well.
+    await card.getByRole("button", { name: "Take it off" }).focus();
+    await p.keyboard.press("Enter");
+    await card.getByRole("status").filter({ hasText: "Prep task taken off your ride. You're still going." }).waitFor({ timeout: 10000 });
+    await focusIs(p, /^Going$/, "Take it off");
+
+    // The Monday switch: Space changes it, and focus moves to the line that says so (the switch is busy while it saves).
+    const monday = p.getByRole("region", { name: "Every Monday" });
+    const digest = monday.getByRole("checkbox", { name: /^Send me this week.s events/ });
+    await digest.waitFor({ state: "attached", timeout: 10000 });
+    const wasOn = await digest.isChecked();
+    await digest.focus();
+    await p.keyboard.press("Space");
+    await monday
+      .getByRole("status")
+      .filter({ hasText: wasOn ? "Off. We won't send it." : "On. The next one comes on Monday morning, if an event matches." })
+      .waitFor({ timeout: 10000 });
+    await p.waitForFunction(() => document.activeElement?.getAttribute("role") === "status", null, { timeout: 5000 });
+    if ((await digest.isChecked()) === wasOn) throw new Error("Space didn't change the Monday switch");
+
+    // Suggest an event: Enter opens it on the link box; Escape closes it with focus back on its button; so does Cancel.
+    const know = p.getByRole("region", { name: "Know an event?" });
+    const form = know.getByRole("form", { name: "Suggest an event" });
+    await know.getByRole("button", { name: "Suggest an event" }).focus();
+    await p.keyboard.press("Enter");
+    await form.waitFor({ timeout: 5000 });
+    await focusOn(p, form.getByLabel("Link to the organiser's page", { exact: true }), "Suggest an event");
+    await ringShows(p, "the organiser's link box");
+    await p.keyboard.type(LINK);
+    await p.keyboard.press("Escape");
+    await form.waitFor({ state: "detached", timeout: 5000 });
+    await focusIs(p, /^Suggest an event$/, "Escape on Suggest an event");
+    await p.keyboard.press("Enter");
+    await form.waitFor({ timeout: 5000 });
+    await tabTo(p, /^Cancel$/, "the Suggest an event form", 40);
+    await p.keyboard.press("Enter");
+    await form.waitFor({ state: "detached", timeout: 5000 });
+    await focusIs(p, /^Suggest an event$/, "Cancel on Suggest an event");
+    const [{ n }] = await sql`select count(*)::int as n from event_suggestions where user_id = ${me.id} and source_url = ${LINK}`;
+    if (n !== 0) throw new Error("closing Suggest an event sent the suggestion");
+  } finally {
+    await sql`delete from events where source = 'feed' and source_key like ${`${run}-%`}`;
+    if (me) {
+      if (before) await sql`update user_settings set events_digest = ${before.events_digest} where user_id = ${me.id}`;
       else await sql`delete from user_settings where user_id = ${me.id}`;
     }
     await p.setViewportSize({ width: 1280, height: 900 });

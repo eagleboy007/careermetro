@@ -2,7 +2,7 @@
 
 import { Mail } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { WEEKLY_NO_CHANCES, WEEKLY_PREHEADER, weeklySubject, type WeeklyView } from "@/lib/my-jobs/weekly";
 
 const ICON = { size: 15, strokeWidth: 1.75, "aria-hidden": true } as const;
@@ -14,15 +14,16 @@ const mono = "font-mono text-[0.68rem] uppercase tracking-[0.05em] text-muted";
  */
 export function WeeklyPreview({ view, name }: { view: WeeklyView | null; name: string | null }) {
   const [open, setOpen] = useState(false);
+  const body = useId();
   return (
     <div className="flex flex-col gap-2 pb-2 pl-12">
-      <button type="button" aria-expanded={open} onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1.5 self-start text-[0.82rem] font-medium text-ink underline underline-offset-2">
+      <button type="button" aria-expanded={open} aria-controls={open ? body : undefined} onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1.5 self-start text-[0.82rem] font-medium text-ink underline underline-offset-2">
         <Mail {...ICON} />
         {open ? "Hide this week's" : "See this week's"}
       </button>
       {open &&
         (view ? (
-          <section aria-label="This week's email" className="flex flex-col gap-3 rounded-[14px] border border-line bg-bg p-3.5 text-[0.86rem]">
+          <section id={body} aria-label="This week's email" className="flex flex-col gap-3 rounded-[14px] border border-line bg-bg p-3.5 text-[0.86rem]">
             <div>
               <p className={mono}>Subject</p>
               <p className="font-semibold">{weeklySubject(view)}</p>
@@ -73,7 +74,7 @@ export function WeeklyPreview({ view, name }: { view: WeeklyView | null; name: s
             <p className="text-[0.8rem] text-muted">{WEEKLY_NO_CHANCES}</p>
           </section>
         ) : (
-          <p className="rounded-[14px] border border-line bg-bg p-3.5 text-[0.84rem] text-muted">
+          <p id={body} className="rounded-[14px] border border-line bg-bg p-3.5 text-[0.84rem] text-muted">
             Nothing is moving this week: no job waiting on a reply for a week and no interview. On a week like this no email is sent.
           </p>
         ))}
