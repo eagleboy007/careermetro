@@ -1,0 +1,56 @@
+{
+  "id": "sap-fiori-ui5-developer-mid",
+  "roleSlug": "sap-fiori-ui5-developer",
+  "persona": "Mid-level SAPUI5 developer from a web development background",
+  "resumeText": "Sneha Iyer | Bengaluru | sneha.iyer@example.com\n\nEXPERIENCE\nSAP UI5 Developer, Brindavan Digital Consulting, Bengaluru (2021 - present)\n- Built freestyle SAPUI5 apps for purchase order approval on S/4HANA.\n- Created Fiori elements list report apps from CDS annotations exposed as OData V4 services.\n- Developed and deployed apps from SAP Business Application Studio to the BTP Cloud Foundry environment.\n- Wrote JavaScript controllers and custom controls with QUnit tests.\n\nWeb Developer, Nandi Web Studio, Bengaluru (2019 - 2021)\n- Built responsive pages with HTML5, CSS3 and jQuery for client websites.\n\nSKILLS\nSAPUI5, Fiori elements, JavaScript, Fiori launchpad, Git\n\nEDUCATION\nBE Information Science, RV College of Engineering, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "sap-fiori-ui5",
+        "quote": "Built freestyle SAPUI5 apps for purchase order approval"
+      },
+      {
+        "skillId": "sap-abap-hana",
+        "quote": "Fiori elements list report apps from CDS annotations exposed as OData V4 services"
+      },
+      {
+        "skillId": "sap-btp-platform",
+        "quote": "Developed and deployed apps from SAP Business Application Studio to the BTP Cloud Foundry environment"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Wrote JavaScript controllers and custom controls"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "custom controls with QUnit tests"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "Built responsive pages with HTML5, CSS3 and jQuery"
+      },
+      {
+        "skillId": "sap-fiori-launchpad",
+        "quote": "Fiori launchpad"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-fiori-launchpad",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-abap",
+      "sap-cap",
+      "typescript",
+      "ci-cd"
+    ]
+  },
+  "reviewedBy": null
+}

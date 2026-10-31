@@ -1,0 +1,110 @@
+{
+  "slug": "functional-safety-engineer",
+  "title": "Functional Safety Engineer",
+  "summary": "Makes sure car electronics fail safely, by finding hazards, setting safety goals and checking designs against the ISO 26262 standard. Works across system, hardware and software teams at automotive suppliers and carmakers, and owns the safety case (the evidence that the product is safe enough).",
+  "dailyDuties": [
+    "Run hazard analysis and risk assessment workshops",
+    "Write safety goals and safety concept documents",
+    "Lead DFMEA, FMEDA and fault tree analysis",
+    "Trace safety requirements to design and tests in DOORS or Polarion",
+    "Review designs and test results for safety gaps",
+    "Prepare work products for safety audits and assessments"
+  ],
+  "typicalTitles": [
+    "Automotive Functional Safety Engineer",
+    "FuSa Engineer",
+    "ISO 26262 Safety Engineer",
+    "Functional Safety Expert",
+    "Hardware Functional Safety Engineer",
+    "Software Functional Safety Engineer",
+    "Safety Engineer - Automotive Electronics"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "automotive-functional-safety",
+      "importance": "required",
+      "expectation": "Apply ISO 26262 across the lifecycle, including HARA, ASIL assignment and FMEDA",
+      "postingShare": null
+    },
+    {
+      "skillId": "functional-safety-concept",
+      "importance": "required",
+      "expectation": "Write safety goals, functional and technical safety concepts and the safety case",
+      "postingShare": null
+    },
+    {
+      "skillId": "design-fmea",
+      "importance": "required",
+      "expectation": "Lead DFMEA at system, hardware or software level",
+      "postingShare": null
+    },
+    {
+      "skillId": "fault-tree-analysis",
+      "importance": "required",
+      "expectation": "Build fault trees and dependent failure analyses for safety goals",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-management-tools",
+      "importance": "required",
+      "expectation": "Manage safety requirements and traceability in DOORS, Polarion or Codebeamer",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain safety findings to engineering teams, customers and assessors",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-spice",
+      "importance": "required",
+      "expectation": "Work inside Automotive SPICE processes and support assessments",
+      "postingShare": null
+    },
+    {
+      "skillId": "autosar-classic",
+      "importance": "nice_to_have",
+      "expectation": "Understand AUTOSAR software architecture where safety mechanisms live",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "nice_to_have",
+      "expectation": "Read embedded C to review software safety mechanisms",
+      "postingShare": null
+    },
+    {
+      "skillId": "hil-testing",
+      "importance": "nice_to_have",
+      "expectation": "Plan safety validation tests that run on HIL benches",
+      "postingShare": null
+    },
+    {
+      "skillId": "adas-functions",
+      "importance": "nice_to_have",
+      "expectation": "Work on ADAS features where SOTIF applies alongside ISO 26262",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "tuv-sud-functional-safety-engineer",
+      "importance": "recommended",
+      "why": "Widely asked ISO 26262 credential for automotive safety roles"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

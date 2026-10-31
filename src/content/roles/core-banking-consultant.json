@@ -1,0 +1,136 @@
+{
+  "slug": "core-banking-consultant",
+  "title": "Core Banking Consultant",
+  "summary": "Core banking consultants set up and roll out a bank's core banking system (the software that runs accounts, deposits and loans), such as Finacle, Temenos Transact or Oracle FLEXCUBE. They sit between bank business teams and technical developers, configuring products, writing specs, testing and moving data during implementations and upgrades.",
+  "dailyDuties": [
+    "Run requirement workshops with bank operations teams",
+    "Set up and parameterise CASA, deposit and loan products",
+    "Write functional specs and gap analyses for customisations",
+    "Prepare test scenarios and support SIT and UAT cycles",
+    "Map and reconcile data during migration from the old system",
+    "Analyse interface specs for channels and payment systems",
+    "Log and follow up defects with the technical team"
+  ],
+  "typicalTitles": [
+    "Finacle Functional Consultant",
+    "Finacle Techno-Functional Consultant",
+    "Temenos T24 Functional Consultant",
+    "Temenos Transact Consultant",
+    "Flexcube Functional Consultant",
+    "Core Banking Business Analyst",
+    "CBS Functional Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "core-banking-systems",
+      "importance": "required",
+      "expectation": "Work hands-on in a core banking system such as Finacle or Oracle FLEXCUBE",
+      "postingShare": null,
+      "oneOf": "core-banking-platform"
+    },
+    {
+      "skillId": "temenos-transact",
+      "importance": "required",
+      "expectation": "Work hands-on in Temenos Transact (T24)",
+      "postingShare": null,
+      "oneOf": "core-banking-platform"
+    },
+    {
+      "skillId": "core-banking-parameterisation",
+      "importance": "required",
+      "expectation": "Set up and parameterise CASA, deposit and loan products, interest and GL mapping",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "required",
+      "expectation": "Know retail banking products and operations: CASA, term deposits, loans and the general ledger",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run workshops with the bank and write functional specs and gap analyses",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Prepare test scenarios and support SIT and UAT cycles through go-live",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query the core banking database to validate data and investigate defects",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-migration",
+      "importance": "required",
+      "expectation": "Map, load and reconcile data from the old system during migration or upgrade",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with bank business users, IT teams and the vendor to agree scope and sign-off",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present solution designs and test results clearly to bank teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "nice_to_have",
+      "expectation": "Read API and interface specs for channels, payments and other connected systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "manual-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write SIT test cases and log defects",
+      "postingShare": null
+    },
+    {
+      "skillId": "database-programming",
+      "importance": "nice_to_have",
+      "expectation": "Read or write PL/SQL and platform scripts for customisations and reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "bank-branch-operations",
+      "importance": "nice_to_have",
+      "expectation": "Understand branch and back-office banking operations from experience",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "core-banking-platform",
+      "label": "Core banking platform"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "ccba",
+      "importance": "optional",
+      "why": "Shows structured business analysis practice for requirements and gap analysis work"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

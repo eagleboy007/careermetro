@@ -25,12 +25,12 @@ In the certifications file, **Proves** lists skills that holding the certificate
 
 | Field | File | Roles awaiting review |
 | --- | --- | --- |
-| Cloud and infrastructure | `roles-cloud.csv` | 25 |
+| Cloud and infrastructure | `roles-cloud.csv` | 27 |
 | Security | `roles-security.csv` | 25 |
-| Data, analytics and AI | `roles-data.csv` | 21 |
-| Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 24 |
+| Data, analytics and AI | `roles-data.csv` | 23 |
+| Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 28 |
 | Testing and quality | `roles-testing.csv` | 4 |
-| Software, hardware, delivery and marketing | `roles-other.csv` | 61 |
+| Software, hardware, delivery and marketing | `roles-other.csv` | 65 |
 | Sales, finance, HR and operations | `roles-business.csv` | 46 |
 | Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
 
@@ -43,7 +43,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
 
-213 role profiles await review in all.
+225 role profiles await review in all.
 
 ## Changed since the draft, awaiting sign-off
 
@@ -56,6 +56,8 @@ Development changed these lines after a test showed a problem. Their **Detail** 
 - `management-trainee#title`: Grouped with sales roles (drafted under operations): most campus management trainee programmes start in sales.
 - `management-trainee#skill:financial-statement-analysis`: Nice to have (was Required): trainees learn it on the programme.
 - `site-reliability-engineer#titles`: "Production Engineer" removed: in India it usually means a manufacturing role, now its own profile.
+- `vlsi-design-engineer#titles`: "Design Verification Engineer", "ASIC Verification Engineer" and "Verification Engineer" removed: chip verification is now its own profile (Design Verification Engineer).
+- `it-service-delivery-manager#title`: Grouped with infrastructure and cloud roles (drafted under delivery): its skills are IT operations ones (ITSM, major incidents, SLAs), shared with application support and technical account managers.
 
 ## How answers flow back into the app
 

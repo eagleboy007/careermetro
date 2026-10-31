@@ -1,0 +1,116 @@
+{
+  "slug": "data-annotation-specialist",
+  "title": "Data Annotation Specialist",
+  "summary": "Labels images, video, text and audio, and rates AI chatbot answers, so that companies can train and test AI models. Works in a delivery team at an AI data company or in-house data operations, following written guidelines and passing quality checks set by a team lead.",
+  "dailyDuties": [
+    "Draw boxes and polygons on images in annotation tools",
+    "Tag text or transcribe audio clips to project rules",
+    "Rate and compare AI model answers and write feedback",
+    "Check a sample of peers' labels for errors",
+    "Flag unclear cases to the team lead with examples",
+    "Track daily output and accuracy in a sheet"
+  ],
+  "typicalTitles": [
+    "Data Annotator",
+    "Annotation Analyst",
+    "Data Labelling Associate",
+    "ML Data Associate",
+    "AI Training Data Analyst",
+    "Image Annotation Specialist",
+    "Generative AI Data Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "data-annotation",
+      "importance": "required",
+      "expectation": "Label images with boxes, polygons and classes in tools such as CVAT or Label Studio",
+      "postingShare": null
+    },
+    {
+      "skillId": "annotation-quality-review",
+      "importance": "required",
+      "expectation": "Follow labelling guidelines closely and check peers' work for errors",
+      "postingShare": null
+    },
+    {
+      "skillId": "text-audio-annotation",
+      "importance": "required",
+      "expectation": "Tag text and transcribe or label audio to project rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "ai-response-rating",
+      "importance": "required",
+      "expectation": "Rate and rank AI model answers and write feedback for training",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Track counts, accuracy and issues in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Read English guidelines well and write clear notes on unclear cases",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Judge edge cases sensibly against the guidelines and spot patterns in errors",
+      "postingShare": null
+    },
+    {
+      "skillId": "video-annotation",
+      "importance": "nice_to_have",
+      "expectation": "Track objects across video frames",
+      "postingShare": null
+    },
+    {
+      "skillId": "computer-vision",
+      "importance": "nice_to_have",
+      "expectation": "Understand how the labels are used to train vision models",
+      "postingShare": null
+    },
+    {
+      "skillId": "nlp",
+      "importance": "nice_to_have",
+      "expectation": "Understand how text labels feed language models",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Know how chat assistants work to judge their answers",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Write small scripts to check or convert label files",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "nice_to_have",
+      "expectation": "Log tool and guideline issues in Jira",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

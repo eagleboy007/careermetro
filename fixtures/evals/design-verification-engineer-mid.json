@@ -1,0 +1,52 @@
+{
+  "id": "design-verification-engineer-mid",
+  "roleSlug": "design-verification-engineer",
+  "persona": "Mid-level IP verification engineer",
+  "resumeText": "Sneha Iyer | Hyderabad | sneha.iyer@example.com\n\nEXPERIENCE\nVerification Engineer, Godavari Semiconductor Design, Hyderabad (2020 - present)\n- Built UVM agents, sequences and scoreboards for an AXI4 interconnect IP.\n- Wrote the verification plan and closed functional and code coverage for two IP releases.\n- Debugged RTL failures from nightly regressions using Synopsys VCS and Verdi waveforms.\n- Added SystemVerilog assertions for FIFO overflow and handshake checks.\n- Automated regression triage with Python scripts that bucket failing seeds.\n- Ran regressions on Linux servers through LSF.\n\nSKILLS\nSystemVerilog, UVM, AXI, AHB, VCS, Python, Linux, Digital electronics\n\nEDUCATION\nBTech Electronics and Communication, JNTU Hyderabad, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "systemverilog-uvm",
+        "quote": "Built UVM agents, sequences and scoreboards"
+      },
+      {
+        "skillId": "amba-protocols",
+        "quote": "scoreboards for an AXI4 interconnect IP"
+      },
+      {
+        "skillId": "verification-planning",
+        "quote": "Wrote the verification plan and closed functional and code coverage"
+      },
+      {
+        "skillId": "verilog-rtl",
+        "quote": "nightly regressions using Synopsys VCS and Verdi waveforms"
+      },
+      {
+        "skillId": "python",
+        "quote": "Automated regression triage with Python scripts"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Ran regressions on Linux servers through LSF"
+      },
+      {
+        "skillId": "digital-logic-design",
+        "quote": "Digital electronics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "digital-logic-design",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "synthesis-timing",
+      "physical-design-pnr",
+      "fpga-design",
+      "formal-verification"
+    ]
+  },
+  "reviewedBy": null
+}

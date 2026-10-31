@@ -1,0 +1,51 @@
+{
+  "id": "middleware-administrator-mid",
+  "roleSlug": "middleware-administrator",
+  "persona": "WebLogic administrator in a banking IT services team with shell scripting only listed",
+  "resumeText": "Arvind Kulkarni | Pune | arvind.kulkarni@example.com\n\nEXPERIENCE\nMiddleware Administrator, Sahyadri Infotech Services, Pune (Apr 2021 - present)\n- Administer Oracle WebLogic 12c domains and clusters for 30 banking applications.\n- Deploy EAR and WAR releases using WLST scripts during weekend change windows.\n- Configure Apache HTTP Server and Tomcat as reverse proxies in front of WebLogic managed servers.\n- Renew SSL certificates and update Java keystores before expiry across 120 servers.\n- Take thread dumps and heap dumps to troubleshoot stuck threads and memory issues.\n- Raise change requests and handle P2 incidents in ServiceNow following ITIL processes.\n\nAssociate System Engineer, Sahyadri Infotech Services, Pune (Aug 2019 - Mar 2021)\n- Monitored Red Hat Linux servers and checked application logs, disk usage and running processes.\n- Applied quarterly Oracle patches to WebLogic test environments under senior guidance.\n\nEDUCATION\nBE Computer Engineering, Savitribai Phule Pune University, 2019\n\nSKILLS\nWebLogic, Tomcat, Apache, Linux, Shell scripting, ServiceNow\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "weblogic-administration",
+        "quote": "Administer Oracle WebLogic 12c domains and clusters"
+      },
+      {
+        "skillId": "web-server-administration",
+        "quote": "Configure Apache HTTP Server and Tomcat as reverse proxies"
+      },
+      {
+        "skillId": "ssl-certificate-management",
+        "quote": "Renew SSL certificates and update Java keystores"
+      },
+      {
+        "skillId": "performance-profiling",
+        "quote": "Take thread dumps and heap dumps to troubleshoot stuck threads"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "handle P2 incidents in ServiceNow following ITIL processes"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Monitored Red Hat Linux servers and checked application logs"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Shell scripting"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "scripting-bash",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "kubernetes",
+      "apm-tools",
+      "terraform"
+    ]
+  },
+  "reviewedBy": null
+}

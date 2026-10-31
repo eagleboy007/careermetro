@@ -1,0 +1,55 @@
+{
+  "id": "it-service-delivery-manager-mid",
+  "roleSlug": "it-service-delivery-manager",
+  "persona": "Managed-services delivery manager for banking clients with no stakeholder evidence beyond client reviews",
+  "resumeText": "Sunita Rao | Hyderabad | sunita.rao@example.com\n\nEXPERIENCE\nService Delivery Manager, Deccan Managed Services Ltd, Hyderabad (Jul 2019 - present)\n- Own monthly service reviews with three banking clients covering SLA performance and service credits.\n- Run major incident bridge calls for P1 outages and send hourly written updates to client IT heads.\n- Chair the weekly change advisory board and track problem records to closure.\n- Run ITIL incident and request processes on ServiceNow ITSM for 6,000 users.\n- Review vendor performance against the statement of work with network and hardware partners.\n- Build SLA dashboards in Power BI from ServiceNow ticket exports.\n- Manage a 40-member L1 and L2 support team across three shifts.\n\nService Desk Lead, Charminar Tech Support Pvt Ltd, Hyderabad (Jun 2016 - Jun 2019)\n- Led a 12-person service desk shift and handled password, access and laptop tickets.\n\nEDUCATION\nBTech Electronics and Communication, JNTU Hyderabad, 2016\n\nCERTIFICATIONS\nITIL 4 Foundation (2018)\n",
+  "expected": {
+    "totalYearsExperience": 10,
+    "skills": [
+      {
+        "skillId": "service-level-management",
+        "quote": "Own monthly service reviews with three banking clients covering SLA performance"
+      },
+      {
+        "skillId": "major-incident-management",
+        "quote": "Run major incident bridge calls for P1 outages"
+      },
+      {
+        "skillId": "communication",
+        "quote": "send hourly written updates to client IT heads"
+      },
+      {
+        "skillId": "itil-problem-change-management",
+        "quote": "Chair the weekly change advisory board and track problem records"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Run ITIL incident and request processes on ServiceNow ITSM"
+      },
+      {
+        "skillId": "it-vendor-management",
+        "quote": "Review vendor performance against the statement of work"
+      },
+      {
+        "skillId": "power-bi",
+        "quote": "Build SLA dashboards in Power BI"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Manage a 40-member L1 and L2 support team"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "python",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

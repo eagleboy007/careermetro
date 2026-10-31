@@ -1,0 +1,51 @@
+{
+  "id": "data-annotation-specialist-mid",
+  "roleSlug": "data-annotation-specialist",
+  "persona": "Image and text annotator with two years at an AI data services firm, no LLM rating work yet",
+  "resumeText": "Farhana Begum | Kolkata | farhana.begum@example.com\n\nEXPERIENCE\nData Annotation Associate, Hooghly AI Data Services, Kolkata (Sep 2024 - present)\n- Annotated 50,000 street images with bounding boxes and polygons in CVAT for a vehicle detection client.\n- Completed text annotation tasks tagging intent and sentiment in customer chat messages.\n- Ran annotation quality audits on 10% samples of peer work and logged errors against the guidelines.\n- Tracked daily productivity and accuracy in Excel sheets shared with the team lead.\n- Explained guideline changes to three new annotators in weekly team huddles.\n- Tracked cars and bikes across video frames for a traffic monitoring project.\n\nData Entry Operator, Salt Lake Records Pvt Ltd, Kolkata (Jan 2024 - Aug 2024)\n- Entered and checked customer forms in the records system.\n\nEDUCATION\nBSc Computer Science, University of Calcutta, 2023\n\nSKILLS\nCVAT, Label Studio, MS Excel, English, Bengali, Hindi\n",
+  "expected": {
+    "totalYearsExperience": 2,
+    "skills": [
+      {
+        "skillId": "data-annotation",
+        "quote": "Annotated 50,000 street images with bounding boxes and polygons in CVAT"
+      },
+      {
+        "skillId": "text-audio-annotation",
+        "quote": "Completed text annotation tasks tagging intent and sentiment"
+      },
+      {
+        "skillId": "annotation-quality-review",
+        "quote": "Ran annotation quality audits on 10% samples of peer work"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Tracked daily productivity and accuracy in Excel sheets"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Explained guideline changes to three new annotators"
+      },
+      {
+        "skillId": "video-annotation",
+        "quote": "Tracked cars and bikes across video frames"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ai-response-rating",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "computer-vision",
+      "llm-apps"
+    ]
+  },
+  "reviewedBy": null
+}

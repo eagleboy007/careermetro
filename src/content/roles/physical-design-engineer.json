@@ -1,0 +1,112 @@
+{
+  "slug": "physical-design-engineer",
+  "title": "Physical Design Engineer",
+  "summary": "Turns a chip block's synthesised netlist into a manufacturable layout by placing cells, building clock trees and routing wires until timing, power and layout rules all pass. Sits in the VLSI backend team between RTL designers and the tape-out (final handoff to the factory).",
+  "dailyDuties": [
+    "Floorplan blocks and plan the power grid",
+    "Run placement, clock tree synthesis and routing in Innovus or ICC2",
+    "Fix setup and hold violations from timing reports",
+    "Clean DRC and LVS errors before signoff",
+    "Check IR drop and electromigration results",
+    "Write Tcl or Python scripts to speed up the flow"
+  ],
+  "typicalTitles": [
+    "ASIC Physical Design Engineer",
+    "SoC Physical Design Engineer",
+    "PD Engineer",
+    "Place and Route Engineer",
+    "Physical Design Implementation Engineer",
+    "STA Engineer",
+    "Timing Signoff Engineer",
+    "Physical Verification Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "physical-design-pnr",
+      "importance": "required",
+      "expectation": "Take blocks from netlist to GDS: floorplan, placement, clock tree synthesis and routing in Innovus or ICC2",
+      "postingShare": null
+    },
+    {
+      "skillId": "synthesis-timing",
+      "importance": "required",
+      "expectation": "Close setup and hold timing with static timing analysis across corners and drive timing ECOs",
+      "postingShare": null
+    },
+    {
+      "skillId": "physical-verification",
+      "importance": "required",
+      "expectation": "Clean DRC, LVS and antenna errors in Calibre or a similar tool before tape-out",
+      "postingShare": null
+    },
+    {
+      "skillId": "emir-signoff",
+      "importance": "required",
+      "expectation": "Run IR drop and electromigration checks and strengthen the power grid where they fail",
+      "postingShare": null
+    },
+    {
+      "skillId": "digital-logic-design",
+      "importance": "required",
+      "expectation": "Understand CMOS cells, clocking and sequential logic behind each timing path",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Run EDA flows and read tool logs on Linux compute farms",
+      "postingShare": null
+    },
+    {
+      "skillId": "eda-scripting",
+      "importance": "required",
+      "expectation": "Script flow steps and report parsing in Tcl or Perl",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Script flow steps and report parsing in Python",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "low-power-design",
+      "importance": "nice_to_have",
+      "expectation": "Implement multi-voltage blocks with UPF power intent and power gating",
+      "postingShare": null
+    },
+    {
+      "skillId": "rtl-lint-cdc",
+      "importance": "nice_to_have",
+      "expectation": "Run logic equivalence checks after netlist changes and ECOs",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Keep flow scripts and constraints in version control",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "vlsi-scripting",
+      "label": "A flow scripting language (Tcl/Perl or Python)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
