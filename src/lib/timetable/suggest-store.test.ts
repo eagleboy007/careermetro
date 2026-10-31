@@ -129,7 +129,7 @@ describe.skipIf(!db)("event suggestions (database)", () => {
     await expect(db!.insert(schema.eventSuggestions).values({ ...base, endsAt: new Date(startsAt.getTime() - 1) })).rejects.toThrow();
   });
 
-  it("is in Download your data as version 37, the person's own only, and goes with the account", async () => {
+  it("is in Download your data (from version 37), the person's own only, and goes with the account", async () => {
     const me = await person();
     const other = await person();
     expect(await suggestEvent(me, form({ title: "Mine" }), { db: d(), now: NOW })).toEqual({ ok: true });
