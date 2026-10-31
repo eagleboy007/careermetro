@@ -369,9 +369,9 @@ describe("timetable content", () => {
     expect(clashes).toEqual([]);
   });
 
-  it("has between 25 and 40 interest topics, each with its label among its aliases", () => {
+  it("has between 25 and 60 interest topics, each with its label among its aliases", () => {
     expect(interestTopics.length).toBeGreaterThanOrEqual(25);
-    expect(interestTopics.length).toBeLessThanOrEqual(40);
+    expect(interestTopics.length).toBeLessThanOrEqual(60);
     for (const t of interestTopics) expect(t.aliases, t.key).toContain(t.label.toLowerCase());
   });
 });

@@ -298,7 +298,7 @@ export function confsTechAddresses(feed: EventFeed, now: Date): string[] {
 }
 
 /** The topic word of a confs.tech file, from its name ("…/2026/python.json" → "python"). */
-const topicWordOf = (address: string) => (/\/([a-z0-9-]+)\.json$/i.exec(address)?.[1] ?? "").replace(/-/g, " ");
+export const topicWordOf = (address: string) => (/\/([a-z0-9-]+)\.json$/i.exec(address)?.[1] ?? "").replace(/-/g, " ");
 
 /**
  * One confs.tech file as rows: conferences in an Indian profile city, or online. A conference both in India and

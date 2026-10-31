@@ -1,5 +1,6 @@
 import type { BuilderAnswers, BuilderReword } from "@/lib/schemas";
 import type { BuilderIssues } from "./rules";
+import type { ProfileLink } from "./links";
 import type { BuilderLines } from "./profile";
 
 /** What /builder's screens are given (FR-36, handoff 12k). */
@@ -10,6 +11,8 @@ export type BuilderData = {
   roles: { slug: string; title: string }[];
   /** Each role's skills by taxonomy name, for the Tools chips. */
   roleTools: Record<string, string[]>;
+  /** Each role's profile links in the order to ask for them (T182). A role missing here, or no role, puts LinkedIn first. */
+  roleLinks?: Record<string, ProfileLink[]>;
 };
 
 export type BuilderReview = { resumeId: string; lines: BuilderLines; suggestions: BuilderReword["suggestions"]; plain: boolean };
