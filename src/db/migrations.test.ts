@@ -138,6 +138,8 @@ const GRANDFATHERED: Record<string, string> = {
     "old code never writes closed_at, which is new in 0050",
   "0051_mock_for_a_job.sql: adds a constraint to an existing table: ALTER TABLE \"mock_sessions\" ADD CONSTRAINT \"mock_sessions_focus\"":
     "widens the focus check by 'job'; old code writes only the four it knew",
+  "0056_events_cleanup.sql: adds a constraint to an existing table: ALTER TABLE \"events\" ADD CONSTRAINT \"events_place\"":
+    "events is empty until the feed job (Timetable PR 4), and the Zod schema already refuses an in-person event with no city",
 };
 
 describe("migrations", () => {
