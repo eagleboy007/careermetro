@@ -1,0 +1,132 @@
+{
+  "slug": "sap-qm-consultant",
+  "title": "SAP QM Consultant",
+  "summary": "Sets up and supports the Quality Management part of SAP so that factories can plan inspections, record results and track defects inside the same system that runs buying and production. Sits in an SAP project or support team next to the materials (MM) and production (PP) consultants, working with plant quality teams.",
+  "dailyDuties": [
+    "Run workshops with plant quality teams to capture inspection needs",
+    "Configure inspection plans, characteristics and quality notifications",
+    "Set up goods receipt and in-process inspection with MM and PP consultants",
+    "Write functional specs for reports and enhancements",
+    "Write test scripts and run integration and user testing",
+    "Train key users and resolve QM support tickets"
+  ],
+  "typicalTitles": [
+    "SAP QM Functional Consultant",
+    "SAP S/4HANA QM Consultant",
+    "SAP Quality Management Consultant",
+    "SAP QM Analyst",
+    "SAP QM Support Consultant",
+    "SAP QM Lead Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "sap-qm-configuration",
+      "importance": "required",
+      "expectation": "Configure inspection types, inspection plans, master inspection characteristics, quality notifications and usage decisions",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-mm-configuration",
+      "importance": "required",
+      "expectation": "Set up QM in procurement: quality info records, goods receipt inspection and vendor evaluation",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-pp-configuration",
+      "importance": "required",
+      "expectation": "Link in-process and final inspection to production orders and routings",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run workshops with plant quality teams and write functional specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map inspection, defect and release processes as-is and to-be",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Write test scripts and run integration and user acceptance testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Train key users and explain design choices in plain words",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with quality, procurement and production teams and ABAP developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-migration",
+      "importance": "nice_to_have",
+      "expectation": "Load inspection plans, characteristics and info records during cutover",
+      "postingShare": null
+    },
+    {
+      "skillId": "non-conformance-capa",
+      "importance": "nice_to_have",
+      "expectation": "Understand defect recording and CAPA as the plant quality team runs them",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistical-process-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Support SPC and sampling results recorded in SAP",
+      "postingShare": null
+    },
+    {
+      "skillId": "iso-9001-qms-documentation",
+      "importance": "nice_to_have",
+      "expectation": "Know the ISO 9001 or GMP rules the system has to support",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Write specs ABAP developers can build reports and enhancements from",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "nice_to_have",
+      "expectation": "Resolve QM support tickets within SLA after go-live",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "sap-s4hana-production-planning",
+      "importance": "optional",
+      "why": "Covers the production side that QM inspections hook into"
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Useful on support projects"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

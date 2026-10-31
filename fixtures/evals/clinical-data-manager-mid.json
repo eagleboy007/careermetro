@@ -1,0 +1,59 @@
+{
+  "id": "clinical-data-manager-mid",
+  "roleSlug": "clinical-data-manager",
+  "persona": "mid",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nSUMMARY\nClinical data professional with 4 years in a CRO on oncology and vaccine trials.\n\nEXPERIENCE\nClinical Data Coordinator II, Sahyadri Clinical Research Services, Pune (2022 - present)\n- Run day-to-day data management for two Phase III oncology studies in Medidata Rave EDC.\n- Wrote edit check specifications and tested 300 edit checks during study build UAT.\n- Raised and closed data queries with 40 sites through discrepancy management in Rave.\n- Coded adverse events and concomitant medications using MedDRA and WHODrug dictionaries.\n- Completed SAE reconciliation with the safety team before database lock for one study.\n\nClinical Data Associate, Sahyadri Clinical Research Services, Pune (2021 - 2022)\n- Reviewed data listings and followed ICH-GCP guidelines for a Phase II vaccine trial.\n- Built weekly query ageing reports in Excel for the project data manager.\n\nEDUCATION\nM.Pharm Pharmacology, Poona College of Pharmacy, 2021\n\nSKILLS\nMedidata Rave, CRF design, MedDRA, WHODrug, Excel, ICH-GCP\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "clinical-edc-systems",
+        "quote": "two Phase III oncology studies in Medidata Rave EDC"
+      },
+      {
+        "skillId": "clinical-edit-checks",
+        "quote": "Wrote edit check specifications and tested 300 edit checks"
+      },
+      {
+        "skillId": "clinical-query-management",
+        "quote": "closed data queries with 40 sites through discrepancy management"
+      },
+      {
+        "skillId": "meddra-whodrug-coding",
+        "quote": "Coded adverse events and concomitant medications using MedDRA and WHODrug dictionaries"
+      },
+      {
+        "skillId": "clinical-database-lock",
+        "quote": "Completed SAE reconciliation with the safety team before database lock"
+      },
+      {
+        "skillId": "clinical-trials-knowledge",
+        "quote": "followed ICH-GCP guidelines for a Phase II vaccine trial"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built weekly query ageing reports in Excel"
+      },
+      {
+        "skillId": "clinical-crf-design",
+        "quote": "CRF design"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "clinical-crf-design",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sas-programming",
+      "cdisc-sdtm",
+      "icd-10-cm-coding"
+    ]
+  },
+  "reviewedBy": null
+}

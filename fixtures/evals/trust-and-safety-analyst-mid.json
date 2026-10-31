@@ -1,0 +1,53 @@
+{
+  "id": "trust-and-safety-analyst-mid",
+  "roleSlug": "trust-and-safety-analyst",
+  "persona": "Mid-level content moderation analyst at a platform outsourcing firm",
+  "resumeText": "Farhan Qureshi | Hyderabad | farhan.q@example.com\n\nEXPERIENCE\nTrust & Safety Analyst, Lumen Review Services, Hyderabad (2021 - present)\n- Reviewed user videos and comments against platform community guidelines in Hindi and English.\n- Handled content moderation for hate speech, scam and nudity queues while meeting accuracy targets.\n- Escalated child safety and self-harm cases to the policy team within the hour.\n- Tracked weekly abuse trends in the scam queue and flagged a new fake loan app pattern.\n- Prepared daily queue MIS in Google Sheets for volume, accuracy and turnaround.\n- Wrote clear decision notes on appeals and shared policy gaps with the quality team.\n- Used the company wellness programme and resilience breaks to manage exposure to graphic content.\n\nCustomer Support Associate, Brightline Contact Centre, Hyderabad (2019 - 2021)\n- Answered chat queries for an online marketplace and logged complaints in the CRM.\n\nEDUCATION\nBA Mass Communication, Osmania University, 2019\n\nSKILLS\nExcel, SQL, Content moderation\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "content-moderation",
+        "quote": "Reviewed user videos and comments against platform community guidelines"
+      },
+      {
+        "skillId": "escalation-handling",
+        "quote": "Escalated child safety and self-harm cases to the policy team"
+      },
+      {
+        "skillId": "abuse-trend-analysis",
+        "quote": "Tracked weekly abuse trends in the scam queue"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Prepared daily queue MIS in Google Sheets"
+      },
+      {
+        "skillId": "operations-mis-reporting",
+        "quote": "Prepared daily queue MIS in Google Sheets for volume, accuracy and turnaround"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Wrote clear decision notes on appeals"
+      },
+      {
+        "skillId": "sql",
+        "quote": "SQL"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sql",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "ai-response-rating",
+      "data-privacy",
+      "power-bi",
+      "data-visualization"
+    ]
+  },
+  "reviewedBy": null
+}

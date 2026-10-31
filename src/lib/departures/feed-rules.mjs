@@ -90,6 +90,9 @@ export const ROLE_TITLES = {
   // An architect title before the analyst and engineer rules that would also read "security" in it ("Cloud Security Architect").
   "security-architect": /\b(security|cyber ?security|infosec|zero trust|identity|iam|identity (and|&) access( management)?) (solutions? )?architect\b|\barchitect,? (information |cyber ?)?security\b/i,
   "cloud-security-engineer": /\b(cloud security|security engineer,? cloud|(aws|azure|gcp|google cloud) security (engineer|analyst|specialist)|cspm (engineer|analyst|specialist))\b/i,
+  // An SAP security, authorizations or GRC Access Control title (tech batch TG2), before the GRC and broad security rules
+  // ("SAP GRC Lead", "SAP Security Analyst"); never a Basis, ABAP, test or architect one.
+  "sap-security-grc-consultant": /^(?=.*\bsap\b)(?!.*\b(basis|abap|developer|test|tester|testing|qa|architect)\b).*\b(security|grc|authori[sz]ations?|access control)\b.*\b(consultant|analyst|specialist|lead|engineer|administrator|admin|expert)\b/i,
   "grc-manager": /\b(grc|governance,? risk|risk and compliance|security governance|it risk|cyber ?risk|isms|(information )?security compliance)\b.*\b(manager|lead)\b|\bhead of grc\b/i,
   // A storage or backup title before the privacy rule, which would read "Data Protection Engineer"; never a storage
   // software developer or a database one.
@@ -201,6 +204,20 @@ export const ROLE_TITLES = {
   // A core banking platform title (tech batch TG1), before the Oracle and business analyst rules ("Oracle FLEXCUBE
   // Technical Consultant", "Finacle Functional Consultant"); never a test one.
   "core-banking-consultant": /^(?!.*\b(test|tester|testing|qa)\b)(.*\b(finacle|t24|temenos|flexcube|core banking)\b.*\b(consultant|developer|engineer|specialist|lead|architect|expert|business analyst)\b|.*\bcbs (functional|technical|techno-?functional) consultant\b)/i,
+  // An Odoo or OpenERP technical or techno-functional title (tech batch TG4), before the business analyst and Python rules
+  // ("Odoo Techno-Functional Consultant" was business analyst, "Python Odoo Developer" Python); a plain functional
+  // one stays a business analyst, and never a test or sales one.
+  "odoo-developer": /^(?!.*\b(test|tester|testing|qa|sales)\b)(?!.*(?<!techno-)\bfunctional\b)(?=.*\b(developer|engineer|programmer|consultant|lead|specialist)\b).*\b(odoo|openerp)\b/i,
+  // SAP EWM, SAP HCM and Oracle HCM Cloud functional titles (tech batch TG2), before the Oracle Fusion technical and
+  // business analyst rules ("Oracle Cloud HCM Consultant", "Oracle HCM Functional Consultant"); never an ABAP, developer,
+  // technical, test or SuccessFactors one. A plain "SAP WM Consultant" has no rule.
+  "sap-ewm-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|test|tester|testing|qa|basis|architect)\b).*\b(ewm|extended warehouse management)\b/i,
+  "sap-hcm-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|test|tester|testing|qa|successfactors|sf|basis|security)\b).*\bsap( [a-z0-9/]+)? (hcm|hr|h4s4|payroll|personnel administration|time management)\b.*\b(consultant|analyst|lead|specialist|expert)\b/i,
+  "oracle-hcm-cloud-consultant": /^(?=.*\boracle\b)(?!.*\b(technical|developer|dba|test|tester|testing|qa|ebs|r12|peoplesoft)\b).*\b(hcm|core hr|global hr|absence management|cloud payroll|fusion payroll|talent management|time and labou?r|workforce compensation)\b.*\b(consultant|analyst|lead|specialist|expert)\b/i,
+  // Oracle SOA Suite, OSB, BPEL and Fusion Middleware developer titles (tech batch TG4), before the Oracle Fusion technical
+  // rule ("Oracle SOA/OIC Developer" and "Oracle Fusion Middleware Developer" were Oracle Fusion technical); a Fusion
+  // Middleware administrator stays a middleware administrator (above), and never a test, DBA or architect one.
+  "oracle-soa-developer": /^(?!.*\b(test|tester|testing|qa|dba|database administrator|administrator|admin|functional|architect)\b)(?=.*\b(developer|engineer|consultant|programmer|lead|specialist)\b).*\b(oracle soa( suite)?|soa suite|oracle (service bus|osb)|osb|bpel|(oracle )?fusion middleware)\b/i,
   // An Oracle Fusion or Integration Cloud technical title, never a functional, DBA or Oracle Cloud Infrastructure one.
   "oracle-fusion-technical-consultant": /^(?!.*\b(functional|dba|database administrator|infrastructure)\b)(?=.*\b(technical|developer|engineer|consultant|analyst)\b).*\b(oracle (fusion|cloud (erp|hcm|scm|financials|technical)|integration cloud|oic|hcm cloud|erp cloud)|oic)\b/i,
   // An Oracle EBS (Oracle Apps, R12) technical or techno-functional title after the Fusion rule; never a DBA, test or
@@ -228,6 +245,12 @@ export const ROLE_TITLES = {
   // Clinical and statistical programmers (tech batch TG1), before the data rules; a plain "SAS Programmer" (often in
   // banking analytics) has no rule.
   "clinical-sas-programmer": /\b(clinical|statistical|biostatistical|clinical trials?) (sas )?programm(er|ing analyst|ing lead)\b|\bclinical programmer\b|\bclinical sas\b|\bsas (clinical|statistical) programmer\b|\b(sdtm|adam|cdisc)\b.*\b(programmer|developer|specialist)\b/i,
+  // Actuarial analyst, biostatistician and clinical data management titles (tech batch TG3), after the clinical SAS
+  // programmer rule and before the data rules. A plain "Actuary", "Statistician", "Pricing Analyst" or "Data Management
+  // Associate", a "Project Data Manager" and a clinical data entry one have no rule.
+  "actuarial-analyst": /^(?!.*\b(software|developer|engineer|data scientist|systems)\b)(?=.*\bactuar(ial|y|ies)\b).*\b(analyst|associate|trainee|executive|student|assistant|specialist)\b/i,
+  "biostatistician": /^(?!.*\b(programm(er|ing)|developer|engineer|software)\b)(.*\bbiostatistic(ian|s)\b|.*\b(clinical|trials?|study|medical|pharma(ceutical)?) statistician\b|.*\bstatistician\b.*\b(clinical|trials?|pharma(ceutical)?|biostatistics|life sciences)\b)/i,
+  "clinical-data-manager": /^(?!.*\b(programm(er|ing)|developer|engineer|software|sas|scientist|entry|abstractor)\b)(.*\bclinical data (manager|management|coordinator|associate|specialist|analyst|lead|reviewer|officer|executive)\b|.*\bcdm (associate|executive|analyst|specialist|coordinator|lead)\b)/i,
   // A dbt or analytics engineering title before the ETL and data engineering rules.
   "analytics-engineer": /(?<!\btext )\banalytics engineer(ing)?\b|\bdbt (developer|engineer)\b|\bdata modell?ing engineer\b/i,
   // A Kafka, Flink or streaming data title before the ETL, data and platform rules ("Streaming Data Engineer",
@@ -254,6 +277,10 @@ export const ROLE_TITLES = {
   // A search or search relevance title after the ML rules and before the platform, Java and software rules ("Software
   // Engineer - Search"); never an SEO or marketing one.
   "search-engineer": /^(?!.*\b(test|tester|testing|qa|seo|sem|marketing|optimi[sz]ation|executive)\b)(?=.*\b(engineer|developer|programmer)\b).*\b(search|elasticsearch|opensearch|solr|lucene|vespa)\b/i,
+  // SAP BW and BW/4HANA titles, and SAP Analytics Cloud consultant ones (tech batch TG3), before the BI developer rule
+  // ("SAP Analytics Cloud Consultant" was BI developer); never an ABAP, Basis, test or security one. An "SAP Analytics
+  // Cloud Developer" stays BI developer and a plain "SAP BI Consultant" stays where it was.
+  "sap-bw-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|basis|test|tester|testing|qa|security|fiori|ui5|cpi|btp|architect)\b)(.*\b(bw|bw4hana|business warehouse)\b.*\b(consultant|developer|analyst|lead|specialist|engineer|expert)\b|.*\b(analytics cloud|sac) (consultant|specialist|lead|expert|analyst)\b)/i,
   // A BI developer builds the reports; a "BI Analyst" stays a data analyst.
   "bi-developer": /\b(bi|power ?bi|msbi|business intelligence|tableau|qlik( ?sense| ?view)?|looker|ssrs|reporting|dashboard|sap analytics cloud) (developer|engineer|consultant|specialist)\b/i,
   // A cloud cost title or a plain "FinOps" one; a plain "Financial Analyst" has no rule.
@@ -284,6 +311,10 @@ export const ROLE_TITLES = {
   "sap-sd-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|technical)\b).*\b(sd|sales (and|&) distribution|otc|o2c|order to cash)\b.*\b(consultant|analyst|lead|specialist|architect)\b/i,
   // An SAP production planning or manufacturing title, never a developer or technical one.
   "sap-pp-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|technical|execution)\b).*\b(pp|pp-pi|production planning|manufacturing)\b.*\b(consultant|analyst|lead|specialist|architect)\b/i,
+  // SAP Quality Management and Plant Maintenance (EAM) titles (tech batch TG4), after the SAP MM, SD and PP rules (an "SAP
+  // QM and PP Consultant" stays PP) and before the QA rules; never a developer, technical, test or project one.
+  "sap-qm-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|technical|test|tester|testing|basis|security)\b).*\b(qm|quality management)\b.*\b(consultant|analyst|lead|specialist|expert)\b/i,
+  "sap-pm-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|technical|test|tester|testing|basis|security|project|program(me)?|product)\b).*\b(pm|eam|plant maintenance|(enterprise )?asset management)\b.*\b(consultant|analyst|lead|specialist|expert)\b/i,
   // An SAP finance title, never a developer or technical one (the ABAP rule below).
   "sap-fico-consultant": /^(?=.*\bsap\b)(?!.*\b(abap|developer|technical)\b).*\b(fico|fi\/co|fi-co|fi|co|finance|financial accounting|controlling)\b.*\b(consultant|analyst|lead|specialist|architect)\b/i,
   "sap-abap-developer": /^(?=.*\b(developer|consultant|engineer|lead|programmer)\b).*\babap\b|\bsap technical consultant\b/i,
@@ -295,10 +326,20 @@ export const ROLE_TITLES = {
   // Guidewire InsuranceSuite titles (tech batch TG1), before the integration rule ("Guidewire Integration Developer");
   // a Guidewire business analyst stays a business analyst (above), and never a test one.
   "guidewire-developer": /^(?!.*\b(test|tester|testing|qa)\b).*\b(guidewire|policycenter|claimcenter|billingcenter|gosu)\b.*\b(developer|engineer|consultant|programmer|lead|architect|specialist)\b/i,
+  // Duck Creek Policy, Billing and Claims titles (tech batch TG3), before the integration rule; a Duck Creek business
+  // analyst stays a business analyst (above), and never a test one.
+  "duck-creek-developer": /^(?!.*\b(test|tester|testing|qa)\b).*\bduck ?creek\b.*\b(developer|engineer|consultant|programmer|lead|specialist|analyst)\b/i,
   // A Pega title, never a business analyst (above) or test one; "Pega" counts only as a whole word.
   "pega-developer": /^(?!.*\b(test|tester|testing|qa)\b)(?=.*\b(developer|engineer|programmer|architect|consultant|lead)\b).*\b(pega|pegasystems)\b/i,
   // A Dynamics 365 CE or CRM title, never a Finance and Operations, Business Central or functional one.
   "dynamics-365-developer": /^(?!.*\b(finance (and|&) operations|f&o|fno|business central|ax|nav|functional)\b)((?=.*\b(developer|engineer|programmer|technical consultant)\b).*\b(dynamics 365|dynamics crm|dynamics ce|microsoft dynamics|d365|ms ?crm|microsoft crm)\b|.*\b(dynamics( 365)? (crm|ce|customer engagement)|ms ?crm|microsoft crm)\b.*\bconsultant\b)/i,
+  // Siebel CRM, Zoho and Murex or Calypso titles (tech batch TG4), before the implementation, integration and front-end
+  // rules ("Siebel Open UI Developer" was front end, "Zoho Implementation Consultant" implementation, "Murex Integration
+  // Consultant" integration); a functional or business analyst one stays a business analyst (above), and never a test
+  // or sales one.
+  "siebel-crm-developer": /^(?!.*\b(test|tester|testing|qa)\b).*\bsiebel\b.*\b(developer|engineer|consultant|programmer|lead|specialist|analyst)\b/i,
+  "zoho-developer": /^(?!.*\b(test|tester|testing|qa|sales|marketing)\b).*\b(zoho|deluge)\b.*\b(developer|engineer|programmer|consultant|specialist|lead|administrator)\b/i,
+  "murex-consultant": /^(?!.*\b(test|tester|testing|qa|sales)\b).*\b(murex|mx\.?3|mxml|calypso)\b.*\b(consultant|developer|engineer|programmer|analyst|lead|specialist|expert)\b/i,
   "power-platform-developer": /^(?=.*\b(developer|engineer|consultant)\b).*\b(power platform|power ?apps|power automate)\b/i,
   // After the Power Platform rule, which keeps "SharePoint and Power Apps Developer"; a SharePoint admin is Microsoft 365.
   "sharepoint-developer": /^(?!.*\b(test|tester|testing|qa|administrator|admin)\b).*\b(sharepoint|spfx)\b.*\b(developer|engineer|consultant|programmer)\b|\b(m365|microsoft 365|office ?365) developer\b/i,
@@ -321,12 +362,37 @@ export const ROLE_TITLES = {
   // An AUTOSAR or MCAL title before the integration and embedded rules ("AUTOSAR Integration Engineer"); never a test or
   // validation one.
   "autosar-engineer": /^(?!.*\b(test|tester|testing|qa|validation)\b).*\b(autosar|mcal|bsw)\b.*\b(engineer|developer|integrator|architect|lead|specialist|consultant)\b/i,
+  // EV powertrain and e-drive integration and validation titles (tech batch TG4), before the integration rule
+  // ("Powertrain Integration Engineer" was integration developer); a powertrain software, firmware, motor control,
+  // battery, charging or mechanical design one keeps its rule or none, and a plain "Powertrain Validation Engineer" (often
+  // an engine one) has no rule.
+  "ev-powertrain-engineer": /^(?!.*\b(software|developer|firmware|embedded|mechanical|design|cad|sales|service|technician|motor controls?|controls|bms|battery|hil|inverter|charging|test automation)\b)(?=.*\b(engineer|specialist|lead)\b)(.*\b(ev|evs|electric vehicles?|e-?mobility|xev|bev|hev|phev|electrified|electric)\b.*\b(powertrain|e-?drive|e-?axle|drivetrain)\b|.*\b(powertrain|e-?drive|e-?axle|drivetrain)\b.*\b(ev|evs|electric vehicles?|xev|bev|hev|phev|electrified|electric)\b|.*\be-?(drive|axle) (validation|integration|systems?|testing|test) engineer\b|.*\bpowertrain integration engineer\b)/i,
   // A MuleSoft, Boomi or middleware title after the data, Oracle and Salesforce rules ("Data Integration Engineer"), never
   // a test, systems, network or SAP integration one.
   "integration-developer": /^(?!.*\b(test|tester|testing|qa|systems?|hardware|network|sap)\b).*\b(mulesoft|mule|boomi|middleware|(api )?integration)( integration)? (developer|engineer|consultant|specialist)\b/i,
   // A post-silicon validation or bring-up title; never a firmware, FPGA or software one, nor a pharma computer system
   // validation one.
   "post-silicon-validation-engineer": /^(?!.*\b(software|firmware|fpga|pharma|computer system|process|cleaning|equipment|clinical|medical)\b).*\b(post[- ]?si(licon)?|silicon|soc|chip|platform|pcie|ddr|usb|memory) (validation|bring[- ]?up)( and debug)? (engineer|lead|specialist)\b/i,
+  // Chip DFT, analog layout and battery management titles and MES titles (tech batch TG2), before the FPGA, chip design,
+  // embedded, QA and software rules ("Design for Test Engineer", "BMS Software Engineer", "MES Software Engineer").
+  // A plain "BMS Engineer" (often a building management one), a BMS hardware one, a plain "Layout Engineer" or "Battery
+  // Engineer" and a PCB layout one have no rule.
+  "dft-engineer": /^(?!.*\b(software|qa|pcb|board|mechanical|automation test)\b)(?=.*\b(engineer|lead|specialist|designer)\b).*\b(dft|design for (test|testability)|mbist|atpg|scan insertion)\b/i,
+  "analog-layout-engineer": /^(?!.*\b(pcb|board|software|ui|ux|web|print|mechanical)\b)(?=.*\b(engineer|designer|specialist|lead)\b).*\b((analog|analogue|custom|mixed[- ]signal|ams|custom ic|ic|mask)( ic)? layout|mask design(er)? engineer)\b/i,
+  "bms-engineer": /^(?!.*\b(building|facility|facilities|hvac|fire|elv|bas|security|operator|technician|hardware)\b)(.*\bbattery management( systems?)?\b.*\b(engineer|developer|specialist)\b|(?=.*\bbms\b)(?=.*\b(software|firmware|algorithms?|controls?|ev|electric vehicles?|battery|li-ion|automotive)\b).*\b(engineer|developer|specialist)\b|.*\bbattery (controls?|algorithms?|state estimation|modell?ing) (development )?engineer\b)/i,
+  "mes-engineer": /^(?!.*\b(test|tester|testing|qa|mechanical)\b)(?=.*\b(engineer|consultant|developer|specialist|analyst|lead|administrator)\b).*\b(mes|manufacturing execution( systems?)?|opcenter|camstar|simatic it|apriso|pas-x|pharmasuite|sap mii|sap digital manufacturing)\b/i,
+  // Analog and mixed-signal chip design, motor control and CAE simulation titles (tech batch TG3), before the FPGA, chip
+  // design, board hardware, embedded and software rules ("Analog Circuit Design Engineer" was hardware design, "Motor
+  // Control Software Engineer" software engineer, "Motor Drive Firmware Engineer" embedded). An analog layout,
+  // verification or applications title, a motor design or motor control centre one, and a plain "Simulation Engineer",
+  // "Structural Analysis Engineer" or "Thermal Engineer" have no rule here.
+  "analog-ic-design-engineer": /^(?!.*\b(layout|pcb|board|verification|validation|test|tester|testing|software|firmware|applications?|field|fpga)\b)(?=.*\b(engineer|designer|lead|specialist)\b).*\b(analog(ue)?( ic| circuit| (and )?mixed[- ]signal)?|mixed[- ]signal( ic| circuit)?|ams( ic| circuit)?|pll|adc|dac|data converter|(power management|pmic|ldo)( ic)?) (ic |circuit )?design(er| engineer)\b/i,
+  "motor-control-engineer": /^(?!.*\b(test|tester|testing|qa|validation|mechanical|technician|sales|hardware|design|service|field|commissioning|centre|center|panel|switchgear)\b)(?=.*\b(engineer|developer|specialist|lead)\b).*\b(motor[- ]controls?|motor drives?|traction (inverter|motor) controls?|traction inverter|inverter controls?|e-?motor controls?)\b/i,
+  "cae-simulation-engineer": /^(?!.*\b(software|developer|programmer|sales|test|tester|testing|qa|electronics?|signal integrity|power integrity|emi|emc|rf|process|plant|network|circuit|civil)\b)(?=.*\b(engineer|analyst|specialist|lead|consultant)\b).*\b(cae|fea|finite element( analysis)?|cfd|computational fluid dynamics|(structural|thermal|durability|crash|nvh|fatigue) (simulation|cae)|(durability|crash|nvh|fatigue) analysis)\b/i,
+  // RF and mmWave IC design titles (tech batch TG4), after the analog IC design rule (an "RF/Analog IC Design Engineer"
+  // stays analog) and before the chip and board hardware rules ("RFIC Circuit Design Engineer" was hardware design); a
+  // board, antenna, layout, test or telecom RF one has no rule here.
+  "rf-ic-design-engineer": /^(?!.*\b(layout|pcb|board|antenna|verification|validation|test|tester|testing|software|firmware|applications?|field|fpga|network|telecom|ran|drive test|sales)\b)(?=.*\b(engineer|designer|lead|specialist)\b)(.*\b(rfic|rf ic|mm-?wave ic|rf integrated circuits?|rf cmos)\b.*\bdesign|.*\bmm-?wave (ic |circuit )?design (engineer|lead)|(?=.*\bic\b).*\brf (circuit |transceiver |front[- ]end )?(ic )?design)/i,
   // An FPGA title before the chip design and embedded rules ("FPGA Firmware Engineer"); never a test, validation or
   // software one.
   "fpga-engineer": /^(?!.*\b(test|tester|testing|qa|validation|software)\b).*\bfpga\b.*\b(engineer|developer|designer)\b/i,
@@ -382,6 +448,12 @@ export const ROLE_TITLES = {
   "nodejs-developer": /^(?!.*\b(full[- ]?stack|mern|mean|test|tester|testing|qa|sdet|automation)\b)(?=.*\b(engineer|developer|programmer)\b).*\b(node(\.?js)?|nest\.?js)\b/i,
   "golang-developer": /^(?!.*\b(full[- ]?stack|test|tester|testing|qa|sdet|automation)\b)(?=.*\b(engineer|developer|programmer|sde)\b).*(\bgolang\b|\bgo (back[- ]?end )?(engineer|developer|programmer)\b|\s[-–,]\s?go$)/i,
   "dotnet-developer": /^(?!.*\b(test|tester|testing|qa|sdet)\b)(?=.*\b(engineer|developer|programmer|lead)\b).*(?<![\w.])(\.net|dot ?net|asp\.net|c#|vb\.net)(?![\w#])/i,
+  // Payments, UPI, card and payment switch or gateway engineering titles (tech batch TG4), after the senior backend and
+  // language rules ("Senior Software Engineer - Payments" and "Java Developer - Payments" stay there) and before the Java
+  // backend, platform and software rules ("Software Engineer - Payments" was software engineer, "Payments Backend
+  // Engineer" software engineer or Java); never a front-end, mobile, data, test, analyst, operations, fraud or medical
+  // payment posting one.
+  "payments-engineer": /^(?!.*\b(java|spring|j2ee|test|tester|testing|qa|sdet|analyst|operations|ops|executive|officer|fraud|risk|posting|accounts?|billing|collections?|front[- ]?end|ui|ux|android|ios|mobile|react|angular|flutter|full[- ]?stack|data|machine learning|ml|devops|sre|site reliability|security|support)\b)(?=.*\b(engineer|developer|programmer|sde)\b).*\b(payments?|upi|card payments|payment (gateway|switch|systems?)|imps|iso ?8583|iso ?20022|merchant acquiring)\b/i,
   "java-backend-developer": /\b(back[- ]?end|java|server[- ]side|spring( boot)?|j2ee)\b.*\b(engineer|developer)\b|\b(software|backend) (engineer|developer)\b.*\bjava\b/i,
   // A front-end architect, or a principal or staff front-end engineer, before the front-end and solutions architect rules.
   "frontend-architect": /\b(front[- ]?end|ui|react|angular|javascript|web)( technical| solutions?)? architect\b|\b(principal|staff) front[- ]?end (engineer|developer)\b/i,
@@ -454,6 +526,11 @@ export const ROLE_TITLES = {
   "devops-engineer": /\b(devops|infrastructure engineer|(ci\/cd|infrastructure automation|kubernetes|terraform|ansible) engineer|(kubernetes|openshift) (administrator|admin))\b|\bsoftware (engineer|developer)\b.*\binfra(structure)?\b/i,
   // Last of the engineering roles: a plain "Software Engineer" or "SDE", never a test, embedded or hardware one.
   "software-engineer": /^(?!.*\b(in test|qa|embedded|firmware|hardware|silicon|asic|mechanical|electrical)\b).*\b(software (engineer|developer|development engineer)|sde|programmer analyst|application developer|member (of )?technical staff|back[- ]?end (engineer|developer)|(api|microservices?) developer)\b|^((senior|sr\.?) )?mts\b/i,
+  // Marketing automation, CRM and lifecycle or retention marketing titles (tech batch TG3), before the digital marketing
+  // rule, which read lifecycle marketing titles ("Lifecycle Marketing Manager"); managers too (the role's own titles). An
+  // email marketing title stays digital marketing, and a plain "CRM Executive" (often a property or customer service
+  // one), a Salesforce or Dynamics CRM title and a marketing automation engineer or developer are not one.
+  "marketing-automation-specialist": /^(?!.*\b(engineer|developer|software|sales|salesforce|dynamics|zoho|administrator|admin|real estate)\b)(.*\bmarketing automation\b.*\b(specialist|executive|analyst|associate|consultant|manager|lead|expert)\b|.*\b(marketo|eloqua|pardot|hubspot|braze|moengage|clevertap|webengage|sfmc|marketing cloud) (specialist|executive|analyst|associate|consultant|expert|manager|lead)\b|.*\b(lifecycle|retention|crm) marketing\b.*\b(specialist|executive|analyst|associate|manager|lead)\b|.*\bcrm (executive|specialist|manager|associate|lead|analyst)\b.*\b(retention|lifecycle|marketing|campaigns?)\b|.*\bmarketing op(eration)?s (specialist|executive|analyst|associate|manager|lead)\b)/i,
   // Social media managers, leads and strategists (batch B2) before digital marketing; a "Social Media Executive" stays
   // digital marketing, and a community manager only when the title says social media.
   "social-media-manager": /^((senior|sr\.?|lead|associate|assistant|deputy|brand) )*((influencer (and|&) )?social media( (and|&) (community|influencer))?( marketing)? (manager|lead|strategist)|social media strategy (manager|lead))\b|^((senior|sr\.?) )?community manager\b.*\bsocial media\b/i,
@@ -590,8 +667,35 @@ export const ROLE_TITLES = {
   "food-beverage-executive": /^(?!.*\b(software|developer|engineer|it|data|marketing|production|processing|quality|qa|qc|plant|safety|technologist|delivery|controller|purchase)\b)((senior|sr\.?|junior|jr\.?|trainee|assistant|outlet) )*((f ?& ?b|f and b|food (and|&) beverages?|fnb)( service)? (supervisor|executive|associate|captain|team leader|officer)|(restaurant|banquets?|in-room dining|ird|bar|outlet) (supervisor|captain)|captain,? ?[-–]? ?(f ?& ?b|food (and|&) beverages?( service)?|restaurant|banquets?)|restaurant manager\b.*\b(hotels?|resorts?))\b/i,
   "hotel-revenue-manager": /^(?!.*\b(software|developer|engineer|rcm|healthcare|medical|hospitals?|accounts?|finance|airlines?|aviation|saas)\b)(?=.*\b(hotels?|resorts?|hospitality|rooms)\b)((senior|sr\.?|junior|jr\.?|assistant|associate|cluster|area) )*((distribution (and|&) )?revenue( (and|&) distribution)? (manager|management (executive|analyst|associate|manager)|analyst|executive)|(hotel|rooms) revenue (manager|analyst|executive))\b/i,
   "housekeeping-supervisor": /^(?!.*\b(software|developer|engineer|it|data|executive housekeeper)\b)((senior|sr\.?|junior|jr\.?|trainee) )*(house ?keeping (supervisor|executive|team lead(er)?|coordinator|incharge|in-charge|captain|officer)|executive,? ?[-–]? ?house ?keeping|(public area|linen( room)?|laundry|uniform room) supervisor|floor supervisor,? ?[-–]? ?(house ?keeping|hotels?|resorts?)|(deputy|assistant) housekeeper)\b/i,
+  // Tech batch TG2, after every other rule so none of them moves. Payments fraud and chargeback titles, never a data
+  // scientist, engineer, AML, insurance claims, forensic or plain "Risk Analyst" one.
+  "fraud-analyst": /^(?!.*\b(scientist|engineer|developer|software|data science|machine learning|aml|kyc|insurance|claims?|forensics?)\b)(.*\bfraud\b.*\b(analyst|investigator|specialist|associate|executive|officer)\b|.*\b(chargebacks?|payment disputes?|card disputes?|payment risk|transaction risk) (analyst|specialist|associate|executive)\b|.*\brisk investigator\b)/i,
+  // Content moderation and platform policy titles; a plain "Content Analyst" or "Content Writer" is not one.
+  "trust-and-safety-analyst": /^(?!.*\b(engineer|developer|software|scientist|writer|marketing)\b)(.*\b(trust (and|&) safety|platform integrity|policy enforcement|content (moderation|review|policy|integrity))\b.*\b(analyst|specialist|associate|executive|reviewer|moderator|lead|agent)\b|.*\bcontent (moderator|reviewer)s?\b)/i,
+  // Graphic, brand and print designers; UI, UX, product, visual, motion, game, fashion, interior and instructional
+  // designers keep their own rules or none.
+  "graphic-designer": /^(?!.*\b(ui|ux|product|web|interaction|motion|animation|game|fashion|interior|textile|jewell?ery|instructional|learning|mechanical|industrial|pcb|circuit|chip|vlsi|sound|packaging)\b)(.*\bgraphics? designer\b|.*\b(brand|communication|visual communication|creative|dtp|print|social media) designer\b|.*\bgraphic design (executive|associate|specialist)\b)/i,
+  // Software and hardware asset management titles, managers too (the role's own title); a finance, fixed asset or
+  // investment "Asset Management Analyst" and a plain "Asset Manager" are not one.
+  "software-asset-manager": /^(?!.*\b(fixed assets?|finance|financial|accounting|real estate|wealth|portfolio|investment|digital assets?|fund)\b)(.*\b(software asset( management)?|sam|it asset( management)?|itam|hardware asset( management)?|ham|software licen[cs]ing|licen[cs]e compliance|licen[cs]e management)\b.*\b(analyst|specialist|administrator|consultant|engineer|executive|coordinator|lead|manager)\b|.*\bflexera (administrator|admin|engineer|analyst|specialist|consultant)\b)/i,
+  // Tech batch TG3, after every other rule so none of them moves. Ad operations, trafficking and programmatic titles,
+  // never an engineer, developer or sales one.
+  "ad-operations-specialist": /^(?!.*\b(engineer|developer|software|sales)\b)(.*\bad ?op(eration)?s\b.*\b(specialist|executive|analyst|associate|coordinator|lead)\b|.*\b(ad|campaign|digital) traffick(er|ing (specialist|executive|analyst|associate|coordinator))\b|.*\bprogrammatic (ad )?(specialist|executive|analyst|associate|trader)\b)/i,
+  // Video editors, post-production editors and video colourists; a content, copy or news editor and a hair colourist are
+  // not one.
+  "video-editor": /^(?!.*\b(software|developer|engineer|copy|content writer|news|hair|salon)\b)(.*\bvideo (editor|editing (executive|specialist|associate|lead))\b|.*\b(post[- ]production|film|footage) editor\b|.*\b(video|film|digital|di) colou?rist\b)/i,
+  // Game, level, gameplay and game systems designers; a game UI, UX or graphic designer keeps its rule or none, and a
+  // systems, economy or narrative designer only when the title says game.
+  "game-designer": /^(?!.*\b(ui|ux|graphic|artist|art|sound|audio|instructional)\b)(.*\b(game|games|gameplay|level|liveops|live ops) designer\b|(?=.*\bgam(e|es|ing)\b).*\b(systems|economy|narrative|combat|monetization|monetisation|quest|mission) designer\b)/i,
+  // Tech batch TG4, after every other rule so none of them moves. 3D game, environment, prop, character and hard surface
+  // artists and 3D modellers for games; a 2D, concept, UI, VFX, architectural or interior one and a plain "3D Modeller"
+  // (often mechanical CAD) are not one.
+  "game-artist-3d": /^(?!.*\b(software|developer|engineer|programmer|ui|ux|graphic|concept|2d|vfx|compositor|motion|architectural|archviz|interior|jewell?ery|furniture|makeup|tattoo|nail|hair|mehendi)\b)(.*\b3d (game )?artist\b|.*\b(game|games) (props?|environment|character|3d|hard surface) ?artist\b|.*\b(environment|props?|character|hard surface) artist\b|.*\b3d (modell?er|modell?ing artist)\b.*\bgam(e|es|ing)\b|.*\bgam(e|es|ing)\b.*\b3d modell?er\b)/i,
+  // Motion graphics, motion and Lottie designers and animators; a "Video Editor and Motion Graphics Designer" stays a
+  // video editor (above), and a plain "Animator" is not one.
+  "motion-graphics-designer": /^(?!.*\b(software|developer|engineer|programmer|sales)\b)(.*\bmotion (graphics? )?(designer|artist|animator)\b|.*\bmotion graphics (executive|specialist|associate|lead)\b|.*\blottie (animator|designer)\b|.*\b(ui|ux|product) animator\b)/i,
 };
-const MANAGER_OK = new Set(["product-manager", "regulatory-compliance-officer", "hospital-operations-executive", "food-beverage-executive", "hotel-revenue-manager", "qa-lead", "qa-manager", "ml-engineering-manager", "data-engineering-manager", "platform-engineering-manager", "delivery-manager", "it-program-manager", "it-service-delivery-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
+const MANAGER_OK = new Set(["product-manager", "software-asset-manager", "clinical-data-manager", "marketing-automation-specialist", "regulatory-compliance-officer", "hospital-operations-executive", "food-beverage-executive", "hotel-revenue-manager", "qa-lead", "qa-manager", "ml-engineering-manager", "data-engineering-manager", "platform-engineering-manager", "delivery-manager", "it-program-manager", "it-service-delivery-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
 /** The business rules that may read a sales, recruiting or legal title, which NOT_IN_SCOPE drops for every other rule. */
 const SALES_OK = new Set(["corporate-legal-associate", "contract-management-specialist", "litigation-paralegal", "key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive", "medical-representative", "channel-sales-manager", "real-estate-sales-executive", "home-loan-sales-officer", "fmcg-sales-officer", "management-trainee"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */

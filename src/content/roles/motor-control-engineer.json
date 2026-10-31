@@ -1,0 +1,133 @@
+{
+  "slug": "motor-control-engineer",
+  "title": "Motor Control Engineer",
+  "summary": "Writes the control software and algorithms that make electric motors in EVs, industrial drives and home appliances run smoothly and efficiently. Sits in the powertrain or drives team, working with power electronics hardware engineers, testers and vehicle or system integrators.",
+  "dailyDuties": [
+    "Develop field oriented control and PWM code for motor controllers",
+    "Tune current and speed loops on the motor test bench",
+    "Build and update motor and inverter models in MATLAB/Simulink",
+    "Debug inverter faults with oscilloscopes and debuggers",
+    "Integrate the controller with the vehicle or system over CAN",
+    "Write test reports and review results with the hardware team"
+  ],
+  "typicalTitles": [
+    "Motor Control Software Engineer",
+    "Motor Control Firmware Engineer",
+    "Motor Controls Engineer",
+    "Traction Inverter Controls Engineer",
+    "Motor Drive Firmware Engineer",
+    "Motor Control Applications Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "motor-control-algorithms",
+      "importance": "required",
+      "expectation": "Implement field oriented control, SVPWM and sensorless control",
+      "postingShare": null
+    },
+    {
+      "skillId": "electrical-machines-transformers",
+      "importance": "required",
+      "expectation": "Understand PMSM, BLDC and induction motor behaviour and parameters",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-electronics-inverters",
+      "importance": "required",
+      "expectation": "Work with three-phase inverters, gate drivers and protection",
+      "postingShare": null
+    },
+    {
+      "skillId": "control-loop-design",
+      "importance": "required",
+      "expectation": "Design and tune current and speed loops",
+      "postingShare": null
+    },
+    {
+      "skillId": "matlab-simulink",
+      "importance": "required",
+      "expectation": "Build motor and inverter models and do model-based design in Simulink",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "required",
+      "expectation": "Write real-time control code and interrupt routines in embedded C",
+      "postingShare": null
+    },
+    {
+      "skillId": "microcontrollers",
+      "importance": "required",
+      "expectation": "Use PWM, ADC and timer peripherals on C2000 or similar motor-control MCUs",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Connect the motor controller to the vehicle or system over CAN",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-debugging",
+      "importance": "nice_to_have",
+      "expectation": "Debug on the bench with oscilloscopes, debuggers and dynamometers",
+      "postingShare": null
+    },
+    {
+      "skillId": "hil-testing",
+      "importance": "nice_to_have",
+      "expectation": "Test control software on HIL benches",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-functional-safety",
+      "importance": "nice_to_have",
+      "expectation": "Follow ISO 26262 for traction motor controllers",
+      "postingShare": null
+    },
+    {
+      "skillId": "autosar-classic",
+      "importance": "nice_to_have",
+      "expectation": "Integrate motor control software into AUTOSAR",
+      "postingShare": null
+    },
+    {
+      "skillId": "ev-hev-systems",
+      "importance": "nice_to_have",
+      "expectation": "Understand EV powertrain and high-voltage systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "rtos",
+      "importance": "nice_to_have",
+      "expectation": "Schedule control tasks on an RTOS",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate test and data analysis",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "tuv-sud-functional-safety-engineer",
+      "importance": "optional",
+      "why": "Useful for automotive traction controller work under ISO 26262"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,139 @@
+{
+  "slug": "software-asset-manager",
+  "title": "Software Asset Manager",
+  "summary": "Software asset managers track what software and hardware a company owns and uses, keep it within licence terms and prepare for vendor audits. They sit in the IT operations or IT procurement team and work with finance, procurement and application owners.",
+  "dailyDuties": [
+    "Reconcile software installs against purchased licences",
+    "Prepare licence positions for vendor audits and true-ups",
+    "Track laptops and servers from purchase to disposal",
+    "Clean asset and CI records in the CMDB",
+    "Track contract renewals with procurement",
+    "Report compliance gaps and savings to IT and finance"
+  ],
+  "typicalTitles": [
+    "SAM Analyst",
+    "Software Asset Management Analyst",
+    "IT Asset Management Analyst",
+    "ITAM Analyst",
+    "Software Licensing Analyst",
+    "Licence Compliance Analyst",
+    "Hardware Asset Management Analyst",
+    "Flexera Administrator"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "software-asset-management",
+      "importance": "required",
+      "expectation": "Reconcile installs and usage against entitlements and build the licence position for audits and true-ups",
+      "postingShare": null
+    },
+    {
+      "skillId": "software-licensing-models",
+      "importance": "required",
+      "expectation": "Apply Microsoft, Oracle, IBM and Adobe licence metrics such as per user, per core and sub-capacity",
+      "postingShare": null
+    },
+    {
+      "skillId": "hardware-asset-management",
+      "importance": "required",
+      "expectation": "Track hardware from purchase to disposal, including tagging, stock and e-waste",
+      "postingShare": null
+    },
+    {
+      "skillId": "servicenow-itom",
+      "importance": "required",
+      "expectation": "Keep CMDB asset and CI records accurate and reconciled with discovery data",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Work within ITIL request, change and asset processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "required",
+      "expectation": "Track contracts, renewals and vendor portals with procurement",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Reconcile entitlement and inventory data in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain compliance gaps and savings to IT and finance owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "servicenow-platform-administration",
+      "importance": "nice_to_have",
+      "expectation": "Configure SAM or HAM modules in ServiceNow",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-management",
+      "importance": "nice_to_have",
+      "expectation": "Pull install data from SCCM, Intune or Jamf",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "nice_to_have",
+      "expectation": "Track SaaS and cloud spend alongside licences",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build compliance and spend dashboards",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query discovery and inventory databases",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with procurement, finance and application owners",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "itil-foundation",
+      "importance": "recommended",
+      "why": "ITIL processes frame asset and request work"
+    },
+    {
+      "certId": "servicenow-csa",
+      "importance": "optional",
+      "why": "Base ServiceNow admin skills for SAM Pro or HAM Pro"
+    },
+    {
+      "certId": "finops-certified-practitioner",
+      "importance": "optional",
+      "why": "Useful where the role also covers SaaS and cloud spend"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

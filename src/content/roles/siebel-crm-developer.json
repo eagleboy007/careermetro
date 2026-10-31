@@ -1,0 +1,122 @@
+{
+  "slug": "siebel-crm-developer",
+  "title": "Siebel CRM Developer",
+  "summary": "Configures and extends Oracle Siebel CRM, the customer management system many banks, telecoms and insurers still run, using Siebel Tools, eScript, workflows and integration (EAI). Sits in a CRM application team that builds changes and supports the live system for sales and service staff.",
+  "dailyDuties": [
+    "Configure business components, applets and views in Siebel Tools",
+    "Write eScript and build workflow processes and business services",
+    "Build EAI integration objects and web services with other systems",
+    "Run EIM data loads and check data with SQL",
+    "Fix production defects and support monthly releases",
+    "Customise Open UI screens with JavaScript"
+  ],
+  "typicalTitles": [
+    "Siebel Developer",
+    "Siebel CRM Consultant",
+    "Siebel Technical Consultant",
+    "Oracle Siebel Developer",
+    "Siebel EAI Developer",
+    "Siebel Open UI Developer",
+    "Siebel Support Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "siebel-crm-configuration",
+      "importance": "required",
+      "expectation": "Configure business components, applets, views and screens in Siebel Tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "siebel-escript-workflows",
+      "importance": "required",
+      "expectation": "Write eScript and build workflow processes, business services and runtime events",
+      "postingShare": null
+    },
+    {
+      "skillId": "siebel-eai-eim",
+      "importance": "required",
+      "expectation": "Build EAI integration objects, data maps and web services, and run EIM loads",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "required",
+      "expectation": "Test and fix SOAP web services and XML messages",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write Oracle SQL against Siebel tables to check and fix data",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "required",
+      "expectation": "Fix production defects and support releases",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain designs and fixes to business analysts and testers",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Customise Siebel Open UI with JavaScript, presentation models and renderers",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "nice_to_have",
+      "expectation": "Expose and call REST services from Siebel",
+      "postingShare": null
+    },
+    {
+      "skillId": "database-programming",
+      "importance": "nice_to_have",
+      "expectation": "Write PL/SQL for data fixes and batch jobs",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Work on Siebel servers to check logs and run jobs",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "nice_to_have",
+      "expectation": "Turn business requirements into technical designs",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Deliver changes in sprints",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "oracle-sql-associate",
+      "importance": "optional",
+      "why": "Shows the SQL skills used on Siebel data"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

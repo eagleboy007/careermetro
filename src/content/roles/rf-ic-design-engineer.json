@@ -1,0 +1,121 @@
+{
+  "slug": "rf-ic-design-engineer",
+  "title": "RF IC Design Engineer",
+  "summary": "RF IC design engineers design the radio parts of a chip, such as low noise amplifiers (LNAs), mixers and power amplifiers, for Wi-Fi, cellular, radar or satellite products. They sit in a chip design team with layout, system and test engineers and take each block from specification to tested silicon.",
+  "dailyDuties": [
+    "Design and size LNA, mixer or power amplifier circuits to a block specification",
+    "Run RF simulations for noise figure, gain and linearity across corners",
+    "Model inductors and baluns with an EM solver",
+    "Review RF layout and fix post-layout shifts",
+    "Measure silicon in the lab and compare results with simulation",
+    "Present design reviews to the chip team"
+  ],
+  "typicalTitles": [
+    "RFIC Design Engineer",
+    "RFIC Circuit Design Engineer",
+    "mmWave IC Design Engineer",
+    "Power Amplifier RFIC Design Engineer",
+    "RF Transceiver IC Design Engineer",
+    "RF Circuit Design Engineer - IC"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "rf-ic-circuit-design",
+      "importance": "required",
+      "expectation": "Design RF blocks such as LNAs, mixers and power amplifiers at transistor level in CMOS or SiGe",
+      "postingShare": null
+    },
+    {
+      "skillId": "rf-performance-analysis",
+      "importance": "required",
+      "expectation": "Size and match circuits to noise figure, gain, linearity and S-parameter targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "rf-em-simulation",
+      "importance": "required",
+      "expectation": "Model inductors, transformers and baluns with an EM solver and use the models in simulation",
+      "postingShare": null
+    },
+    {
+      "skillId": "ic-spice-simulation",
+      "importance": "required",
+      "expectation": "Run Spectre or similar simulations, including periodic steady-state and noise analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "pvt-monte-carlo-analysis",
+      "importance": "required",
+      "expectation": "Check designs across process, voltage and temperature corners and Monte Carlo runs",
+      "postingShare": null
+    },
+    {
+      "skillId": "parasitic-extraction",
+      "importance": "required",
+      "expectation": "Run post-layout extraction and fix the gain, match and frequency shifts it shows",
+      "postingShare": null
+    },
+    {
+      "skillId": "rf-lab-characterisation",
+      "importance": "required",
+      "expectation": "Measure silicon on the bench with network and spectrum analysers and compare to simulation",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write design reviews and specs and work with layout, system and test engineers",
+      "postingShare": null
+    },
+    {
+      "skillId": "pll-clocking-design",
+      "importance": "nice_to_have",
+      "expectation": "Understand VCO and LO generation that feeds the mixers",
+      "postingShare": null
+    },
+    {
+      "skillId": "analog-ic-circuit-design",
+      "importance": "nice_to_have",
+      "expectation": "Design bias circuits, references and baseband analog around the RF chain",
+      "postingShare": null
+    },
+    {
+      "skillId": "analog-custom-layout",
+      "importance": "nice_to_have",
+      "expectation": "Guide RF layout floorplans, shielding and routing in Virtuoso",
+      "postingShare": null
+    },
+    {
+      "skillId": "eda-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Script simulation sweeps and checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate simulation and lab data analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "wireless-connectivity",
+      "importance": "nice_to_have",
+      "expectation": "Know the radio standards the chip targets, such as Wi-Fi or Bluetooth Low Energy",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

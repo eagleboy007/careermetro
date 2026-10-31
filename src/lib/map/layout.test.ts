@@ -130,7 +130,7 @@ describe("layoutLine", () => {
     const l = layoutLine(exampleMapLine);
     expect(l.crossings.map((c) => [c.slug, c.station.id, c.labelAtTop, c.nearby])).toEqual([
       ["data-scientist", "python-prove", false, true],
-      ["supply-chain-analyst", "power-bi-prove", true, false],
+      ["actuarial-analyst", "statistics-prove", true, false],
     ]);
   });
 

@@ -575,6 +575,9 @@
     "aliases": [
       "google cloud platform",
       "gcp"
+    ],
+    "ambiguous": [
+      "gcp"
     ]
   },
   {
@@ -9911,7 +9914,6 @@
       "warehouse management system",
       "wms software",
       "wms operations",
-      "sap ewm",
       "sap wm",
       "manhattan wms",
       "oracle wms",
@@ -9920,7 +9922,6 @@
     ],
     "ambiguous": [
       "warehouse management system",
-      "sap ewm",
       "sap wm",
       "manhattan wms",
       "oracle wms"
@@ -11621,7 +11622,15 @@
       "induction motors",
       "transformer fundamentals",
       "dc machines",
-      "synchronous machines"
+      "synchronous machines",
+      "pmsm",
+      "bldc motor",
+      "bldc motors",
+      "permanent magnet synchronous motor",
+      "ipm motor",
+      "interior permanent magnet motor",
+      "motor parameter identification",
+      "pmsm motor"
     ],
     "ambiguous": [],
     "implies": [],
@@ -14449,6 +14458,2448 @@
       "lost and found",
       "lost and found register",
       "lost property handling"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dft-scan-atpg",
+    "name": "Scan insertion and ATPG (Tessent, TestMAX, Modus)",
+    "category": "tools",
+    "aliases": [
+      "scan insertion",
+      "scan stitching",
+      "scan chain insertion",
+      "atpg",
+      "atpg pattern generation",
+      "scan compression",
+      "edt compression",
+      "tessent fastscan",
+      "tessent testkompress",
+      "testkompress",
+      "tetramax",
+      "testmax atpg",
+      "synopsys testmax",
+      "dft compiler",
+      "cadence modus",
+      "fault coverage analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dft-memory-bist",
+    "name": "Memory and logic BIST (MBIST, LBIST)",
+    "category": "tools",
+    "aliases": [
+      "mbist",
+      "memory bist",
+      "mbist insertion",
+      "logic bist",
+      "lbist",
+      "tessent memorybist",
+      "memory built-in self-test",
+      "memory repair analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dft-boundary-scan-ijtag",
+    "name": "Boundary scan and IJTAG (IEEE 1149.1, 1500, 1687)",
+    "category": "tools",
+    "aliases": [
+      "boundary scan",
+      "boundary scan insertion",
+      "ieee 1149.1",
+      "ieee 1500",
+      "ieee 1687",
+      "ijtag",
+      "bsdl",
+      "jtag tap controller"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dft-pattern-validation",
+    "name": "DFT pattern simulation and silicon test debug",
+    "category": "testing",
+    "aliases": [
+      "atpg pattern validation",
+      "scan pattern simulation",
+      "ate pattern debug",
+      "scan diagnosis",
+      "silicon test diagnosis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "analog-custom-layout",
+    "name": "Analog and custom IC layout (Cadence Virtuoso)",
+    "category": "tools",
+    "aliases": [
+      "analog layout",
+      "analog layout design",
+      "custom ic layout",
+      "analog ic layout",
+      "mixed-signal layout",
+      "ams layout",
+      "cadence virtuoso",
+      "virtuoso layout",
+      "virtuoso layout editor",
+      "virtuoso vle",
+      "virtuoso vxl"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "analog-layout-matching",
+    "name": "Analog layout matching and noise isolation",
+    "category": "programming",
+    "aliases": [
+      "common centroid",
+      "common-centroid layout",
+      "interdigitation",
+      "interdigitated layout",
+      "dummy devices",
+      "guard rings",
+      "substrate noise isolation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "parasitic-extraction",
+    "name": "Parasitic extraction and post-layout analysis (StarRC, Quantus)",
+    "category": "tools",
+    "aliases": [
+      "parasitic extraction",
+      "rc extraction",
+      "pex extraction",
+      "starrc",
+      "synopsys starrc",
+      "quantus",
+      "cadence quantus",
+      "calibre xrc",
+      "calibre pex",
+      "post-layout extraction"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "finfet-layout",
+    "name": "FinFET and advanced-node layout",
+    "category": "tools",
+    "aliases": [
+      "finfet layout",
+      "finfet nodes",
+      "finfet technology",
+      "advanced node layout",
+      "double patterning",
+      "multi-patterning",
+      "layout dependent effects"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "layout-reliability-esd-latchup",
+    "name": "IC layout reliability (ESD and latch-up)",
+    "category": "programming",
+    "aliases": [
+      "latch-up prevention",
+      "latch-up rules",
+      "esd and latch-up",
+      "esd protection layout",
+      "esd layout",
+      "electrostatic discharge protection"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bms-state-estimation",
+    "name": "Battery state estimation (SOC, SOH, SOP)",
+    "category": "programming",
+    "aliases": [
+      "soc estimation",
+      "soh estimation",
+      "state of charge estimation",
+      "state of health estimation",
+      "state of power estimation",
+      "sop estimation",
+      "coulomb counting",
+      "battery state estimation",
+      "soc/soh estimation",
+      "soc and soh estimation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bms-cell-monitoring-balancing",
+    "name": "Cell monitoring, balancing and pack protection",
+    "category": "programming",
+    "aliases": [
+      "cell balancing",
+      "passive cell balancing",
+      "active cell balancing",
+      "passive balancing",
+      "active balancing",
+      "cell monitoring",
+      "cell voltage monitoring",
+      "battery monitoring ic",
+      "afe ic",
+      "bms fault protection"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "battery-modelling",
+    "name": "Li-ion cell behaviour and battery modelling",
+    "category": "programming",
+    "aliases": [
+      "battery modelling",
+      "battery modeling",
+      "equivalent circuit model",
+      "equivalent circuit battery model",
+      "li-ion cell chemistry",
+      "lithium-ion cell chemistry",
+      "cell characterisation",
+      "cell characterization",
+      "hppc test",
+      "ocv-soc curve"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mes-platforms",
+    "name": "Manufacturing execution systems (Opcenter, FactoryTalk, AVEVA, SAP DM)",
+    "category": "tools",
+    "aliases": [
+      "manufacturing execution system",
+      "manufacturing execution systems",
+      "mes implementation",
+      "siemens opcenter",
+      "opcenter execution",
+      "opcenter execution core",
+      "camstar",
+      "simatic it",
+      "factorytalk productioncentre",
+      "factorytalk pharmasuite",
+      "rockwell pharmasuite",
+      "aveva mes",
+      "wonderware mes",
+      "sap digital manufacturing",
+      "sap mii",
+      "delmia apriso",
+      "werum pas-x",
+      "electronic batch records"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "isa95-mes-integration",
+    "name": "ISA-95 and MES integration with ERP and shop floor",
+    "category": "tools",
+    "aliases": [
+      "isa-95",
+      "isa 95",
+      "isa95",
+      "isa-88",
+      "b2mml",
+      "mes erp integration",
+      "mes to erp integration",
+      "mes-erp integration",
+      "level 3 integration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-ewm-configuration",
+    "name": "SAP EWM configuration (Extended Warehouse Management)",
+    "category": "business",
+    "aliases": [
+      "sap ewm",
+      "sap ewm configuration",
+      "sap extended warehouse management",
+      "extended warehouse management",
+      "embedded ewm",
+      "decentralized ewm",
+      "decentralised ewm",
+      "s/4hana ewm",
+      "sap s/4hana ewm",
+      "ewm rf framework",
+      "sap ewm rf",
+      "ewm material flow system",
+      "sap ewm mfs",
+      "ewm-mfs",
+      "ewm wave management",
+      "ewm warehouse process types",
+      "ewm putaway strategies",
+      "ewm storage control"
+    ],
+    "ambiguous": [
+      "sap ewm"
+    ],
+    "implies": [
+      "wms-tools"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-hcm-configuration",
+    "name": "SAP HCM configuration (Personnel Admin, Org Management, Time Management)",
+    "category": "business",
+    "aliases": [
+      "sap hcm",
+      "sap hcm configuration",
+      "sap hr configuration",
+      "sap personnel administration",
+      "sap organizational management",
+      "sap organisational management",
+      "sap time management",
+      "sap hcm time management",
+      "sap time evaluation",
+      "h4s4",
+      "sap hcm for s/4hana",
+      "sap hcm infotypes",
+      "sap pa/om",
+      "sap pa om",
+      "sap hr infotypes"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-payroll-configuration",
+    "name": "SAP HCM payroll configuration (schemas, PCRs, India payroll)",
+    "category": "business",
+    "aliases": [
+      "sap payroll",
+      "sap hcm payroll",
+      "sap hr payroll",
+      "sap india payroll",
+      "sap payroll india",
+      "payroll schemas",
+      "payroll schema",
+      "personnel calculation rules",
+      "sap pcr",
+      "sap pcrs",
+      "sap wage types",
+      "wage type configuration",
+      "pe01",
+      "pe02",
+      "sap payroll posting to fi",
+      "sap off-cycle payroll"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-security-authorizations",
+    "name": "SAP security and authorizations (PFCG role design, user administration)",
+    "category": "security",
+    "aliases": [
+      "sap security",
+      "pfcg",
+      "pfcg role design",
+      "sap role design",
+      "sap authorizations",
+      "sap authorisations",
+      "sap authorization concept",
+      "sap authorization objects",
+      "su24",
+      "su01",
+      "suim",
+      "su53",
+      "sap user administration",
+      "sap role administration",
+      "sap derived roles",
+      "sap composite roles",
+      "sap fiori security",
+      "fiori catalog security",
+      "s/4hana security",
+      "sap hana security"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-grc-access-control",
+    "name": "SAP GRC Access Control (ARA, ARM, EAM, BRM)",
+    "category": "security",
+    "aliases": [
+      "sap grc",
+      "sap grc access control",
+      "grc access control",
+      "sap access control",
+      "access risk analysis",
+      "access request management",
+      "emergency access management",
+      "firefighter id",
+      "firefighter ids",
+      "business role management",
+      "sap grc 12.0",
+      "sap grc 10.1",
+      "sod ruleset",
+      "sap sod analysis",
+      "sod risk analysis",
+      "msmp workflow",
+      "sap grc process control"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-hcm-cloud-modules",
+    "name": "Oracle HCM Cloud functional modules (Core HR, Absence, Payroll, Talent)",
+    "category": "tools",
+    "aliases": [
+      "oracle core hr",
+      "oracle hcm core hr",
+      "oracle global hr",
+      "oracle absence management",
+      "oracle absence management cloud",
+      "oracle hcm absence",
+      "oracle cloud payroll",
+      "oracle hcm payroll",
+      "oracle fusion payroll",
+      "oracle global payroll",
+      "oracle talent management cloud",
+      "oracle hcm talent management",
+      "oracle time and labor",
+      "oracle recruiting cloud",
+      "oracle workforce compensation",
+      "oracle benefits cloud",
+      "oracle hcm help desk",
+      "oracle hcm journeys"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "oracle-fusion-cloud"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-fast-formula",
+    "name": "Oracle HCM fast formulas",
+    "category": "programming",
+    "aliases": [
+      "fast formula",
+      "fast formulas",
+      "oracle fast formula",
+      "oracle fast formulas",
+      "hcm fast formula",
+      "payroll fast formula",
+      "absence fast formula"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fraud-detection-rules",
+    "name": "Fraud rules and monitoring tools (rule tuning, device and velocity signals)",
+    "category": "business",
+    "aliases": [
+      "fraud rules",
+      "fraud rule tuning",
+      "fraud rule creation",
+      "fraud monitoring",
+      "fraud monitoring tool",
+      "fraud risk management",
+      "payment fraud detection",
+      "transaction fraud detection",
+      "falcon fraud manager",
+      "feedzai",
+      "clari5",
+      "sas fraud management",
+      "device fingerprinting",
+      "velocity checks",
+      "velocity rules"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fraud-case-investigation",
+    "name": "Fraud alert review and case investigation",
+    "category": "business",
+    "aliases": [
+      "fraud investigation",
+      "fraud investigations",
+      "fraud alerts",
+      "fraud alert review",
+      "fraud case management",
+      "account takeover investigation",
+      "mule account investigation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "chargeback-dispute-management",
+    "name": "Chargebacks and payment disputes",
+    "category": "business",
+    "aliases": [
+      "chargebacks",
+      "chargeback management",
+      "chargeback analysis",
+      "chargeback disputes",
+      "chargeback representment",
+      "chargeback reason codes",
+      "payment disputes",
+      "card disputes",
+      "upi chargebacks"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "payment-systems-domain",
+    "name": "Payment systems (UPI, cards, wallets, net banking)",
+    "category": "business",
+    "aliases": [
+      "payment systems",
+      "payments domain",
+      "cards and payments",
+      "upi payments",
+      "card payments",
+      "merchant acquiring"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "graphic-design-fundamentals",
+    "name": "Graphic design fundamentals (layout, typography, colour)",
+    "category": "design",
+    "aliases": [
+      "graphic design",
+      "graphic designing",
+      "colour theory",
+      "color theory"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "adobe-photoshop",
+    "name": "Adobe Photoshop",
+    "category": "design",
+    "aliases": [
+      "photoshop",
+      "adobe photoshop",
+      "photo retouching",
+      "image retouching",
+      "photo manipulation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "adobe-illustrator",
+    "name": "Adobe Illustrator",
+    "category": "design",
+    "aliases": [
+      "adobe illustrator",
+      "vector illustration",
+      "vector artwork"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "adobe-indesign",
+    "name": "Adobe InDesign",
+    "category": "design",
+    "aliases": [
+      "indesign",
+      "adobe indesign",
+      "brochure layout",
+      "multi-page layouts"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "brand-identity-design",
+    "name": "Brand identity design (logos, brand guidelines)",
+    "category": "design",
+    "aliases": [
+      "brand identity design",
+      "logo design",
+      "visual identity design",
+      "brand guideline creation",
+      "brand style guide design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "print-production",
+    "name": "Print production and prepress",
+    "category": "design",
+    "aliases": [
+      "print production",
+      "prepress",
+      "pre-press",
+      "print-ready files",
+      "print ready artwork",
+      "cmyk",
+      "print proofing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "motion-graphics",
+    "name": "Motion graphics (After Effects)",
+    "category": "design",
+    "aliases": [
+      "motion graphics",
+      "motion design",
+      "after effects",
+      "adobe after effects",
+      "logo animation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "content-moderation",
+    "name": "Content moderation and platform policy enforcement",
+    "category": "business",
+    "aliases": [
+      "content moderation",
+      "ugc moderation",
+      "user-generated content review",
+      "community guidelines enforcement",
+      "content policy enforcement",
+      "trust and safety operations"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "abuse-trend-analysis",
+    "name": "Platform abuse investigation and trend analysis",
+    "category": "security",
+    "aliases": [
+      "abuse trend analysis",
+      "abuse investigations",
+      "abuse investigation",
+      "spam and abuse detection",
+      "platform abuse",
+      "scam trend analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "software-asset-management",
+    "name": "Software asset management and licence compliance (Flexera, ServiceNow SAM Pro)",
+    "category": "tools",
+    "aliases": [
+      "software asset management",
+      "licence compliance",
+      "license compliance",
+      "software licence management",
+      "software license management",
+      "flexera",
+      "flexera one",
+      "flexnet manager",
+      "servicenow sam pro",
+      "sam pro",
+      "snow license manager",
+      "effective license position",
+      "effective licence position",
+      "licence audit",
+      "license audit"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "software-licensing-models",
+    "name": "Vendor licensing models (Microsoft, Oracle, IBM, Adobe)",
+    "category": "business",
+    "aliases": [
+      "microsoft licensing",
+      "oracle licensing",
+      "ibm licensing",
+      "ilmt",
+      "ibm ilmt",
+      "sub-capacity licensing",
+      "microsoft enterprise agreement",
+      "per core licensing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hardware-asset-management",
+    "name": "IT and hardware asset lifecycle management",
+    "category": "tools",
+    "aliases": [
+      "hardware asset management",
+      "it asset management",
+      "itam",
+      "it asset lifecycle",
+      "e-waste disposal",
+      "it asset disposition",
+      "servicenow ham pro"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "analog-ic-circuit-design",
+    "name": "Analog IC circuit design (op-amps, references, comparators)",
+    "category": "programming",
+    "aliases": [
+      "analog ic design",
+      "cmos analog circuit design",
+      "op-amp design",
+      "ota design",
+      "bandgap reference design",
+      "comparator design",
+      "analog mixed-signal circuit design",
+      "transistor-level circuit design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ic-spice-simulation",
+    "name": "Transistor-level SPICE simulation (Spectre, HSPICE)",
+    "category": "tools",
+    "aliases": [
+      "cadence spectre",
+      "hspice",
+      "eldo",
+      "cadence ade",
+      "ade xl",
+      "ade assembler",
+      "spectre simulation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pvt-monte-carlo-analysis",
+    "name": "PVT corner and Monte Carlo analysis",
+    "category": "testing",
+    "aliases": [
+      "pvt corners",
+      "pvt corner analysis",
+      "corner analysis",
+      "mismatch analysis",
+      "statistical circuit analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-converter-design",
+    "name": "Data converter design (ADC, DAC)",
+    "category": "programming",
+    "aliases": [
+      "adc design",
+      "dac design",
+      "sar adc",
+      "sigma-delta adc",
+      "pipeline adc",
+      "data converter design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pll-clocking-design",
+    "name": "PLL and clocking circuit design",
+    "category": "programming",
+    "aliases": [
+      "pll design",
+      "vco design",
+      "charge pump pll",
+      "cdr design",
+      "frequency synthesizer design",
+      "clock generation circuits"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "power-management-ic-design",
+    "name": "Power management IC design (LDO, on-chip DC-DC)",
+    "category": "programming",
+    "aliases": [
+      "ldo design",
+      "pmic design",
+      "power management ic design",
+      "on-chip dc-dc converter",
+      "buck converter ic design",
+      "low dropout regulator design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ams-behavioral-modelling",
+    "name": "Analog behavioural modelling (Verilog-A, Verilog-AMS)",
+    "category": "testing",
+    "aliases": [
+      "verilog-a",
+      "verilog-ams",
+      "real number modelling",
+      "real number modeling",
+      "ams verification",
+      "analog behavioral modeling"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "motor-control-algorithms",
+    "name": "Motor control algorithms (FOC, SVPWM, sensorless)",
+    "category": "programming",
+    "aliases": [
+      "field oriented control",
+      "field-oriented control",
+      "foc algorithm",
+      "svpwm",
+      "space vector pwm",
+      "sensorless control",
+      "field weakening",
+      "direct torque control"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "power-electronics-inverters",
+    "name": "Power electronics and inverter control",
+    "category": "programming",
+    "aliases": [
+      "three-phase inverter",
+      "inverter control",
+      "gate driver",
+      "igbt",
+      "sic mosfet",
+      "motor drives",
+      "traction inverter"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "control-loop-design",
+    "name": "Control loop design and tuning (PI, PID)",
+    "category": "programming",
+    "aliases": [
+      "pi controller tuning",
+      "current loop tuning",
+      "speed loop tuning",
+      "pid tuning",
+      "pid control",
+      "bode plot analysis",
+      "loop tuning"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fe-meshing-preprocessing",
+    "name": "FE meshing and pre-processing (ANSA, HyperMesh)",
+    "category": "tools",
+    "aliases": [
+      "ansa",
+      "beta ansa",
+      "fe meshing",
+      "fe modelling",
+      "finite element meshing",
+      "hex meshing",
+      "2d and 3d meshing",
+      "mesh quality checks"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "nonlinear-fea",
+    "name": "Non-linear and explicit FEA (Abaqus, LS-DYNA)",
+    "category": "tools",
+    "aliases": [
+      "abaqus",
+      "ls-dyna",
+      "non-linear fea",
+      "contact analysis",
+      "explicit dynamics",
+      "crash analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cfd-analysis",
+    "name": "CFD and thermal flow simulation (Fluent, STAR-CCM+)",
+    "category": "tools",
+    "aliases": [
+      "computational fluid dynamics",
+      "cfd analysis",
+      "cfd simulation",
+      "ansys fluent",
+      "star-ccm+",
+      "starccm+",
+      "ansys cfx",
+      "openfoam"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fatigue-durability-analysis",
+    "name": "Fatigue and durability analysis (nCode, FEMFAT)",
+    "category": "testing",
+    "aliases": [
+      "fatigue analysis",
+      "durability analysis",
+      "ncode",
+      "ncode designlife",
+      "femfat",
+      "fatigue life prediction",
+      "durability cae"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "structural-dynamics-nvh",
+    "name": "Structural dynamics and vibration analysis (Nastran)",
+    "category": "tools",
+    "aliases": [
+      "nastran",
+      "msc nastran",
+      "modal analysis",
+      "random vibration analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cae-test-correlation",
+    "name": "Simulation-to-test correlation",
+    "category": "testing",
+    "aliases": [
+      "cae correlation",
+      "correlation with test data",
+      "strain gauge correlation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ad-server-trafficking",
+    "name": "Ad server trafficking (Google Ad Manager, CM360)",
+    "category": "marketing",
+    "aliases": [
+      "google ad manager",
+      "doubleclick for publishers",
+      "ad trafficking",
+      "campaign trafficking",
+      "line item setup",
+      "campaign manager 360",
+      "cm360",
+      "doubleclick campaign manager"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "programmatic-platforms",
+    "name": "Programmatic platforms and deals (DV360, The Trade Desk, PMP)",
+    "category": "marketing",
+    "aliases": [
+      "dv360",
+      "display & video 360",
+      "display and video 360",
+      "the trade desk",
+      "private marketplace deals",
+      "pmp deals",
+      "programmatic guaranteed",
+      "programmatic advertising"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ad-tags-pixels",
+    "name": "Ad tags, tracking pixels and VAST",
+    "category": "marketing",
+    "aliases": [
+      "ad tags",
+      "vast tags",
+      "tracking pixels",
+      "floodlight tags",
+      "impression trackers",
+      "third-party ad tags",
+      "1x1 pixels"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ad-delivery-troubleshooting",
+    "name": "Campaign pacing and delivery troubleshooting",
+    "category": "marketing",
+    "aliases": [
+      "campaign pacing",
+      "pacing reports",
+      "delivery troubleshooting",
+      "under-delivery",
+      "discrepancy analysis",
+      "ad delivery issues",
+      "delivery discrepancies"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ad-verification-brand-safety",
+    "name": "Ad verification, viewability and brand safety",
+    "category": "marketing",
+    "aliases": [
+      "integral ad science",
+      "doubleverify",
+      "viewability",
+      "brand safety",
+      "invalid traffic",
+      "ad verification"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "header-bidding",
+    "name": "Header bidding and yield (Prebid)",
+    "category": "marketing",
+    "aliases": [
+      "header bidding",
+      "prebid",
+      "prebid.js",
+      "open bidding"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-bw4hana-modelling",
+    "name": "SAP BW/4HANA data modelling (ADSOs, composite providers)",
+    "category": "data",
+    "aliases": [
+      "sap bw/4hana",
+      "bw/4hana",
+      "sap bw4hana",
+      "bw4hana",
+      "sap bw on hana",
+      "bw on hana",
+      "sap bw",
+      "adso",
+      "advanced dso",
+      "composite provider",
+      "compositeprovider",
+      "open ods view",
+      "lsa++"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-bw-data-flows",
+    "name": "SAP BW data flows (extractors, ODP, transformations, DTPs)",
+    "category": "data",
+    "aliases": [
+      "sap bw extractors",
+      "bw extractors",
+      "odp extraction",
+      "operational data provisioning",
+      "lo extractors",
+      "lo cockpit",
+      "generic datasource",
+      "generic datasources",
+      "data transfer process",
+      "bw transformations",
+      "start routine",
+      "end routine",
+      "expert routine"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "sap-bw4hana-modelling"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-bw-process-chains",
+    "name": "SAP BW process chains and load monitoring",
+    "category": "data",
+    "aliases": [
+      "process chains",
+      "process chain monitoring",
+      "bw process chains",
+      "bw load monitoring",
+      "bw data load monitoring"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "sap-bw4hana-modelling"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-bw-reporting",
+    "name": "SAP BW reporting (BEx queries, Analysis for Office)",
+    "category": "data",
+    "aliases": [
+      "bex",
+      "bex query designer",
+      "bex queries",
+      "bex analyzer",
+      "analysis for office",
+      "sap analysis for office",
+      "bw queries"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-hana-modelling",
+    "name": "SAP HANA native modelling (calculation views, SQLScript)",
+    "category": "data",
+    "aliases": [
+      "hana calculation views",
+      "calculation views",
+      "native hana modelling",
+      "native hana modeling",
+      "hana modelling",
+      "hana modeling",
+      "sqlscript",
+      "hana sqlscript",
+      "sap hana xsa",
+      "hdi containers"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-analytics-cloud",
+    "name": "SAP Analytics Cloud",
+    "category": "data",
+    "aliases": [
+      "sap analytics cloud",
+      "sap sac",
+      "sac stories",
+      "sac planning",
+      "sac dashboards"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-datasphere",
+    "name": "SAP Datasphere",
+    "category": "data",
+    "aliases": [
+      "sap datasphere",
+      "datasphere",
+      "sap data warehouse cloud",
+      "sap business data cloud"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "duck-creek-platform",
+    "name": "Duck Creek Policy, Billing and Claims",
+    "category": "tools",
+    "aliases": [
+      "duck creek",
+      "duck creek policy",
+      "duck creek billing",
+      "duck creek claims",
+      "duck creek technologies",
+      "duck creek example platform",
+      "duck creek express",
+      "duck creek author",
+      "duck creek producer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "duck-creek-manuscripts",
+    "name": "Duck Creek manuscripts (rating, rules, forms)",
+    "category": "tools",
+    "aliases": [
+      "duck creek manuscripts",
+      "duck creek rating",
+      "duck creek forms",
+      "duck creek page builder",
+      "duck creek transact",
+      "duck creek manuscript",
+      "manuscript coding in duck creek"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "duck-creek-platform"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "duck-creek-ondemand",
+    "name": "Duck Creek OnDemand (cloud)",
+    "category": "cloud-devops",
+    "aliases": [
+      "duck creek ondemand",
+      "duck creek on-demand",
+      "duck creek saas",
+      "duck creek anywhere"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "duck-creek-platform"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "actuarial-reserving",
+    "name": "Actuarial reserving (IBNR, chain ladder)",
+    "category": "business",
+    "aliases": [
+      "claims reserving",
+      "loss reserving",
+      "actuarial reserving",
+      "ibnr",
+      "ibnr reserves",
+      "chain ladder",
+      "chain-ladder",
+      "bornhuetter-ferguson",
+      "loss triangles",
+      "reserving analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "actuarial-pricing",
+    "name": "Actuarial pricing",
+    "category": "business",
+    "aliases": [
+      "actuarial pricing",
+      "ratemaking",
+      "rate making",
+      "glm pricing",
+      "life insurance pricing",
+      "non-life pricing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "experience-studies",
+    "name": "Actuarial experience studies",
+    "category": "business",
+    "aliases": [
+      "experience studies",
+      "experience study",
+      "mortality studies",
+      "mortality experience",
+      "lapse studies",
+      "lapse experience",
+      "morbidity experience",
+      "actual vs expected analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "actuarial-valuation-reporting",
+    "name": "Actuarial valuation and reporting (IFRS 17, statutory)",
+    "category": "business",
+    "aliases": [
+      "ifrs 17",
+      "ifrs17",
+      "ifrs 17 reporting",
+      "statutory valuation",
+      "actuarial valuation",
+      "embedded value",
+      "solvency ii",
+      "policy liability valuation",
+      "csm calculation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "actuarial-modelling-software",
+    "name": "Actuarial modelling software (Prophet and similar)",
+    "category": "tools",
+    "aliases": [
+      "fis prophet",
+      "prophet actuarial",
+      "prophet models",
+      "prophet modelling",
+      "ggy axis",
+      "mg-alfa",
+      "resq"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "excel-vba",
+    "name": "Excel VBA",
+    "category": "tools",
+    "aliases": [
+      "vba",
+      "excel vba",
+      "vba macros",
+      "excel macros"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "excel"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "clinical-trial-design",
+    "name": "Clinical trial design (sample size, randomisation)",
+    "category": "data",
+    "aliases": [
+      "sample size calculation",
+      "sample size calculations",
+      "sample size estimation",
+      "randomization schedule",
+      "randomisation schedule",
+      "nquery",
+      "east software"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "statistics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "survival-analysis",
+    "name": "Survival analysis",
+    "category": "data",
+    "aliases": [
+      "survival analysis",
+      "time-to-event analysis",
+      "time to event analysis",
+      "kaplan-meier",
+      "kaplan meier",
+      "cox regression",
+      "cox proportional hazards",
+      "log-rank test",
+      "proc lifetest",
+      "proc phreg"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "statistics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "clinical-statistical-modelling",
+    "name": "Statistical modelling for trials (ANCOVA, logistic, mixed models)",
+    "category": "data",
+    "aliases": [
+      "mixed models",
+      "mixed effects models",
+      "mixed-effects models",
+      "mmrm",
+      "proc mixed",
+      "proc glimmix",
+      "ancova",
+      "repeated measures analysis",
+      "generalized linear mixed models"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "statistics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "clinical-crf-design",
+    "name": "Case report form (CRF/eCRF) design",
+    "category": "data",
+    "aliases": [
+      "crf design",
+      "ecrf design",
+      "case report form design",
+      "ecrf specifications",
+      "crf completion guidelines",
+      "crf annotation review"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "clinical-edc-systems",
+    "name": "Clinical EDC systems (Medidata Rave, Oracle InForm, Veeva Vault)",
+    "category": "tools",
+    "aliases": [
+      "medidata rave",
+      "rave edc",
+      "medidata rave edc",
+      "oracle inform",
+      "inform edc",
+      "veeva vault edc",
+      "veeva vault cdms",
+      "veeva cdms",
+      "electronic data capture",
+      "edc study build",
+      "edc build",
+      "oracle clinical",
+      "clinical one"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "clinical-edit-checks",
+    "name": "Data validation plans and edit checks",
+    "category": "data",
+    "aliases": [
+      "edit checks",
+      "edit check specifications",
+      "edit check programming",
+      "data validation plan",
+      "data validation specifications",
+      "edit check testing",
+      "uat of edit checks"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "clinical-query-management",
+    "name": "Clinical query and discrepancy management",
+    "category": "data",
+    "aliases": [
+      "discrepancy management",
+      "data clarification forms",
+      "manual data review",
+      "data listings review",
+      "clinical query management"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "meddra-whodrug-coding",
+    "name": "Medical coding of trial data (MedDRA, WHODrug)",
+    "category": "data",
+    "aliases": [
+      "meddra",
+      "meddra coding",
+      "whodrug",
+      "who drug dictionary",
+      "whodrug coding",
+      "who-dd",
+      "adverse event coding",
+      "concomitant medication coding"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "clinical-database-lock",
+    "name": "Data reconciliation and database lock",
+    "category": "data",
+    "aliases": [
+      "sae reconciliation",
+      "external data reconciliation",
+      "lab data reconciliation",
+      "interim database lock",
+      "clinical database lock",
+      "study database lock"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "video-editing-nle",
+    "name": "Video editing (Premiere Pro, DaVinci Resolve, Final Cut Pro)",
+    "category": "design",
+    "aliases": [
+      "video editing",
+      "premiere pro",
+      "adobe premiere pro",
+      "adobe premiere",
+      "davinci resolve",
+      "final cut pro",
+      "avid media composer",
+      "multicam editing",
+      "youtube video editing",
+      "long-form video editing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "colour-grading",
+    "name": "Colour correction and grading",
+    "category": "design",
+    "aliases": [
+      "colour grading",
+      "color grading",
+      "colour correction",
+      "color correction",
+      "davinci resolve colour",
+      "skin tone correction"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "audio-post-production",
+    "name": "Audio clean-up and mixing for video",
+    "category": "design",
+    "aliases": [
+      "audio mixing",
+      "audio editing",
+      "audio clean-up",
+      "audio cleanup",
+      "adobe audition",
+      "sound design",
+      "audio post-production",
+      "voiceover syncing",
+      "dialogue cleanup"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "video-delivery-specs",
+    "name": "Video formats, codecs and delivery specs",
+    "category": "design",
+    "aliases": [
+      "delivery specs",
+      "h.264",
+      "h.265",
+      "prores",
+      "aspect ratios",
+      "video file formats",
+      "platform delivery specs",
+      "media encoder"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "game-mechanics-design",
+    "name": "Game mechanics and core loop design (GDDs)",
+    "category": "design",
+    "aliases": [
+      "game design",
+      "core loop design",
+      "core gameplay loop",
+      "game mechanics design",
+      "gameplay mechanics",
+      "game design document",
+      "game design documents",
+      "feature design documents",
+      "gameplay design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "level-design",
+    "name": "Level design",
+    "category": "design",
+    "aliases": [
+      "level design",
+      "level layouts",
+      "level blockouts",
+      "greyboxing",
+      "graybox levels",
+      "level progression design",
+      "level flow"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "game-economy-balancing",
+    "name": "Game systems, economy design and balancing",
+    "category": "design",
+    "aliases": [
+      "game economy design",
+      "game economy",
+      "economy balancing",
+      "game balancing",
+      "virtual economy design",
+      "game systems design",
+      "progression systems",
+      "metagame design",
+      "balancing spreadsheets"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "playtesting",
+    "name": "Playtesting and player feedback",
+    "category": "design",
+    "aliases": [
+      "playtesting",
+      "playtests",
+      "playtest sessions",
+      "playtest feedback",
+      "player feedback sessions"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "live-ops-events",
+    "name": "Live-ops event design",
+    "category": "design",
+    "aliases": [
+      "live ops",
+      "liveops",
+      "live-ops",
+      "liveops events",
+      "live ops events",
+      "seasonal events design",
+      "battle pass design",
+      "event calendar for games"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "marketing-automation-platforms",
+    "name": "Marketing automation platforms (Marketo, HubSpot, Salesforce Marketing Cloud)",
+    "category": "marketing",
+    "aliases": [
+      "marketo",
+      "adobe marketo engage",
+      "marketo engage",
+      "salesforce marketing cloud",
+      "sfmc",
+      "hubspot marketing hub",
+      "pardot",
+      "marketing cloud account engagement",
+      "eloqua",
+      "oracle eloqua",
+      "journey builder",
+      "marketing automation platform"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "customer-engagement-platforms",
+    "name": "Customer engagement platforms (MoEngage, CleverTap, WebEngage, Braze)",
+    "category": "marketing",
+    "aliases": [
+      "moengage",
+      "clevertap",
+      "webengage",
+      "braze",
+      "netcore cloud",
+      "push notification campaigns",
+      "in-app messaging campaigns",
+      "whatsapp campaigns",
+      "customer engagement platform"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "lifecycle-journey-orchestration",
+    "name": "Lifecycle journeys and triggered campaigns",
+    "category": "marketing",
+    "aliases": [
+      "customer journeys",
+      "journey orchestration",
+      "lifecycle campaigns",
+      "lifecycle marketing",
+      "drip campaigns",
+      "nurture campaigns",
+      "onboarding journeys",
+      "triggered campaigns",
+      "retention campaigns",
+      "win-back campaigns"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "audience-segmentation",
+    "name": "Audience segmentation and targeting",
+    "category": "marketing",
+    "aliases": [
+      "audience segmentation",
+      "user segmentation",
+      "rfm segmentation",
+      "dynamic segments",
+      "smart lists",
+      "behavioural segmentation",
+      "behavioral segmentation",
+      "cohort targeting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "email-deliverability",
+    "name": "Email deliverability and sender reputation",
+    "category": "marketing",
+    "aliases": [
+      "email deliverability",
+      "sender reputation",
+      "inbox placement",
+      "ip warming",
+      "list hygiene"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "lead-scoring",
+    "name": "Lead scoring and lead lifecycle",
+    "category": "marketing",
+    "aliases": [
+      "lead scoring",
+      "lead scoring models",
+      "lead routing",
+      "marketing qualified leads",
+      "lead lifecycle stages",
+      "lead management framework"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rf-ic-circuit-design",
+    "name": "RF and mmWave IC circuit design (LNA, PA, mixer)",
+    "category": "programming",
+    "aliases": [
+      "rfic design",
+      "rf ic design",
+      "rfic circuit design",
+      "mmwave ic design",
+      "mmwave rfic",
+      "lna design",
+      "low noise amplifier design",
+      "power amplifier design",
+      "rf mixer design",
+      "rf transceiver design",
+      "rf front-end design",
+      "mmic design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rf-performance-analysis",
+    "name": "RF performance analysis and simulation (noise figure, linearity, matching)",
+    "category": "programming",
+    "aliases": [
+      "noise figure",
+      "iip3",
+      "p1db",
+      "s-parameters",
+      "s-parameter analysis",
+      "harmonic balance simulation",
+      "spectrerf",
+      "spectre rf",
+      "keysight ads",
+      "pss and pnoise"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rf-em-simulation",
+    "name": "RF electromagnetic simulation of passives (EMX, HFSS, Momentum)",
+    "category": "tools",
+    "aliases": [
+      "emx",
+      "cadence emx",
+      "hfss",
+      "ansys hfss",
+      "keysight momentum",
+      "on-chip inductor design",
+      "balun design",
+      "rf passive modelling",
+      "sonnet em"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rf-lab-characterisation",
+    "name": "RF lab characterisation (VNA, spectrum analyser, load-pull)",
+    "category": "testing",
+    "aliases": [
+      "vector network analyzer",
+      "vector network analyser",
+      "vna measurements",
+      "load-pull measurements",
+      "load pull",
+      "rf characterization",
+      "rf characterisation",
+      "rf bench validation",
+      "noise figure measurement"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ev-powertrain-integration",
+    "name": "EV powertrain integration and vehicle-level validation (DVP&R)",
+    "category": "testing",
+    "aliases": [
+      "ev powertrain integration",
+      "e-axle integration",
+      "e-drive integration",
+      "edrive integration",
+      "electric drive unit validation",
+      "ev powertrain validation",
+      "powertrain system integration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "powertrain-dyno-testing",
+    "name": "Powertrain dyno and vehicle testing (motor dyno, chassis dyno, data loggers)",
+    "category": "testing",
+    "aliases": [
+      "motor dynamometer",
+      "motor dyno",
+      "chassis dynamometer",
+      "chassis dyno",
+      "dyno testing",
+      "dynamometer testing",
+      "powertrain test bench",
+      "vehicle data logging",
+      "on-road vehicle testing",
+      "drive cycle testing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "vehicle-energy-simulation",
+    "name": "Vehicle performance and range simulation (AVL Cruise, GT-Suite, Amesim)",
+    "category": "tools",
+    "aliases": [
+      "range simulation",
+      "vehicle range estimation",
+      "vehicle performance simulation",
+      "energy consumption simulation",
+      "powertrain sizing",
+      "avl cruise",
+      "avl cruise m",
+      "gt-suite",
+      "gt suite",
+      "simcenter amesim",
+      "amesim",
+      "midc drive cycle",
+      "wltp drive cycle"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "3d-modelling-dcc",
+    "name": "3D modelling for games (Maya, 3ds Max, Blender)",
+    "category": "design",
+    "aliases": [
+      "autodesk maya",
+      "maya modelling",
+      "maya modeling",
+      "3ds max",
+      "3dsmax",
+      "autodesk 3ds max",
+      "blender 3d",
+      "blender modelling",
+      "blender modeling",
+      "hard surface modelling",
+      "hard surface modeling",
+      "low poly modelling",
+      "low poly modeling",
+      "high poly modelling",
+      "polygon modelling",
+      "3d game art"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "digital-sculpting",
+    "name": "Digital sculpting (ZBrush, Mudbox)",
+    "category": "design",
+    "aliases": [
+      "zbrush",
+      "pixologic zbrush",
+      "maxon zbrush",
+      "digital sculpting",
+      "mudbox",
+      "autodesk mudbox",
+      "high poly sculpting",
+      "blender sculpting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pbr-texturing",
+    "name": "PBR texturing (Substance 3D Painter and Designer)",
+    "category": "design",
+    "aliases": [
+      "substance painter",
+      "substance 3d painter",
+      "adobe substance painter",
+      "substance designer",
+      "substance 3d designer",
+      "pbr texturing",
+      "pbr materials",
+      "pbr workflow",
+      "texture painting",
+      "hand-painted textures",
+      "texture baking",
+      "normal map baking",
+      "marmoset toolbag",
+      "quixel mixer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "game-asset-optimisation",
+    "name": "Game-ready asset optimisation (retopology, UVs, LODs, poly budgets)",
+    "category": "design",
+    "aliases": [
+      "retopology",
+      "uv unwrapping",
+      "uv mapping",
+      "uv layout",
+      "lod creation",
+      "poly budget",
+      "polycount optimisation",
+      "polycount optimization",
+      "game-ready assets",
+      "game ready assets",
+      "texel density",
+      "rizomuv",
+      "topogun"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "lottie-ui-animation",
+    "name": "Lottie and in-app UI animation (Bodymovin, Rive)",
+    "category": "design",
+    "aliases": [
+      "lottie",
+      "lottie animation",
+      "lottie animations",
+      "lottiefiles",
+      "bodymovin",
+      "rive animation",
+      "rive animations",
+      "rive app"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "storyboarding-styleframes",
+    "name": "Storyboards, style frames and animatics",
+    "category": "design",
+    "aliases": [
+      "storyboarding",
+      "storyboards",
+      "storyboard creation",
+      "style frames",
+      "styleframes",
+      "animatics",
+      "animatic"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "3d-motion-design",
+    "name": "3D motion design (Cinema 4D, Redshift, Octane)",
+    "category": "design",
+    "aliases": [
+      "cinema 4d",
+      "c4d",
+      "maxon cinema 4d",
+      "redshift render",
+      "octane render",
+      "element 3d",
+      "3d motion graphics",
+      "3d motion design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-qm-configuration",
+    "name": "SAP QM configuration (Quality Management)",
+    "category": "business",
+    "aliases": [
+      "sap qm",
+      "sap quality management",
+      "sap qm configuration",
+      "s/4hana qm",
+      "sap s/4hana qm",
+      "sap s/4hana quality management",
+      "qm in procurement",
+      "qm in production",
+      "qm inspection plans",
+      "inspection lot processing",
+      "sap inspection lots",
+      "quality notifications",
+      "master inspection characteristics",
+      "quality info records",
+      "usage decision"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-pm-configuration",
+    "name": "SAP PM / EAM configuration (Plant Maintenance)",
+    "category": "business",
+    "aliases": [
+      "sap pm configuration",
+      "sap eam",
+      "sap enterprise asset management",
+      "s/4hana asset management",
+      "sap s/4hana asset management",
+      "s/4hana eam",
+      "sap s/4hana pm",
+      "s/4hana pm",
+      "sap equipment master",
+      "sap maintenance plans",
+      "measuring points and counters",
+      "maintenance order types",
+      "sap pm functional"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "sap-pm-maintenance"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-soa-suite",
+    "name": "Oracle SOA Suite (BPEL, Mediator, adapters)",
+    "category": "tools",
+    "aliases": [
+      "oracle soa suite",
+      "oracle soa",
+      "soa suite 12c",
+      "soa suite 11g",
+      "bpel",
+      "oracle bpel",
+      "bpel process manager",
+      "oracle mediator",
+      "soa composites",
+      "oracle jca adapters"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-service-bus",
+    "name": "Oracle Service Bus (OSB)",
+    "category": "tools",
+    "aliases": [
+      "oracle service bus",
+      "osb",
+      "oracle osb",
+      "osb 12c",
+      "osb 11g",
+      "osb proxy services",
+      "osb pipelines",
+      "aqualogic service bus"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "siebel-crm-configuration",
+    "name": "Oracle Siebel CRM configuration (Siebel Tools, Open UI)",
+    "category": "tools",
+    "aliases": [
+      "siebel crm",
+      "oracle siebel",
+      "siebel tools",
+      "siebel configuration",
+      "siebel open ui",
+      "siebel 8.1",
+      "siebel ip17",
+      "siebel applets",
+      "siebel business components"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "siebel-escript-workflows",
+    "name": "Siebel eScript, workflows and business services",
+    "category": "programming",
+    "aliases": [
+      "siebel escript",
+      "escript",
+      "siebel workflows",
+      "siebel workflow processes",
+      "siebel workflow policies",
+      "siebel business services",
+      "siebel runtime events",
+      "siebel browser script"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "siebel-eai-eim",
+    "name": "Siebel EAI and EIM (integration objects, web services, data loads)",
+    "category": "tools",
+    "aliases": [
+      "siebel eai",
+      "siebel eim",
+      "siebel integration objects",
+      "siebel web services",
+      "siebel data maps",
+      "eai data mapper",
+      "eim tables",
+      "siebel inbound web services"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "zoho-deluge-scripting",
+    "name": "Zoho Deluge scripting",
+    "category": "programming",
+    "aliases": [
+      "deluge scripting",
+      "deluge script",
+      "zoho deluge",
+      "deluge custom functions",
+      "deluge functions"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "zoho-creator-development",
+    "name": "Zoho Creator app development",
+    "category": "tools",
+    "aliases": [
+      "zoho creator",
+      "zoho creator development",
+      "zoho creator apps",
+      "zoho creator applications",
+      "zoho creator developer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "zoho-crm-customization",
+    "name": "Zoho CRM and Zoho One customisation (modules, blueprints, workflows)",
+    "category": "tools",
+    "aliases": [
+      "zoho crm customization",
+      "zoho crm customisation",
+      "zoho crm blueprint",
+      "zoho crm blueprints",
+      "zoho crm workflows",
+      "zoho crm client script",
+      "zoho one",
+      "zoho crm developer"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "odoo-module-development",
+    "name": "Odoo module development (ORM, views, QWeb)",
+    "category": "programming",
+    "aliases": [
+      "odoo development",
+      "odoo orm",
+      "odoo modules",
+      "odoo module development",
+      "odoo customization",
+      "odoo customisation",
+      "openerp",
+      "qweb",
+      "qweb reports",
+      "odoo owl"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "python"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "odoo-functional-apps",
+    "name": "Odoo business apps configuration (Accounting, Sales, Inventory, MRP)",
+    "category": "business",
+    "aliases": [
+      "odoo accounting",
+      "odoo inventory",
+      "odoo sales",
+      "odoo purchase",
+      "odoo manufacturing",
+      "odoo mrp",
+      "odoo functional",
+      "odoo implementation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "murex-platform",
+    "name": "Murex MX.3 platform (MxML, datamart, configuration)",
+    "category": "tools",
+    "aliases": [
+      "murex",
+      "murex mx.3",
+      "mx.3",
+      "mxml",
+      "mxml exchange",
+      "murex mxml",
+      "murex datamart",
+      "mxtest",
+      "murex mx.3 configuration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "calypso-platform",
+    "name": "Calypso capital-markets platform (engines, workflows, customisation)",
+    "category": "tools",
+    "aliases": [
+      "calypso",
+      "calypso technology",
+      "adenza calypso",
+      "calypso engines",
+      "calypso customization",
+      "calypso customisation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "capital-markets-trade-lifecycle",
+    "name": "Capital markets products and trade lifecycle (derivatives, FX, fixed income)",
+    "category": "business",
+    "aliases": [
+      "trade lifecycle",
+      "trade life cycle",
+      "otc derivatives",
+      "interest rate derivatives",
+      "fx derivatives",
+      "fixed income derivatives",
+      "front to back trade flow",
+      "trade capture"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "market-risk-pnl",
+    "name": "Market risk and P&L (VaR, sensitivities, P&L explain)",
+    "category": "business",
+    "aliases": [
+      "value at risk",
+      "var calculation",
+      "pnl explain",
+      "p&l explain",
+      "p&l attribution",
+      "frtb"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "payment-switch-integration",
+    "name": "Payment switch and gateway integration (ISO 8583, ISO 20022, UPI switch)",
+    "category": "web",
+    "aliases": [
+      "iso 8583",
+      "iso8583",
+      "iso 20022",
+      "iso20022",
+      "emv",
+      "payment switch",
+      "card switch",
+      "upi switch",
+      "npci integration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "payment-reconciliation-settlement",
+    "name": "Payment reconciliation and settlement systems",
+    "category": "business",
+    "aliases": [
+      "transaction reconciliation",
+      "settlement reconciliation",
+      "settlement engine",
+      "npci settlement"
     ],
     "ambiguous": [],
     "implies": [],

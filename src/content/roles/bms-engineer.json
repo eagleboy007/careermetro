@@ -1,0 +1,128 @@
+{
+  "slug": "bms-engineer",
+  "title": "BMS Engineer",
+  "summary": "Builds the battery management system (BMS) of electric vehicles and storage packs: the software that watches each cell, estimates charge and health, balances cells and keeps the pack safe. Sits in the EV battery or powertrain team with cell, hardware and vehicle software engineers.",
+  "dailyDuties": [
+    "Develop and tune state of charge and state of health estimation",
+    "Build BMS algorithms in MATLAB, Simulink and Stateflow",
+    "Implement cell balancing and protection logic",
+    "Fit cell models from lab test data",
+    "Write or integrate BMS firmware in embedded C",
+    "Define and debug CAN messages with the vehicle",
+    "Validate releases on HIL benches and in vehicle trials"
+  ],
+  "typicalTitles": [
+    "Battery Management System Engineer",
+    "BMS Software Engineer",
+    "BMS Algorithm Engineer",
+    "BMS Firmware Engineer",
+    "Battery Controls Engineer",
+    "BMS Algorithm Development Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "bms-state-estimation",
+      "importance": "required",
+      "expectation": "Develop and tune SOC and SOH estimation, from coulomb counting to Kalman filters",
+      "postingShare": null
+    },
+    {
+      "skillId": "bms-cell-monitoring-balancing",
+      "importance": "required",
+      "expectation": "Implement cell monitoring, balancing and protection logic with AFE chips",
+      "postingShare": null
+    },
+    {
+      "skillId": "battery-modelling",
+      "importance": "required",
+      "expectation": "Build cell models from test data and know how Li-ion chemistries behave",
+      "postingShare": null
+    },
+    {
+      "skillId": "ev-hev-systems",
+      "importance": "required",
+      "expectation": "Understand how the battery pack and BMS fit into the EV powertrain",
+      "postingShare": null
+    },
+    {
+      "skillId": "matlab-simulink",
+      "importance": "required",
+      "expectation": "Build BMS algorithms in MATLAB, Simulink and Stateflow",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "required",
+      "expectation": "Write or integrate BMS firmware in embedded C",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "required",
+      "expectation": "Define and debug CAN communication between the BMS and vehicle",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-functional-safety",
+      "importance": "required",
+      "expectation": "Apply ISO 26262 requirements to BMS functions",
+      "postingShare": null
+    },
+    {
+      "skillId": "hil-testing",
+      "importance": "nice_to_have",
+      "expectation": "Validate BMS software on HIL benches",
+      "postingShare": null
+    },
+    {
+      "skillId": "sensor-fusion",
+      "importance": "nice_to_have",
+      "expectation": "Use Kalman filters for state estimation",
+      "postingShare": null
+    },
+    {
+      "skillId": "autosar-classic",
+      "importance": "nice_to_have",
+      "expectation": "Integrate BMS software into an AUTOSAR stack",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-network-diagnostics",
+      "importance": "nice_to_have",
+      "expectation": "Use CANoe and UDS diagnostics during testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Analyse cell and pack test logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "microcontrollers",
+      "importance": "nice_to_have",
+      "expectation": "Work on the BMS microcontroller",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "tuv-sud-functional-safety-engineer",
+      "importance": "optional",
+      "why": "Shows formal ISO 26262 training, which BMS postings ask about"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,59 @@
+{
+  "id": "oracle-soa-developer-mid",
+  "roleSlug": "oracle-soa-developer",
+  "persona": "Mid-level SOA Suite and OSB developer who has not yet worked on OIC",
+  "resumeText": "Pradeep Nair | Bengaluru | pradeep.nair@example.com\n\nSUMMARY\nOracle SOA developer with 6 years building integrations for telecom and retail clients on SOA Suite 12c and OSB.\n\nEXPERIENCE\nOracle SOA Developer, Kaveri Integration Labs, Bengaluru (2020 - present)\n- Built BPEL and Mediator composites in Oracle SOA Suite 12c with DB, File and FTP adapters for order-to-cash flows.\n- Developed OSB proxy services and business services with XQuery transformations for 30 partner APIs.\n- Wrote XSLT maps and XSD schemas and handled SOAP faults with fault policies.\n- Exposed REST APIs from OSB for the mobile app team and consumed partner REST services.\n- Deployed composites to WebLogic clusters and configured JMS queues and data sources.\n- Wrote SQL queries on Oracle staging tables to reconcile failed orders.\n\nSoftware Engineer, Tranquil Systems, Kochi (2018 - 2020)\n- Wrote PL/SQL packages for nightly billing batch jobs.\n- Monitored failed instances in Enterprise Manager and fixed production integration errors.\n\nSKILLS\nOracle SOA Suite, OSB, BPEL, WebLogic, SQL, PL/SQL, Java, Maven\n\nEDUCATION\nBTech Computer Science, Cochin University of Science and Technology, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "oracle-soa-suite",
+        "quote": "Built BPEL and Mediator composites in Oracle SOA Suite 12c"
+      },
+      {
+        "skillId": "oracle-service-bus",
+        "quote": "Developed OSB proxy services and business services"
+      },
+      {
+        "skillId": "soap-xml",
+        "quote": "Wrote XSLT maps and XSD schemas and handled SOAP faults"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Exposed REST APIs from OSB for the mobile app team"
+      },
+      {
+        "skillId": "weblogic-administration",
+        "quote": "Deployed composites to WebLogic clusters and configured JMS queues"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries on Oracle staging tables"
+      },
+      {
+        "skillId": "database-programming",
+        "quote": "Wrote PL/SQL packages for nightly billing batch jobs"
+      },
+      {
+        "skillId": "application-support",
+        "quote": "fixed production integration errors"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "oracle-integration-cloud",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "oracle-integration-cloud",
+      "ci-cd",
+      "identity-federation"
+    ]
+  },
+  "reviewedBy": null
+}

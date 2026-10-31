@@ -1,0 +1,135 @@
+{
+  "slug": "game-designer",
+  "title": "Game Designer",
+  "summary": "Game designers decide how a game plays: its rules, core loop (the action players repeat), levels, rewards and in-game economy. They work with programmers, artists and product managers, prototype ideas, test them with players and keep tuning live games with events and balance changes.",
+  "dailyDuties": [
+    "Write and update design documents for new features",
+    "Tune rewards and economy numbers in balancing spreadsheets",
+    "Build or adjust levels and test their difficulty",
+    "Prototype a mechanic in the game engine",
+    "Run playtests and sort player feedback",
+    "Plan the next live event or season with the product team",
+    "Review analytics and A/B test results for released features"
+  ],
+  "typicalTitles": [
+    "Level Designer",
+    "Systems Designer - Games",
+    "Game Economy Designer",
+    "Associate Game Designer",
+    "LiveOps Game Designer",
+    "Gameplay Designer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "game-mechanics-design",
+      "importance": "required",
+      "expectation": "Design core loops and mechanics and write clear game design documents",
+      "postingShare": null
+    },
+    {
+      "skillId": "game-economy-balancing",
+      "importance": "required",
+      "expectation": "Design progression, rewards and economy, and balance them in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "level-design",
+      "importance": "required",
+      "expectation": "Lay out levels or puzzles with good pacing and difficulty curves",
+      "postingShare": null
+    },
+    {
+      "skillId": "unity-engine",
+      "importance": "required",
+      "expectation": "Prototype and tune features yourself in a game engine",
+      "postingShare": null,
+      "oneOf": "game-engine"
+    },
+    {
+      "skillId": "unreal-engine",
+      "importance": "required",
+      "expectation": "Prototype and tune features yourself in a game engine",
+      "postingShare": null,
+      "oneOf": "game-engine"
+    },
+    {
+      "skillId": "playtesting",
+      "importance": "required",
+      "expectation": "Run playtests and turn player feedback into design changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "live-ops-events",
+      "importance": "required",
+      "expectation": "Design events, offers and seasons that keep a live game fresh",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build balancing and economy models in Excel or Google Sheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Pitch ideas and explain designs to artists, programmers and product managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "nice_to_have",
+      "expectation": "Read A/B test and game analytics results to tune features",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull player data to check how a feature performs",
+      "postingShare": null
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "nice_to_have",
+      "expectation": "Script simple gameplay in C# for prototypes",
+      "postingShare": null
+    },
+    {
+      "skillId": "ux-research",
+      "importance": "nice_to_have",
+      "expectation": "Understand player motivation and usability",
+      "postingShare": null
+    },
+    {
+      "skillId": "figma",
+      "importance": "nice_to_have",
+      "expectation": "Mock up screens and flows for features",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "game-engine",
+      "label": "A game engine (Unity or Unreal)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "unity-certified-associate-programmer",
+      "importance": "optional",
+      "why": "Shows you can script prototypes in Unity; it is a programming cert, not a design one"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

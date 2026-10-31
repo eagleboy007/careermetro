@@ -1,0 +1,116 @@
+{
+  "slug": "graphic-designer",
+  "title": "Graphic Designer",
+  "summary": "Graphic designers make the visuals a brand uses: social posts, ads, logos, brochures and packaging. They work in a brand's in-house studio or a design agency, taking briefs from marketing and handing finished files to printers or digital teams.",
+  "dailyDuties": [
+    "Design social media and campaign creatives from briefs",
+    "Retouch and prepare images for ads and listings",
+    "Draw logos, icons and illustrations to brand guidelines",
+    "Lay out brochures, menus and reports",
+    "Prepare print-ready files and check proofs with printers",
+    "Present concepts and revise from feedback"
+  ],
+  "typicalTitles": [
+    "Communication Designer",
+    "Brand Designer",
+    "Creative Designer",
+    "Visual Communication Designer",
+    "Graphic Designer - Print and Digital",
+    "Marketing Graphic Designer",
+    "DTP Designer"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "graphic-design-fundamentals",
+      "importance": "required",
+      "expectation": "Use layout, typography, colour and visual hierarchy to make clear designs",
+      "postingShare": null
+    },
+    {
+      "skillId": "adobe-photoshop",
+      "importance": "required",
+      "expectation": "Edit, retouch and composite images in Photoshop",
+      "postingShare": null
+    },
+    {
+      "skillId": "adobe-illustrator",
+      "importance": "required",
+      "expectation": "Draw vector logos, icons and illustrations in Illustrator",
+      "postingShare": null
+    },
+    {
+      "skillId": "adobe-indesign",
+      "importance": "required",
+      "expectation": "Lay out brochures, reports and other multi-page documents in InDesign",
+      "postingShare": null
+    },
+    {
+      "skillId": "brand-identity-design",
+      "importance": "required",
+      "expectation": "Design within a brand's visual identity and help build its guidelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "social-creative-design",
+      "importance": "required",
+      "expectation": "Make social media and campaign creatives in the right sizes and formats",
+      "postingShare": null
+    },
+    {
+      "skillId": "print-production",
+      "importance": "required",
+      "expectation": "Prepare print-ready files with correct bleed, colour mode and resolution, and check proofs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Take briefs, present concepts and act on feedback",
+      "postingShare": null
+    },
+    {
+      "skillId": "figma",
+      "importance": "nice_to_have",
+      "expectation": "Make web banners and hand assets to product designers in Figma",
+      "postingShare": null
+    },
+    {
+      "skillId": "motion-graphics",
+      "importance": "nice_to_have",
+      "expectation": "Animate simple creatives and logo reveals in After Effects",
+      "postingShare": null
+    },
+    {
+      "skillId": "short-form-video-content",
+      "importance": "nice_to_have",
+      "expectation": "Edit short videos for Reels and Shorts",
+      "postingShare": null
+    },
+    {
+      "skillId": "interaction-design",
+      "importance": "nice_to_have",
+      "expectation": "Design simple web pages and app screens with the product team",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with marketing teams, agencies and printers to deadlines",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

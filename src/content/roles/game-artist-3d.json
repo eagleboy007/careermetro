@@ -1,0 +1,110 @@
+{
+  "slug": "game-artist-3d",
+  "title": "3D Game Artist",
+  "summary": "3D game artists build the props, environments and characters players see, from modelling and sculpting to textures that are ready for the game engine. They sit in a studio art team under an art lead, working with game designers and developers to keep assets within performance budgets.",
+  "dailyDuties": [
+    "Model props or environment pieces from concept art and references",
+    "Sculpt high poly detail and bake it to game meshes",
+    "Texture assets with PBR materials in Substance Painter",
+    "Unwrap UVs and build LODs within poly budgets",
+    "Import assets into the engine and set up materials",
+    "Fix assets after art lead reviews"
+  ],
+  "typicalTitles": [
+    "3D Artist - Games",
+    "Game Props Artist",
+    "3D Environment Artist",
+    "3D Character Artist",
+    "Hard Surface Artist",
+    "3D Modeller - Games"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "3d-modelling-dcc",
+      "importance": "required",
+      "expectation": "Model game props, environments or characters in Maya, 3ds Max or Blender",
+      "postingShare": null
+    },
+    {
+      "skillId": "digital-sculpting",
+      "importance": "required",
+      "expectation": "Sculpt high poly detail in ZBrush and bake it to game meshes",
+      "postingShare": null
+    },
+    {
+      "skillId": "pbr-texturing",
+      "importance": "required",
+      "expectation": "Texture assets with a PBR workflow in Substance Painter or Designer",
+      "postingShare": null
+    },
+    {
+      "skillId": "game-asset-optimisation",
+      "importance": "required",
+      "expectation": "Retopologise, unwrap UVs and build LODs within poly and texture budgets",
+      "postingShare": null
+    },
+    {
+      "skillId": "unity-engine",
+      "importance": "required",
+      "expectation": "Import assets into the team's engine and set up materials and collision",
+      "postingShare": null,
+      "oneOf": "game-engine"
+    },
+    {
+      "skillId": "unreal-engine",
+      "importance": "required",
+      "expectation": "Import assets into the team's engine and set up materials and collision",
+      "postingShare": null,
+      "oneOf": "game-engine"
+    },
+    {
+      "skillId": "adobe-photoshop",
+      "importance": "required",
+      "expectation": "Paint textures, decals and reference boards in Photoshop",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Take feedback in art reviews and follow the art lead's style guide",
+      "postingShare": null
+    },
+    {
+      "skillId": "level-design",
+      "importance": "nice_to_have",
+      "expectation": "Dress environments and work with level designers on blockouts",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Check assets in and out with version control such as Perforce or Git",
+      "postingShare": null
+    },
+    {
+      "skillId": "xr-development",
+      "importance": "nice_to_have",
+      "expectation": "Prepare light assets for AR or VR projects",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "game-engine",
+      "label": "A game engine (Unity or Unreal Engine)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

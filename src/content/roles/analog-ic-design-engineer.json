@@ -1,0 +1,124 @@
+{
+  "slug": "analog-ic-design-engineer",
+  "title": "Analog IC Design Engineer",
+  "summary": "Designs the analog parts of a chip, such as amplifiers, voltage regulators, clock circuits and converters between analog signals and digital data, at the level of single transistors. Works in a chip team beside layout engineers, who draw the circuit on silicon, and verification and test engineers.",
+  "dailyDuties": [
+    "Design and size transistor-level circuit blocks to a specification",
+    "Run Spectre or HSPICE simulations and check noise and stability",
+    "Sweep PVT corners and Monte Carlo runs before sign-off",
+    "Review layout with the layout engineer and rerun post-layout simulations",
+    "Write block specifications and present design reviews",
+    "Compare lab measurements on silicon with simulation results"
+  ],
+  "typicalTitles": [
+    "Analog Design Engineer",
+    "Analog Circuit Design Engineer",
+    "Analog Mixed-Signal Design Engineer",
+    "AMS Circuit Design Engineer",
+    "PLL Design Engineer",
+    "ADC Design Engineer",
+    "Power Management IC Design Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "analog-ic-circuit-design",
+      "importance": "required",
+      "expectation": "Design transistor-level blocks such as op-amps, comparators and bandgap references",
+      "postingShare": null
+    },
+    {
+      "skillId": "ic-spice-simulation",
+      "importance": "required",
+      "expectation": "Simulate circuits in Spectre or HSPICE for DC, AC, transient, noise and stability",
+      "postingShare": null
+    },
+    {
+      "skillId": "pvt-monte-carlo-analysis",
+      "importance": "required",
+      "expectation": "Sign off blocks across PVT corners, mismatch and Monte Carlo runs",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-converter-design",
+      "importance": "required",
+      "expectation": "Own at least one block family: ADC or DAC design",
+      "postingShare": null,
+      "oneOf": "analog-block"
+    },
+    {
+      "skillId": "pll-clocking-design",
+      "importance": "required",
+      "expectation": "Own at least one block family: PLL, VCO or clocking circuits",
+      "postingShare": null,
+      "oneOf": "analog-block"
+    },
+    {
+      "skillId": "power-management-ic-design",
+      "importance": "required",
+      "expectation": "Own at least one block family: LDOs or on-chip power management",
+      "postingShare": null,
+      "oneOf": "analog-block"
+    },
+    {
+      "skillId": "parasitic-extraction",
+      "importance": "required",
+      "expectation": "Run post-layout simulations on extracted netlists and fix parasitic effects",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write block specs and present design reviews to the chip team",
+      "postingShare": null
+    },
+    {
+      "skillId": "analog-layout-matching",
+      "importance": "nice_to_have",
+      "expectation": "Guide the layout engineer on matching, guard rings and floorplan",
+      "postingShare": null
+    },
+    {
+      "skillId": "ams-behavioral-modelling",
+      "importance": "nice_to_have",
+      "expectation": "Write Verilog-A or real-number models for mixed-signal verification",
+      "postingShare": null
+    },
+    {
+      "skillId": "post-silicon-validation",
+      "importance": "nice_to_have",
+      "expectation": "Characterise silicon in the lab and debug against simulation",
+      "postingShare": null
+    },
+    {
+      "skillId": "eda-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Automate simulation runs with Ocean, SKILL, Tcl or Perl scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Post-process simulation and lab data with scripts",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "analog-block",
+      "label": "One analog block specialty (data converters, PLLs or power management)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

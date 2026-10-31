@@ -1,0 +1,110 @@
+{
+  "slug": "cae-simulation-engineer",
+  "title": "CAE Simulation Engineer",
+  "summary": "Uses computer simulation (finite element analysis, a way to predict stress and vibration in parts, and sometimes fluid-flow simulation) to check designs before they are built and tested. Works as the specialist analyst for a product design team in automotive, aerospace, energy or engineering services firms.",
+  "dailyDuties": [
+    "Clean up CAD geometry and build meshes in HyperMesh or ANSA",
+    "Set up and run linear and non-linear analyses in ANSYS or Abaqus",
+    "Predict fatigue life from load data for durability targets",
+    "Compare simulation results with physical test data",
+    "Write analysis reports and suggest design changes",
+    "Present results in design reviews with the design team"
+  ],
+  "typicalTitles": [
+    "CAE Engineer",
+    "CAE Analyst",
+    "FEA Engineer",
+    "FEA Analyst",
+    "CFD Engineer",
+    "Durability CAE Engineer",
+    "Thermal Simulation Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "fea-basics",
+      "importance": "required",
+      "expectation": "Run linear static and thermal FEA in ANSYS or a similar solver",
+      "postingShare": null
+    },
+    {
+      "skillId": "fe-meshing-preprocessing",
+      "importance": "required",
+      "expectation": "Build quality shell and solid meshes in HyperMesh or ANSA",
+      "postingShare": null
+    },
+    {
+      "skillId": "nonlinear-fea",
+      "importance": "required",
+      "expectation": "Set up non-linear, contact or explicit analyses in Abaqus or LS-DYNA",
+      "postingShare": null
+    },
+    {
+      "skillId": "fatigue-durability-analysis",
+      "importance": "required",
+      "expectation": "Predict fatigue life and durability from load data",
+      "postingShare": null
+    },
+    {
+      "skillId": "structural-dynamics-nvh",
+      "importance": "required",
+      "expectation": "Run modal, frequency response and random vibration analyses",
+      "postingShare": null
+    },
+    {
+      "skillId": "cae-test-correlation",
+      "importance": "required",
+      "expectation": "Correlate simulation results with physical test data",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write analysis reports and present design recommendations",
+      "postingShare": null
+    },
+    {
+      "skillId": "cfd-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Run CFD or thermal flow simulations in Fluent or STAR-CCM+",
+      "postingShare": null
+    },
+    {
+      "skillId": "3d-cad-modelling",
+      "importance": "nice_to_have",
+      "expectation": "Clean up and simplify CAD geometry before meshing",
+      "postingShare": null
+    },
+    {
+      "skillId": "mechanical-design-calculations",
+      "importance": "nice_to_have",
+      "expectation": "Check results with hand calculations",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate pre- and post-processing with scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "nice_to_have",
+      "expectation": "Keep analysis reports and methods documents clear",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

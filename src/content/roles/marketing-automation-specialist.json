@@ -1,0 +1,146 @@
+{
+  "slug": "marketing-automation-specialist",
+  "title": "Marketing Automation Specialist",
+  "summary": "Marketing automation specialists set up the automatic emails, push notifications and messages that reach customers at the right moment, such as welcome, reminder and win-back journeys. They sit in a marketing, CRM or growth team and work with product, sales and design to grow sign-ups, repeat use and leads.",
+  "dailyDuties": [
+    "Build and test journeys and campaigns in the automation platform",
+    "Create audience segments from user data",
+    "Set up A/B tests on messages, timing and offers",
+    "Check deliverability, bounces and unsubscribes",
+    "Report campaign results and suggest changes",
+    "Plan the campaign calendar with product and growth teams"
+  ],
+  "typicalTitles": [
+    "CRM Manager - Lifecycle Marketing",
+    "Lifecycle Marketing Manager",
+    "Retention Marketing Manager",
+    "Marketing Operations Specialist",
+    "Marketo Specialist",
+    "Marketing Automation Manager",
+    "CRM Executive - Retention"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "marketing-automation-platforms",
+      "importance": "required",
+      "expectation": "Build programs and journeys in Marketo, HubSpot or Salesforce Marketing Cloud",
+      "postingShare": null,
+      "oneOf": "automation-platform"
+    },
+    {
+      "skillId": "customer-engagement-platforms",
+      "importance": "required",
+      "expectation": "Run push, in-app, email and WhatsApp campaigns in MoEngage, CleverTap, WebEngage or Braze",
+      "postingShare": null,
+      "oneOf": "automation-platform"
+    },
+    {
+      "skillId": "lifecycle-journey-orchestration",
+      "importance": "required",
+      "expectation": "Design onboarding, nurture, retention and win-back journeys triggered by user behaviour",
+      "postingShare": null
+    },
+    {
+      "skillId": "audience-segmentation",
+      "importance": "required",
+      "expectation": "Build segments from user events, attributes and lifecycle stage",
+      "postingShare": null
+    },
+    {
+      "skillId": "email-marketing",
+      "importance": "required",
+      "expectation": "Plan and send email campaigns with good templates and copy",
+      "postingShare": null
+    },
+    {
+      "skillId": "email-deliverability",
+      "importance": "required",
+      "expectation": "Protect sender reputation with SPF, DKIM, DMARC, warm-up and list hygiene",
+      "postingShare": null
+    },
+    {
+      "skillId": "ab-testing",
+      "importance": "required",
+      "expectation": "A/B test subject lines, content, timing and journeys and read the results",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Report campaign results and analyse performance data",
+      "postingShare": null,
+      "oneOf": "campaign-data"
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Report campaign results and analyse performance data",
+      "postingShare": null,
+      "oneOf": "campaign-data"
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with product, growth, sales and design teams on campaign plans",
+      "postingShare": null
+    },
+    {
+      "skillId": "lead-scoring",
+      "importance": "nice_to_have",
+      "expectation": "Set up lead scoring and routing for B2B funnels",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Keep CRM and automation data in sync",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Edit responsive email templates",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Track campaign traffic and conversions with UTM tags and analytics",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "automation-platform",
+      "label": "A marketing automation or customer engagement platform"
+    },
+    {
+      "id": "campaign-data",
+      "label": "Campaign reporting in Excel or SQL"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "hubspot-inbound-marketing",
+      "importance": "optional",
+      "why": "Free course covering inbound and nurture basics"
+    },
+    {
+      "certId": "google-analytics-cert",
+      "importance": "optional",
+      "why": "Shows you can track campaign traffic and conversions"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

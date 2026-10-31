@@ -1,0 +1,59 @@
+{
+  "id": "sap-pm-consultant-mid",
+  "roleSlug": "sap-pm-consultant",
+  "persona": "Maintenance planner turned SAP PM functional consultant",
+  "resumeText": "Arvind Rao | Visakhapatnam | arvind.rao@example.com\n\nSUMMARY\nSAP PM functional consultant with 6 years across steel and power plant maintenance projects.\n\nEXPERIENCE\nSAP PM Functional Consultant, Coromandel Infotech Services, Hyderabad (2021 - present)\n- Configured functional locations, equipment categories and maintenance order types for an S/4HANA asset management rollout at a steel plant.\n- Built task lists and SAP maintenance plans for strategy-based preventive maintenance on 3,000 pieces of equipment.\n- Mapped breakdown and corrective maintenance processes as-is and to-be with the maintenance planning team.\n- Loaded equipment and functional location master data through LTMC templates during cutover.\n- Integrated maintenance orders with MM reservations and purchase requisitions for spare parts.\n\nMaintenance Planner, Godavari Power Ltd, Visakhapatnam (2019 - 2021)\n- Created maintenance notifications and work orders in SAP PM for the boiler and turbine sections.\n- Tracked MTTR and MTBF for critical pumps and reported them every month.\n\nSKILLS\nSAP PM, SAP EAM, S/4HANA, MM integration, Excel\n\nEDUCATION\nBTech Mechanical Engineering, Andhra University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "sap-pm-configuration",
+        "quote": "Configured functional locations, equipment categories and maintenance order types"
+      },
+      {
+        "skillId": "sap-pm-maintenance",
+        "quote": "Created maintenance notifications and work orders in SAP PM"
+      },
+      {
+        "skillId": "process-mapping",
+        "quote": "Mapped breakdown and corrective maintenance processes as-is and to-be"
+      },
+      {
+        "skillId": "data-migration",
+        "quote": "Loaded equipment and functional location master data through LTMC templates"
+      },
+      {
+        "skillId": "sap-mm-configuration",
+        "quote": "Integrated maintenance orders with MM reservations"
+      },
+      {
+        "skillId": "maintenance-reliability-metrics",
+        "quote": "Tracked MTTR and MTBF for critical pumps"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "requirements-gathering",
+        "status": "missing"
+      },
+      {
+        "skillId": "uat",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-co-configuration",
+      "sap-abap",
+      "itsm"
+    ]
+  },
+  "reviewedBy": null
+}

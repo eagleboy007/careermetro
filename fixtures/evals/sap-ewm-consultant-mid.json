@@ -1,0 +1,52 @@
+{
+  "id": "sap-ewm-consultant-mid",
+  "roleSlug": "sap-ewm-consultant",
+  "persona": "Mid-level SAP EWM consultant from an SAP partner",
+  "resumeText": "Rohit Kulkarni | Pune | rohit.kulkarni@example.com\n\nEXPERIENCE\nSAP EWM Consultant, Sahyadri SAP Services, Pune (2020 - present)\n- Configured embedded EWM on S/4HANA for two distribution warehouses, including storage types, bins and warehouse process types.\n- Designed putaway and picking strategies and wave templates for outbound deliveries in a consumer goods warehouse.\n- Built RF framework screens for receiving, picking and loading and trained 60 warehouse users.\n- Ran fit-gap workshops with warehouse managers and wrote the EWM solution design document.\n- Mapped as-is and to-be inbound and outbound flows for the cutover plan.\n- Fixed queue errors on the qRFC link between EWM and the ERP during hypercare.\n- Wrote integration test scripts and led UAT with the client warehouse team.\n\nSAP MM Associate Consultant, Konkan Tech Solutions, Mumbai (2018 - 2020)\n- Supported MM inventory management and goods movements for a cement plant.\n\nSKILLS\nSAP EWM, SAP MM, SAP SD, RF framework, Excel\n\nEDUCATION\nBE Mechanical Engineering, Pune University, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "sap-ewm-configuration",
+        "quote": "Configured embedded EWM on S/4HANA for two distribution warehouses"
+      },
+      {
+        "skillId": "sap-mm-configuration",
+        "quote": "Supported MM inventory management and goods movements"
+      },
+      {
+        "skillId": "sap-interfaces",
+        "quote": "Fixed queue errors on the qRFC link between EWM and the ERP"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Ran fit-gap workshops with warehouse managers"
+      },
+      {
+        "skillId": "process-mapping",
+        "quote": "Mapped as-is and to-be inbound and outbound flows"
+      },
+      {
+        "skillId": "uat",
+        "quote": "led UAT with the client warehouse team"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-abap",
+      "sap-fi-configuration",
+      "data-migration",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

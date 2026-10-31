@@ -1,0 +1,64 @@
+{
+  "id": "ev-powertrain-engineer-mid",
+  "roleSlug": "ev-powertrain-engineer",
+  "persona": "mid",
+  "resumeText": "Rohit Kulkarni | Pune | rohit.kulkarni@example.com\n\nEXPERIENCE\nPowertrain Integration Engineer, Sahyadri Electric Mobility, Pune (2022 - present)\n- Integrated the traction motor, inverter and battery pack on an electric 3-wheeler cargo platform.\n- Owned EV powertrain integration of the e-axle and signed off 40 vehicle-level tests for the launch.\n- Ran motor dyno and chassis dyno tests for torque, efficiency and thermal derating.\n- Checked PMSM torque-speed curves and efficiency maps against supplier data.\n- Worked with the traction inverter supplier on SiC MOSFET derating and gate driver faults.\n- Decoded CAN traffic in Vector CANalyzer to debug inverter and VCU fault codes.\n- Built range simulation models in MATLAB/Simulink for the MIDC drive cycle.\n\nTest Engineer, Deccan Auto Components, Pune (2020 - 2022)\n- Ran durability tests on gearbox sub-assemblies and wrote test reports.\n- Led DFMEA reviews for gearbox mounting brackets with the design team.\n\nEDUCATION\nBE Mechanical Engineering, College of Engineering Pune, 2020\n\nSKILLS\nMATLAB, Simulink, CANalyzer, ETAS INCA, DFMEA\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "ev-hev-systems",
+        "quote": "Integrated the traction motor, inverter and battery pack"
+      },
+      {
+        "skillId": "ev-powertrain-integration",
+        "quote": "Owned EV powertrain integration of the e-axle and signed off 40 vehicle-level tests"
+      },
+      {
+        "skillId": "powertrain-dyno-testing",
+        "quote": "Ran motor dyno and chassis dyno tests for torque, efficiency and thermal derating"
+      },
+      {
+        "skillId": "electrical-machines-transformers",
+        "quote": "Checked PMSM torque-speed curves and efficiency maps"
+      },
+      {
+        "skillId": "power-electronics-inverters",
+        "quote": "Worked with the traction inverter supplier on SiC MOSFET derating"
+      },
+      {
+        "skillId": "automotive-network-diagnostics",
+        "quote": "Decoded CAN traffic in Vector CANalyzer"
+      },
+      {
+        "skillId": "vehicle-energy-simulation",
+        "quote": "Built range simulation models"
+      },
+      {
+        "skillId": "matlab-simulink",
+        "quote": "models in MATLAB/Simulink for the MIDC drive cycle"
+      },
+      {
+        "skillId": "design-fmea",
+        "quote": "Led DFMEA reviews for gearbox mounting brackets"
+      },
+      {
+        "skillId": "ecu-measurement-calibration",
+        "quote": "ETAS INCA"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ecu-measurement-calibration",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "bms-state-estimation",
+      "motor-control-algorithms",
+      "autosar-classic",
+      "hil-testing"
+    ]
+  },
+  "reviewedBy": null
+}

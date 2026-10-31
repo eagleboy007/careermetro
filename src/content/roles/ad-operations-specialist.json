@@ -1,0 +1,121 @@
+{
+  "slug": "ad-operations-specialist",
+  "title": "Ad Operations Specialist",
+  "summary": "Sets up, checks and runs online ad campaigns inside ad servers and programmatic buying tools, so that ads show to the right people on time and on budget. Sits between the sales or media-planning team and the tech platforms at publishers, ad tech firms and media agencies.",
+  "dailyDuties": [
+    "Traffic orders, line items and creatives in the ad server",
+    "Set up programmatic deals with buyers and DSPs",
+    "Test ad tags and tracking pixels before launch",
+    "Check daily pacing and fix under-delivery",
+    "Investigate delivery discrepancies with partners",
+    "Send campaign delivery reports to sales and clients"
+  ],
+  "typicalTitles": [
+    "Ad Ops Executive",
+    "Ad Operations Analyst",
+    "Ad Operations Associate",
+    "Ad Trafficker",
+    "Campaign Trafficking Specialist",
+    "Programmatic Ad Operations Executive",
+    "Digital Ad Ops Specialist"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "ad-server-trafficking",
+      "importance": "required",
+      "expectation": "Traffic orders, line items and creatives in Google Ad Manager or CM360",
+      "postingShare": null
+    },
+    {
+      "skillId": "programmatic-platforms",
+      "importance": "required",
+      "expectation": "Set up programmatic deals and campaigns in DV360 or other DSPs and SSPs",
+      "postingShare": null
+    },
+    {
+      "skillId": "ad-tags-pixels",
+      "importance": "required",
+      "expectation": "Implement and test ad tags, VAST tags and tracking pixels",
+      "postingShare": null
+    },
+    {
+      "skillId": "ad-delivery-troubleshooting",
+      "importance": "required",
+      "expectation": "Monitor pacing and fix under-delivery and discrepancies",
+      "postingShare": null
+    },
+    {
+      "skillId": "ad-verification-brand-safety",
+      "importance": "required",
+      "expectation": "Use verification tools to check viewability, brand safety and invalid traffic",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build delivery and performance reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Coordinate launches with sales, clients and agencies",
+      "postingShare": null
+    },
+    {
+      "skillId": "header-bidding",
+      "importance": "nice_to_have",
+      "expectation": "Understand header bidding and yield setups such as Prebid",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Read HTML to debug creatives and tags",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Use Google Analytics and tag managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull delivery data with SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Build dashboards for campaign reporting",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "google-ads-display",
+      "importance": "recommended",
+      "why": "Covers display campaign setup and measurement basics"
+    },
+    {
+      "certId": "google-analytics-cert",
+      "importance": "optional",
+      "why": "Helps with tracking and reporting"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

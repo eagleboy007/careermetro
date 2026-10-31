@@ -1,0 +1,133 @@
+{
+  "slug": "sap-pm-consultant",
+  "title": "SAP PM Consultant",
+  "summary": "Sets up and supports the Plant Maintenance (also called Enterprise Asset Management) part of SAP so that plants can record their machines, plan preventive work and run repair orders. Sits in an SAP project or support team next to the materials and finance consultants, working with maintenance planners and engineers.",
+  "dailyDuties": [
+    "Run fit-gap workshops with maintenance planners and engineers",
+    "Configure equipment, functional locations, task lists and maintenance plans",
+    "Set up notification and order types and their links to MM and CO",
+    "Prepare and load asset master data during cutover",
+    "Write test scripts and run integration and user testing",
+    "Train planners and resolve PM support tickets"
+  ],
+  "typicalTitles": [
+    "SAP PM Functional Consultant",
+    "SAP EAM Consultant",
+    "SAP S/4HANA Asset Management Consultant",
+    "SAP Plant Maintenance Consultant",
+    "SAP PM Analyst",
+    "SAP PM Support Consultant",
+    "SAP S/4HANA PM Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "sap-pm-configuration",
+      "importance": "required",
+      "expectation": "Configure equipment, functional locations, task lists, maintenance plans and order types",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-pm-maintenance",
+      "importance": "required",
+      "expectation": "Run the maintenance cycle end to end: notifications, orders, confirmations and history",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run fit-gap workshops with maintenance teams and write functional specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map preventive, breakdown and corrective maintenance processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-migration",
+      "importance": "required",
+      "expectation": "Load equipment, functional locations and maintenance plans during cutover",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Write test scripts and run integration and user acceptance testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Train planners and technicians and explain design choices",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with plant maintenance, stores and finance teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-mm-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Handle spare parts, reservations and external services from MM",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-co-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Set up order costing and settlement with CO",
+      "postingShare": null
+    },
+    {
+      "skillId": "preventive-maintenance",
+      "importance": "nice_to_have",
+      "expectation": "Understand preventive, predictive and breakdown strategies on the shop floor",
+      "postingShare": null
+    },
+    {
+      "skillId": "maintenance-reliability-metrics",
+      "importance": "nice_to_have",
+      "expectation": "Report MTTR, MTBF and downtime from maintenance history",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Write specs ABAP developers can build reports and enhancements from",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "nice_to_have",
+      "expectation": "Resolve PM support tickets within SLA after go-live",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "sap-s4hana-sourcing-procurement",
+      "importance": "optional",
+      "why": "Covers the MM side of spares and service procurement"
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Useful on support projects"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

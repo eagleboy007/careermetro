@@ -1,0 +1,128 @@
+{
+  "slug": "fraud-analyst",
+  "title": "Fraud Analyst",
+  "summary": "Fraud analysts watch payments and accounts for fraud, tune the rules that stop it, and investigate flagged cases. They sit in the risk team of a bank, payments company or online marketplace, working with operations, product and partner banks.",
+  "dailyDuties": [
+    "Review fraud alerts and decide to block or release accounts",
+    "Tune fraud rules and check how many good customers they stop",
+    "Pull transaction data with SQL to trace new fraud patterns",
+    "Handle chargebacks and disputes with banks and merchants",
+    "Update fraud loss and alert dashboards",
+    "Share fraud trends with product and operations teams"
+  ],
+  "typicalTitles": [
+    "Fraud Risk Analyst",
+    "Fraud Prevention Analyst",
+    "Fraud Detection Analyst",
+    "Chargeback Analyst",
+    "Fraud Strategy Analyst",
+    "Payment Risk Analyst",
+    "Fraud Operations Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "fraud-detection-rules",
+      "importance": "required",
+      "expectation": "Write, test and tune fraud rules in a monitoring tool, using device, velocity and behaviour signals, to cut losses without blocking good customers",
+      "postingShare": null
+    },
+    {
+      "skillId": "fraud-case-investigation",
+      "importance": "required",
+      "expectation": "Review fraud alerts and flagged accounts, decide to block or release, and record each case",
+      "postingShare": null
+    },
+    {
+      "skillId": "chargeback-dispute-management",
+      "importance": "required",
+      "expectation": "Handle chargebacks and payment disputes under card network and UPI rules and recover losses",
+      "postingShare": null
+    },
+    {
+      "skillId": "payment-systems-domain",
+      "importance": "required",
+      "expectation": "Understand how UPI, card, wallet and net banking payments flow between customer, merchant and bank",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL to pull transactions and trace fraud patterns across tables",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Analyse alert, case and loss data in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear case notes and explain fraud trends to product and operations teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with partner banks, cyber cells and merchants to close cases",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Build fraud loss and alert dashboards for leads and partner teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate pattern checks and data pulls with scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "nice_to_have",
+      "expectation": "Measure rule hit rates, false positives and loss rates",
+      "postingShare": null
+    },
+    {
+      "skillId": "aml-transaction-monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Know where fraud work ends and AML alert work begins",
+      "postingShare": null
+    },
+    {
+      "skillId": "kyc-verification",
+      "importance": "nice_to_have",
+      "expectation": "Check KYC documents when reviewing risky accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "regulatory-returns-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Support fraud reporting to RBI and the card networks",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "google-data-analytics",
+      "importance": "optional",
+      "why": "Shows SQL and dashboard basics for people moving into fraud analytics"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

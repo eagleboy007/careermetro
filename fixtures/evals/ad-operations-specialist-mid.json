@@ -1,0 +1,52 @@
+{
+  "id": "ad-operations-specialist-mid",
+  "roleSlug": "ad-operations-specialist",
+  "persona": "Mid-level ad ops executive at a digital media company",
+  "resumeText": "Neha Agarwal | Gurugram | neha.agarwal@example.com\n\nEXPERIENCE\nAd Operations Executive, Saffron Media Exchange, Gurugram (2021 - present)\n- Trafficked display and video campaigns in Google Ad Manager, setting up orders, line items and creatives.\n- Set up private marketplace deals and programmatic guaranteed deals in DV360 for agency buyers.\n- Implemented and tested VAST tags, third-party ad tags and tracking pixels before every launch.\n- Monitored daily campaign pacing and fixed under-delivery by adjusting targeting and frequency caps.\n- Built weekly delivery reports in Excel with pivot tables for the sales team.\n- Coordinated with sales and client teams on launch timelines and creative specs.\n\nEDUCATION\nBBA, Delhi University, 2021\n\nSKILLS\nIntegral Ad Science, HTML, Google Analytics\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "ad-server-trafficking",
+        "quote": "Trafficked display and video campaigns in Google Ad Manager"
+      },
+      {
+        "skillId": "programmatic-platforms",
+        "quote": "Set up private marketplace deals and programmatic guaranteed deals in DV360"
+      },
+      {
+        "skillId": "ad-tags-pixels",
+        "quote": "Implemented and tested VAST tags, third-party ad tags and tracking pixels"
+      },
+      {
+        "skillId": "ad-delivery-troubleshooting",
+        "quote": "Monitored daily campaign pacing and fixed under-delivery"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built weekly delivery reports in Excel"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Coordinated with sales and client teams on launch timelines"
+      },
+      {
+        "skillId": "ad-verification-brand-safety",
+        "quote": "Integral Ad Science"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ad-verification-brand-safety",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "header-bidding",
+      "sql",
+      "sem-google-ads",
+      "social-media-marketing"
+    ]
+  },
+  "reviewedBy": null
+}

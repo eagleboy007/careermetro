@@ -6,7 +6,13 @@
       "bi-developer",
       "analytics-engineer",
       "data-governance-analyst",
-      "clinical-sas-programmer"
+      "clinical-sas-programmer",
+      "fraud-analyst",
+      "trust-and-safety-analyst",
+      "actuarial-analyst",
+      "biostatistician",
+      "clinical-data-manager",
+      "marketing-automation-specialist"
     ],
     "data-engineering": [
       "data-engineer",
@@ -57,7 +63,8 @@
       "dlp-engineer",
       "red-team-operator",
       "third-party-risk-analyst",
-      "it-auditor"
+      "it-auditor",
+      "sap-security-grc-consultant"
     ],
     "infra-cloud": [
       "cloud-engineer",
@@ -87,7 +94,8 @@
       "technical-account-manager",
       "middleware-administrator",
       "it-service-delivery-manager",
-      "platform-engineering-manager"
+      "platform-engineering-manager",
+      "software-asset-manager"
     ],
     "backend": [
       "software-engineer",
@@ -110,7 +118,8 @@
       "developer-advocate",
       "search-engineer",
       "rust-developer",
-      "forward-deployed-engineer"
+      "forward-deployed-engineer",
+      "payments-engineer"
     ],
     "frontend-mobile": [
       "frontend-developer",
@@ -122,7 +131,10 @@
       "game-developer",
       "ar-vr-developer",
       "ux-researcher",
-      "ecommerce-developer"
+      "ecommerce-developer",
+      "graphic-designer",
+      "game-artist-3d",
+      "motion-graphics-designer"
     ],
     "enterprise-apps": [
       "salesforce-developer",
@@ -152,7 +164,20 @@
       "guidewire-developer",
       "core-banking-consultant",
       "sap-fiori-ui5-developer",
-      "sap-btp-integration-developer"
+      "sap-btp-integration-developer",
+      "mes-engineer",
+      "sap-ewm-consultant",
+      "sap-hcm-consultant",
+      "oracle-hcm-cloud-consultant",
+      "sap-bw-consultant",
+      "duck-creek-developer",
+      "sap-qm-consultant",
+      "sap-pm-consultant",
+      "oracle-soa-developer",
+      "siebel-crm-developer",
+      "zoho-developer",
+      "odoo-developer",
+      "murex-consultant"
     ],
     "quality": [
       "qa-automation-engineer",
@@ -178,7 +203,15 @@
       "physical-design-engineer",
       "design-verification-engineer",
       "functional-safety-engineer",
-      "infotainment-engineer"
+      "infotainment-engineer",
+      "dft-engineer",
+      "analog-layout-engineer",
+      "bms-engineer",
+      "analog-ic-design-engineer",
+      "motor-control-engineer",
+      "cae-simulation-engineer",
+      "rf-ic-design-engineer",
+      "ev-powertrain-engineer"
     ],
     "delivery": [
       "business-analyst",
@@ -191,7 +224,8 @@
       "ai-product-manager",
       "customer-success-manager",
       "delivery-manager",
-      "it-program-manager"
+      "it-program-manager",
+      "game-designer"
     ],
     "marketing": [
       "digital-marketing-executive",
@@ -201,7 +235,9 @@
       "brand-manager",
       "seo-specialist",
       "market-research-analyst",
-      "event-marketing-executive"
+      "event-marketing-executive",
+      "ad-operations-specialist",
+      "video-editor"
     ],
     "sales": [
       "key-account-manager",

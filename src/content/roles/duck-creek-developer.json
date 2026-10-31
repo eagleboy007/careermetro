@@ -1,0 +1,116 @@
+{
+  "slug": "duck-creek-developer",
+  "title": "Duck Creek Developer",
+  "summary": "Configures Duck Creek, a software suite that property and casualty (P&C) insurers use to run policies, billing and claims, so that products, rating and forms work as the business needs. Works in an insurance IT team or service company, alongside business analysts, testers and onshore client teams.",
+  "dailyDuties": [
+    "Configure policy products and screens in Duck Creek Author",
+    "Change manuscripts for rating rules and premium calculations",
+    "Build and update policy forms and documents with XML and XSLT",
+    "Write SQL to check policy and premium data",
+    "Build integrations with rating and third-party services",
+    "Fix defects raised in QA and UAT",
+    "Join calls with onshore analysts on requirements"
+  ],
+  "typicalTitles": [
+    "Duck Creek Policy Developer",
+    "Duck Creek Billing Developer",
+    "Duck Creek Claims Developer",
+    "Duck Creek Technical Consultant",
+    "Duck Creek Manuscript Developer",
+    "Duck Creek Configuration Developer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "duck-creek-platform",
+      "importance": "required",
+      "expectation": "Configure Duck Creek Policy, Billing or Claims for P&C insurance products",
+      "postingShare": null
+    },
+    {
+      "skillId": "duck-creek-manuscripts",
+      "importance": "required",
+      "expectation": "Build and change manuscripts for rating, underwriting rules and forms in Duck Creek Author",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "required",
+      "expectation": "Write XML and XSLT for manuscripts, documents and data feeds",
+      "postingShare": null
+    },
+    {
+      "skillId": "pc-insurance-domain",
+      "importance": "required",
+      "expectation": "Understand the P&C policy lifecycle: quote, bind, endorse, renew and cancel",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query SQL Server to check policy, premium and billing data",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build and test integrations with rating, document and third-party services",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Work with business analysts and onshore teams on requirements and defects",
+      "postingShare": null
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "nice_to_have",
+      "expectation": "Write C# and .NET extensions around the Duck Creek platform",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Add client-side logic to Duck Creek screens",
+      "postingShare": null
+    },
+    {
+      "skillId": "duck-creek-ondemand",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and upgrade on Duck Creek OnDemand, the vendor's cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "manual-testing",
+      "importance": "nice_to_have",
+      "expectation": "Unit test and support QA and UAT for each release",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-migration",
+      "importance": "nice_to_have",
+      "expectation": "Move policies from legacy systems into Duck Creek",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Work in sprints with onshore and offshore teams",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
