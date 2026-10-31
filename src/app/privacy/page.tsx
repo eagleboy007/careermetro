@@ -62,6 +62,12 @@ const sections: LegalSection[] = [
           every email has a link that turns it off without signing in.
         </li>
         <li>
+          <strong>The Monday events email:</strong> only if you turn on &quot;Send me this week&apos;s events&quot; on Timetable or in Settings. It lists
+          up to five events in the next seven days that match your goals or interests: each one&apos;s title, organiser, day and time, city or Online,
+          and the organiser&apos;s link. It names no other person. We keep only which weeks it went out, and every email has a link that turns it off
+          without signing in.
+        </li>
+        <li>
           <strong>Messages and reports:</strong> your chats and the reports you make. If you report something, we keep your report and any note you wrote
           with it, so we can act on it and keep a record of the complaint.
         </li>
@@ -122,7 +128,7 @@ const sections: LegalSection[] = [
       <ul>
         <li>A resume checked without an account: deleted after 24 hours.</li>
         <li>A job shared from your phone: deleted when you open it, and within a day if you don&apos;t.</li>
-        <li>Which weeks the weekly My jobs email went out: 90 days.</li>
+        <li>Which weeks the weekly My jobs email and the Monday events email went out: 90 days.</li>
         <li>Timetable events, with the ones you saved or marked I&apos;m going: deleted 90 days after the event ends.</li>
         <li>
           Your account: until you delete it. Deleting starts a 30-day window in which you can change your mind. After that your data is removed for good,

@@ -72,6 +72,7 @@ export function SettingsView({
   planActions,
   jobSearch,
   weekly,
+  digest,
 }: {
   data: SettingsData;
   discoveryActions?: DiscoveryActions;
@@ -82,6 +83,8 @@ export function SettingsView({
   jobSearch?: ReactNode;
   /** The weekly My jobs email's "See this week's" preview (WeeklyPreview), under its switch. */
   weekly?: ReactNode;
+  /** "Send me this week's events" (EventsDigestSwitch, Timetable PR 5), saved apart from the draft; example data without it. */
+  digest?: ReactNode;
 }) {
   return (
     <div className="-mx-4 -mt-6 grid min-[760px]:grid-cols-[220px_minmax(0,1fr)]">
@@ -153,7 +156,7 @@ export function SettingsView({
         </Section>
 
         <Section id="acc-notif" title="Notifications">
-          <NotificationFields weekly={weekly} />
+          <NotificationFields weekly={weekly} digest={digest} />
         </Section>
 
         <Section id="acc-company" title="Company" tag="for employers">

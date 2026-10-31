@@ -9,7 +9,7 @@ type Db = ReturnType<typeof getDb>;
 
 /*
  * The shared app-email budget (T151, T153). Resend's free plan allows 100 emails a day; sign-in codes keep 60, and
- * the app's own bulk emails (the weekly My jobs email now, the Monday events digest later) share
+ * the app's own bulk emails (the weekly My jobs email and the Monday events digest, Timetable PR 5) share
  * APP_EMAIL_DAILY_BUDGET an India day, counted in app_email_days. Work-email codes are one-off and not counted here.
  * Counts only: nothing about a person or an email is kept or logged.
  */

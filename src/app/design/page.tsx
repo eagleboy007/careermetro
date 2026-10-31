@@ -72,6 +72,7 @@ import { MatchView } from "@/components/match/match-view";
 import { ConfidenceSpark } from "@/components/practice/confidence-spark";
 import { PracticeView } from "@/components/practice/practice-view";
 import { LibraryView, ReportLink, SuggestPanel } from "@/components/library/library-view";
+import { EventsDigestSwitch } from "@/components/timetable/events-digest-switch";
 import { TimetableView } from "@/components/timetable/timetable-view";
 import { exampleTimetable, exampleTimetableChoices, exampleTimetableEmpty, exampleTimetableNoCity, exampleTimetableWhy } from "@/lib/timetable/fixtures";
 import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
@@ -875,7 +876,7 @@ export default function DesignPage() {
           city or online, grouped as This week, Later this month and by month, 20 at a time with Show more. All, My goals and My interests, Include
           online and Show outside 25 km work on the screen. Each card has the date block, kind, place, time in IST, cost, organiser, at most five tags
           in the neutral style (an event is not progress), Save, I&apos;m going, Add to calendar (a .ics file with a reminder the evening before) and
-          the organiser&apos;s page. The rail says why these show; the Monday digest and Suggest an event are soon. Made-up events; the cricket
+          the organiser&apos;s page. The rail says why these show and holds the Monday digest switch (Timetable PR 5, shown off here); Suggest an event is soon. Made-up events; the cricket
           meetup matches nothing, so it never shows, and the Mumbai summit is beyond 100 km. Then the same with no profile city (online only), with
           a long title and long place to check wrapping, and with nothing matching. I&apos;m going on an event with a goal tag asks once,
           &ldquo;Add it as a prep task for your SIEM goal?&rdquo; (one button a goal when it has several); yes puts one optional task on the ride on
@@ -885,6 +886,14 @@ export default function DesignPage() {
         <TimetableView view={exampleTimetableNoCity} why={{ ...exampleTimetableWhy, interests: [] }} choices={exampleTimetableChoices} />
         <TimetableView view={designLongTimetable} why={exampleTimetableWhy} choices={exampleTimetableChoices} />
         <TimetableView view={exampleTimetableEmpty} why={{ goals: [], interests: ["Public speaking"] }} choices={exampleTimetableChoices} />
+        <p className="text-sm text-muted">
+          &ldquo;Send me this week&apos;s events&rdquo; (EventsDigestSwitch), the same switch on Timetable and in Settings &gt; Notifications, on
+          ink like every switch. It saves at once; here it has no action, so it can&apos;t be changed. Off, then on.
+        </p>
+        <div className="flex max-w-[420px] flex-col gap-2 rounded-lg border border-line p-4">
+          <EventsDigestSwitch initial={false} />
+          <EventsDigestSwitch initial />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">
@@ -911,7 +920,7 @@ export default function DesignPage() {
           Section list, Your plan (You&apos;re on Free with what Elite adds and See Elite; nothing can be bought), name, username with its
           availability check and headline, the locked email, how the person signs in, private pay, privacy (who can open the profile and what it
           shows, gaps, connection requests from, switches in ink, the Who sees what table and blocked people with Unblock), notifications (with
-          Language: English, Hindi coming later, and the Weekly My jobs email switch with &quot;See this week&apos;s&quot;, C22), Add from your phone (C21),
+          Language: English, Hindi coming later, and the Weekly My jobs email switch with &quot;See this week&apos;s&quot;, C22, and the Monday events digest switch), Add from your phone (C21),
           download and delete with its DELETE check. Example data, so nothing saves. Then Blocked people with nobody blocked, and the weekly preview on a
           week when nothing is moving.
         </p>

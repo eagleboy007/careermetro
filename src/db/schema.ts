@@ -224,7 +224,8 @@ export const userSettings = pgTable("user_settings", {
   emailWeeklySummary: boolean("email_weekly_summary").notNull().default(false),
   /**
    * The email's one-tap "Turn it off" link (no sign-in): a random 32-byte token, base64url, made on the first send and
-   * replaced each time the email is turned off from it. Never logged.
+   * replaced each time an email is turned off from it, unless the other email (the weekly My jobs email or the Monday
+   * events digest, which carry the same token) is still on. Never logged.
    */
   emailOffToken: text("email_off_token").unique(),
   /**
@@ -1728,8 +1729,8 @@ export const eventsDigests = pgTable(
 );
 
 /**
- * App emails sent each India day (Asia/Kolkata), all kinds together: the weekly My jobs email now, the Monday events
- * digest later. Resend's free plan allows 100 a day; sign-in codes keep 60, so app emails share APP_EMAIL_DAILY_BUDGET
+ * App emails sent each India day (Asia/Kolkata), all kinds together: the weekly My jobs email and the Monday events
+ * digest. Resend's free plan allows 100 a day; sign-in codes keep 60, so app emails share APP_EMAIL_DAILY_BUDGET
  * (src/lib/email/budget.ts takes one atomically before each send). A count only: no person, address or content.
  */
 export const appEmailDays = pgTable(

@@ -7,13 +7,14 @@ import { TimetableView, type TimetableActions } from "@/components/timetable/tim
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
 import { exampleTimetable, exampleTimetableChoices, exampleTimetableWhy } from "@/lib/timetable/fixtures";
+import { eventsDigestOn } from "@/lib/timetable/digest-store";
 import { timetableForUser } from "@/lib/timetable/store";
-import { eventPrepAction, eventRsvpAction } from "./actions";
+import { eventPrepAction, eventRsvpAction, eventsDigestAction } from "./actions";
 
 export const metadata: Metadata = { title: "Timetable · CareerMetro", robots: { index: false } };
 
-/** Save, I'm going and the prep task, kept on the server. */
-const TIMETABLE_ACTIONS: TimetableActions = { rsvp: eventRsvpAction, prep: eventPrepAction };
+/** Save, I'm going, the prep task and the Monday digest switch, kept on the server. */
+const TIMETABLE_ACTIONS: TimetableActions = { rsvp: eventRsvpAction, prep: eventPrepAction, digest: eventsDigestAction };
 
 /**
  * The Timetable (FR-57, handoff 10, docs/plans/timetable-plan.md section 7). Signed in only: the signed-in layout and
@@ -33,8 +34,9 @@ async function TimetableScreen() {
     );
   }
   let data: Awaited<ReturnType<typeof timetableForUser>>;
+  let digest: boolean;
   try {
-    data = await timetableForUser(account.id);
+    [data, digest] = await Promise.all([timetableForUser(account.id), eventsDigestOn(account.id)]);
   } catch (error) {
     unstable_rethrow(error);
     // Database errors can carry values; errorFields keeps only the name and code.
@@ -45,7 +47,7 @@ async function TimetableScreen() {
       </p>
     );
   }
-  return <TimetableView view={data.view} why={data.why} choices={data.choices} actions={TIMETABLE_ACTIONS} />;
+  return <TimetableView view={data.view} why={data.why} choices={data.choices} actions={TIMETABLE_ACTIONS} digest={digest} />;
 }
 
 function Banner({ children }: { children: React.ReactNode }) {

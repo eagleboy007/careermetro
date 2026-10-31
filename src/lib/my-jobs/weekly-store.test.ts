@@ -207,6 +207,18 @@ describe.skipIf(!db)("the weekly My jobs email (database)", () => {
     expect(s.emailOffToken).not.toBe(token);
   });
 
+  it("keeps the token when the Monday events digest is still on, so the digest's off link keeps working", async () => {
+    const a = await person();
+    await db!.update(schema.userSettings).set({ eventsDigest: true }).where(eq(schema.userSettings.userId, a.userId));
+    await runWeeklyEmails({ db: d(), now: MONDAY, site: "https://careermetro.test", send: sender().send, only: [a.userId] });
+    const token = (await tokenOf(a.userId))!;
+    await turnOffWeeklyEmail(token, d());
+    const [s] = await db!.select().from(schema.userSettings).where(eq(schema.userSettings.userId, a.userId));
+    expect(s.emailWeeklySummary).toBe(false);
+    expect(s.eventsDigest).toBe(true);
+    expect(s.emailOffToken).toBe(token);
+  });
+
   it("counts waiting from the last status change: a note doesn't move it, a new status does", async () => {
     const a = await person();
     const ref = { kind: "post" as const, postId: a.postId };
