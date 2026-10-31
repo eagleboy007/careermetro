@@ -13,7 +13,8 @@ import type { CurrentAnalysis } from "@/lib/gaps/current";
 import { trackedCurrentAnalysis } from "@/lib/tracks/store";
 import { unreviewedAllowed } from "@/lib/mock/rules";
 import { isSignalKey, pickSignal, signalAnswerOf, signalLiveOf } from "@/lib/today/signal";
-import { attachAdded, buildGoalsSummary, buildRide, signalGoals, signalTaskId, type RideGoal, type RidePath, type RideResource } from "./build";
+import { prepEventsOn } from "@/lib/timetable/store";
+import { attachAdded, buildGoalsSummary, buildRide, signalGoals, signalTaskId, type RideGoal, type RideInput, type RidePath, type RideResource } from "./build";
 import { indiaDay, mondayOf, streakFor, toggled, weekFor, type RideDay } from "./days";
 
 type Db = ReturnType<typeof getDb>;
@@ -237,14 +238,20 @@ export async function todayRideFor(
   current: { skillId: string; name: string } | null;
 } | null> {
   const today = indiaDay(now);
-  const [line, stats, before] = await Promise.all([rideGoalsFor(userId, db, { analysis }), rideStatsFor(userId, now, db), doneBefore(userId, today, db)]);
+  const [line, stats, before, events] = await Promise.all([
+    rideGoalsFor(userId, db, { analysis }),
+    rideStatsFor(userId, now, db),
+    doneBefore(userId, today, db),
+    prepEventsOn(userId, today, db),
+  ]);
   if (!line) return null;
-  const input = {
+  const input: RideInput = {
     goals: line.goals,
     path: line.path,
     doneBefore: before,
     doneToday: new Set(stats.days.find((d) => d.day === today)?.taskIds ?? []),
     doneThisWeek: new Set(stats.days.flatMap((d) => d.taskIds)),
+    prep: { day: today, events, chosen: line.chosen },
   };
   const ride = buildRide(input);
   if (!ride) return null;
@@ -334,6 +341,8 @@ export async function tickTask(userId: string, taskId: string, on: boolean, now:
       doneBefore: await doneBefore(userId, day, tx),
       doneToday: new Set(today),
       doneThisWeek: new Set(),
+      // An event prep task on its day can be ticked like any other (Timetable PR 3).
+      prep: { day, events: await prepEventsOn(userId, day, tx), chosen: line.chosen },
     });
     const task = ride?.tasks.find((t) => t.id === taskId);
     if (!task || task.locked) return false;

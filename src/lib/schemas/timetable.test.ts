@@ -5,6 +5,7 @@ import {
   cityCentresFile,
   DEFAULT_TIMETABLE_SETTINGS,
   eventCard,
+  eventPrepInput,
   eventRow,
   eventRsvpExport,
   eventRsvpInput,
@@ -105,6 +106,15 @@ describe("eventCard", () => {
     expect(eventCard.safeParse({ ...card, online: true, city: null }).success).toBe(false);
     expect(eventCard.safeParse({ ...card, sourceUrl: "javascript:alert(1)" }).success).toBe(false);
     expect(eventCard.safeParse({ ...card, endsAt: "2026-11-07T12:00:00.000Z" }).success).toBe(false);
+  });
+
+  it("names a prep goal only on an event the person is going to, for one of its goal tags", () => {
+    expect(eventCard.safeParse({ ...card, rsvp: "going", prepGoal: "siem" }).error).toBeUndefined();
+    expect(eventCard.safeParse({ ...card, rsvp: "saved", prepGoal: "siem" }).success).toBe(false);
+    expect(eventCard.safeParse({ ...card, rsvp: null, prepGoal: "siem" }).success).toBe(false);
+    expect(eventCard.safeParse({ ...card, rsvp: "going", prepGoal: "python" }).success).toBe(false);
+    const interestOnly: EventCard = { ...card, rsvp: "going", tags: [{ kind: "interest", topic: "siem", label: "Interest: SIEM" }] };
+    expect(eventCard.safeParse({ ...interestOnly, prepGoal: "siem" }).success).toBe(false);
   });
 });
 
@@ -213,6 +223,18 @@ describe("eventRsvpInput", () => {
     expect(eventRsvpInput.safeParse({ eventId: id, state: "maybe" }).success).toBe(false);
     expect(eventRsvpInput.safeParse({ eventId: "e1", state: "saved" }).success).toBe(false);
     expect(eventRsvpInput.safeParse({ eventId: id, state: "going", goalSkillId: "siem" }).success).toBe(false);
+  });
+});
+
+describe("eventPrepInput", () => {
+  it("takes an event id and a goal's skill id, or null to take the task off", () => {
+    expect(eventPrepInput.safeParse({ eventId: id, goalSkillId: "siem" }).success).toBe(true);
+    expect(eventPrepInput.safeParse({ eventId: id, goalSkillId: null }).success).toBe(true);
+    expect(eventPrepInput.safeParse({ eventId: id }).success).toBe(false);
+    expect(eventPrepInput.safeParse({ eventId: id, goalSkillId: "Not A Skill" }).success).toBe(false);
+    expect(eventPrepInput.safeParse({ eventId: "e1", goalSkillId: "siem" }).success).toBe(false);
+    // Proof is never part of it.
+    expect(eventPrepInput.safeParse({ eventId: id, goalSkillId: "siem", proof: true }).success).toBe(false);
   });
 });
 

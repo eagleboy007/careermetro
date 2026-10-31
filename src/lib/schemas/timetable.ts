@@ -132,9 +132,18 @@ export const eventCard = z
     /** Kilometres from the person's city centre, rounded; null for an online event. */
     distanceKm: z.number().int().min(0).nullable(),
     rsvp: eventRsvpState.nullable(),
+    /**
+     * The goal (skill id) the person made it a prep task for (Timetable PR 3): only on an event they are going to, and
+     * only while that goal is still one of its tags. Left out when there is none.
+     */
+    prepGoal: topicKey.optional(),
   })
   .refine((e) => Date.parse(e.endsAt) >= Date.parse(e.startsAt), { message: "ends before it starts", path: ["endsAt"] })
-  .refine((e) => (e.online ? e.distanceKm === null : e.city !== null && e.distanceKm !== null), { message: "place and distance disagree", path: ["distanceKm"] });
+  .refine((e) => (e.online ? e.distanceKm === null : e.city !== null && e.distanceKm !== null), { message: "place and distance disagree", path: ["distanceKm"] })
+  .refine((e) => !e.prepGoal || (e.rsvp === "going" && e.tags.some((t) => t.kind === "goal" && t.topic === e.prepGoal)), {
+    message: "a prep task needs I'm going and that goal's tag",
+    path: ["prepGoal"],
+  });
 export type EventCard = z.infer<typeof eventCard>;
 
 /** "This week", "Later this month", then one group a month ("2026-12"), in IST. */
@@ -169,6 +178,14 @@ export type TimetableView = z.infer<typeof timetableView>;
 /** "Save" ("saved"), "I'm going" ("going"), or neither (null takes the person's row away). The store checks the event is live. */
 export const eventRsvpInput = z.strictObject({ eventId: z.uuid(), state: eventRsvpState.nullable() });
 export type EventRsvpInput = z.infer<typeof eventRsvpInput>;
+
+/**
+ * "Add it as a prep task for your SIEM goal?" (docs/plans/timetable-plan.md section 4): yes names the goal's skill, and
+ * null takes the task off again. The store checks the person is going, the event is live and lists that skill, and the
+ * skill is one of their open goals. Going never fills a gap or adds proof.
+ */
+export const eventPrepInput = z.strictObject({ eventId: z.uuid(), goalSkillId: topicKey.nullable() });
+export type EventPrepInput = z.infer<typeof eventPrepInput>;
 
 /** "Why you see these": the names of the person's open goals, in goal order, and their interests as typed on Me. */
 export const timetableWhy = z.strictObject({

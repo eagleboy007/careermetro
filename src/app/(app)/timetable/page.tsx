@@ -8,12 +8,12 @@ import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
 import { exampleTimetable, exampleTimetableChoices, exampleTimetableWhy } from "@/lib/timetable/fixtures";
 import { timetableForUser } from "@/lib/timetable/store";
-import { eventRsvpAction } from "./actions";
+import { eventPrepAction, eventRsvpAction } from "./actions";
 
 export const metadata: Metadata = { title: "Timetable · CareerMetro", robots: { index: false } };
 
-/** Save and I'm going, kept on the server. */
-const TIMETABLE_ACTIONS: TimetableActions = { rsvp: eventRsvpAction };
+/** Save, I'm going and the prep task, kept on the server. */
+const TIMETABLE_ACTIONS: TimetableActions = { rsvp: eventRsvpAction, prep: eventPrepAction };
 
 /**
  * The Timetable (FR-57, handoff 10, docs/plans/timetable-plan.md section 7). Signed in only: the signed-in layout and

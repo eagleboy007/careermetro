@@ -82,7 +82,7 @@ vi.mock("@/lib/library/store", () => ({ clearOldLibraryRecords: m.clearLibrary }
 vi.mock("@/lib/notifications/store", () => ({ clearOldNotifications: m.clearNotifications }));
 vi.mock("@/lib/my-jobs/store", () => ({ clearUnsavedJobText: m.clearJobText }));
 vi.mock("@/lib/my-jobs/weekly-store", () => ({ clearOldWeeklyEmails: m.clearWeekly, runWeeklyEmails: m.runWeekly, turnOffWeeklyEmail: m.turnOff }));
-vi.mock("@/lib/timetable/store", () => ({ clearOldEventsDigests: m.clearEventsDigests, clearEndedEvents: m.clearEndedEvents }));
+vi.mock("@/lib/timetable/store", () => ({ clearOldEventsDigests: m.clearEventsDigests, clearEndedEvents: m.clearEndedEvents, prepEventsOn: vi.fn(async () => []) }));
 vi.mock("@/lib/my-jobs/share", async (original) => ({ ...(await original<typeof import("@/lib/my-jobs/share")>()), clearOldSharedJobs: m.clearShared, holdSharedJob: m.holdShared }));
 vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
