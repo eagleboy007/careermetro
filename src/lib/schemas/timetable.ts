@@ -1,5 +1,9 @@
 import { z } from "zod";
+import { cleanSuggestedUrl } from "@/lib/library/links";
 import {
+  EVENT_SUGGESTION_QUEUE_MAX,
+  EVENT_SUGGESTION_STATUSES,
+  SUGGESTION_URL_MAX,
   EVENT_COST_MAX,
   EVENT_FEED_FORMATS,
   EVENT_FEED_LENGTH_MAX_DAYS,
@@ -35,6 +39,9 @@ export {
   EVENT_RADIUS_DEFAULT_KM,
   EVENT_RSVP_STATES,
   EVENT_STATUSES,
+  EVENT_SUGGESTION_NOTE,
+  EVENT_SUGGESTION_STATUSES,
+  EVENT_SUGGESTIONS_PENDING_MAX,
   EVENT_WINDOW_DAYS,
   EVENTS_DIGEST_DAYS,
   EVENTS_DIGEST_EVENTS_MAX,
@@ -414,3 +421,136 @@ export const feedEventRow = z
   .refine((e) => !e.online || e.city === null, { message: "an online event has no city", path: ["city"] })
   .refine((e) => e.online || e.city !== null, { message: "an in-person event names its city", path: ["city"] });
 export type FeedEventRow = z.infer<typeof feedEventRow>;
+
+/*
+ * Suggest an event (Timetable PR 6, docs/plans/timetable-plan.md section 6): a signed-in member gives the organiser's
+ * https link and the basic fields. Members' suggestions need a grievance officer (pending item 15), so each one is kept
+ * as pending in `event_suggestions` (owner only, goes with the account) and nothing shows it to anyone else or
+ * publishes it. The link is never fetched by the server, and neither it nor any typed text reaches a log.
+ */
+
+export const eventSuggestionStatus = z.enum(EVENT_SUGGESTION_STATUSES);
+
+const IST_MS = 5.5 * 3600_000;
+
+/**
+ * "2026-11-07T18:00", an India wall clock as the form's date and time boxes give it, as the instant it names. Null
+ * when it isn't a real date and time (31 Feb, 24:00) or isn't in that exact form.
+ */
+export function istInstant(local: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(local);
+  if (!m) return null;
+  const [y, mo, d, h, mi] = m.slice(1).map(Number);
+  if (mo < 1 || mo > 12 || d < 1 || h > 23 || mi > 59) return null;
+  const wall = new Date(Date.UTC(y, mo - 1, d, h, mi));
+  // Date.UTC rolls 31 Feb over into March; a real date comes back as it went in.
+  if (wall.getUTCFullYear() !== y || wall.getUTCMonth() !== mo - 1 || wall.getUTCDate() !== d) return null;
+  return new Date(wall.getTime() - IST_MS);
+}
+
+/** A web address typed into a text box: the event's link has its own box, and the cost is never a payment link. */
+const HAS_LINK = /:\/\/|\bwww\.[a-z0-9-]+\./i;
+
+/** A typed line: trimmed, inner spaces single, then the summary's checks (plain text, length) and no link. */
+const typedLine = (min: number, max: number) =>
+  z
+    .string()
+    .max(max * 4)
+    .transform((s) => s.trim().replace(/\s+/g, " "))
+    .pipe(eventText(min, max).refine((s) => !HAS_LINK.test(s), "no links here: the event's link has its own box"));
+
+/** A start or end from the form, in India time, as its instant. */
+const indiaTime = z
+  .string()
+  .max(16)
+  .transform((s, ctx) => {
+    const at = istInstant(s);
+    if (!at) {
+      ctx.addIssue({ code: "custom", message: "a date and a time" });
+      return z.NEVER;
+    }
+    return at;
+  });
+
+/**
+ * The "Suggest an event" form. The link is cleaned as a Library suggestion is (https, a public host, no shortener, user
+ * info or port; tracking parameters dropped) and comes back with its host. Times are India time. The same checks as
+ * the events table, plus: an online event has no city or area and an "Online" kind is online, and it lasts at most
+ * EVENT_FEED_LENGTH_MAX_DAYS. The store checks it starts ahead (within EVENT_SUGGESTION_AHEAD_DAYS).
+ */
+export const eventSuggestionInput = z
+  .strictObject({
+    url: z
+      .string()
+      .max(EVENT_URL_MAX)
+      .transform((raw, ctx) => {
+        const clean = cleanSuggestedUrl(raw);
+        if (!clean) {
+          ctx.addIssue({ code: "custom", message: "an https link to the organiser's page" });
+          return z.NEVER;
+        }
+        return clean;
+      }),
+    title: typedLine(1, EVENT_TITLE_MAX),
+    organiser: typedLine(1, EVENT_ORGANISER_MAX),
+    kind: eventKind,
+    startsAt: indiaTime,
+    endsAt: indiaTime,
+    online: z.boolean(),
+    city: z.enum(PERSON_CITIES).nullable(),
+    venue: typedLine(0, EVENT_VENUE_MAX).transform((v) => v || null),
+    cost: typedLine(0, EVENT_COST_MAX),
+  })
+  .refine((e) => e.endsAt.getTime() >= e.startsAt.getTime(), { message: "ends before it starts", path: ["endsAt"] })
+  .refine((e) => e.endsAt.getTime() - e.startsAt.getTime() <= EVENT_FEED_LENGTH_MAX_DAYS * 86_400_000, { message: "too long", path: ["endsAt"] })
+  .refine((e) => !e.online || (e.city === null && e.venue === null), { message: "an online event has no city or area", path: ["city"] })
+  .refine((e) => e.online || e.city !== null, { message: "an in-person event names its city", path: ["city"] })
+  .refine((e) => e.kind !== "online" || e.online, { message: "an Online event is online", path: ["kind"] });
+export type EventSuggestionInput = z.input<typeof eventSuggestionInput>;
+export type EventSuggestion = z.output<typeof eventSuggestionInput>;
+
+const suggestedUrl = z.string().max(SUGGESTION_URL_MAX).pipe(z.url({ protocol: /^https$/ }));
+
+/** One of the person's suggestions in Download your data (from export version 37): what they sent, and that it waits. */
+export const eventSuggestionExport = z.strictObject({
+  sourceUrl: suggestedUrl,
+  title: z.string().min(1).max(EVENT_TITLE_MAX),
+  organiser: z.string().min(1).max(EVENT_ORGANISER_MAX),
+  kind: eventKind,
+  startsAt: z.date(),
+  endsAt: z.date(),
+  online: z.boolean(),
+  city: z.enum(PERSON_CITIES).nullable(),
+  venue: z.string().min(1).max(EVENT_VENUE_MAX).nullable(),
+  cost: z.string().max(EVENT_COST_MAX),
+  status: eventSuggestionStatus,
+  createdAt: z.date(),
+});
+export type EventSuggestionExport = z.infer<typeof eventSuggestionExport>;
+
+/**
+ * One pending suggestion on /admin/reports: what was sent and when, never who sent it. Read only: there is no action
+ * until a grievance officer is named. Times are ISO.
+ */
+export const eventSuggestionQueueRow = z.strictObject({
+  id: z.uuid(),
+  sourceUrl: suggestedUrl,
+  host: z.string().min(1).max(253),
+  title: z.string().min(1).max(EVENT_TITLE_MAX),
+  organiser: z.string().min(1).max(EVENT_ORGANISER_MAX),
+  kind: eventKind,
+  startsAt: z.iso.datetime(),
+  endsAt: z.iso.datetime(),
+  online: z.boolean(),
+  city: z.enum(PERSON_CITIES).nullable(),
+  venue: z.string().min(1).max(EVENT_VENUE_MAX).nullable(),
+  cost: z.string().max(EVENT_COST_MAX),
+  createdAt: z.iso.datetime(),
+});
+export type EventSuggestionQueueRow = z.infer<typeof eventSuggestionQueueRow>;
+
+/** The pending queue: how many wait in all, and the oldest EVENT_SUGGESTION_QUEUE_MAX of them. */
+export const eventSuggestionQueue = z
+  .strictObject({ total: z.number().int().min(0), rows: z.array(eventSuggestionQueueRow).max(EVENT_SUGGESTION_QUEUE_MAX) })
+  .refine((q) => q.rows.length <= q.total, { message: "more rows than the total", path: ["rows"] });
+export type EventSuggestionQueue = z.infer<typeof eventSuggestionQueue>;

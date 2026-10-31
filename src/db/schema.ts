@@ -32,6 +32,7 @@ import {
   EVENT_RSVP_STATES,
   EVENT_SOURCES,
   EVENT_STATUSES,
+  EVENT_SUGGESTION_STATUSES,
   EVENT_TOPIC_KINDS,
   NOTIFICATION_KINDS,
   RESOURCE_REPORT_REASONS,
@@ -1726,6 +1727,54 @@ export const eventsDigests = pgTable(
     sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.week] }), index("events_digests_sent").on(t.sentAt)],
+);
+
+/**
+ * "Suggest an event" (Timetable PR 6, migration 0057): a signed-in member's suggestion, as they typed it, with the
+ * organiser's https link (cleaned, never fetched by the server) and its host. Members' suggestions need a grievance
+ * officer (pending item 15), so the only status is `pending`: no reader shows it to anyone but its owner (in Download
+ * your data) and admins (read only, on /admin/reports), and nothing copies it into `events`. Owner only; goes with the
+ * account (cascade); in Download your data from export version 37; deleted 90 days after the event ends.
+ */
+export const eventSuggestions = pgTable(
+  "event_suggestions",
+  {
+    id: id(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    sourceUrl: text("source_url").notNull(),
+    host: text("host").notNull(),
+    title: text("title").notNull(),
+    organiser: text("organiser").notNull(),
+    kind: text("kind", { enum: EVENT_KINDS }).notNull(),
+    startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+    endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+    online: boolean("online").notNull().default(false),
+    city: text("city"),
+    venue: text("venue"),
+    cost: text("cost").notNull().default(""),
+    status: text("status", { enum: EVENT_SUGGESTION_STATUSES }).notNull().default("pending"),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    // The same event from the same person is kept once; it also indexes user_id for the export and the cascade.
+    uniqueIndex("event_suggestions_user_link").on(t.userId, t.sourceUrl, t.startsAt),
+    index("event_suggestions_status_created").on(t.status, t.createdAt),
+    index("event_suggestions_ends").on(t.endsAt),
+    check("event_suggestions_status", sql`${t.status} in ('pending')`),
+    check("event_suggestions_kind", sql`${t.kind} in ('meetup', 'workshop', 'conference', 'online')`),
+    check("event_suggestions_source_url", sql`${t.sourceUrl} like 'https://%' and char_length(${t.sourceUrl}) <= 500`),
+    check("event_suggestions_host_length", sql`char_length(${t.host}) between 1 and 253`),
+    check("event_suggestions_title_length", sql`char_length(${t.title}) between 1 and 160`),
+    check("event_suggestions_organiser_length", sql`char_length(${t.organiser}) between 1 and 120`),
+    check("event_suggestions_city_length", sql`${t.city} is null or char_length(${t.city}) between 1 and 60`),
+    check("event_suggestions_venue_length", sql`${t.venue} is null or char_length(${t.venue}) between 1 and 120`),
+    check("event_suggestions_cost_length", sql`char_length(${t.cost}) <= 60`),
+    check("event_suggestions_online_no_city", sql`not ${t.online} or ${t.city} is null`),
+    check("event_suggestions_place", sql`${t.online} or ${t.city} is not null`),
+    check("event_suggestions_ends_after_start", sql`${t.endsAt} >= ${t.startsAt}`),
+  ],
 );
 
 /**

@@ -74,7 +74,9 @@ import { PracticeView } from "@/components/practice/practice-view";
 import { LibraryView, ReportLink, SuggestPanel } from "@/components/library/library-view";
 import { EventsDigestSwitch } from "@/components/timetable/events-digest-switch";
 import { TimetableView } from "@/components/timetable/timetable-view";
-import { exampleTimetable, exampleTimetableChoices, exampleTimetableEmpty, exampleTimetableNoCity, exampleTimetableWhy } from "@/lib/timetable/fixtures";
+import { SuggestEventForm } from "@/components/timetable/suggest-event-form";
+import { EventSuggestionQueue } from "@/components/admin/event-suggestion-queue";
+import { exampleSuggestionQueue, exampleTimetable, exampleTimetableChoices, exampleTimetableEmpty, exampleTimetableNoCity, exampleTimetableWhy } from "@/lib/timetable/fixtures";
 import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { exampleMatch } from "@/lib/match/fixtures";
 import { exampleFeedback, examplePractice, examplePracticeForJob, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
@@ -874,7 +876,7 @@ export default function DesignPage() {
           city or online, grouped as This week, Later this month and by month, 20 at a time with Show more. All, My goals and My interests, Include
           online and Show outside 25 km work on the screen. Each card has the date block, kind, place, time in IST, cost, organiser, at most five tags
           in the neutral style (an event is not progress), Save, I&apos;m going, Add to calendar (a .ics file with a reminder the evening before) and
-          the organiser&apos;s page. The rail says why these show and holds the Monday digest switch (Timetable PR 5, shown off here); Suggest an event is soon. Made-up events; the cricket
+          the organiser&apos;s page. The rail says why these show and holds the Monday digest switch (Timetable PR 5, shown off here) and Suggest an event (PR 6, below). Made-up events; the cricket
           meetup matches nothing, so it never shows, and the Mumbai summit is beyond 100 km. Then the same with no profile city (online only), with
           a long title and long place to check wrapping, and with nothing matching. I&apos;m going on an event with a goal tag asks once,
           &ldquo;Add it as a prep task for your SIEM goal?&rdquo; (one button a goal when it has several); yes puts one optional task on the ride on
@@ -891,6 +893,17 @@ export default function DesignPage() {
         <div className="flex max-w-[420px] flex-col gap-2 rounded-lg border border-line p-4">
           <EventsDigestSwitch initial={false} />
           <EventsDigestSwitch initial />
+        </div>
+        <p className="text-sm text-muted">
+          &ldquo;Know an event?&rdquo; (SuggestEventForm, Timetable PR 6): it always says suggestions are reviewed before they appear, and that
+          for now they all wait until the grievance officer is named. Suggest an event opens the form: the organiser&apos;s https link, name,
+          organiser, kind, start and end in India time, online or a city and area, and the cost in words. Send for review is ink, not cobalt.
+          With a count, it says how many of the person&apos;s own wait (other members never see them). Here it has no action, so a send says
+          nothing was sent. Closed with two waiting, then open.
+        </p>
+        <div className="flex max-w-[360px] flex-col gap-4 rounded-lg border border-line p-4">
+          <SuggestEventForm pending={2} />
+          <SuggestEventForm initialOpen />
         </div>
       </section>
 
@@ -1251,6 +1264,13 @@ export default function DesignPage() {
         <div className="rounded-lg border border-line p-4">
           <ReportReview reports={[]} now={exampleReportsNow} inForce={{ messages: [], accounts: [] }} />
         </div>
+        <p className="text-sm text-muted">
+          Event suggestions (Timetable PR 6), below the reports on /admin/reports: the pending queue, oldest first, read only. Members&apos;
+          suggestions stay pending until a grievance officer is named, so there is no button that publishes or declines one. Each row shows what
+          was sent and when, with the link&apos;s host opening in a new tab, never who sent it. Made-up events; then the empty queue.
+        </p>
+        <EventSuggestionQueue queue={exampleSuggestionQueue} />
+        <EventSuggestionQueue queue={{ total: 0, rows: [] }} />
         <p className="text-sm text-muted">
           /account/suspended: what a suspended person sees instead of any signed-in page, with the admin&apos;s reason and the grievance officer.
         </p>
