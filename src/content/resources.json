@@ -13832,7 +13832,8 @@
     "kind": "docs",
     "skillIds": [
       "indian-labour-law-compliance",
-      "payroll-inputs-processing"
+      "payroll-inputs-processing",
+      "payroll-statutory-filings"
     ],
     "minutes": 20,
     "free": true
@@ -16335,7 +16336,8 @@
     "provider": "TRACES, Income Tax Department",
     "kind": "docs",
     "skillIds": [
-      "salary-tds-computation"
+      "salary-tds-computation",
+      "payroll-statutory-filings"
     ],
     "minutes": 60,
     "free": true
@@ -16576,6 +16578,28 @@
     "kind": "docs",
     "skillIds": [
       "exim-documentation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Revamped ECR: Electronic Challan-cum-Return for employers",
+    "url": "https://www.epfindia.gov.in/site_en/revamped_ecr.php",
+    "provider": "EPFO",
+    "kind": "docs",
+    "skillIds": [
+      "payroll-statutory-filings"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "E-way bill system (Vikaspedia, Government of India)",
+    "url": "https://en.vikaspedia.in/viewcontent/e-governance/online-citizen-services/government-to-business-services-g2b/goods-and-services-tax/e-way-bill-system?lgn=en",
+    "provider": "Vikaspedia (MeitY)",
+    "kind": "docs",
+    "skillIds": [
+      "eway-bill-compliance"
     ],
     "minutes": 20,
     "free": true
