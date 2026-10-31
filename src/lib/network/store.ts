@@ -479,7 +479,7 @@ async function learnedOf(analysisIds: string[], db: Db | Tx): Promise<Map<string
   const done = await db
     .select({ pathId: pathSteps.pathId, skillId: pathSteps.skillId })
     .from(pathSteps)
-    .where(and(inArray(pathSteps.pathId, [...analysisOf.keys()]), isNotNull(pathSteps.doneAt)));
+    .where(and(inArray(pathSteps.pathId, [...analysisOf.keys()]), isNotNull(pathSteps.doneAt), eq(pathSteps.source, "app")));
   for (const s of done) {
     const id = analysisOf.get(s.pathId)!;
     out.set(id, (out.get(id) ?? new Set<string>()).add(s.skillId));

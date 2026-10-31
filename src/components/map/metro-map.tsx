@@ -12,8 +12,9 @@ import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useId, useMemo, useRef, useState, useTransition } from "react";
 import { RemoveGoal } from "@/components/gaps/job-check-actions";
 import { NotForMe } from "./not-for-me";
+import { addableGoals, AddPitstopPanel, goalKey, OwnPitstopsPanel } from "./own-pitstops";
 import { Cta, ghost, ICON, Key, Label, List, Panel, plural, seg, Soon, type Item } from "./map-parts";
-import { layoutLine, pitstopLabel, type Layout, type PitstopKind, type Station } from "@/lib/map/layout";
+import { layoutLine, pitstopLabel, type Layout, type PitstopKind, type Spur, type Station } from "@/lib/map/layout";
 import { defaultZoom, layoutLife, type LifeZoom } from "@/lib/map/life-layout";
 import type { LifeLine, MapLine } from "@/lib/schemas";
 // The Life line shows only after "Life line" is picked, so it loads then, not with the map.
@@ -56,6 +57,38 @@ export function MetroMap({
   const [selected, setSelected] = useState<string | null>(() => layout?.stations.find((s) => s.state === "now")?.id ?? null);
   const [replay, setReplay] = useState(0);
   const scroller = useRef<HTMLDivElement>(null);
+  // Add a pitstop (FR-58): the person's open goals that take one, and after a change the page refreshes, the panel
+  // shows what changed and focus moves to the panel's heading, never to the page.
+  const router = useRouter();
+  const demo = !line?.resumeId;
+  const addable = useMemo(() => (line ? addableGoals([...line.goals, ...(line.choiceGoals ?? [])], demo) : []), [line, demo]);
+  const [note, setNote] = useState("");
+  const [refreshing, startRefresh] = useTransition();
+  const aside = useRef<HTMLElement>(null);
+  const focusSheet = useRef(false);
+  useEffect(() => {
+    if (refreshing || !focusSheet.current) return;
+    focusSheet.current = false;
+    aside.current?.querySelector<HTMLElement>("h3")?.focus();
+  }, [refreshing, selected]);
+  const select = (id: string) => {
+    setNote("");
+    setSelected(id);
+  };
+  /** Opens a panel from a button outside the map and moves focus to it (Add a pitstop focuses its first field itself). */
+  const show = (id: string) => {
+    select(id);
+    focusSheet.current = id !== "add" && !id.startsWith("add:");
+    aside.current?.scrollIntoView?.({ block: "nearest" });
+  };
+  const changed = (next: string | null, words: string) => {
+    setNote(words);
+    focusSheet.current = true;
+    startRefresh(() => {
+      if (next) setSelected(next);
+      router.refresh();
+    });
+  };
 
   // On a narrow screen the map scrolls sideways; open it with the train in view.
   // The Life line opens at Now.
@@ -94,13 +127,14 @@ export function MetroMap({
           {!showLife && line && layout && (
             <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">
               {line.role.title} · {plural(layout.goalCount, "goal")}, {plural(layout.pitstopCount, "pitstop")}
+              {layout.ownCount > 0 && `, ${layout.ownCount} added by you`}
             </span>
           )}
           {!showLife && line && (
             <div className="flex flex-wrap gap-2 min-[960px]:ml-auto">
-              <button type="button" disabled className={`${ghost} cursor-not-allowed opacity-60`}>
+              <button type="button" className={ghost} onClick={() => show("add")}>
                 <Plus size={16} {...ICON} />
-                Add a pitstop · soon
+                Add a pitstop
               </button>
               <button type="button" className={ghost} onClick={() => setReplay((n) => n + 1)}>
                 <Play size={16} {...ICON} />
@@ -136,7 +170,7 @@ export function MetroMap({
               <LifeSvg layout={lifeLayout} selected={lifeSelected} onSelect={setLifeSelected} />
             </Suspense>
           ) : layout && line ? (
-            <MapSvg layout={layout} line={line} selected={selected} onSelect={setSelected} replay={replay} />
+            <MapSvg layout={layout} line={line} selected={selected} onSelect={select} replay={replay} />
           ) : (
             <LockedMap />
           )}
@@ -152,6 +186,7 @@ export function MetroMap({
             <Key swatch="bg-accent">Gaps filled with proof ✓</Key>
             <Key swatch="bg-[repeating-linear-gradient(90deg,var(--accent)_0_5px,transparent_5px_10px)]">Getting ready (prep)</Key>
             <Key swatch="bg-line">Still ahead</Key>
+            {layout && layout.spurs.length > 0 && <Key swatch="bg-[repeating-linear-gradient(90deg,var(--muted)_0_4px,transparent_4px_8px)]">Added by you (never moves the train)</Key>}
             <Key swatch="bg-muted opacity-30">Other people&apos;s lines</Key>
             {layout?.crossings.some((c) => c.nearby) && (
               <li className="inline-flex items-center gap-[7px]">
@@ -179,18 +214,43 @@ export function MetroMap({
           />
         )}
         {!showLife && line && (line.choiceGoals?.length ?? 0) > 0 && (
-          <ChoiceGoals goals={line.choiceGoals!} pathHref={line.resumeId ? `/resume/${line.resumeId}/path/${line.role.slug}` : null} onAddCertificate={line.resumeId ? onAddCertificate : undefined} />
+          <ChoiceGoals
+            goals={line.choiceGoals!}
+            pathHref={line.resumeId ? `/resume/${line.resumeId}/path/${line.role.slug}` : null}
+            onAddCertificate={line.resumeId ? onAddCertificate : undefined}
+            onShowOwn={(skillId) => show(`own-${skillId}`)}
+          />
         )}
       </div>
 
       {line && layout && (
-        <aside aria-live="polite" aria-label={showLife ? "Moment details" : "Pitstop details"} className="flex min-w-0 flex-col gap-3.5 border-t border-line bg-surface px-4 py-5 min-[960px]:border-t-0 min-[960px]:p-[22px]">
+        <aside
+          ref={aside}
+          aria-live="polite"
+          aria-label={showLife ? "Moment details" : "Pitstop details"}
+          className="flex min-w-0 scroll-mt-4 flex-col gap-3.5 border-t border-line bg-surface px-4 py-5 min-[960px]:border-t-0 min-[960px]:p-[22px]"
+        >
+          {!showLife && note && (
+            <p role="status" className="rounded-md bg-surface-2 px-3 py-2 text-[0.84rem] text-ink">
+              {note}
+            </p>
+          )}
           {showLife ? (
             <Suspense fallback={null}>
               <LifeSheet key={`life-${lifeSelected ?? "none"}`} id={lifeSelected} line={life} layout={lifeLayout} onSelect={setLifeSelected} onZoom={() => setZoom("recent")} />
             </Suspense>
           ) : (
-            <Sheet key={selected ?? "none"} id={selected} layout={layout} line={line} onAddCertificate={onAddCertificate} />
+            <Sheet
+              key={selected ?? "none"}
+              id={selected}
+              layout={layout}
+              line={line}
+              onAddCertificate={onAddCertificate}
+              addable={addable}
+              demo={demo}
+              onShow={show}
+              onChanged={changed}
+            />
           )}
         </aside>
       )}
@@ -281,8 +341,17 @@ function MapSvg({
         ),
       )}
 
+      {layout.spurs.map((sp) => (
+        // A spur of the person's own pitstops (FR-58): dashed and neutral, off the line, never cobalt.
+        <path key={`track-${sp.id}`} aria-hidden="true" d={`M${sp.from.x} ${sp.from.y} V${sp.y}`} className="fill-none stroke-muted" strokeWidth={4} strokeLinecap="round" strokeDasharray="6 6" />
+      ))}
+
       {layout.stations.map((s) => (
         <StationMark key={s.id} s={s} selected={selected === s.id} {...keyed(s.id)} />
+      ))}
+
+      {layout.spurs.map((sp) => (
+        <SpurMark key={sp.id} sp={sp} selected={selected === sp.id} {...keyed(sp.id)} />
       ))}
 
       {layout.crossings.map((c) => {
@@ -412,6 +481,28 @@ function StationMark({ s, selected, ...props }: { s: Station; selected: boolean 
 }
 
 /**
+ * The dot at the end of a spur: "ADDED BY YOU" and the pitstop's name (or how many there are), beside the dot so it
+ * clears the line's labels. Its accessible name starts with the text it shows (WCAG 2.5.3).
+ */
+function SpurMark({ sp, selected, ...props }: { sp: Spur; selected: boolean } & React.SVGProps<SVGGElement>) {
+  const first = sp.goal.ownPitstops?.[0]?.title ?? "";
+  const shown = sp.count === 1 ? short(first) : plural(sp.count, "pitstop");
+  return (
+    <g className="group cursor-pointer outline-none" pointerEvents="bounding-box" aria-label={`Added by you ${shown}, on your ${sp.goal.name} goal`} {...props}>
+      <circle cx={sp.x} cy={sp.y} r={17} className={`fill-none stroke-accent opacity-0 transition-opacity group-focus-visible:opacity-100 ${selected ? "opacity-100" : ""}`} strokeWidth={2} />
+      <circle cx={sp.x} cy={sp.y} r={20} className="fill-transparent" />
+      <circle cx={sp.x} cy={sp.y} r={8} className="fill-surface stroke-muted" strokeWidth={3} />
+      <text x={sp.x + 16} y={sp.y - 3} className="fill-muted font-mono text-[11px] tracking-[0.06em]">
+        {"ADDED BY YOU "}
+      </text>
+      <text x={sp.x + 16} y={sp.y + 15} className="fill-ink font-sans text-[15px] font-[550]">
+        {shown}
+      </text>
+    </g>
+  );
+}
+
+/**
  * The station's accessible name starts with exactly the text it shows (WCAG 2.5.3, label in name), so a voice user can
  * say what they see; the full skill name, "done" and "you are here" follow it.
  */
@@ -501,12 +592,46 @@ function Sheet({
   layout,
   line,
   onAddCertificate,
+  addable,
+  demo,
+  onShow,
+  onChanged,
 }: {
   id: string | null;
   layout: Layout;
   line: MapLine;
   onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
+  /** Goals that take a new pitstop of the person's own (FR-58). */
+  addable: MapLine["goals"];
+  demo: boolean;
+  onShow: (id: string) => void;
+  /** After an own pitstop is saved or removed: the panel to show next (or null to stay) and what to say. */
+  onChanged: (next: string | null, words: string) => void;
 }) {
+  // Add a pitstop (FR-58): "add", or "add:<skill>" with that goal picked; "own-<skill>" is one goal's own pitstops.
+  if (id && (id === "add" || id.startsWith("add:"))) {
+    const skillId = id.startsWith("add:") ? id.slice(4) : null;
+    const preset = skillId ? addable.find((g) => g.skillId === skillId) : undefined;
+    return (
+      <AddPitstopPanel
+        goals={addable}
+        initialGoal={preset ? goalKey(preset) : undefined}
+        demo={demo}
+        onSaved={(goal, title, withCourse) =>
+          onChanged(`own-${goal.skillId}`, `Pitstop added: ${title}.${withCourse ? " Its free course is in it." : ""}`)
+        }
+      />
+    );
+  }
+  if (id && id.startsWith("own-")) {
+    const skillId = id.slice(4);
+    const goal = [...line.goals, ...(line.choiceGoals ?? [])].find((g) => g.skillId === skillId);
+    if (goal) {
+      const canAdd = addable.some((g) => g.skillId === skillId);
+      return <OwnPitstopsPanel goal={goal} demo={demo} onAdd={canAdd ? () => onShow(`add:${skillId}`) : undefined} onChanged={(words) => onChanged(null, words)} />;
+    }
+  }
+
   const station = layout.stations.find((s) => s.id === id);
   const crossing = layout.crossings.find((c) => `x-${c.slug}` === id);
   const links = line.resumeId
@@ -634,6 +759,7 @@ function Sheet({
           <p>Open your path to pick the free courses for this goal.</p>
         )}
         {pit.state === "now" ? <Cta href="/today">Go to today&apos;s ride</Cta> : links && <Cta href={links.path} ghost>Open your path</Cta>}
+        <OwnSummary goal={goal} addable={addable} onShow={onShow} />
         <NotForMe goal={goal} demo={!line.resumeId} />
       </Panel>
     );
@@ -669,8 +795,39 @@ function Sheet({
           <List items={resources} />
         </>
       )}
+      {goal.status !== "missing" && <OwnSummary goal={goal} addable={addable} onShow={onShow} />}
       <NotForMe goal={goal} demo={!line.resumeId} />
     </Panel>
+  );
+}
+
+/**
+ * On a goal's first pitstop: the pitstops the person added on it (FR-58), with a way to see them, or a way to add one
+ * while the goal is open.
+ */
+function OwnSummary({ goal, addable, onShow }: { goal: MapLine["goals"][number]; addable: MapLine["goals"]; onShow: (id: string) => void }) {
+  const own = goal.ownPitstops ?? [];
+  const canAdd = addable.some((g) => g.skillId === goal.skillId);
+  if (!own.length && !canAdd) return null;
+  return (
+    <div className="flex flex-col gap-2">
+      <Label>Added by you</Label>
+      {own.length > 0 && <List items={own.map((p) => ({ Icon: BookOpen, title: p.title, detail: p.course ? p.course.detail : "your own" }))} />}
+      <div className="flex flex-wrap gap-2">
+        {own.length > 0 && (
+          <button type="button" className={ghost} onClick={() => onShow(`own-${goal.skillId}`)}>
+            <Pencil size={16} {...ICON} />
+            Edit your pitstops
+          </button>
+        )}
+        {canAdd && (
+          <button type="button" className={ghost} onClick={() => onShow(`add:${goal.skillId}`)}>
+            <Plus size={16} {...ICON} />
+            Add a pitstop to this goal
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -684,10 +841,13 @@ function ChoiceGoals({
   goals,
   pathHref,
   onAddCertificate,
+  onShowOwn,
 }: {
   goals: MapLine["goals"];
   pathHref: string | null;
   onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
+  /** Opens the goal's own pitstops (FR-58) in the side panel. */
+  onShowOwn: (skillId: string) => void;
 }) {
   const router = useRouter();
   const [note, setNote] = useState("");
@@ -728,8 +888,18 @@ function ChoiceGoals({
               </p>
             )}
             {!g.proved && g.notConfirmed && <NotConfirmedNote />}
+            {(g.ownPitstops?.length ?? 0) > 0 && (
+              <p className="text-muted [overflow-wrap:anywhere]">Added by you: {g.ownPitstops!.map((p) => p.title).join(", ")}.</p>
+            )}
             <div className="flex flex-wrap items-start justify-between gap-2">
-              {!g.proved && g.certificates.length > 0 ? <AddCertificate goal={g} onSave={g.goalId ? onAddCertificate : undefined} /> : <span />}
+              <div className="flex flex-wrap items-start gap-2">
+                {!g.proved && g.certificates.length > 0 && <AddCertificate goal={g} onSave={g.goalId ? onAddCertificate : undefined} />}
+                {(!g.proved || (g.ownPitstops?.length ?? 0) > 0) && (
+                  <button type="button" onClick={() => onShowOwn(g.skillId)} className="min-h-11 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[0.84rem] font-semibold">
+                    Your pitstops<span className="sr-only"> on {g.name}</span>
+                  </button>
+                )}
+              </div>
               <RemoveGoal
                 goalId={g.goalId ?? "example"}
                 name={g.name}

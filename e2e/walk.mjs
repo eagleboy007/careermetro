@@ -611,6 +611,56 @@ await step("not for me: skip the current goal on the Map, then bring it back", a
   await p.waitForFunction(() => document.activeElement?.textContent?.trim() === "Not for me", null, { timeout: 15000 });
   await p.getByRole("region", { name: "Not for me" }).getByRole("button", { name: "Skip anyway" }).waitFor({ timeout: 5000 });
 });
+// Add a pitstop (FR-58): a pitstop of the person's own on an open goal, drawn as a spur labelled ADDED BY YOU. Adding,
+// editing and removing it moves focus to the panel's heading and says what changed; the gaps don't move, and the
+// download lists it apart from the path's own steps.
+await step("add a pitstop: add, edit and remove one of your own on the Map", async () => {
+  await p.goto(BASE + "/map");
+  await settled();
+  const analyses = (d) => JSON.stringify(d.resumes.flatMap((r) => r.profiles.flatMap((x) => x.gapAnalyses.map((a) => a.result))));
+  const before = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const panel = p.getByRole("complementary", { name: "Pitstop details" });
+  await p.getByRole("button", { name: "Add a pitstop", exact: true }).click();
+  await panel.getByRole("heading", { name: "Where do you want to halt?" }).waitFor({ timeout: 10000 });
+  await panel.getByLabel("Name", { exact: true }).fill("Walk labs");
+  await shot("map-add-pitstop");
+  await a11y("map-add-pitstop");
+  await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/api/pitstops")),
+    panel.getByRole("button", { name: "Add pitstop", exact: true }).click(),
+  ]);
+  await panel.getByRole("status").filter({ hasText: "Pitstop added: Walk labs." }).waitFor({ timeout: 15000 });
+  await p.waitForFunction(() => document.activeElement?.textContent?.trim().startsWith("Your pitstops on "), null, { timeout: 15000 });
+  await p.locator('svg g[role="button"][aria-label^="Added by you Walk labs,"]').waitFor({ timeout: 10000 });
+  await shot("map-own-pitstop");
+  await a11y("map-own-pitstop");
+  const added = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  if (analyses(added) !== analyses(before)) throw new Error("adding a pitstop changed the gap analysis");
+  if (!added.ownPitstops?.some((o) => o.name === "Walk labs")) throw new Error("the download lacks the pitstop");
+
+  await panel.getByRole("button", { name: "Edit pitstop: Walk labs" }).click();
+  await panel.getByLabel("Name", { exact: true }).fill("Walk labs week 2");
+  await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "PATCH" && r.url().includes("/api/pitstops/")),
+    panel.getByRole("button", { name: "Save pitstop", exact: true }).click(),
+  ]);
+  await panel.getByRole("status").filter({ hasText: "Pitstop saved." }).waitFor({ timeout: 15000 });
+  await p.locator('svg g[role="button"][aria-label^="Added by you Walk labs week 2,"]').waitFor({ timeout: 10000 });
+  await p.emulateMedia({ colorScheme: "dark" });
+  await a11y("map-own-pitstop-dark");
+  await p.emulateMedia({ colorScheme: "light" });
+
+  await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "DELETE" && r.url().includes("/api/pitstops/")),
+    panel.getByRole("button", { name: "Remove this pitstop: Walk labs week 2" }).click(),
+  ]);
+  await panel.getByRole("status").filter({ hasText: "Removed. Your line is shorter again." }).waitFor({ timeout: 15000 });
+  await p.locator('svg g[role="button"][aria-label^="Added by you"]').first().waitFor({ state: "detached", timeout: 10000 });
+  await p.waitForFunction(() => document.activeElement?.textContent?.trim().startsWith("Your pitstops on "), null, { timeout: 15000 });
+  const removed = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  if (removed.ownPitstops?.length) throw new Error("a removed pitstop is still in the download");
+  if (analyses(removed) !== analyses(before)) throw new Error("removing a pitstop changed the gap analysis");
+});
 // Today's live cards (v44 gap items 8 to 10): no example data for a signed-in person. The signal check, when the bank
 // has a question for today's goal or the next, is checked on the server and ticks the ride's signal task (a ride day);
 // the board shows live rows or says why it has none; On your line shows only with three people who can be counted.
@@ -1322,7 +1372,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
-  if (data.exportVersion !== 36 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  if (data.exportVersion !== 37 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
   await ready("Stop the countdown").waitFor({ timeout: 10000 });
@@ -1668,7 +1718,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 36) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 37) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -1826,7 +1876,7 @@ await step("settings columns: message requests off, Open to work in filters Depa
     await p.emulateMedia({ colorScheme: "light" });
 
     const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 36) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 37) throw new Error(`export version ${data.exportVersion}`);
     if (data.settings?.messageRequests !== false) throw new Error("the download lacks message requests off");
     if (JSON.stringify(data.settings?.openToWorkIn) !== JSON.stringify(["Remote", "Pune"])) throw new Error("the download lacks Open to work in");
     if (JSON.stringify(data.availability?.usuallyFree) !== JSON.stringify(["mon 17:00", "mon 18:00"])) throw new Error("the download lacks Usually free");
@@ -1990,7 +2040,7 @@ await step("me editing: add, edit and delete a role, education, a story and inte
 
   // The download has what is left: one interest.
   const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 36) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 37) throw new Error(`export version ${data.exportVersion}`);
   if (data.interests?.map((x) => x.name).join() !== "Photography" || data.stories?.length || data.meRoles?.length || data.meEducation?.length) throw new Error("the download doesn't match Me");
 
   await p.emulateMedia({ colorScheme: "dark" });
@@ -2372,7 +2422,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 36) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 37) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -2470,7 +2520,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 36) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 37) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -2579,7 +2629,7 @@ await step("mock interview: a full round with follow-ups, answered, ended, with 
     await axeOn(q, "mock-interview-feedback");
 
     const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 36) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 37) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "full" || !round.endedAt || round.answers?.length !== 3 || !round.summary) throw new Error("the download's mock interview is wrong");
     const ups = round.answers.map((a) => a.followUp);

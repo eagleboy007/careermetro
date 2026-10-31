@@ -18,6 +18,7 @@ import {
   MOCK_FEEDBACK_PER_DAY,
   MOCK_SESSIONS_PER_DAY,
   NOTIFICATION_READS_PER_DAY,
+  OWN_PITSTOP_CHANGES_PER_DAY,
   RESOURCE_REPORTS_PER_DAY,
   RESUME_EXPORTS_PER_HOUR,
   SUGGESTIONS_PER_DAY,
@@ -157,6 +158,8 @@ export const LIMITS = {
    * me" on and off without end, each on writing a consent row.
    */
   settingsSavesPerUserDay: { bucket: "settings-save", max: 100, windowMs: 24 * HOUR },
+  /** Adds, edits and removals of the person's own pitstops on the Map (FR-58), each try counted. */
+  ownPitstopChangesPerUserDay: { bucket: "own-pitstop-change", max: OWN_PITSTOP_CHANGES_PER_DAY, windowMs: 24 * HOUR },
   /** Unblocks from Settings > Privacy a day per person, each try counted, so a block and unblock loop can't be scripted. */
   unblocksPerUserDay: { bucket: "unblock", max: 50, windowMs: 24 * HOUR },
 } satisfies Record<string, SharedLimit>;

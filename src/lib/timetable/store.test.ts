@@ -94,8 +94,8 @@ describe.skipIf(!db)("Timetable rows (database)", () => {
     for (const r of t.rsvps) expect(eventRsvpExport.safeParse(r).error).toBeUndefined();
 
     const data = await exportAccountData(me, d());
-    expect(EXPORT_VERSION).toBe(36);
-    expect(data!.exportVersion).toBe(36);
+    expect(EXPORT_VERSION).toBe(37);
+    expect(data!.exportVersion).toBe(37);
     expect(data!.timetable).toEqual(t);
     expect((await exportTimetable(other, d())).rsvps).toHaveLength(1);
   });

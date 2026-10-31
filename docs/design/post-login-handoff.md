@@ -288,6 +288,7 @@ Examples:
 - Colours: cobalt for done, `line` for ahead. The current pitstop has a dotted prep stretch with the train on it.
 - Labels read "N · LEARN" or "N · PROVE", with the goal name below. Labels alternate above and below the line so they don't collide. Done pitstops get a check.
 - Pitstops and goals the user adds are drawn as spurs labelled "ADDED BY YOU" or "YOUR CHOICE".
+  - Built (FR-58, 2026-10-31): "Add a pitstop" opens "Where do you want to halt?" (an open goal, a name of up to 40 characters, an optional free course from the catalog). A goal's own pitstops hang off its first pitstop as one dashed, neutral spur labelled ADDED BY YOU; tapping it gives Edit and Remove ("Removed. Your line is shorter again."). They get the person ready, are never numbered, never hold the train and never change gaps or the match. The prototype's limit of 3 is kept per goal; the prototype's free-text "Or your own" goal (a skill outside the taxonomy) is not built, since goals are taxonomy skills.
 - The destination is the next role, not the last one in a career.
 - Other lines are other role profiles that share a skill with the user's path. They cross at the shared skill. Rider counts come from opted-in users.
 - **Life line** (switch at the top of the map):

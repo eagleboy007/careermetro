@@ -30,7 +30,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 36;
+export const EXPORT_VERSION = 37;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -91,11 +91,25 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
   const pathIds = pathRows.map((p) => p.id);
   const stepRows = pathIds.length
     ? await db
-        .select({ pathId: pathSteps.pathId, position: pathSteps.position, skill: pathSteps.skillId, kind: pathSteps.kind, hours: pathSteps.hours, reason: pathSteps.reason, proofTask: pathSteps.proofTask, doneAt: pathSteps.doneAt })
+        .select({
+          pathId: pathSteps.pathId,
+          position: pathSteps.position,
+          skill: pathSteps.skillId,
+          kind: pathSteps.kind,
+          hours: pathSteps.hours,
+          reason: pathSteps.reason,
+          proofTask: pathSteps.proofTask,
+          doneAt: pathSteps.doneAt,
+          source: pathSteps.source,
+          resourceIds: pathSteps.resourceIds,
+        })
         .from(pathSteps)
         .where(inArray(pathSteps.pathId, pathIds))
         .orderBy(asc(pathSteps.pathId), asc(pathSteps.position))
     : [];
+
+  const appSteps = stepRows.filter((st) => st.source === "app");
+  const ownSteps = stepRows.filter((st) => st.source === "user");
 
   // Job checks keep only the skills a posting asked for; the posting text is never stored, so it can't be here.
   const jobCheckRows = resumeIds.length
@@ -211,13 +225,23 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
             .filter((a) => a.profileId === p.id)
             .map((a) => ({
               ...a,
-              paths: pathRows.filter((x) => x.gapAnalysisId === a.id).map((x) => ({ ...x, steps: stepRows.filter((st) => st.pathId === x.id) })),
+              paths: pathRows
+                .filter((x) => x.gapAnalysisId === a.id)
+                .map((x) => ({
+                  ...x,
+                  steps: appSteps
+                    .filter((st) => st.pathId === x.id)
+                    .map((st) => ({ pathId: st.pathId, position: st.position, skill: st.skill, kind: st.kind, hours: st.hours, reason: st.reason, proofTask: st.proofTask, doneAt: st.doneAt })),
+                })),
             })),
         })),
     })),
     jobDescriptions: jdRows,
     jobChecks: jobCheckRows,
     goals: goalRows,
+    // From version 37, pitstops you added on the Map (FR-58): the goal's skill, the name you gave it and the free course
+    // you picked for it, if any. They sit apart from the path's own steps, which they never change.
+    ownPitstops: ownSteps.map((st) => ({ goalSkill: st.skill, name: st.reason, resourceId: st.resourceIds[0] ?? null })),
     proofs: proofRows,
     rideDays: rideRows,
     inbox,

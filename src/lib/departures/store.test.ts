@@ -285,8 +285,8 @@ describe.skipIf(!db)("departures store (database)", () => {
     ]);
     for (const r of rows) expect(departureExport.safeParse(r).success).toBe(true);
     const data = await exportAccountData(me, db!);
-    expect(EXPORT_VERSION).toBe(36);
-    expect(data!.exportVersion).toBe(36);
+    expect(EXPORT_VERSION).toBe(37);
+    expect(data!.exportVersion).toBe(37);
     expect(data!.departures).toEqual(rows);
     // Deleting the account removes its saves (on delete cascade); the post belongs to no one and stays.
     await db!.delete(schema.users).where(eq(schema.users.id, me));

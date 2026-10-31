@@ -27,7 +27,10 @@ export function Panel({ kicker, title, children }: { kicker: string; title: stri
   return (
     <div className="flex min-w-0 animate-[sheet-in_.3s_cubic-bezier(.2,.8,.2,1)] flex-col gap-3.5 [&>p]:text-[0.88rem] [&>p]:text-muted [&>p]:[overflow-wrap:anywhere]">
       <span className="font-mono text-[0.72rem] uppercase tracking-[0.06em] text-muted">{kicker}</span>
-      <h3 className="text-[1.35rem] font-semibold leading-[1.15] [overflow-wrap:anywhere]">{title}</h3>
+      {/* Focusable from code only, so a change made in the panel can move focus to its heading (FR-58). */}
+      <h3 tabIndex={-1} className="text-[1.35rem] font-semibold leading-[1.15] [overflow-wrap:anywhere] focus:outline-2 focus:outline-offset-2 focus:outline-ink">
+        {title}
+      </h3>
       {children}
     </div>
   );

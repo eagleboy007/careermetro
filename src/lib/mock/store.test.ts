@@ -154,8 +154,8 @@ describe.skipIf(!db)("interview prep store (database)", () => {
     if (!out.ok) throw new Error(out.error);
     await finishTimedTest(me, { testId: out.test.id }, deps());
     const data = (await exportAccountData(me, db!))!;
-    expect(EXPORT_VERSION).toBe(36);
-    expect(data.exportVersion).toBe(36);
+    expect(EXPORT_VERSION).toBe(37);
+    expect(data.exportVersion).toBe(37);
     expect(data.timedTests).toHaveLength(1);
     expect(data.timedTests[0]).toMatchObject({ roleSlug: "data-analyst", right: 0, picks: Array(12).fill(NO_PICK) });
     await db!.delete(schema.users).where(eq(schema.users.id, me));

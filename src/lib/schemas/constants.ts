@@ -759,6 +759,19 @@ export const MAX_TRACKS_PER_ROLE = 5;
 /** Track switches one person makes a day, each try counted. */
 export const TRACK_CHANGES_PER_DAY = 20;
 
+/* Add a pitstop on the Map (FR-58): the person's own extra halts on a goal, path_steps.source = 'user' ------------- */
+
+/** Longest name of a pitstop the person adds (the prototype's "Or your own" field). */
+export const OWN_PITSTOP_TITLE_MAX = 40;
+/** Pitstops of their own one person may have on one goal (the prototype's limit of 3). */
+export const OWN_PITSTOPS_PER_GOAL = 3;
+/** Pitstops of their own one person may have across all their goals. */
+export const OWN_PITSTOPS_MAX = 30;
+/** Adds, edits and removals of their own pitstops one person makes a day, each try counted. */
+export const OWN_PITSTOP_CHANGES_PER_DAY = 60;
+/** Free catalog courses offered for a pitstop of one's own: the next unused ones for the goal's skill. */
+export const OWN_PITSTOP_OPTIONS_MAX = 3;
+
 /** Resume downloads (PDF or Word) one owner makes an hour, each try counted, so renders can't be looped (Testing Run 5, T81). */
 export const RESUME_EXPORTS_PER_HOUR = 30;
 /** Messages one person sends in open direct chats a day, across every chat (Testing Run 5, T85). */

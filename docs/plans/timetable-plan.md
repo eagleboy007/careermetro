@@ -164,7 +164,7 @@ Excluded here, as asked: Junction (waits on a grievance officer), billing (none 
 | Where | What is missing | File |
 |---|---|---|
 | Timetable | The whole screen (this plan) and Today's teaser, which shows example rows with "All events · soon". | `src/components/today/rail-cards.tsx` |
-| Map | "Add a pitstop · soon": a person adds their own pitstop to a goal (`path_steps.source = user`, handoff section 13). | `src/components/map/metro-map.tsx` |
+| Map | Built 2026-10-31 as FR-58 ("Add a pitstop"): a person adds their own pitstop to a goal (`path_steps.source = user`, handoff section 13). | `src/components/map/own-pitstops.tsx` |
 | Map, ways to prove | "Skill check on camera · soon", and "work you did, a manager or colleague confirms · soon". Both are proof types in `gap_proofs` (handoff section 6) with no flow yet. They need a plan: the on-camera check touches the AI pipeline and privacy, and the confirmation emails a third party. | `src/components/map/metro-map.tsx` |
 | Me | "Show my pitstop on the map · soon", which shows the person's current pitstop to others on the line. It waits on the On your line opt-in rules. | `src/components/job-search/job-search.tsx` |
 | Library, Elite | Paid courses stay "Coming soon" slots until licensing deals exist (a business step, not a build). | `src/components/library/elite-shelf.tsx` |

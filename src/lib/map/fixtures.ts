@@ -53,6 +53,29 @@ export const exampleMapLine: MapLine = {
   otherLines: otherLines("data-analyst", exampleGoals, exampleNearby),
 };
 
+/**
+ * The same line with pitstops the person added (FR-58): two on the current goal and one on a weak one, drawn as spurs
+ * labelled ADDED BY YOU, and the free courses offered for each open goal. Nothing about the line itself changes.
+ */
+export const exampleOwnMapLine: MapLine = {
+  ...exampleMapLine,
+  goals: exampleGoals.map((g) => {
+    if (g.proved) return g;
+    const offered = { pitstopOptions: [{ id: `opt-${g.skillId}`, title: `More practice: ${g.name}`, detail: "Kaggle Learn · course · 2 h" }] };
+    if (g.skillId === "sql-window-functions")
+      return {
+        ...g,
+        ...offered,
+        ownPitstops: [
+          { id: "own-1", title: "LeetCode SQL 50", course: null },
+          { id: "own-2", title: "Mode SQL tutorial", course: { id: "res-mode", title: "SQL tutorial: window functions", detail: "Mode · reading · 2 h" } },
+        ],
+      };
+    if (g.skillId === "python") return { ...g, ...offered, ownPitstops: [{ id: "own-3", title: "Pandas for my MIS reports", course: null }] };
+    return { ...g, ...offered };
+  }),
+};
+
 const moment = (m: Omit<LifeMoment, "verified"> & { verified?: boolean }): LifeMoment => ({ verified: false, ...m });
 
 /** A three-year career, drawn whole. */

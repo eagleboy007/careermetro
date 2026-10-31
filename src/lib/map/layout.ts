@@ -27,6 +27,21 @@ export type Station =
 /** Another role's line crossing at a pitstop. `nearby`: a Nearby line, drawn as an interchange station. */
 export type Crossing = { slug: string; title: string; station: Extract<Station, { kind: PitstopKind }>; labelAtTop: boolean; nearby: boolean };
 
+/**
+ * A spur off the line (handoff section 7): the pitstops the person added on one goal (FR-58), drawn as one dashed
+ * branch with a dot labelled ADDED BY YOU. It hangs off the goal's first pitstop, on the side away from its label. It
+ * is never numbered, never holds the train and never counts in `pitstopCount`.
+ */
+export type Spur = {
+  id: string;
+  goal: MapGoal;
+  /** The pitstop the spur leaves the line at. */
+  from: { x: number; y: number };
+  x: number;
+  y: number;
+  count: number;
+};
+
 export type Layout = {
   width: number;
   height: number;
@@ -40,6 +55,9 @@ export type Layout = {
   gridXs: number[];
   goalCount: number;
   pitstopCount: number;
+  spurs: Spur[];
+  /** Pitstops the person added on the line's goals, all spurs together. */
+  ownCount: number;
 };
 
 export const MAP_HEIGHT = 560;
@@ -57,6 +75,8 @@ const BAND = 4;
 const PREP_SHARE = 0.5;
 /** Extra room before the current pitstop, so the train clears the labels on both sides. */
 const NOW_GAP = 160;
+/** How far a spur of the person's own pitstops runs off the line. */
+const SPUR = 80;
 
 /** What numbering a line's pitstops needs of a goal. The Map passes its goals; Network passes a person's line (FR-49). */
 export type PitstopGoal = Pick<MapGoal, "status" | "learnDone" | "proved" | "skipped">;
@@ -163,6 +183,17 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout 
     crossings.push({ slug: other.slug, title: other.title, station: at, labelAtTop: crossings.length % 2 === 1, nearby: other.nearby === true });
   }
 
+  // One spur a goal with pitstops of the person's own, off its first pitstop: down when that pitstop's label is above,
+  // up when it is below, so the spur never crosses a label.
+  const spurs: Spur[] = [];
+  for (const goal of line.goals) {
+    const count = goal.ownPitstops?.length ?? 0;
+    if (!count) continue;
+    const at = pitstopStations.find((s) => s.goal === goal);
+    if (!at) continue;
+    spurs.push({ id: `own-${goal.skillId}`, goal, from: { x: at.x, y: at.y }, x: at.x, y: at.above ? at.y + SPUR : at.y - SPUR, count });
+  }
+
   const gridXs: number[] = [];
   for (let gx = 40; gx < width - 120; gx += 80) gridXs.push(gx);
 
@@ -178,6 +209,8 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout 
     gridXs,
     goalCount,
     pitstopCount: pitstops.length,
+    spurs,
+    ownCount: spurs.reduce((n, sp) => n + sp.count, 0),
   };
 }
 

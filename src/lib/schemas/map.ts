@@ -3,6 +3,7 @@ import { GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS } from "./constants";
 import { MAX_GAPS } from "./gap";
 import { goalChoice, notForMeOffer } from "./goals";
 import { nearbyLines } from "./nearby";
+import { ownPitstopOptions, ownPitstops } from "./pitstops";
 
 /**
  * The Map (post-login handoff, section 7): the person's line from Resume through one goal per gap to Match.
@@ -46,6 +47,13 @@ export const mapGoal = z.object({
   skipped: z.boolean().optional(),
   /** What "Not for me" offers on this goal (FR-48); null or absent when nothing is. */
   notForMe: notForMeOffer.nullable().optional(),
+  /**
+   * Pitstops the person added on this goal (FR-58, `path_steps.source` = user), drawn as a spur labelled ADDED BY YOU.
+   * They get the person ready and never fill the gap, move the train or count toward Match. Absent in older data.
+   */
+  ownPitstops: ownPitstops.optional(),
+  /** Free catalog courses offered when adding one: the next unused ones for the goal's skill. Open goals only. */
+  pitstopOptions: ownPitstopOptions.optional(),
 });
 
 export const mapLine = z.object({

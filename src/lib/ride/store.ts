@@ -71,7 +71,8 @@ export async function rideGoalsFor(
       ? await db
           .select({ skillId: pathSteps.skillId, resourceIds: pathSteps.resourceIds, proofTask: pathSteps.proofTask, doneAt: pathSteps.doneAt })
           .from(pathSteps)
-          .where(eq(pathSteps.pathId, path.id))
+          // Pitstops the person added (FR-58) never go on the ride or move the train.
+          .where(and(eq(pathSteps.pathId, path.id), eq(pathSteps.source, "app")))
           .orderBy(asc(pathSteps.position))
       : [];
     const ids = [...new Set(steps.flatMap((s) => s.resourceIds))];
