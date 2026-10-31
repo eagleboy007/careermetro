@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   certification,
   cityCentresFile,
+  eventFeedsFile,
   eliteShelfFile,
   interestTopicsFile,
   mockBankFile,
@@ -15,6 +16,7 @@ import {
   skill,
   type Certification,
   type CityCentre,
+  type EventFeed,
   type InterestTopic,
   type ShelfEntry,
   type MockQuestion,
@@ -27,6 +29,7 @@ import {
 } from "@/lib/schemas";
 import certificationsJson from "./certifications.json";
 import cityCentresJson from "./city-centres.json";
+import eventFeedsJson from "./event-feeds.json";
 import interestTopicsJson from "./interest-topics.json";
 import eliteShelfJson from "./elite-shelf.json";
 import mockBankJson from "./mock-bank.json";
@@ -248,6 +251,12 @@ export const cityCentres: CityCentre[] = cityCentresFile.parse(cityCentresJson);
  * topic only when it is the topic's key, label or one of its aliases exactly; anything else matches nothing.
  */
 export const interestTopics: InterestTopic[] = interestTopicsFile.parse(interestTopicsJson);
+
+/**
+ * Timetable PR 4 (section 6): the organisers' public feeds the daily event feed may read, each with its terms link and
+ * the day its terms were read. A feed is read only while it is on, and it goes on only with that day.
+ */
+export const eventFeeds: EventFeed[] = eventFeedsFile.parse(eventFeedsJson);
 
 /** Hand-built role profiles (FR-8, FR-9). Unpublished until a domain expert sets reviewedBy. */
 export const roleProfiles: RoleProfile[] = z
