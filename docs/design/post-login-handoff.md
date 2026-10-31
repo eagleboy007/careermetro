@@ -364,6 +364,17 @@ Examples:
   - No company-specific principle labels.
   - Recruiters see stories on the profile under the normal visibility settings. There is no separate share button.
 
+### Show more per section (C23, proposed 2026-10-30 from Testing T162; Development 4 building; prototype v51)
+
+- Problem: with a full account, Me ran to about 31 phone screens (Testing T162). Nobody reads a profile that long, and the edit links at the bottom are never found.
+- Rule: every list section on Me (Experience, Education, Certifications, Proof of work, Practice confidence, Interests, and each box on Your stories) shows its first 3 items. When a section has more, a "Show N more" control sits under the third item; opened, it reads "Show less" and the section stays open for the rest of the visit. With 3 items or fewer there is no control.
+- Order inside a folded section: newest first (current role, latest course, latest proof, latest story), so the three shown are the three that matter.
+- The control is the outlined pill with an arrow, in ink, not cobalt (opening a list is not progress). It must have `aria-expanded` and move focus nowhere.
+- "View as others" and the public profile `/u/[handle]` fold the same way; a visitor opens a section with the same control.
+- Resume editor (`/builder` and Edit on Me): folds by section like the builder's section nav, one section open at a time, the others collapsed to their heading and a one-line summary ("3 roles", "2 degrees"). The review page at the end stays whole, so the user reads it as the recruiter will.
+- Counts in section labels stay as they are ("5 roles · from your resume", "3 verified · 1 added by you"), so the fold never hides how much there is.
+- Prototype: the "show a full account" switch at the top of Me is a prototype control only, not a product control.
+
 ## 12. Junction (later) and Network
 
 - Junction is a posting board with posts, votes, comments, reshares and pins, plus a My interests feed. The name is not confirmed.
@@ -646,4 +657,5 @@ Every change to prototype v2 after this handoff was first given to Development. 
 | C21 | 2026-10-29 | Share from the phone (Departures add box, Settings > Add from your phone) | Phase 2 of My jobs, asked for by the Project manager: Android share target opens "Add a job you found" filled with the shared link and text under a "Shared from your phone" banner, check runs, nothing kept until Save; Paste button in the link field; Settings section with Android and iPhone paths (iPhone: copy, then Paste); we never read the clipboard on our own. | v50 | 12c, 12m | approved (Milin, 2026-10-29, card via the Project manager) |
 | C22 | 2026-10-29 | Weekly My jobs email (Settings > Notifications) | Opt-in, off by default, Mondays 8:00 IST, only when something is moving: waiting on a reply, interviews this week, three skills to practise; company and title only, one-tap turn off without sign-in; preview "See this week's" in Settings. | v50 | 12c, 12m | approved (Milin, 2026-10-29, card via the Project manager) |
 | C20 | 2026-10-28 | Today rail: Next interview | Development built an "Interview in N days" card for Today (PR 242) with no design yet. Design drawn to match: neutral rail card with a calendar icon, "Interview today / tomorrow / in N days", title at company, date and time IST, a line on which still-open skills lead the ride, and Practise its skills / Mock interview / My jobs. No cobalt, goes away after the date, status untouched. | v49 | 5 | approved (Project manager under Milin's delegation, 2026-10-30, after the card went unanswered 38 hours; reversible: Milin can change or drop the card) |
+| C23 | 2026-10-30 | Your profile: Show more per section | From Testing T162 (Me about 31 phone screens with a full account): each list section on Me shows 3 items, newest first, then "Show N more" / "Show less"; no control at 3 or fewer; public profile folds the same way; resume editor folds by section, one open at a time, review page whole. | v51 | 11 | proposed (Project manager under Milin's delegation, 2026-10-30; Development 4 building; reversible) |
 | C17 | 2026-10-20 | Top bar on narrow phones | The in-app notifications bell joins the top bar. To make room, the "careermetro" wordmark hides on narrow phones and only the logo mark shows; tapping the mark still goes to Today. Design agrees: the mark alone is the brand's small-size form (app icon, favicon). Reversible. | built (Development) | 3 | approved (Project manager under Milin's delegation, 2026-10-20; design agrees) |

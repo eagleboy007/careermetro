@@ -1,7 +1,8 @@
 "use client";
 
 import { Award, BadgeCheck, CalendarX, ExternalLink, RefreshCw } from "lucide-react";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useId, useRef, useState, useTransition } from "react";
+import { FoldToggle, useFold } from "@/components/ui/show-more";
 import { NO_NAME, firstName } from "@/lib/account/name";
 import type { CredlyCheckResult } from "@/lib/proofs/result";
 import type { MeCertification } from "@/lib/schemas";
@@ -36,6 +37,9 @@ export function ProfileCertifications({
   // the list says what happened and moves focus to its heading rather than leaving it on the page.
   const [last, setLast] = useState<{ proofId: string; result: CredlyCheckResult } | null>(null);
   const gone = last && !certs.some((c) => c.proofId === last.proofId) ? last : null;
+  // The first 3, then "Show N more" (C23), in the order the list comes in.
+  const fold = useFold(certs);
+  const listId = useId();
   useEffect(() => {
     if (!gone || !headingId) return;
     const active = document.activeElement;
@@ -67,11 +71,12 @@ export function ProfileCertifications({
   return (
     <>
       {status}
-      <ul className="flex flex-col gap-3">
-        {certs.map((c, i) => (
+      <ul id={listId} className="flex flex-col gap-3">
+        {fold.shown.map((c, i) => (
           <CertificationRow key={c.proofId ?? `resume-${i}-${c.name}`} cert={c} own={mode === "own"} addedBy={addedBy} onCheck={check} />
         ))}
       </ul>
+      <FoldToggle fold={fold} noun="certifications" controls={listId} />
     </>
   );
 }

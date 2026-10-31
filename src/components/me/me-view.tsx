@@ -11,10 +11,11 @@ import { EliteBadge } from "@/components/elite/elite-badge";
 import { NearbyLinesList } from "@/components/nearby/nearby-lines";
 import { ConfidenceSpark, confidenceWord, sessionsText } from "@/components/practice/confidence-spark";
 import { SampleTag } from "@/components/ui/sample-tag";
-import { ShowMore, usePaged } from "@/components/ui/show-more";
+import { FoldToggle, useFold } from "@/components/ui/show-more";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { JoinActions } from "@/lib/corporate/types";
 import { initials } from "@/lib/departures/filter";
+import { newestFirstByYear } from "@/lib/fold";
 import { experienceCheckText } from "@/lib/me/job-check-rules";
 import type { JourneyStop, MeProfile, PracticeTrend, Story } from "@/lib/schemas";
 import { SMART, STORY_BOXES } from "@/lib/schemas/constants";
@@ -24,18 +25,12 @@ const ghost = `${btn} border border-line bg-surface px-[15px] py-[9px] text-[0.8
 const quiet = `${btn} px-2 py-[9px] text-[0.86rem] text-muted`;
 const label = "font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted";
 
-/**
- * Roles, education rows and stories show 10 at a time, then "Show more" (T150): at Me's caps (30 roles with resume
- * highlights, 24 education rows, 50 stories each in up to six boxes) the page ran past 50,000 px on a phone.
+/*
+ * Every list section folds to its first 3 items, newest first, then "Show N more" (C23, handoff section 11; Testing
+ * T162): with a full account Me ran to about 31 phone screens. Experience comes newest first from the server, stories
+ * newest changed first, education is put newest first here by its year, interests newest added first. The section
+ * labels keep their counts, so the fold never hides how much there is.
  */
-const ME_PAGE = 10;
-/** After "Show more", focus goes to the first new row itself: its Edit, Delete or work-email controls can be hidden. */
-const wholeRow = (list: HTMLElement, i: number) => {
-  const row = list.children[i];
-  return row instanceof HTMLElement ? row : null;
-};
-/** The first new story's card, in its first box: its summary, since its controls sit inside the closed card. */
-const storyRow = (list: HTMLElement, i: number) => list.querySelector<HTMLElement>(`[data-story-index="${i}"] > summary`);
 
 /** Who sees what, as saved in Account settings, for the rail on the person's own profile. */
 export type WhoSees = { visibility: string; link: string | null; shown: string[] };
@@ -156,11 +151,16 @@ export function MeView({
   const hasResume = me.resumeReadOn !== null;
   const fromResume = viewer ? "from their resume" : "from your resume";
   const gapsShown = me.skills.weak.length + me.skills.missing.length > 0;
-  const shownAs = own ? "own" : "others";
-  const roles = usePaged(me.experience, shownAs, ME_PAGE);
-  const roleList = useRef<HTMLUListElement>(null);
-  const schools = usePaged(me.education, shownAs, ME_PAGE);
-  const schoolList = useRef<HTMLUListElement>(null);
+  const roles = useFold(me.experience);
+  const roleList = useId();
+  const schools = useFold(newestFirstByYear(me.education));
+  const schoolList = useId();
+  const interests = useFold([...me.interests].reverse());
+  const interestList = useId();
+  const trends = useFold(practice ?? []);
+  const trendList = useId();
+  const proofs = useFold(me.proofs);
+  const proofList = useId();
   return (
     <div className="grid min-w-0 gap-6 min-[760px]:grid-cols-[minmax(0,1fr)_300px] min-[760px]:gap-10">
       <div className="flex min-w-0 flex-col">
@@ -245,7 +245,7 @@ export function MeView({
             />
           )}
           {me.experience.length ? (
-            <ul ref={roleList} className="flex flex-col">
+            <ul id={roleList} className="flex flex-col">
               {roles.shown.map((e, i) => (
                 <li key={e.id} className="relative grid grid-cols-[44px_minmax(0,1fr)] gap-3.5 pb-[18px]">
                   {i < roles.shown.length - 1 && <i aria-hidden="true" className="absolute bottom-0.5 left-[21px] top-12 w-0.5 bg-line" />}
@@ -297,7 +297,7 @@ export function MeView({
           ) : (
             <Empty Icon={FileText}>Your roles fill in from your resume, or add them by hand.</Empty>
           )}
-          <ShowMore left={roles.left} shown={roles.shown.length} onMore={roles.more} list={roleList} noun="roles" focusRow={wholeRow} />
+          <FoldToggle fold={roles} noun="roles" controls={roleList} />
           {asOthers && me.experience.length > 0 && mine.experience.some((e) => e.highlights.length) && (
             <Note>Lines from your resume stay private. Your stories show what you did.</Note>
           )}
@@ -375,7 +375,7 @@ export function MeView({
             />
           )}
           {me.education.length ? (
-            <ul ref={schoolList} className="flex flex-col gap-3">
+            <ul id={schoolList} className="flex flex-col gap-3">
               {schools.shown.map((e, i) => (
                 <li key={e.added?.id ?? `resume-${i}`} className="grid grid-cols-[44px_minmax(0,1fr)] gap-3.5">
                   <span aria-hidden="true" className="grid h-11 w-11 place-items-center rounded-[12px] bg-surface-2 text-muted">
@@ -408,7 +408,7 @@ export function MeView({
           ) : (
             <Empty Icon={BookOpen}>Degrees and courses fill in from your resume, or add them by hand.</Empty>
           )}
-          <ShowMore left={schools.left} shown={schools.shown.length} onMore={schools.more} list={schoolList} noun="education" focusRow={wholeRow} />
+          <FoldToggle fold={schools} noun="education" controls={schoolList} />
         </Section>
         )}
 
@@ -440,13 +440,16 @@ export function MeView({
           {own ? (
             <InterestsEditor interests={me.interests} onAdd={edits?.addInterest} onRemove={edits?.removeInterest} say={say} />
           ) : (
-            <ul className="flex flex-wrap gap-1.5" aria-label="Interests">
-              {me.interests.map((t) => (
-                <li key={t} className="min-w-0 max-w-full rounded-full bg-surface-2 px-2.5 py-1 text-[0.78rem] [overflow-wrap:anywhere]">
-                  {t}
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul id={interestList} className="flex flex-wrap gap-1.5" aria-label="Interests">
+                {interests.shown.map((t) => (
+                  <li key={t} className="min-w-0 max-w-full rounded-full bg-surface-2 px-2.5 py-1 text-[0.78rem] [overflow-wrap:anywhere]">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <FoldToggle fold={interests} noun="interests" controls={interestList} />
+            </>
           )}
           {asOthers && me.interests.length === 0 && <Note>Interests you add show on your profile to everyone who can open it.</Note>}
         </Section>
@@ -457,8 +460,8 @@ export function MeView({
         {own && practice && (
           <Section title="Practice confidence" note="only you see this" action={<More href="/practice">Practise</More>}>
             {practice.length ? (
-              <ul className="flex flex-col gap-2.5">
-                {practice.map((t) => (
+              <ul id={trendList} className="flex flex-col gap-2.5">
+                {trends.shown.map((t) => (
                   <li key={t.skillId} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 text-[0.88rem] min-[560px]:grid-cols-[minmax(0,150px)_minmax(0,1fr)_auto]">
                     <b className="min-w-0 font-semibold [overflow-wrap:anywhere]">{t.name}</b>
                     <ConfidenceSpark ratings={t.ratings} className="col-span-2 row-start-2 max-h-9 min-[560px]:col-span-1 min-[560px]:row-start-auto" />
@@ -471,6 +474,7 @@ export function MeView({
             ) : (
               <Empty Icon={MessageSquareText}>Practise a question and rate how sure you feel to start your trend.</Empty>
             )}
+            <FoldToggle fold={trends} noun="practice skills" controls={trendList} />
             <p className="text-[0.78rem] text-muted">How sure you said you felt after each answer. Not a score, and it never fills a goal.</p>
           </Section>
         )}
@@ -478,8 +482,8 @@ export function MeView({
         {(!viewer || me.proofs.length > 0) && (
         <Section title="Proof of work" note={viewer ? "tasks finished on CareerMetro" : "tasks you finished on your path"}>
           {me.proofs.length ? (
-            <ul className="flex flex-col gap-2">
-              {me.proofs.map((p, i) => (
+            <ul id={proofList} className="flex flex-col gap-2">
+              {proofs.shown.map((p, i) => (
                 <li key={i} className="flex items-center gap-3 rounded-[14px] border border-line px-3.5 py-3">
                   <FlaskConical size={18} {...ICON} className="shrink-0 text-muted" />
                   <span className="min-w-0 flex-1">
@@ -492,6 +496,7 @@ export function MeView({
           ) : (
             <Empty Icon={FlaskConical}>Your proof appears here as you meet goals.</Empty>
           )}
+          <FoldToggle fold={proofs} noun="proof of work" controls={proofList} />
         </Section>
         )}
       </div>
@@ -677,16 +682,19 @@ function Journey({ stops }: { stops: JourneyStop[] }) {
 }
 
 function SkillCol({ name, names, status }: { name: string; names: string[]; status: "met" | "weak" | "missing" }) {
+  const fold = useFold(names);
+  const list = useId();
   return (
     <div className="flex min-w-0 flex-col gap-2">
       <span className={label}>
         {name} · {names.length}
       </span>
-      <div className="flex flex-wrap gap-1.5">
-        {names.map((n) => (
+      <div id={list} className="flex flex-wrap gap-1.5">
+        {fold.shown.map((n) => (
           <StatusChip key={n} status={status} label={n} />
         ))}
       </div>
+      <FoldToggle fold={fold} noun={`${name.toLowerCase()} skills`} controls={list} />
     </div>
   );
 }
@@ -719,10 +727,6 @@ const EMPTY_BOX: Partial<Record<(typeof STORY_BOXES)[number], string>> = {
  */
 function Stories({ stories, own, controls }: { stories: Story[]; own: boolean; controls?: (s: Story, box: string) => ReactNode }) {
   const [view, setView] = useState<"board" | "list">("board");
-  // Newest first, so a story just added is always on the first page. The page counts stories, not cards.
-  const paged = usePaged(stories, own ? "own" : "others", ME_PAGE);
-  const boxes = useRef<HTMLDivElement>(null);
-  const indexOf = new Map(paged.shown.map((s, i) => [s.id, i]));
   return (
     <>
       <div role="group" aria-label="Layout" className="inline-flex gap-0.5 self-start rounded-full bg-surface-2 p-[3px]">
@@ -732,36 +736,57 @@ function Stories({ stories, own, controls }: { stories: Story[]; own: boolean; c
           </button>
         ))}
       </div>
-      <div ref={boxes} className={view === "board" ? "grid auto-cols-[minmax(220px,1fr)] grid-flow-col gap-2.5 overflow-x-auto pb-1.5" : "flex flex-col gap-3.5"}>
-        {STORY_BOXES.map((box) => {
-          // The count is the whole box's; the cards are the shown page's.
-          const total = stories.filter((s) => s.boxes.includes(box)).length;
-          const inBox = paged.shown.filter((s) => s.boxes.includes(box));
-          return (
-            <section
-              key={box}
-              aria-label={box}
-              className={`flex min-w-0 flex-col gap-2 rounded-[14px] ${view === "board" ? "bg-surface-2 p-2.5" : ""}`}
-            >
-              <div className="flex items-baseline gap-2">
-                <b className="min-w-0 text-[0.88rem] [overflow-wrap:anywhere]">{box}</b>
-                <span className="font-mono text-[0.7rem] text-muted">{total}</span>
-              </div>
-              {inBox.length ? (
-                inBox.map((s) => <StoryCard key={s.id} s={s} index={indexOf.get(s.id)!} own={own} controls={controls && (() => controls(s, box))} />)
-              ) : total ? (
-                <p className="px-1 text-[0.8rem] text-muted">Under &ldquo;Show more stories&rdquo;.</p>
-              ) : (
-                <p className="rounded-[12px] border border-dashed border-line px-3 py-2.5 text-[0.8rem] text-muted">
-                  No story yet. Think of a time you {EMPTY_BOX[box] ?? "did this"}.
-                </p>
-              )}
-            </section>
-          );
-        })}
+      <div className={view === "board" ? "grid auto-cols-[minmax(220px,1fr)] grid-flow-col gap-2.5 overflow-x-auto pb-1.5" : "flex flex-col gap-3.5"}>
+        {STORY_BOXES.map((box) => (
+          <StoryBoxList
+            key={box}
+            box={box}
+            board={view === "board"}
+            stories={stories.filter((s) => s.boxes.includes(box))}
+            own={own}
+            controls={controls}
+          />
+        ))}
       </div>
-      <ShowMore left={paged.left} shown={paged.shown.length} onMore={paged.more} list={boxes} noun="stories" focusRow={storyRow} />
     </>
+  );
+}
+
+/** One box of stories, newest changed first, folded to its first 3 (C23); its count is the whole box's. */
+function StoryBoxList({
+  box,
+  board,
+  stories,
+  own,
+  controls,
+}: {
+  box: (typeof STORY_BOXES)[number];
+  board: boolean;
+  stories: Story[];
+  own: boolean;
+  controls?: (s: Story, box: string) => ReactNode;
+}) {
+  const fold = useFold(stories);
+  const list = useId();
+  return (
+    <section aria-label={box} className={`flex min-w-0 flex-col gap-2 rounded-[14px] ${board ? "bg-surface-2 p-2.5" : ""}`}>
+      <div className="flex items-baseline gap-2">
+        <b className="min-w-0 text-[0.88rem] [overflow-wrap:anywhere]">{box}</b>
+        <span className="font-mono text-[0.7rem] text-muted">{stories.length}</span>
+      </div>
+      {stories.length ? (
+        <div id={list} className="flex min-w-0 flex-col gap-2">
+          {fold.shown.map((s) => (
+            <StoryCard key={s.id} s={s} own={own} controls={controls && (() => controls(s, box))} />
+          ))}
+        </div>
+      ) : (
+        <p className="rounded-[12px] border border-dashed border-line px-3 py-2.5 text-[0.8rem] text-muted">
+          No story yet. Think of a time you {EMPTY_BOX[box] ?? "did this"}.
+        </p>
+      )}
+      <FoldToggle fold={fold} noun={`stories in ${box}`} controls={list} />
+    </section>
   );
 }
 
@@ -802,9 +827,9 @@ function VerifyJob({ employer, jobCheck }: { employer: string; jobCheck?: { open
   );
 }
 
-function StoryCard({ s, index, own, controls }: { s: Story; index: number; own: boolean; controls?: () => ReactNode }) {
+function StoryCard({ s, own, controls }: { s: Story; own: boolean; controls?: () => ReactNode }) {
   return (
-    <details data-story-index={index} className="group rounded-[12px] border border-line bg-surface px-3 py-2.5">
+    <details className="group rounded-[12px] border border-line bg-surface px-3 py-2.5">
       <summary className="flex cursor-pointer list-none flex-col gap-1 [&::-webkit-details-marker]:hidden">
         <b className="text-[0.86rem] font-semibold leading-[1.3] [overflow-wrap:anywhere]">{s.title}</b>
         <small className="text-[0.74rem] text-muted [overflow-wrap:anywhere]">{s.where}</small>

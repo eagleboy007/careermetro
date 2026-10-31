@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
 import { roleProfile, type Profile } from "@/lib/schemas";
-import { certificationsIn, contentHash, inflections, isListLine, matchProfile, matchResult, MATCHER_VERSION, metSkillIds } from "./match";
+import { postingRole } from "@/lib/jobs/groups";
+import { certificationsIn, contentHash, inflections, isListLine, matchProfile, matchResult, MATCHER_VERSION, metSkillIds, profileMatcher, skillsNamedIn } from "./match";
 
 const role = (slug: string) => roleProfiles.find((r) => r.slug === slug)!;
 const dataAnalyst = role("data-analyst");
@@ -602,5 +603,43 @@ describe("one of these groups", () => {
     expect(valid({ groups, skills: [s("aws", { oneOf: "g" }), s("gcp", { oneOf: "g", importance: "nice_to_have" }), s("linux")] })).toBe(false);
     expect(valid({ skills: [s("aws", { oneOf: "g" }), s("gcp", { oneOf: "g" }), s("linux")] })).toBe(false);
     expect(valid({ groups, skills: [s("aws", { oneOf: "g" }), s("gcp", { oneOf: "g" }), s("linux")] })).toBe(true);
+  });
+});
+
+describe("profileMatcher (T161: one resume read for many roles)", () => {
+  const busy = profile({
+    roles: [
+      {
+        title: "Analyst",
+        employer: "Example Retail",
+        start: "2023-01",
+        end: null,
+        highlights: ["Wrote SQL queries and Power BI dashboards for weekly sales reports", "Currently learning Python for automation", "Built Excel models"],
+      },
+      { title: "Intern", employer: "Example Bank", start: "2018-06", end: "2019-05", highlights: ["Cleaned data in Excel and Tableau", "Built Excel models"] },
+    ],
+    skills: [
+      { name: "Python (Pandas, NumPy)", lastUsed: "2025-03", evidence: ["Automated reports with Pandas"] },
+      { name: "SQL", lastUsed: null, evidence: ["Wrote SQL queries and Power BI dashboards for weekly sales reports"] },
+      { name: "Statistics", lastUsed: "2016-01", evidence: [] },
+    ],
+    certifications: [{ name: "AWS Certified Cloud Practitioner", earned: "2024-05", expires: "none" }],
+  });
+
+  it("gives exactly what matchProfile gives, role after role, in any order", () => {
+    const matchRole = profileMatcher(busy, now);
+    const roles = [...roleProfiles.slice(0, 40), dataAnalyst, ...roleProfiles.slice(0, 5).reverse()];
+    for (const r of roles) expect(matchRole(r)).toEqual(matchProfile(busy, r, now));
+  });
+
+  it("reads a pasted posting the same way, and the same posting twice the same", () => {
+    const posting = postingRole({ requiredSkillIds: ["sql", "excel", "python", "tableau"], niceSkillIds: ["power-bi"] }, now);
+    const matchRole = profileMatcher(busy, now);
+    expect(matchRole(posting)).toEqual(matchProfile(busy, posting, now));
+    expect(matchRole(posting)).toEqual(matchRole(posting));
+  });
+
+  it("still takes the longest term first through the first-word index", () => {
+    expect([...skillsNamedIn("Power BI, SQL and Excel")].sort()).toEqual(["excel", "power-bi", "sql"]);
   });
 });

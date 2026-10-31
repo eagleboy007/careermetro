@@ -149,18 +149,36 @@ const termTokens: TermTokens[] = taxonomy
   .sort((a, b) => b.tokens.length - a.tokens.length);
 const safeTermTokens = termTokens.filter((t) => t.safe);
 
+/**
+ * Terms by their first token, each list still longest first (T161). A term can only match where the text's word equals
+ * its first token, so reading one bucket finds the same first match as scanning every term, without the thousands of
+ * misses per word that made long resumes slow.
+ */
+type TermIndex = ReadonlyMap<string, TermTokens[]>;
+function indexTerms(terms: TermTokens[]): TermIndex {
+  const index = new Map<string, TermTokens[]>();
+  for (const t of terms) {
+    const list = index.get(t.tokens[0]);
+    if (list) list.push(t);
+    else index.set(t.tokens[0], [t]);
+  }
+  return index;
+}
+const allTerms = indexTerms(termTokens);
+const safeTerms = indexTerms(safeTermTokens);
+
 /** Words that say nothing about use, so they don't stop a line from being a plain list of skills. */
 const FILLER = new Set(
   "and & or with in of the a an etc ms microsoft basic basics advanced intermediate expert beginner proficient proficiency good strong knowledge hands-on hands on working familiar tools skills".split(" "),
 );
 
 /** The taxonomy skills named in a short text, such as a skill name "Python (Pandas, NumPy)", and the words left over. */
-function readTerms(text: string, terms: TermTokens[] = termTokens): { skillIds: Set<string>; tokenCount: number; leftover: number } {
+function readTerms(text: string, index: TermIndex = allTerms): { skillIds: Set<string>; tokenCount: number; leftover: number } {
   const words = tokens(text);
   const covered = new Array<boolean>(words.length).fill(false);
   const skillIds = new Set<string>();
   for (let i = 0; i < words.length; i++) {
-    for (const t of terms) {
+    for (const t of index.get(words[i]) ?? []) {
       if (t.tokens.every((w, k) => words[i + k] === w)) {
         skillIds.add(t.skillId);
         t.tokens.forEach((_, k) => (covered[i + k] = true));
@@ -333,10 +351,14 @@ export function certificationsIn(line: string, now = new Date()): { cert: (typeo
 
 const statusRank = { missing: 0, outdated: 1, weak: 2, met: 3 } as const;
 
+const impliedCache = new Map<string, readonly string[]>();
 /** A skill and every broader skill it implies, following chains such as Next.js → React → JavaScript. */
-function withImplied(skillId: string): string[] {
+function withImplied(skillId: string): readonly string[] {
+  const cached = impliedCache.get(skillId);
+  if (cached) return cached;
   const out = [skillId];
   for (let i = 0; i < out.length; i++) for (const id of skillById.get(out[i])?.implies ?? []) if (!out.includes(id)) out.push(id);
+  impliedCache.set(skillId, out);
   return out;
 }
 
@@ -367,15 +389,20 @@ function roleMonths(roles: Profile["roles"], nowMonths: number): (number | null)
  * outdated or missing. Plain code over the skill taxonomy, so the same input always gives the same gaps.
  */
 export function matchProfile(profile: Profile, role: RoleProfile, now = new Date()): MatchResult {
+  return profileMatcher(profile, now)(role);
+}
+
+/**
+ * `matchProfile` for one profile against many roles (T161): the resume is read once, and each role only picks the
+ * evidence for its skills, so Nearby lines, role suggestions and My jobs don't read a long resume again for every role
+ * or posting. Gives exactly what `matchProfile` gives. The profile must not change while the matcher is in use.
+ */
+export function profileMatcher(profile: Profile, now = new Date()): (role: RoleProfile) => MatchResult {
   const nowMonths = now.getUTCFullYear() * 12 + now.getUTCMonth();
-  const evidence = new Map<string, Evidence[]>();
-  const add = (skillId: string, e: Evidence) => {
-    for (const id of withImplied(skillId)) {
-      const list = evidence.get(id);
-      if (list) list.push(e);
-      else evidence.set(id, [e]);
-    }
-  };
+  // What the resume shows, in the order the evidence is added: the listed skills (1) and the certifications (3) as
+  // they are found, and the lines naming each taxonomy skill (2) the first time a role asks for it.
+  const listed: [string, Evidence][] = [];
+  const certified: [string, Evidence][] = [];
 
   // When was each highlight last true? The same bullet under two jobs keeps the newer date.
   const dated: { text: string; months: number | null }[] = [];
@@ -399,7 +426,7 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   //    a longer name such as "Go-to-market strategy".
   for (const s of profile.skills) {
     const exact = taxonomyId(s.name);
-    const read = exact ? null : readTerms(s.name, safeTermTokens);
+    const read = exact ? null : readTerms(s.name, safeTerms);
     const list = !exact && isListLine(s.name);
     // A name with a few extra words ("SQL Server Management Studio") must still be about the skill: not attacking it,
     // teaching it or a hobby, and its evidence counts as use only where the quote names the skill itself.
@@ -411,19 +438,19 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
       const terms = [normalizeForMatch(s.name), ...scanTerms(id)];
       const names = (q: string) => !loose || scanTerms(id).some((t) => containsPhrase(normalizeForMatch(q), t));
       const used = s.evidence.filter((q) => !isListLine(q) && !learningAbout(q, terms) && names(q));
-      if (used.length === 0) add(id, { quote: s.evidence[0] ?? s.name, listedOnly: true, months: lastUsed });
+      if (used.length === 0) listed.push([id, { quote: s.evidence[0] ?? s.name, listedOnly: true, months: lastUsed }]);
       for (const q of used) {
         // The parser's lastUsed can be a current job's start year; the job the quote comes from wins when it is newer.
         // A quote that doesn't name the skill takes the oldest job it appears in, so a short fragment shared with a
         // newer bullet can't borrow that bullet's date.
         if (lastUsed === null) {
-          add(id, { quote: q, listedOnly: false, months: lineMonths(q) });
+          listed.push([id, { quote: q, listedOnly: false, months: lineMonths(q) }]);
           continue;
         }
         const own = terms.some((t) => containsPhrase(normalizeForMatch(q), t));
         const line = lineMonths(q, !own);
         const months = line === null ? lastUsed : Math.max(lastUsed, line);
-        add(id, { quote: q, listedOnly: false, months });
+        listed.push([id, { quote: q, listedOnly: false, months }]);
       }
     }
   }
@@ -432,15 +459,19 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
   const lines = [...new Set([...profile.roles.flatMap((r) => r.highlights), ...profile.skills.flatMap((s) => s.evidence)])]
     .filter((l) => !isListLine(l))
     .map((line) => ({ line, text: normalizeForMatch(line) }));
-  const wanted = new Set(role.skills.map((rs) => rs.skillId));
-  for (const s of taxonomy) {
-    if (!withImplied(s.id).some((id) => wanted.has(id))) continue;
-    const terms = scanTerms(s.id);
+  const scanned = new Map<string, Evidence[]>();
+  const linesNaming = (skillId: string): Evidence[] => {
+    const cached = scanned.get(skillId);
+    if (cached) return cached;
+    const terms = scanTerms(skillId);
+    const found: Evidence[] = [];
     for (const { line, text } of lines) {
       const hit = terms.filter((t) => containsPhrase(text, t));
-      if (hit.length) add(s.id, { quote: line, listedOnly: learningAbout(line, hit), months: lineMonths(line) });
+      if (hit.length) found.push({ quote: line, listedOnly: learningAbout(line, hit), months: lineMonths(line) });
     }
-  }
+    scanned.set(skillId, found);
+    return found;
+  };
 
   // 3. Certifications on the resume: a held certification shows the skills it tests (met) and touches others (weak).
   //    A plan to sit one counts for nothing. This is only the resume read: a met skill can mark its goal met, never
@@ -454,78 +485,96 @@ export function matchProfile(profile: Profile, role: RoleProfile, now = new Date
       const months = passed ?? found.months;
       // With no pass date the certificate could be ten years old, so it shows the skills it tests only as weak and
       // never lifts an outdated skill to met.
-      for (const id of found.cert.proves) add(id, { quote: c.name, listedOnly: months === null || expired, months });
-      for (const id of found.cert.partial) add(id, { quote: c.name, listedOnly: true, months });
+      for (const id of found.cert.proves) certified.push([id, { quote: c.name, listedOnly: months === null || expired, months }]);
+      for (const id of found.cert.partial) certified.push([id, { quote: c.name, listedOnly: true, months }]);
     }
   }
 
   const fresh = (e: Evidence) => e.months === null || nowMonths - e.months <= OUTDATED_AFTER_YEARS * 12;
-  const classify = (skillId: string): Pick<MatchedSkill, "status" | "resumeQuote"> => {
-    const found = evidence.get(skillId) ?? [];
-    const used = found.filter((e) => !e.listedOnly);
-    const recent = used.find(fresh);
-    if (recent) return { status: "met", resumeQuote: recent.quote };
-    if (used.length > 0) {
-      const latest = used.reduce((a, b) => ((a.months ?? 0) >= (b.months ?? 0) ? a : b));
-      return { status: "outdated", resumeQuote: latest.quote };
+  return (role) => {
+    const evidence = new Map<string, Evidence[]>();
+    const add = (skillId: string, e: Evidence) => {
+      for (const id of withImplied(skillId)) {
+        const list = evidence.get(id);
+        if (list) list.push(e);
+        else evidence.set(id, [e]);
+      }
+    };
+    for (const [id, e] of listed) add(id, e);
+    const wanted = new Set(role.skills.map((rs) => rs.skillId));
+    for (const s of taxonomy) {
+      if (!withImplied(s.id).some((id) => wanted.has(id))) continue;
+      for (const e of linesNaming(s.id)) add(s.id, e);
     }
-    const listed = found.find((e) => e.listedOnly);
-    if (listed) return { status: fresh(listed) ? "weak" : "outdated", resumeQuote: listed.quote };
-    return { status: "missing", resumeQuote: null };
-  };
+    for (const [id, e] of certified) add(id, e);
 
-  const rows: { importance: RoleProfile["skills"][number]["importance"]; row: MatchedSkill }[] = role.skills.map((rs) => ({
-    importance: rs.importance,
-    row: {
-      skillId: rs.skillId,
-      skillName: skillById.get(rs.skillId)?.name ?? rs.skillId,
-      requirement: rs.expectation,
-      postingShare: rs.postingShare,
-      ...classify(rs.skillId),
-    } satisfies MatchedSkill,
-  }));
-  const byImportance = (a: MatchedSkill, b: MatchedSkill) =>
-    (b.postingShare ?? -1) - (a.postingShare ?? -1) || statusRank[a.status] - statusRank[b.status];
+    const classify = (skillId: string): Pick<MatchedSkill, "status" | "resumeQuote"> => {
+      const found = evidence.get(skillId) ?? [];
+      const used = found.filter((e) => !e.listedOnly);
+      const recent = used.find(fresh);
+      if (recent) return { status: "met", resumeQuote: recent.quote };
+      if (used.length > 0) {
+        const latest = used.reduce((a, b) => ((a.months ?? 0) >= (b.months ?? 0) ? a : b));
+        return { status: "outdated", resumeQuote: latest.quote };
+      }
+      const listedOnly = found.find((e) => e.listedOnly);
+      if (listedOnly) return { status: fresh(listedOnly) ? "weak" : "outdated", resumeQuote: listedOnly.quote };
+      return { status: "missing", resumeQuote: null };
+    };
 
-  // A "one of these" group counts once, as its strongest skill (ties go to the one more postings ask for). With none
-  // shown it is one gap under the group's label, suggesting the skill most postings ask for.
-  const groups = skillGroups(role);
-  const groupOf = new Map(groups.flatMap((g) => g.skillIds.map((id) => [id, g] as const)));
-  const strongest = (a: MatchedSkill, b: MatchedSkill) =>
-    statusRank[b.status] - statusRank[a.status] || (b.postingShare ?? -1) - (a.postingShare ?? -1);
-  const collapsed: typeof rows = [];
-  for (const r of rows) {
-    const g = groupOf.get(r.row.skillId);
-    if (!g) {
-      collapsed.push(r);
-      continue;
+    const rows: { importance: RoleProfile["skills"][number]["importance"]; row: MatchedSkill }[] = role.skills.map((rs) => ({
+      importance: rs.importance,
+      row: {
+        skillId: rs.skillId,
+        skillName: skillById.get(rs.skillId)?.name ?? rs.skillId,
+        requirement: rs.expectation,
+        postingShare: rs.postingShare,
+        ...classify(rs.skillId),
+      } satisfies MatchedSkill,
+    }));
+    const byImportance = (a: MatchedSkill, b: MatchedSkill) =>
+      (b.postingShare ?? -1) - (a.postingShare ?? -1) || statusRank[a.status] - statusRank[b.status];
+
+    // A "one of these" group counts once, as its strongest skill (ties go to the one more postings ask for). With none
+    // shown it is one gap under the group's label, suggesting the skill most postings ask for.
+    const groups = skillGroups(role);
+    const groupOf = new Map(groups.flatMap((g) => g.skillIds.map((id) => [id, g] as const)));
+    const strongest = (a: MatchedSkill, b: MatchedSkill) =>
+      statusRank[b.status] - statusRank[a.status] || (b.postingShare ?? -1) - (a.postingShare ?? -1);
+    const collapsed: typeof rows = [];
+    for (const r of rows) {
+      const g = groupOf.get(r.row.skillId);
+      if (!g) {
+        collapsed.push(r);
+        continue;
+      }
+      if (g.skillIds[0] !== r.row.skillId) continue;
+      const members = rows.filter((m) => g.skillIds.includes(m.row.skillId)).map((m) => m.row).sort(strongest);
+      const best = members[0];
+      const met = members.filter((m) => m.status === "met").map((m) => m.skillId);
+      const group = { id: g.id, label: g.label, skillIds: g.skillIds, met };
+      collapsed.push({ importance: "required", row: { ...best, skillName: best.status === "missing" ? g.label : best.skillName, group } });
     }
-    if (g.skillIds[0] !== r.row.skillId) continue;
-    const members = rows.filter((m) => g.skillIds.includes(m.row.skillId)).map((m) => m.row).sort(strongest);
-    const best = members[0];
-    const met = members.filter((m) => m.status === "met").map((m) => m.skillId);
-    const group = { id: g.id, label: g.label, skillIds: g.skillIds, met };
-    collapsed.push({ importance: "required", row: { ...best, skillName: best.status === "missing" ? g.label : best.skillName, group } });
-  }
 
-  // A context skill (communication, problem solving) counts when the resume shows it and is never a gap: keywords
-  // can't judge it, so Practice checks it instead.
-  const scored = (r: MatchedSkill) => r.status === "met" || skillById.get(r.skillId)?.scoring !== "context";
-  const required = collapsed.filter((r) => r.importance === "required" && scored(r.row)).map((r) => r.row);
-  const gaps = required.filter((r) => r.status !== "met").sort(byImportance);
-  const met = required.filter((r) => r.status === "met");
-  return {
-    matcherVersion: MATCHER_VERSION,
-    roleSlug: role.slug,
-    gaps,
-    met,
-    niceToHave: rows.filter((r) => r.importance === "nice_to_have" && scored(r.row)).map((r) => r.row).sort(byImportance),
-    groups: groups.map(({ id, skillIds }) => ({ id, skillIds })),
-    readiness: {
-      requiredTotal: required.length,
-      requiredMet: met.length,
-      estimatedHours: gaps.reduce((sum, g) => sum + HOURS_BY_STATUS[g.status as keyof typeof HOURS_BY_STATUS], 0),
-    },
+    // A context skill (communication, problem solving) counts when the resume shows it and is never a gap: keywords
+    // can't judge it, so Practice checks it instead.
+    const scored = (r: MatchedSkill) => r.status === "met" || skillById.get(r.skillId)?.scoring !== "context";
+    const required = collapsed.filter((r) => r.importance === "required" && scored(r.row)).map((r) => r.row);
+    const gaps = required.filter((r) => r.status !== "met").sort(byImportance);
+    const met = required.filter((r) => r.status === "met");
+    return {
+      matcherVersion: MATCHER_VERSION,
+      roleSlug: role.slug,
+      gaps,
+      met,
+      niceToHave: rows.filter((r) => r.importance === "nice_to_have" && scored(r.row)).map((r) => r.row).sort(byImportance),
+      groups: groups.map(({ id, skillIds }) => ({ id, skillIds })),
+      readiness: {
+        requiredTotal: required.length,
+        requiredMet: met.length,
+        estimatedHours: gaps.reduce((sum, g) => sum + HOURS_BY_STATUS[g.status as keyof typeof HOURS_BY_STATUS], 0),
+      },
+    };
   };
 }
 
@@ -544,5 +593,5 @@ export function taxonomyId(name: string): string | undefined {
  * between moments on the Life line. Ambiguous and very short terms are left out, as in sentences.
  */
 export function skillsNamedIn(text: string): Set<string> {
-  return readTerms(text, safeTermTokens).skillIds;
+  return readTerms(text, safeTerms).skillIds;
 }

@@ -1,5 +1,5 @@
 import { skillGroupMembers } from "@/content";
-import { matchProfile } from "@/lib/gaps/match";
+import { profileMatcher, type MatchResult } from "@/lib/gaps/match";
 import type { GapAnalysis, GapStatus, Profile, RoleProfile } from "@/lib/schemas";
 
 /**
@@ -78,16 +78,21 @@ function gapSkills(gap: GapAnalysis["gaps"][number], members: ReadonlyMap<string
 /**
  * The groups of one saved check: the posting matched against the confirmed profile, set beside the target role's
  * stored gaps. `proved` holds the skills with current accepted proof (an account's only; empty for anyone else).
- * The order within each group follows the posting.
+ * The order within each group follows the posting. `matchRole` is `profileMatcher(profile, now)` when many checks are
+ * read against the same profile, so a long resume is read once rather than once per check (T161).
  */
 export function jobCheckView(
   check: StoredJobCheck,
   profile: Profile,
   target: Pick<GapAnalysis, "gaps">,
   proved: ReadonlySet<string> = new Set(),
-  { now = new Date(), members = skillGroupMembers }: { now?: Date; members?: ReadonlyMap<string, string[]> } = {},
+  {
+    now = new Date(),
+    members = skillGroupMembers,
+    matchRole,
+  }: { now?: Date; members?: ReadonlyMap<string, string[]>; matchRole?: (role: RoleProfile) => MatchResult } = {},
 ): JobCheckView {
-  const match = matchProfile(profile, postingRole(check, now), now);
+  const match = (matchRole ?? profileMatcher(profile, now))(postingRole(check, now));
   const met = new Map(match.met.map((m) => [m.skillId, m]));
   const gaps = new Map(match.gaps.map((g) => [g.skillId, g]));
   const targetGapSkills = new Set(target.gaps.flatMap((g) => gapSkills(g, members)));

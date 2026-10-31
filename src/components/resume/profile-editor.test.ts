@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Profile } from "@/lib/schemas";
-import { profileProblems } from "./profile-editor";
+import { EDITOR_SECTIONS, profileProblems, sectionSummary, sectionWithProblem } from "./profile-editor";
 
 const base: Profile = {
   headline: null,
@@ -44,3 +44,29 @@ describe("profileProblems", () => {
     ]);
   });
 });
+
+describe("folded editor sections (C23)", () => {
+  it("sums up each closed section in one line", () => {
+    const p: Profile = {
+      ...base,
+      headline: "Data Analyst",
+      skills: [
+        { name: "SQL", lastUsed: null, evidence: [] },
+        { name: " ", lastUsed: null, evidence: [] },
+      ],
+      education: [...base.education, { qualification: "MBA", institution: "Example School", year: null }],
+    };
+    expect(EDITOR_SECTIONS.map((s) => sectionSummary(s, p, "3"))).toEqual(["Data Analyst · 3 years", "1 role", "1 skill", "2 degrees", "No certifications yet"]);
+    expect(sectionSummary("about", base, " ")).toBe("No headline yet");
+    expect(sectionSummary("about", base, "1")).toBe("No headline yet · 1 year");
+  });
+
+  it("opens the section that stops the save", () => {
+    expect(sectionWithProblem(base, false)).toBeNull();
+    expect(sectionWithProblem(base, true)).toBe("about");
+    expect(sectionWithProblem({ ...base, roles: [{ ...base.roles[0], employer: "" }] }, false)).toBe("work");
+    expect(sectionWithProblem({ ...base, education: [{ qualification: "MBA", institution: "", year: null }] }, false)).toBe("education");
+    expect(sectionWithProblem({ ...base, certifications: [{ name: "CISSP", earned: "March 2024", expires: null }] }, false)).toBe("certifications");
+  });
+});
+

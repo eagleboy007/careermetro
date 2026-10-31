@@ -1,7 +1,8 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState, type RefObject } from "react";
+import { FOLD_SHOWN, foldItems } from "@/lib/fold";
 import { LIST_PAGE_SIZE } from "@/lib/schemas/constants";
 
 /**
@@ -82,3 +83,41 @@ export function ShowMore({
     </div>
   );
 }
+
+export type Fold<T> = { shown: T[]; hidden: number; open: boolean; toggle: () => void };
+
+/**
+ * A section folded to its first `first` items (C23, handoff section 11): "Show N more" opens the rest, "Show less" folds
+ * it again. Once opened it stays open while the page is up; nothing folds by itself. Pass the items newest first.
+ */
+export function useFold<T>(items: readonly T[], first = FOLD_SHOWN): Fold<T> {
+  const [open, setOpen] = useState(false);
+  return { ...foldItems(items, open, first), open, toggle: () => setOpen((o) => !o) };
+}
+
+/**
+ * The control under a folded section (C23): an outlined ink pill with a chevron, never cobalt (opening a list is not
+ * progress). Nothing shows at `first` items or fewer. It names what it opens (`noun`, read by screen readers only, so
+ * two sections never share a button name), says whether the section is open with aria-expanded, points at the list
+ * with aria-controls, and keeps focus on itself: the button stays where it was, under the third item.
+ */
+export function FoldToggle<T>({ fold, noun, controls, className = "flex" }: { fold: Fold<T>; noun: string; controls?: string; className?: string }) {
+  if (fold.hidden <= 0) return null;
+  const Icon = fold.open ? ChevronUp : ChevronDown;
+  return (
+    <div className={className}>
+      <button
+        type="button"
+        aria-expanded={fold.open}
+        aria-controls={controls}
+        onClick={fold.toggle}
+        className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-ink bg-surface px-3.5 py-2 text-[0.84rem] font-medium text-ink hover:bg-surface-2"
+      >
+        <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+        {fold.open ? "Show less" : `Show ${fold.hidden} more`}
+        <span className="sr-only"> {noun}</span>
+      </button>
+    </div>
+  );
+}
+

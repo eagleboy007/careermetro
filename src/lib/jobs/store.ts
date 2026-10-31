@@ -8,7 +8,7 @@ import { roleProfiles } from "@/content";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { buildGapAnalysis } from "@/lib/gaps/analysis";
-import { matchProfile } from "@/lib/gaps/match";
+import { matchProfile, profileMatcher } from "@/lib/gaps/match";
 import { indiaToday, lockPerson } from "@/lib/goals/store";
 import { jobTextHashKey } from "@/lib/hash-keys";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
@@ -281,7 +281,8 @@ export async function jobChecksForPage(
   const resume = await getResumeForOwner(resumeId, owner, db);
   if (!resume?.confirmed) return [];
   const [checks, proved] = await Promise.all([listJobChecks(resumeId, owner, roleSlug, db), provedSkills(owner, db)]);
-  return checks.map((c) => jobCheckView(c, resume.profile, target, proved, { now }));
+  const matchRole = profileMatcher(resume.profile, now);
+  return checks.map((c) => jobCheckView(c, resume.profile, target, proved, { now, matchRole }));
 }
 
 /* "Add as my goal", "Plan for this job" and "Remove this check" (role-suggest-plan.md part B, part 2) ------------- */
