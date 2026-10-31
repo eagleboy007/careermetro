@@ -2741,17 +2741,6 @@
     "free": true
   },
   {
-    "title": "Autopsy user guide",
-    "url": "https://sleuthkit.org/autopsy/docs/user-docs/latest/",
-    "provider": "The Sleuth Kit",
-    "kind": "docs",
-    "skillIds": [
-      "digital-forensics"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "RE101: reverse engineering workshop",
     "url": "https://malwareunicorn.org/workshops/re101.html",
     "provider": "Malware Unicorn",
@@ -7985,17 +7974,6 @@
     "free": true
   },
   {
-    "title": "Mosquitto documentation",
-    "url": "https://mosquitto.org/documentation/",
-    "provider": "Eclipse Mosquitto",
-    "kind": "docs",
-    "skillIds": [
-      "iot-protocols"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "RFC 7252: The Constrained Application Protocol (CoAP)",
     "url": "https://rfc-editor.org/rfc/rfc7252",
     "provider": "IETF",
@@ -12473,17 +12451,6 @@
       "talend"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Autopsy user documentation",
-    "url": "https://sleuthkit.org/autopsy/docs/user-docs/4.23.0/pages.html",
-    "provider": "Sleuth Kit",
-    "kind": "docs",
-    "skillIds": [
-      "forensic-tool-suites"
-    ],
-    "minutes": 120,
     "free": true
   },
   {
