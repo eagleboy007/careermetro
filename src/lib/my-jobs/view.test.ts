@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { countdownWords, daysUntil, interviewWhen, leadLine, leadSkills, minuteValue } from "./view";
+import { countdownWords, daysUntil, gapCount, interviewWhen, leadLine, leadSkills, minuteValue, nowDate } from "./view";
 
 describe("the interview in IST (handoff 12m)", () => {
   const at = "2026-10-30T05:00:00.000Z"; // 10:30 IST on Friday 30 October
@@ -50,5 +50,34 @@ describe("the still-open skills that lead today's ride (C20)", () => {
     expect(leadSkills(open, [])).toEqual([]);
     expect(leadSkills([], ["siem"])).toEqual([]);
     expect(leadLine([])).toBeNull();
+  });
+});
+
+describe("the folded My jobs row on a phone (C24)", () => {
+  const base = { status: "saved" as const, savedAt: "2026-10-27T06:00:00.000Z", appliedAt: null, closedAt: null, interviewAt: null };
+
+  it("shows the one date that matters now", () => {
+    expect(nowDate(base)).toEqual({ label: "Saved", day: "27 Oct" });
+    expect(nowDate({ ...base, status: "applied", appliedAt: "2026-10-21T06:00:00.000Z" })).toEqual({ label: "Applied", day: "21 Oct" });
+    expect(nowDate({ ...base, status: "interview", appliedAt: "2026-10-21T06:00:00.000Z", interviewAt: "2026-10-30T05:00:00.000Z" })).toEqual({
+      label: "Interview",
+      day: "Fri 30 Oct, 10:30",
+    });
+  });
+
+  it("shows a closed row's status and day, never its old interview", () => {
+    const closed = { ...base, appliedAt: "2026-10-21T06:00:00.000Z", interviewAt: "2026-10-30T05:00:00.000Z", closedAt: "2026-10-24T06:00:00.000Z" };
+    expect(nowDate({ ...closed, status: "no" })).toEqual({ label: "Not this time", day: "24 Oct" });
+    expect(nowDate({ ...closed, status: "withdrawn" })).toEqual({ label: "Withdrawn", day: "24 Oct" });
+    expect(nowDate({ ...closed, status: "no", closedAt: null })).toEqual({ label: "Applied", day: "21 Oct" });
+  });
+
+  it("shows nothing without a date", () => {
+    expect(nowDate({ ...base, savedAt: null })).toBeNull();
+  });
+
+  it("counts the gaps in words", () => {
+    const gap = { status: "missing" as const, name: "SQL" };
+    expect([[], [gap], [gap, gap]].map((open) => gapCount({ open }))).toEqual(["no gaps", "1 gap", "2 gaps"]);
   });
 });

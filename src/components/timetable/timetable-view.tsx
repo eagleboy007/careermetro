@@ -22,7 +22,7 @@ import {
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
-import { ShowMore, usePaged } from "@/components/ui/show-more";
+import { ShowMore, usePaged, usePhonePage } from "@/components/ui/show-more";
 import { Switch } from "@/components/ui/switch";
 import { eventIcs } from "@/lib/calendar/ics";
 import type { EventCard, EventRsvpState, TimetableFilter, TimetableView as View, TimetableWhy } from "@/lib/schemas";
@@ -86,7 +86,8 @@ export function TimetableView({
   const shown = useMemo(() => shownGroups(view.groups, { filter, online, far, radiusKm: choices.radiusKm }), [view, filter, online, far, choices.radiusKm]);
   // One list for paging, each card with its group, so a heading shows above the first card of its group on the page.
   const rows = useMemo(() => shown.groups.flatMap((g) => g.events.map((e, i) => ({ e, group: i === 0 ? g.label : null }))), [shown]);
-  const paged = usePaged(rows, `${filter}-${online}-${far}`);
+  const page = usePhonePage();
+  const paged = usePaged(rows, `${filter}-${online}-${far}-${page}`, page);
   const limitKm = far ? Math.max(choices.radiusKm, FAR_RADIUS_KM) : choices.radiusKm;
   const canWiden = view.city !== null && choices.radiusKm < FAR_RADIUS_KM;
 
