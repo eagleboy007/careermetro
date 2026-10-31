@@ -17151,7 +17151,8 @@
     "provider": "SEBI",
     "kind": "docs",
     "skillIds": [
-      "company-management-interactions"
+      "company-management-interactions",
+      "sebi-lodr-compliance"
     ],
     "minutes": 45,
     "free": true
@@ -17477,7 +17478,9 @@
     "provider": "Ministry of Corporate Affairs",
     "kind": "docs",
     "skillIds": [
-      "companies-act-compliance"
+      "companies-act-compliance",
+      "statutory-registers",
+      "secretarial-audit-support"
     ],
     "minutes": 120,
     "free": true
@@ -17500,7 +17503,9 @@
     "kind": "docs",
     "skillIds": [
       "companies-act-compliance",
-      "board-meeting-administration"
+      "board-meeting-administration",
+      "statutory-registers",
+      "secretarial-audit-support"
     ],
     "minutes": 1200,
     "free": true

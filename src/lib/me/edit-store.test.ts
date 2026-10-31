@@ -76,7 +76,6 @@ const story = {
   boxes: ["Problem solving", "Ownership"],
   goalId: null as string | null,
 };
-const missing = "00000000-0000-4000-8000-00000000dead";
 
 describe.skipIf(!db)("Me editing (database)", () => {
   const run = `meedit-${Date.now()}`;
