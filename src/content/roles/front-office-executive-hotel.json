@@ -1,0 +1,111 @@
+{
+  "slug": "front-office-executive-hotel",
+  "title": "Front Office Executive (Hotel)",
+  "summary": "Runs the hotel front desk: checking guests in and out, handling reservations, settling bills and answering guest requests. Sits in the Rooms team under the front office manager and works closely with housekeeping and reservations.",
+  "dailyDuties": [
+    "Check guests in and out and assign rooms",
+    "Update guest profiles, room moves and billing in Opera or IDS",
+    "Take and amend room reservations and group rooming lists",
+    "Settle guest folios and close the cashier shift",
+    "Submit C-Forms for foreign guests and keep the arrival and departure register",
+    "Coordinate with housekeeping on room readiness for arrivals",
+    "Hand over the shift log and open guest requests"
+  ],
+  "typicalTitles": [
+    "Front Office Associate",
+    "Guest Service Associate - Front Office",
+    "Guest Service Officer - Front Office",
+    "Front Desk Agent - Hotel",
+    "Front Office Assistant - Hotel",
+    "Hotel Receptionist",
+    "Night Auditor - Hotel"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "guest-check-in-check-out",
+      "importance": "required",
+      "expectation": "Check guests in and out quickly, including early arrivals, room moves and late check-outs",
+      "postingShare": null
+    },
+    {
+      "skillId": "hotel-pms-operations",
+      "importance": "required",
+      "expectation": "Work daily in a hotel PMS such as Opera or IDS for arrivals, profiles and billing",
+      "postingShare": null
+    },
+    {
+      "skillId": "hotel-reservations-handling",
+      "importance": "required",
+      "expectation": "Take, change and cancel room reservations and handle group rooming lists",
+      "postingShare": null
+    },
+    {
+      "skillId": "front-office-cashiering",
+      "importance": "required",
+      "expectation": "Post charges, settle guest folios and close the cashier shift without differences",
+      "postingShare": null
+    },
+    {
+      "skillId": "night-audit",
+      "importance": "required",
+      "expectation": "Understand night audit steps and the daily revenue reports it produces",
+      "postingShare": null
+    },
+    {
+      "skillId": "frro-c-form-compliance",
+      "importance": "required",
+      "expectation": "Submit C-Forms for foreign guests on time and keep the arrival and departure register current",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-query-resolution",
+      "importance": "required",
+      "expectation": "Resolve guest requests and complaints at the desk and on the phone",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Speak clearly with guests in English and at least one Indian language",
+      "postingShare": null
+    },
+    {
+      "skillId": "cross-selling-upselling",
+      "importance": "nice_to_have",
+      "expectation": "Offer room upgrades and hotel services at check-in",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "nice_to_have",
+      "expectation": "Calm upset guests and hand over to the duty manager when needed",
+      "postingShare": null
+    },
+    {
+      "skillId": "lost-and-found-handling",
+      "importance": "nice_to_have",
+      "expectation": "Log and return guest lost property",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Keep simple shift reports in Excel",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions (hotel group careers pages) and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

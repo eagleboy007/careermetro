@@ -265,6 +265,24 @@
       "mechanical-design-engineer",
       "site-engineer-civil",
       "billing-quantity-engineer-civil"
+    ],
+    "legal": [
+      "corporate-legal-associate",
+      "contract-management-specialist",
+      "regulatory-compliance-officer",
+      "litigation-paralegal"
+    ],
+    "healthcare-admin": [
+      "medical-coder",
+      "medical-billing-specialist",
+      "hospital-operations-executive",
+      "health-insurance-claims-executive"
+    ],
+    "hospitality": [
+      "front-office-executive-hotel",
+      "food-beverage-executive",
+      "hotel-revenue-manager",
+      "housekeeping-supervisor"
     ]
   },
   "neighbours": [
@@ -399,6 +417,30 @@
     [
       "core-engineering",
       "quality"
+    ],
+    [
+      "legal",
+      "finance"
+    ],
+    [
+      "legal",
+      "operations"
+    ],
+    [
+      "healthcare-admin",
+      "operations"
+    ],
+    [
+      "healthcare-admin",
+      "finance"
+    ],
+    [
+      "hospitality",
+      "operations"
+    ],
+    [
+      "hospitality",
+      "sales"
     ]
   ],
   "alsoNear": [

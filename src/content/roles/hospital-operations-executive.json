@@ -1,0 +1,124 @@
+{
+  "slug": "hospital-operations-executive",
+  "title": "Hospital Operations Executive",
+  "summary": "Hospital operations executives keep patients moving smoothly through an Indian hospital, from OPD registration and admission to bed allotment and discharge. They report to the operations manager and coordinate daily with nursing, billing, doctors and support teams.",
+  "dailyDuties": [
+    "Coordinate inpatient admissions and discharges with ward teams",
+    "Prepare the bed status report and allot beds",
+    "Supervise OPD registration and doctor appointments",
+    "Check entries in the hospital information system",
+    "Resolve patient and attendant complaints on the floor",
+    "Maintain records needed for NABH audits",
+    "Send the daily MIS on admissions, discharges and occupancy"
+  ],
+  "typicalTitles": [
+    "Executive - Hospital Operations",
+    "Front Office Executive - Hospital",
+    "OPD Executive",
+    "Patient Care Coordinator",
+    "Admission Desk Executive",
+    "Patient Services Executive - Hospital",
+    "Floor Coordinator - Hospital",
+    "Bed Manager - Hospital"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "patient-admission-discharge",
+      "importance": "required",
+      "expectation": "Coordinate inpatient admissions and discharges and keep discharge time low",
+      "postingShare": null
+    },
+    {
+      "skillId": "hospital-bed-management",
+      "importance": "required",
+      "expectation": "Track bed status and allot beds to emergency and planned admissions",
+      "postingShare": null
+    },
+    {
+      "skillId": "opd-front-office-operations",
+      "importance": "required",
+      "expectation": "Run OPD registration, appointments and front desk flow",
+      "postingShare": null
+    },
+    {
+      "skillId": "his-software",
+      "importance": "required",
+      "expectation": "Record registrations, admissions and transfers in the hospital information system",
+      "postingShare": null
+    },
+    {
+      "skillId": "nabh-accreditation",
+      "importance": "required",
+      "expectation": "Keep records and processes in line with NABH standards and audits",
+      "postingShare": null
+    },
+    {
+      "skillId": "operations-mis-reporting",
+      "importance": "required",
+      "expectation": "Prepare daily MIS on admissions, discharges and occupancy",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-query-resolution",
+      "importance": "required",
+      "expectation": "Resolve patient and attendant complaints on the floor",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Coordinate nursing, billing, pharmacy and housekeeping teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain processes clearly to patients, families and doctors",
+      "postingShare": null
+    },
+    {
+      "skillId": "hospital-patient-billing",
+      "importance": "nice_to_have",
+      "expectation": "Check IPD and OPD bills and estimates before discharge",
+      "postingShare": null
+    },
+    {
+      "skillId": "cashless-preauthorisation",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate with the insurance desk on cashless approvals",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "nice_to_have",
+      "expectation": "Handle escalations from patients and VIP cases",
+      "postingShare": null
+    },
+    {
+      "skillId": "medical-terminology-anatomy",
+      "importance": "nice_to_have",
+      "expectation": "Understand common medical terms used on wards",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Maintain occupancy and turnaround trackers in spreadsheets",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

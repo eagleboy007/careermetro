@@ -18,6 +18,9 @@ export const FIELDS = [
   { file: "roles-other.csv", name: "Software, hardware, delivery and marketing", families: ["backend", "frontend-mobile", "hardware", "delivery", "marketing"] },
   { file: "roles-business.csv", name: "Sales, finance, HR and operations", families: ["sales", "finance", "hr", "operations"] },
   { file: "roles-core-engineering.csv", name: "Core engineering (mechanical, electrical and civil)", families: ["core-engineering"] },
+  { file: "roles-legal.csv", name: "Legal and compliance", families: ["legal"] },
+  { file: "roles-healthcare-admin.csv", name: "Healthcare administration (coding, billing, hospital operations and claims)", families: ["healthcare-admin"] },
+  { file: "roles-hospitality.csv", name: "Hospitality (hotels, food and beverage)", families: ["hospitality"] },
 ];
 
 export const ANSWER_COLUMNS = ["Agree (yes / no)", "Change to", "Comment"];
@@ -27,7 +30,7 @@ const IMPORTANCE = { required: "Required", nice_to_have: "Nice to have" };
 
 /**
  * Changes Development made to a drafted role after an eval showed a problem, or when a new profile took over some of its
- * titles (F0, F1 and TG1, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
+ * titles (F0, F1, TG1 and B5, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
  */
 export const SIGN_OFF = [
   { ref: "export-import-executive#years", note: "Starts at 1 year (was 2): EXIM and export documentation executives are commonly hired at 0-2 years." },
@@ -39,6 +42,8 @@ export const SIGN_OFF = [
   { ref: "site-reliability-engineer#titles", note: "\"Production Engineer\" removed: in India it usually means a manufacturing role, now its own profile." },
   { ref: "vlsi-design-engineer#titles", note: "\"Design Verification Engineer\", \"ASIC Verification Engineer\" and \"Verification Engineer\" removed: chip verification is now its own profile (Design Verification Engineer)." },
   { ref: "it-service-delivery-manager#title", note: "Grouped with infrastructure and cloud roles (drafted under delivery): its skills are IT operations ones (ITSM, major incidents, SLAs), shared with application support and technical account managers." },
+  { ref: "front-office-executive-hotel#skill:cross-selling-upselling", note: "Nice to have (was Required): none of the hotel front office posts the draft is built on ask for upselling." },
+  { ref: "corporate-legal-associate#skill:clm-platforms", note: "New Nice to have skill: in-house legal teams route, approve and store contracts in a contract management tool." },
 ];
 const signOffNote = new Map(SIGN_OFF.map((c) => [c.ref, c.note]));
 

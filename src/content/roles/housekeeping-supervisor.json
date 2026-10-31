@@ -1,0 +1,111 @@
+{
+  "slug": "housekeeping-supervisor",
+  "title": "Housekeeping Supervisor",
+  "summary": "Makes sure hotel guest rooms and public areas are clean, inspected and ready on time. Sits in the Rooms team under the executive housekeeper and leads room attendants, housemen and the linen room on a shift.",
+  "dailyDuties": [
+    "Allocate rooms to attendants at the shift briefing",
+    "Inspect cleaned rooms and release them in the PMS",
+    "Supervise lobby, restroom and back-of-house cleaning",
+    "Count linen and amenities against par stock",
+    "Check chemical storage, dilution and staff safety gear",
+    "Log and store lost and found items",
+    "Prepare duty rosters for the housekeeping team"
+  ],
+  "typicalTitles": [
+    "Housekeeping Executive - Hotel",
+    "Floor Supervisor - Housekeeping",
+    "Housekeeping Team Leader",
+    "Public Area Supervisor",
+    "Linen Room Supervisor",
+    "Deputy Housekeeper",
+    "Assistant Housekeeper - Hotel"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "room-inspection-standards",
+      "importance": "required",
+      "expectation": "Inspect cleaned rooms against the brand checklist and release them on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "linen-inventory-control",
+      "importance": "required",
+      "expectation": "Control linen, uniforms and guest amenities against par stock",
+      "postingShare": null
+    },
+    {
+      "skillId": "public-area-cleaning",
+      "importance": "required",
+      "expectation": "Plan and supervise cleaning of the lobby, restrooms and back of house",
+      "postingShare": null
+    },
+    {
+      "skillId": "housekeeping-chemical-safety",
+      "importance": "required",
+      "expectation": "Store, dilute and use cleaning chemicals safely and train staff on them",
+      "postingShare": null
+    },
+    {
+      "skillId": "lost-and-found-handling",
+      "importance": "required",
+      "expectation": "Record, store and return guest lost property by procedure",
+      "postingShare": null
+    },
+    {
+      "skillId": "hotel-pms-operations",
+      "importance": "required",
+      "expectation": "Update room status and discrepancies in the housekeeping module of the PMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "store-team-rostering-training",
+      "importance": "required",
+      "expectation": "Make duty rosters and allocate rooms to attendants each shift",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead and coach room attendants and housemen on the floor",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-query-resolution",
+      "importance": "nice_to_have",
+      "expectation": "Handle guest requests for amenities and room fixes",
+      "postingShare": null
+    },
+    {
+      "skillId": "facility-vendor-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate laundry, pest control and cleaning vendors",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Keep inventory and inspection records in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "training-delivery-facilitation",
+      "importance": "nice_to_have",
+      "expectation": "Train new room attendants on cleaning steps",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions (hotel group careers pages) and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

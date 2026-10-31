@@ -1,0 +1,124 @@
+{
+  "slug": "medical-billing-specialist",
+  "title": "Medical Billing Specialist",
+  "summary": "Medical billing specialists make sure US hospitals and clinics get paid by insurers, by entering charges, posting payments and chasing unpaid or denied claims (accounts receivable, or AR). They sit in revenue cycle teams at Indian healthcare outsourcing firms, often on US night shifts.",
+  "dailyDuties": [
+    "Call US insurance payers to follow up on unpaid claims",
+    "Analyse denied claims and send corrected claims or appeals",
+    "Enter charges and submit claims through the clearinghouse",
+    "Post payments and read EOBs and ERAs for underpayments",
+    "Verify patient eligibility and benefits before visits",
+    "Update claim notes in the practice management system",
+    "Report daily AR and collections to the team lead"
+  ],
+  "typicalTitles": [
+    "AR Caller - US Healthcare",
+    "AR Associate - RCM",
+    "Denial Management Executive",
+    "Payment Posting Executive",
+    "Charge Entry Executive",
+    "Medical Billing Executive",
+    "Senior AR Executive - Medical Billing",
+    "RCM Executive - US Healthcare"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "ar-follow-up-rcm",
+      "importance": "required",
+      "expectation": "Follow up with US insurance payers on unpaid and pending claims",
+      "postingShare": null
+    },
+    {
+      "skillId": "denial-management",
+      "importance": "required",
+      "expectation": "Work denials, find the root cause and file corrected claims or appeals",
+      "postingShare": null
+    },
+    {
+      "skillId": "charge-entry-claim-submission",
+      "importance": "required",
+      "expectation": "Enter charges and submit clean claims on CMS-1500 or UB-04",
+      "postingShare": null
+    },
+    {
+      "skillId": "payment-posting-eob",
+      "importance": "required",
+      "expectation": "Post payments and read EOBs and ERAs for underpayments",
+      "postingShare": null
+    },
+    {
+      "skillId": "insurance-eligibility-verification",
+      "importance": "required",
+      "expectation": "Verify patient eligibility, benefits and prior authorisation",
+      "postingShare": null
+    },
+    {
+      "skillId": "us-healthcare-payers",
+      "importance": "required",
+      "expectation": "Know Medicare, Medicaid and commercial payer rules and filing limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "practice-management-systems",
+      "importance": "required",
+      "expectation": "Work claims in a practice management or billing system",
+      "postingShare": null
+    },
+    {
+      "skillId": "hipaa-phi-handling",
+      "importance": "required",
+      "expectation": "Handle patient health information under HIPAA rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Speak clear English on US-shift calls with payer representatives",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpt-hcpcs-coding",
+      "importance": "nice_to_have",
+      "expectation": "Read CPT and HCPCS codes on claims to spot coding denials",
+      "postingShare": null
+    },
+    {
+      "skillId": "icd-10-cm-coding",
+      "importance": "nice_to_have",
+      "expectation": "Read diagnosis codes on claims to spot coding denials",
+      "postingShare": null
+    },
+    {
+      "skillId": "operations-mis-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Prepare daily AR and collections reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Use spreadsheets for AR ageing and reconciliation",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "mos-excel-associate",
+      "importance": "optional",
+      "why": "Shows spreadsheet skill for AR ageing and posting reports"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -2798,5 +2798,281 @@
   {
     "skillId": "test-automation-strategy",
     "task": "For a synthetic web and mobile product with 1,200 manual regression cases, write a test automation strategy: what to automate at unit, API and UI level, tool choice with reasons, a 12-month roadmap, CI integration and an ROI estimate. Share the document."
+  },
+  {
+    "skillId": "ar-follow-up-rcm",
+    "task": "Work 10 synthetic unpaid claims: for each write the call or portal notes, the reason the claim is open and the next action, then prioritise the list by value and timely filing date. Share the sheet."
+  },
+  {
+    "skillId": "banquet-event-operations",
+    "task": "Write a banquet event order for a synthetic 250-guest conference lunch: setup, menu, timings, staffing and AV, plus a function sheet for the service team. Share it."
+  },
+  {
+    "skillId": "cashless-preauthorisation",
+    "task": "Process three synthetic cashless pre-authorisation requests: check policy, sum insured, waiting periods and package rates, decide approve, query or deny, and write the reason. Share the sheet."
+  },
+  {
+    "skillId": "cause-list-tracking",
+    "task": "Build a hearing tracker for 20 synthetic matters across three courts in a spreadsheet, with how you check daily cause lists, flag listed matters and send a morning update to counsel. Share the tracker and a sample update."
+  },
+  {
+    "skillId": "charge-entry-claim-submission",
+    "task": "Fill a CMS-1500 claim for a synthetic office visit with two procedures from a superbill, check it against a scrubbing checklist and list three errors that would make it reject. Share it."
+  },
+  {
+    "skillId": "clm-platforms",
+    "task": "Design the setup of a contract lifecycle tool for a synthetic company: contract types, intake form fields, approval workflow by value, clause library and renewal alerts, as a one-page diagram and a field list. Share it."
+  },
+  {
+    "skillId": "coding-audit-qa",
+    "task": "Audit 20 synthetic coded charts (write the codes with a few planted errors), log each error by type, work out the accuracy score and write three feedback points for the coder. Share the audit sheet."
+  },
+  {
+    "skillId": "coding-guidelines-compliance",
+    "task": "For ten synthetic code pairs, check NCCI edits, decide if a modifier such as 25 or 59 is allowed, and write one line on why. Share the sheet and a short note on the rules you used."
+  },
+  {
+    "skillId": "commercial-contract-drafting",
+    "task": "Draft a five-page services agreement for a synthetic Indian IT vendor and a retail client: scope, fees, term, confidentiality, IP, liability cap, indemnity, termination and governing law. Add a one-page note on the three clauses you would fight hardest for. Share it."
+  },
+  {
+    "skillId": "compliance-policy-management",
+    "task": "Draft a four-page compliance policy for a synthetic regulated firm: scope, roles, compliance testing, breach reporting, training and review cycle, plus a one-page note on how it maps to the regulator's rules. Share it."
+  },
+  {
+    "skillId": "compliance-testing-monitoring",
+    "task": "Write a compliance testing plan for a synthetic NBFC's KYC process: what to test, sample size, test steps, a filled test sheet for 10 sample files and a findings summary with ratings. Share it."
+  },
+  {
+    "skillId": "contract-abstraction",
+    "task": "Abstract three synthetic commercial contracts into a standard template: parties, dates, value, term, renewal, termination, liability cap, governing law and unusual clauses. Share the abstracts and the template."
+  },
+  {
+    "skillId": "contract-obligation-tracking",
+    "task": "From five synthetic contracts (write one-paragraph summaries), build an obligations register in a spreadsheet: each obligation, owner, due date, renewal and notice dates, with a 90-day alert view. Share it."
+  },
+  {
+    "skillId": "contract-redlining-review",
+    "task": "Take a synthetic one-sided vendor NDA or MSA (write or pick a sample), redline it for your company with tracked changes and a comment on each change, and list the points you would concede and the ones you would not. Share the marked-up file."
+  },
+  {
+    "skillId": "court-efiling-registry",
+    "task": "Write a step-by-step e-filing checklist for a synthetic writ petition in a High Court: documents, formatting, court fee, vakalatnama, scanning rules and how you would clear three common registry objections. Share it."
+  },
+  {
+    "skillId": "cpt-hcpcs-coding",
+    "task": "Code five synthetic procedure and supply notes with CPT and HCPCS Level II codes and any modifiers, with one line on why for each. Share the coding sheet."
+  },
+  {
+    "skillId": "denial-management",
+    "task": "Analyse 30 synthetic denied claims by CARC reason code in a spreadsheet, chart the top causes, write one appeal letter for a medical necessity denial and one prevention step per top cause. Share it."
+  },
+  {
+    "skillId": "em-coding",
+    "task": "Level five synthetic E/M visit notes (new and established patients) using the 2021 office visit rules on medical decision making or time, showing your reasoning for each level. Share the sheet."
+  },
+  {
+    "skillId": "fnb-service-operations",
+    "task": "Write a service sequence for a synthetic all-day dining restaurant from greeting to billing, with timing standards, and a pre-shift briefing for eight staff on a busy Sunday brunch. Share it."
+  },
+  {
+    "skillId": "front-office-cashiering",
+    "task": "Settle three synthetic guest folios in a spreadsheet (split bill, advance, foreign currency payment) and prepare a cashier shift closing report that balances. Share it."
+  },
+  {
+    "skillId": "frro-c-form-compliance",
+    "task": "Write a step-by-step note on filing Form C for a synthetic foreign guest within 24 hours: documents, fields, who files and how you check the arrival and departure register. Share it."
+  },
+  {
+    "skillId": "fssai-food-safety-hygiene",
+    "task": "Write a daily food safety checklist for a synthetic hotel kitchen and restaurant based on FSSAI Schedule 4: temperatures, storage, personal hygiene and cleaning, with a corrective action log. Share it."
+  },
+  {
+    "skillId": "guest-check-in-check-out",
+    "task": "Write a check-in and check-out script and checklist for a synthetic 120-room hotel, including ID checks, upsell, early arrival and late check-out handling. Record a two-minute role play or write it out. Share it."
+  },
+  {
+    "skillId": "health-claims-fraud-detection",
+    "task": "Review 20 synthetic health claims for fraud triggers (early claims, inflated bills, repeat hospitals) in a spreadsheet, score each, and write referral notes for the two worst. Share it."
+  },
+  {
+    "skillId": "hipaa-phi-handling",
+    "task": "Write a one-page PHI handling checklist for a synthetic medical coding team in India: the 18 identifiers, clean desk, screen and device rules, and what to do if PHI is emailed by mistake. Share it."
+  },
+  {
+    "skillId": "his-software",
+    "task": "For a synthetic HIS, write a step-by-step user guide for registering a patient, raising an IP admission and closing a discharge, with screenshots replaced by field lists. Share it."
+  },
+  {
+    "skillId": "hospital-bed-management",
+    "task": "From a synthetic week of admissions and discharges for four wards, build a bed occupancy and turnaround report in a spreadsheet and write a one-page plan for peak days. Share it."
+  },
+  {
+    "skillId": "hospital-network-tariffs",
+    "task": "Compare package rates for five common procedures across three synthetic network hospitals in a spreadsheet, flag outliers against a benchmark, and write a one-page negotiation brief. Share it."
+  },
+  {
+    "skillId": "hotel-demand-forecasting",
+    "task": "Build a 30-day rooms forecast for a synthetic hotel from on-the-books and last year's pickup in a spreadsheet, chart the pace, and write what you would do on the three weakest days. Share it."
+  },
+  {
+    "skillId": "hotel-pms-operations",
+    "task": "Write a shift guide for a synthetic hotel's property management system: making a reservation, check-in, room move, posting a charge and running the arrivals report, as numbered steps. Share it."
+  },
+  {
+    "skillId": "hotel-reservations-handling",
+    "task": "Handle a synthetic group booking of 30 rooms for a wedding: rooming list, room block, rates, cut-off date and a confirmation email, plus how you would handle five late cancellations. Share it."
+  },
+  {
+    "skillId": "hotel-revenue-pricing",
+    "task": "Set rates for a synthetic 150-room city hotel for the next four weeks in a spreadsheet: base rates by day, length of stay rules for two events and a note on why. Share it."
+  },
+  {
+    "skillId": "housekeeping-chemical-safety",
+    "task": "Write a chemical safety sheet for five common housekeeping chemicals: use, dilution, storage, PPE and first aid, plus a one-page training plan for new room attendants. Share it."
+  },
+  {
+    "skillId": "icd-10-cm-coding",
+    "task": "Code five synthetic outpatient notes (write or use public samples) with ICD-10-CM diagnosis codes, citing the guideline behind each choice and sequencing, in a coding sheet. Share it."
+  },
+  {
+    "skillId": "icd-10-pcs-coding",
+    "task": "Code two synthetic inpatient discharge summaries with ICD-10-CM and ICD-10-PCS codes, build each PCS code character by character with reasons, and note the likely MS-DRG. Share the sheet."
+  },
+  {
+    "skillId": "indian-contract-law",
+    "task": "Write a two-page note on a synthetic dispute (a supplier misses delivery dates): which sections of the Indian Contract Act and Specific Relief Act apply, what remedies the buyer has, and what the contract should have said. Share it."
+  },
+  {
+    "skillId": "insurance-eligibility-verification",
+    "task": "Verify benefits for three synthetic patients from given plan details: active coverage, copay, deductible left, prior auth needs, and write the note you would leave in the system. Share it."
+  },
+  {
+    "skillId": "legal-document-review",
+    "task": "Review 20 synthetic emails and documents (write them) for a contract dispute, code each for relevance, privilege and key issues in a review log, and write a one-page summary of the hot documents. Share it."
+  },
+  {
+    "skillId": "legal-due-diligence",
+    "task": "Write a legal due diligence checklist and a three-page red-flag report for a synthetic small company being acquired: incorporation, shareholding, key contracts, licences, litigation, employment and property, each with a risk rating. Share it."
+  },
+  {
+    "skillId": "legal-notice-drafting",
+    "task": "Draft a legal notice for a synthetic unpaid invoice of Rs 4.5 lakh, and a reply on behalf of the customer disputing it. Keep each to two pages with facts, demand and time limit. Share both."
+  },
+  {
+    "skillId": "legal-research",
+    "task": "Pick a synthetic question, such as whether an unsigned email can form a binding contract in India, research the statute and two or three cases, and write a two-page memo with the question, short answer, analysis and citations. Share it."
+  },
+  {
+    "skillId": "linen-inventory-control",
+    "task": "Set par levels for linen and amenities for a synthetic 100-room hotel in a spreadsheet, record a month's issues, losses and laundry counts, and work out the loss rate. Share it."
+  },
+  {
+    "skillId": "litigation-case-file-management",
+    "task": "Set up a case file index for a synthetic civil suit: pleadings, orders, evidence and correspondence in date order with page numbers, and a matter diary sheet for the next three hearings. Share it."
+  },
+  {
+    "skillId": "litigation-management",
+    "task": "Build a litigation tracker for 15 synthetic cases (court, stage, next date, counsel, exposure, provision) in a spreadsheet, and write a one-page monthly update for the CFO on the three that matter most. Share both."
+  },
+  {
+    "skillId": "lost-and-found-handling",
+    "task": "Write a lost and found SOP for a synthetic hotel: logging, storage, valuables, guest enquiries, retention periods and disposal, with a sample register of five items. Share it."
+  },
+  {
+    "skillId": "medical-document-scrutiny",
+    "task": "Scrutinise a synthetic claim file (discharge summary, bills, reports): list mismatches between diagnosis, treatment and bills, and write three queries to the hospital. Share the checklist."
+  },
+  {
+    "skillId": "medical-terminology-anatomy",
+    "task": "Take a synthetic discharge summary, list 25 medical terms in it with their meaning and the body system, and rewrite the history in plain English in half a page. Share it."
+  },
+  {
+    "skillId": "menu-knowledge-food-pairing",
+    "task": "For a synthetic six-dish menu, write the guest-facing description, allergens and one beverage pairing for each, and a one-page briefing sheet for servers. Share it."
+  },
+  {
+    "skillId": "nabh-accreditation",
+    "task": "Pick one NABH chapter, such as access, assessment and continuity of care, and write a gap checklist for a synthetic hospital: standard, evidence needed, current status and owner, plus two quality indicators. Share it."
+  },
+  {
+    "skillId": "night-audit",
+    "task": "Run a night audit on a synthetic day's figures in a spreadsheet: room revenue, occupancy, ADR, RevPAR, cash and card balancing, and a one-page manager's flash report. Share it."
+  },
+  {
+    "skillId": "opd-front-office-operations",
+    "task": "Write an OPD front office SOP for a synthetic hospital: registration, appointments, token flow, billing handover and complaint handling, and a one-page daily dashboard of waits. Share it."
+  },
+  {
+    "skillId": "ota-channel-distribution",
+    "task": "Audit a synthetic hotel's rates across three OTAs and its own website in a spreadsheet, find parity breaks, and write a one-page plan for channel mix and commissions. Share it."
+  },
+  {
+    "skillId": "patient-admission-discharge",
+    "task": "Map the admission-to-discharge flow for a synthetic 200-bed hospital as a swimlane chart, mark where discharge time is lost, and propose three changes to bring it under three hours. Share it."
+  },
+  {
+    "skillId": "payment-posting-eob",
+    "task": "Post payments from three synthetic EOBs or ERAs into a ledger sheet: allowed, paid, adjustments, patient responsibility and denials, and flag one underpayment. Share it."
+  },
+  {
+    "skillId": "pleadings-drafting-support",
+    "task": "Prepare a paper book for a synthetic civil appeal: index, list of dates and events, synopsis and a draft affidavit, formatted for court. Share the file."
+  },
+  {
+    "skillId": "public-area-cleaning",
+    "task": "Write a public area cleaning schedule for a synthetic hotel lobby, restrooms and corridors: daily, weekly and deep-clean tasks, times, staff and a checklist. Share it."
+  },
+  {
+    "skillId": "rbi-regulatory-framework",
+    "task": "Write a three-page note for a synthetic mid-sized NBFC on its key RBI duties: scale based regulation layer, KYC, fair practices code, grievance redress and returns, with one control for each. Share it."
+  },
+  {
+    "skillId": "regulatory-circular-tracking",
+    "task": "Take one recent public RBI, SEBI or IRDAI circular and write a two-page impact note for a synthetic firm: what changed, who it affects, actions with owners and dates, and the policy or process to update. Share it."
+  },
+  {
+    "skillId": "regulatory-inspection-coordination",
+    "task": "For a synthetic RBI or SEBI inspection, write a coordination plan: document request tracker, owners, response timelines, and a closure tracker for six synthetic observations with root cause and action. Share it."
+  },
+  {
+    "skillId": "regulatory-returns-reporting",
+    "task": "Build a regulatory returns calendar for a synthetic NBFC or broker in a spreadsheet: each return, regulator, frequency, due date, data owner and maker-checker, plus a one-page note on how you track misses. Share it."
+  },
+  {
+    "skillId": "reimbursement-claim-processing",
+    "task": "Adjudicate two synthetic health reimbursement claims: check documents, policy terms, exclusions and sub-limits, work out the payable amount line by line, and write the settlement note. Share it."
+  },
+  {
+    "skillId": "restaurant-pos-systems",
+    "task": "Write a step-by-step guide for a synthetic restaurant POS: opening a table, sending a KOT, splitting a bill, a void with manager approval and the end-of-day report. Share it."
+  },
+  {
+    "skillId": "revenue-management-systems",
+    "task": "Write a one-page guide to reviewing a revenue system's daily recommendations for a synthetic hotel: what to check, when to override and how you record the reason, with two worked examples. Share it."
+  },
+  {
+    "skillId": "risk-adjustment-hcc-coding",
+    "task": "Review three synthetic patient charts for risk adjustment: list each supported HCC with the ICD-10-CM code and MEAT evidence, and flag conditions that lack support. Share the review sheet."
+  },
+  {
+    "skillId": "room-inspection-standards",
+    "task": "Write a guest room inspection checklist of 40 points for a synthetic four-star hotel, inspect your own room against it, and log the findings with photos or notes. Share it."
+  },
+  {
+    "skillId": "sebi-intermediary-regulations",
+    "task": "Write a three-page compliance checklist for a synthetic SEBI-registered stock broker: client onboarding, margin and funds rules, reporting, cyber security and grievances, each with the source rule and a control. Share it."
+  },
+  {
+    "skillId": "str-compset-benchmarking",
+    "task": "From a synthetic month of hotel and compset occupancy, ADR and RevPAR, work out MPI, ARI and RGI in a spreadsheet and write a half-page summary of where the hotel is losing share. Share it."
+  },
+  {
+    "skillId": "us-healthcare-payers",
+    "task": "Write a two-page comparison of Medicare, Medicaid and a commercial plan for a synthetic clinic: who is covered, timely filing limits, prior auth and secondary billing rules. Share it."
+  },
+  {
+    "skillId": "practice-management-systems",
+    "task": "Write a user guide for posting a synthetic office visit in a US practice management system: patient demographics, insurance, charge entry, claim batch and reading the claim status report, as numbered steps with field lists. Share it."
   }
 ]

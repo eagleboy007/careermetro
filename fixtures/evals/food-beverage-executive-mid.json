@@ -1,0 +1,60 @@
+{
+  "id": "food-beverage-executive-mid",
+  "roleSlug": "food-beverage-executive",
+  "persona": "mid",
+  "resumeText": "Rohan Deshmukh | Pune | rohan.deshmukh@example.com\n\nSUMMARY\nFood and beverage service supervisor with 7 years in hotel restaurants, in-room dining and banquets.\n\nEXPERIENCE\nF&B Executive, Sahyadri Grand Hotel, Pune (2022 - present)\n- Supervise service at a 90-cover all day dining restaurant and in-room dining.\n- Execute banquet event orders for weddings and conferences of up to 400 guests.\n- Lead daily briefings on menu changes, allergens and wine pairings for the service team.\n- Run Oracle Micros Simphony billing and close outlet sales at day end.\n- Drive upselling of beverages and desserts through monthly server contests.\n- Prepare weekly duty rosters for a team of 18 stewards and captains.\n- Handle guest feedback at tables and resolve service complaints on the spot.\n\nF&B Supervisor, Deccan Courtyard Inn, Pune (2019 - 2022)\n- Managed a team of 12 associates across breakfast and dinner shifts.\n- Set up buffets and coffee breaks for corporate meetings.\n\nSKILLS\nFSSAI hygiene, HACCP, Micros, MS Excel\n\nEDUCATION\nB.Sc. Hospitality and Hotel Administration, Pune (2019)\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "fnb-service-operations",
+        "quote": "Supervise service at a 90-cover all day dining restaurant and in-room dining"
+      },
+      {
+        "skillId": "banquet-event-operations",
+        "quote": "Execute banquet event orders for weddings and conferences"
+      },
+      {
+        "skillId": "menu-knowledge-food-pairing",
+        "quote": "Lead daily briefings on menu changes, allergens and wine pairings"
+      },
+      {
+        "skillId": "restaurant-pos-systems",
+        "quote": "Run Oracle Micros Simphony billing and close outlet sales"
+      },
+      {
+        "skillId": "cross-selling-upselling",
+        "quote": "Drive upselling of beverages and desserts"
+      },
+      {
+        "skillId": "store-team-rostering-training",
+        "quote": "Prepare weekly duty rosters for a team of 18 stewards and captains"
+      },
+      {
+        "skillId": "customer-query-resolution",
+        "quote": "resolve service complaints on the spot"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 12 associates across breakfast and dinner shifts"
+      },
+      {
+        "skillId": "fssai-food-safety-hygiene",
+        "quote": "FSSAI hygiene"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "fssai-food-safety-hygiene",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "hotel-revenue-pricing",
+      "night-audit",
+      "frro-c-form-compliance",
+      "linen-inventory-control"
+    ]
+  },
+  "reviewedBy": null
+}
