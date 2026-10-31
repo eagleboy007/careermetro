@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { certifications } from ".";
-import { buildPack, csv, FIELDS } from "../../scripts/review/build-review-pack.mjs";
+import { buildPack, csv, FIELDS, SIGN_OFF } from "../../scripts/review/build-review-pack.mjs";
 import { answers, packRefs, parseCsv } from "../../scripts/review/read-review.mjs";
 
 const root = resolve(__dirname, "../..");
@@ -11,6 +11,15 @@ const pack: Record<string, string> = buildPack();
 describe("the expert review pack (docs/review/pack)", () => {
   it("is current: run node scripts/review/build-review-pack.mjs after a content change", () => {
     for (const [name, body] of Object.entries(pack)) expect(readFileSync(resolve(root, "docs/review/pack", name), "utf8"), name).toBe(body);
+  });
+
+  it("marks every change awaiting sign-off on a line the pack still holds", () => {
+    const lines = FIELDS.flatMap((f: { file: string }) => parseCsv(pack[f.file]).slice(1));
+    for (const { ref } of SIGN_OFF as { ref: string }[]) {
+      const line = lines.find((r) => r[0] === ref);
+      expect(line, ref).toBeDefined();
+      expect(line?.[4], ref).toContain("Changed since the draft, awaiting your sign-off:");
+    }
   });
 
   it("puts every role awaiting review in exactly one field file", () => {

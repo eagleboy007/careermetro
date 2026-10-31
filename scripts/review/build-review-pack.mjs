@@ -24,6 +24,18 @@ const ROLE_COLUMNS = ["Ref", "Role", "Section", "Item", "Detail", ...ANSWER_COLU
 
 const IMPORTANCE = { required: "Required", nice_to_have: "Nice to have" };
 
+/**
+ * Changes Development made to a drafted role after an eval showed a problem (F0, 2026-10-31). Each one waits for the
+ * field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
+ */
+export const SIGN_OFF = [
+  { ref: "export-import-executive#years", note: "Starts at 1 year (was 2): EXIM and export documentation executives are commonly hired at 0-2 years." },
+  { ref: "it-auditor#skill:domain-bfsi", note: "Nice to have (was Required): IT auditors work in every sector, not only banking and insurance." },
+  { ref: "salesforce-developer#skill:salesforce-clouds", note: "Required (was Nice to have): developers build on Sales or Service Cloud from day one." },
+  { ref: "salesforce-developer#skill:salesforce-security-model", note: "New Required skill: profiles, permission sets, sharing, and CRUD/FLS checks in code." },
+];
+const signOffNote = new Map(SIGN_OFF.map((c) => [c.ref, c.note]));
+
 export function csvCell(value) {
   const s = String(value ?? "");
   return /[",\n\r]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
@@ -60,7 +72,10 @@ export function roleRows(role, skills) {
     const kind = s.oneOf ? `${IMPORTANCE[s.importance]}, one of (${role.skills.filter((o) => o.oneOf === s.oneOf).map((o) => skills.get(o.skillId) ?? o.skillId).join(" / ")})` : IMPORTANCE[s.importance];
     rows.push([ref(`skill:${s.skillId}`), role.title, `Skill: ${kind}`, skills.get(s.skillId) ?? s.skillId, s.expectation]);
   }
-  return rows.map((r) => [...r, "", "", ""]);
+  return rows.map((r) => {
+    const note = signOffNote.get(r[0]);
+    return [...r.slice(0, 4), note ? [r[4], `Changed since the draft, awaiting your sign-off: ${note}`].filter(Boolean).join("\n") : r[4], "", "", ""];
+  });
 }
 
 /** One review line per certification awaiting review: what it proves and touches, and the roles that recommend it. */
@@ -155,6 +170,12 @@ ${counts.join("\n")}
 | Certifications awaiting review (what each proves, and the roles that recommend it) | \`certifications.csv\` | ${certCount} |
 
 ${roleCount} role profiles await review in all.
+
+## Changed since the draft, awaiting sign-off
+
+Development changed these lines after a test showed a problem. Their **Detail** ends with a note that begins "Changed since the draft". Please say yes, or what it should be.
+
+${SIGN_OFF.map((c) => `- \`${c.ref}\`: ${c.note}`).join("\n")}
 
 ## How answers flow back into the app
 

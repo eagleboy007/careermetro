@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (F0: 72 campus-fresher eval resumes, matcher v9; refills for 3 B4 skills)
+Last updated: 2026-10-31 (F0: 72 campus-fresher eval resumes, matcher v9; refills for 3 B4 skills; the 3 role edits are marked for sign-off in the review pack)
 
 ## Built and live (https://careermetro.vercel.app)
 

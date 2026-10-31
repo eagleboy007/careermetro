@@ -281,7 +281,8 @@ it-auditor#skill:security-policies,IT Auditor,Skill: Required,Security policies 
 it-auditor#skill:identity-access-management,IT Auditor,Skill: Required,Identity and access management,"Test access provisioning, reviews and segregation of duties",,,
 it-auditor#skill:excel,IT Auditor,Skill: Required,Excel,"Build workpapers, samples and findings trackers",,,
 it-auditor#skill:communication,IT Auditor,Skill: Required,Written and verbal communication,Write audit reports and discuss findings with control owners,,,
-it-auditor#skill:domain-bfsi,IT Auditor,Skill: Nice to have,Banking and financial services domain,"Apply RBI, SEBI and SOX expectations in financial services audits",,,
+it-auditor#skill:domain-bfsi,IT Auditor,Skill: Nice to have,Banking and financial services domain,"Apply RBI, SEBI and SOX expectations in financial services audits
+Changed since the draft, awaiting your sign-off: Nice to have (was Required): IT auditors work in every sector, not only banking and insurance.",,,
 it-auditor#skill:data-privacy,IT Auditor,Skill: Nice to have,Data privacy and protection law,Audit personal data handling against the DPDP Act,,,
 it-auditor#skill:third-party-risk,IT Auditor,Skill: Nice to have,Third-party (vendor) risk,Review outsourcing and vendor controls,,,
 it-auditor#skill:cloud-security,IT Auditor,Skill: Nice to have,Cloud security basics,Test controls in cloud-hosted systems,,,
