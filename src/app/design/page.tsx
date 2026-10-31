@@ -76,7 +76,8 @@ import { EventsDigestSwitch } from "@/components/timetable/events-digest-switch"
 import { TimetableView } from "@/components/timetable/timetable-view";
 import { SuggestEventForm } from "@/components/timetable/suggest-event-form";
 import { EventSuggestionQueue } from "@/components/admin/event-suggestion-queue";
-import { exampleSuggestionQueue, exampleTimetable, exampleTimetableChoices, exampleTimetableEmpty, exampleTimetableNoCity, exampleTimetableWhy } from "@/lib/timetable/fixtures";
+import { ManualEventList } from "@/components/admin/manual-event-list";
+import { exampleManualEvents, exampleSuggestionQueue, exampleTimetable, exampleTimetableChoices, exampleTimetableEmpty, exampleTimetableNoCity, exampleTimetableWhy } from "@/lib/timetable/fixtures";
 import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { exampleMatch } from "@/lib/match/fixtures";
 import { exampleFeedback, examplePractice, examplePracticeForJob, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
@@ -1279,6 +1280,13 @@ export default function DesignPage() {
         </p>
         <EventSuggestionQueue queue={exampleSuggestionQueue} />
         <EventSuggestionQueue queue={{ total: 0, rows: [] }} />
+        <p className="text-sm text-muted">
+          Hand-entered events, last on /admin/reports: each event the team typed into src/content/manual-events.json from the organiser&apos;s own
+          page, with its link, the day its date was checked and whether it is live, read only (they change only in a PR). Made-up events; then
+          the empty list.
+        </p>
+        <ManualEventList rows={exampleManualEvents} />
+        <ManualEventList rows={[]} />
         <p className="text-sm text-muted">
           /account/suspended: what a suspended person sees instead of any signed-in page, with the admin&apos;s reason and the grievance officer.
         </p>

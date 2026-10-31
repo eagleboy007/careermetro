@@ -12,6 +12,7 @@ import {
   EVENT_TITLE_MAX,
   PERSON_CITIES,
   type EventKind,
+  type EventSource,
 } from "@/lib/schemas/constants";
 import { topicsOf, type TopicMatchers } from "./match";
 
@@ -32,7 +33,8 @@ export type FeedRows = { ok: boolean; rows: FeedEventRow[]; dropped: FeedDrops; 
  * confs.tech file counts as read and empty), so the store may cancel the feed's events it no longer lists. `error`: the
  * first failure as a short code ("404", "timeout", "too_large", "invalid", …), never text from the answer.
  */
-export type FeedRead = FeedRows & { feedId: string; complete: boolean; error: string | null };
+/** `source` is the events.source the rows are written under: "feed" when left out; hand-entered events use "suggestion". */
+export type FeedRead = FeedRows & { feedId: string; complete: boolean; error: string | null; source?: EventSource };
 export type FeedDeps = { fetchImpl?: typeof fetch; timeoutMs?: number; maxBytes?: number; now?: Date; deadline?: number; matchers?: TopicMatchers };
 
 const DAY_MS = 86_400_000;

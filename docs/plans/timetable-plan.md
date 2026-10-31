@@ -124,7 +124,7 @@ Turning the digest off is one tap, from the email (the same one-click token as t
 - **Only with each organiser's written OK:**
   - Luma calendars of local groups (AWS User Group Pune, MumPy, GDG Cloud Mumbai)
   - the null community chapters
-- **Typed in by hand:** NPTEL and SWAYAM semester dates, twice a year from the official notices, with a link back. These are entered as admin suggestions. Nothing is crawled.
+- **Typed in by hand:** NPTEL and SWAYAM semester dates, twice a year from the official notices, with a link back, and other events from organisers' own pages. These are entered as admin suggestions. Nothing is crawled. **Done (2026-10-31)**, no migration: `src/content/manual-events.json` (strict schema `manualEvent` in `src/lib/schemas/timetable.ts`, content test `src/content/manual-events.test.ts`) holds 9 events from Data research's `data/events/manual-2026-11.json` (DevFest Nagpur held until its date is confirmed). The daily feed route loads the file on every run with no network call (`readManual` in `src/lib/timetable/manual.ts`) through `writeFeedRun`, with `source = suggestion` (the CHECK's value for admin suggestions) and `source_key = manual:<title slug>-<India start date>`, live; a removed event still ahead is cancelled only when the whole file parsed. `/admin/reports` lists them read only. The rules are in `docs/timetable-sources.md`.
 - **Never used (red):**
   - Meetup: the API needs Pro, and commercial use needs written consent.
   - Microsoft Reactor and Learn events: their terms allow non-commercial use only.

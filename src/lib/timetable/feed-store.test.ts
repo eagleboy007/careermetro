@@ -91,4 +91,32 @@ describe.skipIf(!db)("the event feed's writes (database)", () => {
     expect((await writeFeedRun([read([row("c", { startsAt: later(9), endsAt: later(9, 2) })])], { startedAt: t6, now: t6 }, d())).cancelled).toBe(0);
     expect((await byKey("a")).e.status).toBe("live");
   });
+
+  it("writes a hand-entered read under its own source, and cancels only that source's removed events", async () => {
+    // A synthetic id stands in for "manual" so the test never touches the real hand-entered rows.
+    const handId = `${feedId}-hand`;
+    const hand = (key: string, over: Partial<FeedEventRow> = {}) => row(key, { sourceKey: `${handId}:${key}`, ...over });
+    const handRead = (rows: FeedEventRow[]): FeedRead => ({ ...read(rows), feedId: handId, source: "suggestion" });
+    try {
+      const t1 = later(1);
+      const first = await writeFeedRun([handRead([hand("x"), hand("y")])], { startedAt: t1, now: t1 }, d());
+      expect(first.upserted).toBe(2);
+      const rowsOf = async () =>
+        db!.select({ source: schema.events.source, key: schema.events.sourceKey, status: schema.events.status }).from(schema.events).where(like(schema.events.sourceKey, `${handId}:%`));
+      expect((await rowsOf()).map((r) => [r.key, r.source, r.status]).sort()).toEqual([
+        [`${handId}:x`, "suggestion", "live"],
+        [`${handId}:y`, "suggestion", "live"],
+      ]);
+      const t2 = later(2);
+      const second = await writeFeedRun([handRead([hand("x")])], { startedAt: t2, now: t2 }, d());
+      expect(second.cancelled).toBe(1);
+      expect((await rowsOf()).map((r) => [r.key, r.status]).sort()).toEqual([
+        [`${handId}:x`, "live"],
+        [`${handId}:y`, "cancelled"],
+      ]);
+      expect((await byKey("c")).e.status).toBe("live");
+    } finally {
+      await db!.delete(schema.events).where(like(schema.events.sourceKey, `${handId}:%`));
+    }
+  });
 });

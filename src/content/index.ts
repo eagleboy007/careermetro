@@ -31,6 +31,7 @@ import certificationsJson from "./certifications.json";
 import cityCentresJson from "./city-centres.json";
 import eventFeedsJson from "./event-feeds.json";
 import interestTopicsJson from "./interest-topics.json";
+import manualEventsRaw from "./manual-events.json";
 import eliteShelfJson from "./elite-shelf.json";
 import mockBankJson from "./mock-bank.json";
 import practiceQuestionsJson from "./practice-questions.json";
@@ -257,6 +258,13 @@ export const interestTopics: InterestTopic[] = interestTopicsFile.parse(interest
  * the day its terms were read. A feed is read only while it is on, and it goes on only with that day.
  */
 export const eventFeeds: EventFeed[] = eventFeedsFile.parse(eventFeedsJson);
+
+/**
+ * Hand-entered Timetable events (docs/timetable-sources.md), typed in by the team from organisers' own pages. Left
+ * unparsed here: the daily event feed (src/lib/timetable/manual.ts) checks each entry, loads the ones that pass and
+ * cancels a removed event only when the whole file passed. src/content/manual-events.test.ts checks the file in CI.
+ */
+export const manualEventsJson: unknown = manualEventsRaw;
 
 /** Hand-built role profiles (FR-8, FR-9). Unpublished until a domain expert sets reviewedBy. */
 export const roleProfiles: RoleProfile[] = z
