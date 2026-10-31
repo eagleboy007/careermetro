@@ -67,8 +67,8 @@ get no row, so they stay first in line every run (see Findings).
 
 ## Running it
 
-In CI: the workflow runs on pull requests that change `scripts/scale/**` or the workflow, and by hand (Actions → Scale
-check → Run workflow, with the member count and runs as inputs). About 15 minutes.
+In CI: the workflow runs on pull requests that change `scripts/scale/**` or the workflow, every Monday at 03:30 UTC on
+main, and by hand (Actions → Scale check → Run workflow, with the member count and runs as inputs). About 15 minutes.
 
 Locally, with PostgreSQL migrated and seeded (`npm run db:migrate && npm run db:seed`) and `pg_stat_statements` in
 `shared_preload_libraries` if you want the statement lists:

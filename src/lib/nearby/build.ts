@@ -101,14 +101,16 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
         share: line.total ? line.shared / line.total : 0,
         // A year's grace, as role suggestions give: a role asking for more years than that goes after the ones that fit.
         fits: years >= role.experienceBand.minYears - 1,
-        // Over two years past the role's band: a campus-entry role (fresher batch F1, 0 to 2 years) is a poor closest
-        // role for a person with 5 years, so for the closest role it goes after the ones the person isn't past.
+        // Over two years past the role's band: for the closest role it goes after the ones the person isn't past.
         over: years > role.experienceBand.maxYears + 2,
+        // An entry role (its band starts at 0, such as fresher batch F1's 0 to 2 years) the person is over two years past
+        // is no next step: it is left out of the lines and the closest role, and no closest beats a trainee role (T179).
+        entryPast: role.experienceBand.minYears === 0 && years > role.experienceBand.maxYears + 2,
         // How alike the role is to the one the person is heading for: breaks ties between roles that share as much.
         like: likeness(targetIds, requiredIds(role)),
       };
     })
-    .filter((s) => s.line.total > 0)
+    .filter((s) => s.line.total > 0 && !s.entryPast)
     .sort(
       (a, b) =>
         Number(b.fits) - Number(a.fits) ||
@@ -125,8 +127,8 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
   const near = scored.filter((s) => s.keyShare >= NEARBY_MIN_SHARE && s.key >= NEARBY_MIN_SHARED).slice(0, NEARBY_MAX);
   if (near.length) return nearbyLines.parse({ lines: near.map((s) => s.line), closest: null });
   // Closest when none is near: a role whose years fit first, as for the lines (T154), then one the person is not more
-  // than two years past (fresher batch F1), then the one holding the most of
-  // the resume's key skills (half for each one only listed), at least two, then the one asking for more of the resume,
+  // than two years past (fresher batch F1; an entry role they are past is already left out, T179), then the one
+  // holding the most of the resume's key skills (half for each one only listed), at least two, then the one asking for more of the resume,
   // then share, then likeness to the target role. Two shared skills where one implies the other count as one, so the
   // role must share two separate abilities. So a small role sharing 2 of its 6 doesn't beat a larger one the
   // resume holds as much of, and one shared skill names nothing (src/evals/closest-eval.test.ts). The sentence counts

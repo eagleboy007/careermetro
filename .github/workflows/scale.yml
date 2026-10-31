@@ -3,12 +3,15 @@ name: Scale check
 # About 10,000 synthetic members in the CI job's own PostgreSQL, then each main signed-in page and each cron in
 # vercel.json timed against a production build, with EXPLAIN ANALYZE on the key queries (docs/scale-check.md). Fails
 # when a page's p95 passes 2.5 s or a cron passes 80% of its Hobby maxDuration. It runs when the scale scripts or this
-# workflow change, and by hand. Never against staging or production: those runs come later, wired on their own.
+# workflow change, every Monday at 03:30 UTC (09:00 IST) on main so a page regression shows within a week (T-80
+# suggestion), and by hand. Never against staging or production: those runs come later, wired on their own.
 on:
   pull_request:
     paths:
       - scripts/scale/**
       - .github/workflows/scale.yml
+  schedule:
+    - cron: "30 3 * * 1"
   workflow_dispatch:
     inputs:
       members:
