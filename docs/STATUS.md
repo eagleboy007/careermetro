@@ -99,6 +99,7 @@ Last updated: 2026-10-31 (Timetable PR 4: the event feed, both sources off until
 - T167: My jobs shows 10 cards per page on phones (under 640 px, `usePhonePage`, `PHONE_PAGE_SIZE`), 20 elsewhere, then Show more; the compact card waits on Design's C24. Oversize limit for my-jobs now 12,000.
 - C24: My jobs rows close to two lines below 760 px (title + status chip; company · date that matters · gap count), tap to open; phones page at 10; oversize my-jobs limit 4,000.
 - T168: the Timetable pages at 10 events on phones too (`usePhonePage`, below 760 px); oversize timetable phone limit 12,000 (was 15,038 px of 20,000).
+- T169: the walk scans Corporate Messages only once Send is enabled again after the question (axe caught the dimmed button mid-send, main red on 32bd9af).
 - Re-test 34 fixes T115 to T118: the staging smoke scripts go on only when `/api/health` says `"env": "preview"` (T115).
 - The dry run's deadline also respects the job's limit; a stuck step is given up and the account deleted in a fresh browser context within the 15-minute step (T116). A sample's job check is not found once the owner has gaps of their own (T117).
 - `/api/csp-report` logs each directive and host once an hour, with an hourly `csp_violation_summary` of repeats and addresses; the report-only CSP is set per request in `src/proxy.ts`, so a promoted preview build no longer sends toolbar hosts on production (T118).

@@ -3649,6 +3649,9 @@ await step("company chats: the job team writes from the board, the candidate rep
     await chat.getByRole("textbox", { name: "Question" }).fill(QUESTION);
     await chat.getByRole("button", { name: "Send" }).click();
     await chat.getByText(QUESTION).waitFor({ timeout: 10000 });
+    // The question shows before the send settles; scan only once Send is enabled again, or axe can catch the button
+    // between its disabled check and its contrast check, still dimmed (T169).
+    await chat.locator('button[type="submit"]:not([disabled])', { hasText: "Send" }).waitFor({ timeout: 10000 });
     const body = await q.locator("body").innerText();
     if (body.includes(testEmail) || body.includes("@")) throw new Error("an email address is shown in Corporate Messages");
     await q.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-corporate-messages.png`, fullPage: true });
