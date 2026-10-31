@@ -12,6 +12,7 @@ import {
   DEPARTURE_CHANGES_PER_DAY,
   DIRECT_MESSAGES_PER_DAY,
   ELITE_CHANGES_PER_DAY,
+  EVENT_SUGGESTIONS_PER_DAY,
   JOB_SEARCH_CHANGES_PER_DAY,
   LIBRARY_CHANGES_PER_DAY,
   ME_EDITS_PER_DAY,
@@ -142,6 +143,8 @@ export const LIMITS = {
   resourceReportsPerUserDay: { bucket: "resource-report", max: RESOURCE_REPORTS_PER_DAY, windowMs: 24 * HOUR },
   /** "Suggest a free resource" tries one person makes a day. */
   resourceSuggestionsPerUserDay: { bucket: "resource-suggestion", max: SUGGESTIONS_PER_DAY, windowMs: 24 * HOUR },
+  /** "Suggest an event" tries one person makes a day (Timetable PR 6), each try counted whatever the outcome. */
+  eventSuggestionsPerUserDay: { bucket: "event-suggestion", max: EVENT_SUGGESTIONS_PER_DAY, windowMs: 24 * HOUR },
   /** Adds, edits and deletes on Me (docs/plans/me-editing-plan.md): roles, education, stories and interests, each try counted. */
   meEditsPerUserDay: { bucket: "me-edit", max: ME_EDITS_PER_DAY, windowMs: 24 * HOUR },
   /** Opening the notifications panel, which marks every row read (docs/plans/notifications-plan.md), each try counted. */

@@ -66,7 +66,7 @@ describe.skipIf(!db)("Timetable rows (database)", () => {
     return e.id;
   }
 
-  it("exports the person's own saves and I'm going, the three choices and the last digest week, as version 36", async () => {
+  it("exports the person's own saves and I'm going, the three choices and the last digest week and their suggestions, as version 37", async () => {
     const me = await person();
     const other = await person();
     const a = await event();
@@ -94,8 +94,8 @@ describe.skipIf(!db)("Timetable rows (database)", () => {
     for (const r of t.rsvps) expect(eventRsvpExport.safeParse(r).error).toBeUndefined();
 
     const data = await exportAccountData(me, d());
-    expect(EXPORT_VERSION).toBe(37);
-    expect(data!.exportVersion).toBe(37);
+    expect(EXPORT_VERSION).toBe(38);
+    expect(data!.exportVersion).toBe(38);
     expect(data!.timetable).toEqual(t);
     expect((await exportTimetable(other, d())).rsvps).toHaveLength(1);
   });

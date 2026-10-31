@@ -7,19 +7,22 @@ import { TimetableView, type TimetableActions } from "@/components/timetable/tim
 import { currentAccount } from "@/lib/auth/server";
 import { errorFields, logEvent } from "@/lib/log";
 import { exampleTimetable, exampleTimetableChoices, exampleTimetableWhy } from "@/lib/timetable/fixtures";
+import { eventsDigestOn } from "@/lib/timetable/digest-store";
 import { timetableForUser } from "@/lib/timetable/store";
-import { eventPrepAction, eventRsvpAction } from "./actions";
+import { pendingSuggestionCount } from "@/lib/timetable/suggest-store";
+import { eventPrepAction, eventRsvpAction, eventsDigestAction, suggestEventAction } from "./actions";
 
 export const metadata: Metadata = { title: "Timetable · CareerMetro", robots: { index: false } };
 
-/** Save, I'm going and the prep task, kept on the server. */
-const TIMETABLE_ACTIONS: TimetableActions = { rsvp: eventRsvpAction, prep: eventPrepAction };
+/** Save, I'm going, the prep task, the Monday digest switch and Suggest an event, kept on the server. */
+const TIMETABLE_ACTIONS: TimetableActions = { rsvp: eventRsvpAction, prep: eventPrepAction, digest: eventsDigestAction, suggest: suggestEventAction };
 
 /**
  * The Timetable (FR-57, handoff 10, docs/plans/timetable-plan.md section 7). Signed in only: the signed-in layout and
  * the proxy send everyone else away, and with no sign-in on this deployment the page shows example events, where Save
  * and I'm going change the screen only. Signed in, it reads live events that match the person's open goals or
- * interests, near the profile city (never the device) or online, for the next 60 days.
+ * interests, near the profile city (never the device) or online, for the next 60 days. Suggest an event keeps the
+ * person's suggestion as pending for review (Timetable PR 6); the rail counts only their own.
  */
 async function TimetableScreen() {
   await connection();
@@ -33,8 +36,10 @@ async function TimetableScreen() {
     );
   }
   let data: Awaited<ReturnType<typeof timetableForUser>>;
+  let digest: boolean;
+  let suggestionsPending: number;
   try {
-    data = await timetableForUser(account.id);
+    [data, digest, suggestionsPending] = await Promise.all([timetableForUser(account.id), eventsDigestOn(account.id), pendingSuggestionCount(account.id)]);
   } catch (error) {
     unstable_rethrow(error);
     // Database errors can carry values; errorFields keeps only the name and code.
@@ -45,7 +50,7 @@ async function TimetableScreen() {
       </p>
     );
   }
-  return <TimetableView view={data.view} why={data.why} choices={data.choices} actions={TIMETABLE_ACTIONS} />;
+  return <TimetableView view={data.view} why={data.why} choices={data.choices} actions={TIMETABLE_ACTIONS} digest={digest} suggestionsPending={suggestionsPending} />;
 }
 
 function Banner({ children }: { children: React.ReactNode }) {

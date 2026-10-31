@@ -38,6 +38,7 @@ const m = vi.hoisted(() => ({
   clearWeekly: vi.fn(async () => ({ weeklyRowsCleared: 0 })),
   clearEventsDigests: vi.fn(async () => ({ eventsDigestRowsCleared: 0 })),
   clearEndedEvents: vi.fn(async () => ({ endedEventsDeleted: 0 })),
+  clearEndedEventSuggestions: vi.fn(async () => ({ endedSuggestionsDeleted: 0 })),
   runWeekly: vi.fn<
     (o: {
       site: string;
@@ -46,6 +47,7 @@ const m = vi.hoisted(() => ({
     }) => Promise<{ considered: number; sent: number; empty: number; failed: number; capped: boolean }>
   >(async () => ({ considered: 0, sent: 0, empty: 0, failed: 0, capped: false })),
   turnOff: vi.fn<(t: string) => Promise<void>>(async () => {}),
+  turnOffDigest: vi.fn<(t: string) => Promise<void>>(async () => {}),
   holdShared: vi.fn<(job: { text: string; url: string }, userId: string | null) => Promise<string>>(async () => "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f"),
   exportData: vi.fn(),
   signOut: vi.fn(),
@@ -86,7 +88,8 @@ vi.mock("@/lib/library/store", () => ({ clearOldLibraryRecords: m.clearLibrary }
 vi.mock("@/lib/notifications/store", () => ({ clearOldNotifications: m.clearNotifications }));
 vi.mock("@/lib/my-jobs/store", () => ({ clearUnsavedJobText: m.clearJobText }));
 vi.mock("@/lib/my-jobs/weekly-store", () => ({ clearOldWeeklyEmails: m.clearWeekly, runWeeklyEmails: m.runWeekly, turnOffWeeklyEmail: m.turnOff }));
-vi.mock("@/lib/timetable/store", () => ({ clearOldEventsDigests: m.clearEventsDigests, clearEndedEvents: m.clearEndedEvents, prepEventsOn: vi.fn(async () => []) }));
+vi.mock("@/lib/timetable/digest-store", () => ({ turnOffEventsDigest: m.turnOffDigest }));
+vi.mock("@/lib/timetable/store", () => ({ clearOldEventsDigests: m.clearEventsDigests, clearEndedEvents: m.clearEndedEvents, clearEndedEventSuggestions: m.clearEndedEventSuggestions, prepEventsOn: vi.fn(async () => []) }));
 vi.mock("@/lib/my-jobs/share", async (original) => ({ ...(await original<typeof import("@/lib/my-jobs/share")>()), clearOldSharedJobs: m.clearShared, holdSharedJob: m.holdShared }));
 vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
@@ -555,6 +558,19 @@ describe("the weekly My jobs email", () => {
     expect(off.status).toBe(303);
     expect(off.headers.get("location")).toBe(`${SITE}/email/off?done=1`);
     expect(m.turnOff).toHaveBeenCalledWith(TOKEN);
+    expect(m.turnOffDigest).not.toHaveBeenCalled();
+  });
+
+  it("turns off the Monday events digest instead with k=events, keeping k on the page it leads to", async () => {
+    m.turnOff.mockClear();
+    const res = emailOffGet(new Request(`${SITE}/api/email/off?t=${TOKEN}&k=events`));
+    expect(res.headers.get("location")).toBe(`${SITE}/email/off?t=${TOKEN}&k=events`);
+    expect(m.turnOffDigest).not.toHaveBeenCalled();
+    const off = await emailOff(new Request(`${SITE}/api/email/off?t=${TOKEN}&k=events`, { method: "POST", body: "List-Unsubscribe=One-Click" }));
+    expect(off.status).toBe(303);
+    expect(off.headers.get("location")).toBe(`${SITE}/email/off?done=1&k=events`);
+    expect(m.turnOffDigest).toHaveBeenCalledWith(TOKEN);
+    expect(m.turnOff).not.toHaveBeenCalled();
   });
 });
 
@@ -594,13 +610,14 @@ describe("daily cleanup", () => {
     m.clearWeekly.mockResolvedValueOnce({ weeklyRowsCleared: 5 });
     m.clearEventsDigests.mockResolvedValueOnce({ eventsDigestRowsCleared: 6 });
     m.clearEndedEvents.mockResolvedValueOnce({ endedEventsDeleted: 7 });
+    m.clearEndedEventSuggestions.mockResolvedValueOnce({ endedSuggestionsDeleted: 2 });
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     const corporate = { accessEnded: 5, readMarksCleared: 7, sharedNumbersErased: 1, offeredTimesDeleted: 12 };
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1, corporate } });
     // The counts reach the logs, so a run can be checked there.
     const done = logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"));
     expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4,"unconfirmedChecked":2/);
-    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2,"sharedJobsCleared":3,"weeklyRowsCleared":5,"eventsDigestRowsCleared":6,"endedEventsDeleted":7/);
+    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2,"sharedJobsCleared":3,"weeklyRowsCleared":5,"eventsDigestRowsCleared":6,"endedEventsDeleted":7,"endedSuggestionsDeleted":2/);
     logs.mockRestore();
     const none = { accessEnded: 0, readMarksCleared: 0, sharedNumbersErased: 0, offeredTimesDeleted: 0 };
     // One step failing doesn't stop the other, and the job reports the failure.

@@ -2,11 +2,12 @@ import "server-only";
 import { and, asc, desc, eq, gte, inArray, isNotNull, lt, or, sql, type SQL } from "drizzle-orm";
 import { skills } from "@/content";
 import { getDb } from "@/db";
-import { eventRsvps, events, eventsDigests, eventTopics, userGoals, userInterests, userSettings, users } from "@/db/schema";
+import { eventRsvps, events, eventsDigests, eventSuggestions, eventTopics, userGoals, userInterests, userSettings, users } from "@/db/schema";
 import type { RideEvent } from "@/lib/ride/build";
 import { DEFAULT_TIMETABLE_SETTINGS, eventPrepInput, eventRsvpInput, PERSON_CITIES, type EventRsvpState, type EventTeaser, type PersonCity, type TimetableView, type TimetableWhy } from "@/lib/schemas";
 import { EVENT_RADII_KM, EVENT_RADIUS_DEFAULT_KM, EVENT_TOPIC_KINDS, TIMETABLE_EVENTS_MAX } from "@/lib/schemas/constants";
 import { interestTopicsFor, timetableFor, timetableWindow, type TimetableEvent, type TimetablePerson } from "./match";
+import { exportEventSuggestions } from "./suggest-store";
 import { FAR_RADIUS_KM, teaserRows } from "./view";
 
 type Db = ReturnType<typeof getDb>;
@@ -15,10 +16,11 @@ type Db = ReturnType<typeof getDb>;
  * Timetable in Download your data (from export version 36): the radius, Include online and the digest choice (the
  * defaults until the person saves some), every India week the digest went out that is still kept (newest first; rows
  * go after 90 days), and the person's own Save and I'm going rows with each event's title, organiser, start and link.
- * Nobody else's rows; nothing the digest said is kept.
+ * From export version 37 it also holds every event the person suggested that is still kept, with its status (always
+ * pending until a grievance officer is named). Nobody else's rows; nothing the digest said is kept.
  */
 export async function exportTimetable(userId: string, db: Db = getDb()) {
-  const [[settings], digests, rsvps] = await Promise.all([
+  const [[settings], digests, rsvps, suggestions] = await Promise.all([
     db
       .select({ radiusKm: userSettings.eventsRadiusKm, online: userSettings.eventsOnline, digest: userSettings.eventsDigest })
       .from(userSettings)
@@ -38,11 +40,13 @@ export async function exportTimetable(userId: string, db: Db = getDb()) {
       .innerJoin(events, eq(events.id, eventRsvps.eventId))
       .where(eq(eventRsvps.userId, userId))
       .orderBy(asc(eventRsvps.createdAt), asc(events.startsAt)),
+    exportEventSuggestions(userId, db),
   ]);
   return {
     settings: settings ?? { ...DEFAULT_TIMETABLE_SETTINGS },
     digestWeeks: digests.map((d) => d.week),
     rsvps,
+    suggestions,
   };
 }
 
@@ -65,6 +69,18 @@ export async function clearEndedEvents(db: Db = getDb(), now = new Date()): Prom
     .where(lt(events.endsAt, new Date(now.getTime() - 90 * 86_400_000)))
     .returning({ id: events.id });
   return { endedEventsDeleted: gone.length };
+}
+
+/**
+ * Daily cleanup (Timetable PR 6): event suggestions 90 days after their event ends, pending or not, as events go. A
+ * suggestion for an event long over has no use, and it is the person's own words.
+ */
+export async function clearEndedEventSuggestions(db: Db = getDb(), now = new Date()): Promise<{ endedSuggestionsDeleted: number }> {
+  const gone = await db
+    .delete(eventSuggestions)
+    .where(lt(eventSuggestions.endsAt, new Date(now.getTime() - 90 * 86_400_000)))
+    .returning({ id: eventSuggestions.id });
+  return { endedSuggestionsDeleted: gone.length };
 }
 
 /** The radius and Include online the person saved (the defaults with no row). */

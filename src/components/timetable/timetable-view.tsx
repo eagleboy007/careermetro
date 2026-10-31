@@ -13,7 +13,6 @@ import {
   ListChecks,
   ListPlus,
   MapPin,
-  Plus,
   Target,
   Ticket,
   Users,
@@ -24,6 +23,8 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ICON, seg } from "@/components/map/map-parts";
 import { ShowMore, usePaged, usePhonePage } from "@/components/ui/show-more";
 import { Switch } from "@/components/ui/switch";
+import { EventsDigestSwitch } from "./events-digest-switch";
+import { SuggestEventForm, type SuggestEventAction } from "./suggest-event-form";
 import { eventIcs } from "@/lib/calendar/ics";
 import type { EventCard, EventRsvpState, TimetableFilter, TimetableView as View, TimetableWhy } from "@/lib/schemas";
 import { TIMETABLE_NO_CITY } from "@/lib/schemas/constants";
@@ -36,6 +37,10 @@ import { dateBlock, eventPlace, eventWhen, FAR_RADIUS_KM, goalTagName, kindLabel
 export type TimetableActions = {
   rsvp: (eventId: string, state: EventRsvpState | null) => Promise<string | null>;
   prep: (eventId: string, goalSkillId: string | null) => Promise<string | null>;
+  /** "Send me this week's events" on or off (Timetable PR 5); saved at once. */
+  digest?: (on: boolean) => Promise<string | null>;
+  /** "Suggest an event" (Timetable PR 6): kept as pending for review; null when it was kept, or the words to show. */
+  suggest?: SuggestEventAction;
 };
 
 /** What the prep question and the card say, every time (docs/plans/timetable-plan.md section 4). */
@@ -62,18 +67,24 @@ const focusCard = (list: HTMLElement, index: number) => list.querySelectorAll<HT
  * and interests, near the profile city or online, grouped by when, 20 at a time with Show more. The filter row works on
  * the screen: the view already holds every match within 100 km and every online one, and the saved radius and Include
  * online are where it starts ("Show outside 25 km" is for this visit only). Without `actions` (the example preview and
- * /design) Save and I'm going change the screen only.
+ * /design) Save and I'm going change the screen only, and the Monday digest switch can't be changed. `digest` is
+ * whether the person turned the Monday digest on; `suggestionsPending` is how many of their own event suggestions
+ * wait for review (no one else's are ever counted or shown).
  */
 export function TimetableView({
   view,
   why,
   choices,
   actions,
+  digest = false,
+  suggestionsPending = 0,
 }: {
   view: View;
   why: TimetableWhy;
   choices: { radiusKm: number; online: boolean };
   actions?: TimetableActions;
+  digest?: boolean;
+  suggestionsPending?: number;
 }) {
   const [filter, setFilter] = useState<TimetableFilter>("all");
   const [online, setOnline] = useState(choices.online);
@@ -217,17 +228,11 @@ export function TimetableView({
         </section>
         <section aria-label="Every Monday" className={card}>
           <h2 className="text-[1.02rem] font-semibold">Every Monday</h2>
-          <Switch checked={false} onChange={() => {}} disabled hint="One message on Monday morning, only if something matches.">
-            Send me this week&apos;s events · soon
-          </Switch>
+          <EventsDigestSwitch initial={digest} action={actions?.digest} />
         </section>
         <section aria-label="Know an event?" className={card}>
           <h2 className="text-[1.02rem] font-semibold">Know an event?</h2>
-          <p className="text-[0.8rem] text-muted">Organisers and members can suggest one. It shows up after a quick check.</p>
-          <span className="inline-flex items-center gap-1.5 self-start rounded-full border border-line px-3 py-1.5 text-[0.8rem] font-[550] text-muted">
-            <Plus size={15} {...ICON} />
-            Suggest an event · soon
-          </span>
+          <SuggestEventForm action={actions?.suggest} pending={suggestionsPending} />
         </section>
       </aside>
     </div>

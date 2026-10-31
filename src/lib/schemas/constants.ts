@@ -840,9 +840,31 @@ export const EVENT_FEED_LENGTH_MAX_DAYS = 14;
 /** Why the feed dropped an event it read; the log carries these as counts only. */
 export const EVENT_FEED_DROPS = ["invalid", "cancelled", "past", "too_far", "too_long", "no_place", "no_topic", "capped"] as const;
 /**
- * App emails (the weekly My jobs email, and later the Monday events digest) sent a day across the whole app, counted
- * per India day in app_email_days (T151, T153). Resend's free plan allows 100 a day; sign-in codes keep the other 60.
+ * App emails (the weekly My jobs email and the Monday events digest) sent a day across the whole app, counted per India
+ * day in app_email_days (T151, T153). Resend's free plan allows 100 a day; sign-in codes keep the other 60.
  */
 export const APP_EMAIL_DAILY_BUDGET = 40;
-/** Most of APP_EMAIL_DAILY_BUDGET the Monday events digest may take (Timetable PR 5, not built yet); the weekly email gets the rest. */
+/**
+ * Most of APP_EMAIL_DAILY_BUDGET the Monday events digest may take an India day (Timetable PR 5): it never brings the
+ * day's count past this, and one run never sends more. The weekly email, which runs after it, gets the rest.
+ */
 export const APP_EMAIL_DIGEST_SHARE = 20;
+/** The Monday events digest (Timetable PR 5): events in the next this-many days, at most this many listed in one email. */
+export const EVENTS_DIGEST_DAYS = 7;
+export const EVENTS_DIGEST_EVENTS_MAX = 5;
+/*
+ * Suggest an event (Timetable PR 6, docs/plans/timetable-plan.md section 6). Members' suggestions need a grievance
+ * officer (pending item 15), so every one stays pending: the table allows no other status, nothing shows it to anyone
+ * else, and nothing publishes it. The link is cleaned like a Library suggestion (src/lib/library/links.ts) and never
+ * fetched by the server.
+ */
+export const EVENT_SUGGESTION_STATUSES = ["pending"] as const;
+/** Suggestions one person sends a day (each try counted), and how many of theirs for events still ahead can wait at once. */
+export const EVENT_SUGGESTIONS_PER_DAY = 5;
+export const EVENT_SUGGESTIONS_PENDING_MAX = 20;
+/** A suggested event starts within this many days and lasts at most EVENT_FEED_LENGTH_MAX_DAYS, as a feed event does. */
+export const EVENT_SUGGESTION_AHEAD_DAYS = 365;
+/** Pending suggestions shown on /admin/reports at most, oldest first (read only until a grievance officer is named). */
+export const EVENT_SUGGESTION_QUEUE_MAX = 100;
+/** What the form, the rail and the admin queue say, every time: nothing a member suggests shows before a review. */
+export const EVENT_SUGGESTION_NOTE = "We review every suggestion before it appears. For now they all wait: member suggestions go live only once our grievance officer is named.";

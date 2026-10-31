@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { EVENT_TOPICS_MAX, TIMETABLE_EVENTS_MAX } from "./constants";
+import {
+  APP_EMAIL_DIGEST_SHARE,
+  EVENT_SUGGESTION_NOTE,
+  EVENT_SUGGESTION_STATUSES,
+  EVENT_SUGGESTIONS_PENDING_MAX,
+  EVENT_SUGGESTIONS_PER_DAY,
+  EVENT_TOPICS_MAX,
+  EVENTS_DIGEST_DAYS,
+  EVENTS_DIGEST_EVENTS_MAX,
+  TIMETABLE_EVENTS_MAX,
+} from "./constants";
 import {
   cityCentre,
   cityCentresFile,
@@ -9,10 +19,17 @@ import {
   eventRow,
   eventRsvpExport,
   eventRsvpInput,
+  eventSuggestionExport,
+  eventSuggestionInput,
+  eventSuggestionQueue,
   eventTopic,
   eventTopicList,
+  eventsDigestEvent,
+  eventsDigestInput,
+  eventsDigestView,
   interestTopic,
   interestTopicsFile,
+  istInstant,
   timetableSettings,
   timetableView,
   timetableWhy,
@@ -244,5 +261,170 @@ describe("timetableWhy", () => {
     expect(timetableWhy.safeParse({ goals: [], interests: [] }).success).toBe(true);
     expect(timetableWhy.safeParse({ goals: [], interests: ["x".repeat(41)] }).success).toBe(false);
     expect(timetableWhy.safeParse({ goals: [], interests: Array.from({ length: 31 }, (_, i) => `i${i}`) }).success).toBe(false);
+  });
+});
+
+describe("eventsDigestInput", () => {
+  it("takes on or off and nothing else", () => {
+    expect(eventsDigestInput.safeParse({ on: true }).success).toBe(true);
+    expect(eventsDigestInput.safeParse({ on: false }).success).toBe(true);
+    expect(eventsDigestInput.safeParse({ on: "yes" }).success).toBe(false);
+    expect(eventsDigestInput.safeParse({}).success).toBe(false);
+    expect(eventsDigestInput.safeParse({ on: true, userId: id }).success).toBe(false);
+  });
+});
+
+describe("the Monday digest", () => {
+  const event = { title: "Hunting with a SIEM", organiser: "Example Security Circle", when: "Sat 7 Nov, 6 to 8 pm IST", place: "Pune", sourceUrl: "https://events.example.org/pune/nov" };
+
+  it("keeps its numbers: 7 days, 5 events an email, at most 20 emails a day", () => {
+    expect(EVENTS_DIGEST_DAYS).toBe(7);
+    expect(EVENTS_DIGEST_EVENTS_MAX).toBe(5);
+    expect(APP_EMAIL_DIGEST_SHARE).toBe(20);
+  });
+
+  it("lists title, organiser, when, a city or Online, and an https link only", () => {
+    expect(eventsDigestEvent.safeParse(event).success).toBe(true);
+    expect(eventsDigestEvent.safeParse({ ...event, place: "Online" }).success).toBe(true);
+    expect(eventsDigestEvent.safeParse({ ...event, place: "Baner" }).success).toBe(false);
+    expect(eventsDigestEvent.safeParse({ ...event, sourceUrl: "http://events.example.org/x" }).success).toBe(false);
+    expect(eventsDigestEvent.safeParse({ ...event, title: "<b>Hunting</b>" }).success).toBe(false);
+    // Nobody else's name or count rides along.
+    expect(eventsDigestEvent.safeParse({ ...event, going: 12 }).success).toBe(false);
+  });
+
+  it("has one to five events and a count of the rest", () => {
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: [event], more: 0 }).success).toBe(true);
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: Array(5).fill(event), more: 3 }).success).toBe(true);
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: [], more: 0 }).success).toBe(false);
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: Array(6).fill(event), more: 0 }).success).toBe(false);
+    expect(eventsDigestView.safeParse({ week: "2 Nov", events: [event], more: 0 }).success).toBe(false);
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: [event], more: -1 }).success).toBe(false);
+  });
+});
+
+describe("Suggest an event (Timetable PR 6)", () => {
+  // Synthetic: a made-up organiser on an example domain.
+  const form = {
+    url: "https://events.example.org/pune/siem-night?utm_source=x",
+    title: "  Hunting   with a SIEM ",
+    organiser: "Example Security Circle",
+    kind: "meetup",
+    startsAt: "2026-11-07T18:00",
+    endsAt: "2026-11-07T20:30",
+    online: false,
+    city: "Pune",
+    venue: "Baner, Pune",
+    cost: "Free",
+  };
+
+  it("keeps its numbers, and pending is the only status a suggestion can have", () => {
+    expect(EVENT_SUGGESTION_STATUSES).toEqual(["pending"]);
+    expect(EVENT_SUGGESTIONS_PER_DAY).toBe(5);
+    expect(EVENT_SUGGESTIONS_PENDING_MAX).toBe(20);
+    expect(EVENT_SUGGESTION_NOTE).toMatch(/review every suggestion before it appears/);
+  });
+
+  it("reads the form's India times as instants, and refuses a time that isn't real", () => {
+    expect(istInstant("2026-11-07T18:00")?.toISOString()).toBe("2026-11-07T12:30:00.000Z");
+    expect(istInstant("2026-11-07T00:15")?.toISOString()).toBe("2026-11-06T18:45:00.000Z");
+    expect(istInstant("2026-02-31T10:00")).toBeNull();
+    expect(istInstant("2026-11-07T24:00")).toBeNull();
+    expect(istInstant("2026-11-07 18:00")).toBeNull();
+    expect(istInstant("2026-11-07T18:00Z")).toBeNull();
+  });
+
+  it("takes a full form: the link cleaned, text trimmed, times in IST", () => {
+    const r = eventSuggestionInput.safeParse(form);
+    expect(r.error).toBeUndefined();
+    expect(r.data!.url).toEqual({ url: "https://events.example.org/pune/siem-night", host: "events.example.org" });
+    expect(r.data!.title).toBe("Hunting with a SIEM");
+    expect(r.data!.startsAt.toISOString()).toBe("2026-11-07T12:30:00.000Z");
+    expect(r.data!.endsAt.toISOString()).toBe("2026-11-07T15:00:00.000Z");
+    expect(eventSuggestionInput.safeParse({ ...form, venue: "  " }).data!.venue).toBeNull();
+    // A title may name a protocol; only a web address is refused.
+    expect(eventSuggestionInput.safeParse({ ...form, title: "HTTPS: TLS from the ground up" }).success).toBe(true);
+    expect(eventSuggestionInput.safeParse({ ...form, kind: "online", online: true, city: null, venue: "", cost: "" }).success).toBe(true);
+  });
+
+  it("takes only an https link to a public site, never a shortener, an address or another scheme", () => {
+    const refused = [
+      "http://events.example.org/x",
+      "javascript:alert(1)",
+      "https://bit.ly/abc",
+      "https://127.0.0.1/x",
+      "https://localhost/x",
+      "https://user:pw@events.example.org/",
+      "ftp://events.example.org/",
+      "",
+    ];
+    for (const url of refused) expect(eventSuggestionInput.safeParse({ ...form, url }).success, url).toBe(false);
+  });
+
+  it("refuses what the table refuses, and a link or markup in a text box", () => {
+    expect(eventSuggestionInput.safeParse({ ...form, title: "" }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, title: "x".repeat(161) }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, organiser: " " }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, cost: "Pay at https://pay.example.org" }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, cost: "Pay at www.pay.example.org" }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, title: "<b>SIEM</b>" }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, city: "Atlantis" }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, kind: "sponsored" }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, description: "kept?" }).success).toBe(false);
+  });
+
+  it("keeps place, kind and times consistent", () => {
+    // Online has no city or area; in person names its city.
+    expect(eventSuggestionInput.safeParse({ ...form, online: true }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, online: true, city: null }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, city: null }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, kind: "online" }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, endsAt: "2026-11-07T17:59" }).success).toBe(false);
+    expect(eventSuggestionInput.safeParse({ ...form, endsAt: "2026-11-21T18:00" }).success).toBe(true);
+    expect(eventSuggestionInput.safeParse({ ...form, endsAt: "2026-11-21T18:01" }).success).toBe(false);
+  });
+
+  const stored = {
+    sourceUrl: "https://events.example.org/pune/siem-night",
+    title: "Hunting with a SIEM",
+    organiser: "Example Security Circle",
+    kind: "meetup" as const,
+    startsAt: at,
+    endsAt: new Date(at.getTime() + 2 * 3600_000),
+    online: false,
+    city: "Pune" as const,
+    venue: "Baner, Pune",
+    cost: "Free",
+    status: "pending" as const,
+    createdAt: at,
+  };
+
+  it("exports the person's own suggestion with its status, and nothing about anyone else", () => {
+    expect(eventSuggestionExport.safeParse(stored).error).toBeUndefined();
+    expect(eventSuggestionExport.safeParse({ ...stored, status: "live" }).success).toBe(false);
+    expect(eventSuggestionExport.safeParse({ ...stored, userId: id }).success).toBe(false);
+  });
+
+  it("shows admins a read-only queue: no person, no action", () => {
+    const row = {
+      id,
+      sourceUrl: stored.sourceUrl,
+      host: "events.example.org",
+      title: stored.title,
+      organiser: stored.organiser,
+      kind: stored.kind,
+      startsAt: at.toISOString(),
+      endsAt: stored.endsAt.toISOString(),
+      online: false,
+      city: "Pune",
+      venue: "Baner, Pune",
+      cost: "Free",
+      createdAt: at.toISOString(),
+    };
+    expect(eventSuggestionQueue.safeParse({ total: 1, rows: [row] }).error).toBeUndefined();
+    expect(eventSuggestionQueue.safeParse({ total: 0, rows: [] }).success).toBe(true);
+    expect(eventSuggestionQueue.safeParse({ total: 1, rows: [{ ...row, userId: id }] }).success).toBe(false);
+    expect(eventSuggestionQueue.safeParse({ total: 1, rows: [{ ...row, sourceUrl: "http://events.example.org/x" }] }).success).toBe(false);
+    expect(eventSuggestionQueue.safeParse({ total: 0, rows: [row] }).success).toBe(false);
   });
 });

@@ -30,7 +30,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 37;
+export const EXPORT_VERSION = 38;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -239,7 +239,7 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     jobDescriptions: jdRows,
     jobChecks: jobCheckRows,
     goals: goalRows,
-    // From version 37, pitstops you added on the Map (FR-58): the goal's skill, the name you gave it and the free course
+    // From version 38, pitstops you added on the Map (FR-58): the goal's skill, the name you gave it and the free course
     // you picked for it, if any. They sit apart from the path's own steps, which they never change.
     ownPitstops: ownSteps.map((st) => ({ goalSkill: st.skill, name: st.reason, resourceId: st.resourceIds[0] ?? null })),
     proofs: proofRows,
@@ -324,7 +324,9 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // events digest is on (the defaults until you save some), every India week (its Monday) the digest went out that we
     // still keep (90 days), newest first, and
     // the events you saved or marked I'm going, each with its title, organiser, start, link and the goal a prep task is
-    // for. Nothing the digest said is kept, and nobody else's saves are here.
+    // for. Nothing the digest said is kept, and nobody else's saves are here. From version 37, timetable.suggestions:
+    // the events you suggested that we still keep (until 90 days after each ends), each as you sent it with its status,
+    // which stays pending until our grievance officer is named.
     timetable,
   };
 }

@@ -2,6 +2,7 @@
 
 import { ShieldCheck } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { EventsDigestSwitch } from "@/components/timetable/events-digest-switch";
 import { Switch } from "@/components/ui/switch";
 import {
   GAPS_VISIBLE_TO,
@@ -408,10 +409,11 @@ const REMINDER_LABELS: Record<(typeof RIDE_REMINDERS)[number], string> = {
 };
 
 /**
- * Notification choices. The weekly My jobs email (C22) is sent; the others are kept for when their email is on
- * (pending item 21). `weekly` is the "See this week's" preview under its switch.
+ * Notification choices. The weekly My jobs email (C22) and the Monday events digest (Timetable PR 5) are sent; the
+ * others are kept for when their email is on (pending item 21). `weekly` is the "See this week's" preview under its
+ * switch; `digest` is the Monday digest's switch, which saves at once (example data shows it off and fixed).
  */
-export function NotificationFields({ weekly = null }: { weekly?: ReactNode }) {
+export function NotificationFields({ weekly = null, digest }: { weekly?: ReactNode; digest?: ReactNode }) {
   const { draft, setSetting, editable } = useSettingsDraft();
   const s = draft.settings;
   return (
@@ -431,7 +433,8 @@ export function NotificationFields({ weekly = null }: { weekly?: ReactNode }) {
         </select>
       </label>
       <p className="rounded-md bg-surface-2 px-3.5 py-2 text-[0.8rem] text-muted">
-        The weekly My jobs email is sent. Ride reminders and company messages by email come later; we keep those choices for then.
+        The weekly My jobs email and the Monday events email are sent. Ride reminders and company messages by email come later; we keep those choices for
+        then.
       </p>
       <label className="flex max-w-[320px] flex-col gap-1.5">
         <span className="text-[0.82rem] font-semibold">Ride reminder</span>
@@ -462,6 +465,7 @@ export function NotificationFields({ weekly = null }: { weekly?: ReactNode }) {
           Weekly My jobs email
         </Switch>
         {weekly}
+        {digest ?? <EventsDigestSwitch initial={false} />}
       </div>
       {/* docs/plans/notifications-plan.md: the bell in the top bar, in-app only until the email sender exists. */}
       <p className="text-[0.8rem] text-muted">In the app you see connection requests and updates on your applications. Email for these comes later.</p>

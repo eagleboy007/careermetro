@@ -96,22 +96,27 @@ export async function weeklyFor(userId: string, deps: { db?: Db; now?: Date } = 
 
 /** A new off token: 32 random bytes, base64url (43 characters). */
 export const newOffToken = () => randomBytes(32).toString("base64url");
-const TOKEN = /^[A-Za-z0-9_-]{43}$/;
+/** What an off token looks like; anything else is never looked up. */
+export const OFF_TOKEN = /^[A-Za-z0-9_-]{43}$/;
 
-/** The person's off token, made on first use. */
-async function offTokenFor(userId: string, db: Db): Promise<string> {
+/** The person's off token, made on first use. The weekly email and the Monday events digest carry the same one. */
+export async function offTokenFor(userId: string, db: Db): Promise<string> {
   await db.update(userSettings).set({ emailOffToken: newOffToken() }).where(and(eq(userSettings.userId, userId), isNull(userSettings.emailOffToken)));
   const [row] = await db.select({ token: userSettings.emailOffToken }).from(userSettings).where(eq(userSettings.userId, userId)).limit(1);
   return row!.token!;
 }
 
 /**
- * "Turn it off" from the email: turns the weekly email off and replaces the token, so the link works once. Answers
- * true whatever happened, so the page never says whether a token existed.
+ * "Turn it off" from the email: turns the weekly email off. The token is replaced, so the link works once, unless the
+ * Monday events digest is still on: its emails carry the same token, and their off link must keep working (Timetable
+ * PR 5). Answers nothing whatever happened, so the page never says whether a token existed.
  */
 export async function turnOffWeeklyEmail(token: string, db: Db = getDb()): Promise<void> {
-  if (!TOKEN.test(token)) return;
-  await db.update(userSettings).set({ emailWeeklySummary: false, emailOffToken: newOffToken() }).where(eq(userSettings.emailOffToken, token));
+  if (!OFF_TOKEN.test(token)) return;
+  await db
+    .update(userSettings)
+    .set({ emailWeeklySummary: false, emailOffToken: sql`case when ${userSettings.eventsDigest} then ${userSettings.emailOffToken} else ${newOffToken()} end` })
+    .where(eq(userSettings.emailOffToken, token));
 }
 
 export type WeeklyRun = { considered: number; sent: number; empty: number; failed: number; capped: boolean };
@@ -127,7 +132,7 @@ export const weeklyKey = (userId: string, week: string) => `weekly-${userId}-${w
 /**
  * One cron run (Monday to Wednesday, 08:00 IST): everyone with the switch on and no email yet this India week gets
  * one, when their week isn't empty, while the shared app-email budget lasts (`cap` a day, APP_EMAIL_DAILY_BUDGET,
- * shared with the events digest later; src/lib/email/budget.ts). People go in the order of the last week they had a
+ * shared with the Monday events digest, which runs first and takes at most APP_EMAIL_DIGEST_SHARE; src/lib/email/budget.ts). People go in the order of the last week they had a
  * row (never first, then the longest ago), then id, so the same people aren't left at the end every week (T151).
  *
  * At most one email a person a week (T151): before sending, the run takes one from the day's budget and claims the
