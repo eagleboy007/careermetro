@@ -280,7 +280,6 @@ function FoldedHead({
   const closed = isClosed(job.status);
   const when = nowDate(job);
   const gaps = job.fit ? gapCount(job.fit) : null;
-  const name = [job.title, job.company, when && `${when.label} ${when.day}`, gaps].filter(Boolean).join(", ");
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto] gap-x-2 gap-y-1.5 min-[760px]:hidden">
       {/* Spans both columns, laid out on the same grid, so line 2 runs under the chip to the right edge. */}
@@ -288,12 +287,12 @@ function FoldedHead({
         type="button"
         aria-expanded={open}
         aria-controls={controls}
-        aria-label={name}
         onClick={onToggle}
         className="col-span-2 col-start-1 row-span-2 row-start-1 grid min-w-0 grid-cols-subgrid grid-rows-subgrid text-left"
       >
         <span className="col-start-1 row-start-1 flex min-w-0 items-center gap-2.5">
-          <span className={closed ? "opacity-[.72]" : undefined}>
+          {/* The button is named by its visible text (axe label-content-name-mismatch); the logo's initials stay out. */}
+          <span aria-hidden="true" className={closed ? "opacity-[.72]" : undefined}>
             <Logo name={job.company} small />
           </span>
           <b className={`min-w-0 truncate text-[0.95rem] font-semibold ${closed ? "opacity-[.72]" : ""}`}>{job.title}</b>
