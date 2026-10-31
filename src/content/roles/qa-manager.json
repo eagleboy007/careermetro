@@ -1,0 +1,157 @@
+{
+  "slug": "qa-manager",
+  "title": "QA Manager",
+  "summary": "A QA manager leads testing across several teams, products or client accounts. They set the test and automation strategy, manage test leads and engineers, own quality metrics and the testing budget, and give the final quality view before a release.",
+  "dailyDuties": [
+    "Review test strategies and plans with test leads",
+    "Track automation coverage and decide what to automate next",
+    "Publish defect leakage and release readiness metrics",
+    "Run defect triage and go/no-go meetings with product and engineering",
+    "Plan QA capacity, tool licences and budget",
+    "Hire, coach and appraise test leads and engineers"
+  ],
+  "typicalTitles": [
+    "Test Manager",
+    "Quality Engineering Manager",
+    "Testing Manager",
+    "Senior QA Manager",
+    "Senior Test Manager",
+    "Software Quality Assurance Manager",
+    "QA Engineering Manager"
+  ],
+  "experienceBand": {
+    "minYears": 10,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "test-planning",
+      "importance": "required",
+      "expectation": "Set test strategy and test plans across products or accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "test-automation-strategy",
+      "importance": "required",
+      "expectation": "Decide what to automate, pick tools and frameworks, and track automation ROI",
+      "postingShare": null
+    },
+    {
+      "skillId": "selenium",
+      "importance": "required",
+      "expectation": "Know at least one UI automation stack well enough to review frameworks",
+      "postingShare": null,
+      "oneOf": "ui-automation-tool"
+    },
+    {
+      "skillId": "playwright-cypress",
+      "importance": "required",
+      "expectation": "Know at least one UI automation stack well enough to review frameworks",
+      "postingShare": null,
+      "oneOf": "ui-automation-tool"
+    },
+    {
+      "skillId": "quality-metrics-reporting",
+      "importance": "required",
+      "expectation": "Report defect leakage, coverage and release readiness to leadership",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Run automated suites in CI/CD pipelines for continuous testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "bug-tracking",
+      "importance": "required",
+      "expectation": "Run defect triage and defect management across teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "required",
+      "expectation": "Plan QA budgets, tool licences and capacity",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Manage test leads and QA engineers across several teams, including hiring",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree quality gates and go/no-go decisions with product, engineering and clients",
+      "postingShare": null
+    },
+    {
+      "skillId": "api-testing",
+      "importance": "nice_to_have",
+      "expectation": "Guide API test automation for services",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-testing",
+      "importance": "nice_to_have",
+      "expectation": "Plan load and performance testing before releases",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate user acceptance testing with business users",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "nice_to_have",
+      "expectation": "Manage testing vendors and tool suppliers",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Embed testing in agile teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Present quality status to senior leaders",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "ui-automation-tool",
+      "label": "A UI automation tool (Selenium, Playwright or Cypress)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "istqb-test-manager",
+      "importance": "recommended",
+      "why": "Named as desirable in India QA manager postings"
+    },
+    {
+      "certId": "istqb-test-automation",
+      "importance": "optional",
+      "why": "Shows depth in automation strategy and frameworks"
+    },
+    {
+      "certId": "istqb-foundation",
+      "importance": "optional",
+      "why": "Common baseline that many testing teams still ask for"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

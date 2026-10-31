@@ -1,0 +1,162 @@
+{
+  "slug": "data-engineering-manager",
+  "title": "Data Engineering Manager",
+  "summary": "Manages a team of data engineers who build and run the company's data platform: pipelines, the lakehouse or warehouse (central stores for analytics data), and governance. Sits between the data team and its users in analytics, data science, product and finance, and answers for data that is reliable, secure and affordable.",
+  "dailyDuties": [
+    "Hold one-on-ones and coach data engineers",
+    "Review pipeline and data model designs",
+    "Check pipeline failures, data quality alerts and SLAs",
+    "Agree data priorities with analytics, product and finance teams",
+    "Review platform compute and storage spend",
+    "Interview and hire data engineers",
+    "Plan the data platform roadmap"
+  ],
+  "typicalTitles": [
+    "Manager - Data Engineering",
+    "Senior Manager - Data Engineering",
+    "Engineering Manager - Data Platform",
+    "Data Platform Manager",
+    "Big Data Engineering Manager",
+    "Data Engineering Team Lead"
+  ],
+  "experienceBand": {
+    "minYears": 9,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Hire, coach and run reviews for a team of data engineers",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Set platform architecture and engineering standards for the team",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree data priorities and SLAs with analytics, product, finance and risk teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "etl",
+      "importance": "required",
+      "expectation": "Own reliable batch and streaming pipelines the business depends on",
+      "postingShare": null
+    },
+    {
+      "skillId": "spark",
+      "importance": "required",
+      "expectation": "Review Spark jobs for correctness, scale and cost",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-lakehouse",
+      "importance": "required",
+      "expectation": "Run a lakehouse or a cloud warehouse as the main analytics store",
+      "postingShare": null,
+      "oneOf": "analytics-store"
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "required",
+      "expectation": "Run a lakehouse or a cloud warehouse as the main analytics store",
+      "postingShare": null,
+      "oneOf": "analytics-store"
+    },
+    {
+      "skillId": "data-governance",
+      "importance": "required",
+      "expectation": "Put lineage, catalogue, access control and stewardship in place",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-quality-management",
+      "importance": "required",
+      "expectation": "Set data quality rules, checks and alerts with clear owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "required",
+      "expectation": "Track and cut compute and storage spend on the data platform",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-orchestration",
+      "importance": "nice_to_have",
+      "expectation": "Run Airflow or a similar orchestrator at scale",
+      "postingShare": null
+    },
+    {
+      "skillId": "streaming-data",
+      "importance": "nice_to_have",
+      "expectation": "Guide Kafka, Flink or Spark Streaming pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "nice_to_have",
+      "expectation": "Review dimensional and lakehouse data models",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Forecast platform spend and track it against budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-hiring",
+      "importance": "nice_to_have",
+      "expectation": "Run interview loops and grow the team",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Run planning and delivery for the team",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "analytics-store",
+      "label": "A lakehouse or cloud data warehouse"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "gcp-professional-data-engineer",
+      "importance": "optional",
+      "why": "Shows data platform design on Google Cloud"
+    },
+    {
+      "certId": "databricks-data-engineer-associate",
+      "importance": "optional",
+      "why": "Common lakehouse stack in India"
+    },
+    {
+      "certId": "snowflake-snowpro-core",
+      "importance": "optional",
+      "why": "For Snowflake-based platforms"
+    },
+    {
+      "certId": "cdmp",
+      "importance": "optional",
+      "why": "Shows data management and governance depth"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

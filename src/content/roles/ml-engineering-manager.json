@@ -1,0 +1,151 @@
+{
+  "slug": "ml-engineering-manager",
+  "title": "Machine Learning Engineering Manager",
+  "summary": "Leads a team of machine learning and GenAI engineers and data scientists, owning hiring, growth and the delivery of models and LLM features into live products. Sits between the ML team, product and business, and answers for whether models work reliably in production, not for writing most of the code.",
+  "dailyDuties": [
+    "Hold one-on-ones and coach ML engineers and data scientists",
+    "Review designs for training pipelines and model serving",
+    "Check model and LLM evaluation results before a release",
+    "Plan the ML roadmap and agree launch dates with product",
+    "Track production models for drift, cost and incidents",
+    "Interview and hire ML engineers",
+    "Write updates for leadership on model impact"
+  ],
+  "typicalTitles": [
+    "ML Engineering Manager",
+    "AI/ML Engineering Manager",
+    "Manager - Machine Learning",
+    "GenAI Engineering Manager",
+    "GenAI Lead",
+    "Applied Science Manager",
+    "Senior Manager - ML Engineering"
+  ],
+  "experienceBand": {
+    "minYears": 10,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Hire, coach and run reviews for a team of ML engineers and data scientists",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Set technical direction for ML work and grow senior engineers",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree scope, launch dates and success metrics with product and business heads",
+      "postingShare": null
+    },
+    {
+      "skillId": "machine-learning",
+      "importance": "required",
+      "expectation": "Judge model choices and review the team's modelling work",
+      "postingShare": null
+    },
+    {
+      "skillId": "mlops",
+      "importance": "required",
+      "expectation": "Keep models in production with a registry, monitoring, retraining and rollback",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "required",
+      "expectation": "Lead delivery of LLM and GenAI features such as RAG assistants into products",
+      "postingShare": null
+    },
+    {
+      "skillId": "ml-system-design",
+      "importance": "required",
+      "expectation": "Review end-to-end designs for data, training and low-latency serving",
+      "postingShare": null
+    },
+    {
+      "skillId": "model-evaluation",
+      "importance": "required",
+      "expectation": "Set offline and online metrics that decide whether a model ships",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Read and review the team's Python code and prototypes",
+      "postingShare": null
+    },
+    {
+      "skillId": "roadmapping",
+      "importance": "required",
+      "expectation": "Plan and prioritise the ML roadmap with product",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-evaluation",
+      "importance": "nice_to_have",
+      "expectation": "Set up eval sets and guardrails that gate LLM releases",
+      "postingShare": null
+    },
+    {
+      "skillId": "deep-learning",
+      "importance": "nice_to_have",
+      "expectation": "Guide deep learning work with PyTorch or TensorFlow",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-ai-platforms",
+      "importance": "nice_to_have",
+      "expectation": "Run training and inference on SageMaker, Vertex AI, Azure ML or Bedrock",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "nice_to_have",
+      "expectation": "Keep GPU and inference spend within budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "responsible-ai-governance",
+      "importance": "nice_to_have",
+      "expectation": "Apply responsible AI reviews, privacy and model risk checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-hiring",
+      "importance": "nice_to_have",
+      "expectation": "Run interview loops and grow the team",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "Shows production ML design on Google Cloud"
+    },
+    {
+      "certId": "aws-ml-engineer-associate",
+      "importance": "optional",
+      "why": "Shows ML build and deploy on AWS"
+    },
+    {
+      "certId": "azure-mlops-engineer",
+      "importance": "optional",
+      "why": "Shows MLOps on Azure"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

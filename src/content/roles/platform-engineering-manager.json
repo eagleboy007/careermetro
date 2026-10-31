@@ -1,0 +1,169 @@
+{
+  "slug": "platform-engineering-manager",
+  "title": "Platform Engineering Manager",
+  "summary": "Manages DevOps, SRE (site reliability engineering) or cloud platform engineers who keep the company's infrastructure reliable, secure and affordable. Sits between the infrastructure team and the product engineering teams it serves, and answers for uptime, on-call health, cloud spend and how fast teams can ship.",
+  "dailyDuties": [
+    "Hold one-on-ones and coach DevOps and SRE engineers",
+    "Review uptime against SLOs with service teams",
+    "Run incident reviews and follow up on postmortem actions",
+    "Review infrastructure code and architecture changes",
+    "Track cloud spend and plan savings work",
+    "Interview and hire platform engineers",
+    "Plan the platform roadmap with engineering leaders"
+  ],
+  "typicalTitles": [
+    "DevOps Manager",
+    "SRE Manager",
+    "Manager - Site Reliability Engineering",
+    "Cloud Infrastructure Manager",
+    "Engineering Manager - Platform",
+    "Infrastructure Engineering Manager",
+    "DevOps and SRE Manager"
+  ],
+  "experienceBand": {
+    "minYears": 9,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Hire, coach and run reviews for DevOps, SRE or platform engineers",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Set infrastructure architecture and standards for the team",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree reliability, cost and platform priorities with product teams and leadership",
+      "postingShare": null
+    },
+    {
+      "skillId": "aws",
+      "importance": "required",
+      "expectation": "Run production infrastructure on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "azure",
+      "importance": "required",
+      "expectation": "Run production infrastructure on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "gcp",
+      "importance": "required",
+      "expectation": "Run production infrastructure on at least one major cloud",
+      "postingShare": null,
+      "oneOf": "cloud"
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "required",
+      "expectation": "Run production Kubernetes clusters at scale",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "required",
+      "expectation": "Keep infrastructure in reviewed, versioned code",
+      "postingShare": null
+    },
+    {
+      "skillId": "sre-practices",
+      "importance": "required",
+      "expectation": "Set SLOs and error budgets with service teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "required",
+      "expectation": "Run on-call rotations, incident command and postmortems",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "required",
+      "expectation": "Own cloud spend and lead savings work",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "required",
+      "expectation": "Own build and deploy pipelines and delivery metrics",
+      "postingShare": null
+    },
+    {
+      "skillId": "internal-developer-platform",
+      "importance": "nice_to_have",
+      "expectation": "Build a developer portal and golden paths for product teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "observability",
+      "importance": "nice_to_have",
+      "expectation": "Set up metrics, logs and traces across services",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Forecast cloud spend and track it against budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-hiring",
+      "importance": "nice_to_have",
+      "expectation": "Run interview loops and grow the team",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "cloud",
+      "label": "A cloud platform (AWS, Azure or GCP)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "aws-solutions-architect-professional",
+      "importance": "optional",
+      "why": "Shows deep AWS architecture"
+    },
+    {
+      "certId": "cka",
+      "importance": "optional",
+      "why": "Shows hands-on Kubernetes operations"
+    },
+    {
+      "certId": "finops-certified-practitioner",
+      "importance": "optional",
+      "why": "Shows cloud cost practice"
+    },
+    {
+      "certId": "gcp-professional-cloud-architect",
+      "importance": "optional",
+      "why": "For Google Cloud shops"
+    },
+    {
+      "certId": "azure-solutions-architect-expert",
+      "importance": "optional",
+      "why": "For Azure shops"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,84 @@
+{
+  "id": "ml-engineering-manager-senior",
+  "roleSlug": "ml-engineering-manager",
+  "persona": "senior",
+  "resumeText": "Ananya Krishnan | Bengaluru | ananya.krishnan@example.com\n\nSUMMARY\nMachine learning engineering manager with 13 years in applied ML, the last 5 leading ML and GenAI teams in retail technology.\n\nEXPERIENCE\nManager - Machine Learning, Nimbus Retail Tech, Bengaluru (2021 - present)\n- Lead a team of 9 ML engineers and data scientists across search ranking, pricing and GenAI.\n- Hired 6 engineers and ran interview loops for all ML roles.\n- Shipped an LLM-based product Q&A assistant using RAG over the catalogue to 20 million monthly users.\n- Set up MLflow model registry, drift monitoring and weekly retraining for 14 production models.\n- Defined precision recall targets and online conversion metrics that decide whether a ranking model ships.\n- Built LLM-as-a-judge checks that gate every assistant release.\n- Review design documents for training pipelines, feature stores and low-latency model serving.\n- Plan the quarterly ML roadmap with product managers and agree launch scope with category business heads.\n- Cut inference spend by 35% by moving to batched serving on Amazon SageMaker.\n\nSenior Machine Learning Engineer, Kaveri Analytics, Bengaluru (2016 - 2021)\n- Built gradient boosted demand forecasting models for 400 grocery stores.\n- Led 4 engineers as tech lead for the forecasting service and owned its architecture decisions.\n- Trained deep learning models in PyTorch for product image tagging.\n\nData Scientist, Sahyadri Infotech, Pune (2013 - 2016)\n- Built churn and propensity models with logistic regression for telecom clients.\n\nSKILLS\nPython, SQL, PyTorch, scikit-learn, MLflow, Amazon SageMaker, LangChain\n\nEDUCATION\nMTech Computer Science, IIIT Hyderabad, 2013\n",
+  "expected": {
+    "totalYearsExperience": 13,
+    "skills": [
+      {
+        "skillId": "people-management",
+        "quote": "Lead a team of 9 ML engineers and data scientists"
+      },
+      {
+        "skillId": "engineering-hiring",
+        "quote": "Hired 6 engineers and ran interview loops"
+      },
+      {
+        "skillId": "llm-apps",
+        "quote": "Shipped an LLM-based product Q&A assistant using RAG"
+      },
+      {
+        "skillId": "mlops",
+        "quote": "Set up MLflow model registry, drift monitoring and weekly retraining"
+      },
+      {
+        "skillId": "model-evaluation",
+        "quote": "Defined precision recall targets and online conversion metrics"
+      },
+      {
+        "skillId": "llm-evaluation",
+        "quote": "Built LLM-as-a-judge checks that gate every assistant release"
+      },
+      {
+        "skillId": "ml-system-design",
+        "quote": "Review design documents for training pipelines, feature stores and low-latency model serving"
+      },
+      {
+        "skillId": "roadmapping",
+        "quote": "Plan the quarterly ML roadmap with product managers"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "agree launch scope with category business heads"
+      },
+      {
+        "skillId": "cloud-cost",
+        "quote": "Cut inference spend by 35%"
+      },
+      {
+        "skillId": "cloud-ai-platforms",
+        "quote": "moving to batched serving on Amazon SageMaker"
+      },
+      {
+        "skillId": "machine-learning",
+        "quote": "Built gradient boosted demand forecasting models"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Led 4 engineers as tech lead for the forecasting service"
+      },
+      {
+        "skillId": "deep-learning",
+        "quote": "Trained deep learning models in PyTorch"
+      },
+      {
+        "skillId": "python",
+        "quote": "Python"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "python",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "responsible-ai-governance",
+      "computer-vision",
+      "kubernetes",
+      "ai-agents"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,137 @@
+{
+  "slug": "it-program-manager",
+  "title": "IT Program Manager",
+  "summary": "An IT program manager runs a group of related IT projects, such as a core system replacement or a cloud move, as one program. They own the program plan, budget, vendors and governance (the steering committee where sponsors take decisions), with project managers reporting to them.",
+  "dailyDuties": [
+    "Review the integrated plan, dependencies and RAID log with project managers",
+    "Track program spend against budget and update the forecast",
+    "Prepare and run steering committee meetings with sponsors",
+    "Review change requests and their business case",
+    "Hold vendors and system integrators to their statements of work",
+    "Write executive status reports for the CIO and business heads"
+  ],
+  "typicalTitles": [
+    "Senior IT Program Manager",
+    "Transformation Program Manager",
+    "IT Programme Manager",
+    "Program Manager - Digital Transformation",
+    "Program Manager - Cloud Transformation",
+    "IT Portfolio Manager"
+  ],
+  "experienceBand": {
+    "minYears": 11,
+    "maxYears": 20
+  },
+  "skills": [
+    {
+      "skillId": "program-management",
+      "importance": "required",
+      "expectation": "Run a program of related IT projects with an integrated plan, dependencies and RAID logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-portfolio-governance",
+      "importance": "required",
+      "expectation": "Set up program governance, chair steering committees and track benefits",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "required",
+      "expectation": "Own the program budget, forecast spend and explain variances",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-case",
+      "importance": "required",
+      "expectation": "Build and refresh business cases and cost-benefit analysis for change requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "required",
+      "expectation": "Manage system integrators and vendors against statements of work",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-project-management",
+      "importance": "required",
+      "expectation": "Hold project managers to scope, schedule and plan",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Run programs that mix agile and waterfall projects",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Align business sponsors, IT leaders and vendors on scope and priorities",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write executive status reports and steering committee packs",
+      "postingShare": null
+    },
+    {
+      "skillId": "scaled-agile",
+      "importance": "nice_to_have",
+      "expectation": "Run PI planning on SAFe programs",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-migration",
+      "importance": "nice_to_have",
+      "expectation": "Lead data centre or cloud migration programs",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "nice_to_have",
+      "expectation": "Lead project managers and a program office team",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "nice_to_have",
+      "expectation": "Negotiate vendor contracts and change requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-presentation-decks",
+      "importance": "nice_to_have",
+      "expectation": "Build clear decks for leadership reviews",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "pmp",
+      "importance": "recommended",
+      "why": "Most-asked credential in India program manager postings"
+    },
+    {
+      "certId": "prince2-foundation",
+      "importance": "optional",
+      "why": "Named as an alternative to PMP, especially at European banks"
+    },
+    {
+      "certId": "safe-scrum-master",
+      "importance": "optional",
+      "why": "Helps on SAFe programs; the SAFe program-level certs are not in our list yet"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

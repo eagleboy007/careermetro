@@ -25,12 +25,12 @@ In the certifications file, **Proves** lists skills that holding the certificate
 
 | Field | File | Roles awaiting review |
 | --- | --- | --- |
-| Cloud and infrastructure | `roles-cloud.csv` | 27 |
+| Cloud and infrastructure | `roles-cloud.csv` | 28 |
 | Security | `roles-security.csv` | 25 |
-| Data, analytics and AI | `roles-data.csv` | 23 |
+| Data, analytics and AI | `roles-data.csv` | 25 |
 | Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 28 |
-| Testing and quality | `roles-testing.csv` | 4 |
-| Software, hardware, delivery and marketing | `roles-other.csv` | 65 |
+| Testing and quality | `roles-testing.csv` | 5 |
+| Software, hardware, delivery and marketing | `roles-other.csv` | 67 |
 | Sales, finance, HR and operations | `roles-business.csv` | 46 |
 | Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
 
@@ -43,7 +43,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
 
-225 role profiles await review in all.
+231 role profiles await review in all.
 
 ## Changed since the draft, awaiting sign-off
 

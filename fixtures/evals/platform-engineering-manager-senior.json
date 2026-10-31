@@ -1,0 +1,72 @@
+{
+  "id": "platform-engineering-manager-senior",
+  "roleSlug": "platform-engineering-manager",
+  "persona": "senior",
+  "resumeText": "Sandeep Reddy | Hyderabad | sandeep.reddy@example.com\n\nSUMMARY\nPlatform engineering manager with 13 years in infrastructure, DevOps and SRE for payments companies, the last 5 managing platform teams.\n\nEXPERIENCE\nManager - Platform Engineering, Krishna Payments, Hyderabad (2021 - present)\n- Manage 12 engineers across SRE, cloud infrastructure and developer platform teams.\n- Hired 8 engineers and run interview loops for SRE and DevOps roles.\n- Run 40 production EKS clusters on AWS across three regions.\n- Moved all AWS infrastructure to Terraform modules with pull request reviews and drift checks.\n- Introduced SLOs and error budgets for 30 payment services with their owning teams.\n- Run the 24x7 on-call rotation, act as incident commander for P1 outages and chair blameless postmortems.\n- Cut monthly AWS spend by 28% with Savings Plans, rightsizing and Spot nodes.\n- Launched a Backstage developer portal with golden path templates for new services.\n- Rolled out OpenTelemetry tracing and Grafana dashboards across all payment services.\n\nDevOps Lead, Musi Cloud Labs, Hyderabad (2016 - 2021)\n- Led a team of 5 DevOps engineers through the move from a data centre to AWS.\n- Built Jenkins and GitHub Actions pipelines that deploy 60 microservices several times a day.\n\nSystems Engineer, Banjara Infotech, Hyderabad (2013 - 2016)\n- Administered Linux servers and VMware clusters for banking clients.\n\nSKILLS\nAWS, Kubernetes, Terraform, Jenkins, GitHub Actions, Prometheus, Grafana, Python, Bash\n\nEDUCATION\nBTech Electronics and Communication, JNTU Hyderabad, 2013\n",
+  "expected": {
+    "totalYearsExperience": 13,
+    "skills": [
+      {
+        "skillId": "people-management",
+        "quote": "Manage 12 engineers across SRE, cloud infrastructure and developer platform teams"
+      },
+      {
+        "skillId": "engineering-hiring",
+        "quote": "Hired 8 engineers and run interview loops"
+      },
+      {
+        "skillId": "kubernetes",
+        "quote": "Run 40 production EKS clusters on AWS"
+      },
+      {
+        "skillId": "aws",
+        "quote": "production EKS clusters on AWS across three regions"
+      },
+      {
+        "skillId": "terraform",
+        "quote": "Moved all AWS infrastructure to Terraform modules"
+      },
+      {
+        "skillId": "sre-practices",
+        "quote": "Introduced SLOs and error budgets for 30 payment services"
+      },
+      {
+        "skillId": "incident-management",
+        "quote": "act as incident commander for P1 outages"
+      },
+      {
+        "skillId": "cloud-cost",
+        "quote": "Cut monthly AWS spend by 28%"
+      },
+      {
+        "skillId": "internal-developer-platform",
+        "quote": "Launched a Backstage developer portal with golden path templates"
+      },
+      {
+        "skillId": "observability",
+        "quote": "Rolled out OpenTelemetry tracing and Grafana dashboards"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Led a team of 5 DevOps engineers"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Built Jenkins and GitHub Actions pipelines that deploy 60 microservices"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "azure",
+      "machine-learning",
+      "data-lakehouse",
+      "security-incident-response"
+    ]
+  },
+  "reviewedBy": null
+}

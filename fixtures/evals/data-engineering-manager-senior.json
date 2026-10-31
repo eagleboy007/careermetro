@@ -1,0 +1,68 @@
+{
+  "id": "data-engineering-manager-senior",
+  "roleSlug": "data-engineering-manager",
+  "persona": "senior",
+  "resumeText": "Rohit Deshmukh | Pune | rohit.deshmukh@example.com\n\nSUMMARY\nData engineering manager with 14 years in data platforms for lending and financial services, the last 6 managing data engineering teams.\n\nEXPERIENCE\nData Engineering Manager, Godavari FinServ, Pune (2020 - present)\n- Manage a team of 11 data engineers across ingestion, platform and analytics engineering.\n- Hired 7 data engineers and set the team's hiring bar and interview loops.\n- Run the Databricks lakehouse on AWS with Delta Lake bronze, silver and gold layers.\n- Own 300 batch pipelines feeding risk, finance and regulatory reports with agreed delivery SLAs.\n- Moved PySpark jobs to autoscaling job clusters and tuned shuffle-heavy joins.\n- Cut monthly Databricks and S3 spend by 30% through cluster policies and storage lifecycle rules.\n- Rolled out Unity Catalog with column-level access controls and lineage for the RBI audit.\n- Agree data delivery priorities every quarter with the risk office, finance and product heads.\n\nLead Data Engineer, Tapti Data Systems, Pune (2015 - 2020)\n- Led 5 engineers building Airflow-orchestrated Spark pipelines on Hadoop and later AWS EMR.\n- Designed dimensional models for the lending data mart used by 200 analysts.\n\nETL Developer, Narmada Softech, Mumbai (2012 - 2015)\n- Built Informatica ETL jobs loading Oracle data warehouses for insurance clients.\n\nSKILLS\nPySpark, SQL, Databricks, Delta Lake, Airflow, AWS, Informatica\n\nEDUCATION\nBE Computer Engineering, College of Engineering Pune, 2012\n",
+  "expected": {
+    "totalYearsExperience": 14,
+    "skills": [
+      {
+        "skillId": "people-management",
+        "quote": "Manage a team of 11 data engineers"
+      },
+      {
+        "skillId": "engineering-hiring",
+        "quote": "Hired 7 data engineers and set the team's hiring bar"
+      },
+      {
+        "skillId": "data-lakehouse",
+        "quote": "Run the Databricks lakehouse on AWS with Delta Lake"
+      },
+      {
+        "skillId": "etl",
+        "quote": "Own 300 batch pipelines feeding risk, finance and regulatory reports"
+      },
+      {
+        "skillId": "spark",
+        "quote": "Moved PySpark jobs to autoscaling job clusters"
+      },
+      {
+        "skillId": "cloud-cost",
+        "quote": "Cut monthly Databricks and S3 spend by 30%"
+      },
+      {
+        "skillId": "data-governance",
+        "quote": "Rolled out Unity Catalog with column-level access controls and lineage"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Agree data delivery priorities every quarter with the risk office"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Led 5 engineers building Airflow-orchestrated Spark pipelines"
+      },
+      {
+        "skillId": "data-orchestration",
+        "quote": "building Airflow-orchestrated Spark pipelines on Hadoop"
+      },
+      {
+        "skillId": "data-modeling",
+        "quote": "Designed dimensional models for the lending data mart"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-quality-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "kubernetes",
+      "machine-learning",
+      "cloud-data-warehouse",
+      "streaming-data"
+    ]
+  },
+  "reviewedBy": null
+}
