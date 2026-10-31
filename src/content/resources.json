@@ -27024,28 +27024,6 @@
     "free": true
   },
   {
-    "title": "IEEE 1149.1 JTAG and Boundary Scan Tutorial (2nd edition)",
-    "url": "https://www.asset-intertech.com/wp-content/uploads/2022/08/IEEE-1149.1-JTAG-and-Boundary-Scan-Tutorial-Second-Edition.pdf",
-    "provider": "ASSET InterTech",
-    "kind": "docs",
-    "skillIds": [
-      "dft-boundary-scan-ijtag"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "IJTAG vs JTAG vs IEEE 1500: technical tutorial (Al Crouch)",
-    "url": "https://www.asset-intertech.com/wp-content/uploads/2020/09/ijtag-vs-jtag-vs-ieee-1500-technical-tutorial-second-edition-ebook.pdf",
-    "provider": "ASSET InterTech",
-    "kind": "docs",
-    "skillIds": [
-      "dft-boundary-scan-ijtag"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "Boundary scan, JTAG and IEEE 1149 tutorial",
     "url": "https://www.electronics-notes.com/articles/test-methods/boundary-scan-jtag-ieee1149/what-is-boundary-scan-jtag.php",
     "provider": "Electronics Notes",
@@ -29802,17 +29780,6 @@
     "free": true
   },
   {
-    "title": "Concepts of Model Verification and Validation (Los Alamos LA-14167-MS)",
-    "url": "https://digital.library.unt.edu/ark:/67531/metadc785130/m2/1/high_res_d/835920.pdf",
-    "provider": "UNT Digital Library (Los Alamos)",
-    "kind": "docs",
-    "skillIds": [
-      "cae-test-correlation"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Line items (Google Ad Manager Help)",
     "url": "https://support.google.com/admanager/answer/82236",
     "provider": "Google Ad Manager Help",
@@ -32138,17 +32105,6 @@
       "vehicle-energy-simulation"
     ],
     "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Road vehicle model: energy use over a drive cycle",
-    "url": "https://www.batterydesign.net/system/electric-vehicle/road-vehicle-model/",
-    "provider": "Battery Design",
-    "kind": "docs",
-    "skillIds": [
-      "vehicle-energy-simulation"
-    ],
-    "minutes": 15,
     "free": true
   },
   {
