@@ -1,0 +1,37 @@
+[
+  {
+    "id": "foss-united",
+    "name": "FOSS United chapter events (iCalendar)",
+    "organiser": "FOSS United",
+    "format": "ics",
+    "urls": ["https://fossunited.org/api/method/fossunited.api.chapter.upcoming_events_ics"],
+    "termsUrl": "https://fossunited.org/terms",
+    "termsReadOn": null,
+    "on": false,
+    "note": "Off: fossunited.org could not be reached from the build session on 2026-10-31, so its terms were not read. Turn on only after someone reads the terms page and records the date and what it says in docs/timetable-sources.md."
+  },
+  {
+    "id": "confs-tech",
+    "name": "confs.tech conference-data on GitHub",
+    "organiser": "confs.tech listing",
+    "format": "confs-tech",
+    "urls": [
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/javascript.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/typescript.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/python.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/java.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/devops.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/data.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/security.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/android.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/ios.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/golang.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/rust.json",
+      "https://raw.githubusercontent.com/tech-conferences/conference-data/main/conferences/{year}/ux.json"
+    ],
+    "termsUrl": "https://github.com/tech-conferences/conference-data/blob/main/LICENSE",
+    "termsReadOn": null,
+    "on": false,
+    "note": "Off: github.com could not be reached from the build session on 2026-10-31, so the LICENSE file (reported as MIT by Data research) was not read. Turn on only after someone reads it and records the date in docs/timetable-sources.md."
+  }
+]

@@ -809,6 +809,23 @@ export const TIMETABLE_EVENTS_MAX = 200;
 export const INTEREST_TOPICS_MAX = 200;
 export const INTEREST_TOPIC_ALIASES_MAX = 30;
 export const TIMETABLE_NO_CITY = "Add your city in your profile to see events near you.";
+/*
+ * The event feed (Timetable PR 4, src/content/event-feeds.json, /api/cron/events-feed): what each feed may be and how
+ * much of an answer is read. A feed goes on only with the date its terms were read.
+ */
+export const EVENT_FEED_FORMATS = ["ics", "confs-tech"] as const;
+export const EVENT_FEEDS_MAX = 20;
+/** Addresses one feed reads per run (confs.tech has one file per topic and year). */
+export const EVENT_FEED_URLS_MAX = 40;
+/** One answer is read up to this size, within this time, and gives at most this many events. */
+export const EVENT_FEED_MAX_BYTES = 2_000_000;
+export const EVENT_FEED_TIMEOUT_MS = 10_000;
+export const EVENT_FEED_EVENTS_MAX = 2000;
+/** Events further ahead than this, or longer than this, are dropped. */
+export const EVENT_FEED_AHEAD_DAYS = 365;
+export const EVENT_FEED_LENGTH_MAX_DAYS = 14;
+/** Why the feed dropped an event it read; the log carries these as counts only. */
+export const EVENT_FEED_DROPS = ["invalid", "cancelled", "past", "too_far", "too_long", "no_place", "no_topic", "capped"] as const;
 /**
  * App emails (the weekly My jobs email, and later the Monday events digest) sent a day across the whole app, counted
  * per India day in app_email_days (T151, T153). Resend's free plan allows 100 a day; sign-in codes keep the other 60.

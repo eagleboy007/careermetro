@@ -1,0 +1,113 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Synthetic test calendar//EN
+X-WR-CALNAME:Synthetic chapter events
+BEGIN:VTIMEZONE
+TZID:Asia/Kolkata
+BEGIN:STANDARD
+DTSTART:19700101T000000
+TZOFFSETFROM:+0530
+TZOFFSETTO:+0530
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:evt-pune-001@example.org
+SUMMARY:Synthetic FOSS Meetup Pune\, November
+DTSTART;TZID=Asia/Kolkata:20261107T103000
+DTEND;TZID=Asia/Kolkata:20261107T133000
+LOCATION:Example Labs\, Magarpatta\, Pune\, Maharashtra
+URL:https://events.example.org/pune/meetup-nov
+DESCRIPTION:Talks on packaging Python tools and a lightning round. Bring a
+  laptop.\nAll welcome.
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-mumbai-002@example.org
+SUMMARY:Linux &amp; <b>Kubernetes</b> evening
+DTSTART:20261112T130000Z
+DTEND:20261112T153000Z
+LOCATION:Vidyavihar, Mumbai
+URL:https://events.example.org/mumbai/linux-k8s
+DESCRIPTION:Hands-on session.
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-online-003@example.org
+SUMMARY:Online JavaScript tooling talk
+DTSTART:20261115T140000Z
+DTEND:20261115T150000Z
+LOCATION:Online
+URL:https://events.example.org/online/js
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-blr-004@example.org
+SUMMARY:Synthetic Hackathon Bangalore
+DTSTART;VALUE=DATE:20261121
+DTEND;VALUE=DATE:20261123
+LOCATION:Koramangala, Bangalore
+URL:https://events.example.org/blr/hack
+DESCRIPTION:Build with TypeScript over a weekend.
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-cancelled-005@example.org
+SUMMARY:Cancelled Python meetup
+DTSTART:20261120T130000Z
+DTEND:20261120T150000Z
+LOCATION:Pune
+STATUS:CANCELLED
+URL:https://events.example.org/pune/cancelled
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-past-006@example.org
+SUMMARY:Past Python meetup
+DTSTART:20261001T130000Z
+DTEND:20261001T150000Z
+LOCATION:Pune
+URL:https://events.example.org/pune/past
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-abroad-007@example.org
+SUMMARY:Python meetup abroad
+DTSTART:20261110T130000Z
+DTEND:20261110T150000Z
+LOCATION:Berlin, Germany
+URL:https://events.example.org/berlin/python
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-notopic-008@example.org
+SUMMARY:Community potluck
+DTSTART:20261111T130000Z
+DTEND:20261111T150000Z
+LOCATION:Pune
+URL:https://events.example.org/pune/potluck
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-nolink-009@example.org
+SUMMARY:Python meetup with no link
+DTSTART:20261113T130000Z
+DTEND:20261113T150000Z
+LOCATION:Pune
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-long-010@example.org
+SUMMARY:Month-long Python sprint
+DTSTART:20261101T040000Z
+DTEND:20261201T040000Z
+LOCATION:Pune
+URL:https://events.example.org/pune/sprint
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-far-011@example.org
+SUMMARY:Python meetup in two years
+DTSTART:20281110T130000Z
+DTEND:20281110T150000Z
+LOCATION:Pune
+URL:https://events.example.org/pune/far
+END:VEVENT
+BEGIN:VEVENT
+UID:evt-http-012@example.org
+SUMMARY:Python meetup on plain http
+DTSTART:20261114T130000Z
+DTEND:20261114T150000Z
+LOCATION:Pune
+URL:http://events.example.org/pune/http
+END:VEVENT
+END:VCALENDAR

@@ -19,7 +19,7 @@ These are the free or public settings most likely to hurt us. Each one is a mone
 ## Services in use
 
 ### Vercel: hosting the website and app
-- **Used for:** running the app in Mumbai (`bom1`), the staging site (the `staging` branch's preview build; other branches get no preview), the daily 03:00 IST cleanup job (`vercel.json`, `/api/cron/cleanup`), and the weekly My jobs email at 08:00 IST Monday to Wednesday (`/api/cron/weekly-email`; once a day at most, as Hobby allows).
+- **Used for:** running the app in Mumbai (`bom1`), the staging site (the `staging` branch's preview build; other branches get no preview), the daily 03:00 IST cleanup job (`vercel.json`, `/api/cron/cleanup`), the weekly My jobs email at 08:00 IST Monday to Wednesday (`/api/cron/weekly-email`; once a day at most, as Hobby allows), and the daily 05:30 IST event feed (`/api/cron/events-feed`, Timetable PR 4; it reads nothing while every feed is off).
 - **Plan now:** Hobby (free).
 - **What bites:** commercial use isn't allowed on Hobby, there are 100 deploys a day, logs are kept only briefly, and there's no log drain or alerts. Function time and bandwidth limits apply as traffic grows.
 - **Upgrade:** Pro (approx. US$20/month per member). This adds commercial use, higher limits, log drains and longer logs.
@@ -64,6 +64,12 @@ These are the free or public settings most likely to hurt us. Each one is a mone
 - **Plan now:** free public feeds with no contract.
 - **What bites:** no service guarantee. A provider can change or close its feed or terms without notice. Before we charge money, someone should read each provider's terms for commercial use.
 - **Upgrade:** a licensed job data source (a paid API), or employers posting directly on CareerMetro (already built).
+
+### Public event feeds: Timetable
+- **Used for:** events on `/timetable` from organisers' public feeds listed in `src/content/event-feeds.json`, read once a day (05:30 IST, `/api/cron/events-feed`): FOSS United's iCalendar feed and confs.tech's conference data on GitHub (Timetable PR 4, 31 Oct 2026). Each feed goes on only once someone has read its terms and recorded the date in `docs/timetable-sources.md`; both are **off** today because their terms pages could not be reached when the job was built. Never Meetup, LinkedIn, Luma calendars without the organiser's OK, or any site whose terms forbid reuse.
+- **Plan now:** free public feeds with no contract and no key.
+- **What bites:** no service guarantee; a feed can change its format or terms without notice. The job cancels nothing when a feed fails, so an outage leaves the last good events in place.
+- **Upgrade:** organisers' written OK for their Luma or other calendars (Milin's emails), or a licensed events API.
 
 ### Google Cloud: Google sign-in (on hold)
 - **Used for:** "Continue with Google", not switched on.
