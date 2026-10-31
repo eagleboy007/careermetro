@@ -41,5 +41,11 @@ export const gapAnalysis = z.object({
    * never sets it; the analysis's gaps stay the whole role's.
    */
   trackId: z.string().regex(/^[a-z0-9-]+$/).max(60).nullable().optional(),
+  /**
+   * When the person came back to this role as their destination (docs/plans/change-destination-plan.md): set when the
+   * Gaps page reuses this stored analysis while another one is current, so it is current again. Absent on an analysis
+   * only ever picked when it was made; then its creation time stands. The matcher never sets it.
+   */
+  chosenAt: z.iso.datetime().optional(),
 });
 export type GapAnalysis = z.infer<typeof gapAnalysis>;

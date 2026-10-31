@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mapLine, type MapGoal } from "@/lib/schemas";
-import { exampleMapLine } from "./fixtures";
-import { layoutLine, pitstopLabel, pitstopsFor } from "./layout";
+import { exampleMapLine, exampleSwitchedMapLine } from "./fixtures";
+import { EARLIER_STOPS_MAX, layoutLine, MAP_HEIGHT, pitstopLabel, pitstopsFor } from "./layout";
 
 const goal = (skillId: string, status: MapGoal["status"], extra: Partial<MapGoal> = {}): MapGoal => ({
   skillId,
@@ -176,5 +176,53 @@ describe("layoutLine", () => {
       expect(sp.y).toBeGreaterThan(40);
       expect(sp.y + 30).toBeLessThan(540);
     }
+  });
+});
+
+// Change of destination (handoff section 14, open decision 5; docs/plans/change-destination-plan.md).
+describe("layoutLine with an earlier line", () => {
+  it("draws none without a change of destination, and keeps the map's usual height", () => {
+    const l = layoutLine(exampleMapLine);
+    expect(l.earlier).toBeNull();
+    expect(l.height).toBe(MAP_HEIGHT);
+    expect(layoutLine({ ...exampleMapLine, previous: null }).earlier).toBeNull();
+  });
+
+  it("leaves the line at Gaps and runs level below every station, label and crossing line, inside the map", () => {
+    const l = layoutLine(exampleSwitchedMapLine);
+    const e = l.earlier!;
+    const gaps = l.stations.find((s) => s.id === "gaps")!;
+    expect(e.d.startsWith(`M${gaps.x} ${gaps.y}`)).toBe(true);
+    // Labels sit at most 56 units below a station; crossing lines and their labels end at 540.
+    for (const s of l.stations) expect(e.start.y).toBeGreaterThan(s.y + 56);
+    expect(e.start.y).toBeGreaterThan(540);
+    expect(e.label.y).toBeLessThan(l.height);
+    expect(e.end.x + 30).toBeLessThan(l.width);
+    expect(e.end.x - e.start.x).toBeGreaterThanOrEqual(420);
+    expect(l.height).toBeGreaterThan(MAP_HEIGHT);
+  });
+
+  it("puts one small stop per goal left there, at most eight, between its ends", () => {
+    const l = layoutLine(exampleSwitchedMapLine);
+    expect(l.earlier!.stops).toHaveLength(exampleSwitchedMapLine.previous!.left.length);
+    for (const st of l.earlier!.stops) expect(st.x > l.earlier!.start.x && st.x < l.earlier!.end.x).toBe(true);
+    const left = Array.from({ length: 12 }, (_, i) => ({ skillId: `s${i}`, name: `S${i}`, proved: false, ownPitstops: 0 }));
+    const many = layoutLine({ ...exampleMapLine, previous: { role: { slug: "x", title: "X" }, left, shared: 0 } });
+    expect(many.earlier!.stops).toHaveLength(EARLIER_STOPS_MAX);
+  });
+
+  it("never moves the new line: the same stations, train, counts and crossings", () => {
+    const plain = layoutLine(exampleMapLine);
+    const switched = layoutLine(exampleSwitchedMapLine);
+    expect(switched.stations).toEqual(plain.stations);
+    expect(switched.train).toEqual(plain.train);
+    expect(switched.track).toBe(plain.track);
+    expect([switched.goalCount, switched.pitstopCount]).toEqual([plain.goalCount, plain.pitstopCount]);
+    expect(switched.crossings).toEqual(plain.crossings);
+  });
+
+  it("widens a short line so the earlier line and its label fit", () => {
+    const l = layoutLine({ goals: [], otherLines: [], previous: { role: { slug: "x", title: "X" }, left: [], shared: 0 } });
+    expect(l.earlier!.end.x + 30).toBeLessThan(l.width);
   });
 });
