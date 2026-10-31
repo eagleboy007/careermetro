@@ -927,7 +927,9 @@ if (process.env.DATABASE_URL) {
       await q.locator('input[name="age"]').check();
       await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
       await q.waitForURL(/\/today/, { timeout: 15000 });
-      const [asha] = await sql`select id from users where email = ${`asha-line-${testEmail}`}`;
+      // The stand-in sign-in stores the email with a ".test" ending, as the walk's own account lookup expects.
+      const [asha] = await sql`select id from users where email like ${`asha-line-${testEmail}%`}`;
+      if (!asha) throw new Error("Asha's account was not made");
       made.push(asha.id);
       for (const [n, g] of goals.entries()) await sql`insert into user_goals (user_id, skill_id, status, position) values (${asha.id}, ${g.skill_id}, 'active', ${n}) on conflict do nothing`;
       await q.goto(BASE + "/settings#acc-privacy");
