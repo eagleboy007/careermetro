@@ -1,0 +1,60 @@
+{
+  "id": "fraud-analyst-mid",
+  "roleSlug": "fraud-analyst",
+  "persona": "Mid-level payments fraud analyst at a fintech",
+  "resumeText": "Ananya Rao | Bengaluru | ananya.rao@example.com\n\nEXPERIENCE\nFraud Analyst, Kavach Pay Solutions, Bengaluru (2022 - present)\n- Tuned 40 card and UPI fraud rules in the real-time fraud monitoring tool, cutting false declines on good customers.\n- Reviewed daily fraud alerts on flagged merchant accounts and closed each case with notes.\n- Used device fingerprinting and velocity checks to link mule accounts across UPI handles.\n- Wrote SQL queries on transaction tables to trace account takeover patterns.\n- Built a weekly fraud loss dashboard in Tableau for the risk head.\n- Shared monthly fraud trend notes with product and operations teams.\n- Worked with partner banks and the cyber cell to freeze funds on reported scam cases.\n\nPayment Operations Analyst, Setu Ledger Services, Pune (2020 - 2022)\n- Reconciled failed UPI and IMPS payments with partner banks every day.\n- Analysed settlement exceptions in Excel pivot tables for the finance team.\n\nEDUCATION\nBCom, Christ University, Bengaluru, 2020\n\nSKILLS\nSQL, Excel, Tableau, Chargebacks, Python\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "fraud-detection-rules",
+        "quote": "Tuned 40 card and UPI fraud rules in the real-time fraud monitoring tool"
+      },
+      {
+        "skillId": "fraud-case-investigation",
+        "quote": "Reviewed daily fraud alerts on flagged merchant accounts"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries on transaction tables"
+      },
+      {
+        "skillId": "data-visualization",
+        "quote": "Built a weekly fraud loss dashboard in Tableau"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Shared monthly fraud trend notes with product and operations teams"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Worked with partner banks and the cyber cell"
+      },
+      {
+        "skillId": "payment-systems-domain",
+        "quote": "Reconciled failed UPI and IMPS payments with partner banks"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Analysed settlement exceptions in Excel pivot tables"
+      },
+      {
+        "skillId": "chargeback-dispute-management",
+        "quote": "Chargebacks"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "chargeback-dispute-management",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "aml-transaction-monitoring",
+      "kyc-verification",
+      "statistics",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

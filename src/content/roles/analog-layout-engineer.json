@@ -1,0 +1,103 @@
+{
+  "slug": "analog-layout-engineer",
+  "title": "Analog Layout Engineer",
+  "summary": "Draws the physical layout of analog and mixed-signal circuits such as regulators, PLLs and data converters, by hand in Cadence Virtuoso. Works next to circuit designers and makes sure layouts match well, avoid noise and pass DRC, LVS and reliability checks before tape-out.",
+  "dailyDuties": [
+    "Lay out analog blocks such as LDOs, bandgaps and PLLs in Virtuoso",
+    "Place matched devices with common centroid and interdigitation",
+    "Add guard rings and follow ESD and latch-up rules",
+    "Clean DRC and LVS errors with Calibre or PVS",
+    "Run parasitic extraction and fix issues it shows",
+    "Review floorplans and parasitics with circuit designers"
+  ],
+  "typicalTitles": [
+    "Analog Layout Design Engineer",
+    "Custom Layout Engineer",
+    "Mixed-Signal Layout Engineer",
+    "AMS Layout Engineer",
+    "Analog IC Layout Engineer",
+    "Custom Layout Design Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "analog-custom-layout",
+      "importance": "required",
+      "expectation": "Lay out analog and mixed-signal blocks such as LDOs, bandgaps, PLLs and ADCs in Virtuoso",
+      "postingShare": null
+    },
+    {
+      "skillId": "analog-layout-matching",
+      "importance": "required",
+      "expectation": "Use common centroid, interdigitation, dummies, guard rings and shielding for matching and noise",
+      "postingShare": null
+    },
+    {
+      "skillId": "physical-verification",
+      "importance": "required",
+      "expectation": "Clean DRC, LVS and ERC on custom layout with Calibre or PVS",
+      "postingShare": null
+    },
+    {
+      "skillId": "parasitic-extraction",
+      "importance": "required",
+      "expectation": "Run parasitic extraction and fix layout issues the post-layout results show",
+      "postingShare": null
+    },
+    {
+      "skillId": "layout-reliability-esd-latchup",
+      "importance": "required",
+      "expectation": "Follow ESD and latch-up rules in device placement and routing",
+      "postingShare": null
+    },
+    {
+      "skillId": "emir-signoff",
+      "importance": "required",
+      "expectation": "Size wires and vias for electromigration and IR drop",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Discuss floorplans and parasitic trade-offs with circuit designers",
+      "postingShare": null
+    },
+    {
+      "skillId": "finfet-layout",
+      "importance": "nice_to_have",
+      "expectation": "Lay out in FinFET nodes with their patterning and layout-dependent effects",
+      "postingShare": null
+    },
+    {
+      "skillId": "eda-scripting",
+      "importance": "nice_to_have",
+      "expectation": "Automate layout tasks with SKILL, Perl or Tcl scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "physical-design-pnr",
+      "importance": "nice_to_have",
+      "expectation": "Integrate analog blocks into the chip floorplan with the PD team",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Work in a Linux EDA environment",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

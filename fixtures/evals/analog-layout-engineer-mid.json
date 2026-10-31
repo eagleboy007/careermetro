@@ -1,0 +1,48 @@
+{
+  "id": "analog-layout-engineer-mid",
+  "roleSlug": "analog-layout-engineer",
+  "persona": "Mid-level analog layout engineer on planar 28nm data-converter and power blocks",
+  "resumeText": "Sneha Kulkarni | Bengaluru | sneha.kulkarni@example.com\n\nEXPERIENCE\nAnalog Layout Engineer, Nandi Mixed Signal Labs, Bengaluru (2022 - present)\n- Drew layouts for LDOs, bandgaps and comparators in Cadence Virtuoso on a 28nm process.\n- Used common centroid and interdigitated placement with dummy devices for current mirrors and differential pairs.\n- Added guard rings around sensitive blocks and followed latch-up rules around I/O devices.\n- Cleaned DRC and LVS errors with Calibre before every block release.\n- Ran StarRC parasitic extraction and fed back results to circuit designers.\n- Presented layout floorplans and parasitic trade-offs to circuit design leads in weekly reviews.\n\nLayout Trainee, Silicon Plateau Design Services, Bengaluru (2021 - 2022)\n- Built standard cell and simple analog layouts under supervision.\n\nSKILLS\nCadence Virtuoso, Calibre, StarRC, Linux\n\nEDUCATION\nBE Electronics and Communication, BMS College of Engineering, 2021\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "analog-custom-layout",
+        "quote": "Drew layouts for LDOs, bandgaps and comparators in Cadence Virtuoso"
+      },
+      {
+        "skillId": "analog-layout-matching",
+        "quote": "Used common centroid and interdigitated placement with dummy devices"
+      },
+      {
+        "skillId": "layout-reliability-esd-latchup",
+        "quote": "followed latch-up rules around I/O devices"
+      },
+      {
+        "skillId": "physical-verification",
+        "quote": "Cleaned DRC and LVS errors with Calibre"
+      },
+      {
+        "skillId": "parasitic-extraction",
+        "quote": "Ran StarRC parasitic extraction and fed back results"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented layout floorplans and parasitic trade-offs to circuit design leads"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "emir-signoff",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "finfet-layout",
+      "physical-design-pnr",
+      "eda-scripting",
+      "verilog-rtl"
+    ]
+  },
+  "reviewedBy": null
+}

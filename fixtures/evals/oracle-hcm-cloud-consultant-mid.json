@@ -1,0 +1,56 @@
+{
+  "id": "oracle-hcm-cloud-consultant-mid",
+  "roleSlug": "oracle-hcm-cloud-consultant",
+  "persona": "Mid-level Oracle Fusion HCM functional consultant",
+  "resumeText": "Meghana Reddy | Hyderabad | meghana.reddy@example.com\n\nEXPERIENCE\nOracle HCM Functional Consultant, Golconda Cloud Partners, Hyderabad (2020 - present)\n- Configured Oracle Core HR and Absence Management for a retail client with 9,000 workers across India and the Middle East.\n- Set up absence plans, accrual rules and approval workflows in the Oracle HCM Cloud tenant.\n- Wrote fast formulas for absence accruals and eligibility and fixed formula errors raised in testing.\n- Prepared HDL files to load workers, assignments and salary history during data migration.\n- Built OTBI analyses for headcount and leave balances for the HR team.\n- Ran design workshops and fit-gap sessions with client HR leads and wrote configuration workbooks.\n- Wrote test scripts and supported user acceptance testing and go-live for two releases.\n- Tested quarterly updates in Oracle Fusion Cloud and reported regressions to Oracle support.\n\nHR Executive, Charminar Retail, Hyderabad (2017 - 2020)\n- Maintained employee records and leave data in the company HRMS.\n\nSKILLS\nOracle HCM Cloud, OTBI, HDL, SQL, Excel\n\nEDUCATION\nMBA Human Resources, Osmania University, 2017\n",
+  "expected": {
+    "totalYearsExperience": 9,
+    "skills": [
+      {
+        "skillId": "oracle-hcm-cloud-modules",
+        "quote": "Configured Oracle Core HR and Absence Management"
+      },
+      {
+        "skillId": "oracle-fusion-cloud",
+        "quote": "Tested quarterly updates in Oracle Fusion Cloud"
+      },
+      {
+        "skillId": "oracle-fast-formula",
+        "quote": "Wrote fast formulas for absence accruals and eligibility"
+      },
+      {
+        "skillId": "oracle-fusion-data-loads",
+        "quote": "Prepared HDL files to load workers, assignments and salary history"
+      },
+      {
+        "skillId": "oracle-bi-publisher-otbi",
+        "quote": "Built OTBI analyses for headcount and leave balances"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Ran design workshops and fit-gap sessions with client HR leads"
+      },
+      {
+        "skillId": "uat",
+        "quote": "supported user acceptance testing and go-live"
+      },
+      {
+        "skillId": "technical-writing",
+        "quote": "client HR leads and wrote configuration workbooks"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "oracle-integration-cloud",
+      "workday-hcm-configuration",
+      "sap-hcm-configuration",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

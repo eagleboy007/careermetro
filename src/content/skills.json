@@ -9911,7 +9911,6 @@
       "warehouse management system",
       "wms software",
       "wms operations",
-      "sap ewm",
       "sap wm",
       "manhattan wms",
       "oracle wms",
@@ -9920,7 +9919,6 @@
     ],
     "ambiguous": [
       "warehouse management system",
-      "sap ewm",
       "sap wm",
       "manhattan wms",
       "oracle wms"
@@ -14449,6 +14447,740 @@
       "lost and found",
       "lost and found register",
       "lost property handling"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dft-scan-atpg",
+    "name": "Scan insertion and ATPG (Tessent, TestMAX, Modus)",
+    "category": "tools",
+    "aliases": [
+      "scan insertion",
+      "scan stitching",
+      "scan chain insertion",
+      "atpg",
+      "atpg pattern generation",
+      "scan compression",
+      "edt compression",
+      "tessent fastscan",
+      "tessent testkompress",
+      "testkompress",
+      "tetramax",
+      "testmax atpg",
+      "synopsys testmax",
+      "dft compiler",
+      "cadence modus",
+      "fault coverage analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dft-memory-bist",
+    "name": "Memory and logic BIST (MBIST, LBIST)",
+    "category": "tools",
+    "aliases": [
+      "mbist",
+      "memory bist",
+      "mbist insertion",
+      "logic bist",
+      "lbist",
+      "tessent memorybist",
+      "memory built-in self-test",
+      "memory repair analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dft-boundary-scan-ijtag",
+    "name": "Boundary scan and IJTAG (IEEE 1149.1, 1500, 1687)",
+    "category": "tools",
+    "aliases": [
+      "boundary scan",
+      "boundary scan insertion",
+      "ieee 1149.1",
+      "ieee 1500",
+      "ieee 1687",
+      "ijtag",
+      "bsdl",
+      "jtag tap controller"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dft-pattern-validation",
+    "name": "DFT pattern simulation and silicon test debug",
+    "category": "testing",
+    "aliases": [
+      "atpg pattern validation",
+      "scan pattern simulation",
+      "ate pattern debug",
+      "scan diagnosis",
+      "silicon test diagnosis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "analog-custom-layout",
+    "name": "Analog and custom IC layout (Cadence Virtuoso)",
+    "category": "tools",
+    "aliases": [
+      "analog layout",
+      "analog layout design",
+      "custom ic layout",
+      "analog ic layout",
+      "mixed-signal layout",
+      "ams layout",
+      "cadence virtuoso",
+      "virtuoso layout",
+      "virtuoso layout editor",
+      "virtuoso vle",
+      "virtuoso vxl"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "analog-layout-matching",
+    "name": "Analog layout matching and noise isolation",
+    "category": "programming",
+    "aliases": [
+      "common centroid",
+      "common-centroid layout",
+      "interdigitation",
+      "interdigitated layout",
+      "dummy devices",
+      "guard rings",
+      "substrate noise isolation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "parasitic-extraction",
+    "name": "Parasitic extraction and post-layout analysis (StarRC, Quantus)",
+    "category": "tools",
+    "aliases": [
+      "parasitic extraction",
+      "rc extraction",
+      "pex extraction",
+      "starrc",
+      "synopsys starrc",
+      "quantus",
+      "cadence quantus",
+      "calibre xrc",
+      "calibre pex",
+      "post-layout extraction"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "finfet-layout",
+    "name": "FinFET and advanced-node layout",
+    "category": "tools",
+    "aliases": [
+      "finfet layout",
+      "finfet nodes",
+      "finfet technology",
+      "advanced node layout",
+      "double patterning",
+      "multi-patterning",
+      "layout dependent effects"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "layout-reliability-esd-latchup",
+    "name": "IC layout reliability (ESD and latch-up)",
+    "category": "programming",
+    "aliases": [
+      "latch-up prevention",
+      "latch-up rules",
+      "esd and latch-up",
+      "esd protection layout",
+      "esd layout",
+      "electrostatic discharge protection"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bms-state-estimation",
+    "name": "Battery state estimation (SOC, SOH, SOP)",
+    "category": "programming",
+    "aliases": [
+      "soc estimation",
+      "soh estimation",
+      "state of charge estimation",
+      "state of health estimation",
+      "state of power estimation",
+      "sop estimation",
+      "coulomb counting",
+      "battery state estimation",
+      "soc/soh estimation",
+      "soc and soh estimation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bms-cell-monitoring-balancing",
+    "name": "Cell monitoring, balancing and pack protection",
+    "category": "programming",
+    "aliases": [
+      "cell balancing",
+      "passive cell balancing",
+      "active cell balancing",
+      "passive balancing",
+      "active balancing",
+      "cell monitoring",
+      "cell voltage monitoring",
+      "battery monitoring ic",
+      "afe ic",
+      "bms fault protection"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "battery-modelling",
+    "name": "Li-ion cell behaviour and battery modelling",
+    "category": "programming",
+    "aliases": [
+      "battery modelling",
+      "battery modeling",
+      "equivalent circuit model",
+      "equivalent circuit battery model",
+      "li-ion cell chemistry",
+      "lithium-ion cell chemistry",
+      "cell characterisation",
+      "cell characterization",
+      "hppc test",
+      "ocv-soc curve"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mes-platforms",
+    "name": "Manufacturing execution systems (Opcenter, FactoryTalk, AVEVA, SAP DM)",
+    "category": "tools",
+    "aliases": [
+      "manufacturing execution system",
+      "manufacturing execution systems",
+      "mes implementation",
+      "siemens opcenter",
+      "opcenter execution",
+      "opcenter execution core",
+      "camstar",
+      "simatic it",
+      "factorytalk productioncentre",
+      "factorytalk pharmasuite",
+      "rockwell pharmasuite",
+      "aveva mes",
+      "wonderware mes",
+      "sap digital manufacturing",
+      "sap mii",
+      "delmia apriso",
+      "werum pas-x",
+      "electronic batch records"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "isa95-mes-integration",
+    "name": "ISA-95 and MES integration with ERP and shop floor",
+    "category": "tools",
+    "aliases": [
+      "isa-95",
+      "isa 95",
+      "isa95",
+      "isa-88",
+      "b2mml",
+      "mes erp integration",
+      "mes to erp integration",
+      "mes-erp integration",
+      "level 3 integration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-ewm-configuration",
+    "name": "SAP EWM configuration (Extended Warehouse Management)",
+    "category": "business",
+    "aliases": [
+      "sap ewm",
+      "sap ewm configuration",
+      "sap extended warehouse management",
+      "extended warehouse management",
+      "embedded ewm",
+      "decentralized ewm",
+      "decentralised ewm",
+      "s/4hana ewm",
+      "sap s/4hana ewm",
+      "ewm rf framework",
+      "sap ewm rf",
+      "ewm material flow system",
+      "sap ewm mfs",
+      "ewm-mfs",
+      "ewm wave management",
+      "ewm warehouse process types",
+      "ewm putaway strategies",
+      "ewm storage control"
+    ],
+    "ambiguous": [
+      "sap ewm"
+    ],
+    "implies": [
+      "wms-tools"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-hcm-configuration",
+    "name": "SAP HCM configuration (Personnel Admin, Org Management, Time Management)",
+    "category": "business",
+    "aliases": [
+      "sap hcm",
+      "sap hcm configuration",
+      "sap hr configuration",
+      "sap personnel administration",
+      "sap organizational management",
+      "sap organisational management",
+      "sap time management",
+      "sap hcm time management",
+      "sap time evaluation",
+      "h4s4",
+      "sap hcm for s/4hana",
+      "sap hcm infotypes",
+      "sap pa/om",
+      "sap pa om",
+      "sap hr infotypes"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-payroll-configuration",
+    "name": "SAP HCM payroll configuration (schemas, PCRs, India payroll)",
+    "category": "business",
+    "aliases": [
+      "sap payroll",
+      "sap hcm payroll",
+      "sap hr payroll",
+      "sap india payroll",
+      "sap payroll india",
+      "payroll schemas",
+      "payroll schema",
+      "personnel calculation rules",
+      "sap pcr",
+      "sap pcrs",
+      "sap wage types",
+      "wage type configuration",
+      "pe01",
+      "pe02",
+      "sap payroll posting to fi",
+      "sap off-cycle payroll"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-security-authorizations",
+    "name": "SAP security and authorizations (PFCG role design, user administration)",
+    "category": "security",
+    "aliases": [
+      "sap security",
+      "pfcg",
+      "pfcg role design",
+      "sap role design",
+      "sap authorizations",
+      "sap authorisations",
+      "sap authorization concept",
+      "sap authorization objects",
+      "su24",
+      "su01",
+      "suim",
+      "su53",
+      "sap user administration",
+      "sap role administration",
+      "sap derived roles",
+      "sap composite roles",
+      "sap fiori security",
+      "fiori catalog security",
+      "s/4hana security",
+      "sap hana security"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-grc-access-control",
+    "name": "SAP GRC Access Control (ARA, ARM, EAM, BRM)",
+    "category": "security",
+    "aliases": [
+      "sap grc",
+      "sap grc access control",
+      "grc access control",
+      "sap access control",
+      "access risk analysis",
+      "access request management",
+      "emergency access management",
+      "firefighter id",
+      "firefighter ids",
+      "business role management",
+      "sap grc 12.0",
+      "sap grc 10.1",
+      "sod ruleset",
+      "sap sod analysis",
+      "sod risk analysis",
+      "msmp workflow",
+      "sap grc process control"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-hcm-cloud-modules",
+    "name": "Oracle HCM Cloud functional modules (Core HR, Absence, Payroll, Talent)",
+    "category": "tools",
+    "aliases": [
+      "oracle core hr",
+      "oracle hcm core hr",
+      "oracle global hr",
+      "oracle absence management",
+      "oracle absence management cloud",
+      "oracle hcm absence",
+      "oracle cloud payroll",
+      "oracle hcm payroll",
+      "oracle fusion payroll",
+      "oracle global payroll",
+      "oracle talent management cloud",
+      "oracle hcm talent management",
+      "oracle time and labor",
+      "oracle recruiting cloud",
+      "oracle workforce compensation",
+      "oracle benefits cloud",
+      "oracle hcm help desk",
+      "oracle hcm journeys"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "oracle-fusion-cloud"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "oracle-fast-formula",
+    "name": "Oracle HCM fast formulas",
+    "category": "programming",
+    "aliases": [
+      "fast formula",
+      "fast formulas",
+      "oracle fast formula",
+      "oracle fast formulas",
+      "hcm fast formula",
+      "payroll fast formula",
+      "absence fast formula"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fraud-detection-rules",
+    "name": "Fraud rules and monitoring tools (rule tuning, device and velocity signals)",
+    "category": "business",
+    "aliases": [
+      "fraud rules",
+      "fraud rule tuning",
+      "fraud rule creation",
+      "fraud monitoring",
+      "fraud monitoring tool",
+      "fraud risk management",
+      "payment fraud detection",
+      "transaction fraud detection",
+      "falcon fraud manager",
+      "feedzai",
+      "clari5",
+      "sas fraud management",
+      "device fingerprinting",
+      "velocity checks",
+      "velocity rules"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fraud-case-investigation",
+    "name": "Fraud alert review and case investigation",
+    "category": "business",
+    "aliases": [
+      "fraud investigation",
+      "fraud investigations",
+      "fraud alerts",
+      "fraud alert review",
+      "fraud case management",
+      "account takeover investigation",
+      "mule account investigation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "chargeback-dispute-management",
+    "name": "Chargebacks and payment disputes",
+    "category": "business",
+    "aliases": [
+      "chargebacks",
+      "chargeback management",
+      "chargeback analysis",
+      "chargeback disputes",
+      "chargeback representment",
+      "chargeback reason codes",
+      "payment disputes",
+      "card disputes",
+      "upi chargebacks"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "payment-systems-domain",
+    "name": "Payment systems (UPI, cards, wallets, net banking)",
+    "category": "business",
+    "aliases": [
+      "payment systems",
+      "payments domain",
+      "cards and payments",
+      "upi payments",
+      "card payments",
+      "merchant acquiring"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "graphic-design-fundamentals",
+    "name": "Graphic design fundamentals (layout, typography, colour)",
+    "category": "design",
+    "aliases": [
+      "graphic design",
+      "graphic designing",
+      "colour theory",
+      "color theory"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "adobe-photoshop",
+    "name": "Adobe Photoshop",
+    "category": "design",
+    "aliases": [
+      "photoshop",
+      "adobe photoshop",
+      "photo retouching",
+      "image retouching",
+      "photo manipulation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "adobe-illustrator",
+    "name": "Adobe Illustrator",
+    "category": "design",
+    "aliases": [
+      "adobe illustrator",
+      "vector illustration",
+      "vector artwork"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "adobe-indesign",
+    "name": "Adobe InDesign",
+    "category": "design",
+    "aliases": [
+      "indesign",
+      "adobe indesign",
+      "brochure layout",
+      "multi-page layouts"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "brand-identity-design",
+    "name": "Brand identity design (logos, brand guidelines)",
+    "category": "design",
+    "aliases": [
+      "brand identity design",
+      "logo design",
+      "visual identity design",
+      "brand guideline creation",
+      "brand style guide design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "print-production",
+    "name": "Print production and prepress",
+    "category": "design",
+    "aliases": [
+      "print production",
+      "prepress",
+      "pre-press",
+      "print-ready files",
+      "print ready artwork",
+      "cmyk",
+      "print proofing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "motion-graphics",
+    "name": "Motion graphics (After Effects)",
+    "category": "design",
+    "aliases": [
+      "motion graphics",
+      "motion design",
+      "after effects",
+      "adobe after effects",
+      "logo animation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "content-moderation",
+    "name": "Content moderation and platform policy enforcement",
+    "category": "business",
+    "aliases": [
+      "content moderation",
+      "ugc moderation",
+      "user-generated content review",
+      "community guidelines enforcement",
+      "content policy enforcement",
+      "trust and safety operations"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "abuse-trend-analysis",
+    "name": "Platform abuse investigation and trend analysis",
+    "category": "security",
+    "aliases": [
+      "abuse trend analysis",
+      "abuse investigations",
+      "abuse investigation",
+      "spam and abuse detection",
+      "platform abuse",
+      "scam trend analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "software-asset-management",
+    "name": "Software asset management and licence compliance (Flexera, ServiceNow SAM Pro)",
+    "category": "tools",
+    "aliases": [
+      "software asset management",
+      "licence compliance",
+      "license compliance",
+      "software licence management",
+      "software license management",
+      "flexera",
+      "flexera one",
+      "flexnet manager",
+      "servicenow sam pro",
+      "sam pro",
+      "snow license manager",
+      "effective license position",
+      "effective licence position",
+      "licence audit",
+      "license audit"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "software-licensing-models",
+    "name": "Vendor licensing models (Microsoft, Oracle, IBM, Adobe)",
+    "category": "business",
+    "aliases": [
+      "microsoft licensing",
+      "oracle licensing",
+      "ibm licensing",
+      "ilmt",
+      "ibm ilmt",
+      "sub-capacity licensing",
+      "microsoft enterprise agreement",
+      "per core licensing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hardware-asset-management",
+    "name": "IT and hardware asset lifecycle management",
+    "category": "tools",
+    "aliases": [
+      "hardware asset management",
+      "it asset management",
+      "itam",
+      "it asset lifecycle",
+      "e-waste disposal",
+      "it asset disposition",
+      "servicenow ham pro"
     ],
     "ambiguous": [],
     "implies": [],

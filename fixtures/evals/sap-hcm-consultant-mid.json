@@ -1,0 +1,52 @@
+{
+  "id": "sap-hcm-consultant-mid",
+  "roleSlug": "sap-hcm-consultant",
+  "persona": "Mid-level SAP HCM and India payroll consultant",
+  "resumeText": "Sneha Iyer | Chennai | sneha.iyer@example.com\n\nEXPERIENCE\nSAP HCM Consultant, Marina Enterprise Systems, Chennai (2019 - present)\n- Configured personnel actions, custom infotypes and org structure in SAP HCM for a 12,000-employee manufacturer.\n- Maintained work schedules, absence quotas and time evaluation schemas for three plants.\n- Changed India payroll schemas and PCRs for the new wage code and tested results in parallel runs.\n- Updated PF, ESI and professional tax settings and checked monthly statutory reports.\n- Ran parallel payroll runs and user acceptance testing for the H4S4 move with the HR team.\n- Resolved payroll and time tickets in ServiceNow within the agreed SLA each payroll cycle.\n- Gathered requirements from HR and wrote functional specifications for custom payroll reports.\n\nSAP HR Support Analyst, Coromandel Infotech, Chennai (2017 - 2019)\n- Handled infotype data corrections and employee master uploads using LSMW.\n\nSKILLS\nSAP HCM, SAP Payroll, ABAP debugging, Excel\n\nEDUCATION\nMBA Human Resources, Madras University, 2017\n",
+  "expected": {
+    "totalYearsExperience": 9,
+    "skills": [
+      {
+        "skillId": "sap-hcm-configuration",
+        "quote": "Configured personnel actions, custom infotypes and org structure in SAP HCM"
+      },
+      {
+        "skillId": "sap-payroll-configuration",
+        "quote": "Changed India payroll schemas and PCRs for the new wage code"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Gathered requirements from HR and wrote functional specifications"
+      },
+      {
+        "skillId": "uat",
+        "quote": "Ran parallel payroll runs and user acceptance testing"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Resolved payroll and time tickets in ServiceNow within the agreed SLA"
+      },
+      {
+        "skillId": "data-migration",
+        "quote": "employee master uploads using LSMW"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-successfactors-employee-central",
+      "sap-fi-configuration",
+      "workday-hcm-configuration",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

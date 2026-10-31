@@ -1,0 +1,115 @@
+{
+  "slug": "sap-ewm-consultant",
+  "title": "SAP EWM Consultant",
+  "summary": "Sets up and supports SAP Extended Warehouse Management (EWM), the SAP module that runs warehouses: storage bins, receiving, putaway, picking, packing and shipping, plus handheld scanner screens and links to conveyors. Sits in an SAP project or support team next to the MM and SD consultants and works with warehouse managers.",
+  "dailyDuties": [
+    "Run workshops with warehouse teams on inbound and outbound flows",
+    "Configure storage types, bins, warehouse process types and wave templates",
+    "Set up RF scanner screens and test them with warehouse users",
+    "Fix delivery and queue errors between EWM and the ERP system",
+    "Write functional specs for enhancements and review them with ABAP developers",
+    "Prepare test scripts and support integration testing and go-live"
+  ],
+  "typicalTitles": [
+    "SAP EWM Functional Consultant",
+    "SAP Extended Warehouse Management Consultant",
+    "SAP EWM-MFS Consultant",
+    "SAP S/4HANA EWM Consultant",
+    "SAP EWM Techno-Functional Consultant",
+    "SAP WM/EWM Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "sap-ewm-configuration",
+      "importance": "required",
+      "expectation": "Configure warehouse structure, inbound and outbound processes, waves, tasks, RF screens and MFS in SAP EWM",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-mm-configuration",
+      "importance": "required",
+      "expectation": "Know MM inventory and procurement well enough to design the EWM link for goods receipts and stock moves",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-interfaces",
+      "importance": "required",
+      "expectation": "Set up and troubleshoot the qRFC, IDoc and delivery links between EWM and the ERP system",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run workshops with warehouse teams and turn their needs into a fit-gap and design",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map as-is and to-be warehouse flows such as putaway, picking, packing and loading",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Write test scripts and lead integration and user acceptance testing before go-live",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain designs and issues clearly to warehouse users and project leads",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with logistics, IT and vendor teams across project phases",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-sd-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Understand outbound deliveries and shipping from the SD side",
+      "postingShare": null
+    },
+    {
+      "skillId": "wms-tools",
+      "importance": "nice_to_have",
+      "expectation": "Know how warehouse staff use SAP EWM or another WMS day to day",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Write functional specs and debug enhancements with ABAP developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-migration",
+      "importance": "nice_to_have",
+      "expectation": "Load storage bins, products and opening stock during cutover",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "nice_to_have",
+      "expectation": "Handle support tickets after go-live within agreed service levels",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

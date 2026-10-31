@@ -6,7 +6,9 @@
       "bi-developer",
       "analytics-engineer",
       "data-governance-analyst",
-      "clinical-sas-programmer"
+      "clinical-sas-programmer",
+      "fraud-analyst",
+      "trust-and-safety-analyst"
     ],
     "data-engineering": [
       "data-engineer",
@@ -57,7 +59,8 @@
       "dlp-engineer",
       "red-team-operator",
       "third-party-risk-analyst",
-      "it-auditor"
+      "it-auditor",
+      "sap-security-grc-consultant"
     ],
     "infra-cloud": [
       "cloud-engineer",
@@ -87,7 +90,8 @@
       "technical-account-manager",
       "middleware-administrator",
       "it-service-delivery-manager",
-      "platform-engineering-manager"
+      "platform-engineering-manager",
+      "software-asset-manager"
     ],
     "backend": [
       "software-engineer",
@@ -122,7 +126,8 @@
       "game-developer",
       "ar-vr-developer",
       "ux-researcher",
-      "ecommerce-developer"
+      "ecommerce-developer",
+      "graphic-designer"
     ],
     "enterprise-apps": [
       "salesforce-developer",
@@ -152,7 +157,11 @@
       "guidewire-developer",
       "core-banking-consultant",
       "sap-fiori-ui5-developer",
-      "sap-btp-integration-developer"
+      "sap-btp-integration-developer",
+      "mes-engineer",
+      "sap-ewm-consultant",
+      "sap-hcm-consultant",
+      "oracle-hcm-cloud-consultant"
     ],
     "quality": [
       "qa-automation-engineer",
@@ -178,7 +187,10 @@
       "physical-design-engineer",
       "design-verification-engineer",
       "functional-safety-engineer",
-      "infotainment-engineer"
+      "infotainment-engineer",
+      "dft-engineer",
+      "analog-layout-engineer",
+      "bms-engineer"
     ],
     "delivery": [
       "business-analyst",

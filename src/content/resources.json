@@ -10896,7 +10896,11 @@
     "provider": "NPTEL (IIT Kharagpur)",
     "kind": "course",
     "skillIds": [
-      "post-silicon-validation"
+      "post-silicon-validation",
+      "dft-scan-atpg",
+      "dft-memory-bist",
+      "dft-boundary-scan-ijtag",
+      "dft-pattern-validation"
     ],
     "minutes": 1800,
     "free": true
@@ -10918,7 +10922,8 @@
     "provider": "OpenOCD",
     "kind": "docs",
     "skillIds": [
-      "post-silicon-validation"
+      "post-silicon-validation",
+      "dft-boundary-scan-ijtag"
     ],
     "minutes": 120,
     "free": true
@@ -15573,7 +15578,8 @@
     "provider": "Canva Design School",
     "kind": "course",
     "skillIds": [
-      "social-creative-design"
+      "social-creative-design",
+      "graphic-design-fundamentals"
     ],
     "minutes": 60,
     "free": true
@@ -17965,7 +17971,8 @@
     "provider": "SAP Help Portal",
     "kind": "docs",
     "skillIds": [
-      "wms-tools"
+      "wms-tools",
+      "sap-ewm-configuration"
     ],
     "minutes": 30,
     "free": true
@@ -27046,6 +27053,2132 @@
       "san-storage"
     ],
     "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Scan insertion for better ATPG",
+    "url": "https://blogs.sw.siemens.com/tessent/2017/04/24/scan-insertion-for-better-atpg",
+    "provider": "Siemens EDA (Tessent blog)",
+    "kind": "docs",
+    "skillIds": [
+      "dft-scan-atpg"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Test and design for testability (ELEC 5250/6250 slides)",
+    "url": "https://eng.auburn.edu/~nelsovp/courses/elec5250_6250/slides/Test_DFT.pdf",
+    "provider": "Auburn University",
+    "kind": "docs",
+    "skillIds": [
+      "dft-scan-atpg",
+      "dft-boundary-scan-ijtag"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Lab 2: scan chain insertion and ATPG with Tessent (VLSI Testing)",
+    "url": "https://tiger.iee.nycu.edu.tw/course/Testing2023Fall/notes/pdf/lab2_2023F.pdf",
+    "provider": "National Yang Ming Chiao Tung University",
+    "kind": "practice",
+    "skillIds": [
+      "dft-scan-atpg",
+      "dft-pattern-validation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Memory testing: MBIST, BIRA and BISR",
+    "url": "https://www.design-reuse.com/articles/45915/memory-testing-self-repair-mechanism.html",
+    "provider": "Design & Reuse",
+    "kind": "docs",
+    "skillIds": [
+      "dft-memory-bist"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Testing Digital Systems II, Lecture 7: logic BIST",
+    "url": "https://cdnc.itec.kit.edu/downloads/tds2_ws1011_lecture7.pdf",
+    "provider": "Karlsruhe Institute of Technology",
+    "kind": "docs",
+    "skillIds": [
+      "dft-memory-bist"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "SoC testing, Chapter 4: built-in self-test (BIST)",
+    "url": "https://www.ee.ncu.edu.tw/jfli/public_html/soctest/lecture/ch04.pdf",
+    "provider": "National Central University",
+    "kind": "docs",
+    "skillIds": [
+      "dft-memory-bist"
+    ],
+    "minutes": 75,
+    "free": true
+  },
+  {
+    "title": "Reduce your Tessent MemoryBIST simulation debug time",
+    "url": "https://blogs.sw.siemens.com/eda-support/2024/06/29/reduce-your-tessent-memorybist-simulation-debug-time/",
+    "provider": "Siemens EDA (support blog)",
+    "kind": "docs",
+    "skillIds": [
+      "dft-memory-bist",
+      "dft-pattern-validation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "IEEE 1149.1 JTAG and Boundary Scan Tutorial (2nd edition)",
+    "url": "https://www.asset-intertech.com/wp-content/uploads/2022/08/IEEE-1149.1-JTAG-and-Boundary-Scan-Tutorial-Second-Edition.pdf",
+    "provider": "ASSET InterTech",
+    "kind": "docs",
+    "skillIds": [
+      "dft-boundary-scan-ijtag"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "IJTAG vs JTAG vs IEEE 1500: technical tutorial (Al Crouch)",
+    "url": "https://www.asset-intertech.com/wp-content/uploads/2020/09/ijtag-vs-jtag-vs-ieee-1500-technical-tutorial-second-edition-ebook.pdf",
+    "provider": "ASSET InterTech",
+    "kind": "docs",
+    "skillIds": [
+      "dft-boundary-scan-ijtag"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Boundary scan, JTAG and IEEE 1149 tutorial",
+    "url": "https://www.electronics-notes.com/articles/test-methods/boundary-scan-jtag-ieee1149/what-is-boundary-scan-jtag.php",
+    "provider": "Electronics Notes",
+    "kind": "docs",
+    "skillIds": [
+      "dft-boundary-scan-ijtag"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "A new way to solve systematic failures and boost yield (scan diagnosis)",
+    "url": "https://blogs.sw.siemens.com/tessent/2023/04/21/a-new-way-to-solve-systematic-failures-and-boost-yield/",
+    "provider": "Siemens EDA (Tessent blog)",
+    "kind": "docs",
+    "skillIds": [
+      "dft-pattern-validation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Improving semiconductor yield with scan diagnosis",
+    "url": "https://www.electronicdesign.com/home/article/21201851/improving-semiconductor-yield-with-scan-diagnosis",
+    "provider": "Electronic Design",
+    "kind": "docs",
+    "skillIds": [
+      "dft-pattern-validation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Virtual test: simulating ATE vectors in a SystemVerilog testbench (DVCon poster)",
+    "url": "https://dvcon-proceedings.org/wp-content/uploads/virtual-test-simulating-ate-vectors-in-a-systemverilog-testbench-for-faster-time-to-market-poster.pdf",
+    "provider": "DVCon / Analog Devices",
+    "kind": "docs",
+    "skillIds": [
+      "dft-pattern-validation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "ECEN 474/704 Lecture 5: analog layout techniques",
+    "url": "https://people.engr.tamu.edu/spalermo/ecen474/lecture05_ee474_layout.pdf",
+    "provider": "Texas A&M University",
+    "kind": "docs",
+    "skillIds": [
+      "analog-custom-layout",
+      "analog-layout-matching",
+      "layout-reliability-esd-latchup"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "ECEN 474 Lab 2: common-centroid and matched layout",
+    "url": "https://people.engr.tamu.edu/spalermo/ecen474/Lab2.pdf",
+    "provider": "Texas A&M University",
+    "kind": "practice",
+    "skillIds": [
+      "analog-layout-matching",
+      "analog-custom-layout"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Analog Layout Guide",
+    "url": "https://neu-ucb-tvip.github.io/tvip-analog-workspace/Analog_Layout_Guide",
+    "provider": "Northeastern / UC Berkeley TVIP workspace",
+    "kind": "docs",
+    "skillIds": [
+      "analog-layout-matching",
+      "analog-custom-layout"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "EE290C Lecture 3: matching",
+    "url": "https://neu-ucb-tvip.github.io/tvip-analog-workspace/resources/Niknejad_290C_Lecture-3-Matching.pdf",
+    "provider": "UC Berkeley (Ali Niknejad)",
+    "kind": "docs",
+    "skillIds": [
+      "analog-layout-matching"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "EE290C Lecture 1: introduction to Virtuoso",
+    "url": "https://neu-ucb-tvip.github.io/tvip-analog-workspace/resources/Niknejad_290C_Lecture-1-Virtuoso_Intro.pdf",
+    "provider": "UC Berkeley (Ali Niknejad)",
+    "kind": "docs",
+    "skillIds": [
+      "analog-custom-layout"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Common-centroid layouts for analog circuits: advantages and limitations",
+    "url": "https://past.date-conference.com/proceedings-archive/2021/pdf/1829.pdf",
+    "provider": "DATE 2021 (University of Minnesota, Intel)",
+    "kind": "docs",
+    "skillIds": [
+      "analog-layout-matching"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Optimizing analog layouts: techniques for effective layout matching",
+    "url": "https://www.design-reuse.com/article/61548-optimizing-analog-layouts-techniques-for-effective-layout-matching",
+    "provider": "Design & Reuse",
+    "kind": "docs",
+    "skillIds": [
+      "analog-layout-matching"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Lab 3: inverter layout, DRC, extraction and LVS in Virtuoso",
+    "url": "https://www2.seas.gwu.edu/~vlsi/ece218/SPRING/reference/lab3_inverter_layout.pdf",
+    "provider": "George Washington University",
+    "kind": "practice",
+    "skillIds": [
+      "analog-custom-layout"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Cadence layout tutorial (EECE 7248)",
+    "url": "https://ece.northeastern.edu/courses/eece7248/2019fa/Cadence/Tutorial_Layoutl.pdf",
+    "provider": "Northeastern University",
+    "kind": "practice",
+    "skillIds": [
+      "analog-custom-layout"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Virtuoso tutorial: layout, DRC, LVS, xRC and HSPICE (EE434)",
+    "url": "https://eecs.wsu.edu/~daehyun/teaching/2016_EE434/Sp2015/Labs/tut-virtuoso.pdf",
+    "provider": "Washington State University",
+    "kind": "practice",
+    "skillIds": [
+      "analog-custom-layout",
+      "parasitic-extraction"
+    ],
+    "minutes": 150,
+    "free": true
+  },
+  {
+    "title": "Parasitic extraction technology (StarRC white paper)",
+    "url": "https://www.synopsys.com/content/dam/synopsys/implementation&signoff/white-papers/extraction_tech_wp.pdf",
+    "provider": "Synopsys",
+    "kind": "docs",
+    "skillIds": [
+      "parasitic-extraction"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Parasitic extraction (PEX) tutorial for analog IC design",
+    "url": "https://mics.ece.vt.edu/ICDesign/Tutorials/AnalogIC/pex.html",
+    "provider": "Virginia Tech MICS",
+    "kind": "practice",
+    "skillIds": [
+      "parasitic-extraction"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "How to use Calibre parasitic extraction tools: step-by-step guide",
+    "url": "https://blogs.sw.siemens.com/calibre/2026/02/17/how-to-use-calibre-parasitic-extraction-tools-step-by-step-guide/",
+    "provider": "Siemens EDA (Calibre blog)",
+    "kind": "docs",
+    "skillIds": [
+      "parasitic-extraction"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Post-layout simulation tutorial (TSMC 90nm, INF4420)",
+    "url": "https://www.uio.no/studier/emner/matnat/ifi/INF4420/v12/PostLayoutTutorialTSMC90nm.pdf",
+    "provider": "University of Oslo",
+    "kind": "practice",
+    "skillIds": [
+      "parasitic-extraction"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Advanced topics in FinFET back-end layout, analog techniques and design tools",
+    "url": "https://www.design-reuse.com/articles/55839/advanced-topics-in-finfet-back-end-layout-analog-techniques-and-design-tools.html",
+    "provider": "Design & Reuse",
+    "kind": "docs",
+    "skillIds": [
+      "finfet-layout"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Semiconductor Devices for Next Generation FETs (More than Moore), IIT Roorkee",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_ee75/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "finfet-layout"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Data converter design in FinFET processes (DesignWare technical bulletin)",
+    "url": "https://synopsys.com/designware-ip/technical-bulletin/data-converters-design-dwtb-q217.html",
+    "provider": "Synopsys",
+    "kind": "docs",
+    "skillIds": [
+      "finfet-layout"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Development of a predictive process design kit for 15-nm FinFETs: FreePDK15",
+    "url": "https://arxiv.org/pdf/2009.04600",
+    "provider": "arXiv (NC State University)",
+    "kind": "docs",
+    "skillIds": [
+      "finfet-layout"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Stress-related local layout effects in FinFET technology",
+    "url": "https://semiengineering.com/stress-related-local-layout-effects-in-finfet-technology-and-device-design-sensitivity/",
+    "provider": "Semiconductor Engineering",
+    "kind": "docs",
+    "skillIds": [
+      "finfet-layout"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Protect against ESD by ensuring latch-up guard rings",
+    "url": "https://semiwiki.com/eda/siemens-eda/362551-protect-against-esd-by-ensuring-latch-up-guard-rings/",
+    "provider": "SemiWiki",
+    "kind": "docs",
+    "skillIds": [
+      "layout-reliability-esd-latchup"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "GF180MCU design manual: I/O latch-up rules and guidelines",
+    "url": "https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_14_3_2.html",
+    "provider": "GlobalFoundries GF180MCU open PDK",
+    "kind": "docs",
+    "skillIds": [
+      "layout-reliability-esd-latchup"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "GF180MCU design manual: layout practices for latch-up prevention",
+    "url": "https://gf180mcu-pdk.readthedocs.io/en/latest/physical_verification/design_manual/drm_14_3_4.html",
+    "provider": "GlobalFoundries GF180MCU open PDK",
+    "kind": "docs",
+    "skillIds": [
+      "layout-reliability-esd-latchup"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "On-chip ESD protection design for CMOS ICs (tutorial slides, Prof. Ming-Dou Ker)",
+    "url": "https://alab.iee.nycu.edu.tw/~mdker/Talks/20100901.pdf",
+    "provider": "National Yang Ming Chiao Tung University",
+    "kind": "docs",
+    "skillIds": [
+      "layout-reliability-esd-latchup"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Electrostatic discharge protection and latch-up design for ASIC development",
+    "url": "https://core.ac.uk/download/322439293.pdf",
+    "provider": "IntechOpen (via CORE)",
+    "kind": "docs",
+    "skillIds": [
+      "layout-reliability-esd-latchup"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "BU-903: How to measure state-of-charge",
+    "url": "https://www.batteryuniversity.com/article/bu-903-how-to-measure-state-of-charge/",
+    "provider": "Battery University",
+    "kind": "docs",
+    "skillIds": [
+      "bms-state-estimation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "A closer look at state of charge (SOC) and state of health (SOH) estimation techniques",
+    "url": "https://www.analog.com/en/resources/technical-articles/a-closer-look-at-state-of-charge-and-state-health-estimation-tech.html",
+    "provider": "Analog Devices",
+    "kind": "docs",
+    "skillIds": [
+      "bms-state-estimation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Estimate battery SOC using a Kalman filter (example)",
+    "url": "https://www.mathworks.com/help/simscape-battery/ug/estimate-battery-soc-using-kalman-filter-example.html",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "bms-state-estimation",
+      "battery-modelling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Battery state-of-charge estimation (Simscape Battery example)",
+    "url": "https://au.mathworks.com/help/simscape-battery/ug/battery-state-of-charge-estimation.html",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "bms-state-estimation"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "BU-901b: How to measure the remaining useful life of a battery",
+    "url": "https://www.batteryuniversity.com/article/bu-901b-how-to-measure-the-remaining-useful-life-of-a-battery/",
+    "provider": "Battery University",
+    "kind": "docs",
+    "skillIds": [
+      "bms-state-estimation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "A critical look at coulomb counting towards improving Kalman filter based SOC tracking",
+    "url": "https://arxiv.org/pdf/2101.05435",
+    "provider": "arXiv (University of Windsor)",
+    "kind": "docs",
+    "skillIds": [
+      "bms-state-estimation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Cell balancing with BQ769x2 battery monitors (SLUAA81)",
+    "url": "https://ti.com/lit/SLUAA81",
+    "provider": "Texas Instruments",
+    "kind": "docs",
+    "skillIds": [
+      "bms-cell-monitoring-balancing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Passive battery cell balancing",
+    "url": "https://www.analog.com/en/resources/technical-articles/passive-battery-cell-balancing.html",
+    "provider": "Analog Devices",
+    "kind": "docs",
+    "skillIds": [
+      "bms-cell-monitoring-balancing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Battery cell balancing for improved performance in EVs, Part I: passive balancing",
+    "url": "https://www.digikey.at/en/articles/battery-cell-balancing-for-improved-performance-in-evs---part-i-passive-balancing-technologies",
+    "provider": "DigiKey",
+    "kind": "docs",
+    "skillIds": [
+      "bms-cell-monitoring-balancing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "BU-908: Battery management system (BMS)",
+    "url": "https://www.batteryuniversity.com/article/bu-908-battery-management-system-bms/",
+    "provider": "Battery University",
+    "kind": "docs",
+    "skillIds": [
+      "bms-cell-monitoring-balancing",
+      "bms-state-estimation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "BU-304b: Making lithium-ion safe",
+    "url": "https://www.batteryuniversity.com/article/bu-304b-making-lithium-ion-safe/",
+    "provider": "Battery University",
+    "kind": "docs",
+    "skillIds": [
+      "bms-cell-monitoring-balancing",
+      "battery-modelling"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "BU-204: How do lithium batteries work?",
+    "url": "https://www.batteryuniversity.com/article/bu-204-how-do-lithium-batteries-work",
+    "provider": "Battery University",
+    "kind": "docs",
+    "skillIds": [
+      "battery-modelling"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "PyBaMM Tutorial 1: how to run a model",
+    "url": "https://docs.pybamm.org/en/latest/source/examples/notebooks/getting_started/tutorial-1-how-to-run-a-model.html",
+    "provider": "PyBaMM",
+    "kind": "practice",
+    "skillIds": [
+      "battery-modelling"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "On parameter identification of an equivalent circuit model for lithium-ion batteries",
+    "url": "https://www.merl.com/publications/docs/TR2017-123.pdf",
+    "provider": "Mitsubishi Electric Research Laboratories",
+    "kind": "docs",
+    "skillIds": [
+      "battery-modelling"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "The essentials of Siemens Opcenter Execution Process 3.0",
+    "url": "https://blogs.sw.siemens.com/opcenter/the-essentials-of-siemens-opcenter-execution-process-3-0/",
+    "provider": "Siemens (Opcenter blog)",
+    "kind": "docs",
+    "skillIds": [
+      "mes-platforms"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "MES as a core innovation target",
+    "url": "https://blogs.sw.siemens.com/opcenter/mes-as-a-core-innovation-target/",
+    "provider": "Siemens (Opcenter blog)",
+    "kind": "docs",
+    "skillIds": [
+      "mes-platforms"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "What isn't an MES?",
+    "url": "https://www.controleng.com/what-isnt-an-mes",
+    "provider": "Control Engineering",
+    "kind": "docs",
+    "skillIds": [
+      "mes-platforms"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "SAP Digital Manufacturing Integration Guide",
+    "url": "https://help.sap.com/doc/f6b2ab2222794bebad4c0dcd33138e71/latest/en-US/SAP_DMC_Integration_Guide_enUS.pdf",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "mes-platforms",
+      "isa95-mes-integration"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "ISA-95 standard: enterprise-control system integration",
+    "url": "https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard",
+    "provider": "ISA",
+    "kind": "docs",
+    "skillIds": [
+      "isa95-mes-integration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPC UA for ISA-95: overview",
+    "url": "https://reference.opcfoundation.org/specs/OPC-10030/4.1",
+    "provider": "OPC Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "isa95-mes-integration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "B2MML and BatchML schemas (GitHub)",
+    "url": "https://www.github.com/MESAInternational/B2MML-BatchML",
+    "provider": "MESA International",
+    "kind": "docs",
+    "skillIds": [
+      "isa95-mes-integration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Technical integration with SAP S/4HANA or SAP ERP (SAP Digital Manufacturing)",
+    "url": "https://help.sap.com/docs/sap-digital-manufacturing/integration-guide/technical-integration-with-sap-s-4hana-or-sap-erp",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "isa95-mes-integration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "XML delivers (B2MML for ERP to MES integration)",
+    "url": "https://www.controleng.com/articles/xml-delivers",
+    "provider": "Control Engineering",
+    "kind": "docs",
+    "skillIds": [
+      "isa95-mes-integration"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Putaway strategies in Extended Warehouse Management, part 2",
+    "url": "https://community.sap.com/t5/supply-chain-management-blog-posts-by-members/putaway-strategies-in-extended-warehouse-management-part-2/ba-p/13798640",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-ewm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Bulk storage strategy in SAP EWM",
+    "url": "https://community.sap.com/t5/supply-chain-management-blog-posts-by-members/bulk-storage-strategy-in-sap-ewm/ba-p/13446925",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-ewm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "S/4HANA embedded EWM: advanced production integration configuration",
+    "url": "https://answers.sap.com/t5/supply-chain-management-blogs-by-members/s-4hana-embedded-extended-warehouse-management-ewm-advanced-production/ba-p/13431467",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-ewm-configuration"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Inbound process (EWM in SAP S/4HANA)",
+    "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/9832125c23154a179bfa1784cdc9577a/e15a4205bb284393add14c9d419fef45.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-ewm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Inbound delivery process (SAP EWM)",
+    "url": "https://help.sap.com/docs/SAP_EXTENDED_WAREHOUSE_MANAGEMENT/3d97bec9bf1649099384bb8167df3cf2/88ad54fa2c9044b7b5406a511783589e.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-ewm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Infotypes (SAP ERP HCM)",
+    "url": "https://help.sap.com/docs/ERP_HCM/d3bc4479e3344626be836c03a5c6962f/dd72dd538636424de10000000a174cb4.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-hcm-configuration"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Organizational Assignment (Infotype 0001)",
+    "url": "https://help.sap.com/docs/ERP_HCM/b8cf9c5b9e034ee69c063930ad7f06c1/0078dd538636424de10000000a174cb4.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-hcm-configuration"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Actions (Infotype 0000)",
+    "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/4890f6fdb74a48339baba97ef3d921f0/81c5c353b677b44ce10000000a174cb4.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-hcm-configuration"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Organizational Management (SAP NetWeaver 7.4 library)",
+    "url": "https://help.sap.com/doc/saphelp_nw74/7.4.16/en-us/4e/ebb6fb0d1857dee10000000a421bc1/content.htm?no_cache=true",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-hcm-configuration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Public holiday calendar and work schedule rules",
+    "url": "https://community.sap.com/t5/enterprise-resource-planning-blog-posts-by-members/public-holiday-calendar-and-work-schedule-rules/ba-p/13235828",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-hcm-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Provident Fund (Payroll India)",
+    "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/56bd4d7c05534d509bc25c8b3ecf24e7/d75cde537187424de10000000a174cb4.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-payroll-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Defining Professional Tax (Payroll India)",
+    "url": "https://help.sap.com/erp_hcm_ias2_2015_02/helpdata/en/77/3ce153038a424de10000000a174cb4/content.htm?no_cache=true",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-payroll-configuration"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Income tax calculation (Payroll India, PY-IN)",
+    "url": "https://help.sap.com/saphelp_afs64/helpdata/en/0d/bec6ba2cec4cf69e9ba5b43dbec440/content.htm?no_cache=true",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-payroll-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Payroll operations (for writing PCRs)",
+    "url": "https://community.sap.com/t5/enterprise-resource-planning-blog-posts-by-members/payroll-operations/ba-p/13241690",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-payroll-configuration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Simple way of writing a PCR",
+    "url": "https://blogs.sap.com/2012/03/15/simple-way-of-writing-a-pcr/",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-payroll-configuration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Creating roles (PFCG)",
+    "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/c6e6d078ab99452db94ed7b3b7bbcccf/48e8eb38f94cb138e10000000a114084.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-security-authorizations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Creating composite roles",
+    "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/c6e6d078ab99452db94ed7b3b7bbcccf/42271d24d86211d2961a0000e82de14a.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-security-authorizations"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Roles (AS ABAP)",
+    "url": "https://help.sap.com/doc/saphelp_nw75/7.5.5/en-US/4b/68587b8ec53260e10000000a42189b/content.htm?no_cache=true",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-security-authorizations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Assigning authorizations to roles",
+    "url": "https://help.sap.com/docs/SAP_NETWEAVER_AS_ABAP_752/cc0c305d2fab47bd808adcad3ca7ee9d/d923e05001374cc0a338fef7804ced7f.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-security-authorizations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Transporting and distributing roles",
+    "url": "https://help.sap.com/docs/ABAP_PLATFORM_NEW/c6e6d078ab99452db94ed7b3b7bbcccf/6d7c8cfd410ea040aadf92e1f78107a4.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-security-authorizations"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "SAP Access Control (product documentation)",
+    "url": "https://help.sap.com/grc-ac",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-grc-access-control"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SAP Access Control 12.0 User Guide",
+    "url": "https://help.sap.com/doc/ca8a8544445e47f5bb0cbc8220ae01b2/12.0.27/en-US/loio8bdd50b2b1f34e049c45ded84788789c_EN.pdf",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-grc-access-control"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Configuration: Emergency Access Management (SAP Access Control 12.0)",
+    "url": "https://help.sap.com/doc/759acdedc98b4997bbba4f9fb15c9b1a/12.0.33/en-US/loio8354d295b56443c1aea86223a78565cf_en.pdf",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-grc-access-control"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "SAP Access Control 12.0 Security Guide",
+    "url": "https://help.sap.com/doc/8bd8373aebdd4a838b68f6ccfcd53e90/12.0.31/en-US/loio7cd2a1653364455486b0a54924dc7ead_EN.pdf",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-grc-access-control",
+      "sap-security-authorizations"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Mitigation controls creation and assignment in SAP GRC 12.0",
+    "url": "https://community.sap.com/t5/financial-management-blog-posts-by-members/mitigation-controls-creation-and-assignment-in-sap-grc-12-0/ba-p/13549488",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-grc-access-control"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Configure Emergency Access (EAM) in GRC 10",
+    "url": "https://blogs.sap.com/2012/11/03/configure-emergency-access-eam-in-grc-10/",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-grc-access-control"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How to manage cross-system segregation of duties (SoD) risk",
+    "url": "https://community.sap.com/t5/financial-management-blog-posts-by-sap/how-to-manage-cross-system-segregation-of-duties-sod-risk/ba-p/14083887",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-grc-access-control"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Overview of implementing Global Human Resources",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/faigh/overview-of-implementing-global-human-resources.html",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-hcm-cloud-modules"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Using Global Human Resources (Oracle Fusion Cloud HR)",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/fawhr/using-global-human-resources.pdf",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-hcm-cloud-modules"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Setup tasks for implementing Absence Management",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/24a/faiam/setup-tasks-for-implementing-absence-management.html",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-hcm-cloud-modules"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Using Absence Management (Oracle Fusion Cloud HR)",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/fauam/using-absence-management.pdf",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-hcm-cloud-modules"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Implementing Global Payroll (Oracle Fusion Cloud HR)",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/faigp/implementing-global-payroll.pdf",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-hcm-cloud-modules",
+      "oracle-fast-formula"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Administering Fast Formulas (Oracle Fusion Cloud HR)",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/oapff/administering-fast-formulas.pdf",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-fast-formula"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Fast formulas (Implementing Global Human Resources, chapter 36)",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/21d/faigh/fast-formulas.html",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-fast-formula"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Global Absence Accrual Matrix formula",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/oapff/global-absence-accrual-matrix.html",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-fast-formula"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Global Absence Proration formula",
+    "url": "https://docs.oracle.com/en/cloud/saas/human-resources/oapff/global-absence-proration.html",
+    "provider": "Oracle Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-fast-formula"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Global absence accrual matrix fast formula in Fusion Absence Management: an introduction",
+    "url": "https://apps2fusion.com/old/item-3/48-oracle-fusion/fusion-applications/1137-global-absence-accrual-matrix-fast-formula-in-fusion-absence-management-an-introduction",
+    "provider": "Apps2Fusion",
+    "kind": "docs",
+    "skillIds": [
+      "oracle-fast-formula"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Fraud prevention rules (Radar)",
+    "url": "https://docs.stripe.com/radar/rules",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-detection-rules"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Radar rules reference (velocity attributes, syntax)",
+    "url": "https://docs.stripe.com/radar/rules/reference",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-detection-rules"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Radar for Fraud Teams: Rules 101",
+    "url": "https://stripe.com/guides/radar-rules-101",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-detection-rules"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "How Radar works",
+    "url": "https://docs.stripe.com/radar/how-radar-works",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-detection-rules"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Payment fraud detection: how it works",
+    "url": "https://stripe.com/resources/more/payment-fraud-detection-and-approval-rates",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-detection-rules"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Payment fraud detection and prevention: a how-to guide",
+    "url": "https://stripe.com/resources/more/payment-fraud-detection-and-prevention",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-detection-rules",
+      "fraud-case-investigation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Review payments (manual fraud review queue)",
+    "url": "https://docs.stripe.com/radar/reviews",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-case-investigation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Improve fraud management with Radar and Stripe Sigma",
+    "url": "https://stripe.com/guides/improve-fraud-management-with-radar-for-fraud-teams-and-stripe-data",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-case-investigation",
+      "fraud-detection-rules"
+    ],
+    "minutes": 35,
+    "free": true
+  },
+  {
+    "title": "Manage fraud: account takeover and mule account signals",
+    "url": "https://docs.stripe.com/treasury/connect/examples/fraud-guide",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-case-investigation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Common types of online fraud",
+    "url": "https://docs.stripe.com/disputes/prevention/fraud-types",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-case-investigation",
+      "chargeback-dispute-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Master Directions on Fraud Risk Management in Commercial Banks (2024)",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=12702",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-case-investigation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "FAQs on Master Directions on Fraud Risk Management",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=3763",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "fraud-case-investigation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How disputes work",
+    "url": "https://stripe.com/docs/disputes/how-disputes-work",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "chargeback-dispute-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Dispute reason code categories",
+    "url": "https://docs.stripe.com/disputes/categories",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "chargeback-dispute-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Dispute and fraud card monitoring programs (VAMP, ECM)",
+    "url": "https://docs.stripe.com/disputes/monitoring-programs",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "chargeback-dispute-management",
+      "fraud-detection-rules"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Best practices for preventing fraud and disputes",
+    "url": "https://docs.stripe.com/disputes/prevention/best-practices",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "chargeback-dispute-management",
+      "fraud-detection-rules"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Visa Dispute Management Guide for Merchants",
+    "url": "https://usa.visa.com/dam/VCOM/global/support-legal/documents/merchants-dispute-management-guidelines.pdf",
+    "provider": "Visa",
+    "kind": "docs",
+    "skillIds": [
+      "chargeback-dispute-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Mastercard Chargeback Guide, Merchant Edition",
+    "url": "https://www.mastercard.com/content/dam/mccom/shared/business/support/rules-pdfs/chargeback-guide.pdf",
+    "provider": "Mastercard",
+    "kind": "docs",
+    "skillIds": [
+      "chargeback-dispute-management"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Harmonisation of TAT and customer compensation for failed transactions (UPI, cards, IMPS)",
+    "url": "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=11693",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "chargeback-dispute-management",
+      "payment-systems-domain"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "UPI: Unified Payments Interface product overview",
+    "url": "https://www.npci.org.in/product/upi",
+    "provider": "NPCI",
+    "kind": "docs",
+    "skillIds": [
+      "payment-systems-domain"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "BHIM UPI guidelines (ecosystem, participants, UPI ID)",
+    "url": "https://www.npci.org.in/uploads/BHIM_UPI_Guidelines_2026_012a0b1bce.pdf",
+    "provider": "NPCI",
+    "kind": "docs",
+    "skillIds": [
+      "payment-systems-domain"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Payment and Settlement Systems overview",
+    "url": "https://rbi.org.in/scripts/FS_Overview.aspx?fn=9",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "payment-systems-domain"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How card payment processing and settlement works",
+    "url": "https://stripe.com/en-at/resources/more/credit-card-payment-authorization-and-transaction-settlement-process",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "payment-systems-domain"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Acquirer vs issuer: what's the difference?",
+    "url": "https://stripe.com/resources/more/acquirer-vs-issuer",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "payment-systems-domain",
+      "chargeback-dispute-management"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "Introduction to Commercial Banking and Fintech (NPTEL)",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_ec01/preview",
+    "provider": "NPTEL / IIT Kanpur",
+    "kind": "course",
+    "skillIds": [
+      "payment-systems-domain"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "RBI Payments Vision 2025",
+    "url": "https://rbidocs.rbi.org.in/rdocs/PublicationReport/Pdfs/PAYMENTSVISION2025844D11300C884DC4ACB8E56B7348F4D4.PDF",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "payment-systems-domain"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Understanding typography",
+    "url": "https://www.canva.com/design-school/lessons/understanding-typography-theory",
+    "provider": "Canva Design School",
+    "kind": "course",
+    "skillIds": [
+      "graphic-design-fundamentals"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "Color wheel basics",
+    "url": "https://www.canva.com/en/design-school/lessons/color-wheel-basics",
+    "provider": "Canva Design School",
+    "kind": "course",
+    "skillIds": [
+      "graphic-design-fundamentals"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "Graphic design basics (from the experts)",
+    "url": "https://canva.com/en/design-school/courses/graphic-design-basics-from-the-experts",
+    "provider": "Canva Design School",
+    "kind": "course",
+    "skillIds": [
+      "graphic-design-fundamentals"
+    ],
+    "minutes": 44,
+    "free": true
+  },
+  {
+    "title": "Graphic Design Fundamentals",
+    "url": "https://edu.gcfglobal.org/en/graphic-design-playlist-lessons/graphic-design-fundamentals/1",
+    "provider": "GCFGlobal",
+    "kind": "course",
+    "skillIds": [
+      "graphic-design-fundamentals"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Rethinking color theory",
+    "url": "https://design.google/library/color-theory-ruxandra-duru",
+    "provider": "Google Design",
+    "kind": "docs",
+    "skillIds": [
+      "graphic-design-fundamentals"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to choose a web font: a beginner's guide",
+    "url": "https://design.google/library/choosing-web-fonts-beginners-guide",
+    "provider": "Google Design",
+    "kind": "docs",
+    "skillIds": [
+      "graphic-design-fundamentals"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "Graphic design basics in Photoshop",
+    "url": "https://helpx.adobe.com/ph_fil/photoshop/how-to/graphic-design-basics.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "adobe-photoshop",
+      "graphic-design-fundamentals"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Photoshop basics for beginners",
+    "url": "https://helpx.adobe.com/ph_fil/photoshop/how-to/ps-basics-fundamentals.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "adobe-photoshop"
+    ],
+    "minutes": 21,
+    "free": true
+  },
+  {
+    "title": "Photoshop for beginners (layers, clipping masks)",
+    "url": "https://helpx.adobe.com/ph_fil/photoshop/how-to/photoshop-for-beginners.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "adobe-photoshop"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Photoshop tutorials (beginner to advanced)",
+    "url": "https://helpx.adobe.com/ph_fil/photoshop/tutorials.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "adobe-photoshop"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Get started with selections in Photoshop",
+    "url": "https://helpx.adobe.com/photoshop/using/making-selections.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "adobe-photoshop"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Essential techniques for beginners (Shape Builder, Pathfinder)",
+    "url": "https://helpx.adobe.com/cy_en/illustrator/how-to/illustration-techniques.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "adobe-illustrator"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "View all Adobe Illustrator tutorials",
+    "url": "https://helpx.adobe.com/sg/illustrator/view-all-tutorials.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "adobe-illustrator"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learn about Illustrator tools",
+    "url": "https://helpx.adobe.com/illustrator/using/tools-in-illustrator.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "adobe-illustrator"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Essential components of an artwork in Illustrator",
+    "url": "https://helpx.adobe.com/illustrator/using/artwork-essentials.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "adobe-illustrator"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Get started with InDesign",
+    "url": "https://helpx.adobe.com/ph_fil/indesign/how-to/get-started-indesign.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "adobe-indesign"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "View all Adobe InDesign tutorials",
+    "url": "https://helpx.adobe.com/ie/indesign/view-all-tutorials.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "adobe-indesign"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Design editing basics in InDesign",
+    "url": "https://helpx.adobe.com/ph_fil/indesign/how-to/edit-modify-content.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "adobe-indesign"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Produce print-ready PDF files in InDesign",
+    "url": "https://helpx.adobe.com/indesign/using/preparing-pdfs-service-providers.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "print-production",
+      "adobe-indesign"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Package InDesign files for output",
+    "url": "https://helpx.adobe.com/indesign/desktop/print/preflight/package-files-for-output.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "print-production",
+      "adobe-indesign"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Preflight files in InDesign before handoff to a service provider",
+    "url": "https://helpx.adobe.com/ca/indesign/using/preflighting-files-handoff.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "print-production",
+      "adobe-indesign"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to set up Illustrator files for printing",
+    "url": "https://helpx.adobe.com/illustrator/using/setting-documents-printing.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "print-production",
+      "adobe-illustrator"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to add printer's marks and bleeds in Illustrator",
+    "url": "https://helpx.adobe.com/illustrator/using/printers-marks-bleeds.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "print-production",
+      "adobe-illustrator"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "How to use overprinting in Illustrator",
+    "url": "https://helpx.adobe.com/illustrator/using/overprinting.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "print-production"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Design with print colors (CMYK)",
+    "url": "https://www.canva.com/help/cmyk-for-print/",
+    "provider": "Canva",
+    "kind": "docs",
+    "skillIds": [
+      "print-production"
+    ],
+    "minutes": 8,
+    "free": true
+  },
+  {
+    "title": "Use margins, bleed, rulers, and crop marks",
+    "url": "https://www.canva.com/help/margins-bleed-crop-marks/",
+    "provider": "Canva",
+    "kind": "docs",
+    "skillIds": [
+      "print-production"
+    ],
+    "minutes": 8,
+    "free": true
+  },
+  {
+    "title": "Creating a logo",
+    "url": "https://www.canva.com/design-school/courses/creating-a-logo/",
+    "provider": "Canva Design School",
+    "kind": "course",
+    "skillIds": [
+      "brand-identity-design"
+    ],
+    "minutes": 44,
+    "free": true
+  },
+  {
+    "title": "Branding your business",
+    "url": "https://www.canva.com/design-school/courses/branding-design/",
+    "provider": "Canva Design School",
+    "kind": "course",
+    "skillIds": [
+      "brand-identity-design"
+    ],
+    "minutes": 158,
+    "free": true
+  },
+  {
+    "title": "The logo design thinking process",
+    "url": "https://www.canva.com/design-school/lessons/the-logo-design-thinking-process/",
+    "provider": "Canva Design School",
+    "kind": "course",
+    "skillIds": [
+      "brand-identity-design"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "Create a brand style guide for your business",
+    "url": "https://www.adobe.com/creativecloud/business/teams/resources/how-to/brand-guide.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "brand-identity-design"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Visual identity design guide",
+    "url": "https://www.adobe.com/uk/creativecloud/design/discover/visual-identity.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "brand-identity-design"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "Evolving the Google identity",
+    "url": "https://design.google/library/evolving-google-identity",
+    "provider": "Google Design",
+    "kind": "docs",
+    "skillIds": [
+      "brand-identity-design"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Learn After Effects: beginner motion design workshop",
+    "url": "https://www.youtube.com/watch?v=ALmYrTm6EKQ",
+    "provider": "Adobe Video (YouTube)",
+    "kind": "video",
+    "skillIds": [
+      "motion-graphics"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "After Effects tutorials (Get started, layers, animating essentials)",
+    "url": "https://helpx.adobe.com/ph_fil/after-effects/tutorials.html",
+    "provider": "Adobe",
+    "kind": "course",
+    "skillIds": [
+      "motion-graphics"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Animation basics in After Effects",
+    "url": "https://helpx.adobe.com/africa/after-effects/using/animation-basics.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "motion-graphics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Creating Motion Graphics templates in After Effects",
+    "url": "https://helpx.adobe.com/after-effects/desktop/using/video/creating-motion-graphics-templates-in-after-effects.html",
+    "provider": "Adobe",
+    "kind": "video",
+    "skillIds": [
+      "motion-graphics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Learn expression basics to link animations",
+    "url": "https://helpx.adobe.com/after-effects/desktop/work-with-expressions/expression-basics/expression-basics.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "motion-graphics"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What is content moderation?",
+    "url": "https://www.tspa.org/curriculum/ts-fundamentals/content-moderation-and-operations/what-is-content-moderation/",
+    "provider": "Trust & Safety Professional Association",
+    "kind": "docs",
+    "skillIds": [
+      "content-moderation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Content moderation and operations (T&S Fundamentals)",
+    "url": "https://www.tspa.org/curriculum/ts-fundamentals/content-moderation-and-operations/",
+    "provider": "Trust & Safety Professional Association",
+    "kind": "course",
+    "skillIds": [
+      "content-moderation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Content moderation simulation",
+    "url": "https://www.tspa.org/curriculum/ts-curriculum/content-moderation-simulation/",
+    "provider": "Trust & Safety Professional Association",
+    "kind": "practice",
+    "skillIds": [
+      "content-moderation"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Policy models",
+    "url": "https://www.tspa.org/curriculum/ts-fundamentals/policy/policy-models/",
+    "provider": "Trust & Safety Professional Association",
+    "kind": "docs",
+    "skillIds": [
+      "content-moderation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "YouTube Community Guidelines enforcement report",
+    "url": "https://transparencyreport.google.com/youtube-policy?hl=en",
+    "provider": "Google Transparency Report",
+    "kind": "docs",
+    "skillIds": [
+      "content-moderation",
+      "abuse-trend-analysis"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Abuse types",
+    "url": "https://www.tspa.org/curriculum/ts-fundamentals/policy/abuse-types/",
+    "provider": "Trust & Safety Professional Association",
+    "kind": "docs",
+    "skillIds": [
+      "abuse-trend-analysis",
+      "content-moderation"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Common types of data in Trust & Safety",
+    "url": "https://www.tspa.org/curriculum/ts-curriculum/how-trust-safety-teams-use-data/common-types-of-data-in-trust-safety/",
+    "provider": "Trust & Safety Professional Association",
+    "kind": "docs",
+    "skillIds": [
+      "abuse-trend-analysis"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Investigations, intelligence and risk mitigation: teams and roles",
+    "url": "https://www.tspa.org/curriculum/ts-curriculum/investigations-intelligence-risk-mitigation/teams-and-roles/",
+    "provider": "Trust & Safety Professional Association",
+    "kind": "docs",
+    "skillIds": [
+      "abuse-trend-analysis"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Meta's threat disruptions (adversarial threat reports)",
+    "url": "https://transparency.meta.com/metasecurity/threat-reporting/",
+    "provider": "Meta Transparency Center",
+    "kind": "docs",
+    "skillIds": [
+      "abuse-trend-analysis"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Meta Integrity Reports, H1 2026",
+    "url": "https://transparency.meta.com/reports/integrity-reports-h1-2026/",
+    "provider": "Meta Transparency Center",
+    "kind": "docs",
+    "skillIds": [
+      "abuse-trend-analysis",
+      "content-moderation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "What is software asset management?",
+    "url": "https://www.servicenow.com/products/it-asset-management/what-is-software-asset-management.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "software-asset-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Software Asset Management data sheet",
+    "url": "https://www.servicenow.com/content/dam/servicenow-assets/public/en-us/doc-type/resource-center/data-sheet/ds-sam.pdf",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "software-asset-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Software Asset Management success map",
+    "url": "https://www.servicenow.com/content/dam/servicenow-assets/public/en-us/doc-type/success/success-map/software-asset-management.pdf",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "software-asset-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Software asset management (SAM) explained",
+    "url": "https://www.flexera.com/resources/glossary/software-asset-management",
+    "provider": "Flexera",
+    "kind": "docs",
+    "skillIds": [
+      "software-asset-management"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "Why is software asset management important?",
+    "url": "https://www.flexera.com/blog/it-asset-management/why-is-software-asset-management-important/",
+    "provider": "Flexera",
+    "kind": "docs",
+    "skillIds": [
+      "software-asset-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Software spend and effective license position",
+    "url": "https://www.flexera.com/blog/it-asset-management/effective-license-position/",
+    "provider": "Flexera",
+    "kind": "docs",
+    "skillIds": [
+      "software-asset-management",
+      "software-licensing-models"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Software license models: what you need to know (part 1)",
+    "url": "https://flexera.com/blog/elo/software-license-models-101-2",
+    "provider": "Flexera",
+    "kind": "docs",
+    "skillIds": [
+      "software-licensing-models",
+      "software-asset-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Complying with licensing requirements (IBM License Metric Tool)",
+    "url": "https://www.ibm.com/docs/en/license-metric-tool/9.2.0?topic=overview-complying-licensing-requirements",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "software-licensing-models",
+      "software-asset-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Sub-capacity (virtualization capacity) licensing",
+    "url": "https://www.ibm.com/software/passportadvantage/subcaplicensing",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "software-licensing-models"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Oracle Software Licensing Basics",
+    "url": "https://www.oracle.com/a/ocom/docs/corporate/oracle-software-licensing-basics.pdf",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "software-licensing-models"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Oracle Partitioning Policy (server partitioning)",
+    "url": "https://www.oracle.com/assets/partitioning-070609.pdf",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "software-licensing-models"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "What is centrally managed Azure Hybrid Benefit for SQL Server?",
+    "url": "https://learn.microsoft.com/en-us/azure/cost-management-billing/scope-level/overview-azure-hybrid-benefit-scope",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "software-licensing-models"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Overview of licensing and activation in Microsoft 365 Apps",
+    "url": "https://learn.microsoft.com/en-us/microsoft-365-apps/licensing-activation/overview-licensing-activation-microsoft-365-apps",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "software-licensing-models"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Adobe licensing overview (named user vs shared device)",
+    "url": "https://helpx.adobe.com/business/enterprise/licensing/licensing-overview/adobe-licensing-overview.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "software-licensing-models"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "What is hardware asset management?",
+    "url": "https://www.servicenow.com/products/it-asset-management/what-is-hardware-asset-management.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "hardware-asset-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "The value of Hardware Asset Management (data sheet)",
+    "url": "https://www.servicenow.com/content/dam/servicenow-assets/public/en-us/doc-type/resource-center/data-sheet/ds-hardware-asset-management.pdf",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "hardware-asset-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "IT asset management (ITAM): definition and benefits",
+    "url": "https://www.flexera.com/resources/glossary/it-asset-management-itam",
+    "provider": "Flexera",
+    "kind": "docs",
+    "skillIds": [
+      "hardware-asset-management",
+      "software-asset-management"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "Recommended hardware asset management practices to support SAM",
+    "url": "https://www.flexera.com/blog/it-asset-management/recommended-hardware-asset-management-practices-to-support-sam-2/",
+    "provider": "Flexera",
+    "kind": "docs",
+    "skillIds": [
+      "hardware-asset-management",
+      "software-asset-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Realising value from asset management with asset lifecycle modelling",
+    "url": "https://www.flexera.com/blog/it-asset-management/realising-additional-value-from-asset-management-with-asset-lifecycle-modelling-2/",
+    "provider": "Flexera",
+    "kind": "docs",
+    "skillIds": [
+      "hardware-asset-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "NIST SP 1800-5: IT Asset Management",
+    "url": "https://csrc.nist.gov/pubs/sp/1800/5/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "hardware-asset-management",
+      "software-asset-management"
+    ],
+    "minutes": 90,
     "free": true
   }
 ]

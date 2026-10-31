@@ -30,7 +30,7 @@ const IMPORTANCE = { required: "Required", nice_to_have: "Nice to have" };
 
 /**
  * Changes Development made to a drafted role after an eval showed a problem, or when a new profile took over some of its
- * titles (F0, F1, TG1 and B5, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
+ * titles (F0, F1, TG1, B5 and TG2, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
  */
 export const SIGN_OFF = [
   { ref: "export-import-executive#years", note: "Starts at 1 year (was 2): EXIM and export documentation executives are commonly hired at 0-2 years." },
@@ -44,6 +44,9 @@ export const SIGN_OFF = [
   { ref: "it-service-delivery-manager#title", note: "Grouped with infrastructure and cloud roles (drafted under delivery): its skills are IT operations ones (ITSM, major incidents, SLAs), shared with application support and technical account managers." },
   { ref: "front-office-executive-hotel#skill:cross-selling-upselling", note: "Nice to have (was Required): none of the hotel front office posts the draft is built on ask for upselling." },
   { ref: "corporate-legal-associate#skill:clm-platforms", note: "New Nice to have skill: in-house legal teams route, approve and store contracts in a contract management tool." },
+  { ref: "sap-security-grc-consultant#title", note: "Grouped with security roles (drafted under enterprise apps): its key skills are security ones (SAP authorizations, GRC Access Control, access audits), and the nearest roles for its resume are information security analyst and IT auditor." },
+  { ref: "fraud-analyst#skill:data-visualization", note: "Nice to have (was Required): none of the posts the draft cites asks for dashboards. As required, it made Fraud Analyst the closest role for data analyst and BPO quality resumes on SQL, Excel and dashboards alone." },
+  { ref: "trust-and-safety-analyst#skill:data-visualization", note: "Nice to have (was Required): only Google analyst posts seen through aggregators ask for dashboards. As required, it made Trust and Safety Analyst a Nearby line for every data analyst resume." },
 ];
 const signOffNote = new Map(SIGN_OFF.map((c) => [c.ref, c.note]));
 

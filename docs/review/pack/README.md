@@ -25,12 +25,12 @@ In the certifications file, **Proves** lists skills that holding the certificate
 
 | Field | File | Roles awaiting review |
 | --- | --- | --- |
-| Cloud and infrastructure | `roles-cloud.csv` | 28 |
-| Security | `roles-security.csv` | 25 |
-| Data, analytics and AI | `roles-data.csv` | 25 |
-| Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 28 |
+| Cloud and infrastructure | `roles-cloud.csv` | 29 |
+| Security | `roles-security.csv` | 26 |
+| Data, analytics and AI | `roles-data.csv` | 27 |
+| Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 32 |
 | Testing and quality | `roles-testing.csv` | 5 |
-| Software, hardware, delivery and marketing | `roles-other.csv` | 67 |
+| Software, hardware, delivery and marketing | `roles-other.csv` | 71 |
 | Sales, finance, HR and operations | `roles-business.csv` | 46 |
 | Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
 | Legal and compliance | `roles-legal.csv` | 4 |
@@ -46,7 +46,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
 
-243 role profiles await review in all.
+255 role profiles await review in all.
 
 ## Changed since the draft, awaiting sign-off
 
@@ -63,6 +63,9 @@ Development changed these lines after a test showed a problem. Their **Detail** 
 - `it-service-delivery-manager#title`: Grouped with infrastructure and cloud roles (drafted under delivery): its skills are IT operations ones (ITSM, major incidents, SLAs), shared with application support and technical account managers.
 - `front-office-executive-hotel#skill:cross-selling-upselling`: Nice to have (was Required): none of the hotel front office posts the draft is built on ask for upselling.
 - `corporate-legal-associate#skill:clm-platforms`: New Nice to have skill: in-house legal teams route, approve and store contracts in a contract management tool.
+- `sap-security-grc-consultant#title`: Grouped with security roles (drafted under enterprise apps): its key skills are security ones (SAP authorizations, GRC Access Control, access audits), and the nearest roles for its resume are information security analyst and IT auditor.
+- `fraud-analyst#skill:data-visualization`: Nice to have (was Required): none of the posts the draft cites asks for dashboards. As required, it made Fraud Analyst the closest role for data analyst and BPO quality resumes on SQL, Excel and dashboards alone.
+- `trust-and-safety-analyst#skill:data-visualization`: Nice to have (was Required): only Google analyst posts seen through aggregators ask for dashboards. As required, it made Trust and Safety Analyst a Nearby line for every data analyst resume.
 
 ## How answers flow back into the app
 

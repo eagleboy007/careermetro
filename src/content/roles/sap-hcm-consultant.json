@@ -1,0 +1,117 @@
+{
+  "slug": "sap-hcm-consultant",
+  "title": "SAP HCM Consultant",
+  "summary": "Configures and supports on-premise SAP HCM (or H4S4, HCM running on S/4HANA): employee records called infotypes, organisation structure, time and attendance, and India payroll with PF, ESI, professional tax and income tax. Sits in an SAP project or support team and works closely with HR and payroll teams every month.",
+  "dailyDuties": [
+    "Configure infotypes, personnel actions and organisation structure",
+    "Maintain work schedules, absence types and time evaluation",
+    "Change payroll schemas, PCRs and wage types for new pay rules",
+    "Run and check test payrolls before the monthly cut-off",
+    "Update India statutory settings for PF, ESI, PT and income tax",
+    "Resolve payroll and time tickets raised by HR users",
+    "Write functional specs for custom reports and interfaces"
+  ],
+  "typicalTitles": [
+    "SAP HCM Functional Consultant",
+    "SAP HR Consultant",
+    "SAP HCM Payroll Consultant",
+    "SAP India Payroll Consultant",
+    "SAP HCM Time Management Consultant",
+    "SAP HR Payroll Consultant",
+    "SAP H4S4 Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "sap-hcm-configuration",
+      "importance": "required",
+      "expectation": "Configure infotypes, personnel actions, org structure and time management in on-premise SAP HCM or H4S4",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-payroll-configuration",
+      "importance": "required",
+      "expectation": "Configure and support India payroll: wage types, schemas, PCRs, PF, ESI, PT and income tax",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Gather HR and payroll requirements and write functional specifications",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Run parallel payroll runs and user acceptance testing before go-live",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Resolve payroll and time tickets within service levels during monthly cycles",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain payroll results and changes clearly to HR and finance users",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with HR, payroll and finance teams through each payroll cycle and project",
+      "postingShare": null
+    },
+    {
+      "skillId": "payroll-statutory-filings",
+      "importance": "nice_to_have",
+      "expectation": "Know the PF, ESI, PT and LWF filings the payroll output must support",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-fi-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Understand payroll posting to FI and the GL accounts involved",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Debug payroll programs and write specs for custom reports with ABAP developers",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-successfactors-employee-central",
+      "importance": "nice_to_have",
+      "expectation": "Support hybrid setups where Employee Central feeds on-premise payroll",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-migration",
+      "importance": "nice_to_have",
+      "expectation": "Load employee master and infotype data with LSMW or similar tools",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "sap-successfactors-employee-central",
+      "importance": "optional",
+      "why": "Useful when a client moves core HR to Employee Central and keeps on-premise payroll"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

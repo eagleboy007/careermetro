@@ -3074,5 +3074,157 @@
   {
     "skillId": "practice-management-systems",
     "task": "Write a user guide for posting a synthetic office visit in a US practice management system: patient demographics, insurance, charge entry, claim batch and reading the claim status report, as numbered steps with field lists. Share it."
+  },
+  {
+    "skillId": "abuse-trend-analysis",
+    "task": "From 200 synthetic flagged reports (make them in a sheet: type, region, account age, time), find two abuse trends with charts, and write a one-page note for the policy team with actions. Share it."
+  },
+  {
+    "skillId": "adobe-illustrator",
+    "task": "Draw a set of six line icons and one simple logo for a synthetic brand in Illustrator, on a shared grid and stroke width, and export SVG and PNG. Share the AI file and exports."
+  },
+  {
+    "skillId": "adobe-indesign",
+    "task": "Lay out a four-page brochure for a synthetic coaching institute in InDesign with master pages, paragraph styles and a baseline grid, and export a print PDF. Share the package and PDF."
+  },
+  {
+    "skillId": "adobe-photoshop",
+    "task": "Retouch and composite a product photo (your own or a free-licence one) into a synthetic e-commerce banner in Photoshop with layers, masks and adjustment layers, and export web sizes. Share the PSD and exports."
+  },
+  {
+    "skillId": "analog-custom-layout",
+    "task": "Using an open PDK (SkyWater 130 or GF180) and KLayout or Magic, lay out a two-stage op-amp or current mirror, pass DRC and LVS, and share screenshots, the GDS and a one-page note on floorplan choices."
+  },
+  {
+    "skillId": "analog-layout-matching",
+    "task": "Lay out a differential pair in an open PDK twice, once plain and once common-centroid with dummies and a guard ring, then write a one-page comparison of matching, area and routing. Share both layouts and the note."
+  },
+  {
+    "skillId": "battery-modelling",
+    "task": "Fit a first-order equivalent circuit model (OCV, R0, one RC pair) to a public Li-ion pulse test dataset in Python or MATLAB, and plot model against measured voltage. Share the code and a note on fit error."
+  },
+  {
+    "skillId": "bms-cell-monitoring-balancing",
+    "task": "Model a 4-cell series pack in Python or Simulink with uneven starting charge, add passive balancing and overvoltage and undervoltage cut-offs, and plot cell voltages through a charge cycle. Share the model and a short note."
+  },
+  {
+    "skillId": "bms-state-estimation",
+    "task": "Build a SOC estimator in Python or MATLAB on a public Li-ion test dataset (such as NASA or CALCE): coulomb counting first, then an extended Kalman filter, and plot both against the reference. Share the code and a one-page note on error."
+  },
+  {
+    "skillId": "brand-identity-design",
+    "task": "Create a brand identity for a synthetic chai startup: logo, colours, type, and a three-page guideline with do and don't examples and three sample applications. Share it."
+  },
+  {
+    "skillId": "chargeback-dispute-management",
+    "task": "Handle three synthetic card chargebacks (fraud, item not received, duplicate charge): pick the reason code, list the evidence for representment and draft each response. Share them with a one-page process note."
+  },
+  {
+    "skillId": "content-moderation",
+    "task": "Write a short content policy for a synthetic marketplace app (scams, hate, adult content), then apply it to 20 synthetic posts with action and reason for each, plus a note on hard cases. Share it."
+  },
+  {
+    "skillId": "dft-boundary-scan-ijtag",
+    "task": "Write a Verilog JTAG TAP controller with a two-cell boundary scan register and a BSDL file for it, then simulate EXTEST and SAMPLE instructions in a testbench. Share the code, BSDL and waveforms."
+  },
+  {
+    "skillId": "dft-memory-bist",
+    "task": "Write a March C- memory BIST controller in Verilog for a small synthetic SRAM model, inject two stuck-at faults, and show in simulation that the controller flags them. Share the code, waveforms and a one-page note on repair options."
+  },
+  {
+    "skillId": "dft-pattern-validation",
+    "task": "Simulate a set of scan patterns on a small open-source netlist at gate level, break one pattern on purpose (wrong timing or a mismatched expect), and write a one-page debug note tracing the failure to its cause. Share it."
+  },
+  {
+    "skillId": "dft-scan-atpg",
+    "task": "Take an open-source RTL block (a small UART or ALU), insert scan with an open flow such as Yosys plus a scan script, or describe the chains by hand, then generate stuck-at patterns and report fault coverage. Write up chains, coverage and the faults you could not reach. Share it."
+  },
+  {
+    "skillId": "ev-hev-systems",
+    "task": "Draw the block diagram of a synthetic electric two-wheeler powertrain (pack, BMS, motor controller, motor, charger, VCU), list the signals between them over CAN, and write a one-page note on what happens at a cell fault. Share it."
+  },
+  {
+    "skillId": "fraud-case-investigation",
+    "task": "Investigate five synthetic fraud alerts (write the transaction trails): decide block or release for each, with evidence, and write case notes in a standard template. Share the case file."
+  },
+  {
+    "skillId": "fraud-detection-rules",
+    "task": "On a public card or UPI fraud dataset (such as one on Kaggle), write five fraud rules (velocity, amount, new device, location), measure each rule's hit rate and false positives, and tune one. Share the notebook and a one-page note."
+  },
+  {
+    "skillId": "graphic-design-fundamentals",
+    "task": "Redesign a cluttered synthetic event poster twice with a clear grid, two typefaces and a three-colour palette, and write a short note on the hierarchy choices. Share before and after files."
+  },
+  {
+    "skillId": "hardware-asset-management",
+    "task": "Design a hardware asset lifecycle for a synthetic 500-laptop company: tagging, stock, assignment, repair, refresh and e-waste disposal, with a register template and five KPIs. Share it."
+  },
+  {
+    "skillId": "isa95-mes-integration",
+    "task": "Model a synthetic plant on ISA-95 levels 0 to 4, then write the message spec for one ERP-to-MES production order and its confirmation back (fields, triggers, errors). Share the diagram and spec."
+  },
+  {
+    "skillId": "layout-reliability-esd-latchup",
+    "task": "Draw an ESD protection scheme for a synthetic chip's I/O pad (diodes, clamp, guard rings) in an open PDK or as an annotated sketch, and list the latch-up rules you check, with why each matters. Share it."
+  },
+  {
+    "skillId": "mes-platforms",
+    "task": "Design an MES rollout for a synthetic packaging line: work order flow, routing steps, data collected at each step, quality checks and genealogy, as a one-page process map and a table of screens. Share it."
+  },
+  {
+    "skillId": "oracle-fast-formula",
+    "task": "Write an Oracle HCM fast formula, with comments, for a synthetic earned leave accrual (1.5 days a month, prorated for joiners, capped at 45), plus test cases with expected results. Share it."
+  },
+  {
+    "skillId": "oracle-hcm-cloud-modules",
+    "task": "Write a configuration workbook for a synthetic Indian company on Oracle HCM Cloud: legal employer, business units, jobs, grades, an absence plan for earned leave and an approval rule. Share it."
+  },
+  {
+    "skillId": "parasitic-extraction",
+    "task": "Extract parasitics from a small open-PDK layout (an inverter chain or op-amp) with Magic or KLayout, rerun the simulation with them, and write a one-page note on how delay or gain changed and which nets mattered. Share it."
+  },
+  {
+    "skillId": "payment-systems-domain",
+    "task": "Draw how a UPI payment and a card payment flow between customer, app, PSP or acquirer, network and issuing bank, with where each can fail or be disputed, and write a one-page note comparing them. Share it."
+  },
+  {
+    "skillId": "print-production",
+    "task": "Prepare a synthetic tri-fold flyer for print: CMYK, 3 mm bleed, 300 dpi images, outlined or embedded fonts and a PDF/X export, plus a preflight checklist you ran. Share the files."
+  },
+  {
+    "skillId": "sap-ewm-configuration",
+    "task": "Write a configuration workbook for a synthetic SAP EWM warehouse: storage types, bins, warehouse process types, putaway and picking strategies and a wave template, each with the reason. Share it."
+  },
+  {
+    "skillId": "sap-grc-access-control",
+    "task": "Build an SoD ruleset extract for a synthetic procure-to-pay process in a spreadsheet: six conflicting function pairs, the transactions behind each, risk level and a mitigating control, plus a firefighter access procedure. Share it."
+  },
+  {
+    "skillId": "sap-hcm-configuration",
+    "task": "Write a design document for a synthetic Indian company's SAP HCM setup: enterprise and personnel structure, organisational plan, key infotypes, and a work schedule rule for a three-shift plant. Share it."
+  },
+  {
+    "skillId": "sap-payroll-configuration",
+    "task": "Write a payroll design note for a synthetic Indian company in SAP HCM: wage types for basic, HRA and allowances, PF, ESI and professional tax handling, one custom PCR in plain words, and a test plan for a month's run. Share it."
+  },
+  {
+    "skillId": "sap-security-authorizations",
+    "task": "Design SAP roles for a synthetic purchase team: three single roles and one composite role, the transactions and authorization objects in each, and how you would test with SU53 and SUIM. Share it as a role matrix."
+  },
+  {
+    "skillId": "servicenow-itom",
+    "task": "On a free ServiceNow developer instance, load 20 synthetic CIs, link them in a CMDB relationship map for one app, run a health or duplicate check, and write up what you fixed. Share screenshots and notes."
+  },
+  {
+    "skillId": "social-creative-design",
+    "task": "Design a three-post campaign for a synthetic festive sale in feed, story and banner sizes, keeping one look across them, and write a line on each choice. Share the files."
+  },
+  {
+    "skillId": "software-asset-management",
+    "task": "Build a licence position in a spreadsheet for a synthetic company: installs from discovery, purchased entitlements and usage for five products, showing over and under licensing and savings. Share it with a one-page summary."
+  },
+  {
+    "skillId": "software-licensing-models",
+    "task": "Write a two-page note comparing Microsoft per-user, Oracle per-core and IBM sub-capacity licensing for a synthetic server estate, with a worked count of licences needed under each. Share it."
   }
 ]

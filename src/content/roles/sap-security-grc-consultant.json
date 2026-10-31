@@ -1,0 +1,110 @@
+{
+  "slug": "sap-security-grc-consultant",
+  "title": "SAP Security and GRC Consultant",
+  "summary": "Controls who can do what in SAP systems: designs user roles, sets up access and checks for segregation of duties (SoD) conflicts, where one person could both create and approve a transaction, using SAP GRC Access Control. Sits in an SAP security or risk team and works with Basis, business process owners and auditors.",
+  "dailyDuties": [
+    "Build and change PFCG roles and Fiori catalog access",
+    "Process access requests and firefighter access through GRC",
+    "Run SoD risk analysis and propose fixes or mitigating controls",
+    "Troubleshoot authorization errors with SU53 and traces",
+    "Prepare user access reviews and evidence for auditors",
+    "Maintain the GRC rule set and approval workflows"
+  ],
+  "typicalTitles": [
+    "SAP Security Consultant",
+    "SAP GRC Consultant",
+    "SAP GRC Access Control Consultant",
+    "SAP Security and Authorization Consultant",
+    "SAP S/4HANA Security Consultant",
+    "SAP GRC AC Consultant",
+    "SAP Security Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 9
+  },
+  "skills": [
+    {
+      "skillId": "sap-security-authorizations",
+      "importance": "required",
+      "expectation": "Design and maintain PFCG roles, authorization objects, Fiori catalog access and users",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-grc-access-control",
+      "importance": "required",
+      "expectation": "Configure and run GRC Access Control: risk analysis, access requests, firefighter access and business roles",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-audits",
+      "importance": "required",
+      "expectation": "Prepare SoD reports and access evidence for internal and external auditors",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Gather role and access needs from business process owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Handle access requests, authorization errors and tickets within service levels",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain access risks and fixes to process owners and auditors",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-governance",
+      "importance": "nice_to_have",
+      "expectation": "Run periodic user access reviews and joiner-mover-leaver checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-fiori-launchpad",
+      "importance": "nice_to_have",
+      "expectation": "Understand Fiori catalogs, groups and spaces that roles must grant",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-basis-administration",
+      "importance": "nice_to_have",
+      "expectation": "Work with Basis on transports, clients and system parameters",
+      "postingShare": null
+    },
+    {
+      "skillId": "internal-controls-testing",
+      "importance": "nice_to_have",
+      "expectation": "Support SOX or IFC testing of IT and access controls",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate with audit, Basis and business teams on access changes",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "cisa",
+      "importance": "optional",
+      "why": "Shows audit and control knowledge for audit-facing GRC work"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

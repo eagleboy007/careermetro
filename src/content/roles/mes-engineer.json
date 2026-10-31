@@ -1,0 +1,136 @@
+{
+  "slug": "mes-engineer",
+  "title": "MES Engineer",
+  "summary": "Sets up and extends manufacturing execution systems (MES), the software that runs production orders, tracks parts and records quality on the factory floor. Sits between plant IT, the ERP team and automation engineers, linking machines and PLCs below with ERP systems such as SAP above.",
+  "dailyDuties": [
+    "Configure MES models, routes and work instructions",
+    "Write extensions and reports in C# or Java and SQL",
+    "Build interfaces between MES and SAP or other ERP",
+    "Connect PLCs and SCADA to MES through OPC UA",
+    "Gather requirements from production and quality teams",
+    "Support go-lives and fix plant issues during hypercare"
+  ],
+  "typicalTitles": [
+    "MES Consultant",
+    "MES Developer",
+    "Siemens Opcenter Developer",
+    "Opcenter MES Consultant",
+    "Manufacturing Execution Systems Engineer",
+    "Camstar MES Developer",
+    "MES Software Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "mes-platforms",
+      "importance": "required",
+      "expectation": "Configure and extend an MES such as Opcenter, FactoryTalk, AVEVA MES or SAP DM",
+      "postingShare": null
+    },
+    {
+      "skillId": "isa95-mes-integration",
+      "importance": "required",
+      "expectation": "Model plants on ISA-95 and integrate MES with ERP and shop-floor systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write SQL queries, stored procedures and reports on the MES database",
+      "postingShare": null
+    },
+    {
+      "skillId": "industrial-control-systems",
+      "importance": "required",
+      "expectation": "Connect PLCs, SCADA and historians to MES, often via OPC UA",
+      "postingShare": null
+    },
+    {
+      "skillId": "csharp-dotnet",
+      "importance": "required",
+      "expectation": "Write MES extensions and services in C#, Java or JavaScript",
+      "postingShare": null,
+      "oneOf": "mes-language"
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write MES extensions and services in C#, Java or JavaScript",
+      "postingShare": null,
+      "oneOf": "mes-language"
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write MES extensions and services in C#, Java or JavaScript",
+      "postingShare": null,
+      "oneOf": "mes-language"
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Gather requirements from production, quality and IT teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-interfaces",
+      "importance": "nice_to_have",
+      "expectation": "Exchange production orders and confirmations with SAP via IDocs or BAPIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-pp-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Understand SAP production orders and routings on the ERP side",
+      "postingShare": null
+    },
+    {
+      "skillId": "oee-productivity-tracking",
+      "importance": "nice_to_have",
+      "expectation": "Build OEE and downtime reports from MES data",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "nice_to_have",
+      "expectation": "Build and consume REST APIs for MES integration",
+      "postingShare": null
+    },
+    {
+      "skillId": "scada-hmi-platforms",
+      "importance": "nice_to_have",
+      "expectation": "Work with SCADA platforms that feed the MES",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate plant, IT and vendor teams during rollouts",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "mes-language",
+      "label": "C#, Java or JavaScript"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "sap-s4hana-production-planning",
+      "importance": "optional",
+      "why": "Helps when the MES integrates with SAP production planning"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

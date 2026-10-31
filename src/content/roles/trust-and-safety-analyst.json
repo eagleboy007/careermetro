@@ -1,0 +1,122 @@
+{
+  "slug": "trust-and-safety-analyst",
+  "title": "Trust and Safety Analyst",
+  "summary": "Trust and safety analysts review content and accounts against a platform's rules, act on harmful material and spot new abuse trends. They sit in the safety or policy operations team of a social, video or marketplace platform, or at a firm that runs this work for one.",
+  "dailyDuties": [
+    "Review flagged posts, videos and accounts against policy guidelines",
+    "Escalate sensitive cases to policy or legal teams",
+    "Track abuse and scam trends in the review queues",
+    "Prepare queue volume and accuracy reports",
+    "Write decision notes and flag gaps in the guidelines",
+    "Join quality calibrations and wellness sessions"
+  ],
+  "typicalTitles": [
+    "Content Moderator",
+    "Trust & Safety Specialist",
+    "Policy Enforcement Analyst",
+    "Content Review Analyst",
+    "Trust and Safety Associate",
+    "Platform Integrity Analyst",
+    "Content Policy Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "content-moderation",
+      "importance": "required",
+      "expectation": "Review content and accounts against platform policies and take the right action, using wellness practices to cope with disturbing material",
+      "postingShare": null
+    },
+    {
+      "skillId": "abuse-trend-analysis",
+      "importance": "required",
+      "expectation": "Spot new abuse, spam and scam patterns in queue data and report them to policy teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "required",
+      "expectation": "Escalate sensitive or unclear cases to policy, legal or law-enforcement teams on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Pull and summarise case data with SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Track queues, accuracy and trends in Excel or Google Sheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear decision notes and feed policy gaps back to the team",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Build reports and dashboards on volumes, accuracy and abuse trends",
+      "postingShare": null
+    },
+    {
+      "skillId": "operations-mis-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Prepare daily and weekly queue MIS",
+      "postingShare": null
+    },
+    {
+      "skillId": "annotation-quality-review",
+      "importance": "nice_to_have",
+      "expectation": "Audit reviewer decisions against the guidelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "ai-response-rating",
+      "importance": "nice_to_have",
+      "expectation": "Rate generative AI outputs for safety and policy issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Handle user data under Indian and global privacy rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script simple checks on large case sets",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with product, policy and vendor teams",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "google-data-analytics",
+      "importance": "optional",
+      "why": "Shows SQL and dashboard basics for moderators moving into analyst work"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
