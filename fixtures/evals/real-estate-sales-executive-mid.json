@@ -1,0 +1,59 @@
+{
+  "id": "real-estate-sales-executive-mid",
+  "roleSlug": "real-estate-sales-executive",
+  "persona": "mid",
+  "resumeText": "Rohan Deshmukh | Pune | rohan.deshmukh@example.com\n\nEXPERIENCE\nSales Executive, Saffron Heights Developers, Pune (2022 - present)\n- Conducted site visits and sample flat walkthroughs for 30 to 40 families a month at a 2 and 3 BHK project in Wakad.\n- Followed up on walk-in and digital enquiries within 24 hours and scheduled revisits.\n- Prepared cost sheets and booking forms and coordinated the agreement for sale registration with the legal team.\n- Coordinated with tie-up banks to get home loan sanctions for buyers before the agreement date.\n- Logged every enquiry, site visit and follow-up in Sell.Do CRM.\n- Closed 62 bookings in FY2025 against a target of 55 units.\n- Presented project amenities and payment plans to buyers in Marathi, Hindi and English.\n\nPre-Sales Executive, Gharkul Realty, Pune (2020 - 2022)\n- Called digital leads from property portals and fixed site visit appointments for the closing team.\n\nEDUCATION\nBBA, Savitribai Phule Pune University, 2020\n\nSKILLS\nPrice negotiation, MS Excel, Customer handling\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "property-site-visits",
+        "quote": "Conducted site visits and sample flat walkthroughs for 30 to 40 families a month"
+      },
+      {
+        "skillId": "property-enquiry-follow-up",
+        "quote": "Followed up on walk-in and digital enquiries within 24 hours and scheduled revisits"
+      },
+      {
+        "skillId": "property-booking-documentation",
+        "quote": "Prepared cost sheets and booking forms and coordinated the agreement for sale registration"
+      },
+      {
+        "skillId": "buyer-home-loan-coordination",
+        "quote": "Coordinated with tie-up banks to get home loan sanctions for buyers"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Logged every enquiry, site visit and follow-up in Sell.Do CRM"
+      },
+      {
+        "skillId": "deal-closing",
+        "quote": "Closed 62 bookings in FY2025 against a target of 55 units"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented project amenities and payment plans to buyers in Marathi, Hindi and English"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "quote": "Price negotiation, MS Excel, Customer handling"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "commercial-negotiation",
+        "status": "weak"
+      },
+      {
+        "skillId": "rera-compliance-basics",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sql",
+      "financial-modelling",
+      "performance-marketing"
+    ]
+  },
+  "reviewedBy": null
+}

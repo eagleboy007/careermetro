@@ -1,0 +1,63 @@
+{
+  "id": "admin-facilities-executive-from-front-office-executive",
+  "roleSlug": "admin-facilities-executive",
+  "persona": "Front office and admin executive at a mid-size company moving into a full admin and facilities role",
+  "resumeText": "Pooja Nair | Kochi | pooja.nair@example.com\n\nEXPERIENCE\nAdmin Executive, Malabar Spices Exports Pvt Ltd, Kochi (2022 - present)\n- Managed housekeeping and security vendors for a 3-floor office of 180 staff and reviewed facility vendor SLAs every month.\n- Maintained the AMC tracker for DG set, UPS, lifts and fire alarm panels and followed up on service visits.\n- Ran the travel desk for 60 employees, handling flight and hotel bookings within the travel policy.\n- Handled stationery management and pantry supplies ordering for the office and kept the admin asset register.\n- Coordinated evacuation drills twice a year with the building management.\n- Kept vendor bills and the admin expense sheet in Excel for the finance team.\n\nFront Office Executive, Periyar Healthcare, Kochi (2020 - 2022)\n- Managed reception, visitor register and courier dispatch.\n\nSKILLS\nSpace planning, Fire NOC, MS Excel, Zoho Expense\n\nEDUCATION\nBBA, Mahatma Gandhi University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "facility-vendor-management",
+        "quote": "Managed housekeeping and security vendors for a 3-floor office"
+      },
+      {
+        "skillId": "amc-contract-management",
+        "quote": "Maintained the AMC tracker for DG set, UPS, lifts and fire alarm panels"
+      },
+      {
+        "skillId": "travel-desk-management",
+        "quote": "Ran the travel desk for 60 employees"
+      },
+      {
+        "skillId": "office-supplies-inventory",
+        "quote": "Handled stationery management and pantry supplies ordering"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Kept vendor bills and the admin expense sheet in Excel"
+      },
+      {
+        "skillId": "office-statutory-licences",
+        "quote": "Space planning, Fire NOC, MS Excel, Zoho Expense"
+      },
+      {
+        "skillId": "office-space-planning",
+        "quote": "Space planning, Fire NOC, MS Excel, Zoho Expense"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "office-statutory-licences",
+        "status": "weak"
+      },
+      {
+        "skillId": "office-space-planning",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "rfq-quotation-comparison",
+      "vendor-onboarding",
+      "purchase-order-processing"
+    ]
+  },
+  "reviewedBy": null
+}

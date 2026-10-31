@@ -1,0 +1,60 @@
+{
+  "id": "home-loan-sales-officer-mid",
+  "roleSlug": "home-loan-sales-officer",
+  "persona": "mid",
+  "resumeText": "Sandeep Yadav | Lucknow | sandeep.yadav@example.com\n\nEXPERIENCE\nSales Officer - Home Loans, Gomti Housing Finance Ltd, Lucknow (2022 - present)\n- Sourced home loan and LAP files through 12 active DSAs and three builder tie-ups in Gomti Nagar and Sushant Golf City.\n- Explained home loan, loan against property and PMAY subsidy options to salaried and self-employed customers.\n- Checked FOIR and income eligibility before logging each file.\n- Collected ITR, bank statements and property papers and prepared complete login files.\n- Verified KYC documents and completed video KYC for walk-in customers.\n- Tracked every file from login to sanction and disbursement with the credit and operations teams.\n- Met 8 to 10 customers a day through field visits at builder sites and offices.\n\nField Sales Executive - Credit Cards, Avadh Card Services, Lucknow (2020 - 2022)\n- Sold credit cards to salaried customers at corporate offices.\n\nEDUCATION\nBCom, University of Lucknow, 2020\n\nSKILLS\nInsurance cross-sell, CIBIL, MS Excel\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "mortgage-channel-sourcing",
+        "quote": "Sourced home loan and LAP files through 12 active DSAs and three builder tie-ups"
+      },
+      {
+        "skillId": "home-loan-lap-products",
+        "quote": "Explained home loan, loan against property and PMAY subsidy options"
+      },
+      {
+        "skillId": "loan-eligibility-assessment",
+        "quote": "Checked FOIR and income eligibility before logging each file"
+      },
+      {
+        "skillId": "loan-file-documentation",
+        "quote": "Collected ITR, bank statements and property papers and prepared complete login files"
+      },
+      {
+        "skillId": "kyc-verification",
+        "quote": "Verified KYC documents and completed video KYC for walk-in customers"
+      },
+      {
+        "skillId": "login-to-disbursement-tracking",
+        "quote": "Tracked every file from login to sanction and disbursement"
+      },
+      {
+        "skillId": "field-sales-meetings",
+        "quote": "Met 8 to 10 customers a day through field visits at builder sites and offices"
+      },
+      {
+        "skillId": "third-party-product-distribution",
+        "quote": "Insurance cross-sell, CIBIL, MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "third-party-product-distribution",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "credit-risk-modelling",
+      "casa-deposit-acquisition",
+      "banking-client-portfolio-management",
+      "financial-modelling"
+    ]
+  },
+  "reviewedBy": null
+}

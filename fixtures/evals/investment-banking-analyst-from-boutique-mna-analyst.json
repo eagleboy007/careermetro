@@ -1,0 +1,68 @@
+{
+  "id": "investment-banking-analyst-from-boutique-mna-analyst",
+  "roleSlug": "investment-banking-analyst",
+  "persona": "Analyst at a mid-market M&A boutique with no capital markets exposure",
+  "resumeText": "Rhea Malhotra | Mumbai | rhea.malhotra@example.com\n\nEXPERIENCE\nAnalyst, Investment Banking, Westgate Corporate Advisors, Mumbai (2023 - present)\n- Built operating and DCF models for sell-side mandates in the auto components and chemicals sectors.\n- Valued targets using trading comparables and precedent transactions for six live deals.\n- Prepared pitch books for new mandates with promoters of family-owned businesses.\n- Drafted teasers and information memoranda sent to over 40 strategic and private equity buyers.\n- Supported execution of three sell-side M&A transactions from mandate to signing.\n- Analysed annual reports and audited financials of targets and peers to spread historical numbers.\n\nAnalyst Intern, Westgate Corporate Advisors, Mumbai (2022)\n- Updated comparable company tables and sector notes for the team.\n\nEDUCATION\nMBA Finance, Narsee Monjee Institute of Management Studies, Mumbai, 2023\nBCom, HR College of Commerce and Economics, Mumbai, 2021\n\nSKILLS\nExcel, PowerPoint, Capital IQ, equity capital markets\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "financial-modelling",
+        "quote": "Built operating and DCF models for sell-side mandates"
+      },
+      {
+        "skillId": "equity-valuation",
+        "quote": "Valued targets using trading comparables and precedent transactions"
+      },
+      {
+        "skillId": "pitch-book-preparation",
+        "quote": "Prepared pitch books for new mandates"
+      },
+      {
+        "skillId": "information-memorandum-drafting",
+        "quote": "Drafted teasers and information memoranda sent to over 40"
+      },
+      {
+        "skillId": "mna-deal-execution",
+        "quote": "Supported execution of three sell-side M&A transactions"
+      },
+      {
+        "skillId": "financial-statement-analysis",
+        "quote": "Analysed annual reports and audited financials of targets and peers"
+      },
+      {
+        "skillId": "capital-markets-transactions",
+        "quote": "Excel, PowerPoint, Capital IQ, equity capital markets"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Excel, PowerPoint, Capital IQ, equity capital markets"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "capital-markets-transactions",
+        "status": "weak"
+      },
+      {
+        "skillId": "excel",
+        "status": "weak"
+      },
+      {
+        "skillId": "deal-due-diligence-data-room",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sebi-icdr-regulations",
+      "deal-due-diligence-data-room",
+      "equity-research-reports",
+      "credit-appraisal"
+    ]
+  },
+  "reviewedBy": null
+}

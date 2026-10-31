@@ -1,0 +1,67 @@
+{
+  "id": "cost-accountant-from-plant-accounts-executive",
+  "roleSlug": "cost-accountant",
+  "persona": "Plant accounts executive with growing costing work and a semi-qualified CMA",
+  "resumeText": "Pranav Kulkarni | Pune | pranav.kulkarni@example.com\n\nEXPERIENCE\nSenior Executive - Plant Finance, Deccan Forgings Pvt Ltd, Chakan, Pune (2021 - present)\n- Prepare monthly product cost sheets for 120 forged components using BOM and actual consumption.\n- Analyse material price variance and material usage variance against standard costs every month.\n- Carry out month-end inventory valuation of raw material, WIP and finished goods.\n- Run cost estimates and production order settlement in SAP CO for the plant.\n- Prepare costing MIS with budget versus actual commentary for the plant head.\n\nAccounts Executive, Deccan Forgings Pvt Ltd, Chakan, Pune (2019 - 2021)\n- Booked vendor invoices and reconciled vendor ledgers for the plant.\n- Gave stock schedules to statutory auditors during the year-end audit.\n\nEDUCATION\nCMA Intermediate, Institute of Cost Accountants of India, 2022\nBCom, Savitribai Phule Pune University, 2019\n\nSKILLS\nSAP FICO, Excel, cost audit\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "product-cost-sheets",
+        "quote": "Prepare monthly product cost sheets for 120 forged components"
+      },
+      {
+        "skillId": "standard-costing-variance",
+        "quote": "Analyse material price variance and material usage variance against standard costs"
+      },
+      {
+        "skillId": "inventory-valuation",
+        "quote": "Carry out month-end inventory valuation of raw material"
+      },
+      {
+        "skillId": "sap-co-configuration",
+        "quote": "Run cost estimates and production order settlement in SAP CO"
+      },
+      {
+        "skillId": "fpa-variance-reporting",
+        "quote": "Prepare costing MIS with budget versus actual commentary"
+      },
+      {
+        "skillId": "account-reconciliations",
+        "quote": "reconciled vendor ledgers for the plant"
+      },
+      {
+        "skillId": "statutory-audit-support",
+        "quote": "Gave stock schedules to statutory auditors"
+      },
+      {
+        "skillId": "cost-records-audit-compliance",
+        "quote": "SAP FICO, Excel, cost audit"
+      },
+      {
+        "skillId": "excel",
+        "quote": "SAP FICO, Excel, cost audit"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cost-records-audit-compliance",
+        "status": "weak"
+      },
+      {
+        "skillId": "overhead-allocation-absorption",
+        "status": "missing"
+      },
+      {
+        "skillId": "excel",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "overhead-allocation-absorption",
+      "gst-tds-compliance",
+      "financial-modelling"
+    ]
+  },
+  "reviewedBy": null
+}
