@@ -21664,18 +21664,6 @@
     "free": true
   },
   {
-    "title": "Digital VLSI Design course (lectures on floorplan, placement, CTS, routing)",
-    "url": "https://www.eng.biu.ac.il/temanad/digital-vlsi-design/",
-    "provider": "Bar-Ilan University (Adam Teman)",
-    "kind": "course",
-    "skillIds": [
-      "physical-design-pnr",
-      "emir-signoff"
-    ],
-    "minutes": 1200,
-    "free": true
-  },
-  {
     "title": "ECE 720 place and route tutorials",
     "url": "https://eda.ncsu.edu/tutorials/ece-720-place-route-tutorials",
     "provider": "NC State University",
@@ -21896,17 +21884,6 @@
     "free": true
   },
   {
-    "title": "Functional safety concept (ISO 26262)",
-    "url": "https://www.kuglermaag.com/functional-safety/fsc/",
-    "provider": "Kugler Maag",
-    "kind": "docs",
-    "skillIds": [
-      "functional-safety-concept"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
     "title": "ISO 26262-1:2018 Road vehicles, functional safety, vocabulary (overview)",
     "url": "https://www.iso.org/standard/68383.html",
     "provider": "ISO",
@@ -22028,28 +22005,6 @@
     "free": true
   },
   {
-    "title": "Automotive SPICE overview",
-    "url": "https://reactive-systems.com/automotive-spice/aspice-overview.html",
-    "provider": "Reactive Systems",
-    "kind": "docs",
-    "skillIds": [
-      "automotive-spice"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Automotive SPICE v4: what changed",
-    "url": "https://www.kuglermaag.com/news/aspice-4/",
-    "provider": "Kugler Maag",
-    "kind": "docs",
-    "skillIds": [
-      "automotive-spice"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
     "title": "What is SPICE? (SPICE center)",
     "url": "https://www.intacs.info/spice-center",
     "provider": "intacs",
@@ -22063,17 +22018,6 @@
   {
     "title": "Android Automotive overview",
     "url": "https://source.android.com/docs/automotive",
-    "provider": "Android Open Source Project",
-    "kind": "docs",
-    "skillIds": [
-      "android-automotive-aosp"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Vehicle properties (VHAL)",
-    "url": "https://source.android.com/docs/automotive/vhal/properties",
     "provider": "Android Open Source Project",
     "kind": "docs",
     "skillIds": [
@@ -22102,17 +22046,6 @@
       "android-automotive-aosp"
     ],
     "minutes": 40,
-    "free": true
-  },
-  {
-    "title": "Android Automotive embedded OS (white paper)",
-    "url": "https://www.p3-group.com/wp-content/uploads/2024/04/Android-Automotive-Embedded-OS-P3-Whitepaper-v2.pdf",
-    "provider": "P3 group",
-    "kind": "docs",
-    "skillIds": [
-      "android-automotive-aosp"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -22615,17 +22548,6 @@
     "free": true
   },
   {
-    "title": "SAP Fiori system administration (launchpad content management)",
-    "url": "https://learning.sap.com/courses/sap-fiori-system-administration",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-fiori-launchpad"
-    ],
-    "minutes": 480,
-    "free": true
-  },
-  {
     "title": "SAP Fiori launchpad designer: managing catalogs, groups and tiles",
     "url": "https://help.sap.com/saphelp_uiaddon20/helpdata/en/cb/0ae6a170754bb9bcfa66c4c4bdcc37/content.htm",
     "provider": "SAP Help Portal",
@@ -22838,17 +22760,6 @@
     "free": true
   },
   {
-    "title": "Add policies to an API proxy (CORS, API key)",
-    "url": "https://developers.sap.com/tutorials/btp-integration-suite-integral-api-management/",
-    "provider": "SAP Developers",
-    "kind": "practice",
-    "skillIds": [
-      "sap-api-management"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "SAS Programming 1: Essentials (free e-learning)",
     "url": "https://www.sas.com/sas/training/offers/sas-programming-course/overview.html",
     "provider": "SAS",
@@ -22893,17 +22804,6 @@
     "free": true
   },
   {
-    "title": "Macro Programming Essentials for New SAS Users (WUSS 2022)",
-    "url": "https://www.lexjansen.com/wuss/2022/WUSS-2022-Paper-37.pdf",
-    "provider": "WUSS (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "sas-programming"
-    ],
-    "minutes": 50,
-    "free": true
-  },
-  {
     "title": "SAS 9.4 Macro Language: Reference",
     "url": "https://documentation.sas.com/api/collections/pgmsascdc/9.4_3.5/docsets/mcrolref/content/mcrolref.pdf?locale=en",
     "provider": "SAS Documentation",
@@ -22938,52 +22838,6 @@
     "free": true
   },
   {
-    "title": "Introduction to the CDISC Standards (PharmaSUG 2013, IB06)",
-    "url": "https://www.lexjansen.com/pharmasug/2013/IB/PharmaSUG-2013-IB06.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-sdtm",
-      "cdisc-adam",
-      "cdisc-submission-validation"
-    ],
-    "minutes": 40,
-    "free": true
-  },
-  {
-    "title": "Don't Panic: A Data Manager's Guide to SDTM (PharmaSUG China 2021, DM-18)",
-    "url": "https://www.lexjansen.com/pharmasug-cn/2021/DM/Pharmasug-China-2021-DM018.pdf",
-    "provider": "PharmaSUG China (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-sdtm"
-    ],
-    "minutes": 35,
-    "free": true
-  },
-  {
-    "title": "SDTM: Just a Walk in the (Theme) Park (PharmaSUG 2017, DS03)",
-    "url": "https://www.lexjansen.com/pharmasug/2017/DS/PharmaSUG-2017-DS03.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-sdtm"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Moving up! SDTM v3.2: what is new and how to use it (PharmaSUG 2016, DS04)",
-    "url": "https://www.lexjansen.com/pharmasug/2016/DS/PharmaSUG-2016-DS04.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-sdtm"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "pharmaverse examples: SDTM, ADaM and TLG in R",
     "url": "https://pharmaverse.github.io/examples/",
     "provider": "pharmaverse",
@@ -22998,39 +22852,6 @@
     "free": true
   },
   {
-    "title": "From SAP to ADaM: The Nuts and Bolts (PharmaSUG 2010, HW02)",
-    "url": "https://www.lexjansen.com/pharmasug/2010/HW/HW02.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-adam"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "BDS as the workhorse ADaM structure (PharmaSUG 2016, DS13)",
-    "url": "https://www.lexjansen.com/pharmasug/2016/DS/PharmaSUG-2016-DS13.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-adam"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Why Are There So Many ADaM Documents? (PharmaSUG 2020, SS-081)",
-    "url": "https://www.lexjansen.com/pharmasug/2020/SS/PharmaSUG-2020-SS-081.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-adam"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "admiral: ADaM in R asset library (Get started and ADSL vignette)",
     "url": "https://pharmaverse.github.io/admiral/",
     "provider": "pharmaverse",
@@ -23040,39 +22861,6 @@
       "r-programming"
     ],
     "minutes": 180,
-    "free": true
-  },
-  {
-    "title": "Diagnostics of technical errors in define.xml (PHUSE 2018, SI07)",
-    "url": "https://www.lexjansen.com/phuse/2018/si/SI07.pdf",
-    "provider": "PHUSE (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-submission-validation"
-    ],
-    "minutes": 35,
-    "free": true
-  },
-  {
-    "title": "Upgrading from Define-XML 2.0 to 2.1 (PharmaSUG 2022, DS-064)",
-    "url": "https://www.lexjansen.com/pharmasug/2022/DS/PharmaSUG-2022-DS-064.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-submission-validation"
-    ],
-    "minutes": 35,
-    "free": true
-  },
-  {
-    "title": "Up-Versioning Existing Define.xml from 1.0 to 2.0 (PharmaSUG 2016)",
-    "url": "https://www.lexjansen.com/pharmasug/2016/SS/PharmaSUG-2016-SS07.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "cdisc-submission-validation"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -23108,51 +22896,6 @@
       "cdisc-submission-validation"
     ],
     "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Combining TLFs into a Single File Deliverable (PharmaSUG 2016, HT06)",
-    "url": "https://www.lexjansen.com/pharmasug/2016/HT/PharmaSUG-2016-HT06.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "clinical-tlf-programming"
-    ],
-    "minutes": 40,
-    "free": true
-  },
-  {
-    "title": "PROC REPORT for groups of similar tables (PharmaSUG 2014, TT13)",
-    "url": "https://www.lexjansen.com/pharmasug/2014/TT/PharmaSUG-2014-TT13.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "clinical-tlf-programming"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Clinical Study Report Review: Statistician's Approach (PharmaSUG 2014, IB09)",
-    "url": "https://www.lexjansen.com/pharmasug/2014/IB/PharmaSUG-2014-IB09.pdf",
-    "provider": "PharmaSUG (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "clinical-tlf-programming",
-      "clinical-trials-knowledge"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Scrutinize Tables, Listings, Figures (TLFs) Prior to Customer Delivery (PHUSE US 2023)",
-    "url": "https://www.lexjansen.com/phuse-us/2023/as/PAP_AS03.pdf",
-    "provider": "PHUSE US (lexjansen.com)",
-    "kind": "docs",
-    "skillIds": [
-      "clinical-tlf-programming"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -23901,19 +23644,6 @@
     "free": true
   },
   {
-    "title": "CPWD Works Manual 2022 (copy hosted by NDMC)",
-    "url": "https://www.ndmc.gov.in/departments/Departments/Finance/nodal_cell/CPWD%20Works%20Manual%202022.pdf",
-    "provider": "NDMC (CPWD document)",
-    "kind": "docs",
-    "skillIds": [
-      "measurement-book-records",
-      "ra-subcontractor-billing",
-      "construction-contract-conditions"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "Public Works Department: works accounts and initial records",
     "url": "https://cag.gov.in/uploads/media/Works-Accounts-20200604155419.pdf",
     "provider": "Comptroller and Auditor General of India",
@@ -23923,17 +23653,6 @@
       "ra-subcontractor-billing"
     ],
     "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "SOP for processing contractors' bills",
-    "url": "https://newmangaloreport.gov.in/sites/default/files/2021-06/SOPContractors%20bill.pdf",
-    "provider": "New Mangalore Port Authority",
-    "kind": "docs",
-    "skillIds": [
-      "ra-subcontractor-billing"
-    ],
-    "minutes": 20,
     "free": true
   },
   {
@@ -24096,17 +23815,6 @@
     "free": true
   },
   {
-    "title": "Electrician Trade Theory, Week 26: load estimate, sub-circuits and cable sizing for domestic wiring",
-    "url": "https://blendedlearning.bharatskills.gov.in/pluginfile.php/29860/mod_resource/content/1/Electrician%20TT%2C%20Week%20-%2026.pdf",
-    "provider": "Bharat Skills (DGT, Government of India)",
-    "kind": "docs",
-    "skillIds": [
-      "electrical-load-calculations"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "Design of Reinforced Concrete Structures (IS 456:2000), IIT Kharagpur",
     "url": "https://nptel.ac.in/courses/105105105",
     "provider": "NPTEL",
@@ -24149,42 +23857,6 @@
       "boq-rate-analysis"
     ],
     "minutes": 180,
-    "free": true
-  },
-  {
-    "title": "Tamil Nadu PWD Schedule of Rates 2021-22",
-    "url": "https://www.tnhighways.tn.gov.in/pdf/PWD%20SOR%202021-22.pdf",
-    "provider": "Government of Tamil Nadu",
-    "kind": "docs",
-    "skillIds": [
-      "is-1200-measurement-rules",
-      "boq-rate-analysis"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "Indian Railways Unified Standard Schedule of Rates (IRUSSOR) 2021",
-    "url": "https://nwr.indianrailways.gov.in/uploads/files/1742283073461-IRUSSOR-2021.pdf",
-    "provider": "Indian Railways (North Western Railway)",
-    "kind": "docs",
-    "skillIds": [
-      "boq-rate-analysis",
-      "is-1200-measurement-rules"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "Draughtsman Civil trade syllabus (CTS 2.0): building and RCC drawings, bar bending schedule",
-    "url": "https://www.dgt.gov.in/sites/default/files/2023-12/Draughtsman%20Civil_CTS2.0_NSQF-4.pdf",
-    "provider": "Directorate General of Training, Government of India",
-    "kind": "docs",
-    "skillIds": [
-      "civil-drawing-reading",
-      "bar-bending-schedule"
-    ],
-    "minutes": 45,
     "free": true
   }
 ]
