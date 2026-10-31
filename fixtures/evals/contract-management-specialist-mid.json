@@ -1,0 +1,48 @@
+{
+  "id": "contract-management-specialist-mid",
+  "roleSlug": "contract-management-specialist",
+  "persona": "mid",
+  "resumeText": "Rohit Nair | Bengaluru | rohit.nair@example.com\n\nEXPERIENCE\nContracts Analyst, Legal Operations, Nilgiri Healthtech Services, Bengaluru (2021 - present)\n- Draft NDAs, MSAs and statements of work from approved templates and clause libraries.\n- Did contract redlining of supplier paper against the negotiation playbook and escalate deviations to counsel.\n- Configure contract workflows and approvals in Icertis for 400+ supplier agreements.\n- Track renewal dates, notice periods and key obligations in a monthly obligations register.\n- Build Excel dashboards on contract cycle time and expiring agreements.\n\nLegal Process Associate, Vellore LPO Solutions, Chennai (2019 - 2021)\n- Abstracted key terms and metadata from 3,000 legacy contracts during a repository migration.\n\nEDUCATION\nLLB, Government Law College, Thiruvananthapuram, 2019\n\nSKILLS\nIcertis, DocuSign, Excel, Contract review\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "commercial-contract-drafting",
+        "quote": "Draft NDAs, MSAs and statements of work from approved templates"
+      },
+      {
+        "skillId": "contract-redlining-review",
+        "quote": "Did contract redlining of supplier paper against the negotiation playbook"
+      },
+      {
+        "skillId": "clm-platforms",
+        "quote": "Configure contract workflows and approvals in Icertis"
+      },
+      {
+        "skillId": "contract-obligation-tracking",
+        "quote": "Track renewal dates, notice periods and key obligations"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Build Excel dashboards on contract cycle time"
+      },
+      {
+        "skillId": "contract-abstraction",
+        "quote": "Abstracted key terms and metadata from 3,000 legacy contracts"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "commercial-negotiation",
+      "legal-research",
+      "indian-contract-law",
+      "erp-purchasing"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,59 @@
+{
+  "id": "medical-billing-specialist-mid",
+  "roleSlug": "medical-billing-specialist",
+  "persona": "mid",
+  "resumeText": "Mohammed Imran | Hyderabad | m.imran@example.com\n\nEXPERIENCE\nSenior AR Executive, Golconda Revenue Partners (fictional), Hyderabad (2022 - present)\n- Call insurance payers to follow up on unpaid claims for a US multispecialty physician group.\n- Work Medicare, Medicaid and commercial payer accounts and track timely filing limits.\n- Analyse denials such as CO-16 and CO-197 and file appeals with corrected documentation.\n- Read EOBs and ERAs to identify underpayments and request reprocessing.\n- Update claim notes in athenahealth and eClinicalWorks practice management systems.\n- Handle PHI as per HIPAA guidelines on every call and email.\n\nAR Caller, Golconda Revenue Partners (fictional), Hyderabad (2020 - 2022)\n- Explained claim status and denial reasons to payer representatives on US-shift calls.\n- Prepared the daily AR ageing summary for the team lead.\n\nEDUCATION\nBCom, Osmania University, 2020\n\nSKILLS\nEligibility verification, MS Excel, US healthcare RCM\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "ar-follow-up-rcm",
+        "quote": "follow up on unpaid claims for a US multispecialty physician group"
+      },
+      {
+        "skillId": "us-healthcare-payers",
+        "quote": "Work Medicare, Medicaid and commercial payer accounts"
+      },
+      {
+        "skillId": "denial-management",
+        "quote": "Analyse denials such as CO-16 and CO-197 and file appeals"
+      },
+      {
+        "skillId": "payment-posting-eob",
+        "quote": "Read EOBs and ERAs to identify underpayments"
+      },
+      {
+        "skillId": "practice-management-systems",
+        "quote": "athenahealth and eClinicalWorks practice management systems"
+      },
+      {
+        "skillId": "hipaa-phi-handling",
+        "quote": "Handle PHI as per HIPAA guidelines"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Explained claim status and denial reasons to payer representatives"
+      },
+      {
+        "skillId": "insurance-eligibility-verification",
+        "quote": "Eligibility verification"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "charge-entry-claim-submission",
+        "status": "missing"
+      },
+      {
+        "skillId": "insurance-eligibility-verification",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "em-coding",
+      "icd-10-pcs-coding",
+      "cashless-preauthorisation"
+    ]
+  },
+  "reviewedBy": null
+}

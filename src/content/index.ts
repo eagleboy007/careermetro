@@ -81,7 +81,9 @@ import compensationBenefitsAnalyst from "./roles/compensation-benefits-analyst.j
 import computerVisionEngineer from "./roles/computer-vision-engineer.json";
 import contactCenterDeveloper from "./roles/contact-center-developer.json";
 import contentWriter from "./roles/content-writer.json";
+import contractManagementSpecialist from "./roles/contract-management-specialist.json";
 import coreBankingConsultant from "./roles/core-banking-consultant.json";
+import corporateLegalAssociate from "./roles/corporate-legal-associate.json";
 import costAccountant from "./roles/cost-accountant.json";
 import cppDeveloper from "./roles/cpp-developer.json";
 import creditRiskAnalyst from "./roles/credit-risk-analyst.json";
@@ -122,8 +124,10 @@ import eventMarketingExecutive from "./roles/event-marketing-executive.json";
 import exportImportExecutive from "./roles/export-import-executive.json";
 import financialAnalyst from "./roles/financial-analyst.json";
 import fmcgSalesOfficer from "./roles/fmcg-sales-officer.json";
+import foodBeverageExecutive from "./roles/food-beverage-executive.json";
 import forwardDeployedEngineer from "./roles/forward-deployed-engineer.json";
 import fpgaEngineer from "./roles/fpga-engineer.json";
+import frontOfficeExecutiveHotel from "./roles/front-office-executive-hotel.json";
 import frontendArchitect from "./roles/frontend-architect.json";
 import frontendDeveloper from "./roles/frontend-developer.json";
 import fullStackDeveloper from "./roles/full-stack-developer.json";
@@ -136,8 +140,12 @@ import graduateEngineerTraineeMechanical from "./roles/graduate-engineer-trainee
 import grcManager from "./roles/grc-manager.json";
 import guidewireDeveloper from "./roles/guidewire-developer.json";
 import hardwareDesignEngineer from "./roles/hardware-design-engineer.json";
+import healthInsuranceClaimsExecutive from "./roles/health-insurance-claims-executive.json";
 import hilTestEngineer from "./roles/hil-test-engineer.json";
 import homeLoanSalesOfficer from "./roles/home-loan-sales-officer.json";
+import hospitalOperationsExecutive from "./roles/hospital-operations-executive.json";
+import hotelRevenueManager from "./roles/hotel-revenue-manager.json";
+import housekeepingSupervisor from "./roles/housekeeping-supervisor.json";
 import hpcGpuEngineer from "./roles/hpc-gpu-engineer.json";
 import hrBusinessPartner from "./roles/hr-business-partner.json";
 import hrGeneralist from "./roles/hr-generalist.json";
@@ -163,6 +171,7 @@ import kafkaStreamingEngineer from "./roles/kafka-streaming-engineer.json";
 import keyAccountManager from "./roles/key-account-manager.json";
 import learningDevelopmentSpecialist from "./roles/learning-development-specialist.json";
 import linuxKernelDeveloper from "./roles/linux-kernel-developer.json";
+import litigationParalegal from "./roles/litigation-paralegal.json";
 import logisticsCoordinator from "./roles/logistics-coordinator.json";
 import lowCodeDeveloper from "./roles/low-code-developer.json";
 import m365Administrator from "./roles/m365-administrator.json";
@@ -173,6 +182,8 @@ import managementTrainee from "./roles/management-trainee.json";
 import manualTestEngineer from "./roles/manual-test-engineer.json";
 import marketResearchAnalyst from "./roles/market-research-analyst.json";
 import mechanicalDesignEngineer from "./roles/mechanical-design-engineer.json";
+import medicalBillingSpecialist from "./roles/medical-billing-specialist.json";
+import medicalCoder from "./roles/medical-coder.json";
 import medicalRepresentative from "./roles/medical-representative.json";
 import middlewareAdministrator from "./roles/middleware-administrator.json";
 import mlEngineer from "./roles/ml-engineer.json";
@@ -214,6 +225,7 @@ import qualityControlInspector from "./roles/quality-control-inspector.json";
 import quantDeveloper from "./roles/quant-developer.json";
 import realEstateSalesExecutive from "./roles/real-estate-sales-executive.json";
 import redTeamOperator from "./roles/red-team-operator.json";
+import regulatoryComplianceOfficer from "./roles/regulatory-compliance-officer.json";
 import relationshipManagerBanking from "./roles/relationship-manager-banking.json";
 import retailStoreManager from "./roles/retail-store-manager.json";
 import roboticsEngineer from "./roles/robotics-engineer.json";
@@ -378,7 +390,9 @@ export const roleProfiles: RoleProfile[] = z
     computerVisionEngineer,
     contactCenterDeveloper,
     contentWriter,
+    contractManagementSpecialist,
     coreBankingConsultant,
+    corporateLegalAssociate,
     costAccountant,
     cppDeveloper,
     creditRiskAnalyst,
@@ -419,8 +433,10 @@ export const roleProfiles: RoleProfile[] = z
     exportImportExecutive,
     financialAnalyst,
     fmcgSalesOfficer,
+    foodBeverageExecutive,
     forwardDeployedEngineer,
     fpgaEngineer,
+    frontOfficeExecutiveHotel,
     frontendArchitect,
     frontendDeveloper,
     fullStackDeveloper,
@@ -433,8 +449,12 @@ export const roleProfiles: RoleProfile[] = z
     grcManager,
     guidewireDeveloper,
     hardwareDesignEngineer,
+    healthInsuranceClaimsExecutive,
     hilTestEngineer,
     homeLoanSalesOfficer,
+    hospitalOperationsExecutive,
+    hotelRevenueManager,
+    housekeepingSupervisor,
     hpcGpuEngineer,
     hrBusinessPartner,
     hrGeneralist,
@@ -460,6 +480,7 @@ export const roleProfiles: RoleProfile[] = z
     keyAccountManager,
     learningDevelopmentSpecialist,
     linuxKernelDeveloper,
+    litigationParalegal,
     logisticsCoordinator,
     lowCodeDeveloper,
     m365Administrator,
@@ -470,6 +491,8 @@ export const roleProfiles: RoleProfile[] = z
     manualTestEngineer,
     marketResearchAnalyst,
     mechanicalDesignEngineer,
+    medicalBillingSpecialist,
+    medicalCoder,
     medicalRepresentative,
     middlewareAdministrator,
     mlEngineer,
@@ -511,6 +534,7 @@ export const roleProfiles: RoleProfile[] = z
     quantDeveloper,
     realEstateSalesExecutive,
     redTeamOperator,
+    regulatoryComplianceOfficer,
     relationshipManagerBanking,
     retailStoreManager,
     roboticsEngineer,

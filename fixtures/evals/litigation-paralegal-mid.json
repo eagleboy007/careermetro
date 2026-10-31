@@ -1,0 +1,60 @@
+{
+  "id": "litigation-paralegal-mid",
+  "roleSlug": "litigation-paralegal",
+  "persona": "mid",
+  "resumeText": "Faizan Qureshi | New Delhi | faizan.qureshi@example.com\n\nEXPERIENCE\nLegal Executive - Litigation, Rathore & Sinha Law Chambers, New Delhi (2024 - present)\n- Maintain case files, briefs and order sheets for 120 active matters before the Delhi High Court and district courts.\n- File petitions, applications and vakalatnamas through the Delhi High Court e-filing portal and clear registry objections.\n- Check the daily cause list and update hearing dates in the matter diary.\n- Draft first versions of legal notices and replies for cheque bounce and recovery matters.\n- Update the litigation tracker in Excel for corporate clients every week.\n\nParalegal, Yamuna Legal Associates, New Delhi (2022 - 2024)\n- Research judgments on SCC Online and Manupatra and prepare case law compilations for counsel.\n- Prepare paper books, affidavits and indexes for filing in district courts.\n\nEDUCATION\nLLB, Faculty of Law, University of Delhi, 2022\n\nSKILLS\nLegal document review, MS Word, Excel\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "litigation-case-file-management",
+        "quote": "Maintain case files, briefs and order sheets"
+      },
+      {
+        "skillId": "court-efiling-registry",
+        "quote": "through the Delhi High Court e-filing portal"
+      },
+      {
+        "skillId": "cause-list-tracking",
+        "quote": "Check the daily cause list and update hearing dates"
+      },
+      {
+        "skillId": "legal-notice-drafting",
+        "quote": "Draft first versions of legal notices and replies"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Update the litigation tracker in Excel"
+      },
+      {
+        "skillId": "legal-research",
+        "quote": "Research judgments on SCC Online and Manupatra"
+      },
+      {
+        "skillId": "pleadings-drafting-support",
+        "quote": "Prepare paper books, affidavits and indexes"
+      },
+      {
+        "skillId": "legal-document-review",
+        "quote": "Legal document review"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "legal-document-review",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "commercial-contract-drafting",
+      "companies-act-compliance",
+      "legal-due-diligence",
+      "clm-platforms"
+    ]
+  },
+  "reviewedBy": null
+}

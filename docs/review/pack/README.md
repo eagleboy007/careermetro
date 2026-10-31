@@ -33,6 +33,9 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | Software, hardware, delivery and marketing | `roles-other.csv` | 67 |
 | Sales, finance, HR and operations | `roles-business.csv` | 46 |
 | Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
+| Legal and compliance | `roles-legal.csv` | 4 |
+| Healthcare administration (coding, billing, hospital operations and claims) | `roles-healthcare-admin.csv` | 4 |
+| Hospitality (hotels, food and beverage) | `roles-hospitality.csv` | 4 |
 
 | Questions | File | Lines |
 | --- | --- | --- |
@@ -43,7 +46,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
 
-231 role profiles await review in all.
+243 role profiles await review in all.
 
 ## Changed since the draft, awaiting sign-off
 
@@ -58,6 +61,8 @@ Development changed these lines after a test showed a problem. Their **Detail** 
 - `site-reliability-engineer#titles`: "Production Engineer" removed: in India it usually means a manufacturing role, now its own profile.
 - `vlsi-design-engineer#titles`: "Design Verification Engineer", "ASIC Verification Engineer" and "Verification Engineer" removed: chip verification is now its own profile (Design Verification Engineer).
 - `it-service-delivery-manager#title`: Grouped with infrastructure and cloud roles (drafted under delivery): its skills are IT operations ones (ITSM, major incidents, SLAs), shared with application support and technical account managers.
+- `front-office-executive-hotel#skill:cross-selling-upselling`: Nice to have (was Required): none of the hotel front office posts the draft is built on ask for upselling.
+- `corporate-legal-associate#skill:clm-platforms`: New Nice to have skill: in-house legal teams route, approve and store contracts in a contract management tool.
 
 ## How answers flow back into the app
 

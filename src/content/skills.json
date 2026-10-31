@@ -13281,5 +13281,1177 @@
     ],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "commercial-contract-drafting",
+    "name": "Commercial contract drafting",
+    "category": "business",
+    "aliases": [
+      "contract drafting",
+      "drafting commercial agreements",
+      "drafting of commercial contracts",
+      "drafting and vetting of agreements",
+      "contract vetting",
+      "nda drafting",
+      "msa drafting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "contract-redlining-review",
+    "name": "Contract redlining and review",
+    "category": "business",
+    "aliases": [
+      "contract redlining",
+      "redlining contracts",
+      "redlining of agreements",
+      "contract review and redlining",
+      "reviewing commercial contracts"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "legal-research",
+    "name": "Legal research",
+    "category": "business",
+    "aliases": [
+      "legal research",
+      "case law research",
+      "scc online",
+      "manupatra",
+      "westlaw india",
+      "legal research memos",
+      "case law compilation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "indian-contract-law",
+    "name": "Indian contract law",
+    "category": "business",
+    "aliases": [
+      "indian contract act",
+      "indian contract act 1872",
+      "specific relief act",
+      "law of contracts"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "litigation-management",
+    "name": "Litigation and dispute management",
+    "category": "business",
+    "aliases": [
+      "litigation management",
+      "external counsel coordination",
+      "coordination with external counsel",
+      "litigation tracker",
+      "panel advocate coordination"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "legal-due-diligence",
+    "name": "Legal due diligence",
+    "category": "business",
+    "aliases": [
+      "legal due diligence",
+      "legal dd",
+      "legal due diligence reports",
+      "title due diligence"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "clm-platforms",
+    "name": "Contract lifecycle management tools",
+    "category": "tools",
+    "aliases": [
+      "contract lifecycle management",
+      "icertis",
+      "docusign clm",
+      "sap ariba contracts",
+      "agiloft",
+      "ironclad clm",
+      "conga clm",
+      "sirion clm"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "contract-obligation-tracking",
+    "name": "Contract obligation and renewal tracking",
+    "category": "business",
+    "aliases": [
+      "obligation tracking",
+      "contract obligation management",
+      "contract renewal tracking",
+      "contract expiry tracking",
+      "obligations register"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "contract-abstraction",
+    "name": "Contract abstraction and metadata",
+    "category": "business",
+    "aliases": [
+      "contract abstraction",
+      "contract abstracts",
+      "contract metadata extraction",
+      "contract data extraction",
+      "contract repository migration"
+    ],
+    "ambiguous": [
+      "contract data extraction",
+      "contract metadata extraction"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "regulatory-circular-tracking",
+    "name": "Regulatory circular tracking and impact analysis",
+    "category": "business",
+    "aliases": [
+      "rbi circulars",
+      "sebi circulars",
+      "irdai circulars",
+      "regulatory updates tracking",
+      "regulatory change management",
+      "circular impact analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "compliance-testing-monitoring",
+    "name": "Compliance testing and monitoring",
+    "category": "business",
+    "aliases": [
+      "compliance testing",
+      "compliance monitoring and testing",
+      "compliance monitoring plan"
+    ],
+    "ambiguous": [
+      "compliance testing"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "regulatory-returns-reporting",
+    "name": "Regulatory returns and reporting",
+    "category": "business",
+    "aliases": [
+      "regulatory returns",
+      "rbi returns",
+      "regulatory reporting to rbi",
+      "cims returns",
+      "compliance certificates to board"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "compliance-policy-management",
+    "name": "Compliance policy management",
+    "category": "business",
+    "aliases": [
+      "compliance policy drafting",
+      "compliance manual",
+      "compliance policies",
+      "compliance policy review",
+      "board-approved compliance policy"
+    ],
+    "ambiguous": [
+      "compliance policies"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rbi-regulatory-framework",
+    "name": "RBI regulatory framework for banks and NBFCs",
+    "category": "business",
+    "aliases": [
+      "rbi master directions",
+      "rbi master direction",
+      "nbfc compliance",
+      "scale based regulation",
+      "rbi regulatory compliance",
+      "nbfc regulations"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sebi-intermediary-regulations",
+    "name": "SEBI regulations for market intermediaries",
+    "category": "business",
+    "aliases": [
+      "sebi intermediary regulations",
+      "stock broker compliance",
+      "sebi stock brokers regulations",
+      "depository participant compliance",
+      "mutual fund compliance",
+      "sebi intermediary compliance"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "regulatory-inspection-coordination",
+    "name": "Regulatory inspection coordination",
+    "category": "business",
+    "aliases": [
+      "rbi inspection",
+      "sebi inspection",
+      "regulatory inspections",
+      "inspection observations closure",
+      "risk based supervision"
+    ],
+    "ambiguous": [
+      "regulatory inspections"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "litigation-case-file-management",
+    "name": "Litigation case file management",
+    "category": "business",
+    "aliases": [
+      "case file management",
+      "litigation files",
+      "court file maintenance",
+      "matter diary"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "court-efiling-registry",
+    "name": "Court e-filing and registry work",
+    "category": "business",
+    "aliases": [
+      "court e-filing",
+      "e-filing of petitions",
+      "ecourts e-filing",
+      "registry objections",
+      "court filings",
+      "filing of pleadings"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cause-list-tracking",
+    "name": "Cause list and hearing tracking",
+    "category": "business",
+    "aliases": [
+      "cause list",
+      "cause lists",
+      "daily cause list",
+      "hearing dates tracking"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "legal-notice-drafting",
+    "name": "Legal notice drafting",
+    "category": "business",
+    "aliases": [
+      "legal notices",
+      "drafting legal notices",
+      "legal notice drafting",
+      "replies to legal notices",
+      "section 80 cpc notice"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "legal-document-review",
+    "name": "Legal document review",
+    "category": "business",
+    "aliases": [
+      "legal document review",
+      "first level document review",
+      "privilege review",
+      "relativity review",
+      "ediscovery review",
+      "document coding and tagging"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pleadings-drafting-support",
+    "name": "Pleadings and court document preparation",
+    "category": "business",
+    "aliases": [
+      "drafting pleadings",
+      "affidavits drafting",
+      "paper books",
+      "vakalatnama",
+      "written statements drafting",
+      "plaint drafting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "icd-10-cm-coding",
+    "name": "Diagnosis coding (ICD-10-CM)",
+    "category": "business",
+    "aliases": [
+      "icd-10-cm",
+      "icd-10-cm coding",
+      "icd 10 cm",
+      "icd-10 diagnosis coding",
+      "diagnosis coding",
+      "icd-10 coding"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "medical-terminology-anatomy"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "icd-10-pcs-coding",
+    "name": "Inpatient coding (ICD-10-PCS and DRG)",
+    "category": "business",
+    "aliases": [
+      "icd-10-pcs",
+      "icd-10-pcs coding",
+      "ip drg coding",
+      "ipdrg",
+      "ms-drg assignment",
+      "inpatient drg coding",
+      "inpatient coding"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "icd-10-cm-coding"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "cpt-hcpcs-coding",
+    "name": "Procedure coding (CPT and HCPCS)",
+    "category": "business",
+    "aliases": [
+      "cpt coding",
+      "cpt-4",
+      "cpt codes",
+      "hcpcs",
+      "hcpcs level ii",
+      "hcpcs coding",
+      "procedure coding"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "em-coding",
+    "name": "E/M and outpatient specialty coding",
+    "category": "business",
+    "aliases": [
+      "e/m coding",
+      "e&m coding",
+      "evaluation and management coding",
+      "profee coding",
+      "ed profee coding",
+      "surgery coding",
+      "e/m levels"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "cpt-hcpcs-coding"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "risk-adjustment-hcc-coding",
+    "name": "Risk adjustment (HCC) coding",
+    "category": "business",
+    "aliases": [
+      "hcc coding",
+      "risk adjustment coding",
+      "hierarchical condition categories",
+      "hcc coder",
+      "raf score",
+      "hcc chart review"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "icd-10-cm-coding"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "coding-guidelines-compliance",
+    "name": "Coding guidelines, NCCI edits and modifiers",
+    "category": "business",
+    "aliases": [
+      "ncci edits",
+      "cci edits",
+      "coding modifiers",
+      "modifier usage",
+      "official coding guidelines",
+      "lcd and ncd policies",
+      "modifier 25"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "medical-terminology-anatomy",
+    "name": "Medical terminology and anatomy",
+    "category": "business",
+    "aliases": [
+      "medical terminology",
+      "anatomy and physiology",
+      "human anatomy and physiology",
+      "clinical terminology"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "coding-audit-qa",
+    "name": "Coding quality audits",
+    "category": "business",
+    "aliases": [
+      "coding audit",
+      "coding audits",
+      "coding quality audit",
+      "coding qa",
+      "chart audits",
+      "coding accuracy audits",
+      "coding auditor"
+    ],
+    "ambiguous": [
+      "coding audit",
+      "coding audits",
+      "coding qa",
+      "coding quality audit"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "encoder-tools",
+    "name": "Medical coding encoder tools",
+    "category": "tools",
+    "aliases": [
+      "3m encoder",
+      "3m codefinder",
+      "optum encoderpro",
+      "encoderpro",
+      "trucode",
+      "encoder tools",
+      "computer-assisted coding"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hipaa-phi-handling",
+    "name": "HIPAA and PHI handling",
+    "category": "business",
+    "aliases": [
+      "phi handling",
+      "protected health information",
+      "hipaa privacy rule",
+      "hipaa guidelines",
+      "phi confidentiality"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ar-follow-up-rcm",
+    "name": "Insurance AR follow-up (US healthcare)",
+    "category": "business",
+    "aliases": [
+      "ar follow-up",
+      "ar follow up",
+      "ar calling",
+      "ar caller",
+      "insurance claim follow-up",
+      "unpaid claims follow-up",
+      "accounts receivable follow-up"
+    ],
+    "ambiguous": [
+      "ar follow-up",
+      "ar follow up",
+      "accounts receivable follow-up"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "denial-management",
+    "name": "Claim denial management and appeals",
+    "category": "business",
+    "aliases": [
+      "denial management",
+      "denials management",
+      "claim denials",
+      "denial analysis",
+      "claim appeals",
+      "appeals filing",
+      "denial trends"
+    ],
+    "ambiguous": [
+      "appeals filing"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "charge-entry-claim-submission",
+    "name": "Charge entry and claim submission",
+    "category": "business",
+    "aliases": [
+      "charge entry",
+      "claim submission",
+      "cms-1500",
+      "ub-04",
+      "claim scrubbing",
+      "clearinghouse submission",
+      "demo and charge entry"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "payment-posting-eob",
+    "name": "Payment posting and EOB/ERA reading",
+    "category": "business",
+    "aliases": [
+      "payment posting",
+      "era posting",
+      "eob posting",
+      "reading eobs",
+      "eob analysis",
+      "explanation of benefits",
+      "remittance advice"
+    ],
+    "ambiguous": [
+      "payment posting",
+      "remittance advice"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "insurance-eligibility-verification",
+    "name": "Insurance eligibility and benefits verification",
+    "category": "business",
+    "aliases": [
+      "eligibility verification",
+      "insurance verification",
+      "benefits verification",
+      "eligibility and benefits",
+      "prior authorization",
+      "prior authorisation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "practice-management-systems",
+    "name": "Practice management and billing systems (US)",
+    "category": "tools",
+    "aliases": [
+      "practice management system",
+      "practice management software",
+      "eclinicalworks",
+      "athenahealth",
+      "athenaone",
+      "kareo",
+      "nextgen pm",
+      "epic resolute"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "us-healthcare-payers",
+    "name": "US payer rules (Medicare, Medicaid, commercial)",
+    "category": "business",
+    "aliases": [
+      "us healthcare",
+      "medicare",
+      "medicaid",
+      "commercial payers",
+      "us health insurance",
+      "payer guidelines",
+      "timely filing limits"
+    ],
+    "ambiguous": [
+      "us healthcare",
+      "medicare",
+      "medicaid"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "patient-admission-discharge",
+    "name": "Patient admission and discharge coordination",
+    "category": "business",
+    "aliases": [
+      "admission and discharge",
+      "discharge process",
+      "discharge coordination",
+      "ip admissions",
+      "discharge tat",
+      "adt process",
+      "admission counter"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hospital-bed-management",
+    "name": "Hospital bed management",
+    "category": "business",
+    "aliases": [
+      "bed management",
+      "bed allocation",
+      "bed occupancy",
+      "bed status report",
+      "bed board",
+      "bed allotment"
+    ],
+    "ambiguous": [
+      "bed occupancy"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "opd-front-office-operations",
+    "name": "OPD and hospital front office operations",
+    "category": "business",
+    "aliases": [
+      "opd management",
+      "opd coordination",
+      "opd operations",
+      "patient registration",
+      "opd appointments",
+      "hospital front desk",
+      "hospital front office"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "his-software",
+    "name": "Hospital information system (HIS)",
+    "category": "tools",
+    "aliases": [
+      "hospital information system",
+      "his software",
+      "his entries",
+      "his module"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "nabh-accreditation",
+    "name": "NABH accreditation standards and documentation",
+    "category": "business",
+    "aliases": [
+      "nabh",
+      "nabh standards",
+      "nabh accreditation",
+      "nabh documentation",
+      "nabh audits",
+      "nabh quality indicators"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hospital-patient-billing",
+    "name": "Hospital patient billing and estimates (India)",
+    "category": "business",
+    "aliases": [
+      "ipd billing",
+      "opd billing",
+      "ip final billing",
+      "final bill settlement",
+      "patient billing estimates",
+      "hospital estimation desk"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cashless-preauthorisation",
+    "name": "Cashless pre-authorisation processing",
+    "category": "business",
+    "aliases": [
+      "cashless pre-authorisation",
+      "cashless pre-authorization",
+      "pre-auth processing",
+      "preauth approvals",
+      "cashless claims",
+      "enhancement requests",
+      "cashless approvals"
+    ],
+    "ambiguous": [
+      "enhancement requests"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "reimbursement-claim-processing",
+    "name": "Health reimbursement claim processing",
+    "category": "business",
+    "aliases": [
+      "reimbursement claims",
+      "reimbursement claim processing",
+      "health claim adjudication",
+      "health claims settlement"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "medical-document-scrutiny",
+    "name": "Medical document scrutiny for claims",
+    "category": "business",
+    "aliases": [
+      "medical document scrutiny",
+      "discharge summary review",
+      "medical records scrutiny",
+      "claim document verification",
+      "medical necessity review",
+      "case paper review"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hospital-network-tariffs",
+    "name": "Hospital network and tariff coordination",
+    "category": "business",
+    "aliases": [
+      "hospital network management",
+      "network hospitals",
+      "hospital empanelment",
+      "package rate negotiation",
+      "provider network coordination",
+      "hospital tariff negotiation"
+    ],
+    "ambiguous": [
+      "hospital network management",
+      "network hospitals"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "health-claims-fraud-detection",
+    "name": "Health claims fraud detection",
+    "category": "business",
+    "aliases": [
+      "claims fraud detection",
+      "fraud triggers",
+      "health insurance fraud",
+      "suspicious claims",
+      "claim investigation referral"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hotel-pms-operations",
+    "name": "Hotel property management system (Opera, IDS)",
+    "category": "tools",
+    "aliases": [
+      "opera pms",
+      "oracle opera",
+      "opera cloud",
+      "ids next",
+      "fortunenext",
+      "fidelio",
+      "hotel property management system",
+      "opera housekeeping module"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "guest-check-in-check-out",
+    "name": "Hotel guest check-in and check-out",
+    "category": "business",
+    "aliases": [
+      "guest check-in",
+      "check-in and check-out",
+      "guest registration card",
+      "express check-out",
+      "early arrivals and late check-outs"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hotel-reservations-handling",
+    "name": "Hotel room reservations and group bookings",
+    "category": "business",
+    "aliases": [
+      "room reservations",
+      "hotel reservations",
+      "group rooming list",
+      "rooming lists",
+      "room blocks",
+      "reservation amendments and cancellations"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "night-audit",
+    "name": "Hotel night audit",
+    "category": "business",
+    "aliases": [
+      "night audit",
+      "night auditor",
+      "night audit reports",
+      "end of day audit"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "front-office-cashiering",
+    "name": "Front office cashiering and guest folios",
+    "category": "business",
+    "aliases": [
+      "front office cashiering",
+      "guest folio",
+      "guest folios",
+      "folio settlement",
+      "foreign currency exchange counter",
+      "cashier shift closing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "frro-c-form-compliance",
+    "name": "FRRO C-Form reporting for foreign guests",
+    "category": "business",
+    "aliases": [
+      "frro c-form",
+      "c-form submission",
+      "form c filing",
+      "c forms for foreign guests",
+      "foreign guest registration",
+      "arrival and departure register"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fnb-service-operations",
+    "name": "Restaurant and in-room dining service",
+    "category": "business",
+    "aliases": [
+      "f&b service",
+      "food and beverage service",
+      "restaurant service",
+      "all day dining",
+      "in-room dining",
+      "fine dining service",
+      "a la carte service"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "banquet-event-operations",
+    "name": "Banquet service and event orders (BEO)",
+    "category": "business",
+    "aliases": [
+      "banquet event order",
+      "banquet event orders",
+      "banquet operations",
+      "banquet service",
+      "banquet setup",
+      "function prospectus"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "menu-knowledge-food-pairing",
+    "name": "Menu, beverage and food pairing knowledge",
+    "category": "business",
+    "aliases": [
+      "menu knowledge",
+      "wine pairing",
+      "food and wine pairing",
+      "beverage knowledge",
+      "menu briefings",
+      "allergen briefing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "restaurant-pos-systems",
+    "name": "Restaurant POS (Micros) and KOT billing",
+    "category": "tools",
+    "aliases": [
+      "micros pos",
+      "oracle micros",
+      "micros simphony",
+      "simphony pos",
+      "kot billing",
+      "kitchen order tickets"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fssai-food-safety-hygiene",
+    "name": "FSSAI food safety and hygiene (HACCP, FoSTaC)",
+    "category": "business",
+    "aliases": [
+      "fssai",
+      "fssai compliance",
+      "fssai hygiene",
+      "haccp",
+      "fostac",
+      "food safety and hygiene",
+      "food safety audits"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hotel-revenue-pricing",
+    "name": "Hotel rooms pricing and yield management",
+    "category": "business",
+    "aliases": [
+      "hotel revenue management",
+      "yield management",
+      "room rate strategy",
+      "best available rate",
+      "length of stay restrictions",
+      "rooms revenue strategy"
+    ],
+    "ambiguous": [
+      "yield management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ota-channel-distribution",
+    "name": "OTA and channel manager distribution",
+    "category": "business",
+    "aliases": [
+      "ota management",
+      "online travel agencies",
+      "channel manager software",
+      "staah",
+      "siteminder",
+      "rate parity",
+      "ota extranet",
+      "gds distribution"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "revenue-management-systems",
+    "name": "Revenue management systems (IDeaS, Duetto)",
+    "category": "tools",
+    "aliases": [
+      "ideas g3",
+      "ideas rms",
+      "duetto",
+      "rategain",
+      "revenue management system",
+      "oneyield"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hotel-demand-forecasting",
+    "name": "Rooms demand forecasting (pickup and pace)",
+    "category": "business",
+    "aliases": [
+      "rooms forecast",
+      "occupancy forecasting",
+      "pickup and pace",
+      "booking pace",
+      "pickup report"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "str-compset-benchmarking",
+    "name": "STR and competitive set benchmarking",
+    "category": "business",
+    "aliases": [
+      "str report",
+      "str reports",
+      "str star report",
+      "competitive set",
+      "compset",
+      "rate shopping",
+      "revpar index"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "room-inspection-standards",
+    "name": "Guest room inspection and release",
+    "category": "business",
+    "aliases": [
+      "room inspection",
+      "room inspections",
+      "guest room inspection",
+      "room inspection checklist",
+      "vacant ready rooms",
+      "room status discrepancy"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "linen-inventory-control",
+    "name": "Linen, uniform and amenities inventory control",
+    "category": "business",
+    "aliases": [
+      "linen inventory",
+      "linen room",
+      "linen par stock",
+      "linen and uniform control",
+      "guest amenities inventory"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "public-area-cleaning",
+    "name": "Public area cleaning and deep-cleaning schedules",
+    "category": "business",
+    "aliases": [
+      "public area cleaning",
+      "public area supervision",
+      "deep cleaning schedule",
+      "floor care",
+      "lobby and restroom cleaning"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "housekeeping-chemical-safety",
+    "name": "Cleaning chemical handling and safety",
+    "category": "business",
+    "aliases": [
+      "cleaning chemicals",
+      "chemical handling",
+      "chemical dilution",
+      "chemical dispensing",
+      "ecolab chemicals"
+    ],
+    "ambiguous": [
+      "chemical handling"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "lost-and-found-handling",
+    "name": "Guest lost and found handling",
+    "category": "business",
+    "aliases": [
+      "lost and found",
+      "lost and found register",
+      "lost property handling"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

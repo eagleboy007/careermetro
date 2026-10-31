@@ -1,0 +1,64 @@
+{
+  "id": "health-insurance-claims-executive-mid",
+  "roleSlug": "health-insurance-claims-executive",
+  "persona": "mid",
+  "resumeText": "Dr. Ayesha Fernandes, BHMS | Bengaluru | ayesha.fernandes@example.com\n\nEXPERIENCE\nMedical Officer - Claims, Tungabhadra Health TPA Services (fictional), Bengaluru (2022 - present)\n- Process cashless pre-authorisation requests from network hospitals for retail and group health policies.\n- Adjudicated reimbursement claims against policy terms, exclusions, waiting periods and sub-limits.\n- Scrutinise discharge summaries, investigation reports and hospital bills for medical necessity.\n- Read diagnoses, procedures and treatment notes in case papers to check the line of treatment.\n- Met turnaround time targets for cashless approvals during peak hospital discharge hours.\n- Write query letters and deduction notes to hospitals and policyholders in clear language.\n- Flagged suspicious claims with mismatched dates to the investigation team.\n\nClinical Intern, Government Homoeopathic Medical College Hospital, Bengaluru (2021 - 2022)\n- Assisted OPD consultants and maintained patient case records.\n\nEDUCATION\nBHMS, Rajiv Gandhi University of Health Sciences, 2021\n\nSKILLS\nIRDAI guidelines, MS Excel, claims software\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "cashless-preauthorisation",
+        "quote": "Process cashless pre-authorisation requests from network hospitals"
+      },
+      {
+        "skillId": "reimbursement-claim-processing",
+        "quote": "Adjudicated reimbursement claims against policy terms"
+      },
+      {
+        "skillId": "policy-terms-wordings",
+        "quote": "against policy terms, exclusions, waiting periods and sub-limits"
+      },
+      {
+        "skillId": "medical-document-scrutiny",
+        "quote": "Scrutinise discharge summaries, investigation reports and hospital bills"
+      },
+      {
+        "skillId": "medical-terminology-anatomy",
+        "quote": "Read diagnoses, procedures and treatment notes in case papers"
+      },
+      {
+        "skillId": "process-tat-accuracy",
+        "quote": "Met turnaround time targets for cashless approvals"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Write query letters and deduction notes to hospitals and policyholders"
+      },
+      {
+        "skillId": "health-claims-fraud-detection",
+        "quote": "Flagged suspicious claims with mismatched dates to the investigation team"
+      },
+      {
+        "skillId": "irdai-regulations",
+        "quote": "IRDAI guidelines"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "irdai-regulations",
+        "status": "weak"
+      },
+      {
+        "skillId": "hospital-network-tariffs",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "icd-10-pcs-coding",
+      "ar-follow-up-rcm",
+      "hospital-bed-management",
+      "insurance-risk-assessment"
+    ]
+  },
+  "reviewedBy": null
+}

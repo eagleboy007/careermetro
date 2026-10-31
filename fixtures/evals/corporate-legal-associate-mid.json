@@ -1,0 +1,64 @@
+{
+  "id": "corporate-legal-associate-mid",
+  "roleSlug": "corporate-legal-associate",
+  "persona": "mid",
+  "resumeText": "Ananya Kulkarni | Pune | ananya.kulkarni@example.com\n\nEXPERIENCE\nLegal Associate, Sahyadri Agritech Pvt Ltd, Pune (2022 - present)\n- Draft and vet vendor, distribution and service agreements for the procurement and sales teams.\n- Review and redline customer contracts against the company's standard positions.\n- Negotiated liability caps and payment terms with counterparties on 30+ agreements.\n- Prepare research notes on Indian Contract Act issues such as indemnity and termination.\n- Coordinate with external counsel on 12 pending consumer and recovery disputes.\n- Work with sales, finance and operations heads to close contracts within agreed timelines.\n\nAssociate, Deshmukh & Rao Advocates, Pune (2021 - 2022)\n- Researched case law on SCC Online for commercial and consumer disputes.\n- Assisted partners on legal due diligence for two private equity investments.\n\nEDUCATION\nBA LLB, ILS Law College, Pune, 2021\n\nSKILLS\nContract drafting, Companies Act 2013, MS Word, SCC Online\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "commercial-contract-drafting",
+        "quote": "Draft and vet vendor, distribution and service agreements"
+      },
+      {
+        "skillId": "contract-redlining-review",
+        "quote": "Review and redline customer contracts against the company's standard positions"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "quote": "Negotiated liability caps and payment terms with counterparties"
+      },
+      {
+        "skillId": "indian-contract-law",
+        "quote": "research notes on Indian Contract Act issues"
+      },
+      {
+        "skillId": "litigation-management",
+        "quote": "Coordinate with external counsel on 12 pending consumer and recovery disputes"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Work with sales, finance and operations heads to close contracts"
+      },
+      {
+        "skillId": "legal-research",
+        "quote": "Researched case law on SCC Online for commercial and consumer disputes"
+      },
+      {
+        "skillId": "legal-due-diligence",
+        "quote": "Assisted partners on legal due diligence for two private equity investments"
+      },
+      {
+        "skillId": "companies-act-compliance",
+        "quote": "Companies Act 2013"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "companies-act-compliance",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "data-privacy",
+      "roc-mca-filings",
+      "board-meeting-administration",
+      "fema-rbi-filings"
+    ]
+  },
+  "reviewedBy": null
+}

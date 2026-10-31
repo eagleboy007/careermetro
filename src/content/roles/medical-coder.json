@@ -1,0 +1,132 @@
+{
+  "slug": "medical-coder",
+  "title": "Medical Coder",
+  "summary": "Medical coders read US patient charts and turn diagnoses and procedures into standard codes (ICD-10-CM, CPT, HCPCS) that insurers use to pay hospitals and doctors. They work in coding teams at Indian healthcare outsourcing firms, with team leads and quality auditors checking their work.",
+  "dailyDuties": [
+    "Review patient charts and assign ICD-10-CM diagnosis codes",
+    "Assign CPT and HCPCS codes for procedures and services",
+    "Apply modifiers and check NCCI edits before sign-off",
+    "Use the encoder tool to confirm code choices",
+    "Fix codes flagged in quality audit feedback",
+    "Meet daily chart productivity and accuracy targets",
+    "Raise documentation queries with the team lead"
+  ],
+  "typicalTitles": [
+    "Medical Coding Analyst",
+    "Senior Medical Coder",
+    "Certified Medical Coder",
+    "E/M Coder",
+    "IP DRG Coder",
+    "HCC Coder",
+    "Surgery Coder - Profee",
+    "ED Profee Coder"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "icd-10-cm-coding",
+      "importance": "required",
+      "expectation": "Assign accurate ICD-10-CM diagnosis codes from US patient charts",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpt-hcpcs-coding",
+      "importance": "required",
+      "expectation": "Assign CPT and HCPCS Level II codes for procedures, services and supplies",
+      "postingShare": null
+    },
+    {
+      "skillId": "em-coding",
+      "importance": "required",
+      "expectation": "Code in at least one specialty such as E/M, ED or surgery profee",
+      "postingShare": null,
+      "oneOf": "coding-specialty"
+    },
+    {
+      "skillId": "icd-10-pcs-coding",
+      "importance": "required",
+      "expectation": "Code in at least one specialty such as inpatient ICD-10-PCS with DRG",
+      "postingShare": null,
+      "oneOf": "coding-specialty"
+    },
+    {
+      "skillId": "risk-adjustment-hcc-coding",
+      "importance": "required",
+      "expectation": "Code in at least one specialty such as HCC risk adjustment",
+      "postingShare": null,
+      "oneOf": "coding-specialty"
+    },
+    {
+      "skillId": "medical-terminology-anatomy",
+      "importance": "required",
+      "expectation": "Read physician notes using anatomy, physiology and medical terms",
+      "postingShare": null
+    },
+    {
+      "skillId": "coding-guidelines-compliance",
+      "importance": "required",
+      "expectation": "Apply official guidelines, NCCI edits and modifiers correctly",
+      "postingShare": null
+    },
+    {
+      "skillId": "coding-audit-qa",
+      "importance": "required",
+      "expectation": "Take part in coding quality audits and fix audit feedback",
+      "postingShare": null
+    },
+    {
+      "skillId": "hipaa-phi-handling",
+      "importance": "required",
+      "expectation": "Handle patient health information under HIPAA rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-tat-accuracy",
+      "importance": "required",
+      "expectation": "Meet daily chart productivity and accuracy targets, often 95% or more",
+      "postingShare": null
+    },
+    {
+      "skillId": "encoder-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use an encoder such as 3M or EncoderPro to check codes",
+      "postingShare": null
+    },
+    {
+      "skillId": "us-healthcare-payers",
+      "importance": "nice_to_have",
+      "expectation": "Know how Medicare and commercial payer rules affect coding",
+      "postingShare": null
+    },
+    {
+      "skillId": "denial-management",
+      "importance": "nice_to_have",
+      "expectation": "Review coding-related denials and correct codes",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Track productivity and audit results in spreadsheets",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "coding-specialty",
+      "label": "Coding specialty"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

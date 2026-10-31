@@ -4486,7 +4486,8 @@
       "rbi-credit-norms",
       "loan-eligibility-assessment",
       "login-to-disbursement-tracking",
-      "core-banking-parameterisation"
+      "core-banking-parameterisation",
+      "rbi-regulatory-framework"
     ],
     "minutes": 1800,
     "free": true
@@ -10037,7 +10038,9 @@
     "kind": "course",
     "skillIds": [
       "it-vendor-management",
-      "construction-contract-conditions"
+      "construction-contract-conditions",
+      "indian-contract-law",
+      "commercial-contract-drafting"
     ],
     "minutes": 1200,
     "free": true
@@ -10048,7 +10051,10 @@
     "provider": "World Commerce & Contracting Foundation",
     "kind": "course",
     "skillIds": [
-      "it-vendor-management"
+      "it-vendor-management",
+      "contract-obligation-tracking",
+      "commercial-contract-drafting",
+      "contract-redlining-review"
     ],
     "minutes": 540,
     "free": true
@@ -17291,7 +17297,11 @@
     "kind": "docs",
     "skillIds": [
       "medical-underwriting",
-      "irdai-regulations"
+      "irdai-regulations",
+      "cashless-preauthorisation",
+      "reimbursement-claim-processing",
+      "hospital-network-tariffs",
+      "medical-document-scrutiny"
     ],
     "minutes": 60,
     "free": true
@@ -17396,7 +17406,9 @@
     "provider": "IRDAI",
     "kind": "docs",
     "skillIds": [
-      "policy-terms-wordings"
+      "policy-terms-wordings",
+      "reimbursement-claim-processing",
+      "medical-document-scrutiny"
     ],
     "minutes": 60,
     "free": true
@@ -17429,7 +17441,9 @@
     "provider": "IRDAI Policyholder portal",
     "kind": "docs",
     "skillIds": [
-      "policy-terms-wordings"
+      "policy-terms-wordings",
+      "cashless-preauthorisation",
+      "reimbursement-claim-processing"
     ],
     "minutes": 15,
     "free": true
@@ -18530,7 +18544,8 @@
     "provider": "Reserve Bank of India",
     "kind": "docs",
     "skillIds": [
-      "fema-rbi-filings"
+      "fema-rbi-filings",
+      "regulatory-returns-reporting"
     ],
     "minutes": 30,
     "free": true
@@ -24425,6 +24440,2601 @@
       "mechanical-equipment-maintenance"
     ],
     "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "The Indian Contract Act, 1872 (India Code)",
+    "url": "https://indiacode.nic.in/handle/123456789/2187",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "indian-contract-law",
+      "commercial-contract-drafting",
+      "contract-redlining-review"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "The Specific Relief Act, 1963 (India Code)",
+    "url": "https://indiacode.nic.in/handle/123456789/1583",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "indian-contract-law",
+      "litigation-management"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "The Code of Civil Procedure, 1908 (India Code)",
+    "url": "https://indiacode.nic.in/handle/123456789/2191",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "pleadings-drafting-support",
+      "legal-notice-drafting",
+      "litigation-management",
+      "litigation-case-file-management"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "The Commercial Courts Act, 2015 (India Code)",
+    "url": "https://www.indiacode.nic.in/handle/123456789/2156",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "litigation-management",
+      "pleadings-drafting-support",
+      "litigation-case-file-management"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "The Banking Regulation Act, 1949 (India Code)",
+    "url": "https://www.indiacode.nic.in/handle/123456789/1885",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "rbi-regulatory-framework",
+      "regulatory-inspection-coordination",
+      "regulatory-returns-reporting"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Excellence in Drafting of Commercial Contracts (Lexidem webinar, Bhumesh Verma)",
+    "url": "https://www.youtube.com/watch?v=n_sCl7ObrfA",
+    "provider": "YouTube (Lexidem)",
+    "kind": "video",
+    "skillIds": [
+      "commercial-contract-drafting",
+      "contract-redlining-review"
+    ],
+    "minutes": 75,
+    "free": true
+  },
+  {
+    "title": "Effective Negotiation Strategies in Commercial Contract Drafting (RostrumLegal webinar)",
+    "url": "https://www.youtube.com/watch?v=uVAG1_mVz5o",
+    "provider": "YouTube (RostrumLegal)",
+    "kind": "video",
+    "skillIds": [
+      "contract-redlining-review",
+      "commercial-contract-drafting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "WorldCC Contracting Principles",
+    "url": "https://www.worldcc.foundation/how-we-help/resources-tools/contracting-principles.html",
+    "provider": "World Commerce & Contracting Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "commercial-contract-drafting",
+      "contract-redlining-review"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "India Law Research guide (Harvard Law School Library)",
+    "url": "https://guides.library.harvard.edu/law/indian-law-research",
+    "provider": "Harvard Law School Library",
+    "kind": "docs",
+    "skillIds": [
+      "legal-research"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Indian Law Guide (Harvard Library)",
+    "url": "https://guides.library.harvard.edu/india",
+    "provider": "Harvard Library",
+    "kind": "docs",
+    "skillIds": [
+      "legal-research"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Researching the Law of India (Yale Law Library)",
+    "url": "https://library.law.yale.edu/news/researching-law-india",
+    "provider": "Yale Law Library",
+    "kind": "docs",
+    "skillIds": [
+      "legal-research"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Judgement and Orders Search Portal (eCourts) explained",
+    "url": "https://en.vikaspedia.in/e-governance/best-practices/best-ict-practices-in-indian-judiciary/judgement-orders-search-portal",
+    "provider": "Vikaspedia",
+    "kind": "docs",
+    "skillIds": [
+      "legal-research",
+      "litigation-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "SCC Online Training Series, Episode 1: ReSearch+ search",
+    "url": "https://www.youtube.com/watch?v=g7KvkPblzr4",
+    "provider": "YouTube (SCC Online)",
+    "kind": "video",
+    "skillIds": [
+      "legal-research"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SCC Online Training Series, Episode 3: search tips and tricks",
+    "url": "https://www.youtube.com/watch?v=U-E-b9i37_k",
+    "provider": "YouTube (SCC Online)",
+    "kind": "video",
+    "skillIds": [
+      "legal-research"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Intellectual Property Disputes: Court Practices and Enforcement (NPTEL, IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_lw15/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "litigation-management",
+      "legal-research"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "M&A due diligence in India (Khaitan & Co webinar)",
+    "url": "https://www.youtube.com/watch?v=gn3ZuqYwAJk",
+    "provider": "YouTube (Khaitan & Co)",
+    "kind": "video",
+    "skillIds": [
+      "legal-due-diligence"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "A Guide to M&A Due Diligence in India (King Stubb & Kasiva)",
+    "url": "https://ksandk.com/mergers-acquisition/mergers-and-acquisitions-due-diligence-guide/",
+    "provider": "King Stubb & Kasiva",
+    "kind": "docs",
+    "skillIds": [
+      "legal-due-diligence"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "M&A due diligence checklist for India (LawSikho blog)",
+    "url": "https://lawsikho.com/blog/ma-due-diligence-checklist-india/",
+    "provider": "LawSikho",
+    "kind": "docs",
+    "skillIds": [
+      "legal-due-diligence"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Critical facet of title investigation (PSA Legal)",
+    "url": "https://www.psalegal.com/?p=7652",
+    "provider": "PSA Legal",
+    "kind": "docs",
+    "skillIds": [
+      "legal-due-diligence"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to Create a Contract with DocuSign CLM in 3 Steps",
+    "url": "https://www.docusign.com/blog/create-contract-clm-steps",
+    "provider": "DocuSign",
+    "kind": "docs",
+    "skillIds": [
+      "clm-platforms"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "DocuSign CLM Getting Started (pre-implementation checklist)",
+    "url": "https://success.docusign.com/clm/checklist/preimplementation-guide",
+    "provider": "DocuSign",
+    "kind": "docs",
+    "skillIds": [
+      "clm-platforms"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Icertis Contract Intelligence on Azure: reference architecture",
+    "url": "https://learn.microsoft.com/en-us/industry/manufacturing/architecture/ra-icertis-contract-intelligence-azure",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "clm-platforms",
+      "contract-abstraction"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Are missed contract obligations costing your company a fortune? (Icertis)",
+    "url": "https://www.icertis.com/research/blog/are-missed-contract-obligations-costing-your-company-a-fortune/",
+    "provider": "Icertis",
+    "kind": "docs",
+    "skillIds": [
+      "contract-obligation-tracking",
+      "clm-platforms"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Enterprise obligation management is key to driving trust and results (Icertis)",
+    "url": "https://www.icertis.com/research/blog/enterprise-obligation-management-is-key-to-driving-trust-and-results/",
+    "provider": "Icertis",
+    "kind": "docs",
+    "skillIds": [
+      "contract-obligation-tracking",
+      "clm-platforms"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "It pays to be proactive about contract obligations and entitlements (Icertis)",
+    "url": "https://www.icertis.com/research/blog/pays-proactive-contract-obligations-entitlements/",
+    "provider": "Icertis",
+    "kind": "docs",
+    "skillIds": [
+      "contract-obligation-tracking"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Agiloft launches AI obligation management for CLM (LawNext)",
+    "url": "https://www.lawnext.com/2025/12/agiloft-launches-ai-powered-obligation-management-system-for-contract-lifecycle.html",
+    "provider": "LawNext",
+    "kind": "docs",
+    "skillIds": [
+      "clm-platforms",
+      "contract-obligation-tracking"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Contract Management Principles (UK Government)",
+    "url": "https://assets.publishing.service.gov.uk/media/5a7dcf16ed915d2ac884daf3/Contract_Management_Principles.pdf",
+    "provider": "UK Government",
+    "kind": "docs",
+    "skillIds": [
+      "contract-obligation-tracking",
+      "contract-abstraction"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Contract Metadata Extraction: step-by-step guide (SpotDraft)",
+    "url": "https://www.spotdraft.com/blog/contract-metadata-extraction",
+    "provider": "SpotDraft",
+    "kind": "docs",
+    "skillIds": [
+      "contract-abstraction",
+      "clm-platforms"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Contract Abstraction: process, template and best practices (HyperStart)",
+    "url": "https://www.hyperstart.com/blog/contract-abstraction/",
+    "provider": "HyperStart",
+    "kind": "docs",
+    "skillIds": [
+      "contract-abstraction"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "RBI Master Directions (index)",
+    "url": "https://www.rbi.org.in/scripts/BS_ViewMasterDirections.aspx",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "regulatory-circular-tracking",
+      "rbi-regulatory-framework",
+      "compliance-policy-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "RBI (NBFC - Registration, Exemptions and Scale Based Regulation) Directions, 2025",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=12965",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "rbi-regulatory-framework"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "RBI: Compliance functions in banks and role of the Chief Compliance Officer",
+    "url": "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=11962",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-policy-management",
+      "compliance-testing-monitoring",
+      "rbi-regulatory-framework"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "RBI: Prompt Corrective Action framework for NBFCs",
+    "url": "https://website.rbi.org.in/web/rbi/-/notifications/prompt-corrective-action-pca-framework-for-non-banking-financial-companies-nbfcs-12208",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "rbi-regulatory-framework",
+      "regulatory-inspection-coordination"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "RBI Master Direction: Filing of Supervisory Returns",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=13620",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "regulatory-returns-reporting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "RBI press release: Risk-Based Internal Audit in NBFCs and UCBs",
+    "url": "https://website.rbi.org.in/web/rbi/-/press-releases/risk-based-internal-audit-rbia-in-nbfcs-ucbs-51063",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-testing-monitoring",
+      "regulatory-inspection-coordination"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "RBI notification: move towards risk-based supervision of banks",
+    "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=439",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "regulatory-inspection-coordination"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "RBI report on the supervisory framework and risk-based supervision",
+    "url": "https://www.rbi.org.in/scripts/PublicationReportDetails.aspx?ID=663",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "regulatory-inspection-coordination"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "RBI list of all returns (with reporting mode, e.g. CIMS)",
+    "url": "https://www.rbi.org.in/Scripts/BS_Listofallreturns.aspx?id=2774",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "regulatory-returns-reporting",
+      "regulatory-circular-tracking"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Compliance and the compliance function in banks (Basel Committee, BCBS 113)",
+    "url": "https://www.bis.org/publ/bcbs113.htm",
+    "provider": "Bank for International Settlements",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-policy-management",
+      "compliance-testing-monitoring"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Can your organisation perform effective compliance testing? (PwC white paper)",
+    "url": "https://www.pwc.ch/en/publications/2018/pwc_ch_white%20paper_can%20your%20organisation%20perform%20effective%20compliance%20testing.pdf",
+    "provider": "PwC Switzerland",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-testing-monitoring"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "The art of compliance testing and monitoring (NAVEX)",
+    "url": "https://www.navex.com/en-gb/blog/article/the-art-of-compliance-testing-and-monitoring/",
+    "provider": "NAVEX",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-testing-monitoring"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Compliance Assessment Process (Caltech Institute Compliance)",
+    "url": "https://asic.caltech.edu/institute-compliance/compliance-assessment-process",
+    "provider": "Caltech",
+    "kind": "docs",
+    "skillIds": [
+      "compliance-testing-monitoring",
+      "compliance-policy-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Regulatory change management for compliance teams (Ethico)",
+    "url": "https://ethico.com/best-practices/regulatory-change-management-for-compliance-teams-how-to-build-a-process-that-keeps-your-program-current/",
+    "provider": "Ethico",
+    "kind": "docs",
+    "skillIds": [
+      "regulatory-circular-tracking",
+      "compliance-policy-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Regulatory change management best practices (Vixio)",
+    "url": "https://www.vixio.com/blog/regulatory-change-management-best-practices",
+    "provider": "Vixio",
+    "kind": "docs",
+    "skillIds": [
+      "regulatory-circular-tracking"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "SEBI Regulations (official listing)",
+    "url": "https://www.sebi.gov.in/sebiweb/home/HomeAction.do?doListing=yes&sid=1&ssid=3&smid=0",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-intermediary-regulations",
+      "regulatory-circular-tracking"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SEBI Master Circulars (official listing)",
+    "url": "https://www.sebi.gov.in/sebiweb/home/HomeAction.do?doListing=yes&sid=1&ssid=6&smid=0",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-intermediary-regulations",
+      "regulatory-circular-tracking",
+      "compliance-policy-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "FAQs for Mutual Fund Intermediaries (SEBI)",
+    "url": "https://www.sebi.gov.in/sebi_data/faqfiles/sep-2024/1727242760185.pdf",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-intermediary-regulations"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SEBI circular: Investor Charter for Stock Brokers",
+    "url": "https://www.sebi.gov.in/legal/circulars/feb-2025/investor-charter-for-stock-brokers_92099.html",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-intermediary-regulations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "SEBI circular: Inspection of stock brokers by stock exchanges",
+    "url": "https://www.sebi.gov.in/legal/circulars/jun-2003/inspection-of-stock-brokers-by-stock-exchanges_15905.html",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "regulatory-inspection-coordination",
+      "sebi-intermediary-regulations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Supreme Court e-Filing video tutorials",
+    "url": "https://efiling3.sci.gov.in/resources/video_tutorial/view",
+    "provider": "Supreme Court of India",
+    "kind": "video",
+    "skillIds": [
+      "court-efiling-registry"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Step-by-step guide for e-filing at High Courts and District Courts (Patna High Court)",
+    "url": "https://patnahighcourt.gov.in/efiling/docs/Step_by_step_guide_for_efiling_at_High_Courts_and_District_Courts.pdf",
+    "provider": "Patna High Court",
+    "kind": "docs",
+    "skillIds": [
+      "court-efiling-registry",
+      "litigation-case-file-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "eFiling 3.0 manual (Jharkhand High Court)",
+    "url": "https://jharkhandhighcourt.nic.in/efiling-guide/3.0/files/eFiling_manual.pdf",
+    "provider": "Jharkhand High Court",
+    "kind": "docs",
+    "skillIds": [
+      "court-efiling-registry"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "SOP for eFiling 3.0 (Tripura High Court)",
+    "url": "https://thc.nic.in/user%20manual/SOP%20pdf%20eFiling%203.0.pdf",
+    "provider": "Tripura High Court",
+    "kind": "docs",
+    "skillIds": [
+      "court-efiling-registry"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "e-Filing 3.0 video tutorials (Orissa High Court)",
+    "url": "https://orissahighcourt.nic.in/e-filing/tutorials.php",
+    "provider": "Orissa High Court",
+    "kind": "video",
+    "skillIds": [
+      "court-efiling-registry"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Supreme Court Rules, 2013",
+    "url": "https://www.sci.gov.in/supreme-court-rules/",
+    "provider": "Supreme Court of India",
+    "kind": "docs",
+    "skillIds": [
+      "pleadings-drafting-support",
+      "court-efiling-registry",
+      "litigation-case-file-management"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "eCourts Services mobile app manual (English)",
+    "url": "https://orissahighcourt.nic.in/ecourts-mobile-app/eCourts_Services_Mobile_App_English.pdf",
+    "provider": "Orissa High Court",
+    "kind": "docs",
+    "skillIds": [
+      "cause-list-tracking",
+      "litigation-case-file-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "e-Courts mobile application guide (English)",
+    "url": "https://kohimahighcourt.gov.in/downloads/e-Courts_Mobile_Application_(English).pdf",
+    "provider": "Kohima Bench, Gauhati High Court",
+    "kind": "docs",
+    "skillIds": [
+      "cause-list-tracking"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Check cause lists of all courts in India",
+    "url": "https://services.india.gov.in/service/detail/check-cause-lists-of-all-courts-in-india",
+    "provider": "National Portal of India",
+    "kind": "practice",
+    "skillIds": [
+      "cause-list-tracking"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Check online case status of district courts of India",
+    "url": "https://services.india.gov.in/service/detail/check-online-case-status-of-district-courts-of-india",
+    "provider": "National Portal of India",
+    "kind": "practice",
+    "skillIds": [
+      "cause-list-tracking",
+      "litigation-case-file-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Importance of case management and practice directions before Commercial Courts (LiveLaw)",
+    "url": "https://www.livelawbiz.com/columns/importance-of-case-management-and-practice-directions-before-commercial-courts-162293",
+    "provider": "LiveLaw",
+    "kind": "docs",
+    "skillIds": [
+      "litigation-management",
+      "litigation-case-file-management",
+      "pleadings-drafting-support"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "An overview of the 18 stages of a civil suit in India",
+    "url": "https://www.youtube.com/watch?v=01jlqlCpyB8",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "litigation-management",
+      "litigation-case-file-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Webinar: Navigating the stages of a civil suit in India",
+    "url": "https://www.youtube.com/watch?v=8G2rKSTq_SU",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "litigation-management",
+      "pleadings-drafting-support",
+      "litigation-case-file-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Managing litigation as in-house counsel: best practices and strategies",
+    "url": "https://www.youtube.com/watch?v=FYfdyoJw7sw",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "litigation-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Managing outside counsel for in-house counsel",
+    "url": "https://www.youtube.com/watch?v=OoQIwrNpd6s",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "litigation-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "LIMBS: the Government of India's web-based litigation tracking system (UX4G case study)",
+    "url": "https://www.ux4g.gov.in/aboutus/case-studies/ux4g-limbs.php",
+    "provider": "UX4G, Government of India",
+    "kind": "docs",
+    "skillIds": [
+      "litigation-management",
+      "litigation-case-file-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "How to draft effective legal notices (Vishakha Girhe)",
+    "url": "https://www.youtube.com/watch?v=WmD8pcsCsN0",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "legal-notice-drafting"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "How to draft a legal notice (Jeet Sinha)",
+    "url": "https://www.youtube.com/watch?v=CZ0BS66xs2E",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "legal-notice-drafting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What is a legal notice and what it must contain (Advocate Sravya Katta)",
+    "url": "https://www.youtube.com/watch?v=Lgicl9NoNm8",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "legal-notice-drafting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to draft a plaint under Order VII CPC",
+    "url": "https://www.youtube.com/watch?v=oulDdDaakqA",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "pleadings-drafting-support"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How to draft a plaint in 10 minutes",
+    "url": "https://www.youtube.com/watch?v=CffD3aNXAbM",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "pleadings-drafting-support"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "How to draft a civil suit and interim application",
+    "url": "https://www.youtube.com/watch?v=VWNSko-fUZI",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "pleadings-drafting-support"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Reviewing documents in Relativity (RelativityOne docs)",
+    "url": "https://help.relativity.com/RelativityOne/Content/Solutions/Reviewing_documents_in_Relativity.htm",
+    "provider": "Relativity",
+    "kind": "docs",
+    "skillIds": [
+      "legal-document-review"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Reviewing and producing documents (RelativityOne docs)",
+    "url": "https://help.relativity.com/RelativityOne/Content/Getting_Started/Review_Template/Reviewing_and_producing_documents.htm",
+    "provider": "Relativity",
+    "kind": "docs",
+    "skillIds": [
+      "legal-document-review"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Active Learning: reviewer access and coding rules (Relativity docs)",
+    "url": "https://help.relativity.com/Server2025/Content/Relativity/Active_Learning/Reviewer_Access.htm",
+    "provider": "Relativity",
+    "kind": "docs",
+    "skillIds": [
+      "legal-document-review"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Access e-Discovery: EDRM Review (Relativity self-paced video)",
+    "url": "https://www.relativity.com/ediscovery-training/self-paced/edrm-review",
+    "provider": "Relativity",
+    "kind": "video",
+    "skillIds": [
+      "legal-document-review"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "The eDiscovery Reference Model (EDRM) explained (DISCO)",
+    "url": "https://csdisco.com/blog/ediscovery-reference-model-edrm",
+    "provider": "DISCO",
+    "kind": "docs",
+    "skillIds": [
+      "legal-document-review"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "ICD-10 code sets and official guidelines (CMS)",
+    "url": "https://www.cms.gov/medicare/coding-billing/ICD-10-codes",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "icd-10-cm-coding",
+      "icd-10-pcs-coding"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "ICD-10-CM Official Guidelines for Coding and Reporting FY 2027",
+    "url": "https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/ICD10CM/2027/ICD-10-CM-October-1-2026-FY27-Guidelines.pdf",
+    "provider": "CDC NCHS",
+    "kind": "docs",
+    "skillIds": [
+      "icd-10-cm-coding",
+      "coding-guidelines-compliance",
+      "risk-adjustment-hcc-coding"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "ICD-10-CM: what to know (NCHS)",
+    "url": "https://www.cdc.gov/nchs/icd/icd-10-cm/index.html",
+    "provider": "CDC NCHS",
+    "kind": "docs",
+    "skillIds": [
+      "icd-10-cm-coding"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "ICD-10-CM Browser Tool",
+    "url": "https://www.cdc.gov/nchs/icd/icd10cm_browsertool.htm",
+    "provider": "CDC NCHS",
+    "kind": "practice",
+    "skillIds": [
+      "icd-10-cm-coding",
+      "encoder-tools"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "ICD-10-PCS Official Coding Guidelines 2025",
+    "url": "https://cms.gov/files/document/2025-official-icd-10-pcs-coding-guidelines.pdf",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "icd-10-pcs-coding",
+      "coding-guidelines-compliance"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "ICD-10-CM/PCS MS-DRG v44.0 Definitions Manual",
+    "url": "https://www.cms.gov/icd10m/FY2027-fr-v44-fullcode-cms/fullcode_cms/P0001.html",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "icd-10-pcs-coding"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "The ICD-10-PCS Code System (video)",
+    "url": "https://www.aapc.com/video/series/decoding-medical-coding-and-billing-lingo/the-icd-10-pcs-code-system",
+    "provider": "AAPC",
+    "kind": "video",
+    "skillIds": [
+      "icd-10-pcs-coding"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "CPT code process (CPT Editorial Panel)",
+    "url": "https://www.ama-assn.org/about/cpt-editorial-panel/cpt-code-process",
+    "provider": "American Medical Association",
+    "kind": "docs",
+    "skillIds": [
+      "cpt-hcpcs-coding"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "HCPCS Level II coding procedures",
+    "url": "https://www.cms.gov/files/document/hcpcsleveliicodingprocedures-updated-nov132015pdf",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "cpt-hcpcs-coding"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Code sets: articles on CPT, HCPCS and ICD-10",
+    "url": "https://aapc.com/resources/t/code-sets",
+    "provider": "AAPC",
+    "kind": "docs",
+    "skillIds": [
+      "cpt-hcpcs-coding",
+      "icd-10-cm-coding"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Mastering medical coding and billing terminologies: an overview",
+    "url": "https://aapc.com/resources/key-terminologies-and-abbreviations-in-medical-coding-and-billing",
+    "provider": "AAPC",
+    "kind": "docs",
+    "skillIds": [
+      "cpt-hcpcs-coding",
+      "medical-terminology-anatomy",
+      "charge-entry-claim-submission"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Evaluation and Management Services Guide (MLN006764)",
+    "url": "https://www.cms.gov/Outreach-and-Education/Medicare-Learning-Network-MLN/MLNProducts/MLN-Publications-Items/CMS1243514",
+    "provider": "CMS Medicare Learning Network",
+    "kind": "docs",
+    "skillIds": [
+      "em-coding"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "CPT 2023 E/M descriptors and guidelines",
+    "url": "https://www.ama-assn.org/system/files/2023-e-m-descriptors-guidelines.pdf",
+    "provider": "American Medical Association",
+    "kind": "docs",
+    "skillIds": [
+      "em-coding"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "2023 E/M coding changes",
+    "url": "https://aapc.com/resources/evaluation-management-coding-changes-2023",
+    "provider": "AAPC",
+    "kind": "docs",
+    "skillIds": [
+      "em-coding"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What is Hierarchical Condition Category (HCC) coding",
+    "url": "https://www.aapc.com/resources/what-is-hierarchical-condition-category",
+    "provider": "AAPC",
+    "kind": "docs",
+    "skillIds": [
+      "risk-adjustment-hcc-coding"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Report to Congress: Risk Adjustment in Medicare Advantage (2024)",
+    "url": "https://www.cms.gov/files/document/report-congress-risk-adjustment-medicare-advantage-december-2024.pdf",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "risk-adjustment-hcc-coding",
+      "us-healthcare-payers"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Medicare Managed Care Manual, Chapter 7: Risk Adjustment",
+    "url": "https://www.cms.gov/regulations-and-guidance/guidance/manuals/downloads/mc86c07.pdf",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "risk-adjustment-hcc-coding",
+      "us-healthcare-payers"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Some risk-adjustment HCC basics for HIM coding and CDI professionals",
+    "url": "https://medlearn.com/icd10monitor/some-risk-adjustment-hcc-basics-for-him-coding-and-cdi-professionals/",
+    "provider": "ICD10monitor",
+    "kind": "docs",
+    "skillIds": [
+      "risk-adjustment-hcc-coding"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Medicare NCCI Policy Manual",
+    "url": "https://www.cms.gov/medicare/coding-billing/national-correct-coding-initiative-ncci-edits/medicare-ncci-policy-manual",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "coding-guidelines-compliance"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Medicaid NCCI Policy Manual 2026: Introduction",
+    "url": "https://www.cms.gov/files/document/2026-medicaid-ncci-introduction-policy-manual.pdf",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "coding-guidelines-compliance",
+      "us-healthcare-payers"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Understanding Medical Words tutorial",
+    "url": "https://medlineplus.gov/medwords/",
+    "provider": "NIH MedlinePlus",
+    "kind": "course",
+    "skillIds": [
+      "medical-terminology-anatomy"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Anatomy and Physiology 2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/preface",
+    "provider": "OpenStax",
+    "kind": "course",
+    "skillIds": [
+      "medical-terminology-anatomy"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Cancer and Medical Terminology module",
+    "url": "https://training.seer.cancer.gov/terminology/index.html",
+    "provider": "NCI SEER Training",
+    "kind": "course",
+    "skillIds": [
+      "medical-terminology-anatomy"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Anatomy and Physiology module map",
+    "url": "https://www.training.seer.cancer.gov/anatomy/index.html?map",
+    "provider": "NCI SEER Training",
+    "kind": "course",
+    "skillIds": [
+      "medical-terminology-anatomy"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Chart audit checklist",
+    "url": "https://aapc.com/documents/workshops/audit-checklist.pdf",
+    "provider": "AAPC",
+    "kind": "practice",
+    "skillIds": [
+      "coding-audit-qa"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "OIG compliance program guidance for individual and small group physician practices (Federal Register, Oct 2000)",
+    "url": "https://www.govinfo.gov/content/pkg/FR-2000-10-05/pdf/00-25500.pdf",
+    "provider": "HHS OIG via GovInfo",
+    "kind": "docs",
+    "skillIds": [
+      "coding-audit-qa",
+      "coding-guidelines-compliance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Comprehensive Error Rate Testing (CERT)",
+    "url": "https://www.cms.gov/data-research/monitoring-programs/improper-payment-measurement-programs/comprehensive-error-rate-testing-cert",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "coding-audit-qa"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Coding audits: consider these key elements",
+    "url": "https://www.aapc.com/codes/coding-newsletters/my-homehealth-icd-9-alert/coding-audits-consider-these-key-elements-for-effective-115358-article",
+    "provider": "AAPC",
+    "kind": "docs",
+    "skillIds": [
+      "coding-audit-qa"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Computer-Assisted Coding Toolkit",
+    "url": "https://ahima.org/media/ek3b2gc5/computer-assisted-coding-toolkit_axs.pdf",
+    "provider": "AHIMA",
+    "kind": "docs",
+    "skillIds": [
+      "encoder-tools"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "An Introduction to Computer-Assisted Coding (practice brief)",
+    "url": "https://www.echima.ca/wp-content/uploads/2019/11/0105.21-FINAL-Computer-assisted-Coding.pdf",
+    "provider": "AHIMA / CHIMA",
+    "kind": "docs",
+    "skillIds": [
+      "encoder-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "3M 360 Encompass System fact sheet",
+    "url": "https://multimedia.3m.com/mws/media/2027134O/3m-360-encompass-system.pdf",
+    "provider": "3M (Solventum)",
+    "kind": "docs",
+    "skillIds": [
+      "encoder-tools"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "HIPAA Privacy Rule (for professionals)",
+    "url": "https://www.hhs.gov/hipaa/for-professionals/privacy/",
+    "provider": "HHS",
+    "kind": "docs",
+    "skillIds": [
+      "hipaa-phi-handling"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "HIPAA Privacy Rule: general overview",
+    "url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/general-overview/",
+    "provider": "HHS",
+    "kind": "docs",
+    "skillIds": [
+      "hipaa-phi-handling"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Summary of the HIPAA Privacy Rule",
+    "url": "https://www.hhs.gov/sites/default/files/privacysummary.pdf",
+    "provider": "HHS OCR",
+    "kind": "docs",
+    "skillIds": [
+      "hipaa-phi-handling"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "HIPAA guidance for small providers, health plans and businesses",
+    "url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/small-providers-small-health-plans-small-businesses/index.html",
+    "provider": "HHS",
+    "kind": "docs",
+    "skillIds": [
+      "hipaa-phi-handling"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "User Guide: Billing Follow-Up",
+    "url": "https://help.athenahealth.com/Ohelp/Content/Features/Billing_Follow-up_A.htm",
+    "provider": "athenahealth",
+    "kind": "docs",
+    "skillIds": [
+      "ar-follow-up-rcm",
+      "practice-management-systems"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "User Guide: Claim Status",
+    "url": "https://help.athenahealth.com/Ohelp/Content/Features/Claim_Status_A.htm",
+    "provider": "athenahealth",
+    "kind": "docs",
+    "skillIds": [
+      "ar-follow-up-rcm",
+      "practice-management-systems"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "The KPIs that define revenue cycle excellence",
+    "url": "https://www.hfma.org/revenue-cycle/the-kpis-that-define-revenue-cycle-excellence/",
+    "provider": "HFMA",
+    "kind": "docs",
+    "skillIds": [
+      "ar-follow-up-rcm",
+      "denial-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Part B revenue booster: boost your A/R with 10 expert tips",
+    "url": "https://www.aapc.com/codes/coding-newsletters/my-part-b-coding-alert/part-b-revenue-booster-boost-your-ar-now-with-these-10-expert-tips-149333-article",
+    "provider": "AAPC",
+    "kind": "docs",
+    "skillIds": [
+      "ar-follow-up-rcm"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Medicare Parts A and B Appeals Process (MLN006562)",
+    "url": "https://www.cms.gov/files/document/mln006562-medicare-parts-b-appeals-process.pdf",
+    "provider": "CMS Medicare Learning Network",
+    "kind": "docs",
+    "skillIds": [
+      "denial-management",
+      "ar-follow-up-rcm",
+      "us-healthcare-payers"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Healthcare claims denial management: best practice",
+    "url": "https://www.aapc.com/blog/32088-denial-management-best-practice/",
+    "provider": "AAPC",
+    "kind": "docs",
+    "skillIds": [
+      "denial-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Standardizing denial metrics for revenue cycle benchmarking",
+    "url": "https://www.hfma.org/guidance/standardizing-denial-metrics-revenue-cycle-benchmarking-process-improvement/",
+    "provider": "HFMA",
+    "kind": "docs",
+    "skillIds": [
+      "denial-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "User Guide: athenahealth Claim Appeal on Your Behalf",
+    "url": "https://help.athenahealth.com/Ohelp/Content/Features/athenahealth_Claim_Appeal_on_Your_Behalf_A.htm",
+    "provider": "athenahealth",
+    "kind": "docs",
+    "skillIds": [
+      "denial-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Medicare Billing: CMS-1500 and 837P (MLN006976)",
+    "url": "https://cms.gov/files/document/mln006976-medicare-billing-cms-1500-837p.pdf",
+    "provider": "CMS Medicare Learning Network",
+    "kind": "docs",
+    "skillIds": [
+      "charge-entry-claim-submission",
+      "us-healthcare-payers"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Medicare Billing: CMS-1450 and 837I (MLN006926)",
+    "url": "https://cms.gov/files/document/837I-Form-CMS-1450-MLN006926.pdf",
+    "provider": "CMS Medicare Learning Network",
+    "kind": "docs",
+    "skillIds": [
+      "charge-entry-claim-submission"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Medicare Billing: CMS-1500 web-based training",
+    "url": "https://www.cms.gov/Outreach-and-Education/MLN/WBT/MLN4462429-MLN-WBT-1500/1500/splash/index.html",
+    "provider": "CMS Medicare Learning Network",
+    "kind": "course",
+    "skillIds": [
+      "charge-entry-claim-submission"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Medicare Claims Processing Manual, Chapter 26: Form CMS-1500 data set",
+    "url": "https://www.hhs.gov/guidance/sites/default/files/hhs-guidance-documents/CMS/clm104c26.pdf",
+    "provider": "CMS via HHS.gov",
+    "kind": "docs",
+    "skillIds": [
+      "charge-entry-claim-submission"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "User Guide: Creating claims outside the 5-stage patient encounter (charge entry)",
+    "url": "https://help.athenahealth.com/Ohelp/Content/Features/Charge_Entry_Outside_Workflow_A.htm",
+    "provider": "athenahealth",
+    "kind": "docs",
+    "skillIds": [
+      "charge-entry-claim-submission",
+      "practice-management-systems"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Remittance Advice Resources and FAQs (ICN 905367)",
+    "url": "https://www.cms.gov/Outreach-and-Education/Medicare-Learning-Network-MLN/MLNProducts/Downloads/ICN905367TextOnly.pdf",
+    "provider": "CMS Medicare Learning Network",
+    "kind": "docs",
+    "skillIds": [
+      "payment-posting-eob"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Medicare Remit Easy Print (MREP)",
+    "url": "https://www.cms.gov/data-research/cms-information-technology/access-cms-data-application/medicare-remit-easy-print",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "payment-posting-eob"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "MREP example remittance",
+    "url": "https://www.cms.gov/Outreach-and-Education/Medicare-Learning-Network-MLN/MLNGenInfo/Downloads/MREP-Example.pdf",
+    "provider": "CMS Medicare Learning Network",
+    "kind": "practice",
+    "skillIds": [
+      "payment-posting-eob"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Sample Medicare Summary Notice, Part B",
+    "url": "https://medicare.gov/media/document/summarynoticeb.pdf",
+    "provider": "Medicare.gov",
+    "kind": "practice",
+    "skillIds": [
+      "payment-posting-eob",
+      "us-healthcare-payers"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "HIPAA Eligibility Transaction System (HETS)",
+    "url": "https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/HETSHelp/index.html",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "insurance-eligibility-verification"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "HETS 270/271 Companion Guide v14.0",
+    "url": "https://www.cms.gov/files/document/hets2025-4-hets-270-271-companion-guide-v14-0.pdf",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "insurance-eligibility-verification"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Prior Authorization and Pre-Claim Review Initiatives",
+    "url": "https://www.cms.gov/research-statistics-data-and-systems/monitoring-programs/medicare-ffs-compliance-programs/pre-claim-review-initiatives/overview",
+    "provider": "CMS",
+    "kind": "docs",
+    "skillIds": [
+      "insurance-eligibility-verification",
+      "us-healthcare-payers"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How Medicare coordinates with other coverage",
+    "url": "https://www.medicare.gov/health-drug-plans/coordination",
+    "provider": "Medicare.gov",
+    "kind": "docs",
+    "skillIds": [
+      "insurance-eligibility-verification",
+      "us-healthcare-payers"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "User Guide: Billing Overview",
+    "url": "https://help.athenahealth.com/Ohelp/Content/Features/Billing_Workflow_A.htm",
+    "provider": "athenahealth",
+    "kind": "docs",
+    "skillIds": [
+      "practice-management-systems"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "User Guide: Claim Submission",
+    "url": "https://help.athenahealth.com/Ohelp/Content/Features/Claim_Submission_A.htm",
+    "provider": "athenahealth",
+    "kind": "docs",
+    "skillIds": [
+      "practice-management-systems",
+      "charge-entry-claim-submission"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Claims (Tebra/Kareo PM help)",
+    "url": "https://helpme.kareo.com/01_Kareo_PM/Sending_and_Printing_Claims/03_Claims_Management/Claims",
+    "provider": "Tebra (Kareo)",
+    "kind": "docs",
+    "skillIds": [
+      "practice-management-systems"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Healthcare Administration and Management (AFMC Pune)",
+    "url": "https://nptel.ac.in/courses/127106007",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "patient-admission-discharge",
+      "hospital-bed-management",
+      "opd-front-office-operations",
+      "his-software",
+      "nabh-accreditation",
+      "hospital-patient-billing"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Indian Public Health Standards 2022, Vol I: Sub-District and District Hospitals",
+    "url": "https://nhsrcindia.org/sites/default/files/Volume%201_SDH-DH.pdf",
+    "provider": "NHSRC, MoHFW",
+    "kind": "docs",
+    "skillIds": [
+      "patient-admission-discharge",
+      "hospital-bed-management",
+      "opd-front-office-operations",
+      "nabh-accreditation"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Discharge from admitted care: best practice guide",
+    "url": "https://www.health.qld.gov.au/__data/assets/pdf_file/0024/1505247/discharge-admittedcare-best-practice-guide.pdf",
+    "provider": "Queensland Health",
+    "kind": "docs",
+    "skillIds": [
+      "patient-admission-discharge",
+      "hospital-bed-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Hospital discharge guidance",
+    "url": "https://www.gov.wales/hospital-discharge-guidance",
+    "provider": "Welsh Government",
+    "kind": "docs",
+    "skillIds": [
+      "patient-admission-discharge"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Charter of Patients' Rights (draft for comments)",
+    "url": "https://mohfw.gov.in/sites/default/files/PatientCharterforcomments.pdf",
+    "provider": "MoHFW",
+    "kind": "docs",
+    "skillIds": [
+      "patient-admission-discharge",
+      "hospital-patient-billing",
+      "opd-front-office-operations"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Achieving hospital-wide patient flow (white paper)",
+    "url": "https://www.ihi.org/library/white-papers/achieving-hospital-wide-patient-flow",
+    "provider": "Institute for Healthcare Improvement",
+    "kind": "docs",
+    "skillIds": [
+      "hospital-bed-management",
+      "patient-admission-discharge"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Productive Community Hospital: Patient Flow",
+    "url": "https://www.england.nhs.uk/improvement-hub/wp-content/uploads/sites/44/2020/06/Productive-community-hospital-Patient-Flow.pdf",
+    "provider": "NHS England",
+    "kind": "docs",
+    "skillIds": [
+      "hospital-bed-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "About e-Hospital@NIC",
+    "url": "https://ehospital.nic.in/ehospitalsso/aboutus",
+    "provider": "NIC, Government of India",
+    "kind": "docs",
+    "skillIds": [
+      "his-software",
+      "opd-front-office-operations",
+      "patient-admission-discharge"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "NextGen ORS: online OPD registration",
+    "url": "https://informaticsweb.nic.in/appscape/nextgen-ors",
+    "provider": "NIC Informatics",
+    "kind": "docs",
+    "skillIds": [
+      "opd-front-office-operations",
+      "his-software"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "e-Health and Telemedicine (MoHFW)",
+    "url": "https://main.mohfw.gov.in/Organisation/departments-health-and-family-welfare/e-Health-Telemedicine",
+    "provider": "MoHFW",
+    "kind": "docs",
+    "skillIds": [
+      "his-software"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Notification: NABH Accreditation Programme HCO 5th Edition Guidebook",
+    "url": "https://portal.nabh.co/Announcement/Notification%20for%20NABH-Accreditation%20Program_HCO%205th%20Edition%20Guidebook.pdf",
+    "provider": "NABH",
+    "kind": "docs",
+    "skillIds": [
+      "nabh-accreditation"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Notice: NABH new portal for Hospital Accreditation Standards 5th Edition",
+    "url": "https://portal.nabh.co/Announcement/Notice%20for%20NABH%20New%20Portal%20Hospital%20Accreditation%20Standards%205th%20Edition.pdf",
+    "provider": "NABH",
+    "kind": "docs",
+    "skillIds": [
+      "nabh-accreditation"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "How to make a claim: health",
+    "url": "https://policyholder.gov.in/how-to-make-a-claim-health",
+    "provider": "IRDAI Policyholder",
+    "kind": "docs",
+    "skillIds": [
+      "cashless-preauthorisation",
+      "reimbursement-claim-processing",
+      "hospital-patient-billing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Operation Manual for AB PM-JAY",
+    "url": "https://nha.gov.in/img/resources/Operation%20Manual%20for%20AB%20PM-JAY.pdf",
+    "provider": "National Health Authority",
+    "kind": "docs",
+    "skillIds": [
+      "cashless-preauthorisation",
+      "hospital-patient-billing",
+      "hospital-network-tariffs",
+      "medical-document-scrutiny"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "AB PM-JAY Ready Reckoner",
+    "url": "https://nha.gov.in/img/resources/Ready-Reckoner.pdf",
+    "provider": "National Health Authority",
+    "kind": "docs",
+    "skillIds": [
+      "cashless-preauthorisation",
+      "hospital-network-tariffs",
+      "hospital-patient-billing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "BSKY claim adjudication manual (based on AB PM-JAY Claim Adjudication Manual 2.0)",
+    "url": "https://bsky.odisha.gov.in/application/storage/app/uploads/655af2b2189b71700459186.pdf",
+    "provider": "Government of Odisha (BSKY)",
+    "kind": "docs",
+    "skillIds": [
+      "reimbursement-claim-processing",
+      "medical-document-scrutiny",
+      "health-claims-fraud-detection"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "PM-JAY performance audit, Chapter V (CAG)",
+    "url": "https://cag.gov.in/uploads/download_audit_report/2023/09_Chapter-V-064d22bab412c53.02505839.pdf",
+    "provider": "Comptroller and Auditor General of India",
+    "kind": "docs",
+    "skillIds": [
+      "medical-document-scrutiny",
+      "health-claims-fraud-detection",
+      "reimbursement-claim-processing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Hospital Empanelment and De-empanelment Guidelines (PM-JAY)",
+    "url": "https://nha.gov.in/img/resources/Hospital-Empanelment-Guidelines-21-12-22.pdf",
+    "provider": "National Health Authority",
+    "kind": "docs",
+    "skillIds": [
+      "hospital-network-tariffs"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Self-help guide for empanelment of hospitals under ministries in AB PM-JAY",
+    "url": "https://nha.gov.in/img/resources/Self%20Help%20Guide%20for%20Empanelment%20of%20Hospitals%20under%20Mininstries%20in%20AB%20PM-JAY.pdf",
+    "provider": "National Health Authority",
+    "kind": "docs",
+    "skillIds": [
+      "hospital-network-tariffs"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "PM-JAY Anti-Fraud Guidelines",
+    "url": "https://cmhis.nagaland.gov.in/storage/pageFiles/1739357573_260.pdf",
+    "provider": "NHA (hosted by Nagaland CMHIS)",
+    "kind": "docs",
+    "skillIds": [
+      "health-claims-fraud-detection",
+      "medical-document-scrutiny"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Guidelines for actions post fraud detection (PM-JAY)",
+    "url": "https://sha.uk.gov.in/ScannedDocs/WebSite/Uploads/FRAUD_ABUSE/Guidelines%20for%20Actions%20post%20Fraud%20Detecion.pdf",
+    "provider": "State Health Agency Uttarakhand",
+    "kind": "docs",
+    "skillIds": [
+      "health-claims-fraud-detection"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "IRDAI Insurance Fraud Monitoring Framework (JSA Prism, Oct 2025)",
+    "url": "https://www.jsalaw.com/wp-content/uploads/2025/10/JSA-Prism-Insurance-October-2025-Fraud-Monitoring-Framework.Final_.pdf",
+    "provider": "JSA Advocates and Solicitors",
+    "kind": "docs",
+    "skillIds": [
+      "health-claims-fraud-detection"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Anti-fraud policy FY 2027",
+    "url": "https://www.icicilombard.com/docs/default-source/policy-disclosures/fy-2026-27/board-approved-policies/anti-fraud-policy_fy-2027.pdf",
+    "provider": "ICICI Lombard",
+    "kind": "docs",
+    "skillIds": [
+      "health-claims-fraud-detection"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Diploma in Food and Beverage Operations (NIOS course 726)",
+    "url": "https://nios.ac.in/media/documents/vocational/726_Food_and_Beverage_Operations.pdf",
+    "provider": "NIOS",
+    "kind": "course",
+    "skillIds": [
+      "fnb-service-operations",
+      "banquet-event-operations",
+      "menu-knowledge-food-pairing",
+      "restaurant-pos-systems"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "NIOS OER: Hospitality and Tourism Management (food and beverage service)",
+    "url": "https://wikieducator.org/NIOS-OER-HOSPITALITY_AND_TOURISM_MANAGMENT",
+    "provider": "NIOS / WikiEducator",
+    "kind": "course",
+    "skillIds": [
+      "fnb-service-operations",
+      "menu-knowledge-food-pairing"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Introduction to Tourism and Hospitality in BC, Chapter 4: Food and Beverage Services",
+    "url": "https://opentextbc.ca/introtourism2e/part/food-and-beverage-services/",
+    "provider": "BCcampus Open Textbook",
+    "kind": "docs",
+    "skillIds": [
+      "fnb-service-operations",
+      "menu-knowledge-food-pairing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Introduction to Tourism and Hospitality in BC, 2nd edition (Chapter 3: Accommodation)",
+    "url": "https://opentextbc.ca/introtourism2e/",
+    "provider": "BCcampus Open Textbook",
+    "kind": "docs",
+    "skillIds": [
+      "guest-check-in-check-out",
+      "hotel-revenue-pricing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Diploma in Housekeeping and Maintenance (NIOS course 727)",
+    "url": "https://nios.ac.in/media/documents/vocational/727_Housekeeping_and_Maintenance.pdf",
+    "provider": "NIOS",
+    "kind": "course",
+    "skillIds": [
+      "room-inspection-standards",
+      "linen-inventory-control",
+      "public-area-cleaning",
+      "housekeeping-chemical-safety",
+      "lost-and-found-handling"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "NIOS Housekeeping vocational course: syllabus and structure",
+    "url": "https://nios.ac.in/departmentsunits/vocational-education/stand-alone-courses/housekeeping.aspx",
+    "provider": "NIOS",
+    "kind": "docs",
+    "skillIds": [
+      "room-inspection-standards",
+      "linen-inventory-control",
+      "public-area-cleaning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "NIOS Housekeeping content: introduction to cleaning",
+    "url": "https://wikieducator.org/Housekeeping",
+    "provider": "NIOS / WikiEducator",
+    "kind": "docs",
+    "skillIds": [
+      "public-area-cleaning",
+      "housekeeping-chemical-safety"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Participant Handbook: Guest Service Associate (Housekeeping)",
+    "url": "https://scpwd.in/pdf/PH_Guest%20Service%20Associate%20(Housekeeping)%20(Divyangjan.pdf",
+    "provider": "Skill Council for Persons with Disability (THSC-aligned)",
+    "kind": "course",
+    "skillIds": [
+      "room-inspection-standards",
+      "linen-inventory-control",
+      "public-area-cleaning",
+      "housekeeping-chemical-safety",
+      "lost-and-found-handling"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Housekeeping operations e-book (functions, daily routines, linen room control)",
+    "url": "https://ebooks.inflibnet.ac.in/hsp04/front-matter/introduction/",
+    "provider": "INFLIBNET",
+    "kind": "docs",
+    "skillIds": [
+      "room-inspection-standards",
+      "linen-inventory-control"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Safe use of cleaning substances in the hospitality industry (CAIS22)",
+    "url": "https://www.hse.gov.uk/pubns/cais22.htm",
+    "provider": "UK Health and Safety Executive",
+    "kind": "docs",
+    "skillIds": [
+      "housekeeping-chemical-safety"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Housekeeping safety in catering and hospitality",
+    "url": "https://hsa.ie/eng/Your_Industry/Catering_and_Hospitality/Housekeeping",
+    "provider": "Health and Safety Authority Ireland",
+    "kind": "docs",
+    "skillIds": [
+      "housekeeping-chemical-safety"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Front Office Associate participant handbook (extract)",
+    "url": "https://www.nsdcindia.org/scmp/assets/image/945895286-FOA_Extact.pdf",
+    "provider": "NSDC / Tourism and Hospitality Skill Council",
+    "kind": "course",
+    "skillIds": [
+      "guest-check-in-check-out",
+      "hotel-reservations-handling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Front Office Associate participant's guide",
+    "url": "https://www.nsdcindia.org/scmp/assets/image/1583334928-Front_Office_Associate_(Britti).pdf",
+    "provider": "NSDC / Tourism and Hospitality Skill Council",
+    "kind": "course",
+    "skillIds": [
+      "guest-check-in-check-out",
+      "hotel-reservations-handling",
+      "front-office-cashiering"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Checking in Reservations",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/25.3/ocsuh/t_checking_in_reservations.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-pms-operations",
+      "guest-check-in-check-out"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Quick Check Out",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/22.3/ocsuh/cc_auto-checkout.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "guest-check-in-check-out",
+      "front-office-cashiering"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Group Rooming Lists",
+    "url": "https://docs.oracle.com/cd/F18689_01/doc.193/f23597/c_rooming_lists_group_rooming_lists_ch.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-reservations-handling",
+      "hotel-pms-operations"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: OPERA Controls - Blocks",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/24.3/ocsuh/c_opera_controls_blocks.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-reservations-handling"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: End of Day (Night Audit) Procedures",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/24.4/ocsuh/c_endofday_incomeaudit_setting_up_end_of_day_procedures_and_reports_ch.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "night-audit",
+      "hotel-pms-operations"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Mandatory and Optional End of Day Sequence Procedures",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/22.3/ocsuh/c_mandatory_optional_procedures.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "night-audit"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: OPERA Controls - End of Day",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/25.4/ocsuh/c_opera_controls_end_of_day.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "night-audit"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: About Billing",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/24.4/ocsuh/c_manage_billing_manage_billing.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "front-office-cashiering",
+      "hotel-pms-operations"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Settling a Reservation Account Balance",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/24.3/ocsuh/t_manage_billing_settling_a_reservation_account_balance.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "front-office-cashiering",
+      "guest-check-in-check-out"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Auto Folio Settlement",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/22.3/ocsuh/c_auto_folio_settlement.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "front-office-cashiering",
+      "night-audit"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Housekeeping Room Statuses",
+    "url": "https://docs.oracle.com/cd/E81346_01/doc.183/e81527/c_housekeeping_room_statuses.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "room-inspection-standards",
+      "hotel-pms-operations"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Using the Housekeeping Board",
+    "url": "https://docs.oracle.com/cd/F34189_01/doc.201/f42091/t_housekeeping_using_the_housekeeping_board.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "room-inspection-standards",
+      "hotel-pms-operations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Tracking Parcels, Baggage, Valet, and Lost Items",
+    "url": "https://docs.oracle.com/cd/E81346_01/doc.183/e81527/t_concierge_valet_tracking_parcels_baggage_valet_and_lost_items.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "lost-and-found-handling",
+      "hotel-pms-operations"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Managing Restrictions",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/25.3/ocsuh/t_availability_managing_restrictions.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-revenue-pricing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Hurdle Rates Evaluation for Restriction Publication",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/26.1/ocsuh/c_about_hurdle_rates_evaluation_for_restriction_publication.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "revenue-management-systems",
+      "hotel-revenue-pricing",
+      "ota-channel-distribution"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Configuring Rate Strategies",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/24.1/ocsuh/t_configuring_rate_strategies.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-revenue-pricing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud Distribution User Guide: Introduction",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud-distribution/23.5/ohdug/ch_introduction.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "ota-channel-distribution"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: Configuring Channels",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/26.2/ocsuh/t_distribution_configuring_channels.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "ota-channel-distribution"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud Sales and Event Management: About Event Resources",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/24.4/ocsuh/ch_osem_about_event_resources.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "banquet-event-operations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OPERA Cloud: OPERA Controls - Events",
+    "url": "https://docs.oracle.com/en/industries/hospitality/opera-cloud/24.2/ocsuh/c_opera_controls_events.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "banquet-event-operations"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "About the Banquet Event Order Report",
+    "url": "https://docs.oracle.com/cd/G30562_01/books/Hospitality/c-About-the-Banquet-Event-Order-Report-nc1065389.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "banquet-event-operations"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Simphony POS: Beginning and Closing a Check",
+    "url": "https://docs.oracle.com/en/industries/food-beverage/simphony/sipou/t_checks_begin_close_check.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "restaurant-pos-systems"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Simphony POS User Guide 19.8: table of contents",
+    "url": "https://docs.oracle.com/en/industries/food-beverage/simphony/19.8/sipou/toc.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "restaurant-pos-systems"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Simphony KDS: Configuring a KDS Order Device",
+    "url": "https://docs.oracle.com/en/industries/food-beverage/simphony/kdscu/t_kds_order_device_config.htm",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "restaurant-pos-systems"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Simphony KDS Configuration and User Guide (Release 19.2, PDF)",
+    "url": "https://docs.oracle.com/cd/F32325_01/doc.192/f32331.pdf",
+    "provider": "Oracle Hospitality",
+    "kind": "docs",
+    "skillIds": [
+      "restaurant-pos-systems"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "FoSTaC basic courses and training manuals (catering)",
+    "url": "https://fostac.fssai.gov.in/basic.jsp",
+    "provider": "FSSAI",
+    "kind": "course",
+    "skillIds": [
+      "fssai-food-safety-hygiene"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "FoSTaC advance courses (advance catering)",
+    "url": "https://fostac.fssai.gov.in/advance.jsp",
+    "provider": "FSSAI",
+    "kind": "course",
+    "skillIds": [
+      "fssai-food-safety-hygiene"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Guidance Document: Hygiene Rating",
+    "url": "https://hygiene.fssai.gov.in/resources/Guidance_Document_Hygiene_Rating.pdf",
+    "provider": "FSSAI",
+    "kind": "docs",
+    "skillIds": [
+      "fssai-food-safety-hygiene"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Food Safety Management System guidance for catering (draft, HACCP plans)",
+    "url": "https://foodregulatory.fssai.gov.in/All%20Docs/Safe%20Food%20Practices/draft_catering_FSMS.pdf",
+    "provider": "FSSAI",
+    "kind": "docs",
+    "skillIds": [
+      "fssai-food-safety-hygiene",
+      "fnb-service-operations"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Food safety requirements of food businesses",
+    "url": "https://en.vikaspedia.in/viewcontent/health/sanitation-and-hygiene/food-safety/food-safety-requirements-of-food-businesses",
+    "provider": "Vikaspedia (Government of India)",
+    "kind": "docs",
+    "skillIds": [
+      "fssai-food-safety-hygiene"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "FSSAI Guidance Note on Labelling and Display (incl. menu and allergen display)",
+    "url": "https://mail.fssai.gov.in/upload/uploadfiles/files/Guidance_Note_Labelling_23_02_2022.pdf",
+    "provider": "FSSAI",
+    "kind": "docs",
+    "skillIds": [
+      "menu-knowledge-food-pairing",
+      "fssai-food-safety-hygiene"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Online Form C (Bureau of Immigration)",
+    "url": "https://www.india.gov.in/online-form-c-bureau-immigration",
+    "provider": "National Portal of India",
+    "kind": "docs",
+    "skillIds": [
+      "frro-c-form-compliance"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Form C: registration and submission portal for accommodation providers",
+    "url": "https://indianfrro.gov.in/frro/FormC",
+    "provider": "Bureau of Immigration",
+    "kind": "practice",
+    "skillIds": [
+      "frro-c-form-compliance"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Online filling of Form C for foreign guests (Goa government guide)",
+    "url": "https://www.goa.gov.in/wp-content/uploads/2025/12/ONLINE-FILLING-OF.pdf",
+    "provider": "Government of Goa",
+    "kind": "docs",
+    "skillIds": [
+      "frro-c-form-compliance"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "C Form (FRRO) guidance",
+    "url": "https://nitt.edu/home/id/cform",
+    "provider": "NIT Tiruchirappalli",
+    "kind": "docs",
+    "skillIds": [
+      "frro-c-form-compliance"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "STR glossary",
+    "url": "https://str.com/resourcesglossary/index",
+    "provider": "STR / CoStar",
+    "kind": "docs",
+    "skillIds": [
+      "str-compset-benchmarking",
+      "hotel-revenue-pricing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How to read a STAR report",
+    "url": "https://str.com/sites/default/files/2019-07/how-to-read-star-report.pdf",
+    "provider": "STR / CoStar",
+    "kind": "docs",
+    "skillIds": [
+      "str-compset-benchmarking"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "HSMAI glossary: Index (benchmarking)",
+    "url": "https://academy.hsmai.org/glossary/index-benchmarking/",
+    "provider": "HSMAI Academy",
+    "kind": "docs",
+    "skillIds": [
+      "str-compset-benchmarking"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "HSMAI glossary: Pick-up or pace report",
+    "url": "https://academy.hsmai.org/glossary/pick-up-or-pace-report/",
+    "provider": "HSMAI Academy",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-demand-forecasting"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "HSMAI glossary: Channel manager",
+    "url": "https://academy.hsmai.org/glossary/channel-manager/",
+    "provider": "HSMAI Academy",
+    "kind": "docs",
+    "skillIds": [
+      "ota-channel-distribution"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "HSMAI glossary: Rate parity (broad)",
+    "url": "https://academy.hsmai.org/glossary/rate-parity-broad-rate-parity/",
+    "provider": "HSMAI Academy",
+    "kind": "docs",
+    "skillIds": [
+      "ota-channel-distribution"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "HSMAI glossary: Best Available Rate (BAR)",
+    "url": "https://academy.hsmai.org/glossary/bar/",
+    "provider": "HSMAI Academy",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-revenue-pricing"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "HSMAI glossary: Revenue management system",
+    "url": "https://academy.hsmai.org/glossary/revenue-management-system/",
+    "provider": "HSMAI Academy",
+    "kind": "docs",
+    "skillIds": [
+      "revenue-management-systems"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Hotel revenue management systems list",
+    "url": "https://academy.hsmai.org/hotel-revenue-management-tools-list/",
+    "provider": "HSMAI Academy",
+    "kind": "docs",
+    "skillIds": [
+      "revenue-management-systems"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Commercial terms all GMs and operations leaders should know",
+    "url": "https://americas.hsmai.org/wp-content/uploads/sites/16/2026/05/Commercial-Terms-all-GMs-and-Operations-Leaders-Should-Know.pdf",
+    "provider": "HSMAI Americas",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-revenue-pricing",
+      "hotel-demand-forecasting",
+      "str-compset-benchmarking",
+      "ota-channel-distribution",
+      "revenue-management-systems"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "HSMAI Academy glossary (sales, marketing, revenue, distribution)",
+    "url": "https://academy.hsmai.org/glossary",
+    "provider": "HSMAI Academy",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-revenue-pricing",
+      "ota-channel-distribution"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Hotel Revenue Management: Today and Tomorrow (Kimes, Cornell Hospitality Report)",
+    "url": "https://ecommons.cornell.edu/server/api/core/bitstreams/e32db86a-22d2-4823-8539-8de9ed1f4b47/content",
+    "provider": "Cornell eCommons",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-revenue-pricing",
+      "revenue-management-systems"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "A Comparison of Forecasting Methods for Hotel Revenue Management (Weatherford and Kimes)",
+    "url": "https://ecommons.cornell.edu/bitstream/handle/1813/72130/Kimes30_Comparison_of_Forecasting.pdf",
+    "provider": "Cornell eCommons",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-demand-forecasting",
+      "revenue-management-systems"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Improving Hospitality Industry Sales: Twenty-Five Years of Revenue Management",
+    "url": "https://ecommons.cornell.edu/bitstream/handle/1813/71666/Anderson7_Improving_Hospitality_Industry_Sales.pdf?sequence=1",
+    "provider": "Cornell eCommons",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-revenue-pricing",
+      "hotel-demand-forecasting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Revenue Management in U.S. Hotels: 2001-2005 (Canina and Enz, CHR report)",
+    "url": "https://ecommons.cornell.edu/server/api/core/bitstreams/07349e31-ea6e-4ed9-b88e-61ae410c737f/content",
+    "provider": "Cornell eCommons",
+    "kind": "docs",
+    "skillIds": [
+      "hotel-revenue-pricing",
+      "str-compset-benchmarking"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "IDeaS hospitality revenue management glossary",
+    "url": "https://ideas.com/tools-resources/glossary",
+    "provider": "IDeaS",
+    "kind": "docs",
+    "skillIds": [
+      "revenue-management-systems",
+      "hotel-demand-forecasting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What is revenue management (IDeaS)",
+    "url": "https://ideas.com/revenue-management",
+    "provider": "IDeaS",
+    "kind": "docs",
+    "skillIds": [
+      "revenue-management-systems"
+    ],
+    "minutes": 10,
     "free": true
   }
 ]

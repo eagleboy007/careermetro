@@ -1,0 +1,105 @@
+{
+  "slug": "litigation-paralegal",
+  "title": "Litigation Paralegal",
+  "summary": "A litigation paralegal (legal executive) supports advocates on court cases by keeping case files, filing papers in court registries and online, and tracking hearing dates. They work in a law firm's litigation team or a company's legal department, and do research and first drafts but do not argue in court.",
+  "dailyDuties": [
+    "Maintain case files, briefs and order sheets for active matters",
+    "File petitions and documents through court e-filing portals and registries",
+    "Check daily cause lists and update the hearing diary",
+    "Draft first versions of legal notices and replies",
+    "Research judgments on SCC Online or Manupatra",
+    "Prepare paper books, indexes and affidavits for filing",
+    "Update the litigation tracker and MIS for clients or management"
+  ],
+  "typicalTitles": [
+    "Paralegal - Litigation",
+    "Legal Executive - Litigation",
+    "Litigation Assistant",
+    "Legal Assistant - Court Matters",
+    "Court Clerk - Law Firm",
+    "Litigation Executive",
+    "Junior Legal Officer - Litigation"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "litigation-case-file-management",
+      "importance": "required",
+      "expectation": "Maintain case files, briefs, order sheets and the matter diary",
+      "postingShare": null
+    },
+    {
+      "skillId": "court-efiling-registry",
+      "importance": "required",
+      "expectation": "File pleadings through court e-filing portals and clear registry objections",
+      "postingShare": null
+    },
+    {
+      "skillId": "cause-list-tracking",
+      "importance": "required",
+      "expectation": "Check daily cause lists and keep hearing dates up to date",
+      "postingShare": null
+    },
+    {
+      "skillId": "legal-notice-drafting",
+      "importance": "required",
+      "expectation": "Draft first versions of legal notices and replies for review",
+      "postingShare": null
+    },
+    {
+      "skillId": "legal-research",
+      "importance": "required",
+      "expectation": "Find judgments on SCC Online or Manupatra and prepare case law compilations",
+      "postingShare": null
+    },
+    {
+      "skillId": "legal-document-review",
+      "importance": "required",
+      "expectation": "Review and index documents and evidence for a matter",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep litigation trackers and MIS up to date in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Coordinate clearly with advocates, clients and court staff",
+      "postingShare": null
+    },
+    {
+      "skillId": "pleadings-drafting-support",
+      "importance": "nice_to_have",
+      "expectation": "Prepare affidavits, paper books, indexes and simple applications",
+      "postingShare": null
+    },
+    {
+      "skillId": "litigation-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate matters with panel or external advocates",
+      "postingShare": null
+    },
+    {
+      "skillId": "npa-recovery-legal",
+      "importance": "nice_to_have",
+      "expectation": "Support cheque bounce and recovery matters for lenders",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
