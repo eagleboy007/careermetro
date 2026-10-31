@@ -1,0 +1,116 @@
+{
+  "slug": "event-marketing-executive",
+  "title": "Event Marketing Executive",
+  "summary": "Event marketing executives plan and run a company's trade shows, conferences, dealer meets and brand activations (on-ground promotions). They sit in the marketing team, work closely with sales, and handle venues, vendors, budgets and the leads each event brings in.",
+  "dailyDuties": [
+    "Plan the events calendar with sales and marketing heads",
+    "Book venues and brief AV, fabrication and hospitality vendors",
+    "Coordinate stall design and logistics for trade shows",
+    "Organise dealer meets and channel partner events",
+    "Track event budgets and spend against plan",
+    "Upload event leads to the CRM and report results"
+  ],
+  "typicalTitles": [
+    "Events Executive",
+    "Event Marketing Specialist",
+    "Trade Show Coordinator",
+    "Exhibitions Executive",
+    "Events & Field Marketing Executive",
+    "Brand Activation Executive",
+    "Dealer Events Executive"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "event-planning-execution",
+      "importance": "required",
+      "expectation": "Plan and run conferences, launches and customer events from brief to wrap-up",
+      "postingShare": null
+    },
+    {
+      "skillId": "trade-show-exhibition-management",
+      "importance": "required",
+      "expectation": "Manage trade show and exhibition participation, including stall design and fabrication",
+      "postingShare": null
+    },
+    {
+      "skillId": "dealer-channel-events",
+      "importance": "required",
+      "expectation": "Organise dealer meets and channel partner events with the sales team",
+      "postingShare": null
+    },
+    {
+      "skillId": "event-vendor-venue-management",
+      "importance": "required",
+      "expectation": "Source venues and manage AV, fabrication, hospitality and event agency vendors",
+      "postingShare": null
+    },
+    {
+      "skillId": "event-budget-roi",
+      "importance": "required",
+      "expectation": "Plan event budgets, control spend and report cost per lead and ROI",
+      "postingShare": null
+    },
+    {
+      "skillId": "event-lead-capture",
+      "importance": "required",
+      "expectation": "Capture leads at events, upload them to the CRM and drive follow-up",
+      "postingShare": null
+    },
+    {
+      "skillId": "atl-btl-campaigns",
+      "importance": "required",
+      "expectation": "Run BTL brand activations such as mall, college or in-store activations",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Brief vendors and coordinate sales, product and leadership teams on event day",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Work with leads in Salesforce, HubSpot or Zoho CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "agency-management",
+      "importance": "nice_to_have",
+      "expectation": "Brief and manage event and creative agencies",
+      "postingShare": null
+    },
+    {
+      "skillId": "social-media-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Promote events on social media before and during the event",
+      "postingShare": null
+    },
+    {
+      "skillId": "email-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Send invitations and post-event emails",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Keep sales heads and leadership aligned on the events calendar",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

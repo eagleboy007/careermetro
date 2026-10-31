@@ -1,0 +1,55 @@
+{
+  "id": "category-manager-ecommerce-mid",
+  "roleSlug": "category-manager-ecommerce",
+  "persona": "mid",
+  "resumeText": "Ananya Iyer | Bengaluru | ananya.iyer@example.com\n\nEXPERIENCE\nCategory Manager - Personal Care, ZipKart Quick Commerce, Bengaluru (2023 - present)\n- Expanded personal care assortment from 1,800 to 3,200 SKUs using search gap and sales data.\n- Onboarded 45 new D2C brands and sellers onto the platform in 18 months.\n- Planned pricing and promotions for monthly sale events with brand funding.\n- Owned category GMV and margin targets for a 40 crore rupee annual business.\n- Negotiated margins and promotion funding with brand partners every quarter.\n- Worked with supply, marketing and dark store operations teams on new launches.\n\nAssistant Category Manager - Home, ShopNova Marketplace, Bengaluru (2020 - 2023)\n- Built weekly GMV, fill rate and margin trackers in Excel for the home category.\n- Ran seller reviews on returns and ratings.\n\nEDUCATION\nMBA Marketing, Christ University, 2020\n\nSKILLS\nCatalogue quality, Category analytics, Vendor negotiation\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "ecommerce-assortment-planning",
+        "quote": "Expanded personal care assortment from 1,800 to 3,200 SKUs"
+      },
+      {
+        "skillId": "seller-brand-onboarding",
+        "quote": "Onboarded 45 new D2C brands and sellers onto the platform"
+      },
+      {
+        "skillId": "ecommerce-pricing-promotions",
+        "quote": "Planned pricing and promotions for monthly sale events with brand funding"
+      },
+      {
+        "skillId": "category-gmv-margin-management",
+        "quote": "Owned category GMV and margin targets"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "quote": "Negotiated margins and promotion funding with brand partners"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Worked with supply, marketing and dark store operations teams on new launches"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built weekly GMV, fill rate and margin trackers in Excel"
+      },
+      {
+        "skillId": "catalogue-quality-management",
+        "quote": "Catalogue quality, Category analytics, Vendor negotiation"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "catalogue-quality-management",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "sql",
+      "technical-seo-audits",
+      "financial-modelling"
+    ]
+  },
+  "reviewedBy": null
+}

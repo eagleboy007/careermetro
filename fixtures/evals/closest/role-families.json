@@ -181,7 +181,9 @@
       "content-writer",
       "social-media-manager",
       "brand-manager",
-      "seo-specialist"
+      "seo-specialist",
+      "market-research-analyst",
+      "event-marketing-executive"
     ],
     "sales": [
       "key-account-manager",
@@ -190,7 +192,10 @@
       "relationship-manager-banking",
       "business-development-executive",
       "medical-representative",
-      "channel-sales-manager"
+      "channel-sales-manager",
+      "real-estate-sales-executive",
+      "home-loan-sales-officer",
+      "category-manager-ecommerce"
     ],
     "finance": [
       "financial-analyst",
@@ -203,7 +208,9 @@
       "treasury-analyst",
       "equity-research-analyst",
       "insurance-underwriter",
-      "company-secretary-associate"
+      "company-secretary-associate",
+      "investment-banking-analyst",
+      "cost-accountant"
     ],
     "hr": [
       "hr-generalist",
@@ -211,7 +218,8 @@
       "hr-business-partner",
       "payroll-executive",
       "compensation-benefits-analyst",
-      "learning-development-specialist"
+      "learning-development-specialist",
+      "industrial-relations-officer"
     ],
     "operations": [
       "supply-chain-analyst",
@@ -220,7 +228,11 @@
       "logistics-coordinator",
       "warehouse-operations-executive",
       "process-excellence-analyst",
-      "retail-store-manager"
+      "retail-store-manager",
+      "admin-facilities-executive",
+      "customer-service-team-leader",
+      "quality-control-inspector",
+      "export-import-executive"
     ]
   },
   "neighbours": [

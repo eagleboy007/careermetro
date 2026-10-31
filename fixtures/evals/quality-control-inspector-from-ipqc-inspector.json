@@ -1,0 +1,60 @@
+{
+  "id": "quality-control-inspector-from-ipqc-inspector",
+  "roleSlug": "quality-control-inspector",
+  "persona": "In-process quality inspector at an auto component plant moving to a full QC inspector role",
+  "resumeText": "Karthik Subramanian | Chennai | karthik.s@example.com\n\nEXPERIENCE\nQuality Inspector (IPQC), Sriram Precision Components Pvt Ltd, Oragadam, Chennai (2022 - present)\n- Carried out in-process inspection of machined shafts and housings on two CNC lines every shift.\n- Measured parts using vernier caliper, micrometer, height gauge and thread gauges against the control plan.\n- Checked dimensions and tolerances on engineering drawings before releasing each first-off part.\n- Raised non-conformance reports for rejected lots and moved parts to the quarantine area.\n- Recorded inspection results in quality records for the ISO 9001 and IATF 16949 audits.\n- Checked calibration records of each gauge before use and reported overdue instruments.\n\nTrainee Inspector, Ambattur Auto Forge, Chennai (2021 - 2022)\n- Did visual checks of forged parts and filled daily rejection sheets.\n\nSKILLS\nAQL sampling, 5 Whys, Minitab, MS Excel\n\nEDUCATION\nDiploma in Mechanical Engineering, Central Polytechnic College, Chennai, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "product-inspection-stages",
+        "quote": "Carried out in-process inspection of machined shafts"
+      },
+      {
+        "skillId": "dimensional-inspection-instruments",
+        "quote": "Measured parts using vernier caliper, micrometer, height gauge and thread gauges"
+      },
+      {
+        "skillId": "engineering-drawing-reading",
+        "quote": "Checked dimensions and tolerances on engineering drawings"
+      },
+      {
+        "skillId": "non-conformance-capa",
+        "quote": "Raised non-conformance reports for rejected lots"
+      },
+      {
+        "skillId": "iso-9001-qms-documentation",
+        "quote": "Recorded inspection results in quality records for the ISO 9001"
+      },
+      {
+        "skillId": "gauge-calibration-control",
+        "quote": "Checked calibration records of each gauge before use"
+      },
+      {
+        "skillId": "sampling-plans-aql",
+        "quote": "AQL sampling, 5 Whys, Minitab, MS Excel"
+      },
+      {
+        "skillId": "root-cause-analysis-tools",
+        "quote": "AQL sampling, 5 Whys, Minitab, MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sampling-plans-aql",
+        "status": "weak"
+      },
+      {
+        "skillId": "root-cause-analysis-tools",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "cmm-inspection",
+      "dmaic-six-sigma",
+      "lean-waste-elimination",
+      "statistical-process-analysis"
+    ]
+  },
+  "reviewedBy": null
+}

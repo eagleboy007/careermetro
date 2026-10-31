@@ -1,0 +1,118 @@
+{
+  "slug": "export-import-executive",
+  "title": "Export-Import Executive",
+  "summary": "An export-import (EXIM) executive handles the trade compliance side of shipping goods in and out of India: customs filings on ICEGATE, DGFT licences such as EPCG, export incentives like RoDTEP and drawback, and letter of credit documents. The role sits in the EXIM, commercial or supply chain team and works with customs brokers, forwarders and banks.",
+  "dailyDuties": [
+    "Check shipping bills and bills of entry filed on ICEGATE",
+    "Apply for and track EPCG and Advance Authorisation licences on the DGFT portal",
+    "File RoDTEP and duty drawback claims and follow up",
+    "Close e-BRC, EDPMS and IDPMS entries with the bank",
+    "Prepare and check documents under letters of credit",
+    "Coordinate customs brokers, forwarders and shipping lines",
+    "Update licence, incentive and shipment trackers"
+  ],
+  "typicalTitles": [
+    "EXIM Executive",
+    "Executive - EXIM",
+    "Import Export Executive",
+    "EXIM Compliance Executive",
+    "DGFT and Customs Executive",
+    "Export Incentives Executive",
+    "Senior Executive - EXIM and DGFT",
+    "Foreign Trade Executive"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "customs-clearance-compliance",
+      "importance": "required",
+      "expectation": "File and check shipping bills and bills of entry on ICEGATE with the right HS codes and duty",
+      "postingShare": null
+    },
+    {
+      "skillId": "dgft-licences-export-obligation",
+      "importance": "required",
+      "expectation": "Apply for and close EPCG and Advance Authorisation licences and track export obligation",
+      "postingShare": null
+    },
+    {
+      "skillId": "export-incentive-claims",
+      "importance": "required",
+      "expectation": "Claim RoDTEP and duty drawback and follow up until credited",
+      "postingShare": null
+    },
+    {
+      "skillId": "export-realisation-ebrc",
+      "importance": "required",
+      "expectation": "Track export payments and close e-BRC, EDPMS and IDPMS entries with the bank",
+      "postingShare": null
+    },
+    {
+      "skillId": "trade-finance-instruments",
+      "importance": "required",
+      "expectation": "Prepare and check documents under letters of credit",
+      "postingShare": null
+    },
+    {
+      "skillId": "exim-documentation",
+      "importance": "required",
+      "expectation": "Prepare invoices, packing lists and certificates of origin under the agreed incoterms",
+      "postingShare": null
+    },
+    {
+      "skillId": "transporter-3pl-management",
+      "importance": "required",
+      "expectation": "Coordinate customs brokers, freight forwarders and shipping lines",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep shipment, licence and incentive trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clearly to buyers, banks, brokers and government offices",
+      "postingShare": null
+    },
+    {
+      "skillId": "gst-tds-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Handle LUT and GST refund paperwork for exports",
+      "postingShare": null
+    },
+    {
+      "skillId": "supply-chain-erp-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Update shipment and incentive data in SAP or another ERP",
+      "postingShare": null
+    },
+    {
+      "skillId": "freight-billing-control",
+      "importance": "nice_to_have",
+      "expectation": "Check freight and clearing bills before payment",
+      "postingShare": null
+    },
+    {
+      "skillId": "forex-risk-hedging",
+      "importance": "nice_to_have",
+      "expectation": "Know how forward contracts protect export receivables",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,117 @@
+{
+  "slug": "real-estate-sales-executive",
+  "title": "Real Estate Sales Executive",
+  "summary": "A real estate sales executive sells homes in a developer's residential projects, taking buyers from first enquiry through site visit to booking. They sit in the project's sales team, working with pre-sales callers, channel partners (brokers), home loan banks and the post-booking customer team.",
+  "dailyDuties": [
+    "Call back new enquiries and schedule site visits",
+    "Show buyers around the project and sample flat",
+    "Prepare cost sheets and explain payment plans",
+    "Complete booking forms and hand over to the agreement team",
+    "Help buyers apply for home loans with tie-up banks",
+    "Update every lead and visit in the CRM",
+    "Review weekly booking numbers with the sales manager"
+  ],
+  "typicalTitles": [
+    "Sales Executive - Real Estate",
+    "Real Estate Sales Manager",
+    "Sales Manager - Residential Projects",
+    "Closing Manager - Real Estate",
+    "Site Sales Executive - Real Estate",
+    "Property Sales Executive",
+    "Pre-Sales Executive - Real Estate"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "property-site-visits",
+      "importance": "required",
+      "expectation": "Take buyers around the project and sample flat and explain layouts, amenities and payment plans",
+      "postingShare": null
+    },
+    {
+      "skillId": "property-enquiry-follow-up",
+      "importance": "required",
+      "expectation": "Follow up walk-ins and digital enquiries quickly and push them to site visits and revisits",
+      "postingShare": null
+    },
+    {
+      "skillId": "property-booking-documentation",
+      "importance": "required",
+      "expectation": "Prepare cost sheets and booking forms and see the buyer through allotment and the agreement for sale",
+      "postingShare": null
+    },
+    {
+      "skillId": "buyer-home-loan-coordination",
+      "importance": "required",
+      "expectation": "Connect buyers with tie-up banks and track their home loan sanction",
+      "postingShare": null
+    },
+    {
+      "skillId": "rera-compliance-basics",
+      "importance": "required",
+      "expectation": "Know the RERA registration details of the project and keep sales promises within RERA rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "required",
+      "expectation": "Log every enquiry, site visit and follow-up in the CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "deal-closing",
+      "importance": "required",
+      "expectation": "Close bookings against monthly and quarterly unit targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "required",
+      "expectation": "Negotiate price, floor choice and payment terms within approved limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present the project clearly to families, often in more than one language",
+      "postingShare": null
+    },
+    {
+      "skillId": "real-estate-channel-partners",
+      "importance": "nice_to_have",
+      "expectation": "Work with channel partners (brokers) who bring buyers to the site",
+      "postingShare": null
+    },
+    {
+      "skillId": "field-sales-meetings",
+      "importance": "nice_to_have",
+      "expectation": "Meet prospects at offices and homes and run outdoor activations",
+      "postingShare": null
+    },
+    {
+      "skillId": "competitive-intelligence",
+      "importance": "nice_to_have",
+      "expectation": "Compare nearby competing projects on price and amenities",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Keep a daily sales and follow-up tracker in Excel",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

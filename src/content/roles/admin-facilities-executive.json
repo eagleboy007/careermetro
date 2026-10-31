@@ -1,0 +1,117 @@
+{
+  "slug": "admin-facilities-executive",
+  "title": "Admin & Facilities Executive",
+  "summary": "An admin and facilities executive keeps an office or plant running: housekeeping and security vendors, maintenance contracts (AMCs), the travel desk, supplies, and licences such as the fire NOC. The role usually sits in the administration or HR team and reports to an admin manager.",
+  "dailyDuties": [
+    "Check housekeeping, security and pantry work against vendor service levels",
+    "Track AMC renewals and service visits for DG sets, UPS, HVAC and lifts",
+    "Book flights, hotels and cabs for employees through the travel desk",
+    "Renew trade licence, fire NOC and other statutory registrations on time",
+    "Order stationery and pantry supplies and update the admin asset register",
+    "Plan seating and office moves with the facility team",
+    "Prepare monthly admin expense and vendor reports"
+  ],
+  "typicalTitles": [
+    "Executive - Administration",
+    "Facilities and Administration Executive",
+    "Admin and Facilities Officer",
+    "Office Administration Executive",
+    "Senior Executive - Admin and Facilities",
+    "Facility Executive - Administration",
+    "Travel Desk and Admin Executive"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "facility-vendor-management",
+      "importance": "required",
+      "expectation": "Manage housekeeping, security and pantry vendors against agreed service levels",
+      "postingShare": null
+    },
+    {
+      "skillId": "amc-contract-management",
+      "importance": "required",
+      "expectation": "Track and renew maintenance contracts for DG sets, UPS, HVAC, lifts and fire systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "office-statutory-licences",
+      "importance": "required",
+      "expectation": "Keep trade licence, fire NOC, lift and shops registrations valid and run fire drills",
+      "postingShare": null
+    },
+    {
+      "skillId": "travel-desk-management",
+      "importance": "required",
+      "expectation": "Run the travel desk for flights, hotels, cabs and visas within the travel policy",
+      "postingShare": null
+    },
+    {
+      "skillId": "office-supplies-inventory",
+      "importance": "required",
+      "expectation": "Buy and track stationery, pantry stock and admin assets",
+      "postingShare": null
+    },
+    {
+      "skillId": "office-space-planning",
+      "importance": "required",
+      "expectation": "Plan seating, moves and small fit-out work with the facility team",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep vendor, AMC, licence and expense trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear notices and talk with employees, vendors and landlords",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with HR, finance, procurement and site heads on admin needs",
+      "postingShare": null
+    },
+    {
+      "skillId": "purchase-order-processing",
+      "importance": "nice_to_have",
+      "expectation": "Raise purchase requests and follow up on orders for admin spend",
+      "postingShare": null
+    },
+    {
+      "skillId": "rfq-quotation-comparison",
+      "importance": "nice_to_have",
+      "expectation": "Collect quotes and prepare comparisons for new vendors",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Track the admin budget against actuals",
+      "postingShare": null
+    },
+    {
+      "skillId": "vendor-onboarding",
+      "importance": "nice_to_have",
+      "expectation": "Complete vendor registration and paperwork for new service providers",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

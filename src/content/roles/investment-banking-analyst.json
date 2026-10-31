@@ -1,0 +1,122 @@
+{
+  "slug": "investment-banking-analyst",
+  "title": "Investment Banking Analyst",
+  "summary": "Investment banking analysts help companies buy or sell businesses (M&A) and raise money through share or bond issues. They sit at the bottom of a deal team, building financial models, valuations, pitch books and investor documents for associates and directors.",
+  "dailyDuties": [
+    "Build and update financial and valuation models for live deals",
+    "Prepare pitch books and client presentations",
+    "Draft teasers and information memoranda for investors",
+    "Track due diligence requests and maintain the data room",
+    "Pull comparable company and transaction data",
+    "Join client, lawyer and auditor calls and record action points"
+  ],
+  "typicalTitles": [
+    "Investment Banking Analyst - M&A",
+    "M&A Analyst",
+    "ECM Analyst",
+    "DCM Analyst",
+    "Analyst - Investment Banking (ECM/DCM)",
+    "Deal Execution Analyst",
+    "Analyst - Mergers & Acquisitions"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "financial-modelling",
+      "importance": "required",
+      "expectation": "Build and update operating, merger and DCF models for live deals and pitches",
+      "postingShare": null
+    },
+    {
+      "skillId": "equity-valuation",
+      "importance": "required",
+      "expectation": "Value companies with trading comparables, transaction comparables and DCF",
+      "postingShare": null
+    },
+    {
+      "skillId": "pitch-book-preparation",
+      "importance": "required",
+      "expectation": "Prepare pitch books and client presentations for M&A and fund-raising mandates",
+      "postingShare": null
+    },
+    {
+      "skillId": "mna-deal-execution",
+      "importance": "required",
+      "expectation": "Support buy-side and sell-side M&A deals from mandate to closing",
+      "postingShare": null
+    },
+    {
+      "skillId": "capital-markets-transactions",
+      "importance": "required",
+      "expectation": "Work on equity and debt raises such as IPOs, QIPs and bond or NCD issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "information-memorandum-drafting",
+      "importance": "required",
+      "expectation": "Draft teasers and information memoranda for investors and buyers",
+      "postingShare": null
+    },
+    {
+      "skillId": "deal-due-diligence-data-room",
+      "importance": "required",
+      "expectation": "Set up the data room and track due diligence requests and answers",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-statement-analysis",
+      "importance": "required",
+      "expectation": "Read company financials and annual reports and spread the numbers",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Work fast and accurately in Excel, the main tool for models",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear deal materials and present work to senior bankers",
+      "postingShare": null
+    },
+    {
+      "skillId": "sebi-icdr-regulations",
+      "importance": "nice_to_have",
+      "expectation": "Know the basics of SEBI ICDR rules for IPO and QIP documents",
+      "postingShare": null
+    },
+    {
+      "skillId": "market-data-terminals",
+      "importance": "nice_to_have",
+      "expectation": "Pull comparables and deal data from Capital IQ, Bloomberg or similar",
+      "postingShare": null
+    },
+    {
+      "skillId": "sector-industry-research",
+      "importance": "nice_to_have",
+      "expectation": "Research a sector to support a pitch or a buyer list",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate with clients, lawyers, auditors and other advisers on a deal",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

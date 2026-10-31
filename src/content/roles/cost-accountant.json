@@ -1,0 +1,122 @@
+{
+  "slug": "cost-accountant",
+  "title": "Cost Accountant",
+  "summary": "Cost accountants work out what each product costs to make in a factory and explain why actual costs differ from planned (standard) costs. They sit in the plant finance team, keep the cost records the law requires, and support the yearly cost audit.",
+  "dailyDuties": [
+    "Prepare product cost sheets from BOMs and actual consumption",
+    "Analyse material, labour and overhead variances against standard costs",
+    "Value raw material, WIP and finished goods stock at month end",
+    "Run costing activities and settlements in the ERP",
+    "Prepare costing MIS for the plant head",
+    "Maintain cost records and answer cost auditor queries"
+  ],
+  "typicalTitles": [
+    "Costing Executive",
+    "Cost Accountant - Plant",
+    "Plant Costing Analyst",
+    "Costing Officer",
+    "Product Costing Executive",
+    "Cost Controller - Manufacturing",
+    "Costing Manager - Plant"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "product-cost-sheets",
+      "importance": "required",
+      "expectation": "Prepare product and plant-wise cost sheets from BOMs, routings and actual consumption",
+      "postingShare": null
+    },
+    {
+      "skillId": "standard-costing-variance",
+      "importance": "required",
+      "expectation": "Set and revise standard costs and explain material, labour and overhead variances",
+      "postingShare": null
+    },
+    {
+      "skillId": "cost-records-audit-compliance",
+      "importance": "required",
+      "expectation": "Maintain cost records and support the cost audit under the Companies (Cost Records and Audit) Rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "inventory-valuation",
+      "importance": "required",
+      "expectation": "Value raw material, WIP and finished goods stock at month end",
+      "postingShare": null
+    },
+    {
+      "skillId": "overhead-allocation-absorption",
+      "importance": "required",
+      "expectation": "Allocate and absorb plant overheads through cost centres and machine hour rates",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-co-configuration",
+      "importance": "required",
+      "expectation": "Run costing in SAP CO or a similar ERP costing module, including cost estimates and settlement",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpa-variance-reporting",
+      "importance": "required",
+      "expectation": "Prepare monthly costing MIS and budget-versus-actual reports for plant heads",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build cost workings and reconciliations in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Help prepare the plant's annual cost budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-accounting",
+      "importance": "nice_to_have",
+      "expectation": "Reconcile cost records with the financial books",
+      "postingShare": null
+    },
+    {
+      "skillId": "statutory-audit-support",
+      "importance": "nice_to_have",
+      "expectation": "Give stock and cost schedules to statutory auditors",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "nice_to_have",
+      "expectation": "Use pivot tables and lookups on large consumption data",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Explain cost movements to production and purchase teams",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "sap-s4hana-management-accounting",
+      "importance": "optional",
+      "why": "Shows hands-on knowledge of SAP management accounting (CO), where most plant costing runs"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

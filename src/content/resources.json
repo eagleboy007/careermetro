@@ -4476,7 +4476,9 @@
     "skillIds": [
       "domain-bfsi",
       "credit-appraisal",
-      "rbi-credit-norms"
+      "rbi-credit-norms",
+      "loan-eligibility-assessment",
+      "login-to-disbursement-tracking"
     ],
     "minutes": 1800,
     "free": true
@@ -12857,7 +12859,9 @@
       "chemist-stockist-coverage",
       "distribution-network-expansion",
       "distributor-economics",
-      "field-call-reporting"
+      "field-call-reporting",
+      "mortgage-channel-sourcing",
+      "real-estate-channel-partners"
     ],
     "minutes": 1200,
     "free": true
@@ -13534,7 +13538,8 @@
     "kind": "course",
     "skillIds": [
       "commercial-negotiation",
-      "deal-closing"
+      "deal-closing",
+      "property-site-visits"
     ],
     "minutes": 1200,
     "free": true
@@ -13562,7 +13567,10 @@
       "retail-customer-experience",
       "retail-store-sales",
       "store-pnl-management",
-      "visual-merchandising"
+      "visual-merchandising",
+      "category-gmv-margin-management",
+      "ecommerce-assortment-planning",
+      "ecommerce-pricing-promotions"
     ],
     "minutes": 1200,
     "free": true
@@ -16072,7 +16080,8 @@
     "provider": "Reserve Bank of India",
     "kind": "docs",
     "skillIds": [
-      "trade-finance-instruments"
+      "trade-finance-instruments",
+      "export-realisation-ebrc"
     ],
     "minutes": 90,
     "free": true
@@ -16784,7 +16793,9 @@
     "kind": "course",
     "skillIds": [
       "consumer-insights",
-      "market-share-tracking"
+      "market-share-tracking",
+      "market-research-reporting",
+      "secondary-desk-research"
     ],
     "minutes": 1200,
     "free": true
@@ -16796,7 +16807,8 @@
     "kind": "course",
     "skillIds": [
       "consumer-insights",
-      "market-share-tracking"
+      "market-share-tracking",
+      "spss-statistics"
     ],
     "minutes": 1200,
     "free": true
@@ -18606,6 +18618,1576 @@
       "financial-underwriting"
     ],
     "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Inbound Sales training",
+    "url": "https://academy.hubspot.com/track-your-sales",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "property-site-visits",
+      "property-enquiry-follow-up"
+    ],
+    "minutes": 150,
+    "free": true
+  },
+  {
+    "title": "HubSpot free CRM tools course",
+    "url": "https://academy.hubspot.com/courses/hubspot-free-tools",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "property-enquiry-follow-up"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "The Real Estate (Regulation and Development) Act, 2016",
+    "url": "https://indiacode.nic.in/handle/123456789/2158",
+    "provider": "India Code (Government of India)",
+    "kind": "docs",
+    "skillIds": [
+      "rera-compliance-basics",
+      "property-booking-documentation",
+      "real-estate-channel-partners"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "MahaRERA model allotment letter and agreement for sale",
+    "url": "https://www.azbpartners.com/bank/maharera-model-allotment-letter-and-agreement-for-sale/",
+    "provider": "AZB & Partners",
+    "kind": "docs",
+    "skillIds": [
+      "property-booking-documentation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "NHB frequently asked questions",
+    "url": "https://www.nhb.org.in/frequently-asked-question-faqs/",
+    "provider": "National Housing Bank",
+    "kind": "docs",
+    "skillIds": [
+      "buyer-home-loan-coordination"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Operational Guidelines of PMAY-U",
+    "url": "https://pmaymis.gov.in/PMAYMIS2_2024/PDF/Operational_Guidelines_of_PMAY-U.pdf",
+    "provider": "Ministry of Housing and Urban Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "home-loan-lap-products"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Master Circular: Housing Finance",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasCirculardetails.aspx?id=7339",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "home-loan-lap-products",
+      "loan-eligibility-assessment",
+      "buyer-home-loan-coordination"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Guidelines on managing risks and code of conduct in outsourcing of financial services by banks",
+    "url": "https://website.rbi.org.in/web/rbi/-/notifications/guidelines-on-managing-risks-and-code-of-conduct-in-outsourcing-of-financial-services-by-banks-3148",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "mortgage-channel-sourcing"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Directions on managing risks and code of conduct in outsourcing of financial services by NBFCs",
+    "url": "https://website.rbi.org.in/web/rbi/-/notifications/directions-on-managing-risks-and-code-of-conduct-in-outsourcing-of-financial-services-by-nbfcs-11160",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "mortgage-channel-sourcing"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Key Facts Statement (KFS) for Loans & Advances",
+    "url": "https://website.rbi.org.in/web/rbi/-/notifications/key-facts-statement-kfs-for-loans-advances",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "loan-eligibility-assessment",
+      "loan-file-documentation",
+      "login-to-disbursement-tracking"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Master Direction - Know Your Customer (KYC) Direction, 2016",
+    "url": "https://website.rbi.org.in/web/rbi/-/notifications/master-direction-know-your-customer-kyc-direction-2016-updated-as-on-may-04-2023-lt-span-gt-11566",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "loan-file-documentation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Master Circular: Fair Practices Code",
+    "url": "https://rbidocs.rbi.org.in/rdocs/notification/PDFs/26MFP010711F.pdf",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "loan-file-documentation",
+      "login-to-disbursement-tracking"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Amazon Seller University",
+    "url": "https://sell.amazon.in/learn/seller-university",
+    "provider": "Amazon India",
+    "kind": "course",
+    "skillIds": [
+      "seller-brand-onboarding",
+      "catalogue-quality-management",
+      "ecommerce-pricing-promotions"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Pricing for Results: Part 1",
+    "url": "https://archive.grocer.coop/node/7394",
+    "provider": "CDS Consulting Co-op",
+    "kind": "docs",
+    "skillIds": [
+      "ecommerce-pricing-promotions",
+      "category-gmv-margin-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Markup vs. margin",
+    "url": "https://fcc-fac.ca/en/knowledge/markup-vs-margin",
+    "provider": "Farm Credit Canada",
+    "kind": "docs",
+    "skillIds": [
+      "category-gmv-margin-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Overview of Merchant Center's product data specification",
+    "url": "https://support.google.com/merchants/answer/3164023",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "catalogue-quality-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Merchant Center product data specification",
+    "url": "https://support.google.com/merchants/answer/188494",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "catalogue-quality-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Data quality checks",
+    "url": "https://www.povertyactionlab.org/resource/data-quality-checks",
+    "provider": "J-PAL",
+    "kind": "docs",
+    "skillIds": [
+      "survey-fieldwork-management"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Back-checks",
+    "url": "https://data.poverty-action.org/data-quality/backchecks.html",
+    "provider": "Innovations for Poverty Action",
+    "kind": "docs",
+    "skillIds": [
+      "survey-fieldwork-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SPSS tutorials",
+    "url": "https://libguides.library.kent.edu/SPSS",
+    "provider": "Kent State University Libraries",
+    "kind": "docs",
+    "skillIds": [
+      "spss-statistics",
+      "survey-data-tabulation"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SPSS resources",
+    "url": "https://sheffield.ac.uk/mash/stats-resources/spss",
+    "provider": "University of Sheffield (MASH)",
+    "kind": "docs",
+    "skillIds": [
+      "spss-statistics"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Weighting survey data with the pewmethods R package",
+    "url": "https://www.pewresearch.org/decoded/2020/03/26/weighting-survey-data-with-the-pewmethods-r-package/",
+    "provider": "Pew Research Center",
+    "kind": "docs",
+    "skillIds": [
+      "survey-data-tabulation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Producing weighted and survey design-informed estimates",
+    "url": "https://ukdataserviceopen.github.io/UKDS_RGuide/6_Weighted.html",
+    "provider": "UK Data Service",
+    "kind": "docs",
+    "skillIds": [
+      "survey-data-tabulation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "pollster: crosstab and topline tables of weighted survey data",
+    "url": "https://cloud.r-project.org/web/packages/pollster/index.html",
+    "provider": "CRAN",
+    "kind": "docs",
+    "skillIds": [
+      "survey-data-tabulation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Conducting qualitative interviews: an introduction",
+    "url": "https://www.open.edu/openlearn/education-development/conducting-qualitative-interviews-introduction",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "qualitative-fgd-moderation"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "One minute methods: interviews and focus groups",
+    "url": "https://www.open.edu/openlearn/one-minute-methods-interviews-focus-groups",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "video",
+    "skillIds": [
+      "qualitative-fgd-moderation"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Qualitative Research Methods and Research Writing",
+    "url": "https://nptel.ac.in/courses/109105115",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "qualitative-fgd-moderation",
+      "market-research-reporting"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Module 8: Qualitative research and how to design a focus group",
+    "url": "https://ecampusontario.pressbooks.pub/introductiontomarketresearch/?p=113",
+    "provider": "eCampusOntario (Introduction to Market Research)",
+    "kind": "docs",
+    "skillIds": [
+      "qualitative-fgd-moderation"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Essay and report writing skills",
+    "url": "https://www.open.edu/openlearn/education-development/essay-and-report-writing-skills/content-section-0?intro=1",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "market-research-reporting"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Developing insights and an action plan",
+    "url": "https://learn.saylor.org/mod/page/view.php?id=56427",
+    "provider": "Saylor Academy",
+    "kind": "docs",
+    "skillIds": [
+      "market-research-reporting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Sorting Truth from Fiction: Civic Online Reasoning",
+    "url": "https://ocw.mit.edu/courses/res-cms-504-sorting-truth-from-fiction-civic-online-reasoning-spring-2021",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "secondary-desk-research"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Investment banking pitch book",
+    "url": "https://corporatefinanceinstitute.com/resources/valuation/investment-banking-pitch-book",
+    "provider": "Corporate Finance Institute",
+    "kind": "docs",
+    "skillIds": [
+      "pitch-book-preparation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Investment banking pitch book",
+    "url": "https://www.fe.training/free-resources/investment-banking/investment-banking-pitch-book/",
+    "provider": "Financial Edge Training",
+    "kind": "docs",
+    "skillIds": [
+      "pitch-book-preparation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Pitch book",
+    "url": "https://en.wikipedia.org/wiki/Pitch_book",
+    "provider": "Wikipedia",
+    "kind": "docs",
+    "skillIds": [
+      "pitch-book-preparation"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Mergers, Acquisitions and Corporate Restructuring",
+    "url": "https://nptel.ac.in/courses/110105165",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "mna-deal-execution"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "Acquisition valuation (lecture notes)",
+    "url": "https://pages.stern.nyu.edu/~adamodar/pdfiles/eqnotes/AcqValn.pdf",
+    "provider": "Aswath Damodaran, NYU Stern",
+    "kind": "docs",
+    "skillIds": [
+      "mna-deal-execution"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Confidential information memorandum",
+    "url": "https://www.fe.training/free-resources/investment-banking/confidential-information-memorandum/",
+    "provider": "Financial Edge Training",
+    "kind": "docs",
+    "skillIds": [
+      "information-memorandum-drafting",
+      "mna-deal-execution"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What's in a confidential information memorandum (CIM)?",
+    "url": "https://mergersandinquisitions.com/?p=21598",
+    "provider": "Mergers & Inquisitions",
+    "kind": "docs",
+    "skillIds": [
+      "information-memorandum-drafting"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "SEBI (Issue of Capital and Disclosure Requirements) Regulations, 2018 (last amended May 17, 2024)",
+    "url": "https://www.sebi.gov.in/legal/regulations/may-2024/securities-and-exchange-board-of-india-issue-of-capital-and-disclosure-requirements-regulations-2018-last-amended-on-may-17-2024-_80421.html",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-icdr-regulations",
+      "capital-markets-transactions"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Book-building process",
+    "url": "https://investor.sebi.gov.in/book_building.html",
+    "provider": "SEBI Investor Website",
+    "kind": "docs",
+    "skillIds": [
+      "capital-markets-transactions",
+      "sebi-icdr-regulations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of cost accounting and environmental management accounting",
+    "url": "https://www.open.edu/openlearn/money-business/fundamentals-cost-accounting-and-environmental-management-accounting/content-section-0",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "product-cost-sheets",
+      "overhead-allocation-absorption"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of Cost Accounting",
+    "url": "https://nptel.ac.in/courses/110106511",
+    "provider": "NPTEL (ICMAI faculty)",
+    "kind": "course",
+    "skillIds": [
+      "product-cost-sheets"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "Cost Accounting Standards downloads (CASB)",
+    "url": "https://icmai.in/Home/CASB_Downloads",
+    "provider": "Institute of Cost Accountants of India",
+    "kind": "docs",
+    "skillIds": [
+      "product-cost-sheets",
+      "overhead-allocation-absorption",
+      "inventory-valuation",
+      "cost-records-audit-compliance"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Cost Accounting (NOC19-MG38)",
+    "url": "https://onlinecourses.nptel.ac.in/noc19_mg38/preview",
+    "provider": "NPTEL (IIT Bombay)",
+    "kind": "course",
+    "skillIds": [
+      "standard-costing-variance"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "Management Accounting (NOC25-MG85)",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_mg85/preview",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "overhead-allocation-absorption",
+      "standard-costing-variance"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "IAS 2 Inventories",
+    "url": "https://www.ifrs.org/issued-standards/list-of-standards/ias-2-inventories/",
+    "provider": "IFRS Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "inventory-valuation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "IAS 2 Inventories",
+    "url": "https://icaew.com/technical/corporate-reporting/ifrs/ifrs-standards/ias-2-inventories",
+    "provider": "ICAEW",
+    "kind": "docs",
+    "skillIds": [
+      "inventory-valuation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "IAS 2 - Inventories (summary)",
+    "url": "https://www.iasplus.com/en-ca/standards/part-i-ifrs/international-accounting-standards/ias2",
+    "provider": "IAS Plus (Deloitte)",
+    "kind": "docs",
+    "skillIds": [
+      "inventory-valuation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Event safety: getting started",
+    "url": "https://www.hse.gov.uk/event-safety/getting-started.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "event-planning-execution"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Event safety: managing an event",
+    "url": "https://www.hse.gov.uk/event-safety/managing-an-event.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "event-planning-execution",
+      "dealer-channel-events"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Planning for incidents and emergencies at events",
+    "url": "https://www.hse.gov.uk/event-safety/incidents-and-emergencies.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "event-planning-execution"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Manage events in Dynamics 365 Customer Insights - Journeys",
+    "url": "https://learn.microsoft.com/en-us/training/paths/manage-events-dynamics-365-marketing/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "event-planning-execution"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Create an on-site event in Dynamics 365 Customer Insights - Journeys",
+    "url": "https://learn.microsoft.com/en-us/training/modules/create-event-marketing/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "dealer-channel-events",
+      "event-planning-execution"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Advanced event management features (recurring events and templates)",
+    "url": "https://learn.microsoft.com/en-us/training/modules/advanced-event-management-marketing/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "dealer-channel-events"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Event safety: venue and site design",
+    "url": "https://www.hse.gov.uk/event-safety/venue-site-design.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "event-vendor-venue-management",
+      "dealer-channel-events"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Using contractors: a brief guide",
+    "url": "https://www.hse.gov.uk/pubns/indg368.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "event-vendor-venue-management",
+      "facility-vendor-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "The Contract Management Playbook",
+    "url": "https://assets.publishing.service.gov.uk/media/69c15da17e02b81c0d1c7682/20.47_CO_Contract_Management_Playbook_Final_Web.pdf",
+    "provider": "UK Cabinet Office",
+    "kind": "docs",
+    "skillIds": [
+      "event-vendor-venue-management",
+      "facility-vendor-management",
+      "amc-contract-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "How to Prepare for a Trade Show",
+    "url": "https://www.trade.gov/index.php/how-prepare-business-trade-show",
+    "provider": "International Trade Administration (trade.gov)",
+    "kind": "docs",
+    "skillIds": [
+      "trade-show-exhibition-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "International Craft Trade Fairs: A Practical Guide",
+    "url": "https://www.thecommonwealth-ilibrary.org/index.php/comsec/catalog/book/895",
+    "provider": "Commonwealth Secretariat / ITC / UNESCO",
+    "kind": "docs",
+    "skillIds": [
+      "trade-show-exhibition-management",
+      "event-budget-roi"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Foreign trade fair participation guide",
+    "url": "https://www.srilankabusiness.com/pdfs/ipd/ipd-fair-trade-guide-web.pdf",
+    "provider": "Sri Lanka Export Development Board",
+    "kind": "docs",
+    "skillIds": [
+      "trade-show-exhibition-management",
+      "event-budget-roi"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Promote events, manage registration and check-ins, and review results",
+    "url": "https://learn.microsoft.com/en-us/training/modules/promote-events-dynamics-365-marketing/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "event-lead-capture",
+      "event-budget-roi"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Manage real-time events in Customer Insights - Journeys",
+    "url": "https://learn.microsoft.com/en-us/training/modules/manage-events-customer-insights/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "event-lead-capture"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Qualify and convert a lead to an opportunity",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/sales/qualify-lead-convert-opportunity-sales",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "event-lead-capture"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Employment relations and employee engagement",
+    "url": "https://www.open.edu/openlearn/money-business/employment-relations-and-employee-engagement/content-section-0",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "union-negotiation-settlements",
+      "labour-authority-liaison"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Negotiation and Conflict Management (MIT 15.667)",
+    "url": "https://ocw.mit.edu/courses/15-667-negotiation-and-conflict-management-spring-2001/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "union-negotiation-settlements"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "The Industrial Relations Code, 2020 (India Code)",
+    "url": "https://www.indiacode.nic.in/handle/123456789/22040?view_type=browse",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "union-negotiation-settlements",
+      "disciplinary-enquiry-drafting"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "The Industrial Relations Code, 2020 (full text, Ministry of Labour)",
+    "url": "https://www.labour.gov.in/static/uploads/2025/07/682a44b5426bff2c1f4943ee1b2fd566.pdf",
+    "provider": "Ministry of Labour and Employment",
+    "kind": "docs",
+    "skillIds": [
+      "labour-authority-liaison"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "FAQ on Myths and Realities of the Industrial Relations Code 2020",
+    "url": "https://www.labour.gov.in/static/uploads/2026/01/b9f5b3916c042a5597f9cb4f3cc9f0fd.pdf",
+    "provider": "Ministry of Labour and Employment",
+    "kind": "docs",
+    "skillIds": [
+      "labour-authority-liaison",
+      "union-negotiation-settlements"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Industrial Employment (Standing Orders) Act, 1946",
+    "url": "https://indiacode.nic.in/bitstream/123456789/19636/1/industrial-employment-standing-orders-act-1946.pdf",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "disciplinary-enquiry-drafting"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Code of Practice on disciplinary and grievance procedures",
+    "url": "https://www.acas.org.uk/acas-code-of-practice-on-disciplinary-and-grievance-procedures/html",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "disciplinary-enquiry-drafting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Investigations at work: step by step",
+    "url": "https://www.acas.org.uk/investigations-for-discipline-and-grievance-step-by-step",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "disciplinary-enquiry-drafting"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "The Contract Labour (Regulation and Abolition) Act, 1970 (full text)",
+    "url": "https://www.indiacode.nic.in/bitstream/123456789/12810/1/the_contract_labour_(regulation_and_abolition)_act,_1970_no_37_of_1970_date_05.09.1970.pdf",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "contract-labour-compliance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "The Occupational Safety, Health and Working Conditions Code, 2020",
+    "url": "https://www.labour.gov.in/static/uploads/2025/07/36fcfa5d8e6b9145e282bf7b950d6c47.pdf",
+    "provider": "Ministry of Labour and Employment",
+    "kind": "docs",
+    "skillIds": [
+      "factories-act-compliance",
+      "contract-labour-compliance"
+    ],
+    "minutes": 150,
+    "free": true
+  },
+  {
+    "title": "The Factories Act, 1948 (full text)",
+    "url": "https://www.indiacode.nic.in/bitstream/123456789/18999/1/factories_act_1948.pdf",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "factories-act-compliance",
+      "labour-welfare-administration"
+    ],
+    "minutes": 150,
+    "free": true
+  },
+  {
+    "title": "Industrial Safety Engineering (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/110105094",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "factories-act-compliance"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Labour Welfare and Industrial Relations (IIT Guwahati)",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_mg104/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "labour-welfare-administration"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Workplace facilities: what you must provide",
+    "url": "https://www.hse.gov.uk/simple-health-safety/workplace-facilities/welfare.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "labour-welfare-administration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Guidance: Key Performance Indicators (Procurement Act 2023)",
+    "url": "https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-manage-phase/guidance-key-performance-indicators-html",
+    "provider": "GOV.UK",
+    "kind": "docs",
+    "skillIds": [
+      "facility-vendor-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Contracting out Cleaning and Security Contracts",
+    "url": "https://innet.icac.org.hk/docs/Contracting%20out%20Cleaning%20and%20Security%20Contracts%20EN.pdf",
+    "provider": "ICAC Hong Kong",
+    "kind": "docs",
+    "skillIds": [
+      "facility-vendor-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Maintenance of work equipment",
+    "url": "https://www.hse.gov.uk/work-equipment-machinery/maintenance.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "amc-contract-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Define agreements in Dynamics 365 Field Service",
+    "url": "https://learn.microsoft.com/en-us/training/modules/define-agreements/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "amc-contract-management"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Use preventive and reactive maintenance in Asset Management",
+    "url": "https://learn.microsoft.com/en-us/training/modules/preventive-reactive-asset-management/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "amc-contract-management"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Work with travel requisitions in Dynamics 365 Project Operations",
+    "url": "https://learn.microsoft.com/en-us/training/modules/work-travel-requisitions/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "travel-desk-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Work with Expense management in Dynamics 365 Project Operations",
+    "url": "https://learn.microsoft.com/en-us/training/paths/work-expense-management/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "travel-desk-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Manage travel requests in Business Central",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/business-central/expense-management/expense-management-travel-requisitions",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "travel-desk-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Fire safety risk assessment: offices and shops",
+    "url": "https://www.gov.uk/government/publications/fire-safety-risk-assessment-offices-and-shops/fire-safety-risk-assessment-offices-and-shops-accessible",
+    "provider": "GOV.UK",
+    "kind": "docs",
+    "skillIds": [
+      "office-statutory-licences"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Fire safety in the workplace: equipment, drills and training",
+    "url": "https://www.gov.uk/workplace-fire-safety-your-responsibilities/fire-safety-equipment-drills-and-training",
+    "provider": "GOV.UK",
+    "kind": "docs",
+    "skillIds": [
+      "office-statutory-licences"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Fire safety risk assessment: 5-step checklist",
+    "url": "https://www.gov.uk/government/publications/fire-safety-risk-assessment-5-step-checklist/fire-safety-risk-assessment-5-step-checklist-accessible",
+    "provider": "GOV.UK",
+    "kind": "docs",
+    "skillIds": [
+      "office-statutory-licences"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Set up inventory planning in Dynamics 365 Business Central",
+    "url": "https://learn.microsoft.com/en-us/training/modules/set-up-inventory-planning-dynamics-365-business-central/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "office-supplies-inventory"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Get started with inventory management in Business Central",
+    "url": "https://learn.microsoft.com/en-us/training/paths/get-started-inventory-management/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "office-supplies-inventory"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Count, adjust, and reclassify inventory",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/business-central/inventory-how-count-adjust-reclassify",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "office-supplies-inventory"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "The Government Workplace Design Guide",
+    "url": "https://www.gov.uk/government/publications/the-government-workplace-design-guide",
+    "provider": "Government Property Agency (GOV.UK)",
+    "kind": "docs",
+    "skillIds": [
+      "office-space-planning"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "How much space am I entitled to at work?",
+    "url": "https://www.hse.gov.uk/contact/faqs/roomspace.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "office-space-planning"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Workplace health, safety and welfare: a short guide for managers",
+    "url": "https://www.hse.gov.uk/pubns/indg244.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "office-space-planning"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Overview of Workforce Management",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/customer-service/use/workforce-management-overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "workforce-roster-shrinkage"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Optimize staffing with Workforce Management in Dynamics 365 Contact Center",
+    "url": "https://learn.microsoft.com/en-us/training/modules/optimize-staffing-workforce-management-contact-center/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "workforce-roster-shrinkage"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Create and manage capacity plans (shrinkage and staffing)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/contact-center/use/workforce-management-capacity-planning",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "workforce-roster-shrinkage"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Use quality and coaching skill",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/contact-center/use/use-quality-coach",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "call-quality-coaching"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Use evaluations for real-time conversations",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/contact-center/use/realtime-evaluation-plan",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "call-quality-coaching"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Three principles of a coaching approach",
+    "url": "https://www.open.edu/openlearn/money-business/leadership-management/three-principles-coaching-approach/content-section-0",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "call-quality-coaching",
+      "agent-performance-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Problems with an employee's performance",
+    "url": "https://www.acas.org.uk/performance-management/problems-with-an-employees-performance",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "agent-performance-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Performance management: an introduction",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/performance-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "agent-performance-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Performance reviews factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/appraisals-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "agent-performance-management"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Guide to Inspections of Quality Systems",
+    "url": "https://www.fda.gov/files/Guide-to-Inspections-of-Quality-Systems.pdf",
+    "provider": "US FDA",
+    "kind": "docs",
+    "skillIds": [
+      "non-conformance-capa",
+      "product-inspection-stages"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Certified Quality Inspector Body of Knowledge",
+    "url": "https://www.asq.org/cert/resource/pdf/certification/2025-CQI-Body-of-Knowledge.pdf",
+    "provider": "ASQ",
+    "kind": "docs",
+    "skillIds": [
+      "product-inspection-stages"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Engineering Metrology (IIT Kanpur)",
+    "url": "https://nptel.ac.in/courses/112104250",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "dimensional-inspection-instruments",
+      "cmm-inspection"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Metrology (IIT Madras)",
+    "url": "https://nptel.ac.in/courses/112106179",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "dimensional-inspection-instruments",
+      "cmm-inspection",
+      "engineering-drawing-reading"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Engineering Drawing (IIT Kanpur)",
+    "url": "https://nptel.ac.in/courses/112104172",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "engineering-drawing-reading"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Engineering Drawing and Computer Graphics (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/112105294",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "engineering-drawing-reading"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Lot acceptance sampling (Engineering Statistics Handbook 6.2)",
+    "url": "https://www.itl.nist.gov/div898/handbook/pmc/section2/pmc2.htm",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "sampling-plans-aql"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Sampling in quality control",
+    "url": "https://asq.org/quality-resources/sampling",
+    "provider": "ASQ",
+    "kind": "docs",
+    "skillIds": [
+      "sampling-plans-aql"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "ANSI/ASQ Z1.4 and Z1.9 sampling plan standards",
+    "url": "https://asq.org/quality-resources/z14-z19",
+    "provider": "ASQ",
+    "kind": "docs",
+    "skillIds": [
+      "sampling-plans-aql"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "CAPA within the Pharmaceutical Quality System",
+    "url": "https://www.fda.gov/media/85266/download",
+    "provider": "US FDA",
+    "kind": "docs",
+    "skillIds": [
+      "non-conformance-capa"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "ISO 9001 made simple: separating myths from facts",
+    "url": "https://www.iso.org/publication/PUB100368.html",
+    "provider": "ISO",
+    "kind": "docs",
+    "skillIds": [
+      "iso-9001-qms-documentation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "ISO 9000 family: selection and use",
+    "url": "https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100208.pdf",
+    "provider": "ISO",
+    "kind": "docs",
+    "skillIds": [
+      "iso-9001-qms-documentation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Recommended calibration interval",
+    "url": "https://www.nist.gov/calibrations/recommended-calibration-interval",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "gauge-calibration-control"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "GMP 13: Ensuring traceability",
+    "url": "https://www.nist.gov/system/files/documents/2019/06/21/gmp-13-ensuring-traceability-20190621.pdf",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "gauge-calibration-control"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "GMP 11: Assignment and adjustment of calibration intervals",
+    "url": "https://www.nist.gov/document/gmp-11-calibration-intervals-20190506pdf",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "gauge-calibration-control"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Assessing the accuracy of coordinate measuring machines (NBS Technical Note 1400)",
+    "url": "https://nvlpubs.nist.gov/nistpubs/Legacy/TN/nbstechnicalnote1400.pdf",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "cmm-inspection"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "General Rules for the Interpretation of the Harmonized System",
+    "url": "https://www.wcoomd.org/-/media/wco/public/global/pdf/topics/nomenclature/instruments-and-tools/hs-interpretation-general-rules/0001_2012e_gir.pdf?la=en",
+    "provider": "World Customs Organization",
+    "kind": "docs",
+    "skillIds": [
+      "customs-clearance-compliance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Foreign Trade Policy 2023, Chapter 5: EPCG Scheme",
+    "url": "https://content.dgft.gov.in/Website/dgftprod/9f6336a2-e03d-4dbb-86eb-305615f0db13/FTP2023_Chapter05.pdf",
+    "provider": "DGFT",
+    "kind": "docs",
+    "skillIds": [
+      "dgft-licences-export-obligation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Handbook of Procedures 2023, Chapter 5: EPCG Scheme",
+    "url": "https://content.dgft.gov.in/Website/dgftprod/97e20e4c-eae3-4548-8ab5-bb805cd377a7/HBP2023_Chapter05.pdf",
+    "provider": "DGFT",
+    "kind": "docs",
+    "skillIds": [
+      "dgft-licences-export-obligation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Handbook of Procedures, Chapter 4: Duty Exemption / Remission Schemes (Advance Authorisation)",
+    "url": "https://content.dgft.gov.in/Website/HBP_07_2026_Chapter_04.pdf",
+    "provider": "DGFT",
+    "kind": "docs",
+    "skillIds": [
+      "dgft-licences-export-obligation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "FAQs on Advance Authorisation",
+    "url": "https://content.dgft.gov.in/Website/dgftprod/218ff804-081d-425f-95a4-ff4b7c5e3575/DGFT%20FAQs%20-%20Advance%20Authorisation%20v1.0.pdf",
+    "provider": "DGFT",
+    "kind": "docs",
+    "skillIds": [
+      "dgft-licences-export-obligation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "RoDTEP user guide",
+    "url": "https://content.dgft.gov.in/Website/RoDTEP_User_Guide.pdf",
+    "provider": "DGFT",
+    "kind": "docs",
+    "skillIds": [
+      "export-incentive-claims"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Advisory for RoDTEP",
+    "url": "https://content.dgft.gov.in/Website/RoDTEP_Advisory.pdf",
+    "provider": "DGFT / CBIC",
+    "kind": "docs",
+    "skillIds": [
+      "export-incentive-claims"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "e-BRC user manual for exporters",
+    "url": "https://content.dgft.gov.in/Website/eBRC_User_Guide_for_Exporter-v3.0.pdf",
+    "provider": "DGFT",
+    "kind": "docs",
+    "skillIds": [
+      "export-realisation-ebrc"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Public eBRC FAQs (self-certification)",
+    "url": "https://content.dgft.gov.in/Website/DGFT-FAQs-on-Self-Certification-of-eBRC-dated-1.1.pdf",
+    "provider": "DGFT",
+    "kind": "docs",
+    "skillIds": [
+      "export-realisation-ebrc"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Due Diligence: Overview and Key Questions",
+    "url": "https://corporatefinanceinstitute.com/resources/valuation/due-diligence-overview/",
+    "provider": "Corporate Finance Institute",
+    "kind": "docs",
+    "skillIds": [
+      "deal-due-diligence-data-room"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Data Room: Physical and Virtual Deal Rooms",
+    "url": "https://corporatefinanceinstitute.com/resources/business-intelligence/data-room/",
+    "provider": "Corporate Finance Institute",
+    "kind": "docs",
+    "skillIds": [
+      "deal-due-diligence-data-room"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Due Diligence in M&A: An Investment Banker's Guide",
+    "url": "https://www.wallstreetprep.com/knowledge/investment-bankers-guide-ma-due-diligence/",
+    "provider": "Wall Street Prep",
+    "kind": "docs",
+    "skillIds": [
+      "deal-due-diligence-data-room"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Assortment Strategies: How They Work and Types",
+    "url": "https://corporatefinanceinstitute.com/resources/knowledge/strategy/assortment-strategies/",
+    "provider": "Corporate Finance Institute",
+    "kind": "docs",
+    "skillIds": [
+      "ecommerce-assortment-planning"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Product items, product lines and product mixes (Principles of Marketing 9.2)",
+    "url": "https://openstax.org/books/principles-marketing/pages/9-2-product-items-product-lines-and-product-mixes",
+    "provider": "OpenStax",
+    "kind": "docs",
+    "skillIds": [
+      "ecommerce-assortment-planning"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "How to List Your Products and Start Selling Online (Learning Hub)",
+    "url": "https://supplier.meesho.com/learning-hub/categories/how-to-start-selling",
+    "provider": "Meesho Supplier Learning Hub",
+    "kind": "docs",
+    "skillIds": [
+      "seller-brand-onboarding"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Getting Branded Products Approved to Sell Online",
+    "url": "https://supplier.meesho.com/learning-hub/lessons/how-to-register-your-brand-on-meesho",
+    "provider": "Meesho Supplier Learning Hub",
+    "kind": "docs",
+    "skillIds": [
+      "seller-brand-onboarding"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "How to Read a Vernier (Caliper)",
+    "url": "https://math.libretexts.org/Courses/Barton_Community_College/Book%3A_Technical_Mathematics_(Turner)/05%3A_Measurements/5.05%3A_How_to_Read_a_Vernier_(Caliper)",
+    "provider": "LibreTexts",
+    "kind": "docs",
+    "skillIds": [
+      "dimensional-inspection-instruments"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Steps in the Personal Selling Process (Principles of Marketing 15.3)",
+    "url": "https://openstax.org/books/principles-marketing/pages/15-3-steps-in-the-personal-selling-process",
+    "provider": "OpenStax",
+    "kind": "docs",
+    "skillIds": [
+      "property-enquiry-follow-up",
+      "property-site-visits"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Secondary Market Research",
+    "url": "https://open.lib.umn.edu/mdih/chapter/secondary-market-research/",
+    "provider": "University of Minnesota Libraries (open textbook)",
+    "kind": "docs",
+    "skillIds": [
+      "secondary-desk-research"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "FAQs on SEBI (Issue of Capital and Disclosure Requirements) Regulations",
+    "url": "https://www.sebi.gov.in/sebi_data/faqfiles/may-2025/1747290561386.pdf",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-icdr-regulations"
+    ],
+    "minutes": 45,
     "free": true
   }
 ]

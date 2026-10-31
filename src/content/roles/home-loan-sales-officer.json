@@ -1,0 +1,111 @@
+{
+  "slug": "home-loan-sales-officer",
+  "title": "Home Loan Sales Officer",
+  "summary": "A home loan sales officer brings in home loan and loan against property (LAP) customers for a bank or housing finance company. They work in the branch sales team, sourcing through DSAs (agents), builders and direct visits, and follow each file until the loan is disbursed.",
+  "dailyDuties": [
+    "Visit DSAs, connectors and builder sites for new leads",
+    "Meet customers and explain loan options and eligibility",
+    "Collect KYC, income and property documents",
+    "Log complete files into the loan system",
+    "Follow up with credit and operations on sanction and disbursement",
+    "Offer home loan insurance with each loan",
+    "Report daily logins and disbursements to the sales manager"
+  ],
+  "typicalTitles": [
+    "Sales Officer - Home Loans",
+    "Home Loan Sales Executive",
+    "Relationship Officer - Home Loans",
+    "Sales Officer - Affordable Housing Finance",
+    "Mortgage Sales Officer",
+    "Sales Officer - Loan Against Property",
+    "Home Loan Counsellor"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "mortgage-channel-sourcing",
+      "importance": "required",
+      "expectation": "Source home loan and LAP files through DSAs, connectors and builder tie-ups",
+      "postingShare": null
+    },
+    {
+      "skillId": "home-loan-lap-products",
+      "importance": "required",
+      "expectation": "Explain home loan, loan against property and balance-transfer products and PMAY rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "loan-eligibility-assessment",
+      "importance": "required",
+      "expectation": "Work out a customer's eligibility from income, obligations (FOIR) and property value before login",
+      "postingShare": null
+    },
+    {
+      "skillId": "loan-file-documentation",
+      "importance": "required",
+      "expectation": "Collect KYC, income and property documents and prepare a complete login file",
+      "postingShare": null
+    },
+    {
+      "skillId": "kyc-verification",
+      "importance": "required",
+      "expectation": "Verify customer KYC documents against lender policy",
+      "postingShare": null
+    },
+    {
+      "skillId": "login-to-disbursement-tracking",
+      "importance": "required",
+      "expectation": "Track each file from login through sanction to disbursement with credit and operations",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-product-distribution",
+      "importance": "required",
+      "expectation": "Cross-sell home loan insurance and other third-party products with each loan",
+      "postingShare": null
+    },
+    {
+      "skillId": "field-sales-meetings",
+      "importance": "required",
+      "expectation": "Meet customers, builders and DSAs in the field every day",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain loan terms simply to salaried and self-employed customers",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-bureau-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Read CIBIL reports to spot problems before a file is logged",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Update leads and file status in the lender's sales CRM or LOS",
+      "postingShare": null
+    },
+    {
+      "skillId": "b2b-prospecting",
+      "importance": "nice_to_have",
+      "expectation": "Cold-call and visit new builders and connectors to build the channel",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,68 @@
+{
+  "id": "market-research-analyst-mid",
+  "roleSlug": "market-research-analyst",
+  "persona": "mid",
+  "resumeText": "Kavya Reddy | Hyderabad | kavya.reddy@example.com\n\nEXPERIENCE\nResearch Executive, Charminar Insights Pvt Ltd, Hyderabad (2022 - present)\n- Designed questionnaires for brand tracking and concept testing studies for FMCG and auto clients.\n- Briefed field teams and monitored quotas and back-checks across six cities.\n- Analysed survey data in SPSS, running t-tests and chi-square tests on key measures.\n- Wrote tabulation specs and checked banner tables from the data processing team.\n- Wrote topline reports and client debrief decks with key findings and recommendations.\n- Cleaned raw survey data and built charts in Excel for client decks.\n- Presented findings to client brand teams in debrief meetings.\n\nResearch Trainee, Deccan Field Research, Hyderabad (2021 - 2022)\n- Supported CAPI fieldwork in Telangana towns and checked completed interviews.\n\nEDUCATION\nMA Economics, University of Hyderabad, 2021\n\nSKILLS\nFGD moderation, Questionnaire design, PowerPoint\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "survey-research",
+        "quote": "Designed questionnaires for brand tracking and concept testing studies"
+      },
+      {
+        "skillId": "survey-fieldwork-management",
+        "quote": "Briefed field teams and monitored quotas and back-checks across six cities"
+      },
+      {
+        "skillId": "spss-statistics",
+        "quote": "Analysed survey data in SPSS"
+      },
+      {
+        "skillId": "statistics",
+        "quote": "running t-tests and chi-square tests on key measures"
+      },
+      {
+        "skillId": "survey-data-tabulation",
+        "quote": "Wrote tabulation specs and checked banner tables"
+      },
+      {
+        "skillId": "market-research-reporting",
+        "quote": "Wrote topline reports and client debrief decks"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Cleaned raw survey data and built charts in Excel"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented findings to client brand teams in debrief meetings"
+      },
+      {
+        "skillId": "consumer-insights",
+        "quote": "brand tracking and concept testing studies"
+      },
+      {
+        "skillId": "qualitative-fgd-moderation",
+        "quote": "FGD moderation, Questionnaire design, PowerPoint"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "qualitative-fgd-moderation",
+        "status": "weak"
+      },
+      {
+        "skillId": "secondary-desk-research",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sql",
+      "power-bi",
+      "python",
+      "tableau"
+    ]
+  },
+  "reviewedBy": null
+}

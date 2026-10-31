@@ -1,0 +1,67 @@
+{
+  "id": "customer-service-team-leader-from-senior-agent",
+  "roleSlug": "customer-service-team-leader",
+  "persona": "Senior customer care agent and acting team leader in an inbound voice process",
+  "resumeText": "Rahul Verma | Noida | rahul.verma@example.com\n\nEXPERIENCE\nSenior Customer Care Associate and Acting Team Leader, Brightline Contact Solutions, Noida (2021 - present)\n- Led a team of 14 agents in the domestic voice process for a telecom client during the team leader's absence.\n- Tracked AHT, CSAT and first call resolution for the team every day and shared hourly updates.\n- Conducted call monitoring and one-on-one coaching sessions with new agents on soft skills.\n- Took escalation handling for irate customers that agents could not close on the first call.\n- Prepared the daily team MIS in Excel with login hours and call volumes for the operations manager.\n- Ran morning huddles on process updates and briefed the team on daily targets.\n\nCustomer Care Associate, Brightline Contact Solutions, Noida (2019 - 2021)\n- Answered 80 to 100 inbound calls a day on billing and plan queries in Salesforce Service Cloud.\n\nSKILLS\nRoster adherence, Agent scorecards, Salesforce\n\nEDUCATION\nB.Com, Chaudhary Charan Singh University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "people-management",
+        "quote": "Led a team of 14 agents"
+      },
+      {
+        "skillId": "omnichannel-support",
+        "quote": "in the domestic voice process for a telecom client"
+      },
+      {
+        "skillId": "contact-centre-metrics",
+        "quote": "Tracked AHT, CSAT and first call resolution for the team"
+      },
+      {
+        "skillId": "call-quality-coaching",
+        "quote": "Conducted call monitoring and one-on-one coaching sessions"
+      },
+      {
+        "skillId": "escalation-handling",
+        "quote": "Took escalation handling for irate customers"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Prepared the daily team MIS in Excel"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Ran morning huddles on process updates and briefed the team"
+      },
+      {
+        "skillId": "support-ticketing-tools",
+        "quote": "billing and plan queries in Salesforce Service Cloud"
+      },
+      {
+        "skillId": "workforce-roster-shrinkage",
+        "quote": "Roster adherence, Agent scorecards, Salesforce"
+      },
+      {
+        "skillId": "agent-performance-management",
+        "quote": "Roster adherence, Agent scorecards, Salesforce"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "workforce-roster-shrinkage",
+        "status": "weak"
+      },
+      {
+        "skillId": "agent-performance-management",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "root-cause-analysis-tools",
+      "employee-engagement",
+      "training-delivery-facilitation"
+    ]
+  },
+  "reviewedBy": null
+}
