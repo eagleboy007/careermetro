@@ -1,0 +1,47 @@
+{
+  "id": "sap-abap-developer-fresher-campus",
+  "roleSlug": "sap-abap-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Pooja Nair | Bengaluru | pooja.nair@example.com\n\nEDUCATION\nB.E. Computer Science and Engineering, Dayananda Sagar College of Engineering, Bengaluru, 2026 | CGPA 7.8/10\n\nINTERNSHIPS\nSAP ABAP Trainee Intern, Malleswaram Consulting Services Pvt Ltd, Bengaluru | Jan 2026 - Apr 2026 (12 weeks)\n- Built an ALV report in ABAP showing open purchase orders by vendor from a functional spec.\n- Wrote Open SQL SELECT statements with joins on EKKO and EKPO tables.\n- Changed a Smartform for the delivery challan to add the GST number and a new logo.\n- Fixed small defects raised by the testing team in two existing ABAP reports.\n\nSoftware Intern, Jayanagar Infotech, Bengaluru | June 2025 - July 2025 (6 weeks)\n- Wrote test cases and tested screens of an HR web application.\n\nPROJECTS\n- Training capstone: Built a module pool program in ABAP for employee data entry with input checks.\n- Student Records System: Java and MySQL app for the DBMS course.\n\nCOURSEWORK AND CERTIFICATIONS\n- SAP ABAP on HANA training (internal, 8 weeks), 2026\n- Coursework: DBMS, Software Engineering, Object Oriented Programming\n\nSKILLS\nSAP ABAP, ALV reports, Smartforms, BAPI, Open SQL, SE38, SE11, Java, MySQL\n\nACTIVITIES\n- Organised a coding contest for 150 participants at the college tech fest.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "sap-abap",
+        "quote": "Built an ALV report in ABAP showing open purchase orders"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote Open SQL SELECT statements with joins"
+      },
+      {
+        "skillId": "sap-forms",
+        "quote": "Changed a Smartform for the delivery challan"
+      },
+      {
+        "skillId": "sap-interfaces",
+        "quote": "SAP ABAP, ALV reports, Smartforms, BAPI, Open SQL, SE38, SE11, Java, MySQL"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-interfaces",
+        "status": "weak"
+      },
+      {
+        "skillId": "sap-abap-hana",
+        "status": "missing"
+      },
+      {
+        "skillId": "query-optimization",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-fiori-ui5",
+      "javascript",
+      "agile-scrum"
+    ]
+  },
+  "reviewedBy": null
+}

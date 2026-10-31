@@ -1,0 +1,60 @@
+{
+  "id": "computer-vision-engineer-fresher-campus",
+  "roleSlug": "computer-vision-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Ananya Reddy | Visakhapatnam, Andhra Pradesh | ananya.reddy.cv@example.com\n\nEDUCATION\nB.Tech, Computer Science and Engineering (AI and ML), Gayatri Vidya Institute of Engineering, Visakhapatnam (2022 - 2026) | CGPA 8.9/10\n\nINTERNSHIP\nComputer Vision Intern, Vizag Robotics Labs, Visakhapatnam (May 2025 - Jul 2025, 10 weeks)\n- Trained a YOLOv8 model in PyTorch to detect helmets on construction site CCTV frames.\n- Wrote Python scripts with OpenCV to extract frames from videos and resize them for labelling.\n- Measured mAP, precision and recall on a held-out test set of 1,200 images and reported the results weekly.\n\nPROJECTS\n- Leaf disease classifier (final-year project): Fine-tuned a ResNet-50 convolutional neural network to classify 10 tomato leaf diseases with 94% test accuracy.\n- Lane detection (academic, Image Processing course): Implemented Canny edge detection and Hough transform lane detection on dashcam video as part of the Image Processing course.\n- Attendance by face recognition (personal): Built a face recognition attendance system for my class using face embeddings and a webcam.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Machine Learning, Deep Learning, Image Processing, Linear Algebra, Data Structures\n- Deep Learning Specialization (online)\n\nSKILLS\nPython, PyTorch, OpenCV, NumPy, YOLO, CNNs, Linux (Ubuntu), Git, Google Colab\n\nACTIVITIES\n- Paper presented at a national student conference on plant disease detection\n- Robotics club member\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "pytorch",
+        "quote": "Trained a YOLOv8 model in PyTorch to detect helmets"
+      },
+      {
+        "skillId": "computer-vision",
+        "quote": "detect helmets on construction site CCTV frames"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python scripts with OpenCV to extract frames from videos"
+      },
+      {
+        "skillId": "opencv",
+        "quote": "Wrote Python scripts with OpenCV to extract frames"
+      },
+      {
+        "skillId": "model-evaluation",
+        "quote": "Measured mAP, precision and recall on a held-out test set"
+      },
+      {
+        "skillId": "deep-learning",
+        "quote": "Fine-tuned a ResNet-50 convolutional neural network to classify 10 tomato leaf diseases"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Python, PyTorch, OpenCV, NumPy, YOLO, CNNs, Linux (Ubuntu), Git, Google Colab"
+      },
+      {
+        "skillId": "git",
+        "quote": "Python, PyTorch, OpenCV, NumPy, YOLO, CNNs, Linux (Ubuntu), Git, Google Colab"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "linux",
+        "status": "weak"
+      },
+      {
+        "skillId": "git",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "docker",
+      "model-serving",
+      "edge-model-optimization",
+      "cpp"
+    ]
+  },
+  "reviewedBy": null
+}

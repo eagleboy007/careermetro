@@ -1,0 +1,51 @@
+{
+  "id": "logistics-coordinator-fresher-campus",
+  "roleSlug": "logistics-coordinator",
+  "persona": "fresher-campus",
+  "resumeText": "Manpreet Kaur | Ludhiana | manpreet.kaur.scm@example.com | +91 98140 39xxx\n\nEDUCATION\nBBA (Logistics and Supply Chain Management), Lovely Professional University, Phagwara (2023 - 2026) | CGPA 8.0/10\nClass XII (Commerce), Sacred Heart Convent School, Ludhiana (2023) | 88%\n\nINTERNSHIPS\nLogistics Intern, Satluj Freight Movers, Ludhiana (May 2025 - July 2025, 10 weeks)\n- Planned the daily dispatch of 15 to 20 trucks to dealers in Punjab and Haryana.\n- Generated e-way bills on the GST e-way bill portal for outgoing consignments.\n- Followed up with transporters on vehicle placement and delivery times.\n- Coordinated loading slots with the warehouse supervisor to avoid truck waiting.\n- Maintained the dispatch tracker in Excel using VLOOKUP and filters.\n\nPROJECTS\nLast-Mile Delivery Study (final-year project, 2026)\n- Mapped delivery routes of a local courier and suggested two route changes.\n\nWarehouse Layout Study (semester project, 2025)\n- Visited a cold storage in Jalandhar and sketched its receiving and storage flow.\n\nCOURSEWORK\nLogistics Management, Export-Import Procedures, Warehouse Management, Business Statistics\n\nSKILLS\nExcel, e-way bill portal, export documentation basics (invoice, packing list), Punjabi, Hindi, English\n\nACTIVITIES\nLogistics head, LPU One World cultural fest (2025)\nNCC cadet, B certificate\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "shipment-dispatch-planning",
+        "quote": "Planned the daily dispatch of 15 to 20 trucks"
+      },
+      {
+        "skillId": "eway-bill-compliance",
+        "quote": "Generated e-way bills on the GST e-way bill portal"
+      },
+      {
+        "skillId": "transporter-3pl-management",
+        "quote": "Followed up with transporters on vehicle placement"
+      },
+      {
+        "skillId": "warehouse-coordination",
+        "quote": "Coordinated loading slots with the warehouse supervisor"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Maintained the dispatch tracker in Excel using VLOOKUP"
+      },
+      {
+        "skillId": "exim-documentation",
+        "quote": "Excel, e-way bill portal, export documentation basics (invoice, packing list), Punjabi, Hindi, English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "freight-billing-control",
+        "status": "missing"
+      },
+      {
+        "skillId": "exim-documentation",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "supply-chain-erp-reporting",
+      "logistics-analytics",
+      "gst-tds-compliance"
+    ]
+  },
+  "reviewedBy": null
+}

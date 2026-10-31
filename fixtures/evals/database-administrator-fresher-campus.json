@@ -1,0 +1,56 @@
+{
+  "id": "database-administrator-fresher-campus",
+  "roleSlug": "database-administrator",
+  "persona": "fresher-campus",
+  "resumeText": "Priya Sharma | Indore, Madhya Pradesh | priya.sharma.db@example.com\n\nEDUCATION\nB.Tech, Computer Science and Engineering, Shri Govindram Institute of Technology, Indore (2022 - 2026) | CGPA 8.0/10\n\nINTERNSHIP\nDatabase Intern, Malwa Software Services, Indore (May 2025 - Jul 2025, 10 weeks)\n- Wrote SQL queries in MySQL to generate monthly sales and stock reports for a distributor client.\n- Added indexes after reading EXPLAIN output and cut a slow report query from 14 seconds to 2 seconds.\n- Wrote a Bash script with mysqldump to take nightly backups and run it with cron.\n\nPROJECTS\n- MySQL replication lab (academic, Advanced DBMS course): Set up MySQL source-replica replication between two Ubuntu Linux virtual machines and tested failover by stopping the source.\n- Library management database (academic, DBMS course): Designed a normalised schema for books, members and loans and wrote stored procedures as part of the DBMS course.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: DBMS, Advanced DBMS, Operating Systems, Computer Networks\n- Oracle Database SQL fundamentals (online course)\n\nSKILLS\nSQL, MySQL, PostgreSQL basics, Linux, Bash, Database security, Python basics\n\nACTIVITIES\n- Volunteer, coding club teaching SQL to second-year students\n- College basketball team\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries in MySQL to generate monthly sales and stock reports"
+      },
+      {
+        "skillId": "query-optimization",
+        "quote": "Added indexes after reading EXPLAIN output and cut a slow report query"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Wrote a Bash script with mysqldump to take nightly backups"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "quote": "Set up MySQL source-replica replication between two Ubuntu Linux virtual machines"
+      },
+      {
+        "skillId": "linux",
+        "quote": "between two Ubuntu Linux virtual machines"
+      },
+      {
+        "skillId": "database-security",
+        "quote": "SQL, MySQL, PostgreSQL basics, Linux, Bash, Database security, Python basics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "database-security",
+        "status": "weak"
+      },
+      {
+        "skillId": "monitoring",
+        "status": "missing"
+      },
+      {
+        "skillId": "incident-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "oracle-database",
+      "cloud-databases",
+      "nosql",
+      "aws"
+    ]
+  },
+  "reviewedBy": null
+}

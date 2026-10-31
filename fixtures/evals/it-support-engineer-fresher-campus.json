@@ -1,0 +1,51 @@
+{
+  "id": "it-support-engineer-fresher-campus",
+  "roleSlug": "it-support-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Rahul Yadav | Lucknow | rahul.yadav@example.com | +91 94150 38624\n\nEDUCATION\nBCA, Amity University, Lucknow, 2023 - 2026, CGPA 7.8/10\n\nINTERNSHIPS\nIT Support Intern, Gomti Healthcare, Lucknow (June 2025 - August 2025, 8 weeks)\n- Installed and configured Windows 11, printers and antivirus on 30 office desktops.\n- Reset passwords and unlocked user accounts in Active Directory.\n- Troubleshot LAN cabling, IP settings and Wi-Fi drops on the hospital admin floor.\n- Logged and closed user tickets in Freshservice.\n\nPROJECTS\n- Set up a home lab with Windows Server 2019 in VirtualBox as a domain controller.\n- Assembled and repaired desktops for the college computer lab as a student volunteer.\n\nCOURSEWORK AND CERTIFICATIONS\nCompTIA A+ (Core 1 passed, 2025)\nComputer Networks, Operating Systems\n\nSKILLS\nWindows 10/11, Active Directory, Microsoft 365, Outlook, TCP/IP, LAN troubleshooting, Hardware repair\n\nACTIVITIES\nConducted a basic computer skills workshop for 25 non-teaching staff at college.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "desktop-support",
+        "quote": "Installed and configured Windows 11, printers and antivirus"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Reset passwords and unlocked user accounts in Active Directory"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Troubleshot LAN cabling, IP settings and Wi-Fi drops"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Logged and closed user tickets in Freshservice"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Conducted a basic computer skills workshop for 25 non-teaching staff"
+      },
+      {
+        "skillId": "m365-administration",
+        "quote": "Windows 10/11, Active Directory, Microsoft 365, Outlook, TCP/IP, LAN troubleshooting, Hardware repair"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "m365-administration",
+        "status": "weak"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "powershell-scripting",
+      "endpoint-management",
+      "endpoint-security"
+    ]
+  },
+  "reviewedBy": null
+}

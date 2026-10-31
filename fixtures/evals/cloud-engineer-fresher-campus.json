@@ -1,0 +1,60 @@
+{
+  "id": "cloud-engineer-fresher-campus",
+  "roleSlug": "cloud-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Mohammed Faizan | Hyderabad, Telangana | faizan.cloud@example.com\n\nEDUCATION\nB.Tech, Computer Science and Engineering, Muffakham Jah College of Engineering and Technology, Hyderabad (2022 - 2026) | CGPA 7.9/10\n\nINTERNSHIP\nCloud Support Intern, Deccan Hosting Solutions, Hyderabad (Jun 2025 - Aug 2025, 8 weeks)\n- Launched and maintained Ubuntu Linux EC2 instances on AWS for two client staging websites.\n- Wrote a Bash script to compress Nginx logs and copy them to an S3 bucket every night using cron.\n- Updated runbooks for restarting web servers after the senior engineer's walkthrough.\n\nPROJECTS\n- Three-tier web app on AWS (personal): Created a custom VPC with public and private subnets, a NAT gateway and route tables for a Flask app and MySQL database.\n- Containerised college event portal (academic, Cloud Computing course): Containerised the Node.js event portal with Docker and ran it on a single EC2 instance with Docker Compose.\n- Static portfolio site: Hosted my portfolio on S3 with CloudFront.\n\nCERTIFICATIONS AND COURSEWORK\n- AWS Certified Cloud Practitioner (2025)\n- Coursework: Computer Networks, Operating Systems, Cloud Computing, DBMS\n\nSKILLS\nAWS (EC2, S3, VPC, CloudWatch), Linux, Bash, Docker, Terraform (basics), Git, Python basics, Nginx\n\nACTIVITIES\n- AWS Cloud Club campus captain, hosted three hands-on workshops\n- Volunteer, college blood donation drive\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "aws",
+        "quote": "Launched and maintained Ubuntu Linux EC2 instances on AWS"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Launched and maintained Ubuntu Linux EC2 instances"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "Wrote a Bash script to compress Nginx logs and copy them to an S3 bucket"
+      },
+      {
+        "skillId": "cloud-networking",
+        "quote": "Created a custom VPC with public and private subnets, a NAT gateway and route tables"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Containerised the Node.js event portal with Docker"
+      },
+      {
+        "skillId": "terraform",
+        "quote": "AWS (EC2, S3, VPC, CloudWatch), Linux, Bash, Docker, Terraform (basics), Git, Python basics, Nginx"
+      },
+      {
+        "skillId": "monitoring",
+        "quote": "AWS (EC2, S3, VPC, CloudWatch), Linux, Bash, Docker, Terraform (basics), Git, Python basics, Nginx"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "terraform",
+        "status": "weak"
+      },
+      {
+        "skillId": "identity-access-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "monitoring",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "kubernetes",
+      "azure",
+      "ci-cd",
+      "cloud-cost"
+    ]
+  },
+  "reviewedBy": null
+}

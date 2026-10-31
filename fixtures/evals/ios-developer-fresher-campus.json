@@ -1,0 +1,44 @@
+{
+  "id": "ios-developer-fresher-campus",
+  "roleSlug": "ios-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Siddharth Rao | Chennai | siddharth.rao.ios@example.com | +91 98400 51xxx\n\nEDUCATION\nB.E. Computer Science, SSN College of Engineering, Chennai (2022 - 2026) | CGPA 8.3/10\nClass XII, DAV Boys Senior Secondary School, Chennai (2022) | 93%\n\nINTERNSHIPS\niOS Intern, Marina Mobile Studio, Chennai (May 2025 - July 2025, 10 weeks)\n- Built two screens of a food delivery app in Swift and UIKit.\n- Called the order-tracking REST API with URLSession and decoded JSON with Codable.\n- Moved view logic into view models to follow the team's MVVM structure.\n- Worked on feature branches in Git and opened pull requests for review.\n\nPROJECTS\nCampus Mess Menu (personal iOS app, 2025)\n- Built a SwiftUI app that shows the daily mess menu and lets students rate meals.\n- Stored ratings locally with Core Data.\n\nWeather Now (iOS project, 2024)\n- Built a SwiftUI weather app that reads the OpenWeather API.\n\nCOURSEWORK AND CERTIFICATIONS\nMobile Application Development, Object Oriented Programming, Computer Networks\nDevelop in Swift Fundamentals (Apple, online, 2024)\n\nSKILLS\nSwift, SwiftUI, UIKit, Xcode, Core Data, Git, TestFlight, Firebase (basic)\n\nACTIVITIES\nJoint secretary, SSN Coding Club (2024 - 2025)\nMentor for first-year students in the Swift study group\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "swift-ios",
+        "quote": "Built two screens of a food delivery app in Swift and UIKit"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Called the order-tracking REST API with URLSession"
+      },
+      {
+        "skillId": "mobile-architecture",
+        "quote": "Moved view logic into view models to follow the team's MVVM structure"
+      },
+      {
+        "skillId": "git",
+        "quote": "Worked on feature branches in Git"
+      },
+      {
+        "skillId": "mobile-release",
+        "quote": "Swift, SwiftUI, UIKit, Xcode, Core Data, Git, TestFlight, Firebase (basic)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "mobile-release",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "unit-testing",
+      "kotlin",
+      "react-native",
+      "flutter"
+    ]
+  },
+  "reviewedBy": null
+}

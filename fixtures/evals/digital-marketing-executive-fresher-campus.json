@@ -1,0 +1,60 @@
+{
+  "id": "digital-marketing-executive-fresher-campus",
+  "roleSlug": "digital-marketing-executive",
+  "persona": "fresher-campus",
+  "resumeText": "Kavya Menon | Mumbai, Maharashtra | kavya.menon.mktg@example.com\n\nEDUCATION\nBMS (Marketing), Juhu College of Commerce and Management, Mumbai (2023 - 2026) | CGPA 8.3/10\n\nINTERNSHIPS\nDigital Marketing Intern, Konkan Coffee Roasters, Mumbai (Apr 2025 - Jun 2025, 10 weeks)\n- Ran a Rs 8,000 Google Ads search campaign for the online store and tracked clicks and cost per click every day.\n- Planned and posted 36 Instagram posts and reels; followers grew from 2,100 to 3,400.\n- Wrote four blog posts on brewing methods for the website.\n\nContent Intern, Western Line Media, Mumbai (Dec 2024 - Jan 2025, 6 weeks)\n- Rewrote page titles and meta descriptions for 25 blog pages to target local search keywords.\n\nPROJECTS\n- College fest social media (Tarang, the annual college fest): Managed the fest Instagram and LinkedIn pages and coordinated a team of six volunteers for posts and stories.\n- Marketing research project: Surveyed 120 students on food delivery app loyalty and presented findings to the faculty panel.\n\nCERTIFICATIONS AND COURSEWORK\n- Google Ads Search certification; HubSpot Content Marketing certification\n- Coursework: Consumer Behaviour, Digital Marketing, Marketing Research, Advertising\n\nSKILLS\nGoogle Ads, Meta Ads, Google Analytics (GA4), SEO, Instagram, Canva, Content writing, MS Excel\n\nACTIVITIES\n- Head of Publicity, college Marketing Club\n- Anchor for the college annual day\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "sem-google-ads",
+        "quote": "Ran a Rs 8,000 Google Ads search campaign for the online store"
+      },
+      {
+        "skillId": "social-media-marketing",
+        "quote": "Planned and posted 36 Instagram posts and reels"
+      },
+      {
+        "skillId": "content-marketing",
+        "quote": "Wrote four blog posts on brewing methods for the website"
+      },
+      {
+        "skillId": "seo",
+        "quote": "Rewrote page titles and meta descriptions for 25 blog pages to target local search keywords"
+      },
+      {
+        "skillId": "communication",
+        "quote": "presented findings to the faculty panel"
+      },
+      {
+        "skillId": "performance-marketing",
+        "quote": "Google Ads, Meta Ads, Google Analytics (GA4), SEO, Instagram, Canva, Content writing, MS Excel"
+      },
+      {
+        "skillId": "web-analytics",
+        "quote": "Google Ads, Meta Ads, Google Analytics (GA4), SEO, Instagram, Canva, Content writing, MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "performance-marketing",
+        "status": "weak"
+      },
+      {
+        "skillId": "web-analytics",
+        "status": "weak"
+      },
+      {
+        "skillId": "ab-testing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "email-marketing",
+      "crm-tools",
+      "sql",
+      "influencer-creator-marketing"
+    ]
+  },
+  "reviewedBy": null
+}

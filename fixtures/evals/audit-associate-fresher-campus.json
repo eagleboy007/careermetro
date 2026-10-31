@@ -1,0 +1,51 @@
+{
+  "id": "audit-associate-fresher-campus",
+  "roleSlug": "audit-associate",
+  "persona": "fresher-campus",
+  "resumeText": "Rohan Agarwal | Kolkata | rohan.agarwal@example.com | +91 90073 22xxx\n\nEDUCATION\nB.Com (Hons) Accounting and Finance, St. Xavier's College, Kolkata (2023 - 2026) | CGPA 8.1/10\nCA Intermediate, Group I cleared (May 2025)\nClass XII (Commerce), Don Bosco School, Kolkata (2023) | 92%\n\nINTERNSHIPS\nAudit Intern, Banerjee Mitra & Associates, Chartered Accountants, Kolkata (June 2025 - August 2025, 8 weeks)\n- Assisted in the statutory audit of two mid-sized manufacturing companies under the audit senior.\n- Vouched purchase and sales invoices against the ledger and noted exceptions.\n- Prepared working papers and lead schedules for fixed assets and trade payables.\n- Built Excel pivot tables to compare monthly expenses with the previous year.\n\nAccounts Intern, Hooghly Traders, Howrah (December 2024 - January 2025, 6 weeks)\n- Passed journal entries and prepared the trial balance for December.\n\nPROJECTS\nRatio Analysis of Two FMCG Companies (semester project, 2025)\n- Read the annual reports of two listed FMCG companies and summarised their revenue growth.\n\nSurvey on GST Awareness among Small Retailers (group project, 2024)\n- Interviewed 40 shop owners in Burrabazar about how they file GST returns.\n\nCOURSEWORK\nFinancial Accounting, Corporate Accounting, Auditing and Assurance, Income Tax Law, Indirect Tax (GST)\n\nSKILLS\nExcel (pivot tables, VLOOKUP), Tally ERP 9 (basic), GST and TDS basics, MS Word, PowerPoint\n\nACTIVITIES\nPresented our team's case at the inter-college commerce fest \"Arthashastra\" and won second place.\nMember, college Rotaract Club\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "statutory-audit-execution",
+        "quote": "Assisted in the statutory audit of two mid-sized manufacturing companies"
+      },
+      {
+        "skillId": "audit-documentation",
+        "quote": "Prepared working papers and lead schedules for fixed assets"
+      },
+      {
+        "skillId": "financial-accounting",
+        "quote": "Passed journal entries and prepared the trial balance"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built Excel pivot tables to compare monthly expenses"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented our team's case at the inter-college commerce fest"
+      },
+      {
+        "skillId": "gst-tds-compliance",
+        "quote": "Excel (pivot tables, VLOOKUP), Tally ERP 9 (basic), GST and TDS basics, MS Word, PowerPoint"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "internal-controls-testing",
+        "status": "missing"
+      },
+      {
+        "skillId": "gst-tds-compliance",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "audit-software",
+      "account-reconciliations",
+      "stakeholder-management"
+    ]
+  },
+  "reviewedBy": null
+}

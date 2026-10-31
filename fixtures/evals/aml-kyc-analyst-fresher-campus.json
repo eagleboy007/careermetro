@@ -1,0 +1,51 @@
+{
+  "id": "aml-kyc-analyst-fresher-campus",
+  "roleSlug": "aml-kyc-analyst",
+  "persona": "fresher-campus",
+  "resumeText": "Sneha Kulkarni | Mumbai | sneha.kulkarni@example.com | +91 98200 00000\n\nEDUCATION\nB.Com (Banking and Insurance), Ramnarain Ruia Autonomous College, University of Mumbai, 2026 | CGPA 8.4/10\nHSC (Commerce), 2023 | 86%\n\nINTERNSHIPS\nKYC Operations Intern, Sahyadri Shared Services Pvt Ltd (bank back office), Navi Mumbai | May 2025 - July 2025 (10 weeks)\n- Verified PAN, Aadhaar and address proofs for 400 savings account applications against the bank checklist.\n- Screened new customer names against sanctions and PEP lists in the screening tool and flagged 6 possible matches to the team lead.\n- Maintained a daily Excel tracker of pending KYC files and their ageing for the operations manager.\n- Sent back incomplete applications to branches with a short note on the missing documents.\n\nSummer Intern, Konkan Urban Co-operative Bank, Thane | June 2024 - July 2024 (6 weeks)\n- Helped branch staff with re-KYC of 120 old accounts and updated customer details in the core banking system.\n\nPROJECTS\n- Final-year project: Wrote a 40-page report on PMLA 2002 and the RBI KYC Master Direction, comparing customer due diligence rules for low and high risk customers.\n- Case study for the Banking Law course: Studied how a 2023 mule-account fraud ring moved money through student accounts and listed the red flags a bank could have caught.\n\nCERTIFICATIONS AND COURSEWORK\n- NISM-style Anti Money Laundering basics (online, IIBF short course), 2025\n- Coursework: Banking Law and Practice, Financial Accounting, Risk Management in Banks\n\nSKILLS\nKYC documentation, Sanctions and PEP screening, Transaction monitoring (basics), MS Excel (VLOOKUP, pivot tables), MS Word, English, Hindi, Marathi\n\nACTIVITIES\n- Presented the PMLA project findings to 60 students and faculty at the department research day.\n- Treasurer, Commerce Students' Association, 2024-25.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "kyc-due-diligence",
+        "quote": "Verified PAN, Aadhaar and address proofs for 400 savings account applications"
+      },
+      {
+        "skillId": "sanctions-screening",
+        "quote": "Screened new customer names against sanctions and PEP lists"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Maintained a daily Excel tracker of pending KYC files"
+      },
+      {
+        "skillId": "aml-regulations",
+        "quote": "Wrote a 40-page report on PMLA 2002 and the RBI KYC Master Direction"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented the PMLA project findings to 60 students and faculty"
+      },
+      {
+        "skillId": "aml-transaction-monitoring",
+        "quote": "KYC documentation, Sanctions and PEP screening, Transaction monitoring (basics), MS Excel (VLOOKUP, pivot tables), MS Word, English, Hindi, Marathi"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "aml-transaction-monitoring",
+        "status": "weak"
+      },
+      {
+        "skillId": "str-regulatory-reporting",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sql",
+      "financial-modelling",
+      "credit-bureau-analysis"
+    ]
+  },
+  "reviewedBy": null
+}

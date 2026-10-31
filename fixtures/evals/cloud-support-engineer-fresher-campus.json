@@ -1,0 +1,63 @@
+{
+  "id": "cloud-support-engineer-fresher-campus",
+  "roleSlug": "cloud-support-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Priya Nair | Bengaluru | priya.nair@example.com | +91 99000 41267\n\nEDUCATION\nB.E. Information Science, BMS College of Engineering, Bengaluru, 2022 - 2026, CGPA 8.3/10\n\nINTERNSHIPS\nCloud Intern, Nimbus Stack Solutions, Bengaluru (May 2025 - July 2025, 8 weeks)\n- Launched and patched Amazon Linux EC2 instances for the internal test environment.\n- Created a VPC with public and private subnets, route tables and a NAT gateway.\n- Checked CloudWatch alarms each morning and reported failures to the senior engineer.\n\nPROJECTS\n- Static portfolio site hosted on Amazon S3 with CloudFront and a custom domain.\n- Configured VLANs, static routing and DHCP on Cisco Packet Tracer as part of the Computer Networks lab.\n- Set up an Apache web server on Ubuntu Linux and secured it with UFW firewall rules.\n\nCOURSEWORK AND CERTIFICATIONS\nAWS Certified Cloud Practitioner (2025)\nComputer Networks, Operating Systems, Cloud Computing\n\nSKILLS\nAWS (EC2, S3, VPC, IAM), Linux, TCP/IP, DNS, Bash, Python (basics), Git\n\nACTIVITIES\nRan an AWS basics workshop for 60 juniors at the college cloud club.\nMember, college basketball team.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "aws",
+        "quote": "Launched and patched Amazon Linux EC2 instances"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Set up an Apache web server on Ubuntu Linux"
+      },
+      {
+        "skillId": "cloud-networking",
+        "quote": "Created a VPC with public and private subnets"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Configured VLANs, static routing and DHCP on Cisco Packet Tracer"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Ran an AWS basics workshop for 60 juniors"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "AWS (EC2, S3, VPC, IAM), Linux, TCP/IP, DNS, Bash, Python (basics), Git"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "AWS (EC2, S3, VPC, IAM), Linux, TCP/IP, DNS, Bash, Python (basics), Git"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "identity-access-management",
+        "status": "weak"
+      },
+      {
+        "skillId": "itsm",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      },
+      {
+        "skillId": "scripting-bash",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "azure",
+      "windows-server",
+      "powershell-scripting"
+    ]
+  },
+  "reviewedBy": null
+}

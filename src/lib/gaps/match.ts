@@ -4,7 +4,7 @@ import { containsPhrase, normalizeForMatch } from "@/lib/resume/verify";
 import { gapStatus, skillGroups, type Profile, type RoleProfile } from "@/lib/schemas";
 
 /** Bump when the rules below change, so stored analyses say which rules produced them. */
-const RULES_VERSION = "matcher/v8";
+const RULES_VERSION = "matcher/v9";
 
 /** FNV-1a over the text, as 8 hex digits. Enough to tell two versions of the content apart; not for security. */
 export function contentHash(text: string): string {
@@ -234,6 +234,13 @@ export function isListLine(line: string): boolean {
   const parts = line.split(/[,|•·;]/).filter((p) => p.trim());
   if (parts.length >= 3 && parts.every((p) => tokens(p).length <= 3)) return !STRONG_ACTIONS.has(tokens(line)[0] ?? "");
   if (startsWithAction(line)) return false;
+  // A long skills line (five or more items) can hold a few four-word items and notes in brackets: "Tele-calling, MS
+  // Excel, Bucket-wise collections (0-30, 30+, 60+), RBI Fair Practices Code, CRM software, Hindi, English".
+  const items = line
+    .replace(/\([^()]*\)/g, " ")
+    .split(/[,|•·;]/)
+    .filter((p) => p.trim());
+  if (items.length >= 5 && items.every((p) => tokens(p).length <= 4)) return true;
   const { tokenCount, leftover } = readTerms(line);
   if (tokenCount <= 4 && leftover <= 1) return true;
   return parts.length >= 3 && leftover / Math.max(tokenCount, 1) < 0.25;

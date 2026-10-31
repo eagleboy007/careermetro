@@ -68,7 +68,7 @@
     },
     {
       "skillId": "domain-bfsi",
-      "importance": "required",
+      "importance": "nice_to_have",
       "expectation": "Apply RBI, SEBI and SOX expectations in financial services audits",
       "postingShare": null
     },

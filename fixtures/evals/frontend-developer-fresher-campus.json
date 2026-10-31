@@ -1,0 +1,56 @@
+{
+  "id": "frontend-developer-fresher-campus",
+  "roleSlug": "frontend-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Nikhil Menon | Kochi | nikhil.menon.dev@example.com | +91 94470 26xxx\n\nEDUCATION\nB.Tech Computer Science, Model Engineering College, Kochi (2022 - 2026) | CGPA 8.0/10\nClass XII, Bhavan's Vidya Mandir, Kochi (2022) | 91%\n\nINTERNSHIPS\nFrontend Intern, Backwater Labs, Kochi (June 2025 - August 2025, 10 weeks)\n- Built React components for the booking flow from Figma designs.\n- Fetched room availability from REST APIs and showed loading and error states.\n- Managed the cart and filters with Redux Toolkit.\n- Raised pull requests on GitHub and fixed review comments from senior developers.\n\nPROJECTS\nKerala Bus Timings (personal project, 2025)\n- Built a responsive site with HTML, CSS and Flexbox that works on small phones.\n- Wrote vanilla JavaScript to filter buses by route and departure time.\n\nExpense Tracker (React project, 2024)\n- Built a React app with useState and localStorage to track monthly spending.\n\nCOURSEWORK AND CERTIFICATIONS\nWeb Technologies, Data Structures, Software Engineering\nfreeCodeCamp Responsive Web Design (2024)\n\nSKILLS\nHTML, CSS, JavaScript, React, Redux Toolkit, TypeScript (learning), Tailwind CSS, Git, GitHub, Figma (basic)\n\nACTIVITIES\nWeb lead, IEEE student branch (2024 - 2025)\nHackathon finalist, Kochi FOSS Hack 2025\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "react",
+        "quote": "Built React components for the booking flow from Figma designs"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Fetched room availability from REST APIs"
+      },
+      {
+        "skillId": "state-management",
+        "quote": "Managed the cart and filters with Redux Toolkit"
+      },
+      {
+        "skillId": "git",
+        "quote": "Raised pull requests on GitHub and fixed review comments"
+      },
+      {
+        "skillId": "html-css",
+        "quote": "Built a responsive site with HTML, CSS and Flexbox"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Wrote vanilla JavaScript to filter buses by route"
+      },
+      {
+        "skillId": "typescript",
+        "quote": "HTML, CSS, JavaScript, React, Redux Toolkit, TypeScript (learning), Tailwind CSS, Git, GitHub, Figma (basic)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "typescript",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "graphql",
+      "nextjs",
+      "accessibility",
+      "playwright-cypress"
+    ]
+  },
+  "reviewedBy": null
+}

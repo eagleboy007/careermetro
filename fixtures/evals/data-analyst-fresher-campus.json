@@ -1,0 +1,52 @@
+{
+  "id": "data-analyst-fresher-campus",
+  "roleSlug": "data-analyst",
+  "persona": "fresher-campus",
+  "resumeText": "Karan Mehta | Ahmedabad | karan.mehta@example.com | +91 99250 66314\n\nEDUCATION\nB.Sc Statistics, St. Xavier's College, Ahmedabad, 2023 - 2026, CGPA 8.5/10\n\nINTERNSHIPS\nData Analyst Intern, Sabarmati Retail Analytics, Ahmedabad (May 2025 - July 2025, 8 weeks)\n- Wrote SQL queries in MySQL to pull monthly sales by store and category.\n- Cleaned 50,000 rows of point-of-sale data in Python with pandas, fixing duplicates and missing prices.\n- Built an Excel report with pivot tables and VLOOKUP for the regional sales manager.\n- Presented findings on slow-moving stock to the category team at the end of the internship.\n\nPROJECTS\n- IPL Analysis: built Matplotlib and Seaborn charts of batting strike rates across seasons.\n- Zomato Restaurant Dashboard: Power BI dashboard of ratings and cost by Ahmedabad locality.\n\nCOURSEWORK AND CERTIFICATIONS\nProbability, Statistical Inference, Regression Analysis, Sampling Techniques\nGoogle Data Analytics Professional Certificate (Coursera, 2025)\n\nSKILLS\nSQL, Python (pandas, NumPy), Excel, Power BI, Hypothesis testing, Matplotlib\n\nACTIVITIES\nTreasurer, college statistics association; quizzing club member.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries in MySQL to pull monthly sales"
+      },
+      {
+        "skillId": "python",
+        "quote": "Cleaned 50,000 rows of point-of-sale data in Python with pandas"
+      },
+      {
+        "skillId": "data-cleaning",
+        "quote": "fixing duplicates and missing prices"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built an Excel report with pivot tables and VLOOKUP"
+      },
+      {
+        "skillId": "data-visualization",
+        "quote": "built Matplotlib and Seaborn charts of batting strike rates"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented findings on slow-moving stock to the category team"
+      },
+      {
+        "skillId": "statistics",
+        "quote": "SQL, Python (pandas, NumPy), Excel, Power BI, Hypothesis testing, Matplotlib"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "statistics",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "tableau",
+      "dbt",
+      "ab-testing",
+      "cloud-data-warehouse"
+    ]
+  },
+  "reviewedBy": null
+}

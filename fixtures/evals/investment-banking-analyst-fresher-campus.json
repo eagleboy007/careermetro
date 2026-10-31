@@ -1,0 +1,63 @@
+{
+  "id": "investment-banking-analyst-fresher-campus",
+  "roleSlug": "investment-banking-analyst",
+  "persona": "fresher-campus",
+  "resumeText": "Arjun Mehta | Mumbai | arjun.mehta@example.com\n\nEDUCATION\nPGDM (Finance), Narsee Monjee Institute of Management Studies, Mumbai, 2026 | CGPA 3.4/4\nB.Com, H.R. College of Commerce and Economics, Mumbai, 2024 | 82%\nCFA Level I candidate (passed, Aug 2025)\n\nINTERNSHIPS\nSummer Analyst, Dalal Street Advisors Pvt Ltd (boutique investment bank), Mumbai | Apr 2025 - June 2025 (9 weeks)\n- Built a three-statement model and DCF for a listed cement company for a pitch to its promoters.\n- Built trading comparables for 8 listed peer companies using EV/EBITDA and P/E.\n- Prepared 10 slides of a pitch book on sector consolidation for the director.\n- Spread five years of annual report numbers for two target companies into the team's Excel template.\n\nFinance Intern, Kandivali Textiles Ltd, Mumbai | Dec 2024 - Jan 2025 (6 weeks)\n- Prepared monthly debtors ageing reports in Excel for the finance controller.\n\nPROJECTS\n- Equity research report: Valued a listed FMCG company with DCF and comparables for the Corporate Valuation course; target price within 8% of market.\n- LBO case: Built a simple LBO model for a hypothetical hospital chain in the Mergers and Acquisitions course.\n\nCERTIFICATIONS AND COURSEWORK\n- Financial Modelling and Valuation Analyst (FMVA) - in progress\n- Coursework: Corporate Finance, Mergers and Acquisitions, Financial Statement Analysis\n\nSKILLS\nExcel (financial modelling), PowerPoint, DCF, Comparables, IPO and QIP process (coursework), Capitaline, Bloomberg (basics)\n\nACTIVITIES\n- Presented a stock pitch on a mid-cap chemicals company to 80 students at the college finance club.\n- Head of research, Finance Club, 2025-26.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "financial-modelling",
+        "quote": "Built a three-statement model and DCF for a listed cement company"
+      },
+      {
+        "skillId": "equity-valuation",
+        "quote": "Built trading comparables for 8 listed peer companies"
+      },
+      {
+        "skillId": "pitch-book-preparation",
+        "quote": "Prepared 10 slides of a pitch book"
+      },
+      {
+        "skillId": "financial-statement-analysis",
+        "quote": "Spread five years of annual report numbers"
+      },
+      {
+        "skillId": "excel",
+        "quote": "into the team's Excel template"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented a stock pitch on a mid-cap chemicals company"
+      },
+      {
+        "skillId": "capital-markets-transactions",
+        "quote": "Excel (financial modelling), PowerPoint, DCF, Comparables, IPO and QIP process (coursework), Capitaline, Bloomberg (basics)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "capital-markets-transactions",
+        "status": "weak"
+      },
+      {
+        "skillId": "mna-deal-execution",
+        "status": "missing"
+      },
+      {
+        "skillId": "information-memorandum-drafting",
+        "status": "missing"
+      },
+      {
+        "skillId": "deal-due-diligence-data-room",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sebi-icdr-regulations",
+      "stakeholder-management",
+      "sql"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,51 @@
+{
+  "id": "tax-associate-fresher-campus",
+  "roleSlug": "tax-associate",
+  "persona": "fresher-campus",
+  "resumeText": "Divya Krishnan | Coimbatore | divya.krishnan@example.com | +91 94430 72618\n\nEDUCATION\nB.Com (Accounting and Finance), PSG College of Arts and Science, Coimbatore, 2023 - 2026, CGPA 8.4/10\nCA Intermediate, Group I cleared (May 2025)\n\nINTERNSHIPS\nTax Intern, Venkat & Associates, Chartered Accountants, Coimbatore (Apr 2025 - June 2025, 10 weeks)\n- Prepared and filed 35 ITR-1 and ITR-2 returns for salaried and small business clients.\n- Prepared monthly GSTR-3B working and GSTR-1 data for 6 textile trading clients.\n- Reconciled Form 26AS and AIS with client books before filing returns.\n- Vouched purchase invoices during the statutory audit of a spinning mill.\n\nPROJECTS\n- Comparison of the old and new income tax regimes for 50 salaried employees (college project).\n- GST impact study on small textile traders in Tiruppur.\n\nCOURSEWORK AND CERTIFICATIONS\nDirect Taxation, Indirect Taxation (GST), Auditing, Corporate Accounting\nTally Prime with GST certificate (2024)\n\nSKILLS\nIncome tax returns, GST returns, Tally Prime, MS Excel, TDS basics, Tamil, English\n\nACTIVITIES\nClass representative; member, college commerce association.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "income-tax-compliance",
+        "quote": "Prepared and filed 35 ITR-1 and ITR-2 returns"
+      },
+      {
+        "skillId": "gst-tds-compliance",
+        "quote": "Prepared monthly GSTR-3B working and GSTR-1 data"
+      },
+      {
+        "skillId": "account-reconciliations",
+        "quote": "Reconciled Form 26AS and AIS with client books"
+      },
+      {
+        "skillId": "statutory-audit-support",
+        "quote": "Vouched purchase invoices during the statutory audit"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Income tax returns, GST returns, Tally Prime, MS Excel, TDS basics, Tamil, English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "tax-assessments-litigation",
+        "status": "missing"
+      },
+      {
+        "skillId": "excel",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "transfer-pricing-documentation",
+      "sap-fi-configuration",
+      "stakeholder-management"
+    ]
+  },
+  "reviewedBy": null
+}

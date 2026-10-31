@@ -1,0 +1,47 @@
+{
+  "id": "game-developer-fresher-campus",
+  "roleSlug": "game-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Arjun Deshpande | Mumbai | arjun.deshpande@example.com | +91 98200 47130\n\nEDUCATION\nB.Sc Game Design and Development, MIT Institute of Design, Pune, 2023 - 2026, CGPA 8.0/10\n\nINTERNSHIPS\nGame Developer Intern, Pixel Masala Studios, Mumbai (May 2025 - July 2025, 10 weeks)\n- Built level mechanics and enemy AI in Unity for a casual runner game on Android.\n- Wrote C# scripts for player movement, collectibles and the scoring system.\n\nPROJECTS\n- Gully Cricket 3D: Unity game with ball physics; wrote vector maths for bowling trajectories and bounce angles.\n- Space Shooter: 2D Unity game made in a 48-hour Global Game Jam with a team of three.\n- Used Git and GitHub for version control with a 3-member team on the Gully Cricket project.\n\nCOURSEWORK AND CERTIFICATIONS\nGame Programming, Linear Algebra for Games, 3D Modelling Basics\nUnity Certified User: Programmer (2025)\n\nSKILLS\nUnity, C#, Blender, OOP, Git, Photoshop, C++ (basics)\n\nACTIVITIES\nOrganiser, college game jam club; esports team captain (Valorant).\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "unity-engine",
+        "quote": "Built level mechanics and enemy AI in Unity"
+      },
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Wrote C# scripts for player movement, collectibles and the scoring system"
+      },
+      {
+        "skillId": "game-math",
+        "quote": "wrote vector maths for bowling trajectories and bounce angles"
+      },
+      {
+        "skillId": "git",
+        "quote": "Used Git and GitHub for version control with a 3-member team"
+      },
+      {
+        "skillId": "oop",
+        "quote": "Unity, C#, Blender, OOP, Git, Photoshop, C++ (basics)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "oop",
+        "status": "weak"
+      },
+      {
+        "skillId": "performance-profiling",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "unreal-engine",
+      "game-networking",
+      "mobile-release"
+    ]
+  },
+  "reviewedBy": null
+}

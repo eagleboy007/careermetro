@@ -1,0 +1,67 @@
+{
+  "id": "robotics-engineer-fresher-campus",
+  "roleSlug": "robotics-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Omkar Joshi | Pune | omkar.joshi@example.com | github.com/omkar-robotics\n\nEDUCATION\nB.Tech Mechatronics Engineering, MIT World Peace University, Pune, 2026 | CGPA 8.2/10\n\nINTERNSHIPS\nRobotics Intern, Sinhagad Automation Pvt Ltd, Pune | Jan 2026 - Apr 2026 (12 weeks)\n- Wrote ROS 2 nodes in Python to read wheel encoder data and publish odometry for a warehouse robot.\n- Tested the robot's motion in Gazebo simulation before running it in the lab.\n- Set up Ubuntu 22.04 and ROS 2 Humble on the robot's onboard computer and fixed driver issues.\n\nDesign Intern, Chakan Precision Tools, Pune | June 2025 - July 2025 (6 weeks)\n- Made SolidWorks models of fixture parts for the shop floor.\n\nPROJECTS\n- Autonomous Campus Rover (final-year project): Built a map of the college corridor with slam_toolbox on a TurtleBot3 and localized the robot on it with AMCL.\n- Robotic arm: 4-DOF arm driven by servos and an Arduino, picking objects by colour using a webcam.\n- Line follower robot for the college robotics competition.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Robotics and Control, Kinematics of Machines, Microcontrollers, Machine Vision\n- ROS 2 for Beginners (Udemy), 2025\n\nSKILLS\nROS 2, Python, C++, Ubuntu Linux, Gazebo, Nav2 (basics), SolidWorks, Arduino, Git\n\nACTIVITIES\n- Team lead, college Robocon team, 2025.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "ros",
+        "quote": "Wrote ROS 2 nodes in Python to read wheel encoder data"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote ROS 2 nodes in Python"
+      },
+      {
+        "skillId": "robot-simulation",
+        "quote": "Tested the robot's motion in Gazebo simulation"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Set up Ubuntu 22.04 and ROS 2 Humble"
+      },
+      {
+        "skillId": "slam-localization",
+        "quote": "Built a map of the college corridor with slam_toolbox"
+      },
+      {
+        "skillId": "cpp",
+        "quote": "ROS 2, Python, C++, Ubuntu Linux, Gazebo, Nav2 (basics), SolidWorks, Arduino, Git"
+      },
+      {
+        "skillId": "robot-navigation-planning",
+        "quote": "ROS 2, Python, C++, Ubuntu Linux, Gazebo, Nav2 (basics), SolidWorks, Arduino, Git"
+      },
+      {
+        "skillId": "git",
+        "quote": "ROS 2, Python, C++, Ubuntu Linux, Gazebo, Nav2 (basics), SolidWorks, Arduino, Git"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cpp",
+        "status": "weak"
+      },
+      {
+        "skillId": "robot-navigation-planning",
+        "status": "weak"
+      },
+      {
+        "skillId": "git",
+        "status": "weak"
+      },
+      {
+        "skillId": "sensor-fusion",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "edge-model-optimization",
+      "docker",
+      "ci-cd"
+    ]
+  },
+  "reviewedBy": null
+}

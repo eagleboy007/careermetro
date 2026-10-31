@@ -1,0 +1,52 @@
+{
+  "id": "iot-engineer-fresher-campus",
+  "roleSlug": "iot-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Karthik Raman | Coimbatore, Tamil Nadu | karthik.raman.iot@example.com\n\nEDUCATION\nB.E., Electronics and Communication Engineering, Noyyal College of Technology, Coimbatore (2022 - 2026) | CGPA 8.0/10\n\nINTERNSHIP\nIoT Intern, Noyyal Smart Systems, Coimbatore (May 2025 - Jul 2025, 10 weeks)\n- Wrote Embedded C firmware for an ESP32 board that reads temperature and humidity sensors in a textile mill.\n- Published sensor readings over MQTT to a Mosquitto broker every 30 seconds.\n- Helped connect the devices to AWS IoT Core and checked incoming messages in the console.\n\nPROJECTS\n- Smart irrigation (final-year project): Built a LoRa-based soil moisture network with three field nodes and one gateway for a farm near Pollachi.\n- BLE attendance tag (academic, Wireless Communication course): Built a Bluetooth Low Energy beacon on an nRF52 board and logged nearby phones as part of the Wireless Communication course.\n- Home energy monitor (personal): Measured plug load current with an ACS712 sensor and Arduino and plotted it on a web page.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Microcontrollers and Embedded Systems, Wireless Communication, Computer Networks, Digital Electronics\n- NPTEL: Introduction to Internet of Things (Elite)\n\nSKILLS\nEmbedded C, Arduino, ESP32, MQTT, LoRa, BLE, AWS IoT Core, TCP/IP basics, Python basics, KiCad basics\n\nACTIVITIES\n- IEEE student branch, organised an IoT workshop\n- College robotics team, Robocon 2024\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "embedded-c",
+        "quote": "Wrote Embedded C firmware for an ESP32 board"
+      },
+      {
+        "skillId": "microcontrollers",
+        "quote": "Wrote Embedded C firmware for an ESP32 board that reads temperature and humidity sensors"
+      },
+      {
+        "skillId": "iot-protocols",
+        "quote": "Published sensor readings over MQTT to a Mosquitto broker"
+      },
+      {
+        "skillId": "iot-cloud-platforms",
+        "quote": "Helped connect the devices to AWS IoT Core"
+      },
+      {
+        "skillId": "wireless-connectivity",
+        "quote": "Built a LoRa-based soil moisture network with three field nodes"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Embedded C, Arduino, ESP32, MQTT, LoRa, BLE, AWS IoT Core, TCP/IP basics, Python basics, KiCad basics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "networking-basics",
+        "status": "weak"
+      },
+      {
+        "skillId": "iot-device-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "rtos",
+      "embedded-linux",
+      "docker",
+      "pcb-schematic-design"
+    ]
+  },
+  "reviewedBy": null
+}

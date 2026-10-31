@@ -1,0 +1,51 @@
+{
+  "id": "customer-support-executive-fresher-campus",
+  "roleSlug": "customer-support-executive",
+  "persona": "fresher-campus",
+  "resumeText": "Ayesha Khan | Hyderabad | ayesha.khan@example.com | +91 91000 58xxx\n\nEDUCATION\nBA (English Literature), Osmania University (St. Francis College for Women), Hyderabad (2023 - 2026) | CGPA 7.9/10\nClass XII, Sri Chaitanya Junior College, Hyderabad (2023) | 86%\n\nINTERNSHIPS\nCustomer Support Intern, ShopKart Online, Hyderabad (May 2025 - July 2025, 8 weeks)\n- Handled customer chats, emails and calls in English, Hindi and Telugu.\n- Resolved about 50 customer queries a day on order status, payments and delivery delays.\n- Updated and closed tickets in Freshdesk with the right category and priority.\n- Wrote clear case notes on each ticket so the next shift could pick it up.\n\nFront Desk Volunteer, Hope Eye Care Camp, Hyderabad (December 2024, 6 weeks of weekends)\n- Registered patients and answered their questions about appointment times.\n\nPROJECTS\nChatbot Script for College Admissions Desk (personal project, 2025)\n- Wrote 40 question-and-answer pairs for common admission queries.\n\nShort Film Subtitling (club project, 2024)\n- Translated and subtitled two short films from Telugu into English.\n\nCERTIFICATIONS\nCustomer Service Fundamentals (online course, 2025)\nFreshdesk Basics (Freshworks Academy, 2025)\n\nSKILLS\nFreshdesk, MS Excel, Google Sheets, CSAT and AHT basics, typing 45 wpm, English, Hindi, Telugu, Urdu\n\nACTIVITIES\nWon second prize in the inter-college debate at Osmania University, 2025.\nMember, college drama society\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "omnichannel-support",
+        "quote": "Handled customer chats, emails and calls in English, Hindi and Telugu"
+      },
+      {
+        "skillId": "customer-query-resolution",
+        "quote": "Resolved about 50 customer queries a day"
+      },
+      {
+        "skillId": "support-ticketing-tools",
+        "quote": "Updated and closed tickets in Freshdesk"
+      },
+      {
+        "skillId": "case-documentation",
+        "quote": "Wrote clear case notes on each ticket"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Won second prize in the inter-college debate"
+      },
+      {
+        "skillId": "contact-centre-metrics",
+        "quote": "Freshdesk, MS Excel, Google Sheets, CSAT and AHT basics, typing 45 wpm, English, Hindi, Telugu, Urdu"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "contact-centre-metrics",
+        "status": "weak"
+      },
+      {
+        "skillId": "escalation-handling",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "cross-selling-upselling",
+      "kyc-verification",
+      "order-returns-refunds"
+    ]
+  },
+  "reviewedBy": null
+}

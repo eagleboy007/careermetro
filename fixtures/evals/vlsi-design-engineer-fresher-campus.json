@@ -1,0 +1,51 @@
+{
+  "id": "vlsi-design-engineer-fresher-campus",
+  "roleSlug": "vlsi-design-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Sruthi Venkatesan | Bengaluru | sruthi.v@example.com\n\nEDUCATION\nB.Tech Electronics and Communication Engineering, PES University, Bengaluru, 2026 | CGPA 8.8/10\n\nINTERNSHIPS\nRTL Design Intern, Nandi Silicon Pvt Ltd, Bengaluru | Jan 2026 - May 2026 (12 weeks)\n- Wrote synthesizable Verilog RTL for a UART transmitter and receiver and debugged it in simulation.\n- Ran simulation and lint jobs for the block on the team's Linux servers.\n- Wrote Python scripts to parse simulation logs and summarize pass and fail counts.\n\nSummer Intern, Electronic City Semiconductor Training Centre, Bengaluru | June 2025 - July 2025 (8 weeks)\n- Completed a guided lab course on Verilog and digital design flow.\n\nPROJECTS\n- 32-bit RISC-V core: Single-cycle RV32I processor in Verilog, simulated with Icarus Verilog and GTKWave.\n- Traffic light controller: Designed a Moore FSM with flip-flops and verified its state transitions for the Digital Design course.\n- 4-bit ALU on FPGA board for the Digital Electronics lab.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Digital Design, CMOS VLSI Design, Computer Architecture, Static Timing Analysis (elective)\n- NPTEL: Hardware Modeling using Verilog (Elite + Silver), 2025\n\nSKILLS\nVerilog, SystemVerilog (basics), UVM (basics), Linux, Python, Tcl (basics), Xilinx Vivado, Icarus Verilog, Synopsys Design Compiler (training)\n\nACTIVITIES\n- Secretary, IEEE Circuits and Systems student chapter.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "verilog-rtl",
+        "quote": "Wrote synthesizable Verilog RTL for a UART transmitter"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Ran simulation and lint jobs for the block on the team's Linux servers"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python scripts to parse simulation logs"
+      },
+      {
+        "skillId": "digital-logic-design",
+        "quote": "Designed a Moore FSM with flip-flops"
+      },
+      {
+        "skillId": "systemverilog-uvm",
+        "quote": "Verilog, SystemVerilog (basics), UVM (basics), Linux, Python, Tcl (basics), Xilinx Vivado, Icarus Verilog, Synopsys Design Compiler (training)"
+      },
+      {
+        "skillId": "synthesis-timing",
+        "quote": "Verilog, SystemVerilog (basics), UVM (basics), Linux, Python, Tcl (basics), Xilinx Vivado, Icarus Verilog, Synopsys Design Compiler (training)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "systemverilog-uvm",
+        "status": "weak"
+      },
+      {
+        "skillId": "synthesis-timing",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "amba-protocols",
+      "rtl-lint-cdc",
+      "embedded-protocols"
+    ]
+  },
+  "reviewedBy": null
+}
