@@ -1,0 +1,60 @@
+{
+  "id": "it-program-manager-senior",
+  "roleSlug": "it-program-manager",
+  "persona": "senior",
+  "resumeText": "Meenakshi Raghavan | Chennai | meenakshi.r@example.com\n\nSUMMARY\nIT program manager with 15 years in banking technology, running multi-project modernisation programs for a large lender.\n\nEXPERIENCE\nSenior IT Program Manager, Kaveri Financial Technologies, Chennai (2020 - present)\n- Run a core banking modernisation program of nine projects with an integrated plan, RAID log and cross-project dependencies.\n- Set up the program steering committee and stage-gate reviews with the CIO and business sponsors.\n- Own the program budget and report budget vs actuals and forecasts to finance every month.\n- Wrote the business case and cost-benefit analysis for the payments platform replacement.\n- Manage three system integrators against statements of work and quarterly supplier performance reviews.\n- Align business heads, IT leaders and vendors on scope and release priorities.\n- Write monthly executive status reports and steering committee packs for the CIO.\n\nIT Project Manager, Adyar Systems, Chennai (2016 - 2020)\n- Managed project plans, scope and schedules for a loan origination rollout across 400 branches.\n- Ran change control and go-live readiness checks with the bank's operations team.\n\nBusiness Analyst, Adyar Systems, Chennai (2011 - 2016)\n- Wrote functional specifications for retail lending systems.\n\nSKILLS\nProgram management, Agile, MS Project, Excel, PowerPoint\n\nEDUCATION\nBTech Information Technology, Anna University, 2011\nMBA (part-time), 2015\n\nCERTIFICATIONS\nPMP (2017)\n",
+  "expected": {
+    "totalYearsExperience": 15,
+    "skills": [
+      {
+        "skillId": "program-management",
+        "quote": "Run a core banking modernisation program of nine projects"
+      },
+      {
+        "skillId": "it-portfolio-governance",
+        "quote": "Set up the program steering committee and stage-gate reviews"
+      },
+      {
+        "skillId": "spend-forecasting",
+        "quote": "Own the program budget and report budget vs actuals"
+      },
+      {
+        "skillId": "business-case",
+        "quote": "Wrote the business case and cost-benefit analysis for the payments platform replacement"
+      },
+      {
+        "skillId": "it-vendor-management",
+        "quote": "Manage three system integrators against statements of work"
+      },
+      {
+        "skillId": "it-project-management",
+        "quote": "Managed project plans, scope and schedules for a loan origination rollout"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Align business heads, IT leaders and vendors on scope and release priorities"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Write monthly executive status reports and steering committee packs"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Agile"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "agile-scrum",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "system-design",
+      "java",
+      "scaled-agile",
+      "cloud-migration"
+    ]
+  },
+  "reviewedBy": null
+}

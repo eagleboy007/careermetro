@@ -1,0 +1,151 @@
+{
+  "slug": "delivery-manager",
+  "title": "Delivery Manager",
+  "summary": "A delivery manager in an IT services company owns delivery for one or more client accounts: several project teams, the client relationship, and the account's revenue and margin. Project managers and technical leads report to them, and they report to the account or delivery head.",
+  "dailyDuties": [
+    "Review status, risks and dependencies across the account's project teams",
+    "Track revenue, billing and margin against the account plan",
+    "Plan staffing and fill open positions with the resourcing team",
+    "Handle client escalations and agree recovery plans",
+    "Run delivery reviews with client IT leaders",
+    "Prepare estimates and statements of work for renewals and new work",
+    "Coach project managers and technical leads"
+  ],
+  "typicalTitles": [
+    "Senior Delivery Manager",
+    "Account Delivery Manager",
+    "IT Delivery Manager",
+    "Delivery Lead Manager",
+    "Global Delivery Manager",
+    "Delivery Manager - IT Services",
+    "Client Delivery Manager"
+  ],
+  "experienceBand": {
+    "minYears": 10,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "delivery-pnl-management",
+      "importance": "required",
+      "expectation": "Own revenue, billing and margin for one or more client accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "program-management",
+      "importance": "required",
+      "expectation": "Run several project teams under one governance rhythm with RAID logs and status reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-project-management",
+      "importance": "required",
+      "expectation": "Hold project managers to scope, schedule and plan across the account",
+      "postingShare": null
+    },
+    {
+      "skillId": "workforce-planning",
+      "importance": "required",
+      "expectation": "Plan staffing, the team pyramid and fulfilment of open positions",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "required",
+      "expectation": "Handle client escalations and drive recovery plans to closure",
+      "postingShare": null
+    },
+    {
+      "skillId": "presales-solutioning",
+      "importance": "required",
+      "expectation": "Shape proposals, effort estimates and statements of work for renewals and new work",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Run delivery in agile or hybrid models across teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead project managers and technical leads, often teams of 50 or more",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Own the delivery relationship with client IT leaders and the account team",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present delivery reviews and status to client and internal leadership",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "nice_to_have",
+      "expectation": "Negotiate rates, change requests and contract terms with the client",
+      "postingShare": null
+    },
+    {
+      "skillId": "key-account-planning",
+      "importance": "nice_to_have",
+      "expectation": "Help grow the account with account plans and new opportunities",
+      "postingShare": null
+    },
+    {
+      "skillId": "service-level-management",
+      "importance": "nice_to_have",
+      "expectation": "Report SLAs on support and managed-services work",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "nice_to_have",
+      "expectation": "Run application support work on ITIL processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "scaled-agile",
+      "importance": "nice_to_have",
+      "expectation": "Deliver inside a SAFe release train",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know the client's banking or insurance domain",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "pmp",
+      "importance": "recommended",
+      "why": "Most-asked project credential for delivery managers in Indian IT services"
+    },
+    {
+      "certId": "prince2-foundation",
+      "importance": "optional",
+      "why": "Named as an alternative to PMP, common on UK and European accounts"
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Useful when the account includes application support or managed services"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

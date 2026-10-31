@@ -1,0 +1,56 @@
+{
+  "id": "qa-manager-senior",
+  "roleSlug": "qa-manager",
+  "persona": "senior",
+  "resumeText": "Arvind Menon | Bengaluru | arvind.menon@example.com\n\nSUMMARY\nQA manager with 13 years in software testing, from automation engineer to leading quality across four product lines.\n\nEXPERIENCE\nQA Manager, Vidyut Software Labs, Bengaluru (2020 - present)\n- Manage 3 test leads and 38 QA engineers across Bengaluru and Kochi, including hiring and appraisals.\n- Define the test strategy and test plans for four retail product lines.\n- Built the test automation roadmap and tracked automation ROI each quarter.\n- Publish defect leakage and release readiness metrics to engineering leadership every sprint.\n- Integrated regression suites into Jenkins pipelines for nightly runs.\n- Run daily defect triage in Jira with product and development leads.\n- Agree quality gates and go/no-go decisions with product and engineering heads.\n\nTest Lead, Nandi Retail Tech, Bengaluru (2016 - 2020)\n- Designed the Selenium WebDriver framework in Java for the web checkout.\n- Led a team of 8 testers on regression and system testing.\n\nTest Engineer, Nandi Retail Tech, Bengaluru (2013 - 2016)\n- Wrote and ran functional test cases for the store billing system.\n\nSKILLS\nSelenium, Java, TestNG, Jenkins, Jira, Postman, SQL\n\nEDUCATION\nBE Electronics and Communication, Visvesvaraya Technological University, 2013\n\nCERTIFICATIONS\nISTQB Foundation Level (2014)\n",
+  "expected": {
+    "totalYearsExperience": 13,
+    "skills": [
+      {
+        "skillId": "people-management",
+        "quote": "Manage 3 test leads and 38 QA engineers"
+      },
+      {
+        "skillId": "test-planning",
+        "quote": "Define the test strategy and test plans for four retail product lines"
+      },
+      {
+        "skillId": "test-automation-strategy",
+        "quote": "Built the test automation roadmap and tracked automation ROI"
+      },
+      {
+        "skillId": "quality-metrics-reporting",
+        "quote": "Publish defect leakage and release readiness metrics"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Integrated regression suites into Jenkins pipelines for nightly runs"
+      },
+      {
+        "skillId": "bug-tracking",
+        "quote": "Run daily defect triage in Jira"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Agree quality gates and go/no-go decisions with product and engineering heads"
+      },
+      {
+        "skillId": "selenium",
+        "quote": "Designed the Selenium WebDriver framework in Java"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "spend-forecasting",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "performance-testing",
+      "uat",
+      "it-vendor-management",
+      "playwright-cypress"
+    ]
+  },
+  "reviewedBy": null
+}

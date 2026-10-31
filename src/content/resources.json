@@ -2208,7 +2208,8 @@
     "provider": "Martin Fowler",
     "kind": "docs",
     "skillIds": [
-      "test-planning"
+      "test-planning",
+      "test-automation-strategy"
     ],
     "minutes": 60,
     "free": true
@@ -2254,7 +2255,8 @@
     "skillIds": [
       "uat",
       "manual-testing",
-      "test-planning"
+      "test-planning",
+      "quality-metrics-reporting"
     ],
     "minutes": 600,
     "free": true
@@ -13980,7 +13982,8 @@
     "provider": "Greenhouse",
     "kind": "docs",
     "skillIds": [
-      "applicant-tracking-systems"
+      "applicant-tracking-systems",
+      "engineering-hiring"
     ],
     "minutes": 20,
     "free": true
@@ -14730,7 +14733,8 @@
     "provider": "US Office of Personnel Management",
     "kind": "docs",
     "skillIds": [
-      "interview-coordination"
+      "interview-coordination",
+      "engineering-hiring"
     ],
     "minutes": 30,
     "free": true
@@ -24185,6 +24189,261 @@
       "bar-bending-schedule"
     ],
     "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Use structured interviewing (re:Work hiring guide)",
+    "url": "https://rework.withgoogle.com/en/guides/hiring-use-structured-interviewing",
+    "provider": "Google re:Work",
+    "kind": "docs",
+    "skillIds": [
+      "engineering-hiring"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Conducting a GitLab interview",
+    "url": "https://handbook.gitlab.com/handbook/hiring/conducting-a-gitlab-interview/",
+    "provider": "GitLab Handbook",
+    "kind": "docs",
+    "skillIds": [
+      "engineering-hiring"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Engineering manager hiring",
+    "url": "https://handbook.gitlab.com/handbook/engineering/careers/management/hiring/",
+    "provider": "GitLab Handbook",
+    "kind": "docs",
+    "skillIds": [
+      "engineering-hiring"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Building an engineering team (Ammon Bartram and Harj Taggar)",
+    "url": "https://blog.ycombinator.com/building-an-engineering-team-by-ammon-bartram-and-harj-taggar",
+    "provider": "Y Combinator",
+    "kind": "video",
+    "skillIds": [
+      "engineering-hiring"
+    ],
+    "minutes": 71,
+    "free": true
+  },
+  {
+    "title": "Project profitability: plan for it and keep it",
+    "url": "https://www.pmi.org/learning/library/project-profitability-plan-keep-it-7190",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "delivery-pnl-management"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Financial constraints on service and outsourcing projects",
+    "url": "https://www.pmi.org/learning/library/financial-constraints-service-outsourcing-projects-4758",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "delivery-pnl-management"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "A case for project revenue management",
+    "url": "https://www.pmi.org/learning/library/a-case-project-revenue-management-6569",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "delivery-pnl-management"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Project management working with on-site and offshore teams",
+    "url": "https://www.pmi.org/learning/library/working-on-site-offshore-teams-7804",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "delivery-pnl-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Dynamics and economics of the offshore software model",
+    "url": "https://www.pmi.org/learning/library/dynamics-economics-offshore-software-model-perspective-7757",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "delivery-pnl-management"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Managing firm fixed price projects using earned value management",
+    "url": "https://www.pmi.org/learning/library/managing-fixed-price-projects-evm-7642",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "delivery-pnl-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Enabling IT governance with project portfolio management",
+    "url": "https://www.pmi.org/learning/library/enable-governance-project-portfolio-management-8429",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "it-portfolio-governance"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Effectiveness in project portfolio management",
+    "url": "https://www.pmi.org/learning/library/effectiveness-project-portfolio-management-6394",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "it-portfolio-governance"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Ten guidelines for successful benefits realization",
+    "url": "https://www.pmi.org/learning/library/guidelines-successful-benefits-realization-9909",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "it-portfolio-governance"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Skilled management: life cycle stage gate reviews",
+    "url": "https://www.pmi.org/learning/library/skilled-management-life-cycle-reviews-8230",
+    "provider": "PMI",
+    "kind": "docs",
+    "skillIds": [
+      "it-portfolio-governance"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Guide for effective benefits management in major projects",
+    "url": "https://www.gov.uk/government/publications/guide-for-effective-benefits-management-in-major-projects",
+    "provider": "UK Government (IPA)",
+    "kind": "docs",
+    "skillIds": [
+      "it-portfolio-governance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Assurance workbook: portfolios and portfolio management",
+    "url": "https://www.gov.uk/government/publications/assurance-workbook-portfolios-and-portfolio-management",
+    "provider": "UK Government (IPA)",
+    "kind": "docs",
+    "skillIds": [
+      "it-portfolio-governance"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "ISTQB Certified Tester Test Automation Strategy (CT-TAS) syllabus v1.0",
+    "url": "https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CT-TAS_Syllabus_v1.0.pdf",
+    "provider": "ISTQB",
+    "kind": "docs",
+    "skillIds": [
+      "test-automation-strategy"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Shift testing left with unit tests",
+    "url": "https://learn.microsoft.com/devops/develop/shift-left-make-testing-fast-reliable",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "test-automation-strategy"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Just say no to more end-to-end tests",
+    "url": "https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html",
+    "provider": "Google Testing Blog",
+    "kind": "docs",
+    "skillIds": [
+      "test-automation-strategy"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "ISTQB Certified Tester Advanced Level Test Management (CTAL-TM) syllabus v3.0",
+    "url": "https://www.istqb.org/wp-content/uploads/2024/11/ISTQB_CTAL-TM_Syllabus_v3.0_zKjKsaN.pdf",
+    "provider": "ISTQB",
+    "kind": "docs",
+    "skillIds": [
+      "quality-metrics-reporting",
+      "test-automation-strategy"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Code coverage at Google",
+    "url": "https://research.google/pubs/code-coverage-at-google/",
+    "provider": "Google Research",
+    "kind": "docs",
+    "skillIds": [
+      "quality-metrics-reporting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Build confidence in Azure workloads with effective testing practices",
+    "url": "https://learn.microsoft.com/en-us/azure/well-architected/design-guides/testing",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "quality-metrics-reporting",
+      "test-automation-strategy"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Progress report for test plans (Azure Test Plans)",
+    "url": "https://learn.microsoft.com/en-us/azure/devops/test/progress-report?view=azure-devops",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "quality-metrics-reporting"
+    ],
+    "minutes": 15,
     "free": true
   }
 ]
