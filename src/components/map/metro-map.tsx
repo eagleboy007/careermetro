@@ -553,41 +553,46 @@ function EarlierMark({
   const shown = earlierName(previous.role.title);
   const left = previous.left.length;
   return (
-    <g
-      data-earlier=""
-      className="group cursor-pointer outline-none"
-      pointerEvents="bounding-box"
-      aria-label={`${shown}, ${left === 0 ? "no goals" : plural(left, "goal")} left here. Greyed out: it never moves your train`}
-      {...props}
-    >
-      {/* A wide, invisible strip along the level run and its labels, so it is easy to tap. */}
-      <rect x={branch.start.x} y={branch.start.y - 18} width={branch.end.x - branch.start.x + 30} height={92} className="fill-transparent" />
-      <rect
-        x={branch.start.x - 8}
-        y={branch.start.y - 22}
-        width={branch.end.x - branch.start.x + 46}
-        height={100}
-        rx={14}
-        className={`fill-none stroke-ink opacity-0 transition-opacity group-focus-visible:opacity-100 ${selected ? "opacity-100" : ""}`}
-        strokeWidth={2}
-      />
-      {branch.stops.map((st, i) => (
-        <g key={i} aria-hidden="true">
-          <circle cx={st.x} cy={st.y} r={6} className="fill-surface stroke-muted" strokeWidth={3} />
-          <text x={st.x} y={st.y + 24} textAnchor="middle" className="fill-muted font-mono text-[10px] tracking-[0.06em]">
-            LEFT HERE
-          </text>
-          <text x={st.x} y={st.y + 40} textAnchor="middle" className="fill-muted font-sans text-[12px]">
-            {st.name}
-          </text>
-        </g>
-      ))}
-      {/* The closed end: a short bar across the line. */}
-      <rect x={branch.end.x - 3} y={branch.end.y - 14} width={6} height={28} rx={3} className="fill-muted opacity-50" />
-      <text x={branch.label.x} y={branch.label.y} className="fill-muted font-mono text-[11px] tracking-[0.06em]">
-        {shown}
-      </text>
-    </g>
+    <>
+      <g
+        data-earlier=""
+        className="group cursor-pointer outline-none"
+        pointerEvents="bounding-box"
+        aria-label={`${shown}, ${left === 0 ? "no goals" : plural(left, "goal")} left here. Greyed out: it never moves your train`}
+        {...props}
+      >
+        {/* A wide, invisible strip along the level run and its labels, so it is easy to tap. */}
+        <rect x={branch.start.x} y={branch.start.y - 18} width={branch.end.x - branch.start.x + 30} height={92} className="fill-transparent" />
+        <rect
+          x={branch.start.x - 8}
+          y={branch.start.y - 22}
+          width={branch.end.x - branch.start.x + 46}
+          height={100}
+          rx={14}
+          className={`fill-none stroke-ink opacity-0 transition-opacity group-focus-visible:opacity-100 ${selected ? "opacity-100" : ""}`}
+          strokeWidth={2}
+        />
+        {/* The closed end: a short bar across the line. */}
+        <rect x={branch.end.x - 3} y={branch.end.y - 14} width={6} height={28} rx={3} className="fill-muted opacity-50" />
+        <text x={branch.label.x} y={branch.label.y} className="fill-muted font-mono text-[11px] tracking-[0.06em]">
+          {shown}
+        </text>
+      </g>
+      {/* The stops sit outside the button, so its name is only the line's own label (WCAG 2.5.3); taps pass through. */}
+      <g aria-hidden="true" pointerEvents="none">
+        {branch.stops.map((st, i) => (
+          <g key={i} aria-hidden="true">
+            <circle cx={st.x} cy={st.y} r={6} className="fill-surface stroke-muted" strokeWidth={3} />
+            <text x={st.x} y={st.y + 24} textAnchor="middle" className="fill-muted font-mono text-[10px] tracking-[0.06em]">
+              LEFT HERE
+            </text>
+            <text x={st.x} y={st.y + 40} textAnchor="middle" className="fill-muted font-sans text-[12px]">
+              {st.name}
+            </text>
+          </g>
+        ))}
+      </g>
+    </>
   );
 }
 
