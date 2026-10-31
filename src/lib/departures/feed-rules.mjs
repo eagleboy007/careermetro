@@ -385,10 +385,13 @@ export const ROLE_TITLES = {
   // marketing, and an SEO engineer or developer is not one.
   "seo-specialist": /^((senior|sr\.?|junior|jr\.?|lead|associate|technical|on-page|off-page) )*(seo|search engine optimi[sz]ation) (specialist|analyst|manager|lead|strategist|consultant)\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email|online) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search|social media) (specialist|executive|manager|associate)\b/i,
-  // Business roles (batches B1 to B4), last, each read only from the titles it is built for. A plain "Account
+  // Business roles (batches B1 to B4, and F1), last, each read only from the titles it is built for. A plain "Account
   // Executive", "Sales Manager", "Sales Executive", "Account Manager" or "Relationship Manager" has no rule.
   "product-marketing-manager": /\bproduct marketing (manager|lead|specialist|associate|executive)\b|^manager,? ?[-–]? ?product marketing\b/i,
   "key-account-manager": /^((senior|sr\.?|national|regional|zonal|corporate|associate|deputy|assistant) )*key accounts? (manager|executive|lead|specialist)\b|^((senior|sr\.?|deputy|assistant) )?modern trade (manager|executive|lead)\b/i,
+  // Batch F1. FMCG and general trade sales officers, before area sales and business development so a territory or field
+  // sales officer whose title names FMCG, general trade or consumer goods reads here; a plain "Sales Officer" has no rule.
+  "fmcg-sales-officer": /^(?!.*\b(software|saas|it|pharma\w*|medical|home loans?|housing|mortgage|insurance|real estate|loans?|banking|cards?|b2b)\b)((senior|sr\.?|junior|jr\.?|trainee|field|territory) )*((sales (officer|executive|trainee|representative)|territory sales (in-?charge|incharge))\b.*\b(fmcg|general trade|consumer goods|consumer products|cpg)\b|(fmcg|general trade|consumer goods|cpg) sales (officer|executive|trainee|representative))/i,
   "area-sales-manager": /^((senior|sr\.?|deputy|assistant) )?((area|territory) sales (manager|officer|executive|lead)|area manager\b.*\bsales|area business manager)\b/i,
   "inside-sales-executive": /^((senior|sr\.?|associate|junior|jr\.?) )?(inside sales (executive|representative|rep|associate|specialist)|(sales|business) development (representative|rep)|sdr|bdr)\b|^account executive\b.*\binside sales\b/i,
   // FP&A and business finance analysts; never a financial systems, crime, data or cloud cost one.
@@ -478,10 +481,20 @@ export const ROLE_TITLES = {
   // Factory quality inspectors; a quality engineer stays with the test rules, and a food safety or building inspector
   // is not one.
   "quality-control-inspector": /^(?!.*\b(software|engineer|developer|data|food safety|building|tax|police)\b)((senior|sr\.?|junior|jr\.?|trainee|assistant|incoming|in-process|line|final|shift|receiving) )*((quality( control| assurance)?|qc|qa|iqc|ipqc|pdi|final inspection|incoming inspection|in-process inspection|dimensional|machining) inspector)\b/i,
+  // Batch F1 (also FMCG sales officers, above). Bank probationary officers and their scale I programmes, before
+  // management trainee so a public sector bank's management trainee reads here; a purchase order ("PO") title is not one.
+  "bank-probationary-officer": /^(?!.*\b(software|developer|engineer|data|it)\b)(((assistant|deputy) manager,? ?[-–]? ?)?((bank|sbi|ibps) )?probationary officers?\b|(bank|sbi|ibps) po\b|((assistant|deputy) manager|management trainee),? ?[-–]? ?(young bankers?|public sector bank|psu bank)\b|scale[- ](i|1) officer\b)/i,
+  // Management trainees on a rotation programme, never an engineering, technical or bank one.
+  "management-trainee": /^(?!.*\b(software|developer|engineer|engineering|technical|it|data|mechanical|electrical|civil|production|bank|banking|probationary)\b)((graduate|corporate) )*(management trainee|executive trainee|leadership (development )?(programme|program) trainee)\b/i,
+  // CA article assistants and articleship trainees, never an article writer or editor.
+  "article-assistant-ca": /^(?!.*\b(writer|writing|content|editor|journal\w*|news)\b)((ca|audit|tax|senior|sr\.?|junior|jr\.?) )*(article(d|ship)? (assistant|trainee|clerk|student)|articleship\b|ca article)\b/i,
+  // Back-office and non-voice processing executives in banks, insurers and BPOs, never a team leader or a voice process
+  // one; a plain "Operations Executive" has no rule.
+  "back-office-executive": /^(?!.*\b(software|developer|engineer|it|sap|(?<!non[- ])voice|team lead(er)?|manager|analyst)\b)((senior|sr\.?|junior|jr\.?|trainee) )*((back[- ]office|banking operations|bank operations|policy issuance|data verification|non-voice( process)?) (executive|associate|assistant|officer|processor)|(operations|process) associate,? ?[-–]? ?(back[- ]office|non-voice|banking))\b/i,
 };
-const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant"]);
+const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
 /** The business rules that may read a sales or recruiting title, which NOT_IN_SCOPE drops for every other rule. */
-const SALES_OK = new Set(["key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive", "medical-representative", "channel-sales-manager", "real-estate-sales-executive", "home-loan-sales-officer"]);
+const SALES_OK = new Set(["key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive", "medical-representative", "channel-sales-manager", "real-estate-sales-executive", "home-loan-sales-officer", "fmcg-sales-officer", "management-trainee"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;

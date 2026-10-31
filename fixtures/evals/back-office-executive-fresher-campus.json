@@ -1,0 +1,52 @@
+{
+  "id": "back-office-executive-fresher-campus",
+  "roleSlug": "back-office-executive",
+  "persona": "fresher-campus",
+  "resumeText": "Sneha Das | Kolkata | sneha.das@example.com\n\nEDUCATION\nBCom (Accounting and Finance), Salt Lake College of Commerce, Kolkata, 2026\n\nINTERNSHIP\nOperations Intern, Eastbridge Insurance Brokers Pvt Ltd, Kolkata (Jan 2026 - Mar 2026)\n- Handled data entry and data verification for about 90 proposal forms a day.\n- Checked policy issuance documents for missing signatures and proofs before sending them to the insurer.\n- Prepared daily MIS reports in Excel on pending cases and ageing.\n- Kept processing accuracy above 98 percent across the internship.\n\nSKILLS\nMS Excel, VLOOKUP, typing 35 wpm, Bengali, Hindi, English\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "data-entry-verification",
+        "quote": "Handled data entry and data verification"
+      },
+      {
+        "skillId": "back-office-document-processing",
+        "quote": "Checked policy issuance documents for missing signatures"
+      },
+      {
+        "skillId": "operations-mis-reporting",
+        "quote": "Prepared daily MIS reports in Excel"
+      },
+      {
+        "skillId": "excel",
+        "quote": "daily MIS reports in Excel on pending cases"
+      },
+      {
+        "skillId": "process-tat-accuracy",
+        "quote": "Kept processing accuracy above 98 percent"
+      },
+      {
+        "skillId": "excel-pivot-lookup",
+        "quote": "MS Excel, VLOOKUP, typing 35 wpm, Bengali, Hindi, English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "excel-pivot-lookup",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "tally-accounting-software",
+      "sql",
+      "customer-query-resolution",
+      "kyc-due-diligence"
+    ]
+  },
+  "reviewedBy": null
+}

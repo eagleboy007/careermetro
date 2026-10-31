@@ -31,7 +31,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 24 |
 | Testing and quality | `roles-testing.csv` | 4 |
 | Software, hardware, delivery and marketing | `roles-other.csv` | 61 |
-| Sales, finance, HR and operations | `roles-business.csv` | 41 |
+| Sales, finance, HR and operations | `roles-business.csv` | 46 |
 
 | Questions | File | Lines |
 | --- | --- | --- |
@@ -42,7 +42,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
 
-201 role profiles await review in all.
+206 role profiles await review in all.
 
 ## How answers flow back into the app
 

@@ -2442,5 +2442,33 @@
   {
     "skillId": "yara-rules",
     "task": "Write five YARA rules for public malware families (samples from MalwareBazaar, inside an isolated VM), test them against the samples and a folder of clean files to show no false positives, and share the rules and test log."
+  },
+  {
+    "skillId": "back-office-document-processing",
+    "task": "Scrutinise ten synthetic account opening or policy proposal forms (given) against a checklist you write: missing fields, signature and KYC mismatches, wrong dates. Log each form as clear or discrepant with the reason. Share the checklist and log."
+  },
+  {
+    "skillId": "bank-branch-operations",
+    "task": "Write a one-page walk-through of a bank branch day for a synthetic branch: cash opening, CTS cheque clearing, a savings account opening, a fixed deposit and cash closing, naming the checks at each step. Share it."
+  },
+  {
+    "skillId": "business-presentation-decks",
+    "task": "Turn a synthetic sales or cost dataset into a 6-slide PowerPoint or Google Slides deck: the question, three findings with one chart each, a recommendation and next steps. Share the deck."
+  },
+  {
+    "skillId": "data-entry-verification",
+    "task": "Key 50 synthetic customer records from scanned-style forms into a sheet, then check a colleague's 50 (or a given set) as the checker: mark every mismatch, work out the error rate and list the fixes. Share both sheets."
+  },
+  {
+    "skillId": "operations-mis-reporting",
+    "task": "From a synthetic month of back-office cases (received, processed, pending, TAT), build a daily MIS in Excel with a summary tab, ageing buckets and one chart, and write three lines on what the manager should act on. Share it."
+  },
+  {
+    "skillId": "process-tat-accuracy",
+    "task": "For a synthetic processing queue of 200 cases with timestamps and QC results, work out TAT adherence and accuracy against agreed targets, find the two steps causing most delays, and propose one fix each. Share the sheet."
+  },
+  {
+    "skillId": "retailer-order-booking",
+    "task": "Plan a beat for 30 synthetic retail outlets: a visit route, an order booking sheet with lines per call and productive calls, and a one-week tracker against a secondary sales target. Share the plan and sheet."
   }
 ]

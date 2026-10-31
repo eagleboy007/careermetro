@@ -678,7 +678,8 @@
     "provider": "GCFGlobal",
     "kind": "course",
     "skillIds": [
-      "excel"
+      "excel",
+      "operations-mis-reporting"
     ],
     "minutes": 600,
     "free": true
@@ -15094,7 +15095,8 @@
     "provider": "Reserve Bank of India",
     "kind": "docs",
     "skillIds": [
-      "casa-deposit-acquisition"
+      "casa-deposit-acquisition",
+      "bank-branch-operations"
     ],
     "minutes": 90,
     "free": true
@@ -20401,6 +20403,325 @@
       "sebi-icdr-regulations"
     ],
     "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Create a presentation in PowerPoint (training)",
+    "url": "https://support.microsoft.com/en-us/powerpoint/training/create-a-presentation-in-powerpoint",
+    "provider": "Microsoft Support",
+    "kind": "video",
+    "skillIds": [
+      "business-presentation-decks"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Basic tasks for creating a PowerPoint presentation",
+    "url": "https://support.microsoft.com/en-us/powerpoint/basic-tasks-for-creating-a-powerpoint-presentation",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "business-presentation-decks"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Stage your story in PowerPoint",
+    "url": "https://support.microsoft.com/en-us/education/student-help-center/stage-your-story-in-powerpoint",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "business-presentation-decks"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Apply data validation to cells",
+    "url": "https://support.microsoft.com/en-us/excel/get-started/apply-data-validation-to-cells",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "data-entry-verification"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Create a drop-down list in Excel",
+    "url": "https://support.microsoft.com/en-us/office/create-a-drop-down-list-7693307a-59ef-400a-b769-c5402dce407b",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "data-entry-verification"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Find and remove duplicates in Excel",
+    "url": "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "data-entry-verification"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Create a PivotTable to analyze worksheet data",
+    "url": "https://support.microsoft.com/en-us/excel/get-started/create-a-pivottable-to-analyze-worksheet-data",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "operations-mis-reporting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Use PivotTables and other business intelligence tools to analyze your data",
+    "url": "https://support.microsoft.com/en-us/office/use-pivottables-and-other-business-intelligence-tools-to-analyze-your-data-da1b3e85-d3c0-4f15-8cd9-bef446762ec3",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "operations-mis-reporting"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "FAQs on Master Direction on KYC (June 2025)",
+    "url": "https://www.rbi.org.in/commonman/Upload/English/FAQs/PDFs/KYC09062025.pdf",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "back-office-document-processing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Master Direction - Know Your Customer (KYC) Direction",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/notification.aspx?id=2607",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "back-office-document-processing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of Office Management and Methods",
+    "url": "https://onlinecourses.swayam2.ac.in/cec19_mg35/preview",
+    "provider": "SWAYAM (CEC)",
+    "kind": "course",
+    "skillIds": [
+      "back-office-document-processing"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Understanding operations management",
+    "url": "https://www.open.edu/openlearn/money-business/leadership-management/understanding-operations-management/content-section-0",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "process-tat-accuracy"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Operations Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_me18/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "process-tat-accuracy"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Total Quality Management - I",
+    "url": "https://onlinecourses.nptel.ac.in/e-learning/preview/noc23_mg06",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "process-tat-accuracy"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Form 3CA-3CD User Manual",
+    "url": "https://www.incometax.gov.in/iec/foportal/help/statutory-forms/popular-form/form3ca-3cd-um",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tax-audit-form-3cd"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Form 3CA-CD & Form 3CB-CD: Filing of Audit Report u/s 44AB (webinar slides)",
+    "url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2024-09/Webinar%20PPT%20for%203CA-3CD_3CB-3CD_13.09.2024.pdf",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tax-audit-form-3cd"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Form 3CB-3CD",
+    "url": "https://www.incometax.gov.in/iec/foportal/newformpage/forms/form3cb-3cd",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tax-audit-form-3cd"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Form 140 (earlier Form 26Q) User Manual",
+    "url": "https://www.incometax.gov.in/iec/foportal/newformpage/forms/form140-um",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tds-return-filing"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "TDS/TCS Statement Upload and View User Manual",
+    "url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2020-08/TDS_TCSStatement_Upload_User_Manual.pdf",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tds-return-filing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "TRACES forms and downloads",
+    "url": "https://traces61contents.tdscpc.gov.in/en/forms.html",
+    "provider": "TRACES (Income Tax Department)",
+    "kind": "docs",
+    "skillIds": [
+      "tds-return-filing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Participant Handbook: Sales Person (Distribution), RAS/Q0604",
+    "url": "https://rasci.in/Final%20New%20Version_PH%20and%20FG/Salesperson%20Distribution/PH_Sales%20Person%20(Distribution)%20V4.0.pdf",
+    "provider": "Retailers Association's Skill Council of India",
+    "kind": "docs",
+    "skillIds": [
+      "retailer-order-booking"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Management of Field Sales",
+    "url": "https://onlinecourses.nptel.ac.in/e-learning/preview/noc21_mg29",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "retailer-order-booking"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Retail Management",
+    "url": "https://onlinecourses.swayam2.ac.in/e-learning/preview/cec19_mg40",
+    "provider": "SWAYAM (CEC)",
+    "kind": "course",
+    "skillIds": [
+      "retailer-order-booking"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Master Direction: Know Your Customer (KYC) Direction, 2016",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=11566",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "bank-branch-operations"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "FAQs on Cheque Clearing (CTS)",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=3878",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "bank-branch-operations"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Management of Commercial Banking",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_mg40/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "bank-branch-operations"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Oracle FLEXCUBE Universal Banking 14.8 Documentation Library",
+    "url": "https://docs.oracle.com/cd/G27840_01/index.htm",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "core-banking-systems"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Oracle FLEXCUBE Core Entities User Guide (Release 14.7.1)",
+    "url": "https://docs.oracle.com/cd/F90549_01/PDF/Core/CE.pdf",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "core-banking-systems"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Core Banking Solution (CBS) Requirements for Urban Co-operative Banks",
+    "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=11097",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "core-banking-systems"
+    ],
+    "minutes": 20,
     "free": true
   }
 ]

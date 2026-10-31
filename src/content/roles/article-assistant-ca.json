@@ -1,0 +1,121 @@
+{
+  "slug": "article-assistant-ca",
+  "title": "CA Article Assistant",
+  "summary": "A CA article assistant is a chartered accountancy student doing the compulsory practical training at a CA firm after clearing CA Intermediate and ICITSS (the institute's IT and orientation course). They work under seniors and partners on statutory and tax audit fieldwork, GST, TDS and income-tax returns, and bookkeeping for clients.",
+  "dailyDuties": [
+    "Do vouching and verification of bills and ledgers on audit fieldwork",
+    "Prepare GST returns and reconcile input tax credit for clients",
+    "Compute TDS and prepare quarterly TDS returns",
+    "Prepare income-tax computations and returns for individuals and firms",
+    "Post entries and pull reports in Tally for bookkeeping clients",
+    "Prepare audit schedules and working papers for review"
+  ],
+  "typicalTitles": [
+    "CA Article Assistant",
+    "Articled Assistant",
+    "CA Articleship Trainee",
+    "Article Trainee - Audit and Tax",
+    "Audit Article Assistant",
+    "Article Clerk - CA Firm"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "financial-accounting",
+      "importance": "required",
+      "expectation": "Apply accounting standards and prepare reconciliations from CA Intermediate study",
+      "postingShare": null
+    },
+    {
+      "skillId": "statutory-audit-execution",
+      "importance": "required",
+      "expectation": "Do vouching and verification on audit fieldwork under a senior",
+      "postingShare": null
+    },
+    {
+      "skillId": "gst-tds-compliance",
+      "importance": "required",
+      "expectation": "Prepare GST returns and compute TDS for client filings",
+      "postingShare": null
+    },
+    {
+      "skillId": "income-tax-compliance",
+      "importance": "required",
+      "expectation": "Compute income and prepare income-tax returns for individuals and firms",
+      "postingShare": null
+    },
+    {
+      "skillId": "tally-accounting-software",
+      "importance": "required",
+      "expectation": "Post vouchers and pull ledgers and reports in Tally",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Prepare audit schedules and tax workings in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Ask clients for documents and explain queries clearly",
+      "postingShare": null
+    },
+    {
+      "skillId": "audit-documentation",
+      "importance": "nice_to_have",
+      "expectation": "Prepare working papers that a manager can review",
+      "postingShare": null
+    },
+    {
+      "skillId": "tax-audit-form-3cd",
+      "importance": "nice_to_have",
+      "expectation": "Prepare tax audit annexures and Form 3CD clauses",
+      "postingShare": null
+    },
+    {
+      "skillId": "tds-return-filing",
+      "importance": "nice_to_have",
+      "expectation": "Prepare quarterly TDS returns and download certificates",
+      "postingShare": null
+    },
+    {
+      "skillId": "statutory-audit-support",
+      "importance": "nice_to_have",
+      "expectation": "Prepare audit schedules and follow up on client queries",
+      "postingShare": null
+    },
+    {
+      "skillId": "internal-controls-testing",
+      "importance": "nice_to_have",
+      "expectation": "Test controls on internal or concurrent audits",
+      "postingShare": null
+    },
+    {
+      "skillId": "account-reconciliations",
+      "importance": "nice_to_have",
+      "expectation": "Scrutinise ledgers and reconcile balances",
+      "postingShare": null
+    },
+    {
+      "skillId": "companies-act-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Help with ROC filings for company clients",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

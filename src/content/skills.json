@@ -11427,5 +11427,175 @@
     ],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "business-presentation-decks",
+    "name": "Business presentations in PowerPoint",
+    "category": "tools",
+    "aliases": [
+      "powerpoint",
+      "ms powerpoint",
+      "microsoft powerpoint",
+      "powerpoint presentations",
+      "presentation decks",
+      "google slides"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-entry-verification",
+    "name": "Data entry and verification",
+    "category": "business",
+    "aliases": [
+      "data entry",
+      "data entry operations",
+      "data verification",
+      "typing speed",
+      "maker-checker",
+      "maker checker"
+    ],
+    "ambiguous": [
+      "data verification",
+      "maker-checker",
+      "maker checker"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "operations-mis-reporting",
+    "name": "Operations MIS reports",
+    "category": "business",
+    "aliases": [
+      "mis reports",
+      "mis report",
+      "daily mis reports",
+      "mis preparation",
+      "operations mis",
+      "tat reports"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "back-office-document-processing",
+    "name": "Back-office document processing and scrutiny",
+    "category": "business",
+    "aliases": [
+      "document processing",
+      "document scrutiny",
+      "document verification",
+      "account opening forms",
+      "form scrutiny",
+      "policy issuance"
+    ],
+    "ambiguous": [
+      "document processing",
+      "document verification"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "process-tat-accuracy",
+    "name": "Working to turnaround time and accuracy targets",
+    "category": "business",
+    "aliases": [
+      "tat adherence",
+      "turnaround time targets",
+      "accuracy targets",
+      "processing accuracy",
+      "sop adherence"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "tax-audit-form-3cd",
+    "name": "Tax audit under section 44AB (Form 3CD)",
+    "category": "business",
+    "aliases": [
+      "tax audit",
+      "tax audit report",
+      "form 3cd",
+      "form 3ca",
+      "form 3cb",
+      "section 44ab"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "tds-return-filing",
+    "name": "TDS return preparation and filing",
+    "category": "business",
+    "aliases": [
+      "tds returns",
+      "tds return filing",
+      "form 26q",
+      "form 27q",
+      "traces portal",
+      "form 16a"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "retailer-order-booking",
+    "name": "Retailer visits and order booking",
+    "category": "business",
+    "aliases": [
+      "retailer order booking",
+      "outlet order booking",
+      "retailer visits",
+      "outlet visits",
+      "retail outlet visits",
+      "productive calls",
+      "lines per call",
+      "new outlet opening"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bank-branch-operations",
+    "name": "Bank branch operations (deposits, cash and clearing)",
+    "category": "business",
+    "aliases": [
+      "branch banking operations",
+      "bank branch operations",
+      "cheque clearing",
+      "cts clearing",
+      "cash and clearing operations",
+      "teller operations",
+      "deposit account opening"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "core-banking-systems",
+    "name": "Core banking systems (Finacle, BaNCS, Flexcube)",
+    "category": "tools",
+    "aliases": [
+      "finacle",
+      "infosys finacle",
+      "tcs bancs",
+      "oracle flexcube",
+      "flexcube",
+      "core banking solution",
+      "core banking system"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

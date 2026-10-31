@@ -101,6 +101,9 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
         share: line.total ? line.shared / line.total : 0,
         // A year's grace, as role suggestions give: a role asking for more years than that goes after the ones that fit.
         fits: years >= role.experienceBand.minYears - 1,
+        // Over two years past the role's band: a campus-entry role (fresher batch F1, 0 to 2 years) is a poor closest
+        // role for a person with 5 years, so for the closest role it goes after the ones the person isn't past.
+        over: years > role.experienceBand.maxYears + 2,
         // How alike the role is to the one the person is heading for: breaks ties between roles that share as much.
         like: likeness(targetIds, requiredIds(role)),
       };
@@ -121,7 +124,8 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
   // Near on key skills: a role isn't near because the resume shows communication. The line still shows every shared skill.
   const near = scored.filter((s) => s.keyShare >= NEARBY_MIN_SHARE && s.key >= NEARBY_MIN_SHARED).slice(0, NEARBY_MAX);
   if (near.length) return nearbyLines.parse({ lines: near.map((s) => s.line), closest: null });
-  // Closest when none is near: a role whose years fit first, as for the lines (T154), then the one holding the most of
+  // Closest when none is near: a role whose years fit first, as for the lines (T154), then one the person is not more
+  // than two years past (fresher batch F1), then the one holding the most of
   // the resume's key skills (half for each one only listed), at least two, then the one asking for more of the resume,
   // then share, then likeness to the target role. Two shared skills where one implies the other count as one, so the
   // role must share two separate abilities. So a small role sharing 2 of its 6 doesn't beat a larger one the
@@ -133,6 +137,7 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
     .sort(
       (a, b) =>
         Number(b.fits) - Number(a.fits) ||
+        Number(a.over) - Number(b.over) ||
         held(b) - held(a) ||
         b.asks - a.asks ||
         b.share - a.share ||

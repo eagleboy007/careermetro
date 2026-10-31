@@ -1,0 +1,52 @@
+{
+  "id": "article-assistant-ca-fresher-campus",
+  "roleSlug": "article-assistant-ca",
+  "persona": "fresher-campus",
+  "resumeText": "Harsh Agarwal | Jaipur | harsh.agarwal@example.com\n\nEDUCATION\nCA Intermediate, both groups cleared, ICAI, 2025\nICITSS (Information Technology and Orientation Course) completed, 2025\nBCom, Rajasthan Commerce College, Jaipur, 2025\n\nINTERNSHIP\nSummer Intern, Mehta Gupta & Associates, Chartered Accountants, Jaipur (May 2025 - Jul 2025)\n- Posted purchase and sales vouchers for three trading clients in Tally Prime.\n- Helped prepare GST returns (GSTR-1 and GSTR-3B) for five small businesses.\n- Assisted with vouching of expense bills during the statutory audit of a cooperative society.\n- Prepared bank reconciliation statements for two clients in Excel.\n\nSKILLS\nIncome tax computation, Tally Prime, Excel\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "tally-accounting-software",
+        "quote": "vouchers for three trading clients in Tally Prime"
+      },
+      {
+        "skillId": "gst-tds-compliance",
+        "quote": "Helped prepare GST returns (GSTR-1 and GSTR-3B)"
+      },
+      {
+        "skillId": "statutory-audit-execution",
+        "quote": "Assisted with vouching of expense bills"
+      },
+      {
+        "skillId": "financial-accounting",
+        "quote": "Prepared bank reconciliation statements for two clients"
+      },
+      {
+        "skillId": "excel",
+        "quote": "for two clients in Excel"
+      },
+      {
+        "skillId": "income-tax-compliance",
+        "quote": "Income tax computation, Tally Prime, Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "income-tax-compliance",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "tax-audit-form-3cd",
+      "tds-return-filing",
+      "audit-software",
+      "transfer-pricing-documentation"
+    ]
+  },
+  "reviewedBy": null
+}

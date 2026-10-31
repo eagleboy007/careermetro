@@ -1,0 +1,122 @@
+{
+  "slug": "bank-probationary-officer",
+  "title": "Bank Probationary Officer",
+  "summary": "A bank probationary officer (PO) is a new Scale I officer in a public or private bank, hired through an entrance exam or a bank training programme. During a probation of about two years they rotate through branch desks such as accounts, cash, clearing and loans, reporting to the branch manager before being confirmed as an officer.",
+  "dailyDuties": [
+    "Open savings, current and fixed deposit accounts after checking KYC documents",
+    "Supervise cash, cheque clearing and remittance work at the branch",
+    "Process retail and small business loan files under a senior officer",
+    "Resolve customer requests and complaints at the counter",
+    "Cross-sell deposits, loans, cards and insurance to meet branch targets",
+    "Prepare daily branch reports and compliance returns"
+  ],
+  "typicalTitles": [
+    "Probationary Officer",
+    "Bank PO",
+    "Management Trainee - Public Sector Bank",
+    "Assistant Manager - Probationary Officer",
+    "Deputy Manager - Probationary Officers Programme",
+    "Scale I Officer - Branch Banking",
+    "Assistant Manager - Young Bankers Programme"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 2
+  },
+  "skills": [
+    {
+      "skillId": "bank-branch-operations",
+      "importance": "required",
+      "expectation": "Handle deposit accounts, cash, cheque clearing and remittances under branch rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "kyc-verification",
+      "importance": "required",
+      "expectation": "Verify customer KYC documents when opening accounts and processing loans",
+      "postingShare": null
+    },
+    {
+      "skillId": "rbi-credit-norms",
+      "importance": "required",
+      "expectation": "Know RBI basics such as NPA classification and prudential norms",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-statement-analysis",
+      "importance": "required",
+      "expectation": "Read a borrower's balance sheet and work out basic ratios for a loan proposal",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-query-resolution",
+      "importance": "required",
+      "expectation": "Resolve walk-in customer requests and complaints at the branch",
+      "postingShare": null
+    },
+    {
+      "skillId": "cross-selling-upselling",
+      "importance": "required",
+      "expectation": "Cross-sell deposits, loans, cards and insurance to meet branch targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep branch reports and target trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain products and rules clearly to customers in English and the local language",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-appraisal",
+      "importance": "nice_to_have",
+      "expectation": "Prepare appraisal notes for retail and MSME loans under a senior officer",
+      "postingShare": null
+    },
+    {
+      "skillId": "loan-file-documentation",
+      "importance": "nice_to_have",
+      "expectation": "Collect and check loan documents before sanction and disbursement",
+      "postingShare": null
+    },
+    {
+      "skillId": "core-banking-systems",
+      "importance": "nice_to_have",
+      "expectation": "Post transactions and look up accounts in a core banking system such as Finacle",
+      "postingShare": null
+    },
+    {
+      "skillId": "casa-deposit-acquisition",
+      "importance": "nice_to_have",
+      "expectation": "Bring in new savings, current and fixed deposit accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "aml-regulations",
+      "importance": "nice_to_have",
+      "expectation": "Follow PMLA and RBI KYC directions when flagging unusual transactions",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-product-distribution",
+      "importance": "nice_to_have",
+      "expectation": "Sell mutual funds and insurance once the required exam certificates are held",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

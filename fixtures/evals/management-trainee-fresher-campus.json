@@ -1,0 +1,56 @@
+{
+  "id": "management-trainee-fresher-campus",
+  "roleSlug": "management-trainee",
+  "persona": "fresher-campus",
+  "resumeText": "Aditi Kulkarni | Pune | aditi.kulkarni@example.com\n\nEDUCATION\nPGDM (Marketing and Operations), Deccan Institute of Management, Pune, 2026\nBCom, Fergusson Road College of Commerce, Pune, 2024\n\nSUMMER INTERNSHIP\nSummer Management Intern, Sahyadri Snacks Pvt Ltd, Pune (Apr 2025 - Jun 2025)\n- Built an Excel model with pivot tables and VLOOKUP to track 1,200 SKU-level dispatches from two depots.\n- Ran market research with 150 kirana store owners across Pune on a new snack pack size.\n- Prepared a cost benefit analysis for merging two depots into one warehouse.\n- Presented findings in a 12-slide PowerPoint deck to the regional sales head.\n\nLIVE PROJECT\n- Mapped the order-to-delivery process for a local dairy and suggested three changes to cut delays.\n\nSKILLS\nExcel, PowerPoint, Financial statement analysis\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "excel",
+        "quote": "Built an Excel model with pivot tables"
+      },
+      {
+        "skillId": "excel-pivot-lookup",
+        "quote": "pivot tables and VLOOKUP to track 1,200 SKU-level dispatches"
+      },
+      {
+        "skillId": "customer-market-research",
+        "quote": "Ran market research with 150 kirana store owners"
+      },
+      {
+        "skillId": "business-case",
+        "quote": "Prepared a cost benefit analysis for merging two depots"
+      },
+      {
+        "skillId": "business-presentation-decks",
+        "quote": "12-slide PowerPoint deck to the regional sales head"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented findings in a 12-slide PowerPoint deck"
+      },
+      {
+        "skillId": "financial-statement-analysis",
+        "quote": "Excel, PowerPoint, Financial statement analysis"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sql",
+      "power-bi",
+      "dmaic-six-sigma",
+      "primary-secondary-sales"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -53,9 +53,12 @@ import applicationSupportEngineer from "./roles/application-support-engineer.jso
 import appsecEngineer from "./roles/appsec-engineer.json";
 import arVrDeveloper from "./roles/ar-vr-developer.json";
 import areaSalesManager from "./roles/area-sales-manager.json";
+import articleAssistantCa from "./roles/article-assistant-ca.json";
 import auditAssociate from "./roles/audit-associate.json";
 import automotiveDiagnosticsEngineer from "./roles/automotive-diagnostics-engineer.json";
 import autosarEngineer from "./roles/autosar-engineer.json";
+import backOfficeExecutive from "./roles/back-office-executive.json";
+import bankProbationaryOfficer from "./roles/bank-probationary-officer.json";
 import biDeveloper from "./roles/bi-developer.json";
 import blockchainDeveloper from "./roles/blockchain-developer.json";
 import brandManager from "./roles/brand-manager.json";
@@ -111,6 +114,7 @@ import eucEngineer from "./roles/euc-engineer.json";
 import eventMarketingExecutive from "./roles/event-marketing-executive.json";
 import exportImportExecutive from "./roles/export-import-executive.json";
 import financialAnalyst from "./roles/financial-analyst.json";
+import fmcgSalesOfficer from "./roles/fmcg-sales-officer.json";
 import forwardDeployedEngineer from "./roles/forward-deployed-engineer.json";
 import fpgaEngineer from "./roles/fpga-engineer.json";
 import frontendArchitect from "./roles/frontend-architect.json";
@@ -150,6 +154,7 @@ import lowCodeDeveloper from "./roles/low-code-developer.json";
 import m365Administrator from "./roles/m365-administrator.json";
 import mainframeDeveloper from "./roles/mainframe-developer.json";
 import malwareAnalyst from "./roles/malware-analyst.json";
+import managementTrainee from "./roles/management-trainee.json";
 import manualTestEngineer from "./roles/manual-test-engineer.json";
 import marketResearchAnalyst from "./roles/market-research-analyst.json";
 import medicalRepresentative from "./roles/medical-representative.json";
@@ -320,9 +325,12 @@ export const roleProfiles: RoleProfile[] = z
     appsecEngineer,
     arVrDeveloper,
     areaSalesManager,
+    articleAssistantCa,
     auditAssociate,
     automotiveDiagnosticsEngineer,
     autosarEngineer,
+    backOfficeExecutive,
+    bankProbationaryOfficer,
     biDeveloper,
     blockchainDeveloper,
     brandManager,
@@ -378,6 +386,7 @@ export const roleProfiles: RoleProfile[] = z
     eventMarketingExecutive,
     exportImportExecutive,
     financialAnalyst,
+    fmcgSalesOfficer,
     forwardDeployedEngineer,
     fpgaEngineer,
     frontendArchitect,
@@ -417,6 +426,7 @@ export const roleProfiles: RoleProfile[] = z
     m365Administrator,
     mainframeDeveloper,
     malwareAnalyst,
+    managementTrainee,
     manualTestEngineer,
     marketResearchAnalyst,
     medicalRepresentative,
