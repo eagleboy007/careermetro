@@ -23,7 +23,7 @@ import { syncCurrentGoals } from "@/lib/goals/store";
 import { interestKey } from "@/lib/me/text";
 import { getPathForOwner, PATH_LIMITS } from "@/lib/path/store";
 import { builderAnswers } from "@/lib/schemas/builder";
-import { EVENT_TOPICS_MAX } from "@/lib/schemas/constants";
+import { EVENT_RSVP_STATES, EVENT_TOPICS_MAX } from "@/lib/schemas/constants";
 import { profile as profileSchema } from "@/lib/schemas/profile";
 import { assertLocalDatabase, cleanMaxData, MAX_DATA_EMAIL, peerEmail } from "./clean.mjs";
 import {
@@ -335,9 +335,11 @@ async function seed() {
     eventRows.flatMap((e) => eventGoals.map((topic) => ({ eventId: e.id, kind: "skill" as const, topic }))),
     (rows) => db.insert(schema.eventTopics).values(rows),
   );
-  const marks: { userId: string; eventId: string; state: "saved" | "going" }[] = eventRows.flatMap((e, i) =>
-    i % 4 === 1 ? [{ userId, eventId: e.id, state: "saved" as const }] : i % 4 === 2 ? [{ userId, eventId: e.id, state: "going" as const }] : [],
-  );
+  const marks: { userId: string; eventId: string; state: (typeof EVENT_RSVP_STATES)[number] }[] = [];
+  eventRows.forEach((e, i) => {
+    if (i % 4 === 1) marks.push({ userId, eventId: e.id, state: "saved" });
+    if (i % 4 === 2) marks.push({ userId, eventId: e.id, state: "going" });
+  });
   await db.insert(schema.eventRsvps).values(marks);
 
   // ---- Builder draft at its caps --------------------------------------------------------------------------------
