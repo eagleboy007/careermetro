@@ -21,6 +21,7 @@ import {
 } from "@/db/schema";
 import { roleProfiles, skills } from "@/content";
 import { displayName } from "@/lib/account/name";
+import { pickedAt, pickedOnly } from "@/lib/gaps/current";
 import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { logEvent } from "@/lib/log";
 import { isSampleResume, SAMPLE_MIME } from "@/lib/resume/sample-mime";
@@ -448,8 +449,9 @@ async function analysesOf(userIds: string[], viewerId: string, db: Db | Tx): Pro
     .from(gapAnalyses)
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-    .where(and(inArray(resumes.userId, userIds), sql`${profiles.version} = (select max(p2.version) from profiles p2 where p2.resume_id = ${profiles.resumeId})`))
-    .orderBy(resumes.userId, desc(gapAnalyses.createdAt));
+    // As currentAnalysis: the analysis picked last, never one waiting for "Make this my destination".
+    .where(and(inArray(resumes.userId, userIds), sql`${profiles.version} = (select max(p2.version) from profiles p2 where p2.resume_id = ${profiles.resumeId})`, pickedOnly))
+    .orderBy(resumes.userId, desc(pickedAt), desc(gapAnalyses.createdAt));
   for (const r of rows) {
     if (r.userId !== viewerId && isSampleResume(r.mimeType)) continue;
     const parsed = gapAnalysis.safeParse(r.result);

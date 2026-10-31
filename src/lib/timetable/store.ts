@@ -3,6 +3,7 @@ import { and, asc, desc, eq, gte, inArray, isNotNull, lt, or, sql, type SQL } fr
 import { skills } from "@/content";
 import { getDb } from "@/db";
 import { eventRsvps, events, eventsDigests, eventSuggestions, eventTopics, userGoals, userInterests, userSettings, users } from "@/db/schema";
+import { goalOnCurrentLine } from "@/lib/gaps/current";
 import type { RideEvent } from "@/lib/ride/build";
 import { DEFAULT_TIMETABLE_SETTINGS, eventPrepInput, eventRsvpInput, PERSON_CITIES, type EventRsvpState, type EventTeaser, type PersonCity, type TimetableView, type TimetableWhy } from "@/lib/schemas";
 import { EVENT_RADII_KM, EVENT_RADIUS_DEFAULT_KM, EVENT_TOPIC_KINDS, TIMETABLE_EVENTS_MAX } from "@/lib/schemas/constants";
@@ -94,7 +95,7 @@ const isCity = (c: string | null): c is PersonCity => c !== null && (PERSON_CITI
 /**
  * The person as the timetable sees them: the profile city (never the device), the saved radius and Include online,
  * the skills of their open goals (active or renew, swapped-to skill included) in goal order, and their interests'
- * keys. `why` names the goals and the interests as typed, for "Why you see these".
+ * keys. Goals left on the earlier line after a change of destination don't count (`goalOnCurrentLine`). `why` names the goals and the interests as typed, for "Why you see these".
  */
 export async function timetablePersonFor(userId: string, db: Db = getDb()): Promise<TimetableReader> {
   const [[user], [settings], goals, interests] = await Promise.all([
@@ -103,7 +104,7 @@ export async function timetablePersonFor(userId: string, db: Db = getDb()): Prom
     db
       .select({ skillId: userGoals.skillId, swappedTo: userGoals.swappedTo })
       .from(userGoals)
-      .where(and(eq(userGoals.userId, userId), inArray(userGoals.status, ["active", "renew"])))
+      .where(and(eq(userGoals.userId, userId), inArray(userGoals.status, ["active", "renew"]), goalOnCurrentLine))
       .orderBy(asc(userGoals.position), asc(userGoals.skillId)),
     db.select({ name: userInterests.name, nameKey: userInterests.nameKey }).from(userInterests).where(eq(userInterests.userId, userId)).orderBy(asc(userInterests.createdAt), asc(userInterests.nameKey)),
   ]);
@@ -257,7 +258,14 @@ export async function setEventPrep(userId: string, raw: unknown, db: Db = getDb(
     db
       .select({ skillId: userGoals.skillId })
       .from(userGoals)
-      .where(and(eq(userGoals.userId, userId), inArray(userGoals.status, ["active", "renew"]), or(eq(userGoals.skillId, goalSkillId), eq(userGoals.swappedTo, goalSkillId))))
+      .where(
+        and(
+          eq(userGoals.userId, userId),
+          inArray(userGoals.status, ["active", "renew"]),
+          goalOnCurrentLine,
+          or(eq(userGoals.skillId, goalSkillId), eq(userGoals.swappedTo, goalSkillId)),
+        ),
+      )
       .limit(1),
   ]);
   if (!event || event.status !== "live") return { ok: false, error: "not_found" };

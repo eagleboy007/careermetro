@@ -95,9 +95,12 @@ export const exampleSwitchedMapLine: MapLine = {
         { skillId: "stakeholder-management", skillName: "Stakeholder management" },
       ],
     },
+    analysisId: null,
     title: "Business Analyst",
     currentRoleSlug: "data-analyst",
     lineSkillIds: new Set(exampleGoals.map((g) => g.skillId)),
+    learnDone: new Set(exampleGoals.filter((g) => g.learnDone).map((g) => g.skillId)),
+    changedAt: "2026-10-20T09:30:00.000Z",
     goals: new Map([
       ["requirements-gathering", { id: "g-req", proved: true }],
       ["process-mapping", { id: "g-proc", proved: false }],

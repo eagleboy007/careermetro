@@ -6,12 +6,13 @@ import { gapAnalyses, profiles, resumes, roleProfiles } from "@/db/schema";
 import { loadPrompt } from "@/lib/ai/prompts";
 import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
-import { hasOwnAnalysis } from "@/lib/resume/sample";
+import { hasOwnAnalysis, isSampleResumeId } from "@/lib/resume/sample";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { singleFlight } from "@/lib/single-flight";
 import { gapAnalysis, MAX_GAPS, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
 import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
-import { currentAnalysis, type Db as CurrentDb } from "./current";
+import { currentAnalysis, pickedNow, type Db as CurrentDb } from "./current";
+import { picksSilently, type DestinationNow } from "./destination";
 import { EXPLAIN_MODEL, explainGaps, type ExplainClient } from "./explain";
 import { sampleExplanations } from "./sample-explanations";
 import { MATCHER_VERSION, matchProfile, metSkillIds, type MatchResult } from "./match";
@@ -28,8 +29,13 @@ export const GAP_LIMITS = {
 };
 
 export type GapsForOwner =
-  /** `sample`: the resume is the sample (T113), so what is made from it keeps checked-in or template words. */
-  | { ok: true; analysisId: string; analysis: GapAnalysis; rating: number | null; sample: boolean }
+  /**
+   * `sample`: the resume is the sample (T113), so what is made from it keeps checked-in or template words.
+   * `choosable`: this analysis is for another role than the signed-in person's destination, so the page offers "Make
+   * this my destination" (docs/plans/change-destination-plan.md); false for the destination itself, an anonymous
+   * visitor and the sample.
+   */
+  | { ok: true; analysisId: string; analysis: GapAnalysis; rating: number | null; sample: boolean; choosable: boolean }
   | { ok: false; reason: "not_found" | "not_confirmed" | "busy" };
 
 /** What an explanation still running is assumed to cost when checking the budget. A typical one costs 2 to 4 cents. */
@@ -57,7 +63,7 @@ async function reserveExplanation(tx: Tx, owner: Owner, profileId: string, roleS
   });
 }
 
-type StoredAnalysis = Omit<Extract<GapsForOwner, { ok: true }>, "sample">;
+type StoredAnalysis = Omit<Extract<GapsForOwner, { ok: true }>, "sample" | "choosable">;
 
 /**
  * The stored analysis for this profile and role, if one still says what today's matcher says. Prefers today's
@@ -140,10 +146,7 @@ async function analyse(
       .limit(1);
     const match = matchProfile(resume.profile, role, deps.now);
     const stored = await storedAnalysis(tx, resume.profileId, roleRow?.id ?? null, role, match);
-    // Coming back to a role picked before makes it the destination again, as a role opened for the first time is
-    // (docs/plans/change-destination-plan.md). Never for the sample, which is a made-up person's.
-    if (stored && owner.userId !== undefined && !resume.sample) return { done: { ...(await pickAgain(tx, owner.userId, stored)), sample: false } };
-    if (stored) return { done: { ...stored, sample: resume.sample } };
+    if (stored) return { done: await settleStored(tx, owner, resume.sample, stored, role.slug) };
     // A role the person fully meets needs no words from the model, so it uses none of their explanations. Nor does the
     // sample resume (T113): it gets checked-in words or the template, never the model or the shared budget.
     const reservedId = match.gaps.length > 0 && !resume.sample ? await reserveExplanation(tx, owner, resume.profileId, role.slug) : null;
@@ -164,38 +167,57 @@ async function analyse(
   const second = await withKeyLock(db, lockKey, GAP_LIMITS.lockTimeoutMs, async (tx) => {
     // Another request may have stored one meanwhile; then this call stays logged and its words are dropped.
     const stored = await storedAnalysis(tx, profileId, roleRowId, role, match);
-    if (stored) return { ...stored, sample: first.sample };
+    if (stored) return settleStored(tx, owner, first.sample, stored, role.slug);
+    // A role other than the person's destination waits for "Make this my destination" (docs/plans/change-destination-plan.md);
+    // their first analysis, the same role on another resume, or their own resume after the sample, becomes it as before.
+    const waits = owner.userId !== undefined && !first.sample && !picksSilently(await destinationNow(tx, owner.userId), role.slug);
+    const analysis: GapAnalysis = waits ? { ...explained.analysis, notChosen: true } : explained.analysis;
     const [row] = await tx
       .insert(gapAnalyses)
-      .values({ profileId, roleProfileId: roleRowId, result: explained.analysis, matcherVersion: MATCHER_VERSION, aiCallId: callId })
+      .values({ profileId, roleProfileId: roleRowId, result: analysis, matcherVersion: MATCHER_VERSION, aiCallId: callId })
       .returning({ id: gapAnalyses.id });
-    return { ok: true, analysisId: row.id, analysis: explained.analysis, rating: null, sample: first.sample } as const;
+    return { ok: true, analysisId: row.id, analysis, rating: null, sample: first.sample, choosable: waits } as const;
   });
   return second === "busy" ? { ok: false, reason: "busy" } : second;
 }
 
-/** What the person chose on an analysis (its track, when they last picked its role), carried onto a rebuilt one. */
+/** What the person chose on an analysis (its track, when they last picked its role, that it waits to be picked), carried onto a rebuilt one. */
 export function keepChoices(rebuilt: GapAnalysis, stored: GapAnalysis): GapAnalysis {
   const out = { ...rebuilt };
   if (stored.trackId !== undefined) out.trackId = stored.trackId;
   if (stored.chosenAt !== undefined) out.chosenAt = stored.chosenAt;
+  if (stored.notChosen) out.notChosen = true;
   return out;
 }
 
-/**
- * When a stored analysis is not the person's current one, marks it picked now (`chosenAt`), so it is current again:
- * Today, the Map and Me follow the role the person came back to, and the role they leave becomes the Map's earlier
- * line. The time is the database's, the clock `created_at` comes from, so the two always compare. Writes nothing when
- * it is already current. Runs inside the Gaps lock.
- */
-async function pickAgain(tx: Tx, userId: string, stored: StoredAnalysis): Promise<StoredAnalysis> {
+/** The person's destination now, as `picksSilently` reads it. Null when they have none. */
+async function destinationNow(tx: Tx, userId: string): Promise<DestinationNow> {
   const current = await currentAnalysis(userId, tx as unknown as CurrentDb);
-  if (!current || current.id === stored.analysisId) return stored;
-  const [row] = await tx
-    .update(gapAnalyses)
-    .set({ result: sql`jsonb_set(${gapAnalyses.result}, '{chosenAt}', to_jsonb(to_char(now() at time zone 'utc', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')))` })
-    .where(eq(gapAnalyses.id, stored.analysisId))
-    .returning({ result: gapAnalyses.result });
+  if (!current) return null;
+  return { id: current.id, roleSlug: current.result.roleSlug, sample: await isSampleResumeId(current.resumeId, tx as unknown as CurrentDb) };
+}
+
+/**
+ * A stored analysis the Gaps page reuses, settled against the person's destination (docs/plans/change-destination-plan.md;
+ * C25, Project manager approved on Milin's behalf, 2026-10-31). The destination itself: unchanged. Another role:
+ * shown with "Make this your destination?", nothing written; opening a page never switches it. With no destination yet,
+ * the sample's as destination, or the same role on another resume, it becomes the destination as before (`pickAgain`).
+ * Never for an anonymous visitor or the sample, which is a made-up person's.
+ */
+async function settleStored(tx: Tx, owner: Owner, sample: boolean, stored: StoredAnalysis, roleSlug: string): Promise<Extract<GapsForOwner, { ok: true }>> {
+  if (owner.userId === undefined || sample) return { ...stored, sample, choosable: false };
+  const current = await destinationNow(tx, owner.userId);
+  if (current?.id === stored.analysisId) return { ...stored, sample, choosable: false };
+  if (picksSilently(current, roleSlug)) return { ...(await pickAgain(tx, stored)), sample, choosable: false };
+  return { ...stored, sample, choosable: true };
+}
+
+/**
+ * Marks a stored analysis picked now (`pickedNow`: `chosenAt` from the database clock, `notChosen` dropped), so it is
+ * current: Today, the Map and Me follow it. Runs inside the Gaps lock, only when `settleStored` allows it.
+ */
+async function pickAgain(tx: Tx, stored: StoredAnalysis): Promise<StoredAnalysis> {
+  const [row] = await tx.update(gapAnalyses).set({ result: pickedNow }).where(eq(gapAnalyses.id, stored.analysisId)).returning({ result: gapAnalyses.result });
   const parsed = row ? gapAnalysis.safeParse(row.result) : null;
   return parsed?.success ? { ...stored, analysis: parsed.data } : stored;
 }

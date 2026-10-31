@@ -47,5 +47,16 @@ export const gapAnalysis = z.object({
    * only ever picked when it was made; then its creation time stands. The matcher never sets it.
    */
   chosenAt: z.iso.datetime().optional(),
+  /**
+   * Set when the Gaps page made this analysis for another role while the person already had a destination
+   * (docs/plans/change-destination-plan.md, follow-ups): it shows that role's gaps, but it is not their destination
+   * until they press "Make this my destination", which drops it and sets `chosenAt`. Absent otherwise. The matcher never
+   * sets it.
+   */
+  notChosen: z.literal(true).optional(),
 });
 export type GapAnalysis = z.infer<typeof gapAnalysis>;
+
+/** "Make this my destination" on a role's Gaps page, or "Switch back" on the Map: the analysis to make current. */
+export const destinationChoice = z.strictObject({ analysisId: z.uuid() });
+export type DestinationChoice = z.infer<typeof destinationChoice>;

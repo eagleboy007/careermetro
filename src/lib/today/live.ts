@@ -6,7 +6,7 @@ import { roleProfiles } from "@/content";
 import { postViews } from "@/lib/departures/fit";
 import { logEvent } from "@/lib/log";
 import { departuresBoard, fitContextFor, type DeparturesBoard } from "@/lib/departures/store";
-import type { CurrentAnalysis } from "@/lib/gaps/current";
+import { goalOnCurrentLine, type CurrentAnalysis } from "@/lib/gaps/current";
 import { onYourLine, type Departure, type OnYourLine } from "@/lib/schemas";
 import { boardRows } from "./live-board";
 
@@ -97,6 +97,8 @@ export async function onYourLineFor(
   const where = and(
     eq(userGoals.skillId, goal.skillId),
     eq(userGoals.status, "active"),
+    // A goal left on someone's earlier line after a change of destination isn't on their line now.
+    goalOnCurrentLine,
     firstDay ? gte(userGoals.createdAt, new Date(now.getTime() - WEEK)) : undefined,
     countedBy(viewerId),
   );

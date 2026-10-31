@@ -4,7 +4,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { NEXT, type PathNext } from "./path-end";
 
 /**
- * What Today shows for a signed-in person, compared with this path: Today and the Map follow their newest gap check
+ * What Today shows for a signed-in person, compared with this path: Today and the Map follow their destination
  * (`currentAnalysis`), so this path's goals are there only when that check is for this resume and role;
  * `other-resume` is the same role checked on another resume (the newest gap check, not necessarily the newest resume; T123). `unknown` when there is no check or it couldn't be read.
  */
@@ -26,7 +26,7 @@ export function todayText(ride: TodayRide): string {
   }
   if (ride.is === "other-resume") return "Today and your Map follow the gap check on another of your resumes, not this one. You can still mark steps done here.";
   if (ride.is === "other-check") {
-    return `Today and your Map follow your latest gap check${ride.roleTitle ? `, for ${ride.roleTitle}` : ""}, not this path. You can still mark steps done here.`;
+    return `Today and your Map follow your destination${ride.roleTitle ? `, ${ride.roleTitle}` : ""}, not this path. To change it, use Make this my destination on this role's gaps. You can still mark steps done here.`;
   }
   return "Today shows your goals and daily ride.";
 }

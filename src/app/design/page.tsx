@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { designGalleryEnabled } from "@/lib/preview";
 import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { GapRating } from "@/components/gaps/gap-rating";
+import { MakeDestination } from "@/components/gaps/make-destination";
 import { JobCheck, KeepInMyJobs } from "@/components/gaps/job-check";
 import { JobCheckResult } from "@/components/gaps/job-check-result";
 import { RolePicker, type RoleOption } from "@/components/gaps/role-picker";
@@ -624,9 +625,9 @@ export default function DesignPage() {
         </p>
         <MetroMap line={exampleOwnMapLine} />
         <p className="text-sm text-muted">
-          Change of destination (handoff section 14, open decision 5): after a switch from Business Analyst to Data Analyst the gaps are worked out again,
-          proof carries over, and the earlier line greys out below the map while the new line branches off at Gaps. Tap the earlier line for what was left
-          on it and Switch back. It never moves the train or counts toward Match. Example data, so nothing is saved.
+          Change of destination (C25): after a switch from Business Analyst to Data Analyst the earlier line leaves at Gaps and runs below in muted
+          grey to a closed end, one &ldquo;Left here&rdquo; stop per goal left behind. Tap it for what came along, what stayed, Switch back and Hide earlier
+          line; hidden, a dotted stub at Gaps shows it again. It never moves the train or counts toward Match. Example data, so nothing is saved.
         </p>
         <MetroMap line={exampleSwitchedMapLine} />
       </section>
@@ -1655,6 +1656,12 @@ export default function DesignPage() {
           />
           <CoveredSkills title="Good to have" skills={[{ skillId: "python", skillName: "Python", status: "missing" }]} />
           <GapRating analysisId="example" initial={null} demo />
+          <p className="text-sm text-muted">
+            &ldquo;Make this your destination?&rdquo; (C25), at the foot of a role&apos;s Gaps page: opening the page never switches the destination, only the
+            button does. On the destination&apos;s own page the card says so instead. Example data, so nothing is saved.
+          </p>
+          <MakeDestination analysisId="example" roleTitle="Cloud Engineer" currentTitle="Data Analyst" choosable />
+          <MakeDestination analysisId="example" roleTitle="Data Analyst" currentTitle={null} choosable={false} />
         </div>
       </section>
       <section className="grid gap-8 md:grid-cols-2">

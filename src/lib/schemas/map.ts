@@ -57,13 +57,15 @@ export const mapGoal = z.object({
 });
 
 /**
- * The person's earlier line after a change of destination (handoff section 14, open decision 5;
+ * The person's earlier line after a change of destination (handoff section 7, C25; section 14, open decision 5;
  * docs/plans/change-destination-plan.md): the role they aimed for before, greyed out, with the new line branching off
  * at Gaps. Nothing on it moves the train or counts toward Match. Goals are kept by the person, not the role, so their
  * proof, learn ticks and own pitstops wait there for a switch back.
  */
 export const previousLine = z.object({
   role: z.object({ slug: z.string().min(1), title: z.string().min(1) }),
+  /** The earlier destination's analysis, for "Switch back" (it makes that analysis current). Null in example data. */
+  analysisId: z.uuid().nullable(),
   /** Gaps of the earlier line that are not on the new one, in the earlier line's order. */
   left: z
     .array(
@@ -79,6 +81,12 @@ export const previousLine = z.object({
     .max(MAX_GAPS),
   /** Gaps of the earlier line that are on the new line too: their proof, ticks and own pitstops came along. */
   shared: z.number().int().min(0).max(MAX_GAPS),
+  /** Those goals, in the earlier line's order, for "Came along to the new line" (C25): proof or progress kept. */
+  came: z
+    .array(z.object({ skillId: z.string().min(1), name: z.string().min(1).max(80), proved: z.boolean(), learnDone: z.boolean() }))
+    .max(MAX_GAPS),
+  /** When the person made the new role their destination (`chosenAt`), for "Next destination · changed {date}". Null when unknown. */
+  changedAt: z.iso.datetime().nullable(),
 });
 
 export const mapLine = z.object({

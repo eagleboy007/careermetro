@@ -5,6 +5,7 @@ import { earlierLine } from "./previous";
 
 const gaps = (ids: string[]) => ids.map((skillId) => ({ skillId, skillName: skillId.toUpperCase() }));
 const base = {
+  analysisId: "7d1c2f9e-3a4b-4c5d-8e6f-0a1b2c3d4e5f",
   title: "Business Analyst",
   currentRoleSlug: "data-analyst",
   lineSkillIds: new Set(["sql", "excel", "power-bi"]),
@@ -17,13 +18,37 @@ describe("earlierLine", () => {
     const line = earlierLine({ ...base, previous: { roleSlug: "business-analyst", gaps: gaps(["sql", "process-mapping", "excel", "requirements-gathering"]) } });
     expect(line).toEqual({
       role: { slug: "business-analyst", title: "Business Analyst" },
+      analysisId: base.analysisId,
       left: [
         { skillId: "process-mapping", name: "PROCESS-MAPPING", proved: false, ownPitstops: 0 },
         { skillId: "requirements-gathering", name: "REQUIREMENTS-GATHERING", proved: false, ownPitstops: 0 },
       ],
       shared: 2,
+      came: [
+        { skillId: "sql", name: "SQL", proved: false, learnDone: false },
+        { skillId: "excel", name: "EXCEL", proved: false, learnDone: false },
+      ],
+      changedAt: null,
     });
     expect(previousLine.safeParse(line).success).toBe(true);
+  });
+
+  it("lists what came along with its proof or progress, and when the destination changed (C25)", () => {
+    const line = earlierLine({
+      ...base,
+      previous: { roleSlug: "business-analyst", gaps: gaps(["sql", "excel", "process-mapping"]) },
+      goals: new Map([["sql", { id: "g1", proved: true }]]),
+      learnDone: new Set(["excel"]),
+      changedAt: "2026-10-31T09:30:00.000Z",
+    });
+    expect(line!.came).toEqual([
+      { skillId: "sql", name: "SQL", proved: true, learnDone: false },
+      { skillId: "excel", name: "EXCEL", proved: false, learnDone: true },
+    ]);
+    expect(line!.changedAt).toBe("2026-10-31T09:30:00.000Z");
+    expect(previousLine.safeParse(line).success).toBe(true);
+    expect(previousLine.safeParse({ ...line!, changedAt: "last week" }).success).toBe(false);
+    expect(previousLine.safeParse({ ...line!, analysisId: "abc" }).success).toBe(false);
   });
 
   it("keeps each left goal's proof and the pitstops the person added on it, at most three", () => {
@@ -67,7 +92,9 @@ describe("previousLine and chosenAt schemas", () => {
 
   it("refuses more own pitstops on a left goal than a goal can have", () => {
     const left = [{ skillId: "a", name: "A", proved: false, ownPitstops: 4 }];
-    expect(previousLine.safeParse({ role: { slug: "x", title: "X" }, left, shared: 0 }).success).toBe(false);
+    const line = { role: { slug: "x", title: "X" }, analysisId: null, left, shared: 0, came: [], changedAt: null };
+    expect(previousLine.safeParse(line).success).toBe(false);
+    expect(previousLine.safeParse({ ...line, left: [{ ...left[0], ownPitstops: 3 }] }).success).toBe(true);
   });
 
   it("takes chosenAt only as an ISO date and time on the analysis", () => {

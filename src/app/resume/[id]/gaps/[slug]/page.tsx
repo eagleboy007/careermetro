@@ -4,9 +4,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { chooseDestination } from "@/app/(app)/map/actions";
 import { CoveredSkills } from "@/components/gaps/covered-skills";
 import { GapRating } from "@/components/gaps/gap-rating";
 import { JobCheck } from "@/components/gaps/job-check";
+import { MakeDestination } from "@/components/gaps/make-destination";
 import { ResumeNotFound } from "@/components/resume/resume-not-found";
 import { ScreeningCheck } from "@/components/resume/screening-check";
 import { GapCard } from "@/components/route/gap-card";
@@ -17,6 +19,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { roleProfiles, skills } from "@/content";
 import { SHOWN_GAPS } from "@/lib/gaps/analysis";
 import { askedInForGap, postingShares } from "@/lib/gaps/asked-in";
+import { currentAnalysis } from "@/lib/gaps/current";
 import { getGapsForOwner } from "@/lib/gaps/store";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import { goalSkillsOf, jobChecksForPage } from "@/lib/jobs/store";
@@ -57,7 +60,18 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
     );
   }
 
-  const { analysis, analysisId, rating } = result;
+  const { analysis, analysisId, rating, choosable } = result;
+  // "Make this your destination?" (C25; docs/plans/change-destination-plan.md): the signed-in person's own analysis only.
+  // Opening this page never switches the destination. Its name is extra: a failure to read it never hides the gaps.
+  let currentTitle: string | null = null;
+  if (choosable && owner?.userId !== undefined) {
+    try {
+      const current = await currentAnalysis(owner.userId);
+      currentTitle = current ? (roleProfiles.find((r) => r.slug === current.result.roleSlug)?.title ?? null) : null;
+    } catch (error) {
+      logEvent("error", "destination_read_failed", { route: "/resume/[id]/gaps/[slug]", role: slug, ...errorFields(error) });
+    }
+  }
   // Saved job checks are read-only here; a failure to load them never hides the gaps.
   let checks: JobCheckView[] | null;
   // The account's goal skills, for "Add as my goal"; null for an anonymous visitor, who is asked to sign in.
@@ -146,6 +160,10 @@ async function Gaps({ params }: { params: Promise<{ id: string; slug: string }> 
         </section>
       )}
       <GapRating analysisId={analysisId} initial={rating} />
+      {/* C25: the card at the foot of the page. Only for the signed-in person's own resume, never the sample. */}
+      {owner?.userId !== undefined && !result.sample && (
+        <MakeDestination analysisId={analysisId} roleTitle={role.title} currentTitle={currentTitle} choosable={choosable} onChoose={chooseDestination} />
+      )}
       <p className="text-sm text-muted">
         <Link href={`/resume/${id}/role`} className="underline underline-offset-2 hover:text-ink">
           Pick another role

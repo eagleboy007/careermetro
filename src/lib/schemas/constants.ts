@@ -758,6 +758,8 @@ export const AVAILABILITY_SAVES_PER_DAY = 30;
 export const MAX_TRACKS_PER_ROLE = 5;
 /** Track switches one person makes a day, each try counted. */
 export const TRACK_CHANGES_PER_DAY = 20;
+/** "Make this my destination" and "Switch back" presses one person makes a day, each try counted. */
+export const DESTINATION_CHANGES_PER_DAY = 20;
 
 /* Add a pitstop on the Map (FR-58): the person's own extra halts on a goal, path_steps.source = 'user' ------------- */
 

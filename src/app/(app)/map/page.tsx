@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { MetroMap } from "@/components/map/metro-map";
 import { addCertificate } from "../today/actions";
+import { chooseDestination } from "./actions";
 import { currentAccount } from "@/lib/auth/server";
 import { currentAnalysis } from "@/lib/gaps/current";
 import { exampleLifeLine, exampleMapLine } from "@/lib/map/fixtures";
@@ -36,7 +37,7 @@ async function MapScreen({ searchParams }: PageProps<"/map">) {
   return (
     <div className="flex flex-col gap-4">
       {line && <Banner>Your line comes from your gaps and your path, and your Life line from your resume. Other people on it appear once profiles can be found.</Banner>}
-      <MetroMap line={line} life={life} sample={sample} onAddCertificate={addCertificate} />
+      <MetroMap line={line} life={life} sample={sample} onAddCertificate={addCertificate} onChooseDestination={chooseDestination} />
     </div>
   );
 }
