@@ -453,7 +453,7 @@ describe.skipIf(!db)("job checks (database)", () => {
       expect(await snapshot()).toEqual(before);
 
       const [row] = await checksOf(me.resumeId);
-      expect(row).toMatchObject({ roleSlug: null, title: "Fleet Planning Analyst", unknownSkills: ["Fleet scheduling", "SAP WM"] });
+      expect(row).toMatchObject({ roleSlug: null, title: "Fleet Planning Analyst", unknownSkills: ["Fleet scheduling", "Toll reconciliation"] });
       const [call] = await db!.select().from(schema.aiCalls).where(eq(schema.aiCalls.id, row.aiCallId!));
       expect(call.inputRefs).toEqual({ resumeId: me.resumeId });
 
