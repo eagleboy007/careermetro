@@ -986,11 +986,14 @@ if (process.env.DATABASE_URL) {
         mapSwitch(p).click({ force: true }),
       ]);
       await p.locator("[data-map-share]").getByRole("status").getByText("You now show on the map.").waitFor({ timeout: 10000 });
+      // The switch stays dimmed until the save's refresh lands; scan it as people see it after that.
+      await p.waitForFunction(() => document.querySelector("fieldset[data-map-share]")?.disabled === false, null, { timeout: 10000 });
       await a11y("on-your-line-me");
       const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
       if (data.exportVersion !== 39) throw new Error(`export version ${data.exportVersion}`);
       if (data.settings?.showOnMap !== true) throw new Error("the download lacks showOnMap");
-      if (/Bina|Chetan|Asha Kulkarni/.test(JSON.stringify(data))) throw new Error("the download names other people on the pitstop");
+      // Bina is a connection, so she is in the Network part of the download (FR-49); the others on the pitstop are not.
+      if (/Chetan|Asha Kulkarni/.test(JSON.stringify(data))) throw new Error("the download names other people on the pitstop");
     } finally {
       await p.setViewportSize({ width: 1280, height: 900 });
       await p.emulateMedia({ colorScheme: "light" });
