@@ -1,0 +1,123 @@
+{
+  "slug": "customer-service-team-leader",
+  "title": "Customer Service Team Leader",
+  "summary": "A customer service team leader runs a team of about 10 to 20 voice, chat or email agents in a BPO or in-house contact centre and owns its handle time, satisfaction (CSAT) and first-contact resolution numbers. The role reports to an operations manager and coaches agents, manages rosters and takes escalated calls.",
+  "dailyDuties": [
+    "Run start-of-shift huddles and share targets with agents",
+    "Monitor live calls or chats and coach agents one-on-one",
+    "Track AHT, CSAT, FCR and roster adherence through the day",
+    "Take escalated calls from unhappy customers",
+    "Plan rosters, leaves and breaks to keep shrinkage in limits",
+    "Review agent scorecards and run improvement plans",
+    "Send daily and weekly team MIS to the operations manager"
+  ],
+  "typicalTitles": [
+    "Team Leader - Customer Service",
+    "Team Leader - Voice Process",
+    "Team Lead - Customer Support",
+    "Contact Centre Team Leader",
+    "Team Leader - Chat Process",
+    "Customer Care Team Leader",
+    "Team Leader - Inbound Voice Process"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "contact-centre-metrics",
+      "importance": "required",
+      "expectation": "Own the team's AHT, CSAT, FCR and service-level targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "workforce-roster-shrinkage",
+      "importance": "required",
+      "expectation": "Manage rosters, login hours, breaks and shrinkage with the workforce team",
+      "postingShare": null
+    },
+    {
+      "skillId": "call-quality-coaching",
+      "importance": "required",
+      "expectation": "Listen to calls or chats, give feedback and coach agents one-on-one",
+      "postingShare": null
+    },
+    {
+      "skillId": "agent-performance-management",
+      "importance": "required",
+      "expectation": "Run agent scorecards, reviews and improvement plans for a team of 10 to 20",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "required",
+      "expectation": "Take escalated calls and close complaints the agents could not resolve",
+      "postingShare": null
+    },
+    {
+      "skillId": "omnichannel-support",
+      "importance": "required",
+      "expectation": "Know the voice, chat or email process the team works on",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build daily and weekly team MIS and dashboards in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead, motivate and hold a frontline team accountable",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Run team huddles and explain results to managers and clients",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use the CRM to review customer history and case notes",
+      "postingShare": null
+    },
+    {
+      "skillId": "support-ticketing-tools",
+      "importance": "nice_to_have",
+      "expectation": "Track open tickets and backlog in the help desk tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "nice_to_have",
+      "expectation": "Find the cause of repeat calls and low scores",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-engagement",
+      "importance": "nice_to_have",
+      "expectation": "Run team engagement activities to keep attrition down",
+      "postingShare": null
+    },
+    {
+      "skillId": "training-delivery-facilitation",
+      "importance": "nice_to_have",
+      "expectation": "Deliver refresher and process-update sessions to agents",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,56 @@
+{
+  "id": "event-marketing-executive-from-event-agency-coordinator",
+  "roleSlug": "event-marketing-executive",
+  "persona": "Event agency coordinator moving to an in-house event marketing role",
+  "resumeText": "Sneha Iyer | Bengaluru | sneha.iyer@example.com\n\nEXPERIENCE\nSenior Event Coordinator, Lotus Lane Events, Bengaluru (2022 - present)\n- Planned and executed 30 corporate conferences and product launches for clients of 200 to 1,500 guests.\n- Managed stall fabrication and logistics for clients at trade shows in Bengaluru, Mumbai and Delhi NCR.\n- Organised annual dealer meets for a two-wheeler client with 600 dealers in Goa and Jaipur.\n- Handled venue booking and briefed AV, fabrication and hospitality vendors for every event.\n- Ran mall and college BTL activations for a consumer electronics brand across six cities.\n\nEvent Executive, Lotus Lane Events, Bengaluru (2021 - 2022)\n- Prepared event run sheets and managed guest registration desks.\n\nEDUCATION\nBBA, Christ University, Bengaluru, 2021\n\nSKILLS\nEvent budgets, MS Excel, Canva\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "event-planning-execution",
+        "quote": "Planned and executed 30 corporate conferences and product launches"
+      },
+      {
+        "skillId": "trade-show-exhibition-management",
+        "quote": "Managed stall fabrication and logistics for clients at trade shows"
+      },
+      {
+        "skillId": "dealer-channel-events",
+        "quote": "Organised annual dealer meets for a two-wheeler client"
+      },
+      {
+        "skillId": "event-vendor-venue-management",
+        "quote": "Handled venue booking and briefed AV, fabrication and hospitality vendors"
+      },
+      {
+        "skillId": "atl-btl-campaigns",
+        "quote": "Ran mall and college BTL activations for a consumer electronics brand"
+      },
+      {
+        "skillId": "event-budget-roi",
+        "quote": "Event budgets, MS Excel, Canva"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "event-budget-roi",
+        "status": "weak"
+      },
+      {
+        "skillId": "event-lead-capture",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "event-lead-capture",
+      "crm-tools",
+      "email-marketing",
+      "performance-marketing"
+    ]
+  },
+  "reviewedBy": null
+}

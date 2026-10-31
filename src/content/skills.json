@@ -10194,5 +10194,1238 @@
     ],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "property-site-visits",
+    "name": "Property site visits and sample flat walkthroughs",
+    "category": "business",
+    "aliases": [
+      "property site visits",
+      "project site visits",
+      "sample flat walkthroughs",
+      "sample flat visits",
+      "site visit conversions",
+      "site visits and revisits"
+    ],
+    "ambiguous": [
+      "project site visits"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "property-enquiry-follow-up",
+    "name": "Property enquiry follow-up and walk-in conversion",
+    "category": "business",
+    "aliases": [
+      "property enquiry follow-up",
+      "walk-in enquiries",
+      "walk-in conversions",
+      "revisit follow-ups",
+      "real estate lead management",
+      "enquiry to site visit conversion"
+    ],
+    "ambiguous": [
+      "real estate lead management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "property-booking-documentation",
+    "name": "Property booking, allotment and agreement process",
+    "category": "business",
+    "aliases": [
+      "booking form",
+      "booking formalities",
+      "cost sheet preparation",
+      "allotment letter",
+      "agreement for sale",
+      "builder buyer agreement",
+      "demand letters",
+      "unit booking process"
+    ],
+    "ambiguous": [
+      "booking form"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "buyer-home-loan-coordination",
+    "name": "Home loan coordination for property buyers",
+    "category": "business",
+    "aliases": [
+      "home loan tie-ups",
+      "bank tie-ups for home loans",
+      "home loan assistance to buyers",
+      "apf approved project",
+      "home loan coordination"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rera-compliance-basics",
+    "name": "RERA rules for real estate sales",
+    "category": "business",
+    "aliases": [
+      "rera",
+      "rera compliance",
+      "rera registration",
+      "maharera",
+      "k-rera",
+      "real estate regulation and development act"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "real-estate-channel-partners",
+    "name": "Real estate channel partner (broker) management",
+    "category": "business",
+    "aliases": [
+      "real estate channel partners",
+      "channel partner meets",
+      "cp empanelment",
+      "broker network management",
+      "channel partner sourcing for projects",
+      "cp payouts"
+    ],
+    "ambiguous": [
+      "broker network management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mortgage-channel-sourcing",
+    "name": "Home loan sourcing through DSA, connector and builder channels",
+    "category": "business",
+    "aliases": [
+      "dsa sourcing",
+      "dsa channel management",
+      "connector channel",
+      "builder channel sourcing",
+      "home loan sourcing",
+      "mortgage sourcing",
+      "dst channel"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "home-loan-lap-products",
+    "name": "Home loan, LAP and balance-transfer products",
+    "category": "business",
+    "aliases": [
+      "loan against property",
+      "home loan balance transfer",
+      "balance transfer with top-up",
+      "affordable housing loans",
+      "pmay subsidy",
+      "pmay clss",
+      "mortgage products"
+    ],
+    "ambiguous": [
+      "mortgage products"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "loan-eligibility-assessment",
+    "name": "Customer loan eligibility assessment (FOIR, LTV)",
+    "category": "business",
+    "aliases": [
+      "foir",
+      "foir calculation",
+      "loan eligibility calculation",
+      "income eligibility assessment",
+      "ltv calculation",
+      "eligibility assessment for loans"
+    ],
+    "ambiguous": [
+      "loan eligibility calculation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "loan-file-documentation",
+    "name": "Loan file documentation and login file preparation",
+    "category": "business",
+    "aliases": [
+      "loan file documentation",
+      "loan documentation",
+      "login file preparation",
+      "property papers collection",
+      "itr and bank statement collection",
+      "document pick-up for loans"
+    ],
+    "ambiguous": [
+      "loan documentation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "login-to-disbursement-tracking",
+    "name": "Login-to-disbursement file tracking",
+    "category": "business",
+    "aliases": [
+      "login to disbursement",
+      "login to sanction",
+      "file login",
+      "sanction to disbursement",
+      "disbursement tracking",
+      "pdd collection",
+      "post-disbursement documents"
+    ],
+    "ambiguous": [
+      "file login",
+      "disbursement tracking"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ecommerce-assortment-planning",
+    "name": "E-commerce assortment and selection planning",
+    "category": "business",
+    "aliases": [
+      "assortment planning",
+      "selection expansion",
+      "range planning",
+      "sku rationalisation",
+      "sku rationalization",
+      "assortment gap analysis"
+    ],
+    "ambiguous": [
+      "assortment planning",
+      "range planning"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "seller-brand-onboarding",
+    "name": "Seller and brand onboarding on marketplaces",
+    "category": "business",
+    "aliases": [
+      "seller onboarding",
+      "brand onboarding",
+      "seller acquisition",
+      "brand acquisition",
+      "marketplace seller management",
+      "seller account management"
+    ],
+    "ambiguous": [
+      "seller onboarding",
+      "seller account management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ecommerce-pricing-promotions",
+    "name": "Marketplace pricing and promotions",
+    "category": "business",
+    "aliases": [
+      "marketplace pricing",
+      "pricing and promotions",
+      "sale event planning",
+      "promotion planning",
+      "deal planning",
+      "competitive price benchmarking",
+      "promotion funding"
+    ],
+    "ambiguous": [
+      "pricing and promotions",
+      "promotion planning",
+      "deal planning"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "category-gmv-margin-management",
+    "name": "Category GMV and margin management",
+    "category": "business",
+    "aliases": [
+      "category p&l",
+      "category gmv",
+      "gmv growth",
+      "category margin management",
+      "take rate",
+      "gmv targets"
+    ],
+    "ambiguous": [
+      "gmv growth",
+      "take rate",
+      "gmv targets"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "catalogue-quality-management",
+    "name": "Catalogue and listing quality",
+    "category": "business",
+    "aliases": [
+      "catalogue quality",
+      "catalog quality",
+      "listing quality",
+      "catalogue enrichment",
+      "catalog enrichment",
+      "product listing optimisation",
+      "product content quality"
+    ],
+    "ambiguous": [
+      "catalog quality",
+      "catalogue enrichment",
+      "catalog enrichment"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "survey-fieldwork-management",
+    "name": "Survey fieldwork management",
+    "category": "marketing",
+    "aliases": [
+      "fieldwork management",
+      "field team briefing",
+      "quota monitoring",
+      "fieldwork quality checks",
+      "back-checks",
+      "cati fieldwork",
+      "capi fieldwork"
+    ],
+    "ambiguous": [
+      "quota monitoring"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "spss-statistics",
+    "name": "IBM SPSS Statistics",
+    "category": "tools",
+    "aliases": [
+      "spss",
+      "ibm spss",
+      "spss statistics",
+      "spss syntax",
+      "spss data analysis"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "statistics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "survey-data-tabulation",
+    "name": "Survey data tabulation and weighting",
+    "category": "marketing",
+    "aliases": [
+      "cross-tabulation",
+      "cross-tabulations",
+      "cross tabulation",
+      "tabulation specs",
+      "tabulation plan",
+      "banner tables",
+      "survey data weighting"
+    ],
+    "ambiguous": [
+      "cross-tabulation",
+      "cross-tabulations",
+      "cross tabulation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "qualitative-fgd-moderation",
+    "name": "Focus groups and depth interviews (qualitative research)",
+    "category": "marketing",
+    "aliases": [
+      "focus group discussions",
+      "fgds",
+      "fgd moderation",
+      "depth interviews",
+      "in-depth interviews",
+      "discussion guide",
+      "focus group moderation"
+    ],
+    "ambiguous": [
+      "depth interviews",
+      "in-depth interviews",
+      "discussion guide"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "market-research-reporting",
+    "name": "Market research report writing",
+    "category": "marketing",
+    "aliases": [
+      "market research reports",
+      "topline reports",
+      "research debriefs",
+      "insight decks",
+      "research report writing",
+      "client debrief decks"
+    ],
+    "ambiguous": [
+      "insight decks",
+      "research report writing"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "secondary-desk-research",
+    "name": "Secondary and desk research",
+    "category": "marketing",
+    "aliases": [
+      "secondary research",
+      "desk research",
+      "market sizing",
+      "secondary data research",
+      "industry desk research"
+    ],
+    "ambiguous": [
+      "secondary research",
+      "desk research",
+      "market sizing"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pitch-book-preparation",
+    "name": "Pitch book preparation",
+    "category": "business",
+    "aliases": [
+      "pitch books",
+      "pitch book preparation",
+      "pitchbook preparation",
+      "client pitch materials",
+      "pitch materials for mandates",
+      "credentials decks"
+    ],
+    "ambiguous": [
+      "client pitch materials"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mna-deal-execution",
+    "name": "M&A deal execution",
+    "category": "business",
+    "aliases": [
+      "m&a transactions",
+      "m&a deal execution",
+      "buy-side mandates",
+      "sell-side mandates",
+      "merger models",
+      "accretion dilution analysis",
+      "precedent transactions analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "capital-markets-transactions",
+    "name": "Equity and debt capital markets transactions (ECM/DCM)",
+    "category": "business",
+    "aliases": [
+      "ecm transactions",
+      "equity capital markets",
+      "debt capital markets",
+      "dcm transactions",
+      "ipo transactions",
+      "qip transactions",
+      "drhp drafting",
+      "ncd issuances"
+    ],
+    "ambiguous": [
+      "equity capital markets",
+      "debt capital markets"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "information-memorandum-drafting",
+    "name": "Teasers and information memoranda",
+    "category": "business",
+    "aliases": [
+      "information memorandum",
+      "information memoranda",
+      "confidential information memorandum",
+      "teasers and information memoranda",
+      "deal teasers",
+      "cim drafting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "deal-due-diligence-data-room",
+    "name": "Deal due diligence and data room management",
+    "category": "business",
+    "aliases": [
+      "virtual data room",
+      "data room management",
+      "vdr management",
+      "due diligence data room",
+      "due diligence trackers",
+      "financial due diligence coordination"
+    ],
+    "ambiguous": [
+      "virtual data room"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sebi-icdr-regulations",
+    "name": "SEBI ICDR regulations",
+    "category": "business",
+    "aliases": [
+      "sebi icdr",
+      "icdr regulations",
+      "sebi (icdr) regulations",
+      "issue of capital and disclosure requirements",
+      "sebi icdr regulations"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "product-cost-sheets",
+    "name": "Product cost sheets and BOM costing",
+    "category": "business",
+    "aliases": [
+      "cost sheets",
+      "product cost sheets",
+      "plant-wise cost sheets",
+      "sku-wise costing",
+      "bom costing",
+      "cost of production statements"
+    ],
+    "ambiguous": [
+      "cost sheets",
+      "bom costing"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "standard-costing-variance",
+    "name": "Standard costing and cost variance analysis",
+    "category": "business",
+    "aliases": [
+      "standard costing",
+      "standard cost updates",
+      "standard cost revision",
+      "material price variance",
+      "material usage variance",
+      "labour efficiency variance",
+      "overhead absorption variance"
+    ],
+    "ambiguous": [
+      "standard costing"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cost-records-audit-compliance",
+    "name": "Cost records and cost audit compliance",
+    "category": "business",
+    "aliases": [
+      "cost audit",
+      "cost audit report",
+      "cost audit compliance",
+      "cost records maintenance",
+      "companies (cost records and audit) rules",
+      "cost records and audit rules",
+      "form cra-1",
+      "form cra-3"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "inventory-valuation",
+    "name": "Inventory valuation",
+    "category": "business",
+    "aliases": [
+      "inventory valuation",
+      "stock valuation",
+      "wip valuation",
+      "finished goods valuation",
+      "ind as 2 inventory valuation",
+      "weighted average inventory costing"
+    ],
+    "ambiguous": [
+      "inventory valuation",
+      "stock valuation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "overhead-allocation-absorption",
+    "name": "Overhead allocation and absorption",
+    "category": "business",
+    "aliases": [
+      "overhead allocation",
+      "overhead absorption",
+      "machine hour rate",
+      "machine hour rates",
+      "activity based costing",
+      "activity-based costing",
+      "cost centre allocation"
+    ],
+    "ambiguous": [
+      "activity based costing",
+      "activity-based costing",
+      "overhead allocation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "event-planning-execution",
+    "name": "Event planning and execution",
+    "category": "marketing",
+    "aliases": [
+      "event planning and execution",
+      "end-to-end event execution",
+      "event management",
+      "conference management",
+      "event run sheets",
+      "on-ground event execution",
+      "corporate events planning"
+    ],
+    "ambiguous": [
+      "event management",
+      "conference management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "trade-show-exhibition-management",
+    "name": "Trade show and exhibition management",
+    "category": "marketing",
+    "aliases": [
+      "trade shows",
+      "trade show management",
+      "exhibition stall management",
+      "exhibition booth design",
+      "stall fabrication",
+      "exhibition participation",
+      "expo participation"
+    ],
+    "ambiguous": [
+      "trade shows"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dealer-channel-events",
+    "name": "Dealer meets and channel partner events",
+    "category": "marketing",
+    "aliases": [
+      "dealer meets",
+      "dealer meet",
+      "distributor meets",
+      "dealer conferences",
+      "retailer meets"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "event-vendor-venue-management",
+    "name": "Event vendor and venue management",
+    "category": "marketing",
+    "aliases": [
+      "venue sourcing",
+      "venue booking",
+      "event vendor management",
+      "event vendors",
+      "av vendors",
+      "event agency coordination",
+      "fabrication vendors"
+    ],
+    "ambiguous": [
+      "venue booking"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "event-budget-roi",
+    "name": "Event budgets and ROI tracking",
+    "category": "marketing",
+    "aliases": [
+      "event budgets",
+      "event budget management",
+      "event roi",
+      "event roi tracking",
+      "cost per lead for events",
+      "events budget"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "event-lead-capture",
+    "name": "Event lead capture and follow-up",
+    "category": "marketing",
+    "aliases": [
+      "event lead capture",
+      "lead capture at events",
+      "badge scanning",
+      "lead retrieval app",
+      "post-event follow-up",
+      "post-event lead follow-up"
+    ],
+    "ambiguous": [
+      "badge scanning",
+      "lead retrieval app"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "union-negotiation-settlements",
+    "name": "Union negotiations and long-term settlements",
+    "category": "business",
+    "aliases": [
+      "union negotiations",
+      "collective bargaining",
+      "long term settlement",
+      "long-term settlement",
+      "long-term wage settlement",
+      "wage settlements",
+      "charter of demands",
+      "12(3) settlement",
+      "18(1) settlement"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "disciplinary-enquiry-drafting",
+    "name": "Charge sheets and disciplinary enquiry documentation",
+    "category": "business",
+    "aliases": [
+      "charge sheets",
+      "charge sheet drafting",
+      "show cause notices",
+      "enquiry proceedings",
+      "enquiry officer",
+      "misconduct cases",
+      "certified standing orders"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "contract-labour-compliance",
+    "name": "Contract labour management and compliance",
+    "category": "business",
+    "aliases": [
+      "contract labour management",
+      "contract workmen",
+      "contractor compliance audits",
+      "clra registration",
+      "contract labour licence",
+      "clra compliance",
+      "labour contractor management"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "factories-act-compliance",
+    "name": "Factories Act and OSH Code compliance",
+    "category": "business",
+    "aliases": [
+      "factories act",
+      "factories act 1948",
+      "factory licence",
+      "factory licence renewal",
+      "factories act registers",
+      "osh code",
+      "occupational safety, health and working conditions code"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "labour-welfare-administration",
+    "name": "Statutory welfare and canteen administration",
+    "category": "business",
+    "aliases": [
+      "canteen management",
+      "canteen committee",
+      "works committee",
+      "welfare amenities",
+      "statutory welfare officer",
+      "labour welfare activities"
+    ],
+    "ambiguous": [
+      "canteen management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "labour-authority-liaison",
+    "name": "Liaison with labour authorities and conciliation",
+    "category": "business",
+    "aliases": [
+      "labour department liaison",
+      "conciliation proceedings",
+      "labour court cases",
+      "government liaisoning",
+      "conciliation officer meetings"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "facility-vendor-management",
+    "name": "Facility services vendor management (housekeeping, security, pantry)",
+    "category": "business",
+    "aliases": [
+      "housekeeping vendor management",
+      "security vendor management",
+      "facility vendor management",
+      "housekeeping and security vendors",
+      "soft services management",
+      "pantry and cafeteria vendors",
+      "facility vendor slas"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "amc-contract-management",
+    "name": "AMC and facility equipment maintenance contracts",
+    "category": "business",
+    "aliases": [
+      "annual maintenance contracts",
+      "amc renewals",
+      "amc tracker",
+      "amc management",
+      "dg set maintenance",
+      "hvac and ups amcs",
+      "facility preventive maintenance"
+    ],
+    "ambiguous": [
+      "annual maintenance contracts",
+      "amc renewals",
+      "amc tracker",
+      "amc management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "travel-desk-management",
+    "name": "Corporate travel desk management",
+    "category": "business",
+    "aliases": [
+      "travel desk",
+      "travel desk management",
+      "corporate travel bookings",
+      "travel and accommodation bookings",
+      "flight and hotel bookings",
+      "travel agency coordination"
+    ],
+    "ambiguous": [
+      "flight and hotel bookings"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "office-statutory-licences",
+    "name": "Office statutory licences and fire safety compliance",
+    "category": "business",
+    "aliases": [
+      "fire noc",
+      "trade licence renewal",
+      "trade license renewal",
+      "shops and establishment registration",
+      "lift licence renewal",
+      "statutory licence renewals",
+      "fire safety drills",
+      "dg set noc"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "office-supplies-inventory",
+    "name": "Office supplies, stationery and admin asset inventory",
+    "category": "business",
+    "aliases": [
+      "office supplies procurement",
+      "stationery management",
+      "stationery inventory",
+      "pantry supplies",
+      "admin asset register",
+      "office asset tagging"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "office-space-planning",
+    "name": "Office space planning and seating",
+    "category": "business",
+    "aliases": [
+      "space planning",
+      "seating plan",
+      "seat allocation",
+      "office relocation",
+      "office fit-out coordination",
+      "workspace planning"
+    ],
+    "ambiguous": [
+      "space planning",
+      "seat allocation",
+      "office relocation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "workforce-roster-shrinkage",
+    "name": "Roster adherence and shrinkage management",
+    "category": "business",
+    "aliases": [
+      "roster adherence",
+      "schedule adherence",
+      "shrinkage management",
+      "agent shrinkage",
+      "roster planning",
+      "login hours tracking",
+      "intraday management",
+      "shift roster"
+    ],
+    "ambiguous": [
+      "schedule adherence",
+      "roster planning",
+      "shift roster"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "call-quality-coaching",
+    "name": "Call quality monitoring and agent coaching",
+    "category": "business",
+    "aliases": [
+      "call quality coaching",
+      "call monitoring",
+      "call barging",
+      "agent coaching",
+      "one-on-one coaching sessions",
+      "quality calibration sessions",
+      "call audits",
+      "chat audits"
+    ],
+    "ambiguous": [
+      "call monitoring",
+      "call barging"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "agent-performance-management",
+    "name": "Agent performance management (scorecards, PIPs)",
+    "category": "business",
+    "aliases": [
+      "agent scorecards",
+      "team performance scorecards",
+      "performance improvement plans",
+      "bottom quartile management",
+      "agent performance reviews",
+      "stack ranking of agents"
+    ],
+    "ambiguous": [
+      "agent scorecards",
+      "performance improvement plans"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "product-inspection-stages",
+    "name": "Incoming, in-process and final product inspection",
+    "category": "business",
+    "aliases": [
+      "incoming inspection",
+      "incoming quality inspection",
+      "iqc",
+      "in-process inspection",
+      "ipqc",
+      "final inspection",
+      "pre-dispatch inspection",
+      "first piece inspection",
+      "first article inspection"
+    ],
+    "ambiguous": [
+      "first article inspection"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dimensional-inspection-instruments",
+    "name": "Dimensional inspection with measuring instruments",
+    "category": "business",
+    "aliases": [
+      "vernier caliper",
+      "vernier callipers",
+      "micrometer",
+      "height gauge",
+      "bore gauge",
+      "dial gauge",
+      "thread gauges",
+      "plug gauges",
+      "profile projector"
+    ],
+    "ambiguous": [
+      "micrometer"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "engineering-drawing-reading",
+    "name": "Reading engineering drawings and tolerances (GD&T)",
+    "category": "business",
+    "aliases": [
+      "engineering drawings",
+      "drawing reading",
+      "gd&t",
+      "geometric dimensioning and tolerancing",
+      "blueprint reading",
+      "reading technical drawings"
+    ],
+    "ambiguous": [
+      "engineering drawings"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sampling-plans-aql",
+    "name": "Acceptance sampling plans (AQL)",
+    "category": "business",
+    "aliases": [
+      "aql sampling",
+      "acceptance sampling",
+      "sampling plans",
+      "sampling plan",
+      "ansi z1.4",
+      "is 2500 sampling",
+      "sampling inspection"
+    ],
+    "ambiguous": [
+      "sampling plans",
+      "sampling plan",
+      "acceptance sampling"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "non-conformance-capa",
+    "name": "Non-conformance reports and CAPA",
+    "category": "business",
+    "aliases": [
+      "non-conformance reports",
+      "non-conformance report",
+      "nonconformance reports",
+      "raising ncrs",
+      "material rejection notes",
+      "corrective and preventive action",
+      "capa",
+      "quarantine of rejected material"
+    ],
+    "ambiguous": [
+      "capa",
+      "corrective and preventive action"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "iso-9001-qms-documentation",
+    "name": "ISO 9001 quality management system documentation",
+    "category": "business",
+    "aliases": [
+      "iso 9001",
+      "iso 9001:2015",
+      "qms documentation",
+      "quality records",
+      "iatf 16949",
+      "internal quality audits",
+      "quality management system"
+    ],
+    "ambiguous": [
+      "iso 9001",
+      "iso 9001:2015",
+      "quality management system",
+      "internal quality audits"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "gauge-calibration-control",
+    "name": "Measuring instrument and gauge calibration control",
+    "category": "business",
+    "aliases": [
+      "instrument calibration",
+      "gauge calibration",
+      "calibration records",
+      "calibration schedule",
+      "nabl calibration",
+      "calibration due list"
+    ],
+    "ambiguous": [
+      "instrument calibration",
+      "calibration records",
+      "calibration schedule"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cmm-inspection",
+    "name": "CMM inspection",
+    "category": "business",
+    "aliases": [
+      "coordinate measuring machine",
+      "cmm inspection",
+      "cmm reports",
+      "cmm programming"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "customs-clearance-compliance",
+    "name": "Customs filing and compliance (bills of entry, ICEGATE)",
+    "category": "business",
+    "aliases": [
+      "icegate",
+      "bill of entry",
+      "bills of entry",
+      "customs duty calculation",
+      "hs code classification",
+      "hsn classification",
+      "customs compliance",
+      "advance bill of entry"
+    ],
+    "ambiguous": [
+      "hs code classification",
+      "hsn classification"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dgft-licences-export-obligation",
+    "name": "DGFT licences and export obligation (EPCG, Advance Authorisation)",
+    "category": "business",
+    "aliases": [
+      "epcg",
+      "epcg licence",
+      "epcg license",
+      "advance authorisation",
+      "advance authorization",
+      "export obligation discharge",
+      "eodc",
+      "iec registration",
+      "dgft licensing",
+      "dgft portal"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "export-incentive-claims",
+    "name": "Export incentive claims (RoDTEP, duty drawback)",
+    "category": "business",
+    "aliases": [
+      "rodtep",
+      "rodtep claims",
+      "duty drawback",
+      "drawback claims",
+      "rosctl",
+      "export incentives"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "export-realisation-ebrc",
+    "name": "Export realisation tracking (e-BRC, EDPMS, IDPMS)",
+    "category": "business",
+    "aliases": [
+      "e-brc",
+      "ebrc generation",
+      "edpms",
+      "idpms",
+      "export realisation",
+      "export proceeds realisation",
+      "bank realisation certificate"
+    ],
+    "ambiguous": [
+      "edpms",
+      "idpms"
+    ],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

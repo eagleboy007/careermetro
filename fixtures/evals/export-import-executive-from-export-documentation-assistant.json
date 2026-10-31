@@ -1,0 +1,63 @@
+{
+  "id": "export-import-executive-from-export-documentation-assistant",
+  "roleSlug": "export-import-executive",
+  "persona": "Export documentation assistant at a textile exporter moving into an EXIM compliance role",
+  "resumeText": "Nisha Patel | Ahmedabad | nisha.patel@example.com\n\nEXPERIENCE\nExport Documentation Executive, Sabarmati Textiles Ltd, Ahmedabad (2022 - present)\n- Prepared commercial invoices, packing lists and certificate of origin for about 40 export shipments a month.\n- Checked shipping bills filed on ICEGATE by our customs broker against invoices and HS code classification.\n- Filed RoDTEP claims and duty drawback follow-ups for all export shipments on the customs portal.\n- Prepared export documents under letters of credit and resolved bank discrepancies.\n- Coordinated with the CHA and freight forwarder coordination for container bookings and vessel cut-offs.\n- Kept the shipment and incentive tracker in Excel for the commercial head.\n\nAccounts Assistant, Navrang Traders, Ahmedabad (2020 - 2022)\n- Posted purchase and sales entries in Tally.\n\nSKILLS\nEPCG, e-BRC, SAP\n\nEDUCATION\nB.Com, Gujarat University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "exim-documentation",
+        "quote": "Prepared commercial invoices, packing lists and certificate of origin"
+      },
+      {
+        "skillId": "customs-clearance-compliance",
+        "quote": "Checked shipping bills filed on ICEGATE by our customs broker"
+      },
+      {
+        "skillId": "export-incentive-claims",
+        "quote": "Filed RoDTEP claims and duty drawback follow-ups"
+      },
+      {
+        "skillId": "trade-finance-instruments",
+        "quote": "Prepared export documents under letters of credit"
+      },
+      {
+        "skillId": "transporter-3pl-management",
+        "quote": "freight forwarder coordination for container bookings"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Kept the shipment and incentive tracker in Excel"
+      },
+      {
+        "skillId": "dgft-licences-export-obligation",
+        "quote": "EPCG, e-BRC, SAP"
+      },
+      {
+        "skillId": "export-realisation-ebrc",
+        "quote": "EPCG, e-BRC, SAP"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "dgft-licences-export-obligation",
+        "status": "weak"
+      },
+      {
+        "skillId": "export-realisation-ebrc",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "forex-risk-hedging",
+      "gst-tds-compliance",
+      "freight-billing-control"
+    ]
+  },
+  "reviewedBy": null
+}

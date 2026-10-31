@@ -1,0 +1,123 @@
+{
+  "slug": "category-manager-ecommerce",
+  "title": "Category Manager - E-commerce",
+  "summary": "An e-commerce category manager runs one product category on a marketplace or quick-commerce app as a small business. They decide what to sell, bring in sellers and brands, and set prices and promotions to grow sales (GMV) and margin, working with supply, marketing and operations teams.",
+  "dailyDuties": [
+    "Review category GMV, margin and conversion each week",
+    "Find assortment gaps from search and sales data",
+    "Pitch and onboard new brands and sellers",
+    "Plan prices, deals and sale-event promotions",
+    "Negotiate margins and promotion funding with brands",
+    "Fix listing and catalogue quality issues",
+    "Work with supply teams on stock and fill rates"
+  ],
+  "typicalTitles": [
+    "Category Manager - Marketplace",
+    "Category Manager - Quick Commerce",
+    "Assistant Category Manager - E-commerce",
+    "Category Executive - E-commerce",
+    "Category Lead - Marketplace",
+    "Category Manager - Online Grocery",
+    "Seller Category Manager"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "ecommerce-assortment-planning",
+      "importance": "required",
+      "expectation": "Decide which products and brands the category should add, fix or drop, using search and sales data",
+      "postingShare": null
+    },
+    {
+      "skillId": "seller-brand-onboarding",
+      "importance": "required",
+      "expectation": "Find, pitch and onboard new sellers and brands, and grow the existing ones",
+      "postingShare": null
+    },
+    {
+      "skillId": "ecommerce-pricing-promotions",
+      "importance": "required",
+      "expectation": "Set competitive prices and plan promotions and sale events with brand funding",
+      "postingShare": null
+    },
+    {
+      "skillId": "category-gmv-margin-management",
+      "importance": "required",
+      "expectation": "Own the category's GMV (gross merchandise value) and margin targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "catalogue-quality-management",
+      "importance": "required",
+      "expectation": "Keep product listings complete and accurate so customers can find and trust them",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "required",
+      "expectation": "Negotiate margins, promotion funding and terms with brands and sellers",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build weekly category trackers and analyses in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with supply, marketing, ops and finance teams to launch and grow selection",
+      "postingShare": null
+    },
+    {
+      "skillId": "modern-trade-retail",
+      "importance": "nice_to_have",
+      "expectation": "Understand quick-commerce dark stores and how fast delivery changes assortment",
+      "postingShare": null
+    },
+    {
+      "skillId": "competitive-intelligence",
+      "importance": "nice_to_have",
+      "expectation": "Track competitor platforms on price, selection and offers",
+      "postingShare": null
+    },
+    {
+      "skillId": "inventory-planning-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Plan stock with supply teams to keep fill rates high",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull category data with SQL queries",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Plan sponsored ads and on-platform marketing with brands",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "mos-excel-associate",
+      "importance": "optional",
+      "why": "Shows the Excel skills used for category trackers; no India category-management certification was found."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

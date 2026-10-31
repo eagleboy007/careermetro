@@ -1,0 +1,117 @@
+{
+  "slug": "industrial-relations-officer",
+  "title": "Industrial Relations Officer",
+  "summary": "Industrial relations (IR) officers manage the relationship between a factory's management, its workers and their unions. They sit in the plant HR team and handle union talks, grievances, disciplinary enquiries, contract labour and compliance with factory and labour laws.",
+  "dailyDuties": [
+    "Meet union representatives and resolve shop-floor grievances",
+    "Draft charge sheets and conduct domestic enquiries",
+    "Audit labour contractors for licences, registers and wage payments",
+    "Maintain Factories Act registers and file returns",
+    "Review canteen, transport and welfare facilities with committees",
+    "Prepare data for wage settlement negotiations",
+    "Attend meetings with labour department officials"
+  ],
+  "typicalTitles": [
+    "IR Officer",
+    "Industrial Relations Executive",
+    "Plant IR Executive",
+    "Labour Welfare Officer",
+    "Factory HR & IR Officer",
+    "IR & Compliance Officer",
+    "Personnel & IR Officer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "union-negotiation-settlements",
+      "importance": "required",
+      "expectation": "Prepare for and take part in union negotiations and long-term wage settlements",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-relations",
+      "importance": "required",
+      "expectation": "Handle worker grievances on the shop floor and keep relations with unions stable",
+      "postingShare": null
+    },
+    {
+      "skillId": "disciplinary-enquiry-drafting",
+      "importance": "required",
+      "expectation": "Draft charge sheets and show cause notices and run domestic enquiries under the standing orders",
+      "postingShare": null
+    },
+    {
+      "skillId": "contract-labour-compliance",
+      "importance": "required",
+      "expectation": "Manage contractors and keep contract labour licences, registers and wage payments compliant",
+      "postingShare": null
+    },
+    {
+      "skillId": "factories-act-compliance",
+      "importance": "required",
+      "expectation": "Keep the plant compliant with the Factories Act and OSH Code: licence, registers, returns and inspections",
+      "postingShare": null
+    },
+    {
+      "skillId": "indian-labour-law-compliance",
+      "importance": "required",
+      "expectation": "Apply the labour codes on wages, PF, ESI, bonus and gratuity for plant workers",
+      "postingShare": null
+    },
+    {
+      "skillId": "labour-welfare-administration",
+      "importance": "required",
+      "expectation": "Run canteen, transport and other statutory welfare facilities and committees",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Talk with workers, union leaders and managers in English, Hindi or the local language",
+      "postingShare": null
+    },
+    {
+      "skillId": "labour-authority-liaison",
+      "importance": "nice_to_have",
+      "expectation": "Represent the plant before labour officers and in conciliation",
+      "postingShare": null
+    },
+    {
+      "skillId": "payroll-inputs-processing",
+      "importance": "nice_to_have",
+      "expectation": "Check attendance and wage inputs from the time office",
+      "postingShare": null
+    },
+    {
+      "skillId": "hrms-tools",
+      "importance": "nice_to_have",
+      "expectation": "Keep worker records in the HRMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-engagement",
+      "importance": "nice_to_have",
+      "expectation": "Organise engagement and safety-week events for workers",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Keep IR trackers and compliance calendars in Excel",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

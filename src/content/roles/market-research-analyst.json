@@ -1,0 +1,129 @@
+{
+  "slug": "market-research-analyst",
+  "title": "Market Research Analyst",
+  "summary": "A market research analyst runs surveys, focus groups and desk research to answer business questions about customers and markets. They usually work in a research agency or a company's insights team, designing studies, managing fieldwork, analysing data in tools like SPSS and Excel, and writing the report.",
+  "dailyDuties": [
+    "Draft and revise questionnaires with the client",
+    "Brief field teams and check quotas and data quality",
+    "Write tabulation specs and check data tables",
+    "Analyse survey data in SPSS and Excel",
+    "Prepare discussion guides and observe focus groups",
+    "Write topline reports and debrief decks",
+    "Gather secondary data for market sizing"
+  ],
+  "typicalTitles": [
+    "Market Research Executive",
+    "Research Executive - Market Research",
+    "Senior Research Executive - Consumer Research",
+    "Research Analyst - Primary Research",
+    "Primary Market Research Analyst",
+    "Quantitative Research Executive - Market Research",
+    "Market Research Associate"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "survey-research",
+      "importance": "required",
+      "expectation": "Design questionnaires for brand, usage and concept studies",
+      "postingShare": null
+    },
+    {
+      "skillId": "survey-fieldwork-management",
+      "importance": "required",
+      "expectation": "Brief field teams and monitor quotas, quality and back-checks during fieldwork",
+      "postingShare": null
+    },
+    {
+      "skillId": "spss-statistics",
+      "importance": "required",
+      "expectation": "Clean and analyse survey data in SPSS",
+      "postingShare": null
+    },
+    {
+      "skillId": "survey-data-tabulation",
+      "importance": "required",
+      "expectation": "Write tabulation specs and check cross-tabs and banner tables",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "required",
+      "expectation": "Run significance tests such as t-tests, chi-square and ANOVA",
+      "postingShare": null
+    },
+    {
+      "skillId": "qualitative-fgd-moderation",
+      "importance": "required",
+      "expectation": "Write discussion guides and moderate or observe focus groups and depth interviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "market-research-reporting",
+      "importance": "required",
+      "expectation": "Write topline reports and insight decks that answer the client's question",
+      "postingShare": null
+    },
+    {
+      "skillId": "secondary-desk-research",
+      "importance": "required",
+      "expectation": "Gather and summarise secondary data and estimate market sizes",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Clean data and build charts and tables in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present findings to clients and brand teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "consumer-insights",
+      "importance": "nice_to_have",
+      "expectation": "Turn study results into consumer insights for brand teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-market-research",
+      "importance": "nice_to_have",
+      "expectation": "Build segments and personas from research",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Turn results into clear charts and dashboards",
+      "postingShare": null
+    },
+    {
+      "skillId": "competitive-intelligence",
+      "importance": "nice_to_have",
+      "expectation": "Profile competitors as part of a study",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "mos-excel-associate",
+      "importance": "optional",
+      "why": "Excel is used daily for data cleaning and charts in research reports."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

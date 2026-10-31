@@ -1,0 +1,118 @@
+{
+  "slug": "quality-control-inspector",
+  "title": "Quality Control Inspector",
+  "summary": "A quality control inspector checks raw material, parts on the line and finished goods in a factory against drawings and specifications, using measuring instruments and sampling plans. The role sits in the plant's quality department, reports to a quality engineer or head, and raises non-conformance reports when parts fail.",
+  "dailyDuties": [
+    "Inspect incoming material against the quality plan and supplier documents",
+    "Measure in-process parts with vernier, micrometer and gauges",
+    "Do final inspection before dispatch using the sampling plan",
+    "Raise non-conformance reports and hold rejected material",
+    "Fill inspection reports and quality records for ISO 9001",
+    "Check that instruments are calibrated before use",
+    "Join root cause discussions on repeat defects"
+  ],
+  "typicalTitles": [
+    "QC Inspector",
+    "Quality Inspector",
+    "Incoming Quality Inspector",
+    "In-Process Quality Inspector",
+    "Final Inspection Inspector",
+    "IQC Inspector",
+    "Line Quality Inspector",
+    "Quality Control Inspector - Machining"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "product-inspection-stages",
+      "importance": "required",
+      "expectation": "Carry out incoming, in-process and final inspection against the quality plan",
+      "postingShare": null
+    },
+    {
+      "skillId": "dimensional-inspection-instruments",
+      "importance": "required",
+      "expectation": "Measure parts with vernier, micrometer, height gauge and plug or thread gauges",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-drawing-reading",
+      "importance": "required",
+      "expectation": "Read drawings and tolerances to decide accept or reject",
+      "postingShare": null
+    },
+    {
+      "skillId": "sampling-plans-aql",
+      "importance": "required",
+      "expectation": "Pick samples to the agreed AQL sampling plan",
+      "postingShare": null
+    },
+    {
+      "skillId": "non-conformance-capa",
+      "importance": "required",
+      "expectation": "Raise non-conformance reports, hold rejected material and follow up corrective actions",
+      "postingShare": null
+    },
+    {
+      "skillId": "iso-9001-qms-documentation",
+      "importance": "required",
+      "expectation": "Fill inspection reports and quality records the ISO 9001 system needs",
+      "postingShare": null
+    },
+    {
+      "skillId": "gauge-calibration-control",
+      "importance": "required",
+      "expectation": "Use only calibrated instruments and keep the calibration list up to date",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "required",
+      "expectation": "Help find the root cause of defects with why-why or fishbone analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistical-process-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Plot control charts and support gauge R&R studies",
+      "postingShare": null
+    },
+    {
+      "skillId": "cmm-inspection",
+      "importance": "nice_to_have",
+      "expectation": "Run or read CMM reports for complex parts",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Keep inspection data and rejection trends in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "warehouse-safety-5s",
+      "importance": "nice_to_have",
+      "expectation": "Follow 5S and safety rules on the shop floor",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Explain rejections clearly to production and suppliers",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

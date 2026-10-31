@@ -1,0 +1,55 @@
+{
+  "id": "industrial-relations-officer-from-plant-hr-executive",
+  "roleSlug": "industrial-relations-officer",
+  "persona": "Plant HR executive at a unionised auto parts plant moving into a full IR role",
+  "resumeText": "Arvind Yadav | Gurugram | arvind.yadav@example.com\n\nEXPERIENCE\nExecutive - Plant HR, Aravali Auto Components Ltd, Manesar (2020 - present)\n- Handled shop-floor grievances of 900 workmen and met union representatives every week.\n- Drafted charge sheets and show cause notices for misconduct cases under certified standing orders.\n- Audited 14 labour contractors for licences, wage registers and PF and ESI payments.\n- Maintained Factories Act registers and filed annual and half-yearly returns.\n- Ran the canteen committee and works committee meetings each month.\n- Prepared wage cost data for management ahead of the wage talks with the union.\n\nHR Trainee, Aravali Auto Components Ltd, Manesar (2019 - 2020)\n- Supported the time office with attendance and overtime records.\n\nEDUCATION\nMBA (HR), Maharshi Dayanand University, Rohtak, 2019\nBA, University of Delhi, 2017\n\nSKILLS\nLabour law compliance, Wage settlements, MS Excel, greytHR\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "employee-relations",
+        "quote": "Handled shop-floor grievances of 900 workmen"
+      },
+      {
+        "skillId": "disciplinary-enquiry-drafting",
+        "quote": "Drafted charge sheets and show cause notices for misconduct cases"
+      },
+      {
+        "skillId": "contract-labour-compliance",
+        "quote": "Audited 14 labour contractors for licences, wage registers"
+      },
+      {
+        "skillId": "factories-act-compliance",
+        "quote": "Maintained Factories Act registers and filed annual and half-yearly returns"
+      },
+      {
+        "skillId": "labour-welfare-administration",
+        "quote": "Ran the canteen committee and works committee meetings"
+      },
+      {
+        "skillId": "indian-labour-law-compliance",
+        "quote": "wage registers and PF and ESI payments"
+      },
+      {
+        "skillId": "union-negotiation-settlements",
+        "quote": "Labour law compliance, Wage settlements, MS Excel, greytHR"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "union-negotiation-settlements",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "labour-authority-liaison",
+      "full-cycle-recruitment",
+      "compensation-planning"
+    ]
+  },
+  "reviewedBy": null
+}
