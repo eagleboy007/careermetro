@@ -1,5 +1,5 @@
 import { roleProfiles } from "@/content";
-import { HOURS_BY_STATUS, matchProfile, type MatchedSkill } from "@/lib/gaps/match";
+import { HOURS_BY_STATUS, profileMatcher, type MatchedSkill } from "@/lib/gaps/match";
 import { MIN_SHARE } from "@/lib/gaps/suggest";
 import { matchList, type MatchHours, type MatchList, type MatchRole, type Profile, type RoleProfile } from "@/lib/schemas";
 import { clip } from "@/lib/text";
@@ -60,8 +60,9 @@ export function matchListFor({
   openJobs = new Map(),
   now = new Date(),
 }: MatchInput): MatchList {
+  const matchRole = profileMatcher(profile, now);
   const out: MatchRole[] = roles.flatMap((role) => {
-    const match = matchProfile(profile, role, now);
+    const match = matchRole(role);
     const required = match.readiness.requiredTotal;
     if (required === 0) return [];
     const open = match.gaps.filter((g) => !unitSkills(g).some((id) => proved.has(id)));

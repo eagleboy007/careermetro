@@ -1,5 +1,5 @@
 import { roleProfiles, skills } from "@/content";
-import { matchProfile, type MatchedSkill } from "@/lib/gaps/match";
+import { profileMatcher, type MatchedSkill } from "@/lib/gaps/match";
 import { formatExperience } from "@/lib/role-view";
 import {
   NEARBY_MAX,
@@ -51,10 +51,12 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
   const years = profile.totalYearsExperience ?? 0;
   const target = roles.find((r) => r.slug === targetSlug) ?? roleProfiles.find((r) => r.slug === targetSlug);
   const targetIds = target ? requiredIds(target) : new Set<string>();
+  // The resume is read once for every role (T161): a long one read 150 times took the Map and Me past 10 s.
+  const matchRole = profileMatcher(profile, now);
   const scored = roles
     .filter((r) => r.slug !== targetSlug)
     .map((role) => {
-      const match = matchProfile(profile, role, now);
+      const match = matchRole(role);
       const byProof = (row: MatchedSkill) => unitSkills(row).some((id) => proved.has(id));
       const open = match.gaps.filter((g) => !byProof(g));
       const sharedSkills = [
