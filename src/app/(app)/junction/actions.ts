@@ -71,7 +71,8 @@ export async function editPostAction(input: unknown): Promise<JunctionAct> {
 }
 
 export async function deletePostAction(postId: unknown): Promise<JunctionAct> {
-  return guarded("junction_delete_failed", async (id) => act(await deletePost(id, { postId })), no);
+  // No refresh: the card says "Post deleted" in its place, which a refresh would remove before anyone reads it.
+  return guarded("junction_delete_failed", async (id) => act(await deletePost(id, { postId }), false), no);
 }
 
 export async function votePostAction(postId: unknown): Promise<JunctionToggle> {
