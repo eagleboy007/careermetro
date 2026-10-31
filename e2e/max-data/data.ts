@@ -26,6 +26,9 @@ import {
   ME_ROLES_MAX,
   MY_JOB_CITY_MAX,
   MY_JOB_NOTE_MAX,
+  OWN_PITSTOP_TITLE_MAX,
+  OWN_PITSTOPS_MAX,
+  OWN_PITSTOPS_PER_GOAL,
   PROFILE_CERTIFICATION_NAME_MAX,
   PROFILE_CERTIFICATIONS_MAX,
   PROFILE_HIGHLIGHT_MAX,
@@ -114,6 +117,21 @@ export const v = (i: number, max: number): string => textOf(KINDS[i % KINDS.leng
 export const labelled = (label: string, i: number, max: number): string => cutText(`${label} ${v(i, max)}`, max).trimEnd();
 
 const month = (year: number, m: number) => `${year}-${String(m).padStart(2, "0")}`;
+
+/**
+ * The member's own pitstops on the Map (FR-58, T172): OWN_PITSTOPS_MAX names, each at OWN_PITSTOP_TITLE_MAX (an emoji run
+ * may end one unit short). The seed gives goals OWN_PITSTOPS_PER_GOAL each in turn, but the last LONE_PITSTOPS names go
+ * one to a goal: a spur with more than one says "3 pitstops" and only a lone one shows its name, so those are the hard
+ * ones, one unbroken word, Hindi and an emoji run.
+ */
+export const LONE_PITSTOPS = 3;
+export function maxOwnPitstops(): string[] {
+  const lone = [textOf("unbroken", OWN_PITSTOP_TITLE_MAX), textOf("hindi", OWN_PITSTOP_TITLE_MAX), textOf("emoji", OWN_PITSTOP_TITLE_MAX)];
+  const spaced = Array.from({ length: OWN_PITSTOPS_MAX - lone.length }, (_, i) => fill(WORDS, OWN_PITSTOP_TITLE_MAX, `Pitstop ${i + 1}`));
+  return [...spaced, ...lone];
+}
+/** How many open goals the own pitstops take: full goals first, then one each for the lone names. */
+export const OWN_PITSTOP_GOALS = (OWN_PITSTOPS_MAX - LONE_PITSTOPS) / OWN_PITSTOPS_PER_GOAL + LONE_PITSTOPS;
 
 /** The i-th Latin-only text: the long-word and unbroken kinds in turn, which the resume PDF's font can draw. */
 export const latinV = (i: number, max: number): string => textOf(i % 2 ? "unbroken" : "word", max);

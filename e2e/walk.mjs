@@ -88,6 +88,19 @@ const step = async (name, fn) => {
     await shot("fail-" + name);
   }
 };
+/**
+ * A request through a page's API context (q.request.get, .post, ...), sent again once when the socket was reset under it:
+ * the context keeps idle keep-alive sockets, and one the server is closing as it is reused fails with ECONNRESET or
+ * "socket hang up" (T171, once in CI on the add-a-pitstop step). Never retried on an HTTP status.
+ */
+const api = async (q, method, url, options) => {
+  try {
+    return await q.request[method](url, options);
+  } catch (e) {
+    if (!/ECONNRESET|socket hang up/.test(e.message)) throw e;
+    return q.request[method](url, options);
+  }
+};
 await step("home", async () => {
   await p.goto(BASE + "/");
   await p.getByRole("heading", { name: "Paste the job you're applying for and see what it asks that you don't have." }).waitFor({ timeout: 10000 });
@@ -148,7 +161,7 @@ await step("download the confirmed resume as PDF and Word", async () => {
   await a11y("resume-download");
   for (const [label, type, magic] of [["PDF", "application/pdf", "%PDF-"], ["Word", "wordprocessingml", "PK"]]) {
     const href = await p.getByRole("link", { name: label, exact: true }).getAttribute("href");
-    const res = await p.request.get(BASE + href);
+    const res = await api(p, "get", BASE + href);
     if (res.status() !== 200 || !res.headers()["content-type"].includes(type)) throw new Error(`${label}: ${res.status()} ${res.headers()["content-type"]}`);
     const body = await res.body();
     if (!body.subarray(0, magic.length).toString("latin1").startsWith(magic)) throw new Error(`${label} isn't a ${label} file`);
@@ -492,7 +505,7 @@ await step("design page: the certificate form says example data is never saved",
 await step("static pages still load after a tick", async () => {
   // A tick once threw away every cached page, and /roles/[slug] then failed to rebuild (500).
   for (const path of ["/roles/data-analyst", "/roles", "/"]) {
-    const r = await p.request.get(BASE + path);
+    const r = await api(p, "get", BASE + path);
     if (r.status() !== 200) throw new Error(`${path} status ${r.status()}`);
   }
 });
@@ -511,7 +524,7 @@ await step("untick -> back to first, no streak", async () => {
 let choiceSkill = "";
 await step("job check: add as my goal, remove it and add it again, see it as Your choice on Today and the map, plan for this job, remove the check", async () => {
   const gapsUrl = pathUrl.replace("/path/", "/gaps/");
-  const before = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const before = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   await p.goto(gapsUrl);
   await settled();
   const add = p.getByRole("button", { name: /^Add as my goal: / }).first();
@@ -532,7 +545,7 @@ await step("job check: add as my goal, remove it and add it again, see it as You
   await p.waitForFunction((name) => document.activeElement?.getAttribute("aria-label") === `Add as my goal: ${name}`, skill, { timeout: 10000 });
   await addIt();
   // The gaps and the match don't move.
-  const after = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const after = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   const analyses = (d) => JSON.stringify(d.resumes.flatMap((r) => r.profiles.flatMap((x) => x.gapAnalyses.map((a) => a.result))));
   if (analyses(after) !== analyses(before)) throw new Error("adding a goal changed the gap analysis");
   const goal = after.goals.find((g) => g.source === "user");
@@ -618,9 +631,13 @@ await step("add a pitstop: add, edit and remove one of your own on the Map", asy
   await p.goto(BASE + "/map");
   await settled();
   const analyses = (d) => JSON.stringify(d.resumes.flatMap((r) => r.profiles.flatMap((x) => x.gapAnalyses.map((a) => a.result))));
-  const before = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  // Read the download only once the map is drawn: settled() gives up quietly, so the read could start while the map's
+  // own requests were still in flight (T171).
+  const addButton = p.getByRole("button", { name: "Add a pitstop", exact: true });
+  await addButton.waitFor({ timeout: 10000 });
+  const before = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   const panel = p.getByRole("complementary", { name: "Pitstop details" });
-  await p.getByRole("button", { name: "Add a pitstop", exact: true }).click();
+  await addButton.click();
   await panel.getByRole("heading", { name: "Where do you want to halt?" }).waitFor({ timeout: 10000 });
   await panel.getByLabel("Name", { exact: true }).fill("Walk labs");
   await shot("map-add-pitstop");
@@ -634,7 +651,7 @@ await step("add a pitstop: add, edit and remove one of your own on the Map", asy
   await p.locator('svg g[role="button"][aria-label^="Added by you Walk labs,"]').waitFor({ timeout: 10000 });
   await shot("map-own-pitstop");
   await a11y("map-own-pitstop");
-  const added = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const added = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   if (analyses(added) !== analyses(before)) throw new Error("adding a pitstop changed the gap analysis");
   if (!added.ownPitstops?.some((o) => o.name === "Walk labs")) throw new Error("the download lacks the pitstop");
 
@@ -646,7 +663,12 @@ await step("add a pitstop: add, edit and remove one of your own on the Map", asy
   ]);
   await panel.getByRole("status").filter({ hasText: "Pitstop saved." }).waitFor({ timeout: 15000 });
   await p.locator('svg g[role="button"][aria-label^="Added by you Walk labs week 2,"]').waitFor({ timeout: 10000 });
+  // Switch in place (a reload would close the panel the next steps use), then wait until the header text has been
+  // restyled dark and two frames have painted: axe once read the old light ink on the new dark background (T171).
+  const inkBefore = await p.locator("header").first().evaluate((el) => getComputedStyle(el).color);
   await p.emulateMedia({ colorScheme: "dark" });
+  await p.waitForFunction((before) => getComputedStyle(document.querySelector("header")).color !== before, inkBefore, { timeout: 10000 });
+  await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
   await a11y("map-own-pitstop-dark");
   await p.emulateMedia({ colorScheme: "light" });
 
@@ -657,7 +679,7 @@ await step("add a pitstop: add, edit and remove one of your own on the Map", asy
   await panel.getByRole("status").filter({ hasText: "Removed. Your line is shorter again." }).waitFor({ timeout: 15000 });
   await p.locator('svg g[role="button"][aria-label^="Added by you"]').first().waitFor({ state: "detached", timeout: 10000 });
   await p.waitForFunction(() => document.activeElement?.textContent?.trim().startsWith("Your pitstops on "), null, { timeout: 15000 });
-  const removed = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const removed = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   if (removed.ownPitstops?.length) throw new Error("a removed pitstop is still in the download");
   if (analyses(removed) !== analyses(before)) throw new Error("removing a pitstop changed the gap analysis");
 });
@@ -1334,7 +1356,7 @@ await step("share from the phone: the shared job fills the add box, checks at on
   const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
   const posting = JSON.parse(readFileSync(new URL("../fixtures/job-postings/example-analytics-data-analyst.json", import.meta.url), "utf8"));
   try {
-    const get = await p.request.get(BASE + "/share", { maxRedirects: 0 });
+    const get = await api(p, "get", BASE + "/share", { maxRedirects: 0 });
     if (get.status() !== 405) throw new Error(`GET /share answered ${get.status()}, not 405`);
     await p.goto(BASE + "/today");
     await settled();
@@ -1725,7 +1747,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await p.reload();
   await settled();
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
-  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
   if (data.exportVersion !== 38 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
@@ -1757,7 +1779,7 @@ await step("current job: free mail is refused, a code to the work email waits fo
   await p.getByRole("button", { name: "View as others" }).click();
   await p.getByText("You are seeing your profile the way other people will", { exact: false }).waitFor();
   if (await p.getByText(/checking the domain|^Verified with work email/).count()) throw new Error("others see more than Not verified");
-  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   const check = data.jobEmailChecks?.[0];
   if (check?.status !== "review" || JSON.stringify(data.jobEmailChecks).includes("priya.sharma@")) throw new Error("download lacks the check, or has the address");
   await a11y("me-job-check");
@@ -2008,7 +2030,7 @@ await step("account settings: name is locked, download works", async () => {
   if (!(await p.getByLabel("First name").isDisabled()) || !(await p.getByLabel("Last name").isDisabled())) throw new Error("name is still editable");
   await p.getByRole("link", { name: "Grievances page" }).waitFor({ timeout: 5000 });
   const lastName = await p.getByLabel("Last name").inputValue();
-  const res = await p.request.get(BASE + "/api/account/export");
+  const res = await api(p, "get", BASE + "/api/account/export");
   if (!res.ok()) throw new Error("download status " + res.status());
   const data = await res.json();
   if ((data.account?.lastName ?? "") !== lastName || !data.resumes?.length) throw new Error("download is missing data");
@@ -2072,7 +2094,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
   if (overflow) throw new Error("settings scroll sideways at 360px");
 
   // The download has it all.
-  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
@@ -2230,7 +2252,7 @@ await step("settings columns: message requests off, Open to work in filters Depa
     await a11y("inbox-usually-free-dark");
     await p.emulateMedia({ colorScheme: "light" });
 
-    const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+    const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
     if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
     if (data.settings?.messageRequests !== false) throw new Error("the download lacks message requests off");
     if (JSON.stringify(data.settings?.openToWorkIn) !== JSON.stringify(["Remote", "Pune"])) throw new Error("the download lacks Open to work in");
@@ -2394,7 +2416,7 @@ await step("me editing: add, edit and delete a role, education, a story and inte
   await main.getByRole("button", { name: "Remove Cricket stats" }).waitFor({ state: "detached", timeout: 15000 });
 
   // The download has what is left: one interest.
-  const data = await p.request.get(BASE + "/api/account/export").then((r) => r.json());
+  const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
   if (data.interests?.map((x) => x.name).join() !== "Photography" || data.stories?.length || data.meRoles?.length || data.meEducation?.length) throw new Error("the download doesn't match Me");
 
@@ -2808,7 +2830,7 @@ await step("builder: seven sections, one click each, and Review drops the model'
     await q.waitForURL(/\/resume\/[0-9a-f-]+$/, { timeout: 15000 });
     await q.getByRole("button", { name: "Looks right", exact: true }).click();
     await q.getByRole("heading", { name: "Download your resume" }).waitFor({ timeout: 15000 });
-    const pdf = await q.request.get(BASE + (await q.getByRole("link", { name: "PDF", exact: true }).getAttribute("href")));
+    const pdf = await api(q, "get", BASE + (await q.getByRole("link", { name: "PDF", exact: true }).getAttribute("href")));
     if (pdf.status() !== 200 || !(await pdf.body()).subarray(0, 5).toString("latin1").startsWith("%PDF-")) throw new Error(`the built resume's PDF download gave ${pdf.status()}`);
   } finally {
     await ctxB.close();
@@ -2880,7 +2902,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByText("You're on Free", { exact: true }).waitFor({ timeout: 10000 });
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
-    const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
+    const data = await api(q, "get", BASE + "/api/account/export").then((r) => r.json());
     if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
@@ -2978,7 +3000,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.locator("summary").first().click();
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
-    const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
+    const data = await api(q, "get", BASE + "/api/account/export").then((r) => r.json());
     if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
@@ -3087,7 +3109,7 @@ await step("mock interview: a full round with follow-ups, answered, ended, with 
     if (/\b(score|grade|rating|\d+\s*\/\s*10|ready)\b/i.test(words)) throw new Error("the feedback shows a score or 'ready'");
     await axeOn(q, "mock-interview-feedback");
 
-    const data = await q.request.get(BASE + "/api/account/export").then((r) => r.json());
+    const data = await api(q, "get", BASE + "/api/account/export").then((r) => r.json());
     if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "full" || !round.endedAt || round.answers?.length !== 3 || !round.summary) throw new Error("the download's mock interview is wrong");

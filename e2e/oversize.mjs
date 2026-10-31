@@ -34,7 +34,8 @@ const seed = JSON.parse(readFileSync(new URL("./results/max-data.json", import.m
 const DEFAULT_LIMIT = 12_000;
 const PAGES = [
   { name: "today", path: "/today" },
-  { name: "map", path: "/map" },
+  // The seed's own pitstops draw spurs on the line (T172): each spur label must stay inside the map's viewBox.
+  { name: "map", path: "/map", spurs: true },
   // My jobs: 20 full rows at 1280 px. At 390 px (C24) 10 folded rows of about 80 px before Show more, plus the header,
   // tabs, filters and the add box: about 2,500, an estimate, so 4,000 is the phone height check.
   { name: "my-jobs", path: "/departures?tab=mine", limit: 12_000, phoneLimit: 4_000 },
@@ -70,6 +71,16 @@ const fail = (line) => {
   if (process.env.GITHUB_ACTIONS) console.log(`::error title=oversize::${line.replace(/\n/g, " ")}`);
 };
 
+/** A request through a page's API context, sent again once on a reset socket, never on an HTTP status (as in walk.mjs, T171). */
+const api = async (q, method, url, options) => {
+  try {
+    return await q.request[method](url, options);
+  } catch (e) {
+    if (!/ECONNRESET|socket hang up/.test(e.message)) throw e;
+    return q.request[method](url, options);
+  }
+};
+
 /** Width, height and, when the page spills sideways, the innermost elements past the window's right edge. */
 const measure = (q) =>
   q.evaluate(() => {
@@ -100,6 +111,29 @@ const measure = (q) =>
         text: (el.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 40),
       }));
     return out;
+  });
+
+/**
+ * The Map's spur labels (T172): the text of each "Added by you" spur, its getBBox against its SVG's viewBox once the
+ * fonts are in. A label past the viewBox is cut off, since the map scales the viewBox to its box.
+ */
+const spurLabels = (q) =>
+  q.evaluate(async () => {
+    await document.fonts.ready;
+    const texts = [...document.querySelectorAll('svg g[role="button"][aria-label^="Added by you"] text')];
+    const outside = [];
+    for (const t of texts) {
+      const vb = t.ownerSVGElement.viewBox.baseVal;
+      const b = t.getBBox();
+      if (b.x < vb.x - 0.5 || b.y < vb.y - 0.5 || b.x + b.width > vb.x + vb.width + 0.5 || b.y + b.height > vb.y + vb.height + 0.5) {
+        outside.push({
+          text: (t.textContent ?? "").trim().slice(0, 40),
+          box: `${Math.round(b.x)},${Math.round(b.y)} ${Math.round(b.width)}x${Math.round(b.height)}`,
+          viewBox: `${vb.x},${vb.y} ${vb.width}x${vb.height}`,
+        });
+      }
+    }
+    return { count: texts.length, outside };
   });
 
 /** Waits for the page's own loading states to end, as the walk does. */
@@ -162,6 +196,11 @@ try {
               fail(`${at}: scrolls sideways (scrollWidth ${m.scrollWidth} > innerWidth ${m.innerWidth})\n${list}`);
             }
             if (m.scrollHeight > limit) fail(`${at}: ${m.scrollHeight}px tall, over its ${limit}px limit`);
+            if (page.spurs) {
+              const spurs = await spurLabels(q);
+              if (!spurs.count) fail(`${at}: no spur labels on the map, though the seed adds pitstops of the member's own`);
+              for (const o of spurs.outside) fail(`${at}: spur label "${o.text}" (box ${o.box}) runs outside the map's viewBox ${o.viewBox}`);
+            }
             const file = `${OUT}${scheme}-${size.width}-${page.name}-h${m.scrollHeight}.jpg`;
             await q.screenshot({
               path: file,
@@ -182,11 +221,11 @@ try {
       // caps in Latin text only (long unbroken words, 300-character highlights).
       if (scheme === "light") {
         at = "resume PDF (Hindi and emoji)";
-        const refused = await q.request.get(`${BASE}/api/resume/${seed.resumeId}/export?format=pdf`, { timeout: 60000 });
+        const refused = await api(q, "get", `${BASE}/api/resume/${seed.resumeId}/export?format=pdf`, { timeout: 60000 });
         if (refused.status() !== 422 || !/can't print/.test(await refused.text())) fail(`${at}: HTTP ${refused.status()}, not the "can't print" refusal`);
         at = "resume PDF (Latin)";
         const started = Date.now();
-        const pdf = await q.request.get(`${BASE}/api/resume/${seed.pdfResumeId}/export?format=pdf`, { timeout: 60000 });
+        const pdf = await api(q, "get", `${BASE}/api/resume/${seed.pdfResumeId}/export?format=pdf`, { timeout: 60000 });
         const ms = Date.now() - started;
         const body = await pdf.body();
         rows.push({ at, height: "-", limit: "-", width: "-", ms });
