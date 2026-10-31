@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (T170: walk covers the Timetable)
+Last updated: 2026-10-31 (Add a pitstop on the Map; plans for manager/colleague proof and the on-camera check, parked)
 
 ## Built and live (https://careermetro.vercel.app)
 
