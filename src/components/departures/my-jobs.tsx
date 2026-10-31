@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from "react";
 import { ICON } from "@/components/map/map-parts";
-import { ShowMore, usePaged } from "@/components/ui/show-more";
+import { ShowMore, usePaged, usePhonePage } from "@/components/ui/show-more";
 import { StatusChip } from "@/components/ui/status-chip";
 import { actionFailed, readApiReply } from "@/lib/api-reply";
 import { interviewIcs } from "@/lib/calendar/ics";
@@ -118,8 +118,10 @@ export function MyJobsList({
 }) {
   const [filter, setFilter] = useState<MyJobFilter>("all");
   const shown = jobs.filter((j) => inFilter(j.status, filter));
-  // Up to 300 jobs: 20 show at a time (T147), starting again on the first page when the filter changes.
-  const paged = usePaged(shown, filter);
+  // Up to 300 jobs: 20 show at a time (T147), 10 on a phone (T167), starting again on the first page when the filter
+  // or the page size changes.
+  const page = usePhonePage();
+  const paged = usePaged(shown, `${filter}:${page}`, page);
   const list = useRef<HTMLUListElement>(null);
   const empty = myJobsEmpty(filter, MY_JOB_FILTER_LABELS[filter]);
   return (

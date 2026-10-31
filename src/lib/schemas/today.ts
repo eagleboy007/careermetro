@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS, USER_STATES } from "./constants";
+import { EVENT_TITLE_MAX, GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS, USER_STATES } from "./constants";
 import { trackPicker } from "./role-track";
 import { goalChoice, notForMeOffer } from "./goals";
 export { USER_STATES } from "./constants";
@@ -246,12 +246,15 @@ export const goalsSummary = z
     path: ["moreNames"],
   });
 
-/** Timetable teaser on Today: the next local or online events for the user's goals. */
+/**
+ * Timetable teaser on Today: the next two live events that match the person's goals or interests (teaserRows in
+ * src/lib/timetable/view.ts). The title is the card's, clipped like job titles.
+ */
 export const eventTeaser = z.object({
   id: z.string().min(1).max(60),
   day: z.string().min(2).max(3),
   date: z.number().int().min(1).max(31),
-  title: z.string().min(1).max(100),
+  title: z.string().min(1).max(EVENT_TITLE_MAX),
   detail: z.string().max(120),
 });
 

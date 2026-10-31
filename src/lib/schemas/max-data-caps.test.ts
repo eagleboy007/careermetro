@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   MANY_LINES_NOTE,
   maxBuilderAnswers,
+  maxEvent,
   maxHeadline,
   maxInterests,
   maxJob,
@@ -16,6 +17,7 @@ import {
 } from "../../../e2e/max-data/data";
 import { builderAnswers } from "./builder";
 import {
+  EVENT_TITLE_MAX,
   HEADLINE_MAX,
   INTEREST_MAX,
   JOB_COMPANY_MAX,
@@ -29,8 +31,10 @@ import {
   PROFILE_TEXT_MAX,
   STORIES_MAX,
   STORY_PART_MAX,
+  TIMETABLE_EVENTS_MAX,
 } from "./constants";
 import { profile } from "./profile";
+import { eventRow } from "./timetable";
 
 // The max-data seed (T150) must sit at the caps, never past them: the seed writes straight to the tables, so these
 // checks stand in for the forms and stores it skips. Synthetic text only.
@@ -98,5 +102,17 @@ describe("max-data seed text", () => {
     expect(parsed.tools).toHaveLength(30);
     expect(parsed.links.github).toBe(raw.links.github);
     expect(parsed.links.github.length).toBe(300);
+  });
+
+  it("gives Timetable events at their caps that the event row's checks take, past the 200 a view keeps (T165)", () => {
+    expect(SIZES.events).toBeGreaterThan(TIMETABLE_EVENTS_MAX);
+    const at = new Date("2026-11-02T12:30:00Z");
+    for (let i = 0; i < 8; i++) {
+      const e = maxEvent(i);
+      const row = { id: "00000000-0000-4000-8000-000000000001", status: "live", source: "feed", startsAt: at, endsAt: at, checkedAt: null, createdAt: at, updatedAt: at, ...e };
+      expect(eventRow.safeParse(row).error).toBeUndefined();
+      expect(e.title.length).toBeGreaterThan(EVENT_TITLE_MAX - 2);
+      expect(e.sourceKey.startsWith("max-data-event-")).toBe(true);
+    }
   });
 });

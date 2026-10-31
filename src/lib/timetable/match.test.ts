@@ -229,12 +229,86 @@ describe("timetableFor", () => {
     expect(timetableView.safeParse(view).error).toBeUndefined();
   });
 
-  it("builds a valid view from 2,000 matching events, the cap", () => {
+  it("keeps the soonest 200 of 2,000 matching events, the cap (T165)", () => {
     const topics: EventTopic[] = [{ kind: "skill", topic: "siem" }];
     const many = Array.from({ length: 2000 }, (_, i) => event({ startsAt: new Date(NOW.getTime() + (i % 59) * DAY + HOUR), topics }));
     const view = timetableFor(many, person(), NOW);
-    expect(allCards(view)).toHaveLength(2000);
+    const cards = allCards(view);
+    expect(cards).toHaveLength(200);
+    expect(Date.parse(cards[199].startsAt)).toBeLessThanOrEqual(NOW.getTime() + 6 * DAY + HOUR);
     expect(timetableView.safeParse(view).error).toBeUndefined();
+  });
+
+  it("shows at most 5 tags on a card, goals first (T165)", () => {
+    const goals = ["siem", "python", "aws", "threat-detection", "threat-intelligence", "threat-modeling"];
+    const e = event({ topics: [...goals.map((topic) => ({ kind: "skill" as const, topic })), { kind: "interest", topic: "ai" }] });
+    const [card] = allCards(timetableFor([e], person({ goalSkillIds: goals, interestKeys: ["ai"] }), NOW));
+    expect(card.tags).toHaveLength(5);
+    expect(card.tags.every((t) => t.kind === "goal")).toBe(true);
+  });
+
+  it("counts the 60 days as India calendar days, to the end of the 60th day (T166)", () => {
+    // NOW is Wednesday 14 October, 12:00 IST; the 60th day after is Sunday 13 December.
+    const lastMinute = event({ startsAt: new Date("2026-12-13T18:29:00Z") }); // 13 December, 23:59 IST
+    const nextDay = event({ startsAt: new Date("2026-12-13T18:30:00Z") }); // 14 December, 00:00 IST
+    expect(allCards(timetableFor([lastMinute, nextDay], person(), NOW)).map((c) => c.id)).toEqual([lastMinute.id]);
+    // The same answer at any hour of the India day.
+    const lateNow = new Date("2026-10-14T18:00:00Z"); // 23:30 IST
+    expect(allCards(timetableFor([lastMinute, nextDay], person(), lateNow)).map((c) => c.id)).toEqual([lastMinute.id]);
+  });
+
+  it("orders events that start together by title, the same way on every server (T166)", () => {
+    const at = new Date(NOW.getTime() + DAY);
+    const titles = ["zebra talk", "Älpler night", "apple meetup", "Banyan session"];
+    const cards = allCards(timetableFor(titles.map((title) => event({ title, startsAt: at })), person(), NOW));
+    expect(cards.map((c) => c.title)).toEqual([...titles].sort((a, b) => a.localeCompare(b, "en-IN")));
+  });
+});
+
+describe("topics never come from ordinary words (T163, T166)", () => {
+  const skillTopics = (title: string, description = "") => topicsOf(title, description).filter((t) => t.kind === "skill").map((t) => t.topic);
+
+  it("doesn't take React from \"react to\", Rust from \"Rust-proof\" or Go from \"Go to gate 2\"", () => {
+    expect(skillTopics("How teams react to incidents")).not.toContain("react");
+    expect(skillTopics("React to feedback calmly: a soft-skills hour")).not.toContain("react");
+    expect(skillTopics("Rust-proof your bike: a repair workshop")).not.toContain("rust-programming");
+    expect(skillTopics("Registration", "Go to gate 2 and show your pass.")).not.toContain("go");
+    const career = skillTopics("Excel in your career", "Let's go! Go through what hiring managers want.");
+    expect(career).not.toContain("excel");
+    expect(career).not.toContain("go");
+  });
+
+  it("still finds those skills where the text means them", () => {
+    expect(skillTopics("React hooks workshop")).toContain("react");
+    expect(skillTopics("Intro to Rust for systems programmers")).toContain("rust-programming");
+    expect(skillTopics("Concurrency in Go", "Bring golang installed.")).toContain("go");
+    expect(skillTopics("Pivot tables in Excel")).toContain("excel");
+  });
+
+  it("drops an ambiguous name's lowercase spelling, and keeps its exact one", () => {
+    const lower = skillTopics("we will go over the agenda and excel together");
+    expect(lower).not.toContain("go");
+    expect(lower).not.toContain("excel");
+    expect(topicsOf("Security Meetup Pune", "").some((t) => t.kind === "interest" && t.topic === "security")).toBe(true);
+    expect(topicsOf("Venue", "The building has security at the door.").some((t) => t.topic === "security")).toBe(false);
+  });
+
+  it("never takes a topic from security, programming, mentorship, startup, algorithms or crypto alone (T166)", () => {
+    const text = "Free mentorship, crypto payments accepted at the startup cafe; security checks; programming notes; algorithms for queues.";
+    expect(topicsOf("Evening social", text).filter((t) => t.kind === "interest")).toEqual([]);
+    expect(interestTopicsFor(["security", "programming", "mentorship", "startup", "algorithms", "crypto"])).toEqual(["security", "programming", "careers", "startups", "competitive-programming", "blockchain"]);
+  });
+
+  it("keeps room for interests however many skills a description names (T166)", () => {
+    const names = skills.map((s) => s.name).join(", ");
+    const topics = topicsOf(names, `${names}. Generative AI, open source, hackathons, UI/UX and fintech.`);
+    expect(topics.length).toBeLessThanOrEqual(100);
+    expect(topics.filter((t) => t.kind === "interest").length).toBeGreaterThanOrEqual(5);
+  });
+
+  it("reads only the first 20,000 characters of a description (T166)", () => {
+    expect(topicsOf("Meetup", `${"x ".repeat(10_000)}Kubernetes`).some((t) => t.topic === "kubernetes")).toBe(false);
+    expect(topicsOf("Meetup", `${"x ".repeat(9_000)}Kubernetes`).some((t) => t.topic === "kubernetes")).toBe(true);
   });
 });
 

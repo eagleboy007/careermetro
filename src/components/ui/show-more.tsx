@@ -1,9 +1,9 @@
 "use client";
 
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useState, useSyncExternalStore, type RefObject } from "react";
 import { FOLD_SHOWN, foldItems } from "@/lib/fold";
-import { LIST_PAGE_SIZE } from "@/lib/schemas/constants";
+import { LIST_PAGE_SIZE, PHONE_PAGE_SIZE } from "@/lib/schemas/constants";
 
 /**
  * Paging for a list that can grow long (Testing Run 7, T147): the first LIST_PAGE_SIZE rows, then each "Show more"
@@ -18,6 +18,26 @@ export function usePaged<T>(items: T[], resetKey: string | number | null = null,
     left: Math.max(0, items.length - limit),
     more: () => setState({ key: resetKey, limit: limit + page }),
   };
+}
+
+const PHONE = "(max-width: 639px)";
+const watchPhone = (change: () => void) => {
+  const query = window.matchMedia(PHONE);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+};
+
+/**
+ * The page size for a list of tall cards (T167): PHONE_PAGE_SIZE on a phone-width screen, LIST_PAGE_SIZE elsewhere.
+ * The server and the first render use LIST_PAGE_SIZE, so hydration matches; a phone then drops to its own size. Pass
+ * it to usePaged with a reset key that includes it, so the list starts again at the new size.
+ */
+export function usePhonePage(): number {
+  return useSyncExternalStore(
+    watchPhone,
+    () => (window.matchMedia(PHONE).matches ? PHONE_PAGE_SIZE : LIST_PAGE_SIZE),
+    () => LIST_PAGE_SIZE,
+  );
 }
 
 /**

@@ -185,7 +185,8 @@ export function TodayView({
             <DeparturesBoard rows={data.departures} allHref={departuresHref} />
           </JobSearchBoardSlot>
         )}
-        <TimetableTeaser events={data.events} />
+        {/* Hidden when no event matches the person (docs/plans/timetable-plan.md section 7). */}
+        {data.events.length > 0 && <TimetableTeaser events={data.events} />}
         {state !== "no_resume" && data.onYourLine && <OnYourLineCard line={data.onYourLine} firstDay={state === "first"} />}
       </div>
     </div>

@@ -15,7 +15,7 @@ import { FoldToggle, useFold } from "@/components/ui/show-more";
 import { StatusChip } from "@/components/ui/status-chip";
 import type { JoinActions } from "@/lib/corporate/types";
 import { initials } from "@/lib/departures/filter";
-import { newestFirstByYear } from "@/lib/fold";
+import { FOLD_SKILL_CHIPS, newestFirstByYear } from "@/lib/fold";
 import { experienceCheckText } from "@/lib/me/job-check-rules";
 import type { JourneyStop, MeProfile, PracticeTrend, Story } from "@/lib/schemas";
 import { SMART, STORY_BOXES } from "@/lib/schemas/constants";
@@ -682,7 +682,7 @@ function Journey({ stops }: { stops: JourneyStop[] }) {
 }
 
 function SkillCol({ name, names, status }: { name: string; names: string[]; status: "met" | "weak" | "missing" }) {
-  const fold = useFold(names);
+  const fold = useFold(names, FOLD_SKILL_CHIPS);
   const list = useId();
   return (
     <div className="flex min-w-0 flex-col gap-2">

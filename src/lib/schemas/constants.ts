@@ -608,6 +608,8 @@ export const BUILDER_JOB_KIND_LABELS: Record<(typeof BUILDER_JOB_KINDS)[number],
  * time (src/components/ui/show-more.tsx). The stores still return every row up to their own cap.
  */
 export const LIST_PAGE_SIZE = 20;
+/** Tall cards (My jobs) show this many at a time on a phone-width screen (T167, until the compact row C24). */
+export const PHONE_PAGE_SIZE = 10;
 /** Inbox chats one person's Inbox loads, newest first. */
 export const INBOX_THREADS_MAX = 500;
 /** Rows each Network list (connections, requests waiting, requests sent) loads, newest first. */
@@ -790,16 +792,19 @@ export const EVENT_COST_MAX = 60;
  * skills; the cap has room to grow with the taxonomy and the matcher keeps the first ones in taxonomy order.
  */
 export const EVENT_TOPICS_MAX = 100;
-/** Tags on one event card: the person's goals and interests it matches, never more than the event's topics. */
-export const EVENT_TAGS_MAX = EVENT_TOPICS_MAX;
+/** Tags on one event card: the first of the person's goals and interests it matches, goals first (T165, the PM's 5). */
+export const EVENT_TAGS_MAX = 5;
 /** The radius choices: the saved 25 km, and "Show outside 25 km" for one visit. */
 export const EVENT_RADII_KM = [25, 100] as const;
 export const EVENT_RADIUS_DEFAULT_KM = 25;
 /** The timetable shows the next 60 days, and drops events that started more than 2 hours ago. */
 export const EVENT_WINDOW_DAYS = 60;
 export const EVENT_STARTED_GRACE_MS = 2 * 3600_000;
-/** Events on one timetable view: room to grow well past what the first feeds list in 60 days. */
-export const TIMETABLE_EVENTS_MAX = 2000;
+/**
+ * Events on one timetable view (T165, the PM's 200): the soonest ones, which the screen pages 20 at a time with Show
+ * more. Room past what the first feeds list in 60 days for one person's goals and interests.
+ */
+export const TIMETABLE_EVENTS_MAX = 200;
 /** Interest topics the content file may hold, and the aliases one topic may have. */
 export const INTEREST_TOPICS_MAX = 200;
 export const INTEREST_TOPIC_ALIASES_MAX = 30;

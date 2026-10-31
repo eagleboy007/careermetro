@@ -34,7 +34,8 @@ const DEFAULT_LIMIT = 12_000;
 const PAGES = [
   { name: "today", path: "/today" },
   { name: "map", path: "/map" },
-  { name: "my-jobs", path: "/departures?tab=mine", limit: 16_000 },
+  // My jobs on a phone (T167): 10 cards of about 680 px before Show more, plus the tabs and filters: an estimate.
+  { name: "my-jobs", path: "/departures?tab=mine", limit: 12_000 },
   { name: "me-board", path: "/me", limit: 12_000 },
   { name: "me-list", path: "/me", limit: 14_000, layout: "List" },
   { name: "profile", path: `/u/${seed.username}`, limit: 8_000 },
@@ -45,6 +46,8 @@ const PAGES = [
   { name: "mock", path: "/mock" },
   { name: "inbox", path: "/inbox" },
   { name: "network", path: "/network" },
+  // 20 event cards at their caps (230 seeded, 200 kept, then Show more) and the rail: a first estimate (T165).
+  { name: "timetable", path: "/timetable", limit: 20_000 },
   { name: "resume", path: `/resume/${seed.resumeId}`, limit: 6_000 },
   { name: "builder", path: "/builder" },
 ];

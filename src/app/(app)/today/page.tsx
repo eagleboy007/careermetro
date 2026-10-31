@@ -12,7 +12,7 @@ import { NAME_NOTICE } from "@/lib/auth/after-sign-in";
 import { currentAccount } from "@/lib/auth/server";
 import { NAME_MISMATCH_MESSAGE } from "@/lib/resume/name-match";
 import { isSampleResumeId } from "@/lib/resume/sample";
-import { USER_STATES, type Departure, type NextInterviewView, type OnYourLine, type UserState } from "@/lib/schemas";
+import { USER_STATES, type Departure, type EventTeaser, type NextInterviewView, type OnYourLine, type UserState } from "@/lib/schemas";
 import { jobSearchForRequest } from "@/lib/request-reads";
 import { errorFields, logEvent } from "@/lib/log";
 import { rideWithSignal, withSignalTask } from "@/lib/ride/build";
@@ -21,6 +21,7 @@ import { departuresBoard } from "@/lib/departures/store";
 import { jobPrep, nextInterview } from "@/lib/my-jobs/store";
 import { daysUntil, leadSkills } from "@/lib/my-jobs/view";
 import { onYourLineFor, todayBoardFor } from "@/lib/today/live";
+import { timetableTeaserFor } from "@/lib/timetable/store";
 import { currentAnalysis, todayStateFor } from "@/lib/today/state";
 import { switchJobSearch } from "../settings/job-search-actions";
 import { addCertificate, answerSignalCheck, chooseTrack, saveWeeklyHours, tickRideTask } from "./actions";
@@ -42,7 +43,7 @@ import {
 export const metadata: Metadata = { title: "Today · CareerMetro", robots: { index: false } };
 
 // Example data for the signed-out preview and the No resume state. A signed-in person with a line gets their own ride,
-// goals, signal check, board and people on their line; only the Timetable stays example data.
+// goals, signal check, board, people on their line and Timetable teaser.
 const data: TodayData = {
   name: exampleName,
   role: exampleRole,
@@ -90,6 +91,8 @@ async function Today({ searchParams }: PageProps<"/today">) {
   // failed read from counting as unhandled while the ride runs: the board below still sees the failure.
   const openPosts = analysis && searching ? departuresBoard(null, { placesOf: account.id }) : null;
   if (openPosts) openPosts.catch(() => {});
+  // The Timetable teaser: the next two live events on the person's goals or interests, in any state; none hides it.
+  const teaser = timetableTeaserFor(account.id, now).catch(failed<EventTeaser[]>("today_timetable_failed", []));
   const [found, sample] = await Promise.all([todayStateFor(account.id, now, undefined, analysis), analysis ? isSampleResumeId(analysis.resumeId) : false]);
   // The live cards never fail the page: a card that can't be read is left out (the board shows it has no rows).
   const [board, line, interview]: [Departure[], OnYourLine | null, NextInterviewView | null] =
@@ -117,6 +120,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
       : [];
   const nextUp = interview ? { ...interview, days: daysUntil(interview.interviewAt, now), leadSkills: lead } : null;
   const signal = found.state === "no_resume" ? null : found.signal;
+  const events = await teaser;
   const own: TodayData =
     found.state === "first"
       ? {
@@ -134,6 +138,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
           signalLive: signal?.live ?? null,
           onYourLine: line,
           nextInterview: nextUp,
+          events,
         }
       : found.state === "returning"
         ? {
@@ -149,8 +154,9 @@ async function Today({ searchParams }: PageProps<"/today">) {
             signalLive: signal?.live ?? null,
             onYourLine: line,
             nextInterview: nextUp,
+            events,
           }
-        : { ...data, name, greeting, unfinishedHref: found.unfinishedResumeId ? `/resume/${found.unfinishedResumeId}` : null };
+        : { ...data, name, greeting, events, unfinishedHref: found.unfinishedResumeId ? `/resume/${found.unfinishedResumeId}` : null };
   return (
     <div className="flex flex-col gap-4">
       {params.notice === NAME_NOTICE && (
@@ -160,8 +166,8 @@ async function Today({ searchParams }: PageProps<"/today">) {
       )}
       <Banner>
         {found.state === "no_resume"
-          ? "Add your resume to start. The cards below are example data until we build them."
-          : "Everything here is your own except the Timetable, which is example data until we build it."}
+          ? "Add your resume to start. The departures below are example data until then."
+          : "Everything here is your own."}
       </Banner>
       {sample && found.state !== "no_resume" && <SampleLineNote />}
       {/* Job search off hides the Departures board (handoff 6): no board rows are sent, and the card says how to turn it on. */}

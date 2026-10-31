@@ -10,7 +10,8 @@ export const NAV = {
   map: { key: "map", label: "Map", href: "/map", Icon: MapIcon, built: true },
   departures: { key: "departures", label: "Departures", href: "/departures", Icon: TrainFront, built: true },
   arrivals: { key: "arrivals", label: "Arrivals", href: "/arrivals", Icon: Inbox, built: true },
-  timetable: { key: "timetable", label: "Timetable", href: "/timetable", Icon: CalendarDays, built: false },
+  /** Events matching the person's goals and interests, near their profile city or online (FR-57, handoff 10). */
+  timetable: { key: "timetable", label: "Timetable", href: "/timetable", Icon: CalendarDays, built: true },
   junction: { key: "junction", label: "Junction", href: "/junction", Icon: MessagesSquare, built: false },
   /** Connections and name search (FR-49, handoff 12j). In the avatar menu, with a count of requests waiting. */
   network: { key: "network", label: "Network", href: "/network", Icon: Users, built: true },

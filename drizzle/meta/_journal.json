@@ -393,6 +393,13 @@
       "when": 1792521600000,
       "tag": "0055_timetable",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1792525200000,
+      "tag": "0056_events_cleanup",
+      "breakpoints": true
     }
   ]
 }
