@@ -111,7 +111,9 @@ export function FoldToggle<T>({ fold, noun, controls, className = "flex" }: { fo
         aria-expanded={fold.open}
         aria-controls={controls}
         onClick={fold.toggle}
-        className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-ink bg-surface px-3.5 py-2 text-[0.84rem] font-medium text-ink hover:bg-surface-2"
+        // Relative, so the screen-reader text stays inside the button: in the Board's sideways-scrolling row an
+        // absolutely placed span would otherwise widen the whole page at phone width.
+        className="relative inline-flex min-h-11 items-center gap-1.5 rounded-full border border-ink bg-surface px-3.5 py-2 text-[0.84rem] font-medium text-ink hover:bg-surface-2"
       >
         <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
         {fold.open ? "Show less" : `Show ${fold.hidden} more`}

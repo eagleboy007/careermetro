@@ -2629,6 +2629,8 @@ if (process.env.DATABASE_URL) {
       await q.getByText(/Loading…/).first().waitFor({ state: "detached", timeout: 30000 }).catch(() => {});
       const rail = q.locator("section", { has: q.getByRole("heading", { name: /^Certifications/ }) });
       await rail.getByText("AWS Certified Cloud Practitioner").waitFor({ timeout: 10000 });
+      // Four certificates fold to three (C23): open the rest first.
+      await rail.getByRole("button", { name: /^Show 1 more/ }).click();
       if ((await rail.getByText("Added by you").count()) !== 4) throw new Error("expected 4 certificates Added by you before any check");
       await rail.getByText(/Expired Jan 2026/).waitFor();
       // The Microsoft Learn link can't be checked with Credly.
