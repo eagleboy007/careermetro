@@ -18657,17 +18657,6 @@
     "free": true
   },
   {
-    "title": "Agreement for sale under RERA 2016: format, mandatory clauses and legal implications",
-    "url": "https://www.snrlaw.in/agreement-for-sale-under-the-real-estate-regulation-and-development-act-2016-format-mandatory-clauses-and-legal-implications/",
-    "provider": "S&R Associates",
-    "kind": "docs",
-    "skillIds": [
-      "property-booking-documentation"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "MahaRERA model allotment letter and agreement for sale",
     "url": "https://www.azbpartners.com/bank/maharera-model-allotment-letter-and-agreement-for-sale/",
     "provider": "AZB & Partners",
@@ -18679,29 +18668,6 @@
     "free": true
   },
   {
-    "title": "Real Estate Regulatory Authorities of States and UTs",
-    "url": "https://rera.mohua.gov.in/real-estate-regulatory-authorities-of-states-uts.html",
-    "provider": "Ministry of Housing and Urban Affairs",
-    "kind": "docs",
-    "skillIds": [
-      "rera-compliance-basics",
-      "real-estate-channel-partners"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "The State of Real Estate Regulation in India 2023",
-    "url": "https://iihs.co.in/knowledge-gateway/wp-content/uploads/2023/11/The-State-of-Real-Estate-Regulation-in-India-2023.pdf",
-    "provider": "Indian Institute for Human Settlements",
-    "kind": "docs",
-    "skillIds": [
-      "rera-compliance-basics"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "NHB frequently asked questions",
     "url": "https://www.nhb.org.in/frequently-asked-question-faqs/",
     "provider": "National Housing Bank",
@@ -18710,18 +18676,6 @@
       "buyer-home-loan-coordination"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "PMAY-Urban guidelines",
-    "url": "https://www.pmay-urban.gov.in/guideline",
-    "provider": "Ministry of Housing and Urban Affairs",
-    "kind": "docs",
-    "skillIds": [
-      "buyer-home-loan-coordination",
-      "home-loan-lap-products"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -18884,17 +18838,6 @@
       "survey-fieldwork-management"
     ],
     "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "Field Management (category)",
-    "url": "https://dimewiki.worldbank.org/Category:Field_Management",
-    "provider": "World Bank DIME Wiki",
-    "kind": "docs",
-    "skillIds": [
-      "survey-fieldwork-management"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -19099,17 +19042,6 @@
     "free": true
   },
   {
-    "title": "Confidential information memorandum (CIM)",
-    "url": "https://www.lexisnexis.com/en-gb/glossary/cim",
-    "provider": "LexisNexis",
-    "kind": "docs",
-    "skillIds": [
-      "information-memorandum-drafting"
-    ],
-    "minutes": 5,
-    "free": true
-  },
-  {
     "title": "What's in a confidential information memorandum (CIM)?",
     "url": "https://mergersandinquisitions.com/?p=21598",
     "provider": "Mergers & Inquisitions",
@@ -19142,17 +19074,6 @@
       "sebi-icdr-regulations"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "SEBI (Issue and Listing of Non-Convertible Securities) Regulations, 2021 (amended as on January 21, 2026)",
-    "url": "https://www.sebi.gov.in/legal/regulations/jan-2026/securities-and-exchange-board-of-india-issue-and-listing-of-non-convertible-securities-regulations-2021-amended-as-on-january-21-2026-_99288.html",
-    "provider": "SEBI",
-    "kind": "docs",
-    "skillIds": [
-      "capital-markets-transactions"
-    ],
-    "minutes": 180,
     "free": true
   },
   {
@@ -19189,18 +19110,6 @@
       "inventory-valuation"
     ],
     "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Cost Accounting (NPTEL video course)",
-    "url": "https://archive.nptel.ac.in/courses/110101132",
-    "provider": "NPTEL",
-    "kind": "course",
-    "skillIds": [
-      "standard-costing-variance",
-      "product-cost-sheets"
-    ],
-    "minutes": 1200,
     "free": true
   },
   {
