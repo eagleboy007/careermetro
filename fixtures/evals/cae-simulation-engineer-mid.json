@@ -1,0 +1,52 @@
+{
+  "id": "cae-simulation-engineer-mid",
+  "roleSlug": "cae-simulation-engineer",
+  "persona": "Mid-level structural CAE analyst in automotive durability",
+  "resumeText": "Arjun Nair | Chennai | arjun.nair@example.com\n\nEXPERIENCE\nCAE Engineer, Coromandel Engineering Simulations, Chennai (2020 - present)\n- Built shell and hex meshes in ANSA for chassis brackets and engine mounts.\n- Ran linear static analysis of suspension parts in ANSYS Mechanical.\n- Set up non-linear contact analysis in Abaqus for bolted joints and rubber bushes.\n- Predicted fatigue life of welded brackets with nCode DesignLife from road load data.\n- Correlated strain results with test data from the durability lab and updated material cards.\n- Presented simulation results and design change proposals to the vehicle design team.\n\nEDUCATION\nME Engineering Design, PSG College of Technology, Coimbatore, 2020\n\nSKILLS\nHyperMesh, Nastran, Python\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "fe-meshing-preprocessing",
+        "quote": "Built shell and hex meshes in ANSA"
+      },
+      {
+        "skillId": "fea-basics",
+        "quote": "Ran linear static analysis of suspension parts in ANSYS Mechanical"
+      },
+      {
+        "skillId": "nonlinear-fea",
+        "quote": "Set up non-linear contact analysis in Abaqus"
+      },
+      {
+        "skillId": "fatigue-durability-analysis",
+        "quote": "Predicted fatigue life of welded brackets with nCode DesignLife"
+      },
+      {
+        "skillId": "cae-test-correlation",
+        "quote": "Correlated strain results with test data"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented simulation results and design change proposals"
+      },
+      {
+        "skillId": "structural-dynamics-nvh",
+        "quote": "Nastran"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "structural-dynamics-nvh",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "cfd-analysis",
+      "3d-cad-modelling",
+      "mechanical-design-calculations",
+      "design-fmea"
+    ]
+  },
+  "reviewedBy": null
+}

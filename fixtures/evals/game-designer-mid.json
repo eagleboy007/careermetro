@@ -1,0 +1,60 @@
+{
+  "id": "game-designer-mid",
+  "roleSlug": "game-designer",
+  "persona": "mid",
+  "resumeText": "Rohan Deshpande | Pune | rohan.deshpande@example.com\n\nEXPERIENCE\nGame Designer, Sahyadri Play Studios, Pune (2022 - present)\n- Designed the core loop and wrote game design documents for a casual puzzle game with 2 million installs.\n- Balanced the soft currency economy and level rewards in balancing spreadsheets built in Google Sheets.\n- Designed 120 puzzle levels with level progression design based on completion data.\n- Prototyped new boosters in Unity before handing them to the engineering team.\n- Ran weekly playtest sessions with players and turned feedback into tuning changes.\n\nJunior Game Designer, Pixel Chai Games, Pune (2021 - 2022)\n- Wrote feature specs for a card game and tuned card stats with the lead designer.\n- Read A/B test results with the analytics team to pick reward values.\n\nEDUCATION\nB.Des Game Design, MIT Institute of Design, Pune, 2021\n\nSKILLS\nUnity, Excel, Figma, game design, live ops\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "game-mechanics-design",
+        "quote": "Designed the core loop and wrote game design documents"
+      },
+      {
+        "skillId": "game-economy-balancing",
+        "quote": "Balanced the soft currency economy and level rewards in balancing spreadsheets"
+      },
+      {
+        "skillId": "excel",
+        "quote": "balancing spreadsheets built in Google Sheets"
+      },
+      {
+        "skillId": "level-design",
+        "quote": "Designed 120 puzzle levels with level progression design"
+      },
+      {
+        "skillId": "unity-engine",
+        "quote": "Prototyped new boosters in Unity"
+      },
+      {
+        "skillId": "playtesting",
+        "quote": "Ran weekly playtest sessions with players"
+      },
+      {
+        "skillId": "ab-testing",
+        "quote": "Read A/B test results with the analytics team"
+      },
+      {
+        "skillId": "live-ops-events",
+        "quote": "live ops"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "live-ops-events",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "unreal-engine",
+      "game-networking",
+      "cpp",
+      "sql"
+    ]
+  },
+  "reviewedBy": null
+}

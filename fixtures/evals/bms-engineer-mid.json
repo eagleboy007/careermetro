@@ -1,0 +1,60 @@
+{
+  "id": "bms-engineer-mid",
+  "roleSlug": "bms-engineer",
+  "persona": "Mid-level BMS engineer at an electric three-wheeler maker, light on functional safety",
+  "resumeText": "Rohit Deshmukh | Pune | rohit.deshmukh@example.com\n\nEXPERIENCE\nBMS Engineer, Sahyadri E-Mobility, Pune (2021 - present)\n- Owned battery management system software for electric three-wheeler LFP packs.\n- Developed SOC estimation using coulomb counting with OCV correction at rest.\n- Built Stateflow charts in Simulink for contactor and precharge control.\n- Implemented passive cell balancing logic for a 16-cell LFP pack.\n- Built equivalent circuit models from HPPC test data for each new cell supplier.\n- Wrote embedded C drivers for the battery monitoring AFE and fault handling.\n- Defined CAN bus messages between the BMS and the vehicle control unit.\n- Validated BMS releases on a dSPACE HIL bench before vehicle trials.\n\nGraduate Engineer Trainee, Deccan Auto Electricals, Pune (2020 - 2021)\n- Tested wiring harnesses and battery chargers on the production line.\n\nSKILLS\nMATLAB, Simulink, Embedded C, CAN, ISO 26262 (training)\n\nEDUCATION\nBE Electrical Engineering, College of Engineering Pune, 2020\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "ev-hev-systems",
+        "quote": "Owned battery management system software for electric three-wheeler LFP packs"
+      },
+      {
+        "skillId": "bms-state-estimation",
+        "quote": "Developed SOC estimation using coulomb counting"
+      },
+      {
+        "skillId": "matlab-simulink",
+        "quote": "Built Stateflow charts in Simulink"
+      },
+      {
+        "skillId": "bms-cell-monitoring-balancing",
+        "quote": "Implemented passive cell balancing logic"
+      },
+      {
+        "skillId": "battery-modelling",
+        "quote": "Built equivalent circuit models from HPPC test data"
+      },
+      {
+        "skillId": "embedded-c",
+        "quote": "Wrote embedded C drivers for the battery monitoring AFE"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Defined CAN bus messages between the BMS and the vehicle control unit"
+      },
+      {
+        "skillId": "hil-testing",
+        "quote": "Validated BMS releases on a dSPACE HIL bench"
+      },
+      {
+        "skillId": "automotive-functional-safety",
+        "quote": "ISO 26262 (training)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "automotive-functional-safety",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "autosar-classic",
+      "sensor-fusion",
+      "python",
+      "automotive-network-diagnostics"
+    ]
+  },
+  "reviewedBy": null
+}

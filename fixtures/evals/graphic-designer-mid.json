@@ -1,0 +1,56 @@
+{
+  "id": "graphic-designer-mid",
+  "roleSlug": "graphic-designer",
+  "persona": "Mid-level brand and print graphic designer at an agency",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.k@example.com\n\nEXPERIENCE\nGraphic Designer, Peacock Brand Studio, Pune (2021 - present)\n- Designed festive social media creatives for 12 consumer brands every month.\n- Retouched and composited product photos in Photoshop for e-commerce listings.\n- Drew vector logos and icon sets in Adobe Illustrator for two brand launches.\n- Created logo design and brand identity guidelines for a regional snack brand.\n- Prepared print-ready files with bleed and CMYK colour for packaging and hoardings.\n- Applied colour theory to clear layouts with strong typography for menus, posters and leaflets.\n- Presented concepts to clients and revised designs from their feedback.\n\nJunior Designer, Inkwell Media, Pune (2019 - 2021)\n- Designed newspaper ads and flyers to tight daily deadlines.\n\nEDUCATION\nBDes Communication Design, MIT Institute of Design, Pune, 2019\n\nSKILLS\nPhotoshop, Illustrator, InDesign, CorelDRAW, Canva\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "social-creative-design",
+        "quote": "Designed festive social media creatives for 12 consumer brands"
+      },
+      {
+        "skillId": "adobe-photoshop",
+        "quote": "Retouched and composited product photos in Photoshop"
+      },
+      {
+        "skillId": "adobe-illustrator",
+        "quote": "Drew vector logos and icon sets in Adobe Illustrator"
+      },
+      {
+        "skillId": "brand-identity-design",
+        "quote": "Created logo design and brand identity guidelines"
+      },
+      {
+        "skillId": "print-production",
+        "quote": "Prepared print-ready files with bleed and CMYK colour"
+      },
+      {
+        "skillId": "graphic-design-fundamentals",
+        "quote": "Applied colour theory to clear layouts with strong typography"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented concepts to clients and revised designs from their feedback"
+      },
+      {
+        "skillId": "adobe-indesign",
+        "quote": "InDesign"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "adobe-indesign",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "motion-graphics",
+      "figma",
+      "interaction-design",
+      "short-form-video-content"
+    ]
+  },
+  "reviewedBy": null
+}

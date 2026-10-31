@@ -1,0 +1,64 @@
+{
+  "id": "dft-engineer-mid",
+  "roleSlug": "dft-engineer",
+  "persona": "Mid-level DFT engineer on networking SoCs, strong on scan and MBIST, no boundary scan work",
+  "resumeText": "Harsha Vardhan Reddy | Hyderabad | harsha.reddy@example.com\n\nEXPERIENCE\nDFT Engineer, Deccan Silicon Works, Hyderabad (2021 - present)\n- Performed scan insertion and EDT compression for a networking SoC using Tessent.\n- Generated stuck-at and transition fault ATPG patterns and reported test coverage per block.\n- Inserted MBIST controllers for on-chip SRAMs with Tessent MemoryBIST and debugged repair flows.\n- Ran scan pattern simulation of serial and parallel scan patterns with SDF timing.\n- Wrote SDC constraints for scan shift and capture modes and closed test-mode timing in PrimeTime.\n- Wrote Tcl scripts to automate the DFT insertion flow across 12 blocks.\n- Fixed DFT rule violations reported by Spyglass DFT on block RTL.\n\nJunior Design Engineer, Kakatiya Chip Services, Hyderabad (2020 - 2021)\n- Supported the DFT team with netlist checks and coverage reports.\n\nSKILLS\nVerilog, Digital electronics, Tessent, PrimeTime, Tcl, Linux\n\nEDUCATION\nBTech Electronics and Communication Engineering, JNTU Hyderabad, 2020\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "dft-scan-atpg",
+        "quote": "Performed scan insertion and EDT compression"
+      },
+      {
+        "skillId": "dft-memory-bist",
+        "quote": "Inserted MBIST controllers for on-chip SRAMs"
+      },
+      {
+        "skillId": "dft-pattern-validation",
+        "quote": "Ran scan pattern simulation of serial and parallel scan patterns"
+      },
+      {
+        "skillId": "synthesis-timing",
+        "quote": "closed test-mode timing in PrimeTime"
+      },
+      {
+        "skillId": "eda-scripting",
+        "quote": "Wrote Tcl scripts to automate the DFT insertion flow"
+      },
+      {
+        "skillId": "rtl-lint-cdc",
+        "quote": "Fixed DFT rule violations reported by Spyglass DFT"
+      },
+      {
+        "skillId": "verilog-rtl",
+        "quote": "Verilog"
+      },
+      {
+        "skillId": "digital-logic-design",
+        "quote": "Digital electronics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "verilog-rtl",
+        "status": "weak"
+      },
+      {
+        "skillId": "digital-logic-design",
+        "status": "weak"
+      },
+      {
+        "skillId": "dft-boundary-scan-ijtag",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "low-power-design",
+      "physical-design-pnr",
+      "post-silicon-validation",
+      "systemverilog-uvm"
+    ]
+  },
+  "reviewedBy": null
+}

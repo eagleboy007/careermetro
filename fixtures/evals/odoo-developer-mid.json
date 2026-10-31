@@ -1,0 +1,56 @@
+{
+  "id": "odoo-developer-mid",
+  "roleSlug": "odoo-developer",
+  "persona": "mid",
+  "resumeText": "Arjun Nair | Kochi | arjun.nair@example.com\n\nEXPERIENCE\nOdoo Developer, Malabar ERP Labs, Kochi (2022 - present)\n- Developed custom Odoo modules for inventory, purchase and manufacturing using the Odoo ORM.\n- Configured Odoo Accounting and Inventory apps for 8 distribution clients, including GST taxes and warehouse routes.\n- Designed QWeb reports for invoices, delivery slips and job cards.\n- Wrote Python business logic and computed fields, and tuned slow PostgreSQL queries on large stock tables.\n- Built XML-RPC and REST integrations between Odoo and a courier platform.\n- Migrated client databases from Odoo 15 to Odoo 17 with custom module upgrades.\n\nSKILLS\nPython, Odoo, PostgreSQL, XML, JavaScript\n\nEDUCATION\nBTech Computer Science, Cochin University of Science and Technology, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "odoo-module-development",
+        "quote": "Developed custom Odoo modules for inventory, purchase and manufacturing"
+      },
+      {
+        "skillId": "odoo-functional-apps",
+        "quote": "Configured Odoo Accounting and Inventory apps"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python business logic and computed fields"
+      },
+      {
+        "skillId": "sql",
+        "quote": "tuned slow PostgreSQL queries on large stock tables"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Built XML-RPC and REST integrations between Odoo and a courier platform"
+      },
+      {
+        "skillId": "data-migration",
+        "quote": "Migrated client databases from Odoo 15 to Odoo 17"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "JavaScript"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "javascript",
+        "status": "weak"
+      },
+      {
+        "skillId": "git",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "docker",
+      "python-web-frameworks",
+      "unit-testing",
+      "financial-accounting"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,48 @@
+{
+  "id": "sap-security-grc-consultant-mid",
+  "roleSlug": "sap-security-grc-consultant",
+  "persona": "Mid-level SAP security consultant growing into GRC",
+  "resumeText": "Aditya Sharma | Noida | aditya.sharma@example.com\n\nEXPERIENCE\nSAP Security Consultant, Yamuna Digital Consulting, Noida (2021 - present)\n- Designed master and derived PFCG roles for finance and procurement on S/4HANA, and set up Fiori catalog access.\n- Troubleshot authorization errors with SU53 and ST01 traces for 400 users each month.\n- Ran SoD risk analysis in SAP GRC Access Control and proposed mitigating controls with process owners.\n- Configured firefighter IDs in emergency access management and reviewed firefighter logs weekly.\n- Prepared user access review evidence and SoD reports for the statutory auditors.\n- Handled access request and authorization tickets in ServiceNow within the SLA.\n\nIT Support Engineer, Gomti Systems, Lucknow (2019 - 2021)\n- Created users and reset passwords in SAP ECC for plant staff.\n\nSKILLS\nSAP Security, SAP GRC, SU24, Excel\n\nEDUCATION\nBTech Computer Science, AKTU, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "sap-security-authorizations",
+        "quote": "Designed master and derived PFCG roles for finance and procurement"
+      },
+      {
+        "skillId": "sap-grc-access-control",
+        "quote": "Ran SoD risk analysis in SAP GRC Access Control"
+      },
+      {
+        "skillId": "security-audits",
+        "quote": "Prepared user access review evidence and SoD reports for the statutory auditors"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Handled access request and authorization tickets in ServiceNow within the SLA"
+      },
+      {
+        "skillId": "identity-governance",
+        "quote": "Prepared user access review evidence"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "requirements-gathering",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-basis-administration",
+      "internal-controls-testing",
+      "sap-btp-platform",
+      "pam-platforms"
+    ]
+  },
+  "reviewedBy": null
+}

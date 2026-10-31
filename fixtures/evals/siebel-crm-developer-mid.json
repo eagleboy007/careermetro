@@ -1,0 +1,52 @@
+{
+  "id": "siebel-crm-developer-mid",
+  "roleSlug": "siebel-crm-developer",
+  "persona": "Mid-level Siebel developer with EAI and Open UI work",
+  "resumeText": "Kavitha Ramesh | Chennai | kavitha.ramesh@example.com\n\nSUMMARY\nSiebel CRM developer with 6 years on Siebel 8.1 and IP17 for banking and telecom customer service teams.\n\nEXPERIENCE\nSiebel Developer, Marina Bay Technologies, Chennai (2021 - present)\n- Configured business components, applets and views in Siebel Tools for the service request module.\n- Wrote Siebel eScript in business services and built Siebel workflow processes for order validation.\n- Built Siebel integration objects and data maps for inbound web services from the billing system.\n- Loaded EIM tables to migrate 2 million contact records from the legacy CRM.\n- Tested SOAP web services with SoapUI and fixed XML mapping errors.\n- Fixed production defects raised by the support desk and deployed monthly releases.\n\nAssociate Developer, Vaigai Software Services, Madurai (2019 - 2021)\n- Wrote Oracle SQL queries on Siebel tables to check and correct account data.\n- Customised Siebel Open UI screens with JavaScript physical renderers.\n\nSKILLS\nSiebel CRM, Siebel Tools, eScript, EAI, EIM, Open UI, Oracle SQL, JavaScript\n\nEDUCATION\nBE Computer Science, Anna University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "siebel-crm-configuration",
+        "quote": "Configured business components, applets and views in Siebel Tools"
+      },
+      {
+        "skillId": "siebel-escript-workflows",
+        "quote": "Wrote Siebel eScript in business services"
+      },
+      {
+        "skillId": "siebel-eai-eim",
+        "quote": "Built Siebel integration objects and data maps"
+      },
+      {
+        "skillId": "soap-xml",
+        "quote": "Tested SOAP web services with SoapUI"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote Oracle SQL queries on Siebel tables"
+      },
+      {
+        "skillId": "application-support",
+        "quote": "Fixed production defects raised by the support desk"
+      },
+      {
+        "skillId": "javascript",
+        "quote": "Customised Siebel Open UI screens with JavaScript"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "rest-apis",
+      "database-programming",
+      "agile-scrum",
+      "salesforce-apex"
+    ]
+  },
+  "reviewedBy": null
+}

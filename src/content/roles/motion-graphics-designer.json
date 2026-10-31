@@ -1,0 +1,115 @@
+{
+  "slug": "motion-graphics-designer",
+  "title": "Motion Graphics Designer",
+  "summary": "Motion graphics designers animate app screens, brand stories and explainers, and ship in-app animations as light Lottie files that developers can use. They usually sit in a product design or brand team, working with UI designers, developers and marketers.",
+  "dailyDuties": [
+    "Sketch storyboards and style frames from a brief",
+    "Animate brand, product and explainer pieces in After Effects",
+    "Build in-app animations and export them as Lottie files",
+    "Prepare vector assets from Illustrator and Figma files",
+    "Hand over motion specs and check animations with developers",
+    "Revise work after product and brand reviews"
+  ],
+  "typicalTitles": [
+    "Motion Designer",
+    "Product Motion Designer",
+    "Motion Graphic Artist",
+    "UI Motion Designer",
+    "Lottie Animator",
+    "Brand Motion Designer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "motion-graphics",
+      "importance": "required",
+      "expectation": "Animate product, brand and explainer pieces in After Effects",
+      "postingShare": null
+    },
+    {
+      "skillId": "lottie-ui-animation",
+      "importance": "required",
+      "expectation": "Make in-app animations and export them as Lottie or Rive files developers can ship",
+      "postingShare": null
+    },
+    {
+      "skillId": "storyboarding-styleframes",
+      "importance": "required",
+      "expectation": "Plan pieces with storyboards and style frames before animating",
+      "postingShare": null
+    },
+    {
+      "skillId": "adobe-illustrator",
+      "importance": "required",
+      "expectation": "Prepare layered vector assets in Illustrator for animation",
+      "postingShare": null
+    },
+    {
+      "skillId": "graphic-design-fundamentals",
+      "importance": "required",
+      "expectation": "Use typography, colour and layout well in kinetic type and brand motion",
+      "postingShare": null
+    },
+    {
+      "skillId": "figma",
+      "importance": "required",
+      "expectation": "Work from Figma product screens and hand over motion specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present concepts and take feedback from product, brand and marketing teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "3d-motion-design",
+      "importance": "nice_to_have",
+      "expectation": "Add simple 3D scenes with Cinema 4D or similar tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "adobe-photoshop",
+      "importance": "nice_to_have",
+      "expectation": "Prepare raster assets and textures",
+      "postingShare": null
+    },
+    {
+      "skillId": "video-editing-nle",
+      "importance": "nice_to_have",
+      "expectation": "Cut footage together with motion pieces in Premiere Pro",
+      "postingShare": null
+    },
+    {
+      "skillId": "audio-post-production",
+      "importance": "nice_to_have",
+      "expectation": "Add sound design and sync music to animation",
+      "postingShare": null
+    },
+    {
+      "skillId": "prototyping",
+      "importance": "nice_to_have",
+      "expectation": "Prototype interactions in ProtoPie or Figma",
+      "postingShare": null
+    },
+    {
+      "skillId": "short-form-video-content",
+      "importance": "nice_to_have",
+      "expectation": "Adapt motion pieces for Reels and Shorts",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

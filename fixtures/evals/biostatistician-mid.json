@@ -1,0 +1,56 @@
+{
+  "id": "biostatistician-mid",
+  "roleSlug": "biostatistician",
+  "persona": "Mid-level oncology biostatistician at a CRO",
+  "resumeText": "Arjun Menon | Bengaluru | arjun.menon@example.com\n\nSUMMARY\nBiostatistician with 7 years in clinical trials and observational studies, mostly oncology.\n\nEXPERIENCE\nBiostatistician, Nilgiri Clinical Research, Bengaluru (2021 - present)\n- Wrote statistical analysis plans and table shells for Phase II and III oncology trials.\n- Ran sample size calculations for two Phase III protocols using nQuery.\n- Performed Kaplan-Meier and Cox regression analyses for overall survival endpoints.\n- Fitted MMRM models in SAS for repeated measures efficacy endpoints.\n- Reviewed safety tables and listings produced by the programming team.\n- Presented interim results to the sponsor study team and answered their questions.\n\nStatistical Analyst, Malabar Health Analytics, Kochi (2019 - 2021)\n- Used SAS procedures for descriptive statistics and hypothesis testing in observational studies.\n\nSKILLS\nSAS, Statistics, CDISC ADaM\n\nEDUCATION\nMSc Biostatistics, Manipal Academy of Higher Education, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "clinical-trials-knowledge",
+        "quote": "Wrote statistical analysis plans and table shells for Phase II and III oncology trials"
+      },
+      {
+        "skillId": "clinical-trial-design",
+        "quote": "Ran sample size calculations for two Phase III protocols"
+      },
+      {
+        "skillId": "survival-analysis",
+        "quote": "Performed Kaplan-Meier and Cox regression analyses"
+      },
+      {
+        "skillId": "clinical-statistical-modelling",
+        "quote": "Fitted MMRM models in SAS for repeated measures"
+      },
+      {
+        "skillId": "sas-programming",
+        "quote": "Fitted MMRM models in SAS for repeated measures efficacy endpoints"
+      },
+      {
+        "skillId": "statistics",
+        "quote": "Used SAS procedures for descriptive statistics and hypothesis testing"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented interim results to the sponsor study team"
+      },
+      {
+        "skillId": "cdisc-adam",
+        "quote": "CDISC ADaM"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cdisc-adam",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "cdisc-sdtm",
+      "r-programming",
+      "cdisc-submission-validation"
+    ]
+  },
+  "reviewedBy": null
+}

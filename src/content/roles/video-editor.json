@@ -1,0 +1,104 @@
+{
+  "slug": "video-editor",
+  "title": "Video Editor",
+  "summary": "Video editors turn raw footage into finished brand films, YouTube videos and short vertical clips for Reels and Shorts. They usually sit in a brand, growth or content team, or at a media studio, working with producers, designers and social media managers.",
+  "dailyDuties": [
+    "Cut raw footage into first drafts from a brief or script",
+    "Edit vertical Reels and Shorts with hooks and captions",
+    "Add titles, lower thirds and simple animations",
+    "Correct and grade colour so shots match",
+    "Clean up audio and mix music and voiceover",
+    "Make revisions from producer and brand feedback",
+    "Export and deliver files to each platform's specs"
+  ],
+  "typicalTitles": [
+    "Executive Video Editor",
+    "Post-Production Editor",
+    "Short-Form Video Editor",
+    "YouTube Video Editor",
+    "Video Editor - Brand Content",
+    "Video Editor and Colourist"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "video-editing-nle",
+      "importance": "required",
+      "expectation": "Cut brand, social and YouTube videos in Premiere Pro, DaVinci Resolve or Final Cut Pro",
+      "postingShare": null
+    },
+    {
+      "skillId": "short-form-video-content",
+      "importance": "required",
+      "expectation": "Edit vertical Reels and Shorts with hooks, pacing and captions that hold attention",
+      "postingShare": null
+    },
+    {
+      "skillId": "motion-graphics",
+      "importance": "required",
+      "expectation": "Add titles, lower thirds and simple animations in After Effects",
+      "postingShare": null
+    },
+    {
+      "skillId": "colour-grading",
+      "importance": "required",
+      "expectation": "Correct and grade footage so shots match and skin tones look right",
+      "postingShare": null
+    },
+    {
+      "skillId": "audio-post-production",
+      "importance": "required",
+      "expectation": "Clean up dialogue, balance music and sync voiceovers",
+      "postingShare": null
+    },
+    {
+      "skillId": "video-delivery-specs",
+      "importance": "required",
+      "expectation": "Export the right codec, aspect ratio and size for each platform",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Take briefs and feedback from producers and brand teams and turn revisions quickly",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Manage several requests and deadlines from marketing teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "adobe-photoshop",
+      "importance": "nice_to_have",
+      "expectation": "Make thumbnails and fix stills",
+      "postingShare": null
+    },
+    {
+      "skillId": "graphic-design-fundamentals",
+      "importance": "nice_to_have",
+      "expectation": "Use type, layout and colour well in on-screen text",
+      "postingShare": null
+    },
+    {
+      "skillId": "social-media-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Read watch time and retention data to improve edits",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

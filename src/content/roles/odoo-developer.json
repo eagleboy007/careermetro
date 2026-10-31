@@ -1,0 +1,120 @@
+{
+  "slug": "odoo-developer",
+  "title": "Odoo Developer",
+  "summary": "Builds and customises modules for Odoo, an open-source ERP (software that runs accounting, sales, inventory and manufacturing), in Python with PostgreSQL. Works at an Odoo partner or in a company's IT team, next to functional consultants who set up the standard apps.",
+  "dailyDuties": [
+    "Build or extend Odoo modules with models, views and access rules",
+    "Design QWeb reports such as invoices and delivery slips",
+    "Write Python business logic for client-specific processes",
+    "Integrate Odoo with other systems through XML-RPC or REST APIs",
+    "Upgrade custom modules to a newer Odoo version",
+    "Review issues with functional consultants and fix bugs"
+  ],
+  "typicalTitles": [
+    "Odoo Technical Consultant",
+    "Python Odoo Developer",
+    "Odoo ERP Developer",
+    "Odoo Techno-Functional Consultant",
+    "OpenERP Developer"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "odoo-module-development",
+      "importance": "required",
+      "expectation": "Build and extend Odoo modules with the ORM, XML views, access rights and QWeb reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Write Python business logic, computed fields and server actions",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Write and tune PostgreSQL queries behind Odoo",
+      "postingShare": null
+    },
+    {
+      "skillId": "odoo-functional-apps",
+      "importance": "required",
+      "expectation": "Understand and configure standard Odoo apps such as Accounting, Sales, Inventory and Manufacturing",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Change the Odoo web client with JavaScript and OWL components",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Integrate Odoo with other systems through XML-RPC, JSON-RPC or REST APIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "required",
+      "expectation": "Keep module code in Git and work through pull requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-migration",
+      "importance": "nice_to_have",
+      "expectation": "Upgrade databases and custom modules between Odoo versions",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and run Odoo on Linux servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "docker",
+      "importance": "nice_to_have",
+      "expectation": "Run Odoo and PostgreSQL in containers",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "nice_to_have",
+      "expectation": "Turn client needs into a list of module changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-accounting",
+      "importance": "nice_to_have",
+      "expectation": "Know basic accounting and GST so accounting customisations are correct",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write tests for custom modules",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "pcap",
+      "importance": "optional",
+      "why": "Shows core Python skill for freshers moving into Odoo work"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

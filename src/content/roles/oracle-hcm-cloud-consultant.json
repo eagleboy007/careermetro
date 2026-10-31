@@ -1,0 +1,109 @@
+{
+  "slug": "oracle-hcm-cloud-consultant",
+  "title": "Oracle HCM Cloud Consultant",
+  "summary": "Configures Oracle Fusion HCM Cloud, Oracle's online HR software, for clients: core employee records, leave (Absence), payroll and talent processes, plus fast formulas (small rules written in Oracle's formula language), bulk data loads and reports. Sits in an Oracle implementation or support team between client HR teams and technical developers.",
+  "dailyDuties": [
+    "Run design workshops and fit-gap sessions with HR teams",
+    "Configure Core HR, Absence or Payroll setups in the cloud tenant",
+    "Write and fix fast formulas for accruals, eligibility and validation",
+    "Prepare and load HDL files for workers and setup data",
+    "Build OTBI analyses for HR users",
+    "Test quarterly updates and support user acceptance testing"
+  ],
+  "typicalTitles": [
+    "Oracle HCM Functional Consultant",
+    "Oracle Fusion HCM Functional Consultant",
+    "Oracle Cloud HCM Consultant",
+    "Oracle HCM Payroll Consultant",
+    "Oracle Absence Management Consultant",
+    "Oracle Core HR Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "oracle-hcm-cloud-modules",
+      "importance": "required",
+      "expectation": "Configure at least two Oracle HCM Cloud modules such as Core HR, Absence, Payroll or Talent",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-fusion-cloud",
+      "importance": "required",
+      "expectation": "Work in Oracle Fusion Cloud setup tasks, security roles and quarterly updates",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-fast-formula",
+      "importance": "required",
+      "expectation": "Write and fix fast formulas for absence accruals, eligibility, validation or payroll",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-fusion-data-loads",
+      "importance": "required",
+      "expectation": "Load and correct worker and setup data with HDL and HSDL",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-bi-publisher-otbi",
+      "importance": "required",
+      "expectation": "Build OTBI analyses and simple BI Publisher reports for HR users",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Run design workshops and fit-gap sessions with HR teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "required",
+      "expectation": "Write test scripts and lead user acceptance testing and go-live support",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain configuration choices and issues clearly to HR users",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with client HR, payroll and IT leads across phases",
+      "postingShare": null
+    },
+    {
+      "skillId": "oracle-integration-cloud",
+      "importance": "nice_to_have",
+      "expectation": "Understand OIC integrations that feed or read HCM data",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Write SQL for BI Publisher data models and data checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "nice_to_have",
+      "expectation": "Write configuration workbooks and design documents",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

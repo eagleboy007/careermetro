@@ -1,0 +1,140 @@
+{
+  "slug": "ev-powertrain-engineer",
+  "title": "EV Powertrain Engineer",
+  "summary": "EV powertrain engineers make the traction motor, inverter and battery pack work together in an electric vehicle and prove it through bench, dyno and road tests. They sit in a vehicle engineering team at an EV maker or supplier, between the component teams and the vehicle launch team.",
+  "dailyDuties": [
+    "Plan powertrain tests and keep the DVP&R up to date",
+    "Run motor dyno, chassis dyno and on-road tests",
+    "Analyse logged CAN and test data for torque, efficiency and heat",
+    "Calibrate torque maps and regen settings during vehicle trials",
+    "Debug inverter, motor and controller faults with suppliers",
+    "Estimate range and energy use for new vehicle variants",
+    "Report test results and open issues to the programme team"
+  ],
+  "typicalTitles": [
+    "Powertrain Integration Engineer",
+    "EV Powertrain Integration Engineer",
+    "Powertrain Validation Engineer - EV",
+    "E-Drive Validation Engineer",
+    "EV Powertrain Systems Engineer",
+    "Vehicle Integration Engineer - EV Powertrain"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "ev-hev-systems",
+      "importance": "required",
+      "expectation": "Understand how the traction motor, inverter, battery pack and vehicle controller work together",
+      "postingShare": null
+    },
+    {
+      "skillId": "ev-powertrain-integration",
+      "importance": "required",
+      "expectation": "Integrate powertrain parts on the vehicle and own the DVP&R and sign-off tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "powertrain-dyno-testing",
+      "importance": "required",
+      "expectation": "Plan and run motor dyno, chassis dyno and on-road tests and analyse logged data",
+      "postingShare": null
+    },
+    {
+      "skillId": "electrical-machines-transformers",
+      "importance": "required",
+      "expectation": "Check traction motor torque, efficiency and thermal limits against vehicle needs",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-electronics-inverters",
+      "importance": "required",
+      "expectation": "Work with inverter and DC-DC suppliers on ratings, derating and faults",
+      "postingShare": null
+    },
+    {
+      "skillId": "ecu-measurement-calibration",
+      "importance": "required",
+      "expectation": "Calibrate torque maps, regen and drive modes with INCA or CANape",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-network-diagnostics",
+      "importance": "required",
+      "expectation": "Debug CAN traffic and fault codes with CANoe or CANalyzer",
+      "postingShare": null
+    },
+    {
+      "skillId": "matlab-simulink",
+      "importance": "required",
+      "expectation": "Analyse test data and build powertrain models in MATLAB and Simulink",
+      "postingShare": null
+    },
+    {
+      "skillId": "vehicle-energy-simulation",
+      "importance": "required",
+      "expectation": "Estimate range, gradeability and energy use to size the powertrain",
+      "postingShare": null
+    },
+    {
+      "skillId": "battery-modelling",
+      "importance": "nice_to_have",
+      "expectation": "Understand cell behaviour, pack limits and thermal effects on range",
+      "postingShare": null
+    },
+    {
+      "skillId": "design-fmea",
+      "importance": "nice_to_have",
+      "expectation": "Lead DFMEA for powertrain mounting and high-voltage integration",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "nice_to_have",
+      "expectation": "Close field and test failures with 8D or fishbone analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "automotive-functional-safety",
+      "importance": "nice_to_have",
+      "expectation": "Follow ISO 26262 work products for powertrain functions",
+      "postingShare": null
+    },
+    {
+      "skillId": "hil-testing",
+      "importance": "nice_to_have",
+      "expectation": "Use HIL benches to test powertrain controllers before vehicle trials",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate test data processing and reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate motor, inverter and battery suppliers and in-house teams",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "tuv-sud-functional-safety-engineer",
+      "importance": "optional",
+      "why": "ISO 26262 depth for safety-relevant powertrain functions"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

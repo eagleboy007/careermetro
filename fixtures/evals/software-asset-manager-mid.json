@@ -1,0 +1,52 @@
+{
+  "id": "software-asset-manager-mid",
+  "roleSlug": "software-asset-manager",
+  "persona": "Mid-level IT asset analyst at an IT services firm",
+  "resumeText": "Vikram Iyer | Chennai | vikram.iyer@example.com\n\nEXPERIENCE\nIT Asset Analyst, Coromandel Tech Services, Chennai (2021 - present)\n- Reconciled Microsoft and Adobe installs against entitlements in Flexera One for 9,000 users.\n- Built the effective license position for SQL Server under per core licensing before the annual true-up.\n- Tracked laptops from purchase to disposal and arranged certified e-waste disposal.\n- Cleaned duplicate CI records in the ServiceNow CMDB every month.\n- Fulfilled software requests through the ITIL request fulfilment process.\n- Tracked software contract renewals with procurement and vendor portals.\n- Analysed inventory exports in Excel with pivot tables.\n\nDesktop Support Engineer, Kaveri Infotech, Chennai (2018 - 2021)\n- Imaged laptops and fixed hardware issues for 600 users.\n\nEDUCATION\nBSc Computer Science, Loyola College, Chennai, 2018\n\nSKILLS\nFlexera One, ServiceNow, Excel, SCCM, Oracle licensing\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "software-asset-management",
+        "quote": "Reconciled Microsoft and Adobe installs against entitlements in Flexera One"
+      },
+      {
+        "skillId": "software-licensing-models",
+        "quote": "SQL Server under per core licensing"
+      },
+      {
+        "skillId": "hardware-asset-management",
+        "quote": "Tracked laptops from purchase to disposal"
+      },
+      {
+        "skillId": "servicenow-itom",
+        "quote": "Cleaned duplicate CI records in the ServiceNow CMDB"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Fulfilled software requests through the ITIL request fulfilment process"
+      },
+      {
+        "skillId": "it-vendor-management",
+        "quote": "Tracked software contract renewals with procurement and vendor portals"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Analysed inventory exports in Excel with pivot tables"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "power-bi",
+      "cloud-cost",
+      "sql",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

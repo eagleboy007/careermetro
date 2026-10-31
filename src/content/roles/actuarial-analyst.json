@@ -1,0 +1,142 @@
+{
+  "slug": "actuarial-analyst",
+  "title": "Actuarial Analyst",
+  "summary": "Uses maths, statistics and insurance data to estimate how much an insurer should hold for future claims (reserving) and charge for its products (pricing), while working through actuarial exams. Sits in the actuarial team of an insurer, reinsurer, consulting firm or global capability centre, under qualified actuaries.",
+  "dailyDuties": [
+    "Prepare claims and premium data with SQL and Excel",
+    "Run reserving or pricing models and check the results",
+    "Analyse mortality, lapse or claims experience against assumptions",
+    "Update cash-flow or valuation models for quarterly reporting",
+    "Automate routine model runs with VBA, R or Python",
+    "Write short reports and notes for senior actuaries",
+    "Study for the next actuarial exam"
+  ],
+  "typicalTitles": [
+    "Associate Actuarial Analyst",
+    "Actuarial Associate",
+    "Actuarial Trainee",
+    "Reserving Analyst - Actuarial",
+    "Pricing Analyst - Actuarial",
+    "Valuation Analyst - Actuarial",
+    "Actuarial Executive"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "actuarial-reserving",
+      "importance": "required",
+      "expectation": "Estimate claims reserves and IBNR with standard reserving methods",
+      "postingShare": null,
+      "oneOf": "actuarial-practice"
+    },
+    {
+      "skillId": "actuarial-pricing",
+      "importance": "required",
+      "expectation": "Build and update pricing models for insurance products",
+      "postingShare": null,
+      "oneOf": "actuarial-practice"
+    },
+    {
+      "skillId": "experience-studies",
+      "importance": "required",
+      "expectation": "Analyse mortality, morbidity, lapse or claims experience against assumptions",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "required",
+      "expectation": "Fit distributions and models and judge whether results are credible",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build and check actuarial models and reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Use Python or R to analyse data and automate actuarial work",
+      "postingShare": null,
+      "oneOf": "actuarial-language"
+    },
+    {
+      "skillId": "r-programming",
+      "importance": "required",
+      "expectation": "Use Python or R to analyse data and automate actuarial work",
+      "postingShare": null,
+      "oneOf": "actuarial-language"
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear reports and explain results to senior actuaries and clients",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull policy, premium and claims data from databases",
+      "postingShare": null
+    },
+    {
+      "skillId": "actuarial-valuation-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Know the basics of IFRS 17 and statutory valuation and reporting",
+      "postingShare": null
+    },
+    {
+      "skillId": "actuarial-modelling-software",
+      "importance": "nice_to_have",
+      "expectation": "Run or update cash-flow models in Prophet or a similar actuarial tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-vba",
+      "importance": "nice_to_have",
+      "expectation": "Automate spreadsheets and model runs with VBA",
+      "postingShare": null
+    },
+    {
+      "skillId": "reinsurance-basics",
+      "importance": "nice_to_have",
+      "expectation": "Understand how treaties and retentions change results",
+      "postingShare": null
+    },
+    {
+      "skillId": "irdai-regulations",
+      "importance": "nice_to_have",
+      "expectation": "Know IRDAI rules that affect reserving and pricing in India",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Show results in clear charts and dashboards",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "actuarial-practice",
+      "label": "Reserving or pricing work"
+    },
+    {
+      "id": "actuarial-language",
+      "label": "A data language (Python or R)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

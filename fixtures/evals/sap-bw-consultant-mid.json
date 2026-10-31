@@ -1,0 +1,60 @@
+{
+  "id": "sap-bw-consultant-mid",
+  "roleSlug": "sap-bw-consultant",
+  "persona": "Mid-level SAP BW consultant with BW/4HANA project and support work",
+  "resumeText": "Rohan Kulkarni | Pune | rohan.kulkarni@example.com\n\nSUMMARY\nSAP BW consultant with 7 years on BW on HANA and BW/4HANA for manufacturing and retail clients.\n\nEXPERIENCE\nSAP BW Consultant, Sahyadri Analytics Services, Pune (2021 - present)\n- Built ADSOs and composite providers for sales and inventory reporting in BW/4HANA.\n- Set up ODP extraction from S/4HANA and wrote transformations and DTPs for 30 data flows.\n- Wrote ABAP end routines and start routines to derive plant and region attributes.\n- Monitor daily process chains and fix failed loads within the support SLA.\n- Designed BEx queries and Analysis for Office workbooks for the finance team.\n- Gathered reporting requirements from business users in workshops and wrote functional specs.\n\nAssociate Consultant, Deccan Infotech, Pune (2019 - 2021)\n- Supported BW on HANA loads from ECC LO extractors for a retail client.\n- Wrote SQL queries to reconcile BW data with source tables.\n- Built SAP Analytics Cloud stories on top of BW live connections.\n\nSKILLS\nSAP BW/4HANA, BW on HANA, ABAP, BEx, Analysis for Office, SQL, SAP Analytics Cloud\n\nEDUCATION\nBE Computer Engineering, Savitribai Phule Pune University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "sap-bw4hana-modelling",
+        "quote": "Built ADSOs and composite providers for sales and inventory reporting"
+      },
+      {
+        "skillId": "sap-bw-data-flows",
+        "quote": "Set up ODP extraction from S/4HANA and wrote transformations and DTPs"
+      },
+      {
+        "skillId": "sap-abap",
+        "quote": "Wrote ABAP end routines and start routines"
+      },
+      {
+        "skillId": "sap-bw-process-chains",
+        "quote": "Monitor daily process chains and fix failed loads"
+      },
+      {
+        "skillId": "sap-bw-reporting",
+        "quote": "Designed BEx queries and Analysis for Office workbooks"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Gathered reporting requirements from business users in workshops"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries to reconcile BW data with source tables"
+      },
+      {
+        "skillId": "sap-analytics-cloud",
+        "quote": "Built SAP Analytics Cloud stories on top of BW live connections"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-hana-modelling",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-datasphere",
+      "sap-abap-hana",
+      "python",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,115 @@
+{
+  "slug": "zoho-developer",
+  "title": "Zoho Developer",
+  "summary": "Builds and customises business apps on Zoho, such as Zoho CRM and Zoho Creator, using Deluge, Zoho's own scripting language. Usually works at a Zoho partner or in a company's internal IT team, turning sales, service and operations processes into apps and automations.",
+  "dailyDuties": [
+    "Write Deluge functions and workflows for client requests",
+    "Build or change forms, reports and pages in Zoho Creator",
+    "Configure Zoho CRM modules, blueprints and workflow rules",
+    "Connect Zoho apps to other tools through APIs and webhooks",
+    "Meet clients to understand their process and agree on changes",
+    "Fix issues raised by users after go-live"
+  ],
+  "typicalTitles": [
+    "Zoho Creator Developer",
+    "Zoho CRM Developer",
+    "Deluge Developer",
+    "Zoho One Developer",
+    "Zoho Technical Consultant",
+    "Zoho Implementation Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "zoho-deluge-scripting",
+      "importance": "required",
+      "expectation": "Write Deluge custom functions, workflows and scheduled scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "zoho-creator-development",
+      "importance": "required",
+      "expectation": "Build Zoho Creator apps with forms, reports, pages and workflows",
+      "postingShare": null
+    },
+    {
+      "skillId": "zoho-crm-customization",
+      "importance": "required",
+      "expectation": "Customise Zoho CRM and other Zoho One apps with modules, layouts, blueprints and workflow rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Connect Zoho apps to other systems through REST APIs, webhooks and connections",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn a client's business needs into a Zoho solution design",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map a business process before automating it in Zoho",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain solutions to clients and train their users",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Know how sales teams use a CRM for leads, deals and pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Build simple widgets and pages with HTML, CSS and JavaScript",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query data for Zoho Analytics reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-migration",
+      "importance": "nice_to_have",
+      "expectation": "Move data from spreadsheets or old systems into Zoho",
+      "postingShare": null
+    },
+    {
+      "skillId": "uat",
+      "importance": "nice_to_have",
+      "expectation": "Run user acceptance testing with the client before go-live",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Build dashboards in Zoho Analytics",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

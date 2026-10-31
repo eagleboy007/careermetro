@@ -1,0 +1,44 @@
+{
+  "id": "analog-ic-design-engineer-mid",
+  "roleSlug": "analog-ic-design-engineer",
+  "persona": "Mid-level analog designer working on power management blocks",
+  "resumeText": "Sneha Kulkarni | Bengaluru | sneha.kulkarni@example.com\n\nEXPERIENCE\nAnalog Design Engineer, Kaveri Silicon Labs, Bengaluru (2021 - present)\n- Designed a 1.2 V capless LDO and a bandgap reference in 28nm CMOS for a sensor interface chip.\n- Designed a two-stage op-amp and dynamic comparator for the sensor readout front end.\n- Ran Spectre simulations in Cadence ADE for DC, AC, transient, noise and loop stability.\n- Signed off every block with PVT corner and Monte Carlo analysis before tape-out.\n- Reviewed post-layout extracted netlists with the layout team and fixed gain loss caused by parasitics.\n\nEDUCATION\nMTech Microelectronics, NIT Karnataka, Surathkal, 2021\n\nSKILLS\nVerilog-A, Python, Cadence Virtuoso schematic\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "power-management-ic-design",
+        "quote": "Designed a 1.2 V capless LDO"
+      },
+      {
+        "skillId": "analog-ic-circuit-design",
+        "quote": "Designed a two-stage op-amp and dynamic comparator"
+      },
+      {
+        "skillId": "ic-spice-simulation",
+        "quote": "Ran Spectre simulations in Cadence ADE"
+      },
+      {
+        "skillId": "pvt-monte-carlo-analysis",
+        "quote": "PVT corner and Monte Carlo analysis"
+      },
+      {
+        "skillId": "parasitic-extraction",
+        "quote": "Reviewed post-layout extracted netlists with the layout team"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "pll-clocking-design",
+      "data-converter-design",
+      "post-silicon-validation",
+      "eda-scripting"
+    ]
+  },
+  "reviewedBy": null
+}

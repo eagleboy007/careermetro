@@ -1,0 +1,56 @@
+{
+  "id": "mes-engineer-mid",
+  "roleSlug": "mes-engineer",
+  "persona": "Mid-level MES developer on Siemens Opcenter for an auto-parts client, integrating with SAP",
+  "resumeText": "Ananya Iyer | Chennai | ananya.iyer@example.com\n\nEXPERIENCE\nMES Developer, Kaveri Digital Manufacturing Services, Chennai (2021 - present)\n- Configured Siemens Opcenter Execution for an automotive parts plant with 14 assembly lines.\n- Mapped plant equipment to the ISA-95 hierarchy for the MES rollout.\n- Built SAP to MES integration with IDocs for production orders and goods movements.\n- Wrote C# extensions for Opcenter work instruction and genealogy screens.\n- Wrote SQL Server stored procedures for OEE and scrap reports.\n- Connected Siemens S7 PLCs to MES through OPC UA for machine counts and alarms.\n- Supported go-live and hypercare for two plants with the client IT team.\n\nSoftware Engineer, Marina Business Systems, Chennai (2020 - 2021)\n- Maintained .NET web forms for an internal inventory application.\n\nSKILLS\nSiemens Opcenter, C#, SQL Server, SAP integration, Requirements gathering\n\nEDUCATION\nBE Computer Science, Anna University, 2020\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "mes-platforms",
+        "quote": "Configured Siemens Opcenter Execution for an automotive parts plant"
+      },
+      {
+        "skillId": "isa95-mes-integration",
+        "quote": "Mapped plant equipment to the ISA-95 hierarchy"
+      },
+      {
+        "skillId": "sap-interfaces",
+        "quote": "Built SAP to MES integration with IDocs"
+      },
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Wrote C# extensions for Opcenter"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL Server stored procedures"
+      },
+      {
+        "skillId": "oee-productivity-tracking",
+        "quote": "stored procedures for OEE and scrap reports"
+      },
+      {
+        "skillId": "industrial-control-systems",
+        "quote": "Connected Siemens S7 PLCs to MES through OPC UA"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Requirements gathering"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "requirements-gathering",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-pp-configuration",
+      "plc-iec-61131-programming",
+      "java",
+      "scada-hmi-platforms"
+    ]
+  },
+  "reviewedBy": null
+}

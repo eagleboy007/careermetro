@@ -1,0 +1,124 @@
+{
+  "slug": "dft-engineer",
+  "title": "DFT Engineer",
+  "summary": "Adds test logic to chips so every manufactured die can be checked for defects: scan chains, built-in self-test for memories and boundary scan. Sits in the SoC design team between RTL designers, physical design and the test engineers who run patterns on testers.",
+  "dailyDuties": [
+    "Insert scan chains and test compression into RTL or netlists",
+    "Generate ATPG patterns and push test coverage up",
+    "Insert and verify memory BIST and repair logic",
+    "Simulate test patterns at gate level and debug failures",
+    "Write test-mode timing constraints with the STA team",
+    "Script DFT flows in Tcl or Python",
+    "Help the test team debug pattern failures on silicon"
+  ],
+  "typicalTitles": [
+    "ASIC DFT Engineer",
+    "SoC DFT Engineer",
+    "DFT Design Engineer",
+    "Design for Test Engineer",
+    "Design for Testability Engineer",
+    "DFT ATPG Engineer",
+    "MBIST Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "dft-scan-atpg",
+      "importance": "required",
+      "expectation": "Insert scan chains and compression, and generate ATPG patterns that hit coverage targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "dft-memory-bist",
+      "importance": "required",
+      "expectation": "Insert and verify MBIST for on-chip memories, including repair",
+      "postingShare": null
+    },
+    {
+      "skillId": "dft-boundary-scan-ijtag",
+      "importance": "required",
+      "expectation": "Add boundary scan and IJTAG networks to IEEE 1149.1 and 1687",
+      "postingShare": null
+    },
+    {
+      "skillId": "dft-pattern-validation",
+      "importance": "required",
+      "expectation": "Simulate scan and MBIST patterns at gate level and debug failures",
+      "postingShare": null
+    },
+    {
+      "skillId": "verilog-rtl",
+      "importance": "required",
+      "expectation": "Read and edit Verilog RTL to add test logic and fix testability issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "synthesis-timing",
+      "importance": "required",
+      "expectation": "Write test-mode constraints and close timing in scan shift and capture",
+      "postingShare": null
+    },
+    {
+      "skillId": "digital-logic-design",
+      "importance": "required",
+      "expectation": "Understand flops, clocks and resets well enough to reason about fault models",
+      "postingShare": null
+    },
+    {
+      "skillId": "eda-scripting",
+      "importance": "required",
+      "expectation": "Script DFT flows and reports",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Script DFT flows and reports",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "rtl-lint-cdc",
+      "importance": "nice_to_have",
+      "expectation": "Run DFT rule checks such as Spyglass DFT on RTL",
+      "postingShare": null
+    },
+    {
+      "skillId": "post-silicon-validation",
+      "importance": "nice_to_have",
+      "expectation": "Support tester bring-up and silicon failure diagnosis",
+      "postingShare": null
+    },
+    {
+      "skillId": "low-power-design",
+      "importance": "nice_to_have",
+      "expectation": "Handle DFT across power domains described in UPF",
+      "postingShare": null
+    },
+    {
+      "skillId": "physical-design-pnr",
+      "importance": "nice_to_have",
+      "expectation": "Work with the PD team on scan chain reordering and test logic placement",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "vlsi-scripting",
+      "label": "Tcl/Perl or Python scripting"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

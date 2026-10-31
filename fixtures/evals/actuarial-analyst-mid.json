@@ -1,0 +1,52 @@
+{
+  "id": "actuarial-analyst-mid",
+  "roleSlug": "actuarial-analyst",
+  "persona": "Mid-level general insurance reserving analyst with IAI exam progress",
+  "resumeText": "Ananya Iyer | Mumbai | ananya.iyer@example.com\n\nSUMMARY\nActuarial analyst with 5 years in general insurance reserving and life experience studies.\n\nEXPERIENCE\nActuarial Analyst, Konkan Re Analytics, Mumbai (2022 - present)\n- Run quarterly claims reserving using chain ladder and Bornhuetter-Ferguson methods for motor and health portfolios.\n- Estimate IBNR reserves and prepare reserving exhibits for the appointed actuary.\n- Built Excel VBA macros to automate loss triangle preparation.\n- Pull claims and premium data with SQL queries from the data warehouse.\n- Wrote R scripts to fit claim severity distributions and test goodness of fit.\n\nActuarial Trainee, Marine Drive Consulting Actuaries, Mumbai (2021 - 2022)\n- Supported lapse and mortality experience studies for a life insurer client.\n- Prepared Excel summaries of claims data for client reports.\n\nEXAMS\nIAI CS1, CM1 and CB1 cleared; IFoA CS2 cleared\n\nSKILLS\nExcel, VBA, SQL, R, IFRS 17\n\nEDUCATION\nBSc Statistics, University of Mumbai, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "actuarial-reserving",
+        "quote": "Run quarterly claims reserving using chain ladder and Bornhuetter-Ferguson methods"
+      },
+      {
+        "skillId": "experience-studies",
+        "quote": "Supported lapse and mortality experience studies"
+      },
+      {
+        "skillId": "excel-vba",
+        "quote": "Built Excel VBA macros to automate loss triangle preparation"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Prepared Excel summaries of claims data"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Pull claims and premium data with SQL queries"
+      },
+      {
+        "skillId": "r-programming",
+        "quote": "Wrote R scripts to fit claim severity distributions"
+      },
+      {
+        "skillId": "statistics",
+        "quote": "fit claim severity distributions and test goodness of fit"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "actuarial-pricing",
+      "actuarial-modelling-software",
+      "python",
+      "machine-learning"
+    ]
+  },
+  "reviewedBy": null
+}
