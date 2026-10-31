@@ -1642,6 +1642,8 @@ export const events = pgTable(
   (t) => [
     uniqueIndex("events_source_key").on(t.source, t.sourceKey),
     index("events_status_starts").on(t.status, t.startsAt),
+    // The daily cleanup deletes events 90 days after they end (T164, migration 0056).
+    index("events_ends").on(t.endsAt),
     check("events_source", sql`${t.source} in ('feed', 'suggestion')`),
     check("events_kind", sql`${t.kind} in ('meetup', 'workshop', 'conference', 'online')`),
     check("events_status", sql`${t.status} in ('pending', 'live', 'hidden', 'cancelled')`),
@@ -1653,6 +1655,8 @@ export const events = pgTable(
     check("events_venue_length", sql`${t.venue} is null or char_length(${t.venue}) between 1 and 120`),
     check("events_cost_length", sql`char_length(${t.cost}) <= 60`),
     check("events_online_no_city", sql`not ${t.online} or ${t.city} is null`),
+    // An in-person event names its city (T166, migration 0056).
+    check("events_place", sql`${t.online} or ${t.city} is not null`),
     check("events_ends_after_start", sql`${t.endsAt} >= ${t.startsAt}`),
   ],
 );

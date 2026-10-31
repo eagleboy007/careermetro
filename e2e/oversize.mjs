@@ -45,6 +45,8 @@ const PAGES = [
   { name: "mock", path: "/mock" },
   { name: "inbox", path: "/inbox" },
   { name: "network", path: "/network" },
+  // 20 event cards at their caps (230 seeded, 200 kept, then Show more) and the rail: a first estimate (T165).
+  { name: "timetable", path: "/timetable", limit: 20_000 },
   { name: "resume", path: `/resume/${seed.resumeId}`, limit: 6_000 },
   { name: "builder", path: "/builder" },
 ];

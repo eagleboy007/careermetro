@@ -297,7 +297,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // them; they only pre-tick times when a company asks for times.
     availability,
     // Timetable (from version 36, docs/plans/timetable-plan.md): your radius in km, Include online and whether the Monday
-    // events digest is on (the defaults until you save some), the India week (its Monday) the digest last went out, and
+    // events digest is on (the defaults until you save some), every India week (its Monday) the digest went out that we
+    // still keep (90 days), newest first, and
     // the events you saved or marked I'm going, each with its title, organiser, start, link and the goal a prep task is
     // for. Nothing the digest said is kept, and nobody else's saves are here.
     timetable,

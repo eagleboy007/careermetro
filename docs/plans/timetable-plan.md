@@ -151,7 +151,7 @@ Turning the digest off is one tap, from the email (the same one-click token as t
 ## 8. PRs
 
 1. Migration 0055 (`events`, `event_topics`, `event_rsvps`, `events_digests`, `user_settings` columns), Zod schemas, `city-centres.json` and `interest-topics.json`, the matcher with tests, and export v36. After sign-off. **Done (2026-10-30)**: data model signed off by the Project manager under Milin's delegation; matcher in `src/lib/timetable/match.ts`, export in `src/lib/timetable/store.ts`.
-2. `/timetable` and the Today teaser over the example events, then live rows, Save, I'm going and Add to calendar.
+2. `/timetable` and the Today teaser over the example events, then live rows, Save, I'm going and Add to calendar. **Done (2026-10-30)**: the filter row works on the screen over every match within 100 km; "I'm going" asks nothing yet (the prep-task question comes with PR 3); the Monday digest switch and Suggest an event show as soon.
 3. The prep task on the ride.
 4. The feed job, starting with FOSS United and confs.tech.
 5. The Monday digest and its Settings switch.

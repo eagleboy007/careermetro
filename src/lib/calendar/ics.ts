@@ -61,6 +61,56 @@ export function eveningBefore(startsAt: Date): Date {
   return new Date(midnightUtc - 24 * 3600_000 + REMINDER_HOUR_IST * 3600_000 - IST_OFFSET_MS);
 }
 
+export type EventIcs = {
+  eventId: string;
+  startsAt: Date;
+  endsAt: Date;
+  /** The event's title. */
+  summary: string;
+  organiser: string;
+  /** "Baner, Pune" or "Online". */
+  location: string;
+  /** The organiser's https page, always the event's link. */
+  url: string;
+  now: Date;
+};
+
+/**
+ * The .ics file for one Timetable event ("Add to calendar", docs/plans/timetable-plan.md section 4), built the same way
+ * as an interview's: the title, organiser, place and the organiser's link, and a reminder at 19:00 IST the evening
+ * before. Nothing about the person.
+ */
+export function eventIcs(ev: EventIcs): string {
+  const summary = escapeIcsText(ev.summary);
+  const end = ev.endsAt.getTime() > ev.startsAt.getTime() ? ev.endsAt : new Date(ev.startsAt.getTime() + 3600_000);
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//CareerMetro//Timetable//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:event-${ev.eventId.replace(/[^A-Za-z0-9-]/g, "")}@careermetro.app`,
+    "SEQUENCE:0",
+    `DTSTAMP:${icsUtc(ev.now)}`,
+    `DTSTART:${icsUtc(ev.startsAt)}`,
+    `DTEND:${icsUtc(end)}`,
+    `SUMMARY:${summary}`,
+    `LOCATION:${escapeIcsText(ev.location)}`,
+    `DESCRIPTION:${escapeIcsText(`By ${ev.organiser}. Details and any change are on the organiser's page: ${ev.url}`)}`,
+    // A URI value: not TEXT-escaped. Line breaks can't be in an https link that passed the event's checks.
+    `URL:${ev.url.replace(/[\r\n]/g, "")}`,
+    "BEGIN:VALARM",
+    "ACTION:DISPLAY",
+    `DESCRIPTION:Tomorrow: ${summary}`,
+    `TRIGGER;VALUE=DATE-TIME:${icsUtc(eveningBefore(ev.startsAt))}`,
+    "END:VALARM",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.map(foldIcsLine).join("\r\n") + "\r\n";
+}
+
 /** The .ics file for one interview, with a display reminder the evening before. */
 export function interviewIcs(iv: InterviewIcs): string {
   const end = new Date(iv.startsAt.getTime() + iv.minutes * 60_000);

@@ -16,13 +16,18 @@ export function assertLocalDatabase(url) {
   if (process.env.VERCEL_ENV === "production") throw new Error("the max-data seed never runs in production");
 }
 
+/** The seed's Timetable events: max-data-event-<n>. No "_" or "%" inside, so LIKE matches only these. */
+export const EVENT_KEY_LIKE = "max-data-event-%";
+
 /**
- * Deletes the member and the peers. Their chats go first: a chat's started_by is only set null when its starter goes, so
+ * Deletes the seed's Timetable events (which belong to no one; their topics and saves go with them), then the member
+ * and the peers. Their chats go first: a chat's started_by is only set null when its starter goes, so
  * the chats themselves would stay behind. Everything else goes with the account (on delete cascade). `sql` is a
  * postgres.js client. Returns how many accounts were removed.
  */
 export async function cleanMaxData(sql) {
   return sql.begin(async (tx) => {
+    await tx`delete from events where source = 'feed' and source_key like ${EVENT_KEY_LIKE}`;
     const ids = (await tx`select id from users where email = ${MAX_DATA_EMAIL} or email like ${PEER_EMAIL_LIKE}`).map((r) => r.id);
     if (!ids.length) return 0;
     await tx`delete from conversations where id in (select conversation_id from conversation_members where user_id in ${tx(ids)})`;

@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (business role batch B1 with T161 faster heavy pages and T162 folded profile sections)
+Last updated: 2026-10-31 (Timetable PR 2: /timetable, the Today teaser and Testing Re-test 63 fixes)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -113,7 +113,9 @@ Last updated: 2026-10-31 (business role batch B1 with T161 faster heavy pages an
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/` from src/content, with one CSV per field (cloud 25, security 25, data 21, enterprise apps 24, testing 4, other 55, business 11; all 165 roles have `reviewedBy` null), the 54 timed-test questions, the 135 Practice questions and a README for reviewers. Each line has a Ref plus Agree / Change to / Comment columns. A copy is in `/mnt/project-files/careermetro/review/roles/`. `node scripts/review/read-review.mjs <file>` lists a returned file's answers. A test fails when the pack is out of date, so re-run the script after any content change.
 
 - Timetable plan (`docs/plans/timetable-plan.md`, handoff 10 and 13, prototype v2 evt): data model signed off by the Project manager under Milin's delegation. Sources follow Data research's review (`data/events/sources-2026-10-30.md`): FOSS United and confs.tech first; Meetup, Microsoft Reactor and NASSCOM are never used. Section 9 lists the other unbuilt v2 controls.
-  - PR 1, no screen: migration 0055 (`events`, `event_topics`, `event_rsvps`, `events_digests`, `user_settings.events_radius_km`/`events_online`/`events_digest`; RLS, no policies), Zod schemas (`src/lib/schemas/timetable.ts`), `city-centres.json` (all 51 `PERSON_CITIES`) and `interest-topics.json` (33 topics), the pure matcher `src/lib/timetable/match.ts` (taxonomy and interest topics found by code, haversine between city centres, 60-day window, IST groups), export v36 (`timetable`) and digest rows over 90 days in the daily cleanup. Next: PR 2, `/timetable` and the Today teaser.
+  - PR 1, no screen: migration 0055 (`events`, `event_topics`, `event_rsvps`, `events_digests`, `user_settings.events_radius_km`/`events_online`/`events_digest`; RLS, no policies), Zod schemas (`src/lib/schemas/timetable.ts`), `city-centres.json` (all 51 `PERSON_CITIES`) and `interest-topics.json` (33 topics), the pure matcher `src/lib/timetable/match.ts` (taxonomy and interest topics found by code, haversine between city centres, 60-day window, IST groups), export v36 (`timetable`) and digest rows over 90 days in the daily cleanup.
+  - Testing Re-test 63: T163–T166. Ambiguous skill and topic names ("React", "Rust", "Go", "Excel", "Security") match only in their exact spelling, and a stoplist blanks phrases such as "react to", "go to" and "rust-proof" first (PM, 2026-10-31); `security`, `programming`, `mentorship`, `startup`, `algorithms` and `crypto` are ambiguous interest aliases; interests keep 20 of the 100 topic slots and only 20,000 description characters are read. Migration 0056: the daily cleanup deletes events 90 days after they end, with their topics and RSVPs (`events_ends` index; privacy page says so), and `events_place` refuses an in-person event with no city. A view keeps the soonest 200 events with at most 5 tags a card (PM); summary text refuses tags, entities and control characters; the RSVP export has limits and an https check; the 60 days are India calendar days; the export lists every digest week kept (`digestWeeks`, still v36); sorting uses `en-IN`.
+  - PR 2: `/timetable` (`src/components/timetable/timetable-view.tsx`, store reads in `src/lib/timetable/store.ts`): live matches near the profile city or online, grouped by when, 20 a page with Show more; All / My goals / My interests, Include online and Show outside 25 km work on the screen (the store reads every match within 100 km); Save, I'm going (`event_rsvps`, no prep task until PR 3), Add to calendar (`eventIcs`) and the organiser's page; the Why panel, with the Monday digest and Suggest an event marked soon. Today's teaser shows the next two matches with All events, and hides with none; the nav marks Timetable built. `/design` and the max-data oversize check (230 seeded events) cover it. Next: PR 3, the prep task on the ride.
 
 - Departures boards: Data research's Mumbai and Pune batch went through the board check (84 asked: 69 passing, 1 404, 2 timeouts, 12 with no India post). The 69 that pass are in `src/content/job-boards.json`, which now holds 281 of the 300 allowed. The feed now maps "service desk agent" to it-support-engineer and "hardware architect" to hardware-design-engineer.
 
@@ -137,7 +139,7 @@ Waiting: the end of Milin's name-search message ("city or …"); photo and certi
 
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 
-Numbers: the next migration is **0056**. `EXPORT_VERSION` (36) lives in `src/lib/account/export.ts`. The latest FR is FR-57 (FR-36 filled a number that was never used).
+Numbers: the next migration is **0057**. `EXPORT_VERSION` (36) lives in `src/lib/account/export.ts`. The latest FR is FR-57 (FR-36 filled a number that was never used).
 
 ## Decisions log (newest first)
 

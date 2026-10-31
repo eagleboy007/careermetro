@@ -1,5 +1,39 @@
 import { describe, expect, it } from "vitest";
-import { escapeIcsText, eveningBefore, foldIcsLine, icsUtc, interviewIcs } from "./ics";
+import { escapeIcsText, eveningBefore, eventIcs, foldIcsLine, icsUtc, interviewIcs } from "./ics";
+
+describe("Timetable event calendar file", () => {
+  // Synthetic event: Sat 17 Oct, 17:00 to 20:00 IST.
+  const ev = {
+    eventId: "00000000-0000-4000-8000-0000000e0001",
+    startsAt: new Date("2026-10-17T11:30:00.000Z"),
+    endsAt: new Date("2026-10-17T14:30:00.000Z"),
+    summary: "Hunting with a SIEM: hands-on lab, night one",
+    organiser: "Pune Security Meetup (example)",
+    location: "Baner, Pune",
+    url: "https://events.example.org/pune-security/siem-lab?ref=a,b",
+    now: new Date("2026-10-12T10:00:00.000Z"),
+  };
+
+  it("holds the event's times, title, place and organiser link, with the reminder the evening before", () => {
+    const file = eventIcs(ev);
+    const unfolded = file.replace(/\r\n /g, "");
+    expect(file.endsWith("\r\n")).toBe(true);
+    expect(unfolded).toContain("PRODID:-//CareerMetro//Timetable//EN");
+    expect(unfolded).toContain("UID:event-00000000-0000-4000-8000-0000000e0001@careermetro.app");
+    expect(unfolded).toContain("DTSTART:20261017T113000Z");
+    expect(unfolded).toContain("DTEND:20261017T143000Z");
+    expect(unfolded).toContain("SUMMARY:Hunting with a SIEM: hands-on lab\\, night one");
+    expect(unfolded).toContain("LOCATION:Baner\\, Pune");
+    expect(unfolded).toContain("URL:https://events.example.org/pune-security/siem-lab?ref=a,b");
+    // 19:00 IST on Friday 16 October.
+    expect(unfolded).toContain("TRIGGER;VALUE=DATE-TIME:20261016T133000Z");
+    for (const line of file.split("\r\n")) expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75);
+  });
+
+  it("gives an event with no length an hour, so calendars show it", () => {
+    expect(eventIcs({ ...ev, endsAt: ev.startsAt }).replace(/\r\n /g, "")).toContain("DTEND:20261017T123000Z");
+  });
+});
 
 const iv = {
   interviewId: "6f1c2a9e-0b1d-4c3e-9f00-1234567890ab",

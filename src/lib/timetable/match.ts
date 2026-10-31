@@ -1,5 +1,5 @@
 import { cityCentres, interestTopics, skills } from "@/content";
-import { hasSkill, norm, skillMatchersFor } from "@/lib/departures/feed-rules.mjs";
+import { escape, hasSkill, norm, skillMatchersFor } from "@/lib/departures/feed-rules.mjs";
 import { indiaDay, mondayOf } from "@/lib/ride/days";
 import type {
   CityCentre,
@@ -26,18 +26,42 @@ type Matcher = ReturnType<typeof skillMatchersFor>[number];
 export type TopicMatchers = { skills: Matcher[]; interests: Matcher[] };
 
 /**
- * One matcher per skill and per interest topic, whole words only. Terms marked ambiguous ("react", "data",
- * "networking") are left out, as the resume matcher leaves them out of free text: an event never gets a topic from an
- * ordinary word.
+ * Skill names that are also ordinary words in an event's text, on top of each skill's own ambiguous list: "Go to gate
+ * 2", "Excel in your career" (T163).
+ */
+export const EVENT_AMBIGUOUS_SKILL_NAMES = ["go", "excel"] as const;
+
+/**
+ * Phrases where a common word is not the skill or the topic (T163, the PM's stoplist): "react to", "go to", "let's go",
+ * "rust-proof", "excel at". They are blanked out of an event's text before any matcher reads it, so even a
+ * capitalised "Go to gate 2" or "Rust-proof" at the start of a sentence names nothing.
+ */
+export const EVENT_STOP_PHRASES =
+  /(?<![A-Za-z0-9])(?:react(?:s|ed|ing)?\s+(?:to|with|against|quickly|fast|calmly)|go(?:es|ing)?\s+(?:to|through|ahead|back|beyond|out|on|for|over|home|live|green)|gone\s+(?:to|through)|let'?s\s+go|on\s+the\s+go|ready,?\s+set,?\s+go|rust[- ]?(?:proof|proofing|resistant|free|colou?red|belt)|excel(?:s|led|ling)?\s+(?:in|at)|swift(?:ly)?\s+(?:action|response|reply|answer)|ruby\s+(?:wedding|anniversary|jubilee)|spring\s+(?:break|cleaning|season|fest|festival))(?![A-Za-z0-9])/gi;
+
+/** Only so much of an organiser's description is read for topics (T166). */
+export const EVENT_DESCRIPTION_READ_MAX = 20_000;
+/** Topic slots kept for interests, so a description naming many skills can't push every interest out (T166). */
+export const EVENT_INTEREST_TOPICS_RESERVED = 20;
+
+/** A matcher's name that matches only the exact spelling, whole words only (case-aware), for an ambiguous name. */
+const exactName = (name: string) => new RegExp(`(?<![A-Za-z0-9])(${escape(name)})(?![A-Za-z0-9])`);
+
+/**
+ * One matcher per skill and per interest topic, whole words only. Aliases marked ambiguous ("react", "data",
+ * "networking") are left out, as the resume matcher leaves them out of free text. A name that is itself ambiguous
+ * ("React", "Rust", "Go", "Security") matches only in its exact, capitalised spelling (T163), and the stop phrases
+ * are blanked first, so an event never gets a topic from an ordinary word.
  */
 export function topicMatchersFor(skillList: readonly Skill[], topics: readonly InterestTopic[]): TopicMatchers {
-  const withoutAmbiguous = (id: string, name: string, aliases: string[], ambiguous: string[]) => {
-    const skip = new Set(ambiguous.map(norm));
-    return { id, name, aliases: aliases.filter((a) => !skip.has(norm(a))) };
+  const build = (entries: { id: string; name: string; aliases: string[]; ambiguous: readonly string[] }[]): Matcher[] => {
+    const skips = entries.map((e) => new Set(e.ambiguous.map(norm)));
+    const matchers = skillMatchersFor(entries.map((e, i) => ({ id: e.id, name: e.name, aliases: e.aliases.filter((a) => !skips[i].has(norm(a))) })));
+    return matchers.map((m, i) => (skips[i].has(norm(entries[i].name)) ? { ...m, name: exactName(entries[i].name) } : m));
   };
   return {
-    skills: skillMatchersFor(skillList.map((s) => withoutAmbiguous(s.id, s.name, s.aliases, s.ambiguous))),
-    interests: skillMatchersFor(topics.map((t) => withoutAmbiguous(t.key, t.label, t.aliases, t.ambiguous))),
+    skills: build(skillList.map((s) => ({ id: s.id, name: s.name, aliases: s.aliases, ambiguous: [...s.ambiguous, ...EVENT_AMBIGUOUS_SKILL_NAMES] }))),
+    interests: build(topics.map((t) => ({ id: t.key, name: t.label, aliases: t.aliases, ambiguous: t.ambiguous }))),
   };
 }
 
@@ -45,16 +69,17 @@ let defaultMatchers: TopicMatchers | null = null;
 const matchersOf = () => (defaultMatchers ??= topicMatchersFor(skills, interestTopics));
 
 /**
- * The topics found in an event's title and description: skill ids in taxonomy order, then interest topic keys in the
- * list's order, at most EVENT_TOPICS_MAX. Only the topics are returned; the description is never kept or logged.
+ * The topics found in an event's title and the first EVENT_DESCRIPTION_READ_MAX characters of its description, with
+ * the stop phrases blanked: skill ids in taxonomy order, then interest topic keys in the list's order, at most
+ * EVENT_TOPICS_MAX, of which skills leave up to EVENT_INTEREST_TOPICS_RESERVED to interests. Only the topics are
+ * returned; the description is never kept or logged.
  */
 export function topicsOf(title: string, description: string, matchers: TopicMatchers = matchersOf()): EventTopic[] {
-  const text = `${title}\n${description}`;
-  const found: EventTopic[] = [
-    ...matchers.skills.filter((m) => hasSkill(m, text)).map((m) => ({ kind: "skill" as const, topic: m.id })),
-    ...matchers.interests.filter((m) => hasSkill(m, text)).map((m) => ({ kind: "interest" as const, topic: m.id })),
-  ];
-  return found.slice(0, EVENT_TOPICS_MAX);
+  const text = `${title}\n${description.slice(0, EVENT_DESCRIPTION_READ_MAX)}`.replace(EVENT_STOP_PHRASES, " ");
+  const skillTopics = matchers.skills.filter((m) => hasSkill(m, text)).map((m) => ({ kind: "skill" as const, topic: m.id }));
+  const interestTopicsFound = matchers.interests.filter((m) => hasSkill(m, text)).map((m) => ({ kind: "interest" as const, topic: m.id }));
+  const skillRoom = EVENT_TOPICS_MAX - Math.min(interestTopicsFound.length, EVENT_INTEREST_TOPICS_RESERVED);
+  return [...skillTopics.slice(0, skillRoom), ...interestTopicsFound].slice(0, EVENT_TOPICS_MAX);
 }
 
 /**
@@ -119,6 +144,16 @@ export type TimetablePerson = {
 const DAY_MS = 86_400_000;
 const IST_MS = 5.5 * 3600_000;
 const indiaMidnight = (day: string) => new Date(Date.parse(`${day}T00:00:00Z`) - IST_MS);
+
+/**
+ * The timetable's window (T166): from two hours before `now` (an event that started a little while ago still shows) to
+ * the end of the India calendar day EVENT_WINDOW_DAYS days after today, as India counts days, not rolling hours.
+ * `until` is exclusive: India midnight that ends the last day.
+ */
+export function timetableWindow(now: Date): { from: number; until: number } {
+  const lastDayAfter = new Date(Date.parse(`${indiaDay(now)}T00:00:00Z`) + (EVENT_WINDOW_DAYS + 1) * DAY_MS).toISOString().slice(0, 10);
+  return { from: now.getTime() - EVENT_STARTED_GRACE_MS, until: indiaMidnight(lastDayAfter).getTime() };
+}
 
 /** "…" past the limit, like job titles. */
 const clip = (s: string, max: number) => (s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s);
@@ -185,16 +220,15 @@ export function timetableFor(
   const topicLabel = new Map(topics.map((t) => [t.key, t.label]));
   const names = { skill: (id: string) => skillName.get(id) ?? id, interest: (key: string) => topicLabel.get(key) ?? key };
   const personTopics = interestTopicsFor(person.interestKeys, topics);
-  const from = now.getTime() - EVENT_STARTED_GRACE_MS;
-  const until = now.getTime() + EVENT_WINDOW_DAYS * DAY_MS;
+  const { from, until } = timetableWindow(now);
 
   let outsideRadius = 0;
   const cards: EventCard[] = [];
-  const ordered = [...events].sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime() || a.title.localeCompare(b.title) || a.id.localeCompare(b.id));
+  const ordered = [...events].sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime() || a.title.localeCompare(b.title, "en-IN") || a.id.localeCompare(b.id, "en-IN"));
   for (const e of ordered) {
     if (e.status !== "live") continue;
     const start = e.startsAt.getTime();
-    if (start < from || start > until) continue;
+    if (start < from || start >= until) continue;
     const tags = tagsFor(e.topics, person.goalSkillIds, personTopics, names).filter((t) =>
       filter === "goals" ? t.kind === "goal" : filter === "interests" ? t.kind === "interest" : true,
     );

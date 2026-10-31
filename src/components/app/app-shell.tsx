@@ -282,7 +282,7 @@ function AvatarMenu({ user }: { user: ShellUser }) {
                 </Link>
               </li>
             ) : (
-              <li key={item.key} className={`${row} text-muted ${item.key === "timetable" ? "min-[760px]:hidden" : ""}`}>
+              <li key={item.key} className={`${row} text-muted`}>
                 <item.Icon size={16} strokeWidth={1.75} aria-hidden="true" />
                 {item.label} <Soon />
               </li>

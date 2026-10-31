@@ -23,12 +23,14 @@ import { syncCurrentGoals } from "@/lib/goals/store";
 import { interestKey } from "@/lib/me/text";
 import { getPathForOwner, PATH_LIMITS } from "@/lib/path/store";
 import { builderAnswers } from "@/lib/schemas/builder";
+import { EVENT_TOPICS_MAX } from "@/lib/schemas/constants";
 import { profile as profileSchema } from "@/lib/schemas/profile";
 import { assertLocalDatabase, cleanMaxData, MAX_DATA_EMAIL, peerEmail } from "./clean.mjs";
 import {
   MAX_DATA_NAME,
   MAX_DATA_USERNAME,
   maxBuilderAnswers,
+  maxEvent,
   maxHeadline,
   maxInterests,
   maxJob,
@@ -50,6 +52,7 @@ const sqlClient = postgres(url ?? "postgres://unset", { max: 4, onnotice: () => 
 const db = drizzle(sqlClient, { schema });
 
 const MIN = 60_000;
+const HOUR = 3_600_000;
 const DAY = 86_400_000;
 
 /** Inserts in slices, so no statement nears Postgres's 65,535 parameters. */
@@ -84,6 +87,8 @@ async function seed() {
       username: MAX_DATA_USERNAME,
       usernameChangedAt: now,
       headline: maxHeadline(),
+      // The Timetable's in-person events are in Pune.
+      city: "Pune",
     })
     .returning({ id: schema.users.id });
   const userId = member.id;
@@ -315,6 +320,24 @@ async function seed() {
     sessions = rows.length;
   }
 
+  // ---- Timetable: events on the member's goals, every text at its cap -----------------------------------------------
+  const eventGoals = [...goals.map((g) => g.skillId), ...choice].slice(0, EVENT_TOPICS_MAX);
+  const eventRows = await db
+    .insert(schema.events)
+    .values(
+      Array.from({ length: SIZES.events }, (_, i) => {
+        const startsAt = new Date(now.getTime() + HOUR + (i % 50) * DAY);
+        return { source: "feed" as const, status: "live" as const, ...maxEvent(i), startsAt, endsAt: new Date(startsAt.getTime() + 2 * HOUR) };
+      }),
+    )
+    .returning({ id: schema.events.id });
+  await insertAll(
+    eventRows.flatMap((e) => eventGoals.map((topic) => ({ eventId: e.id, kind: "skill" as const, topic }))),
+    (rows) => db.insert(schema.eventTopics).values(rows),
+  );
+  const marks = eventRows.flatMap((e, i) => (i % 4 === 1 ? [{ userId, eventId: e.id, state: "saved" as const }] : i % 4 === 2 ? [{ userId, eventId: e.id, state: "going" as const }] : []));
+  await db.insert(schema.eventRsvps).values(marks);
+
   // ---- Builder draft at its caps --------------------------------------------------------------------------------
   await db.insert(schema.resumeDrafts).values({ userId, answers: builderAnswers.parse(maxBuilderAnswers(role.slug)) });
 
@@ -333,6 +356,7 @@ async function seed() {
     library: resources.length,
     practiceRatings: ratings,
     mockSessions: sessions,
+    events: eventRows.length,
   };
   // Counts and ids only: no text.
   console.log("max-data seed:", JSON.stringify(counts));

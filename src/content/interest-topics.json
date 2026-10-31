@@ -28,7 +28,8 @@
   {
     "key": "security",
     "label": "Security",
-    "aliases": ["security", "cybersecurity", "cyber security", "infosec", "information security", "appsec", "application security", "ethical hacking", "ctf", "capture the flag", "bug bounty"]
+    "aliases": ["security", "cybersecurity", "cyber security", "infosec", "information security", "appsec", "application security", "ethical hacking", "ctf", "capture the flag", "bug bounty"],
+    "ambiguous": ["security"]
   },
   {
     "key": "web",
@@ -50,7 +51,8 @@
   {
     "key": "blockchain",
     "label": "Blockchain",
-    "aliases": ["blockchain", "web3", "crypto", "cryptocurrency", "ethereum", "smart contracts", "solidity"]
+    "aliases": ["blockchain", "web3", "crypto", "cryptocurrency", "ethereum", "smart contracts", "solidity"],
+    "ambiguous": ["crypto"]
   },
   {
     "key": "iot",
@@ -83,7 +85,8 @@
   {
     "key": "programming",
     "label": "Programming",
-    "aliases": ["programming", "coding", "software development", "software engineering"]
+    "aliases": ["programming", "coding", "software development", "software engineering"],
+    "ambiguous": ["programming"]
   },
   {
     "key": "python",
@@ -126,13 +129,14 @@
   {
     "key": "startups",
     "label": "Startups",
-    "aliases": ["startups", "startup", "entrepreneurship", "founders"]
+    "aliases": ["startups", "startup", "entrepreneurship", "founders"],
+    "ambiguous": ["startup"]
   },
   {
     "key": "careers",
     "label": "Career growth",
     "aliases": ["career growth", "career", "careers", "job search", "interview prep", "resume writing", "mentorship"],
-    "ambiguous": ["career", "careers"]
+    "ambiguous": ["career", "careers", "mentorship"]
   },
   {
     "key": "women-in-tech",
@@ -163,7 +167,8 @@
   {
     "key": "competitive-programming",
     "label": "Competitive programming",
-    "aliases": ["competitive programming", "dsa", "data structures", "algorithms", "leetcode"]
+    "aliases": ["competitive programming", "dsa", "data structures", "algorithms", "leetcode"],
+    "ambiguous": ["algorithms"]
   },
   {
     "key": "technical-writing",
