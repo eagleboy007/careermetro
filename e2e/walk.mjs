@@ -994,6 +994,10 @@ await step("departures: live roles, Updated, save, apply on the company site, My
     await p.reload();
     await settled();
     await tabs.getByRole("button", { name: /^My jobs/ }).click();
+    // At 390 px the row is folded to two lines (C24), its status chip still there; tapping the lines opens the rest.
+    await mineRow.getByRole("button", { name: /^Status: Applied/ }).waitFor({ timeout: 10000 });
+    await mineRow.getByRole("button", { name: ROLE, expanded: false }).click();
+    await mineRow.getByRole("button", { name: ROLE, expanded: true }).waitFor({ timeout: 5000 });
     await mineRow.getByText("Closed on the company's board", { exact: true }).waitFor({ timeout: 10000 });
     if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("Departures scrolls sideways at 390px (dark)");
     await a11y("departures-live-closed-phone-dark");
@@ -1063,7 +1067,8 @@ await step("my jobs: add a job you found, save it, move its status, keep a note,
     await a11y("my-jobs-edit-sheet-interview");
     await sheet.getByRole("button", { name: "Save", exact: true }).click();
     await row.getByRole("button", { name: /^Status: Interview/ }).waitFor({ timeout: 10000 });
-    await row.getByText(/, 10:30$/).first().waitFor({ timeout: 10000 });
+    // The folded phone head (C24) holds the same date, hidden at this width, so take the one that shows.
+    await row.getByText(/, 10:30$/).locator("visible=true").first().waitFor({ timeout: 10000 });
     const [kept0] = await sql`select s.stage, s.interview_at from job_saves s where s.note = ${NOTE}`;
     if (kept0?.stage !== 3 || new Date(kept0.interview_at).toISOString() !== new Date(`${inThree}T10:30:00+05:30`).toISOString())
       throw new Error("the interview date or the Interview status was not kept");
@@ -1123,6 +1128,17 @@ await step("my jobs: add a job you found, save it, move its status, keep a note,
     if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("My jobs scrolls sideways at 390px (dark)");
     await a11y("my-jobs-phone-dark");
     await shot("my-jobs-phone-dark");
+    // Folded rows (C24): the status chip works closed; the two lines open the rest (Edit among it) and close it again.
+    const fleet = list.getByRole("listitem").filter({ hasText: "Fleet Planning Analyst" });
+    const fold = (expanded) => fleet.getByRole("button", { name: /^Fleet Planning Analyst/, expanded });
+    await fleet.getByRole("button", { name: /^Status: Saved/ }).waitFor({ timeout: 10000 });
+    if (await fleet.getByRole("button", { name: /^Edit Fleet Planning Analyst/ }).count()) throw new Error("a folded My jobs row shows its Edit button at 390px");
+    await fold(false).click();
+    await fleet.getByRole("button", { name: /^Edit Fleet Planning Analyst/ }).waitFor({ timeout: 5000 });
+    if (await p.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)) throw new Error("an open My jobs row scrolls sideways at 390px (dark)");
+    await a11y("my-jobs-phone-dark-open");
+    await fold(true).click();
+    await fold(false).waitFor({ timeout: 5000 });
   } finally {
     await p.setViewportSize({ width: 1280, height: 900 });
     await p.emulateMedia({ colorScheme: "light" });

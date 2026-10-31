@@ -627,7 +627,9 @@ export default function DesignPage() {
         <p className="text-sm text-muted">
           My jobs (handoff 12m, prototype v48): feed jobs and jobs added from any site in one list, newest change first, with the filter chips, the source
           tag, Open the original, fit (still-open gaps as chips, &quot;Only for this job&quot; in muted words), dates, the private note under a lock, and the
-          status chip with its menu. The pen opens the edit sheet. Closed rows are dimmed. Below it, &quot;Add a job you found&quot;: try a Greenhouse,
+          status chip with its menu. The pen opens the edit sheet. Closed rows are dimmed. Below 760 px (C24) each row folds to two lines: the
+          title cut to one line beside the status chip, which still works, then company · the date that matters now · the gap count in muted words,
+          with a chevron; tapping the lines opens the rest and tapping again closes it. Narrow the window to see it; phones page at 10. Below it, &quot;Add a job you found&quot;: try a Greenhouse,
           Lever, Ashby or SmartRecruiters link to see the hint turn green, then &quot;Add and check my gaps&quot; for &quot;Check these, then save&quot;.
           Then My jobs with nothing in it.
         </p>

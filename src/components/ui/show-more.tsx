@@ -20,7 +20,8 @@ export function usePaged<T>(items: T[], resetKey: string | number | null = null,
   };
 }
 
-const PHONE = "(max-width: 639px)";
+// One breakpoint with the folded My jobs row (C24), which CSS shows below 760 px.
+const PHONE = "(max-width: 759px)";
 const watchPhone = (change: () => void) => {
   const query = window.matchMedia(PHONE);
   query.addEventListener("change", change);
