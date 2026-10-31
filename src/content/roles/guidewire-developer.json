@@ -1,0 +1,127 @@
+{
+  "slug": "guidewire-developer",
+  "title": "Guidewire Developer",
+  "summary": "Guidewire developers configure and extend Guidewire's insurance software (PolicyCenter for policies, ClaimCenter for claims, BillingCenter for billing) for property and casualty insurers. They sit in insurance IT teams at services firms or insurers, working from business analysts' stories and writing code in Gosu, Guidewire's Java-like language.",
+  "dailyDuties": [
+    "Configure product model, entities and typelists for new coverages",
+    "Write Gosu rules and enhancements for validation and rating",
+    "Build PCF screens and wizards from user stories",
+    "Build or fix integrations through plugins, messaging and web services",
+    "Debug defects with SQL queries and server logs",
+    "Join stand-ups and demos with onshore insurance teams"
+  ],
+  "typicalTitles": [
+    "Guidewire PolicyCenter Developer",
+    "Guidewire ClaimCenter Developer",
+    "Guidewire BillingCenter Developer",
+    "Guidewire Configuration Developer",
+    "Guidewire Integration Developer",
+    "Guidewire Technical Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "guidewire-insurancesuite",
+      "importance": "required",
+      "expectation": "Configure PolicyCenter, ClaimCenter or BillingCenter: product model, entities, typelists, PCF screens and rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "gosu-programming",
+      "importance": "required",
+      "expectation": "Write Gosu rules, enhancements and classes in Guidewire Studio",
+      "postingShare": null
+    },
+    {
+      "skillId": "guidewire-integration",
+      "importance": "required",
+      "expectation": "Build or support integrations through plugins, messaging and batch processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Read and write Java, since Gosu runs on the JVM and integrations often use Java",
+      "postingShare": null
+    },
+    {
+      "skillId": "pc-insurance-domain",
+      "importance": "required",
+      "expectation": "Know the P&C policy, claims and billing lifecycle the screens and rules serve",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Build and call REST web services between Guidewire and other systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query the application database to trace data and debug issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain changes to business analysts and onshore teams, often across US or UK hours",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "nice_to_have",
+      "expectation": "Work with SOAP services and XML payloads in older integrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "guidewire-cloud",
+      "importance": "nice_to_have",
+      "expectation": "Deploy and support InsuranceSuite on Guidewire Cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Use Git branches and pull requests for configuration changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write GUnit tests for rules and classes",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Use build pipelines for Guidewire deployments",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-migration",
+      "importance": "nice_to_have",
+      "expectation": "Help move policy or claims data from legacy systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Work in Scrum sprints with onshore product owners",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

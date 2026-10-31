@@ -1,0 +1,56 @@
+{
+  "id": "sap-btp-integration-developer-mid",
+  "roleSlug": "sap-btp-integration-developer",
+  "persona": "Mid-level SAP PI/PO developer now building on SAP Integration Suite",
+  "resumeText": "Vikram Malhotra | Gurugram | vikram.malhotra@example.com\n\nEXPERIENCE\nSAP Integration Consultant, Aravalli Integration Services, Gurugram (2022 - present)\n- Built iFlows in SAP Integration Suite to connect S/4HANA with a third-party logistics system.\n- Wrote Groovy scripts to split payloads and set dynamic headers.\n- Built XSLT and message mappings for IDoc to XML conversions.\n- Connected REST and OData APIs using the HTTP and OData adapters.\n- Migrated 40 PI/PO interfaces to Cloud Integration with the functional team.\n- Monitored failed messages and fixed production integration errors.\n\nSAP PI/PO Developer, Yamuna Infotech, Noida (2019 - 2022)\n- Configured IDoc and RFC scenarios in SAP PI/PO for finance and sales interfaces.\n\nSKILLS\nSAP CPI, Groovy, XSLT, SAP BTP cockpit, SAP PI/PO\n\nEDUCATION\nBTech Electronics and Communication, Guru Gobind Singh Indraprastha University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "sap-integration-suite",
+        "quote": "Built iFlows in SAP Integration Suite to connect S/4HANA"
+      },
+      {
+        "skillId": "groovy-scripting",
+        "quote": "Wrote Groovy scripts to split payloads"
+      },
+      {
+        "skillId": "soap-xml",
+        "quote": "Built XSLT and message mappings for IDoc to XML conversions"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Connected REST and OData APIs using the HTTP and OData adapters"
+      },
+      {
+        "skillId": "sap-interfaces",
+        "quote": "Configured IDoc and RFC scenarios in SAP PI/PO"
+      },
+      {
+        "skillId": "application-support",
+        "quote": "Monitored failed messages and fixed production integration errors"
+      },
+      {
+        "skillId": "sap-btp-platform",
+        "quote": "SAP BTP cockpit"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sap-btp-platform",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-api-management",
+      "mulesoft",
+      "sap-abap",
+      "identity-federation"
+    ]
+  },
+  "reviewedBy": null
+}

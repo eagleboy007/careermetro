@@ -1,0 +1,123 @@
+{
+  "slug": "design-verification-engineer",
+  "title": "Design Verification Engineer",
+  "summary": "Proves a chip block or SoC works before it is made, by building simulation testbenches that throw millions of random tests at the design and measure what has been covered. Sits beside the RTL designers in a semiconductor team and signs off each block for tape-out.",
+  "dailyDuties": [
+    "Write and update the verification plan for a block",
+    "Build UVM agents, sequences and scoreboards",
+    "Debug failing tests from waveforms and file bugs with designers",
+    "Add assertions and coverage points",
+    "Run nightly regressions and triage failures",
+    "Review coverage holes and write tests to close them"
+  ],
+  "typicalTitles": [
+    "SoC Design Verification Engineer",
+    "IP Verification Engineer",
+    "DV Engineer",
+    "UVM Verification Engineer",
+    "Functional Verification Engineer",
+    "Pre-Silicon Verification Engineer",
+    "Hardware Verification Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "systemverilog-uvm",
+      "importance": "required",
+      "expectation": "Build SystemVerilog UVM testbenches with agents, sequences, scoreboards and assertions",
+      "postingShare": null
+    },
+    {
+      "skillId": "verification-planning",
+      "importance": "required",
+      "expectation": "Write the verification plan for a block and drive regressions to coverage closure",
+      "postingShare": null
+    },
+    {
+      "skillId": "verilog-rtl",
+      "importance": "required",
+      "expectation": "Read RTL and debug failing tests from waveforms in VCS, Xcelium or Questa",
+      "postingShare": null
+    },
+    {
+      "skillId": "digital-logic-design",
+      "importance": "required",
+      "expectation": "Understand FSMs, FIFOs, arbiters and clock domains well enough to find design bugs",
+      "postingShare": null
+    },
+    {
+      "skillId": "amba-protocols",
+      "importance": "required",
+      "expectation": "Verify on-chip bus protocols such as AXI, AHB and APB",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Run and triage regressions on Linux servers",
+      "postingShare": null
+    },
+    {
+      "skillId": "eda-scripting",
+      "importance": "required",
+      "expectation": "Automate regressions and triage in Perl or Tcl",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "python",
+      "importance": "required",
+      "expectation": "Automate regressions and triage in Python",
+      "postingShare": null,
+      "oneOf": "vlsi-scripting"
+    },
+    {
+      "skillId": "formal-verification",
+      "importance": "nice_to_have",
+      "expectation": "Write properties and prove them with formal tools such as JasperGold",
+      "postingShare": null
+    },
+    {
+      "skillId": "cpp",
+      "importance": "nice_to_have",
+      "expectation": "Write C++ reference models and DPI hooks for the testbench",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-c",
+      "importance": "nice_to_have",
+      "expectation": "Write C tests that run on the SoC's embedded cores",
+      "postingShare": null
+    },
+    {
+      "skillId": "low-power-design",
+      "importance": "nice_to_have",
+      "expectation": "Run power-aware simulations with the design's UPF",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Keep testbench code in version control and review changes",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "vlsi-scripting",
+      "label": "A flow scripting language (Tcl/Perl or Python)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

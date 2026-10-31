@@ -12302,5 +12302,873 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "physical-design-pnr",
+    "name": "Physical design: floorplan, place and route, CTS (Innovus, ICC2)",
+    "category": "tools",
+    "aliases": [
+      "physical design",
+      "floorplanning",
+      "floor planning",
+      "place and route",
+      "placement and routing",
+      "clock tree synthesis",
+      "cadence innovus",
+      "innovus",
+      "synopsys icc2",
+      "icc2",
+      "fusion compiler",
+      "power planning",
+      "netlist to gds"
+    ],
+    "ambiguous": [
+      "physical design",
+      "power planning"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "physical-verification",
+    "name": "Physical verification (DRC, LVS, Calibre)",
+    "category": "tools",
+    "aliases": [
+      "physical verification",
+      "drc and lvs",
+      "drc/lvs",
+      "lvs debugging",
+      "drc debugging",
+      "calibre drc",
+      "mentor calibre",
+      "siemens calibre",
+      "antenna checks",
+      "cadence pegasus"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "emir-signoff",
+    "name": "IR drop and electromigration signoff (RedHawk, Voltus)",
+    "category": "tools",
+    "aliases": [
+      "ir drop analysis",
+      "ir drop",
+      "electromigration",
+      "em/ir analysis",
+      "emir analysis",
+      "redhawk",
+      "redhawk-sc",
+      "ansys redhawk",
+      "voltus",
+      "cadence voltus"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "low-power-design",
+    "name": "Low-power design and UPF power intent",
+    "category": "programming",
+    "aliases": [
+      "upf",
+      "unified power format",
+      "power intent",
+      "power gating",
+      "multi-voltage design",
+      "multi-voltage domains",
+      "low power design"
+    ],
+    "ambiguous": [
+      "low power design"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "verification-planning",
+    "name": "Verification planning and coverage closure",
+    "category": "testing",
+    "aliases": [
+      "verification plan",
+      "verification planning",
+      "coverage closure",
+      "code coverage closure",
+      "coverage driven verification",
+      "regression debug",
+      "vplan"
+    ],
+    "ambiguous": [
+      "verification plan",
+      "verification planning",
+      "regression debug",
+      "code coverage closure"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "formal-verification",
+    "name": "Formal property verification (JasperGold, VC Formal)",
+    "category": "testing",
+    "aliases": [
+      "formal verification",
+      "formal property verification",
+      "jaspergold",
+      "cadence jaspergold",
+      "vc formal",
+      "synopsys vc formal",
+      "questa formal"
+    ],
+    "ambiguous": [
+      "formal verification"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "functional-safety-concept",
+    "name": "Safety goals, safety concepts and safety case",
+    "category": "testing",
+    "aliases": [
+      "functional safety concept",
+      "technical safety concept",
+      "safety goals",
+      "safety case",
+      "functional safety requirements",
+      "technical safety requirements"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fault-tree-analysis",
+    "name": "Fault tree and dependent failure analysis",
+    "category": "testing",
+    "aliases": [
+      "fault tree analysis",
+      "fault tree",
+      "fault trees",
+      "dependent failure analysis",
+      "common cause failure analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "requirements-management-tools",
+    "name": "Requirements management and traceability tools (DOORS, Polarion)",
+    "category": "tools",
+    "aliases": [
+      "ibm doors",
+      "rational doors",
+      "doors next",
+      "doors ng",
+      "polarion",
+      "codebeamer",
+      "jama connect",
+      "requirements traceability"
+    ],
+    "ambiguous": [
+      "requirements traceability"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "automotive-spice",
+    "name": "Automotive SPICE (ASPICE) processes",
+    "category": "testing",
+    "aliases": [
+      "aspice",
+      "automotive spice",
+      "a-spice",
+      "aspice assessment"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "android-automotive-aosp",
+    "name": "Android Automotive OS and AOSP platform (framework, HAL)",
+    "category": "programming",
+    "aliases": [
+      "android automotive",
+      "android automotive os",
+      "aaos",
+      "aosp",
+      "android open source project",
+      "android hal",
+      "vehicle hal",
+      "hidl",
+      "aidl hal"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "qt-qml",
+    "name": "Qt and QML",
+    "category": "programming",
+    "aliases": [
+      "qt framework",
+      "qt/qml",
+      "qml",
+      "qt quick",
+      "qt creator",
+      "qt c++",
+      "qt widgets"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bluetooth-profiles",
+    "name": "Bluetooth Classic stacks and profiles (A2DP, HFP, AVRCP)",
+    "category": "programming",
+    "aliases": [
+      "a2dp",
+      "hfp",
+      "avrcp",
+      "pbap",
+      "bluetooth profiles",
+      "bluetooth stack",
+      "bluez",
+      "fluoride stack",
+      "bluetooth classic"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "multimedia-frameworks",
+    "name": "Media and audio frameworks (GStreamer, Android audio)",
+    "category": "programming",
+    "aliases": [
+      "gstreamer",
+      "audio hal",
+      "android audio framework",
+      "android media framework",
+      "alsa",
+      "pulseaudio"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "guidewire-insurancesuite",
+    "name": "Guidewire InsuranceSuite configuration (PolicyCenter, ClaimCenter, BillingCenter)",
+    "category": "tools",
+    "aliases": [
+      "guidewire",
+      "guidewire policycenter",
+      "guidewire claimcenter",
+      "guidewire billingcenter",
+      "policycenter",
+      "claimcenter",
+      "billingcenter",
+      "guidewire insurancesuite",
+      "guidewire studio",
+      "guidewire configuration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "gosu-programming",
+    "name": "Gosu programming",
+    "category": "programming",
+    "aliases": [
+      "gosu",
+      "gosu programming",
+      "gosu scripting",
+      "gosu rules",
+      "gosu enhancements"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "guidewire-integration",
+    "name": "Guidewire integration (plugins, messaging, batch)",
+    "category": "tools",
+    "aliases": [
+      "guidewire integration",
+      "guidewire messaging",
+      "guidewire plugins",
+      "guidewire event messaging",
+      "guidewire batch processes",
+      "guidewire web services"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "guidewire-insurancesuite"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "guidewire-cloud",
+    "name": "Guidewire Cloud Platform",
+    "category": "cloud-devops",
+    "aliases": [
+      "guidewire cloud",
+      "guidewire cloud platform",
+      "gwcp",
+      "guidewire cloud console"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pc-insurance-domain",
+    "name": "Insurance domain (P&C policy, claims and billing)",
+    "category": "business",
+    "aliases": [
+      "p&c insurance",
+      "property and casualty insurance",
+      "property & casualty insurance",
+      "p&c domain",
+      "general insurance domain",
+      "policy administration system",
+      "claims lifecycle"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "temenos-transact",
+    "name": "Temenos Transact (T24)",
+    "category": "tools",
+    "aliases": [
+      "temenos",
+      "temenos t24",
+      "temenos transact",
+      "t24 core banking",
+      "t24 arrangement architecture",
+      "temenos aa"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "core-banking-parameterisation",
+    "name": "Core banking product setup and parameterisation",
+    "category": "business",
+    "aliases": [
+      "core banking parameterisation",
+      "core banking parameterization",
+      "finacle parameterisation",
+      "finacle parameterization",
+      "casa product setup",
+      "loan product setup",
+      "deposit product setup",
+      "t24 product configuration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-migration",
+    "name": "Data migration and reconciliation",
+    "category": "data",
+    "aliases": [
+      "data migration",
+      "legacy data migration",
+      "source to target mapping",
+      "migration reconciliation",
+      "data migration testing"
+    ],
+    "ambiguous": [
+      "data migration",
+      "source to target mapping",
+      "data migration testing"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-btp-platform",
+    "name": "SAP BTP and Business Application Studio",
+    "category": "cloud-devops",
+    "aliases": [
+      "sap btp",
+      "sap business technology platform",
+      "btp cockpit",
+      "sap btp cockpit",
+      "sap cloud platform",
+      "sap scp",
+      "sap business application studio",
+      "sap bas",
+      "sap web ide",
+      "btp cloud foundry"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-fiori-launchpad",
+    "name": "SAP Fiori launchpad configuration",
+    "category": "tools",
+    "aliases": [
+      "fiori launchpad",
+      "fiori launchpad configuration",
+      "flp configuration",
+      "launchpad designer",
+      "fiori launchpad content manager",
+      "fiori catalogs and groups",
+      "fiori tiles and target mappings"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-cap",
+    "name": "SAP Cloud Application Programming Model (CAP)",
+    "category": "programming",
+    "aliases": [
+      "sap cap",
+      "cloud application programming model",
+      "sap cloud application programming model",
+      "cap node.js",
+      "cap java"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-integration-suite",
+    "name": "SAP Integration Suite (Cloud Integration / CPI)",
+    "category": "tools",
+    "aliases": [
+      "sap cpi",
+      "sap integration suite",
+      "sap cloud platform integration",
+      "sap cloud integration",
+      "sap btp integration suite",
+      "iflow",
+      "iflows",
+      "cpi iflows",
+      "sap hci",
+      "cpi message mapping"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "groovy-scripting",
+    "name": "Groovy scripting",
+    "category": "programming",
+    "aliases": [
+      "groovy",
+      "groovy script",
+      "groovy scripting",
+      "groovy scripts"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-api-management",
+    "name": "SAP API Management",
+    "category": "tools",
+    "aliases": [
+      "sap api management",
+      "sap apim",
+      "btp api management",
+      "sap api portal"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sas-programming",
+    "name": "SAS programming (Base SAS, macros, PROC SQL)",
+    "category": "programming",
+    "aliases": [
+      "base sas",
+      "advanced sas",
+      "sas macros",
+      "sas macro programming",
+      "sas programming",
+      "sas/stat",
+      "sas enterprise guide",
+      "sas 9.4"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cdisc-sdtm",
+    "name": "CDISC SDTM dataset programming",
+    "category": "data",
+    "aliases": [
+      "sdtm",
+      "cdisc sdtm",
+      "sdtm mapping",
+      "sdtm datasets",
+      "sdtm domains",
+      "sdtmig",
+      "annotated crf",
+      "acrf"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cdisc-adam",
+    "name": "CDISC ADaM dataset programming",
+    "category": "data",
+    "aliases": [
+      "adam datasets",
+      "cdisc adam",
+      "adam specifications",
+      "adamig",
+      "adam ig"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "clinical-tlf-programming",
+    "name": "Clinical tables, listings and figures (TLF) programming",
+    "category": "data",
+    "aliases": [
+      "tlf programming",
+      "tfl programming",
+      "tables, listings and figures",
+      "tables listings and figures",
+      "safety tables",
+      "efficacy tables",
+      "proc report",
+      "double programming"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "sas-programming"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "cdisc-submission-validation",
+    "name": "Submission data validation (define.xml, Pinnacle 21)",
+    "category": "data",
+    "aliases": [
+      "define.xml",
+      "define-xml",
+      "pinnacle 21",
+      "pinnacle21",
+      "p21 validation",
+      "sdrg",
+      "adrg"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "clinical-trials-knowledge",
+    "name": "Clinical trial process and ICH-GCP basics",
+    "category": "business",
+    "aliases": [
+      "ich gcp",
+      "ich-gcp",
+      "good clinical practice",
+      "statistical analysis plan",
+      "clinical study report",
+      "clinical study reports",
+      "clinical trial phases",
+      "21 cfr part 11"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "r-programming",
+    "name": "R programming",
+    "category": "programming",
+    "aliases": [
+      "r programming",
+      "rstudio",
+      "tidyverse",
+      "dplyr",
+      "ggplot2",
+      "r shiny",
+      "pharmaverse"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "weblogic-administration",
+    "name": "Oracle WebLogic Server administration",
+    "category": "cloud-devops",
+    "aliases": [
+      "weblogic",
+      "oracle weblogic",
+      "weblogic server",
+      "weblogic administration",
+      "weblogic admin",
+      "wlst",
+      "weblogic clusters"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "websphere-administration",
+    "name": "IBM WebSphere Application Server administration",
+    "category": "cloud-devops",
+    "aliases": [
+      "websphere",
+      "ibm websphere",
+      "websphere application server",
+      "websphere nd",
+      "wsadmin",
+      "jython scripting",
+      "websphere liberty"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "jboss-wildfly-administration",
+    "name": "JBoss EAP and WildFly administration",
+    "category": "cloud-devops",
+    "aliases": [
+      "jboss",
+      "jboss eap",
+      "red hat jboss",
+      "wildfly",
+      "jboss cli",
+      "jboss administration"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "web-server-administration",
+    "name": "Web server administration (Apache HTTPD, IHS, Nginx, Tomcat)",
+    "category": "cloud-devops",
+    "aliases": [
+      "apache http server",
+      "apache httpd",
+      "httpd",
+      "ibm http server",
+      "nginx",
+      "apache tomcat",
+      "tomcat",
+      "mod_jk",
+      "reverse proxy configuration"
+    ],
+    "ambiguous": [
+      "nginx",
+      "tomcat",
+      "apache tomcat",
+      "httpd",
+      "reverse proxy configuration"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ssl-certificate-management",
+    "name": "SSL/TLS certificate and keystore management",
+    "category": "security",
+    "aliases": [
+      "ssl certificates",
+      "ssl certificate renewal",
+      "keystore",
+      "java keystore",
+      "keytool",
+      "truststore",
+      "csr generation",
+      "openssl"
+    ],
+    "ambiguous": [
+      "ssl certificates",
+      "openssl",
+      "keystore",
+      "java keystore",
+      "keytool",
+      "truststore"
+    ],
+    "implies": [
+      "cryptography-basics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "service-level-management",
+    "name": "Service level management (SLAs, service reviews)",
+    "category": "business",
+    "aliases": [
+      "service level management",
+      "sla management",
+      "sla reporting",
+      "sla governance",
+      "service reviews",
+      "monthly service reviews",
+      "service credits",
+      "service improvement plan",
+      "continual service improvement"
+    ],
+    "ambiguous": [
+      "sla management",
+      "sla reporting",
+      "service reviews"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "major-incident-management",
+    "name": "Major incident management",
+    "category": "cloud-devops",
+    "aliases": [
+      "major incident management",
+      "major incidents",
+      "major incident manager",
+      "p1 incidents",
+      "priority 1 incidents",
+      "incident bridge calls",
+      "major incident process"
+    ],
+    "ambiguous": [
+      "major incidents",
+      "p1 incidents",
+      "priority 1 incidents",
+      "incident bridge calls"
+    ],
+    "implies": [
+      "incident-management"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "itil-problem-change-management",
+    "name": "ITIL problem and change management",
+    "category": "tools",
+    "aliases": [
+      "problem management",
+      "itil change management",
+      "change advisory board",
+      "cab meetings",
+      "change enablement",
+      "known error database",
+      "problem records"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "itsm"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "annotation-quality-review",
+    "name": "Annotation quality review and guideline adherence",
+    "category": "ml",
+    "aliases": [
+      "annotation quality audits",
+      "annotation qa",
+      "label quality checks",
+      "labelling quality checks",
+      "inter-annotator agreement",
+      "annotation guidelines",
+      "labelling guidelines"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "data-annotation"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "text-audio-annotation",
+    "name": "Text and audio data annotation",
+    "category": "ml",
+    "aliases": [
+      "text annotation",
+      "audio annotation",
+      "audio transcription",
+      "speech transcription",
+      "speech data annotation",
+      "ner tagging",
+      "sentiment labelling",
+      "intent labelling"
+    ],
+    "ambiguous": [
+      "ner tagging",
+      "sentiment labelling",
+      "intent labelling"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ai-response-rating",
+    "name": "LLM response rating and RLHF data work",
+    "category": "ml",
+    "aliases": [
+      "rlhf annotation",
+      "llm response evaluation",
+      "llm response rating",
+      "preference ranking",
+      "side-by-side rating",
+      "sft data creation",
+      "prompt and response writing"
+    ],
+    "ambiguous": [
+      "preference ranking",
+      "sft data creation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "video-annotation",
+    "name": "Video annotation and object tracking labels",
+    "category": "ml",
+    "aliases": [
+      "video annotation",
+      "video labelling",
+      "object tracking annotation",
+      "frame-by-frame annotation",
+      "3d cuboid annotation"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "data-annotation"
+    ],
+    "scoring": "gap"
   }
 ]

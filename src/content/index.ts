@@ -68,6 +68,7 @@ import businessAnalyst from "./roles/business-analyst.json";
 import businessDevelopmentExecutive from "./roles/business-development-executive.json";
 import categoryManagerEcommerce from "./roles/category-manager-ecommerce.json";
 import channelSalesManager from "./roles/channel-sales-manager.json";
+import clinicalSasProgrammer from "./roles/clinical-sas-programmer.json";
 import cloudArchitect from "./roles/cloud-architect.json";
 import cloudEngineer from "./roles/cloud-engineer.json";
 import cloudFinopsAnalyst from "./roles/cloud-finops-analyst.json";
@@ -80,6 +81,7 @@ import compensationBenefitsAnalyst from "./roles/compensation-benefits-analyst.j
 import computerVisionEngineer from "./roles/computer-vision-engineer.json";
 import contactCenterDeveloper from "./roles/contact-center-developer.json";
 import contentWriter from "./roles/content-writer.json";
+import coreBankingConsultant from "./roles/core-banking-consultant.json";
 import costAccountant from "./roles/cost-accountant.json";
 import cppDeveloper from "./roles/cpp-developer.json";
 import creditRiskAnalyst from "./roles/credit-risk-analyst.json";
@@ -89,6 +91,7 @@ import customerSuccessManager from "./roles/customer-success-manager.json";
 import customerSupportExecutive from "./roles/customer-support-executive.json";
 import cyberSecurityAnalyst from "./roles/cyber-security-analyst.json";
 import dataAnalyst from "./roles/data-analyst.json";
+import dataAnnotationSpecialist from "./roles/data-annotation-specialist.json";
 import dataArchitect from "./roles/data-architect.json";
 import dataCenterEngineer from "./roles/data-center-engineer.json";
 import dataEngineer from "./roles/data-engineer.json";
@@ -98,6 +101,7 @@ import dataScientist from "./roles/data-scientist.json";
 import databaseAdministrator from "./roles/database-administrator.json";
 import databaseArchitect from "./roles/database-architect.json";
 import databaseDeveloper from "./roles/database-developer.json";
+import designVerificationEngineer from "./roles/design-verification-engineer.json";
 import developerAdvocate from "./roles/developer-advocate.json";
 import devopsEngineer from "./roles/devops-engineer.json";
 import devsecopsEngineer from "./roles/devsecops-engineer.json";
@@ -121,12 +125,14 @@ import fpgaEngineer from "./roles/fpga-engineer.json";
 import frontendArchitect from "./roles/frontend-architect.json";
 import frontendDeveloper from "./roles/frontend-developer.json";
 import fullStackDeveloper from "./roles/full-stack-developer.json";
+import functionalSafetyEngineer from "./roles/functional-safety-engineer.json";
 import gameDeveloper from "./roles/game-developer.json";
 import gisDeveloper from "./roles/gis-developer.json";
 import golangDeveloper from "./roles/golang-developer.json";
 import graduateEngineerTraineeElectrical from "./roles/graduate-engineer-trainee-electrical.json";
 import graduateEngineerTraineeMechanical from "./roles/graduate-engineer-trainee-mechanical.json";
 import grcManager from "./roles/grc-manager.json";
+import guidewireDeveloper from "./roles/guidewire-developer.json";
 import hardwareDesignEngineer from "./roles/hardware-design-engineer.json";
 import hilTestEngineer from "./roles/hil-test-engineer.json";
 import homeLoanSalesOfficer from "./roles/home-loan-sales-officer.json";
@@ -138,6 +144,7 @@ import implementationConsultant from "./roles/implementation-consultant.json";
 import incidentResponseAnalyst from "./roles/incident-response-analyst.json";
 import industrialRelationsOfficer from "./roles/industrial-relations-officer.json";
 import informationSecurityAnalyst from "./roles/information-security-analyst.json";
+import infotainmentEngineer from "./roles/infotainment-engineer.json";
 import insideSalesExecutive from "./roles/inside-sales-executive.json";
 import insuranceUnderwriter from "./roles/insurance-underwriter.json";
 import integrationDeveloper from "./roles/integration-developer.json";
@@ -146,6 +153,7 @@ import iosDeveloper from "./roles/ios-developer.json";
 import iotEngineer from "./roles/iot-engineer.json";
 import itAuditor from "./roles/it-auditor.json";
 import itProjectManager from "./roles/it-project-manager.json";
+import itServiceDeliveryManager from "./roles/it-service-delivery-manager.json";
 import itSupportEngineer from "./roles/it-support-engineer.json";
 import javaBackendDeveloper from "./roles/java-backend-developer.json";
 import kafkaStreamingEngineer from "./roles/kafka-streaming-engineer.json";
@@ -163,6 +171,7 @@ import manualTestEngineer from "./roles/manual-test-engineer.json";
 import marketResearchAnalyst from "./roles/market-research-analyst.json";
 import mechanicalDesignEngineer from "./roles/mechanical-design-engineer.json";
 import medicalRepresentative from "./roles/medical-representative.json";
+import middlewareAdministrator from "./roles/middleware-administrator.json";
 import mlEngineer from "./roles/ml-engineer.json";
 import mlopsEngineer from "./roles/mlops-engineer.json";
 import networkEngineer from "./roles/network-engineer.json";
@@ -179,6 +188,7 @@ import pegaDeveloper from "./roles/pega-developer.json";
 import penetrationTester from "./roles/penetration-tester.json";
 import performanceTestEngineer from "./roles/performance-test-engineer.json";
 import phpDeveloper from "./roles/php-developer.json";
+import physicalDesignEngineer from "./roles/physical-design-engineer.json";
 import platformEngineer from "./roles/platform-engineer.json";
 import plcScadaEngineer from "./roles/plc-scada-engineer.json";
 import plmDeveloper from "./roles/plm-developer.json";
@@ -208,7 +218,9 @@ import salesforceAdministrator from "./roles/salesforce-administrator.json";
 import salesforceDeveloper from "./roles/salesforce-developer.json";
 import sapAbapDeveloper from "./roles/sap-abap-developer.json";
 import sapBasisAdministrator from "./roles/sap-basis-administrator.json";
+import sapBtpIntegrationDeveloper from "./roles/sap-btp-integration-developer.json";
 import sapFicoConsultant from "./roles/sap-fico-consultant.json";
+import sapFioriUi5Developer from "./roles/sap-fiori-ui5-developer.json";
 import sapMmConsultant from "./roles/sap-mm-consultant.json";
 import sapPpConsultant from "./roles/sap-pp-consultant.json";
 import sapSdConsultant from "./roles/sap-sd-consultant.json";
@@ -347,6 +359,7 @@ export const roleProfiles: RoleProfile[] = z
     businessDevelopmentExecutive,
     categoryManagerEcommerce,
     channelSalesManager,
+    clinicalSasProgrammer,
     cloudArchitect,
     cloudEngineer,
     cloudFinopsAnalyst,
@@ -359,6 +372,7 @@ export const roleProfiles: RoleProfile[] = z
     computerVisionEngineer,
     contactCenterDeveloper,
     contentWriter,
+    coreBankingConsultant,
     costAccountant,
     cppDeveloper,
     creditRiskAnalyst,
@@ -368,6 +382,7 @@ export const roleProfiles: RoleProfile[] = z
     customerSupportExecutive,
     cyberSecurityAnalyst,
     dataAnalyst,
+    dataAnnotationSpecialist,
     dataArchitect,
     dataCenterEngineer,
     dataEngineer,
@@ -377,6 +392,7 @@ export const roleProfiles: RoleProfile[] = z
     databaseAdministrator,
     databaseArchitect,
     databaseDeveloper,
+    designVerificationEngineer,
     developerAdvocate,
     devopsEngineer,
     devsecopsEngineer,
@@ -400,12 +416,14 @@ export const roleProfiles: RoleProfile[] = z
     frontendArchitect,
     frontendDeveloper,
     fullStackDeveloper,
+    functionalSafetyEngineer,
     gameDeveloper,
     gisDeveloper,
     golangDeveloper,
     graduateEngineerTraineeElectrical,
     graduateEngineerTraineeMechanical,
     grcManager,
+    guidewireDeveloper,
     hardwareDesignEngineer,
     hilTestEngineer,
     homeLoanSalesOfficer,
@@ -417,6 +435,7 @@ export const roleProfiles: RoleProfile[] = z
     incidentResponseAnalyst,
     industrialRelationsOfficer,
     informationSecurityAnalyst,
+    infotainmentEngineer,
     insideSalesExecutive,
     insuranceUnderwriter,
     integrationDeveloper,
@@ -425,6 +444,7 @@ export const roleProfiles: RoleProfile[] = z
     iotEngineer,
     itAuditor,
     itProjectManager,
+    itServiceDeliveryManager,
     itSupportEngineer,
     javaBackendDeveloper,
     kafkaStreamingEngineer,
@@ -442,6 +462,7 @@ export const roleProfiles: RoleProfile[] = z
     marketResearchAnalyst,
     mechanicalDesignEngineer,
     medicalRepresentative,
+    middlewareAdministrator,
     mlEngineer,
     mlopsEngineer,
     networkEngineer,
@@ -458,6 +479,7 @@ export const roleProfiles: RoleProfile[] = z
     penetrationTester,
     performanceTestEngineer,
     phpDeveloper,
+    physicalDesignEngineer,
     platformEngineer,
     plcScadaEngineer,
     plmDeveloper,
@@ -487,7 +509,9 @@ export const roleProfiles: RoleProfile[] = z
     salesforceDeveloper,
     sapAbapDeveloper,
     sapBasisAdministrator,
+    sapBtpIntegrationDeveloper,
     sapFicoConsultant,
+    sapFioriUi5Developer,
     sapMmConsultant,
     sapPpConsultant,
     sapSdConsultant,

@@ -1,0 +1,52 @@
+{
+  "id": "functional-safety-engineer-mid",
+  "roleSlug": "functional-safety-engineer",
+  "persona": "Embedded engineer turned ISO 26262 safety engineer",
+  "resumeText": "Arjun Deshpande | Pune | arjun.deshpande@example.com\n\nEXPERIENCE\nFunctional Safety Engineer, Sahyadri Mobility Systems, Pune (2021 - present)\n- Performed HARA for an electric power steering ECU and assigned ASIL ratings to hazards under ISO 26262.\n- Derived safety goals and wrote the functional safety concept for the steering torque path.\n- Ran DFMEA and FMEDA workshops with hardware and software teams.\n- Linked safety requirements to design and test cases in IBM DOORS.\n- Presented safety analysis results to customer safety managers in monthly reviews.\n- Supported an ASPICE Level 2 assessment by preparing software work products.\n\nEmbedded Software Engineer, Deccan Auto Electronics, Pune (2018 - 2021)\n- Developed embedded C drivers for brake ECU sensors following MISRA C.\n\nSKILLS\nISO 26262, FMEDA, DOORS, Embedded C, CANoe\n\nEDUCATION\nBE Electronics and Telecommunication, College of Engineering Pune, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "automotive-functional-safety",
+        "quote": "assigned ASIL ratings to hazards under ISO 26262"
+      },
+      {
+        "skillId": "functional-safety-concept",
+        "quote": "wrote the functional safety concept for the steering torque path"
+      },
+      {
+        "skillId": "design-fmea",
+        "quote": "Ran DFMEA and FMEDA workshops"
+      },
+      {
+        "skillId": "requirements-management-tools",
+        "quote": "Linked safety requirements to design and test cases in IBM DOORS"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented safety analysis results to customer safety managers"
+      },
+      {
+        "skillId": "automotive-spice",
+        "quote": "Supported an ASPICE Level 2 assessment"
+      },
+      {
+        "skillId": "embedded-c",
+        "quote": "Developed embedded C drivers for brake ECU sensors"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "fault-tree-analysis",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "autosar-classic",
+      "hil-testing",
+      "matlab-simulink",
+      "adas-functions"
+    ]
+  },
+  "reviewedBy": null
+}

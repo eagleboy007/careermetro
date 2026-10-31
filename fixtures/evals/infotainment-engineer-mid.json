@@ -1,0 +1,52 @@
+{
+  "id": "infotainment-engineer-mid",
+  "roleSlug": "infotainment-engineer",
+  "persona": "Mid-level Android Automotive platform engineer",
+  "resumeText": "Divya Menon | Chennai | divya.menon@example.com\n\nEXPERIENCE\nSoftware Engineer - Infotainment, Marina Auto Electronics, Chennai (2021 - present)\n- Customised AOSP framework services and the vehicle HAL for an Android Automotive head unit.\n- Wrote Java system services that expose climate and seat signals to car apps.\n- Fixed HFP call audio and A2DP streaming issues by reading HCI logs from the Bluetooth stack.\n- Tuned the audio HAL so navigation prompts duck media playback.\n\nEmbedded Software Engineer, Adyar Devices, Chennai (2019 - 2021)\n- Brought up Yocto images and Linux device drivers for a telematics board.\n- Read CAN bus signals from the vehicle gateway for trip logging.\n\nSKILLS\nJava, C, AOSP, Bluetooth, Yocto, Multithreading, Git\n\nEDUCATION\nBTech Electronics and Communication, College of Engineering Guindy, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "android-automotive-aosp",
+        "quote": "Customised AOSP framework services and the vehicle HAL"
+      },
+      {
+        "skillId": "java",
+        "quote": "Wrote Java system services that expose climate and seat signals"
+      },
+      {
+        "skillId": "bluetooth-profiles",
+        "quote": "Fixed HFP call audio and A2DP streaming issues"
+      },
+      {
+        "skillId": "multimedia-frameworks",
+        "quote": "Tuned the audio HAL so navigation prompts duck media playback"
+      },
+      {
+        "skillId": "embedded-linux",
+        "quote": "Brought up Yocto images and Linux device drivers"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Read CAN bus signals from the vehicle gateway"
+      },
+      {
+        "skillId": "concurrency-multithreading",
+        "quote": "Java, C, AOSP, Bluetooth, Yocto, Multithreading, Git"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "concurrency-multithreading",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "qt-qml",
+      "rtos",
+      "kotlin",
+      "autosar-classic"
+    ]
+  },
+  "reviewedBy": null
+}

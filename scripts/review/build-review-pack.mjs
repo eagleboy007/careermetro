@@ -26,8 +26,8 @@ const ROLE_COLUMNS = ["Ref", "Role", "Section", "Item", "Detail", ...ANSWER_COLU
 const IMPORTANCE = { required: "Required", nice_to_have: "Nice to have" };
 
 /**
- * Changes Development made to a drafted role after an eval showed a problem (F0 and F1, 2026-10-31). Each one waits for the
- * field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
+ * Changes Development made to a drafted role after an eval showed a problem, or when a new profile took over some of its
+ * titles (F0, F1 and TG1, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
  */
 export const SIGN_OFF = [
   { ref: "export-import-executive#years", note: "Starts at 1 year (was 2): EXIM and export documentation executives are commonly hired at 0-2 years." },
@@ -37,6 +37,8 @@ export const SIGN_OFF = [
   { ref: "management-trainee#title", note: "Grouped with sales roles (drafted under operations): most campus management trainee programmes start in sales." },
   { ref: "management-trainee#skill:financial-statement-analysis", note: "Nice to have (was Required): trainees learn it on the programme." },
   { ref: "site-reliability-engineer#titles", note: "\"Production Engineer\" removed: in India it usually means a manufacturing role, now its own profile." },
+  { ref: "vlsi-design-engineer#titles", note: "\"Design Verification Engineer\", \"ASIC Verification Engineer\" and \"Verification Engineer\" removed: chip verification is now its own profile (Design Verification Engineer)." },
+  { ref: "it-service-delivery-manager#title", note: "Grouped with infrastructure and cloud roles (drafted under delivery): its skills are IT operations ones (ITSM, major incidents, SLAs), shared with application support and technical account managers." },
 ];
 const signOffNote = new Map(SIGN_OFF.map((c) => [c.ref, c.note]));
 

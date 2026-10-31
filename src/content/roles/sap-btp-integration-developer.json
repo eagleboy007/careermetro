@@ -1,0 +1,115 @@
+{
+  "slug": "sap-btp-integration-developer",
+  "title": "SAP BTP Integration Developer",
+  "summary": "SAP BTP integration developers connect SAP systems such as S/4HANA with other SAP and non-SAP applications using SAP Integration Suite, SAP's cloud service for building message flows called iFlows. They sit in SAP integration teams with functional consultants and partner system owners, building mappings, scripts and APIs and fixing failed messages.",
+  "dailyDuties": [
+    "Build iFlows from interface specs in SAP Integration Suite",
+    "Write Groovy scripts and XSLT or message mappings",
+    "Configure IDoc, SOAP, REST, OData and SFTP adapters",
+    "Set up destinations, credentials and certificates in BTP",
+    "Migrate older SAP PI/PO interfaces to the cloud",
+    "Monitor failed messages and fix production errors"
+  ],
+  "typicalTitles": [
+    "SAP CPI Developer",
+    "SAP CPI Consultant",
+    "SAP Integration Suite Developer",
+    "SAP BTP Integration Consultant",
+    "SAP CPI/PI-PO Consultant",
+    "SAP Cloud Integration Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "sap-integration-suite",
+      "importance": "required",
+      "expectation": "Build, deploy and monitor iFlows in SAP Integration Suite (Cloud Integration)",
+      "postingShare": null
+    },
+    {
+      "skillId": "groovy-scripting",
+      "importance": "required",
+      "expectation": "Write Groovy scripts for payload handling, headers and custom logic in iFlows",
+      "postingShare": null
+    },
+    {
+      "skillId": "soap-xml",
+      "importance": "required",
+      "expectation": "Build XSLT and message mappings and work with SOAP and XML payloads",
+      "postingShare": null
+    },
+    {
+      "skillId": "rest-apis",
+      "importance": "required",
+      "expectation": "Connect REST and OData APIs through HTTP and OData adapters",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-interfaces",
+      "importance": "required",
+      "expectation": "Integrate S/4HANA and ECC through IDocs, RFCs and BAPIs, including PI/PO migrations",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-btp-platform",
+      "importance": "required",
+      "expectation": "Manage subaccounts, destinations and security material in the BTP cockpit",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Agree interface specs with functional consultants and partner system teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-api-management",
+      "importance": "nice_to_have",
+      "expectation": "Publish and secure APIs with SAP API Management policies",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-federation",
+      "importance": "nice_to_have",
+      "expectation": "Set up OAuth 2.0 and certificate-based authentication for interfaces",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Read ABAP on the SAP side of an interface",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Keep scripts and mappings under version control",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-writing",
+      "importance": "nice_to_have",
+      "expectation": "Write interface technical specs and runbooks",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "nice_to_have",
+      "expectation": "Monitor failed messages and fix production integration errors",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,140 @@
+{
+  "slug": "it-service-delivery-manager",
+  "title": "IT Service Delivery Manager",
+  "summary": "Makes sure an IT support or managed service meets its agreed service levels (SLAs) for a client or the business, using ITIL processes for incidents, problems and changes. Sits between the support teams, vendors and client leadership, owning service reviews, escalations and improvement plans.",
+  "dailyDuties": [
+    "Review SLA and ticket reports from ServiceNow",
+    "Lead bridge calls and updates during major incidents",
+    "Chair change advisory boards and follow up problem records",
+    "Run monthly service reviews with clients",
+    "Check vendor performance against contracts",
+    "Handle client escalations and agree action plans",
+    "Plan shift cover and coach support team leads"
+  ],
+  "typicalTitles": [
+    "Service Delivery Manager",
+    "Service Manager - Managed Services",
+    "Service Delivery Manager - AMS",
+    "ITSM Service Delivery Manager",
+    "Major Incident Manager",
+    "Service Level Manager",
+    "Service Delivery Lead - IT Operations"
+  ],
+  "experienceBand": {
+    "minYears": 6,
+    "maxYears": 14
+  },
+  "skills": [
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Run ITIL incident, request and service processes on a tool such as ServiceNow",
+      "postingShare": null
+    },
+    {
+      "skillId": "service-level-management",
+      "importance": "required",
+      "expectation": "Own SLAs and KPIs and run monthly service reviews with clients",
+      "postingShare": null
+    },
+    {
+      "skillId": "major-incident-management",
+      "importance": "required",
+      "expectation": "Lead P1 bridge calls, updates and post-incident reviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "itil-problem-change-management",
+      "importance": "required",
+      "expectation": "Run problem records and change advisory boards to closure",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "required",
+      "expectation": "Hold vendors and partners to contracts and service levels",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build SLA and ticket reports for service reviews",
+      "postingShare": null,
+      "oneOf": "vm-reporting"
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "required",
+      "expectation": "Build SLA and ticket reports for service reviews",
+      "postingShare": null,
+      "oneOf": "vm-reporting"
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Manage client and business stakeholders and their escalations",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear incident updates and service review packs",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead support teams across shifts and locations",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "nice_to_have",
+      "expectation": "Calm and resolve client escalations",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-project-management",
+      "importance": "nice_to_have",
+      "expectation": "Run service transition and improvement projects",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "nice_to_have",
+      "expectation": "Understand L2 and L3 support work well enough to challenge root causes",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "vm-reporting",
+      "label": "A reporting tool (Excel or Power BI)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "itil-foundation",
+      "importance": "recommended",
+      "why": "Most service delivery postings ask for ITIL Foundation"
+    },
+    {
+      "certId": "pmp",
+      "importance": "optional",
+      "why": "Helps with transition and improvement projects"
+    },
+    {
+      "certId": "prince2-foundation",
+      "importance": "optional",
+      "why": "Project method some clients use"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

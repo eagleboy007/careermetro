@@ -1,0 +1,51 @@
+{
+  "id": "clinical-sas-programmer-mid",
+  "roleSlug": "clinical-sas-programmer",
+  "persona": "Mid-level statistical programmer at a CRO with no submission validation work yet",
+  "resumeText": "Priya Venkataraman | Bengaluru | priya.venkataraman@example.com\n\nSUMMARY\nStatistical programmer with five years in clinical trial reporting for oncology and respiratory studies.\n\nEXPERIENCE\nStatistical Programmer, Nilgiri Clinical Analytics Pvt Ltd, Bengaluru (Jun 2021 - present)\n- Programmed SDTM domains (DM, AE, LB, VS) from raw EDC data for Phase II and III oncology studies.\n- Built ADaM datasets including ADSL and ADAE following the ADaM IG and study specifications.\n- Wrote Base SAS and SAS macro programs to produce safety tables, listings and figures for clinical study reports.\n- Performed independent double programming to validate outputs against the statistical analysis plan.\n- Derived efficacy endpoints using PROC MIXED and PROC LIFETEST with guidance from the study biostatistician.\n- Presented programming status and open data issues in weekly study team calls.\n\nEDUCATION\nMSc Statistics, Bangalore University, 2021\n\nSKILLS\nSAS 9.4, R (basic), SQL, Microsoft Office\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "cdisc-sdtm",
+        "quote": "Programmed SDTM domains (DM, AE, LB, VS) from raw EDC data"
+      },
+      {
+        "skillId": "cdisc-adam",
+        "quote": "Built ADaM datasets including ADSL and ADAE"
+      },
+      {
+        "skillId": "sas-programming",
+        "quote": "Wrote Base SAS and SAS macro programs"
+      },
+      {
+        "skillId": "clinical-tlf-programming",
+        "quote": "produce safety tables, listings and figures for clinical study reports"
+      },
+      {
+        "skillId": "clinical-trials-knowledge",
+        "quote": "validate outputs against the statistical analysis plan"
+      },
+      {
+        "skillId": "statistics",
+        "quote": "Derived efficacy endpoints using PROC MIXED and PROC LIFETEST"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented programming status and open data issues in weekly study team calls"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "cdisc-submission-validation",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "python",
+      "machine-learning",
+      "tableau"
+    ]
+  },
+  "reviewedBy": null
+}
