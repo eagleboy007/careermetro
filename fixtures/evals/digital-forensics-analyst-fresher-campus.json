@@ -1,0 +1,47 @@
+{
+  "id": "digital-forensics-analyst-fresher-campus",
+  "roleSlug": "digital-forensics-analyst",
+  "persona": "fresher-campus",
+  "resumeText": "Harsh Patel | Gandhinagar | harsh.patel.forensics@example.com | +91 97240 35xxx\n\nEDUCATION\nB.Sc (Hons) Forensic Science, Gujarat Forensic Sciences Institute, Gandhinagar (2023 - 2026) | CGPA 8.2/10\nClass XII (Science), Kendriya Vidyalaya, Ahmedabad (2023) | 87%\n\nINTERNSHIPS\nCyber Forensics Intern, Sabarmati Cyber Lab, Ahmedabad (May 2025 - July 2025, 8 weeks)\n- Created forensic images of seized hard disks with FTK Imager and verified them with SHA-256 hashes.\n- Used Autopsy to recover deleted files and browser history from a laptop image.\n- Filled chain-of-custody forms and evidence labels for every exhibit received in the lab.\n- Wrote draft examination reports for the senior examiner to review.\n\nPROJECTS\nAndroid WhatsApp Artefact Recovery (final-year project, 2026)\n- Extracted WhatsApp chats and media from a rooted Android phone image using ALEAPP.\n\nSteganography Detection (semester project, 2025)\n- Tested three tools for spotting hidden data in JPEG images.\n\nCOURSEWORK\nComputer Forensics, Cyber Law (IT Act 2000), Networking Fundamentals, Linux Basics\n\nSKILLS\nAutopsy, FTK Imager, ALEAPP, Wireshark (basic), Linux, Python (basic), Hindi, Gujarati, English\n\nACTIVITIES\nVolunteer, state police cyber awareness week (2024)\nMember, college quiz club\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "digital-forensics",
+        "quote": "Used Autopsy to recover deleted files and browser history"
+      },
+      {
+        "skillId": "forensic-tool-suites",
+        "quote": "Created forensic images of seized hard disks with FTK Imager"
+      },
+      {
+        "skillId": "mobile-forensics",
+        "quote": "Extracted WhatsApp chats and media from a rooted Android phone image"
+      },
+      {
+        "skillId": "forensic-evidence-handling",
+        "quote": "Filled chain-of-custody forms and evidence labels"
+      },
+      {
+        "skillId": "technical-writing",
+        "quote": "Wrote draft examination reports for the senior examiner"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "security-incident-response",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "malware-analysis",
+      "siem",
+      "osint"
+    ]
+  },
+  "reviewedBy": null
+}

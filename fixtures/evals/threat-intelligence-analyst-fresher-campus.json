@@ -1,0 +1,52 @@
+{
+  "id": "threat-intelligence-analyst-fresher-campus",
+  "roleSlug": "threat-intelligence-analyst",
+  "persona": "fresher-campus",
+  "resumeText": "Sana Qureshi | Lucknow, Uttar Pradesh | sana.qureshi.cti@example.com\n\nEDUCATION\nB.Tech, Computer Science and Engineering (Cyber Security), Awadh Institute of Technology, Lucknow (2022 - 2026) | CGPA 8.4/10\n\nINTERNSHIP\nThreat Intelligence Intern, Gomti Cyber Labs, Lucknow (May 2025 - Jul 2025, 8 weeks)\n- Collected indicators of compromise from AlienVault OTX and public threat feeds for a weekly client bulletin.\n- Mapped techniques from two ransomware reports to MITRE ATT&CK and summarised them in a table.\n- Looked up exposed company assets on Shodan and listed open RDP ports for the analyst team.\n\nPROJECTS\n- Phishing domain watch (personal): Tracked newly registered look-alike domains of Indian banks using open source intelligence and WHOIS records.\n- Traffic analysis (academic, Computer Networks course): Analysed DNS and TCP/IP traffic in Wireshark captures to spot a simulated beaconing host as part of the Computer Networks course.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Computer Networks, Cryptography, Cyber Forensics, Operating Systems\n- TryHackMe Cyber Threat Intelligence module; Cisco Introduction to Cybersecurity\n\nSKILLS\nThreat intelligence, OSINT, MITRE ATT&CK, Splunk (basics), Wireshark, Shodan, Linux basics\n\nACTIVITIES\n- Published a weekly threat brief for the college cyber club with 300 readers\n- Ranked 42nd of 600 teams in a national student CTF\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "threat-intelligence",
+        "quote": "Collected indicators of compromise from AlienVault OTX and public threat feeds"
+      },
+      {
+        "skillId": "threat-detection",
+        "quote": "Mapped techniques from two ransomware reports to MITRE ATT&CK"
+      },
+      {
+        "skillId": "osint",
+        "quote": "Looked up exposed company assets on Shodan"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Analysed DNS and TCP/IP traffic in Wireshark captures"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Published a weekly threat brief for the college cyber club"
+      },
+      {
+        "skillId": "siem",
+        "quote": "Threat intelligence, OSINT, MITRE ATT&CK, Splunk (basics), Wireshark, Shodan, Linux basics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "siem",
+        "status": "weak"
+      },
+      {
+        "skillId": "problem-solving",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "malware-analysis",
+      "digital-forensics",
+      "security-incident-response",
+      "endpoint-security"
+    ]
+  },
+  "reviewedBy": null
+}

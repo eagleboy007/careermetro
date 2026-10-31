@@ -1,0 +1,56 @@
+{
+  "id": "blockchain-developer-fresher-campus",
+  "roleSlug": "blockchain-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Aditya Menon | Kochi | aditya.menon@example.com | +91 97450 33218\n\nEDUCATION\nB.Tech Computer Science, Cochin University of Science and Technology, Kochi, 2022 - 2026, CGPA 8.0/10\n\nINTERNSHIPS\nBlockchain Intern, Ledgerleaf Labs, Bengaluru (remote, June 2025 - August 2025, 12 weeks)\n- Wrote Solidity smart contracts for an ERC-721 certificate NFT on the Polygon testnet.\n- Wrote Hardhat unit tests for the minting and transfer functions with Mocha and Chai.\n- Built a Node.js and Express REST API that reads certificate ownership from the chain.\n\nPROJECTS\n- Escrow dApp: Solidity escrow contract with a React front end and MetaMask login.\n- Implemented SHA-256 hashing and RSA digital signatures in Python as part of the Cryptography course.\n- Crowdfunding contract deployed on the Sepolia testnet with a refund-on-failure rule.\n\nCOURSEWORK AND CERTIFICATIONS\nCryptography and Network Security, Distributed Systems, Data Structures\nAlchemy University - Ethereum Developer Bootcamp (2025)\n\nSKILLS\nSolidity, Hardhat, Ethers.js, Node.js, Express, JavaScript, React, Git, Smart contract security (Reentrancy, OpenZeppelin)\n\nACTIVITIES\nLead, CUSAT Web3 Club; ran two smart contract workshops for juniors.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "solidity",
+        "quote": "Wrote Solidity smart contracts for an ERC-721 certificate NFT"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Wrote Hardhat unit tests for the minting and transfer functions"
+      },
+      {
+        "skillId": "nodejs",
+        "quote": "Built a Node.js and Express REST API"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Express REST API that reads certificate ownership from the chain"
+      },
+      {
+        "skillId": "cryptography-basics",
+        "quote": "Implemented SHA-256 hashing and RSA digital signatures"
+      },
+      {
+        "skillId": "smart-contract-security",
+        "quote": "Solidity, Hardhat, Ethers.js, Node.js, Express, JavaScript, React, Git, Smart contract security (Reentrancy, OpenZeppelin)"
+      },
+      {
+        "skillId": "git",
+        "quote": "Solidity, Hardhat, Ethers.js, Node.js, Express, JavaScript, React, Git, Smart contract security (Reentrancy, OpenZeppelin)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "smart-contract-security",
+        "status": "weak"
+      },
+      {
+        "skillId": "git",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "hyperledger-fabric",
+      "go",
+      "typescript",
+      "docker"
+    ]
+  },
+  "reviewedBy": null
+}

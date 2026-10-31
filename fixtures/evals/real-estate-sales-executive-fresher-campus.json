@@ -1,0 +1,59 @@
+{
+  "id": "real-estate-sales-executive-fresher-campus",
+  "roleSlug": "real-estate-sales-executive",
+  "persona": "fresher-campus",
+  "resumeText": "Riya Malhotra | Gurugram | riya.malhotra@example.com | +91 98110 82715\n\nEDUCATION\nBBA, Guru Gobind Singh Indraprastha University, Delhi, 2023 - 2026, CGPA 7.6/10\n\nINTERNSHIPS\nSales Intern, Aravali Homes, Gurugram (Jan 2026 - Mar 2026, 10 weeks)\n- Conducted site visits for walk-in buyers at a 2 and 3 BHK project on Dwarka Expressway.\n- Called back property portal enquiries within 24 hours and booked site visit slots.\n- Updated lead status and visit notes in the Sell.Do CRM after every call.\n\nCustomer Relations Intern, Urban Nest Realty, Delhi (June 2025 - July 2025, 6 weeks)\n- Prepared project brochures and price sheets for the sales team.\n\nPROJECTS\n- Survey of 80 first-time home buyers in Gurugram on what decides a purchase (final-year project).\n\nCOURSEWORK AND CERTIFICATIONS\nSales Management, Marketing Management, Business Communication\n\nSKILLS\nCustomer handling, Site visits, Sell.Do CRM, RERA basics, MS Excel, Hindi, English, Punjabi\n\nACTIVITIES\nAnchored the college annual fest and hosted the alumni meet for 300 guests.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "property-site-visits",
+        "quote": "Conducted site visits for walk-in buyers"
+      },
+      {
+        "skillId": "property-enquiry-follow-up",
+        "quote": "Called back property portal enquiries within 24 hours"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Updated lead status and visit notes in the Sell.Do CRM"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Anchored the college annual fest and hosted the alumni meet"
+      },
+      {
+        "skillId": "rera-compliance-basics",
+        "quote": "Customer handling, Site visits, Sell.Do CRM, RERA basics, MS Excel, Hindi, English, Punjabi"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "property-booking-documentation",
+        "status": "missing"
+      },
+      {
+        "skillId": "buyer-home-loan-coordination",
+        "status": "missing"
+      },
+      {
+        "skillId": "rera-compliance-basics",
+        "status": "weak"
+      },
+      {
+        "skillId": "deal-closing",
+        "status": "missing"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "real-estate-channel-partners",
+      "competitive-intelligence",
+      "field-sales-meetings"
+    ]
+  },
+  "reviewedBy": null
+}

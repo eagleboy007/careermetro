@@ -1,0 +1,64 @@
+{
+  "id": "application-support-engineer-fresher-campus",
+  "roleSlug": "application-support-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Sneha Iyer | Chennai | sneha.iyer@example.com | +91 94440 55621\n\nEDUCATION\nB.Sc Computer Science, Madras Christian College, Chennai, 2023 - 2026, CGPA 8.1/10\n\nINTERNSHIPS\nApplication Support Intern, Coromandel FinServ Technologies, Chennai (Dec 2025 - Feb 2026, 10 weeks)\n- Supported the L1 team on user issues with the internal loan origination application.\n- Logged, updated and closed user tickets in ServiceNow within agreed SLAs.\n- Wrote SQL queries to check failed transaction records in the loan database.\n- Used Linux commands like grep and tail to trace errors in application server logs.\n- Analysed recurring login failures and traced them to a wrong session timeout setting.\n\nPROJECTS\n- Log Cleaner: wrote a bash script to compress and archive application log files older than 7 days.\n- Hostel Complaint Tracker: built a small PHP and MySQL web app for students to raise and track complaints.\n\nCOURSEWORK AND CERTIFICATIONS\nOperating Systems, Database Management Systems, Computer Networks\nITIL 4 Foundation (self-study, exam scheduled)\n\nSKILLS\nSQL, MySQL, Linux, Bash, ServiceNow, Incident management, Java (basics), MS Excel\n\nACTIVITIES\nPresented the weekly ticket summary to the support lead during the internship.\nVolunteer, college NSS unit.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "application-support",
+        "quote": "Supported the L1 team on user issues with the internal loan origination application"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Logged, updated and closed user tickets in ServiceNow"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries to check failed transaction records"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Used Linux commands like grep and tail to trace errors"
+      },
+      {
+        "skillId": "scripting-bash",
+        "quote": "wrote a bash script to compress and archive application log files"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Analysed recurring login failures and traced them to a wrong session timeout setting"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented the weekly ticket summary to the support lead"
+      },
+      {
+        "skillId": "incident-management",
+        "quote": "SQL, MySQL, Linux, Bash, ServiceNow, Incident management, Java (basics), MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "batch-scheduling",
+        "status": "missing"
+      },
+      {
+        "skillId": "incident-management",
+        "status": "weak"
+      },
+      {
+        "skillId": "apm-tools",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "oracle-database",
+      "messaging-queues",
+      "kubernetes",
+      "domain-bfsi"
+    ]
+  },
+  "reviewedBy": null
+}

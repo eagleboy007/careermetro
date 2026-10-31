@@ -1,0 +1,59 @@
+{
+  "id": "python-developer-fresher-campus",
+  "roleSlug": "python-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Debolina Sen | Kolkata | debolina.sen@example.com | github.com/debolina-py\n\nEDUCATION\nB.Tech Computer Science and Engineering, Heritage Institute of Technology, Kolkata, 2026 | CGPA 8.4/10\n\nINTERNSHIPS\nPython Developer Intern, Salt Lake Softech Pvt Ltd, Kolkata | Jan 2026 - Apr 2026 (12 weeks)\n- Built REST APIs with Django REST Framework for a clinic appointment booking app.\n- Defined Django models for doctors, slots and appointments and wrote the migrations.\n- Wrote Python helper functions to send appointment reminders by email.\n- Worked on Git feature branches and raised pull requests for review.\n\nData Intern, Howrah Analytics, Remote | June 2025 - July 2025 (6 weeks)\n- Cleaned survey data in pandas and made charts with Matplotlib.\n\nPROJECTS\n- Book Exchange Portal: Django web app where students list and swap used books, with login and search.\n- Expense Tracker API: Small Flask API storing expenses in SQLite.\n- Telegram bot that sends the college timetable each morning, written in Python.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: DBMS, Object Oriented Programming, Operating Systems, Software Engineering\n- PCEP - Certified Entry-Level Python Programmer, 2025\n\nSKILLS\nPython, Django, Django REST Framework, Flask, MySQL, SQLite, SQL, OOP, Git, pandas, HTML, CSS\n\nACTIVITIES\n- Volunteer at PyCon India 2025.\n- Member, college debating society.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "rest-apis",
+        "quote": "Built REST APIs with Django REST Framework"
+      },
+      {
+        "skillId": "python-web-frameworks",
+        "quote": "Built REST APIs with Django REST Framework for a clinic appointment booking app"
+      },
+      {
+        "skillId": "orm-databases",
+        "quote": "Defined Django models for doctors, slots and appointments"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote Python helper functions to send appointment reminders"
+      },
+      {
+        "skillId": "git",
+        "quote": "Worked on Git feature branches and raised pull requests"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Python, Django, Django REST Framework, Flask, MySQL, SQLite, SQL, OOP, Git, pandas, HTML, CSS"
+      },
+      {
+        "skillId": "oop",
+        "quote": "Python, Django, Django REST Framework, Flask, MySQL, SQLite, SQL, OOP, Git, pandas, HTML, CSS"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sql",
+        "status": "weak"
+      },
+      {
+        "skillId": "oop",
+        "status": "weak"
+      },
+      {
+        "skillId": "unit-testing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "docker",
+      "aws",
+      "messaging-queues"
+    ]
+  },
+  "reviewedBy": null
+}

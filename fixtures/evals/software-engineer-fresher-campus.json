@@ -1,0 +1,60 @@
+{
+  "id": "software-engineer-fresher-campus",
+  "roleSlug": "software-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Ananya Gupta | Bhopal | ananya.gupta.dev@example.com | +91 94250 93xxx\n\nEDUCATION\nB.Tech Computer Science, Maulana Azad National Institute of Technology (MANIT), Bhopal (2022 - 2026) | CGPA 8.7/10\nClass XII, Carmel Convent School, Bhopal (2022) | 95%\n\nINTERNSHIPS\nSoftware Engineering Intern, Narmada Tech Solutions, Bengaluru (May 2025 - July 2025, 10 weeks)\n- Built REST endpoints in Java and Spring Boot for a vendor onboarding service.\n- Wrote SQL queries and indexes on MySQL to speed up the vendor search page.\n- Committed code through Git feature branches and fixed review comments from my mentor.\n\nPROJECTS\nHostel Room Allocation System (DBMS and OOP course project, 2025)\n- Designed Java classes with inheritance and interfaces for rooms, students and wardens.\n\nRoute Finder for Bhopal City Buses (personal project, 2024)\n- Implemented Dijkstra's algorithm with a priority queue to find the shortest bus route.\n\nCOURSEWORK\nData Structures and Algorithms, Object Oriented Programming, Operating Systems, DBMS, Computer Networks\n\nSKILLS\nJava, C++, Python (basic), Spring Boot, MySQL, Git, JUnit (basic), Linux, HTML/CSS\n\nACTIVITIES\nSolved 450+ problems on LeetCode and Codeforces; Codeforces rating 1650.\nCoordinator, MANIT coding club (2024 - 2025)\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "java",
+        "quote": "Built REST endpoints in Java and Spring Boot"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Built REST endpoints in Java and Spring Boot for a vendor onboarding service"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries and indexes on MySQL"
+      },
+      {
+        "skillId": "git",
+        "quote": "Committed code through Git feature branches"
+      },
+      {
+        "skillId": "oop",
+        "quote": "Designed Java classes with inheritance and interfaces"
+      },
+      {
+        "skillId": "data-structures-algorithms",
+        "quote": "Implemented Dijkstra's algorithm with a priority queue"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Solved 450+ problems on LeetCode and Codeforces"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Java, C++, Python (basic), Spring Boot, MySQL, Git, JUnit (basic), Linux, HTML/CSS"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "unit-testing",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "docker",
+      "aws",
+      "system-design",
+      "ci-cd"
+    ]
+  },
+  "reviewedBy": null
+}

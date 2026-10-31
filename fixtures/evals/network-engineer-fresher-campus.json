@@ -1,0 +1,56 @@
+{
+  "id": "network-engineer-fresher-campus",
+  "roleSlug": "network-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Mohammed Irfan | Hyderabad | mohammed.irfan@example.com | +91 90000 00000\n\nEDUCATION\nB.Tech Electronics and Communication Engineering, Muffakham Jah College of Engineering and Technology, Hyderabad, 2026 | CGPA 7.6/10\n\nINTERNSHIPS\nNetwork Operations Intern, Golconda Netlink Pvt Ltd (ISP), Hyderabad | Jan 2026 - Mar 2026 (10 weeks)\n- Watched link and device status on PRTG and raised alerts to the L2 engineer when a link went down.\n- Troubleshot DHCP and DNS issues for 30 small business customers over phone and remote session.\n- Found that a faulty patch cord was causing packet loss on a customer link by testing each segment.\n- Updated the network diagram and the shift handover notes at the end of each shift.\n\nIT Support Intern, Banjara Hills Hospital, Hyderabad | June 2025 - July 2025 (6 weeks)\n- Set up desktops and printers and crimped LAN cables for a new ward.\n\nPROJECTS\n- Campus network design: Configured VLANs, inter-VLAN routing and OSPF for a three-building campus in Cisco Packet Tracer.\n- Wi-Fi survey: Measured signal strength across the college library and suggested access point positions.\n\nCERTIFICATIONS AND COURSEWORK\n- Cisco CCNA 200-301 (passed, 2025)\n- Coursework: Computer Networks, Data Communication, Network Security\n\nSKILLS\nTCP/IP, VLANs, OSPF, Cisco Packet Tracer, PRTG, FortiGate firewall (basics), ServiceNow, Windows, Wireshark\n\nACTIVITIES\n- Volunteer, technical team for the college fest network.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "network-monitoring",
+        "quote": "Watched link and device status on PRTG"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Troubleshot DHCP and DNS issues for 30 small business customers"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Found that a faulty patch cord was causing packet loss"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Updated the network diagram and the shift handover notes"
+      },
+      {
+        "skillId": "routing-switching",
+        "quote": "Configured VLANs, inter-VLAN routing and OSPF"
+      },
+      {
+        "skillId": "network-security",
+        "quote": "TCP/IP, VLANs, OSPF, Cisco Packet Tracer, PRTG, FortiGate firewall (basics), ServiceNow, Windows, Wireshark"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "TCP/IP, VLANs, OSPF, Cisco Packet Tracer, PRTG, FortiGate firewall (basics), ServiceNow, Windows, Wireshark"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "network-security",
+        "status": "weak"
+      },
+      {
+        "skillId": "itsm",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "cloud-networking",
+      "python",
+      "terraform",
+      "linux"
+    ]
+  },
+  "reviewedBy": null
+}

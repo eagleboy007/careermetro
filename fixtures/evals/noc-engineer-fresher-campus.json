@@ -1,0 +1,52 @@
+{
+  "id": "noc-engineer-fresher-campus",
+  "roleSlug": "noc-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Rahul Verma | Noida | rahul.verma.net@example.com | +91 95600 47xxx\n\nEDUCATION\nB.Tech Electronics and Communication, JSS Academy of Technical Education, Noida (2022 - 2026) | CGPA 7.8/10\nClass XII, Delhi Public School, Noida (2022) | 85%\n\nINTERNSHIPS\nNOC Intern, Yamuna Broadband Networks, Noida (June 2025 - August 2025, 8 weeks)\n- Monitored link and device status for 300 customer sites on PRTG dashboards.\n- Logged link-down alerts as incidents and escalated them to the L2 team.\n- Checked interface status and pinged devices from the Linux jump server.\n\nPROJECTS\nCampus Network Design (semester project, 2025)\n- Configured VLANs and OSPF routing on Cisco routers and switches in Packet Tracer.\n- Planned IP subnets for six departments and a guest Wi-Fi network.\n\nHome Lab (personal project, 2024)\n- Set up an Ubuntu server with Zabbix to monitor my home router.\n\nCOURSEWORK AND CERTIFICATIONS\nComputer Networks, Data Communication, Operating Systems\nCCNA (preparing, exam booked for December 2026)\n\nSKILLS\nTCP/IP, subnetting, VLANs, OSPF, Cisco Packet Tracer, PRTG, Zabbix, Linux, Windows Server (basic), ServiceNow (basic)\n\nACTIVITIES\nMember, IEEE student branch\nVolunteer, college tech fest network team\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "network-monitoring",
+        "quote": "Monitored link and device status for 300 customer sites"
+      },
+      {
+        "skillId": "incident-management",
+        "quote": "Logged link-down alerts as incidents and escalated them"
+      },
+      {
+        "skillId": "linux",
+        "quote": "pinged devices from the Linux jump server"
+      },
+      {
+        "skillId": "routing-switching",
+        "quote": "Configured VLANs and OSPF routing on Cisco routers"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Planned IP subnets for six departments"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "TCP/IP, subnetting, VLANs, OSPF, Cisco Packet Tracer, PRTG, Zabbix, Linux, Windows Server (basic), ServiceNow (basic)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "itsm",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "firewall-platforms",
+      "cloud-networking",
+      "virtualization",
+      "scripting-bash"
+    ]
+  },
+  "reviewedBy": null
+}

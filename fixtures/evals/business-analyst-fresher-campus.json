@@ -1,0 +1,55 @@
+{
+  "id": "business-analyst-fresher-campus",
+  "roleSlug": "business-analyst",
+  "persona": "fresher-campus",
+  "resumeText": "Riya Agarwal | Kolkata | riya.agarwal@example.com\n\nEDUCATION\nMBA (Systems and Operations), Institute of Management Studies, Kolkata, 2026 | CGPA 7.9/10\nB.Com (Hons), St. Xavier's College, Kolkata, 2024 | 78%\n\nINTERNSHIPS\nBusiness Analyst Intern, Paisaflow Fintech Pvt Ltd, Kolkata | Apr 2025 - June 2025 (9 weeks)\n- Interviewed 12 branch staff to gather requirements for a digital gold loan application and wrote a BRD.\n- Drew as-is and to-be process flows in Visio for gold loan sanction, cutting 3 manual hand-offs.\n- Wrote 20 user stories with acceptance criteria for the loan application screens.\n- Wrote SQL queries to check daily loan application counts against the dashboard.\n\nOperations Intern, Eastline Logistics, Howrah | Dec 2024 - Jan 2025 (6 weeks)\n- Recorded the shipment booking steps and listed delays in an Excel sheet for the operations head.\n\nPROJECTS\n- MBA live project: Mapped the patient admission process at a 50-bed nursing home and suggested a token system.\n- Dashboard project: Built a sales dashboard in Power BI from a sample retail dataset for the Business Analytics course.\n\nCERTIFICATIONS\n- Google Project Management (Coursera), 2025\n- Coursework: Business Process Management, Systems Analysis and Design, DBMS\n\nSKILLS\nRequirement gathering, BRD/FRD, User stories, Visio, SQL, MS Excel, Power BI, Jira, Scrum (basics)\n\nACTIVITIES\n- Presented the to-be gold loan design to the product head and two developers at the end of the internship.\n- Winner, inter-college case study competition, 2025.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Interviewed 12 branch staff to gather requirements"
+      },
+      {
+        "skillId": "process-mapping",
+        "quote": "Drew as-is and to-be process flows in Visio"
+      },
+      {
+        "skillId": "prd-writing",
+        "quote": "Wrote 20 user stories with acceptance criteria"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries to check daily loan application counts"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented the to-be gold loan design to the product head"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Requirement gathering, BRD/FRD, User stories, Visio, SQL, MS Excel, Power BI, Jira, Scrum (basics)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "agile-scrum",
+        "status": "weak"
+      },
+      {
+        "skillId": "uat",
+        "status": "missing"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "crm-tools",
+      "wireframing",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

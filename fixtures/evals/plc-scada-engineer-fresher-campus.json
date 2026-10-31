@@ -1,0 +1,51 @@
+{
+  "id": "plc-scada-engineer-fresher-campus",
+  "roleSlug": "plc-scada-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Prakash Jadhav | Nashik | prakash.jadhav@example.com | +91 97300 64xxx\n\nEDUCATION\nB.E. Instrumentation Engineering, K.K. Wagh Institute of Engineering, Nashik (2022 - 2026) | CGPA 7.9/10\nClass XII, KTHM College, Nashik (2022) | 83%\n\nINTERNSHIPS\nAutomation Intern, Godavari Control Systems, Nashik (May 2025 - July 2025, 10 weeks)\n- Helped commission the control panel for a 2 MLD water treatment plant.\n- Wrote ladder logic for pump sequencing on a Siemens S7-1200 PLC under the project engineer.\n- Built WinCC HMI screens for tank levels and pump status.\n- Traced a faulty level sensor input to a loose terminal and fixed the wiring.\n\nPROJECTS\nBottle Filling Line (final-year project, 2026)\n- Programmed a Delta PLC in ladder logic to fill and cap bottles on a conveyor.\n- Read flow meter values over Modbus RTU into the PLC.\n\nTemperature Controller (semester project, 2025)\n- Built a PID temperature loop using an Arduino and a thermocouple.\n\nCOURSEWORK AND CERTIFICATIONS\nProcess Control, Industrial Automation, Transducers, Industrial Networks\nPLC and SCADA certificate course, Prolific Training Centre (2024)\n\nSKILLS\nSiemens TIA Portal, Delta WPLSoft, WinCC, ladder logic, Modbus, Ethernet basics, AutoCAD Electrical\n\nACTIVITIES\nMember, ISA student section\nTeam member, college robotics club\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "industrial-control-systems",
+        "quote": "Helped commission the control panel for a 2 MLD water treatment plant"
+      },
+      {
+        "skillId": "plc-iec-61131-programming",
+        "quote": "Wrote ladder logic for pump sequencing on a Siemens S7-1200 PLC"
+      },
+      {
+        "skillId": "scada-hmi-platforms",
+        "quote": "Built WinCC HMI screens for tank levels"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "Read flow meter values over Modbus RTU"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Traced a faulty level sensor input to a loose terminal"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Siemens TIA Portal, Delta WPLSoft, WinCC, ladder logic, Modbus, Ethernet basics, AutoCAD Electrical"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "networking-basics",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "ot-ics-security",
+      "sql",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

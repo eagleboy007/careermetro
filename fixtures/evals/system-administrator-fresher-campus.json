@@ -1,0 +1,64 @@
+{
+  "id": "system-administrator-fresher-campus",
+  "roleSlug": "system-administrator",
+  "persona": "fresher-campus",
+  "resumeText": "Amit Chauhan | Chandigarh | amit.chauhan.sysadmin@example.com\n\nEDUCATION\nB.Sc. Information Technology, Sukhna College of Information Technology, Chandigarh (2023 - 2026) | CGPA 7.7/10\n\nINTERNSHIP\nIT Support Intern, Shivalik Infotech Services, Mohali (Jun 2025 - Aug 2025, 10 weeks)\n- Closed 60+ helpdesk tickets in Freshservice for laptop, email and printer requests.\n- Troubleshot printer and network connectivity issues for 40 office staff.\n- Created and disabled user accounts in Active Directory for joiners and leavers.\n\nPROJECTS\n- Windows Server lab (academic, Network Administration course): Installed Windows Server 2019 as a domain controller and applied group policy for password rules as part of the Network Administration course.\n- Home lab (personal): Ran Ubuntu and CentOS virtual machines on Hyper-V and set up an Apache web server on Linux.\n- Campus network design (academic, Computer Networks course): Designed VLANs and subnets for a three-floor building in Cisco Packet Tracer as part of the Computer Networks course.\n\nCOURSEWORK AND CERTIFICATIONS\n- CompTIA A+ (2025); Red Hat System Administration I course (online)\n- Coursework: Operating Systems, Computer Networks, Network Administration, Information Security\n\nSKILLS\nLinux, Windows Server, Active Directory, Hyper-V, PowerShell basics, TCP/IP, Freshservice\n\nACTIVITIES\n- Lab assistant volunteer, college computer centre\n- NCC cadet\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "itsm",
+        "quote": "Closed 60+ helpdesk tickets in Freshservice"
+      },
+      {
+        "skillId": "problem-solving",
+        "quote": "Troubleshot printer and network connectivity issues for 40 office staff"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Created and disabled user accounts in Active Directory"
+      },
+      {
+        "skillId": "windows-server",
+        "quote": "Installed Windows Server 2019 as a domain controller and applied group policy"
+      },
+      {
+        "skillId": "virtualization",
+        "quote": "Ran Ubuntu and CentOS virtual machines on Hyper-V"
+      },
+      {
+        "skillId": "linux",
+        "quote": "set up an Apache web server on Linux"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Designed VLANs and subnets for a three-floor building in Cisco Packet Tracer"
+      },
+      {
+        "skillId": "powershell-scripting",
+        "quote": "Linux, Windows Server, Active Directory, Hyper-V, PowerShell basics, TCP/IP, Freshservice"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "powershell-scripting",
+        "status": "weak"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "status": "missing"
+      },
+      {
+        "skillId": "vulnerability-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "aws",
+      "azure",
+      "terraform",
+      "monitoring"
+    ]
+  },
+  "reviewedBy": null
+}

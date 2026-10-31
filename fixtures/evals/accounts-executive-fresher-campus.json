@@ -1,0 +1,48 @@
+{
+  "id": "accounts-executive-fresher-campus",
+  "roleSlug": "accounts-executive",
+  "persona": "fresher-campus",
+  "resumeText": "Riya Agarwal | Jaipur, Rajasthan | riya.agarwal26@example.com\n\nEDUCATION\nB.Com (Honours), Accounting and Finance, St. Anselm's College of Commerce, Jaipur (2023 - 2026) | CGPA 8.4/10\nClass XII (Commerce), CBSE, 2023 | 91%\n\nINTERNSHIPS\nAudit and Accounts Intern, Mehta Jain & Associates (Chartered Accountants), Jaipur (May 2025 - Jul 2025, 10 weeks)\n- Recorded 400+ purchase and sales vouchers in Tally Prime for two trading clients.\n- Prepared GSTR-1 and GSTR-3B working sheets for 12 small-business clients and matched them with the GST portal.\n- Prepared bank reconciliation statements for three client accounts and flagged unmatched entries to the senior.\n\nAccounts Intern, Pinkcity Handloom Exports, Jaipur (Dec 2024 - Jan 2025, 6 weeks)\n- Entered vendor invoices and sorted pending supplier bills by due date for the accounts manager.\n- Filed purchase orders and goods receipt notes for the monthly audit file.\n\nACADEMIC PROJECTS\n- Final accounts (Financial Accounting II): Prepared the trial balance, trading account, profit and loss account and balance sheet for a sample partnership firm from 60 journal entries.\n- Research project: Surveyed 45 kirana shop owners in Jaipur on how GST registration changed their billing habits and wrote a 20-page report.\n\nCERTIFICATIONS AND COURSEWORK\n- Tally Prime with GST, Rajasthan Commerce Academy (2024)\n- Coursework: Financial Accounting, Corporate Accounting, Income Tax Law, Auditing, Business Statistics\n\nSKILLS\nTally Prime, GST returns, Accounts payable and receivable, Bank reconciliation, MS Excel (VLOOKUP, Pivot Tables), MS Word\n\nACTIVITIES\n- Treasurer, Commerce Society (2024 - 2025)\n- NSS volunteer, financial literacy camps in nearby villages\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "tally-accounting-software",
+        "quote": "Recorded 400+ purchase and sales vouchers in Tally Prime"
+      },
+      {
+        "skillId": "gst-tds-compliance",
+        "quote": "Prepared GSTR-1 and GSTR-3B working sheets for 12 small-business clients"
+      },
+      {
+        "skillId": "account-reconciliations",
+        "quote": "Prepared bank reconciliation statements for three client accounts"
+      },
+      {
+        "skillId": "accounts-payable-receivable",
+        "quote": "Entered vendor invoices and sorted pending supplier bills by due date"
+      },
+      {
+        "skillId": "financial-accounting",
+        "quote": "Prepared the trial balance, trading account, profit and loss account and balance sheet"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Tally Prime, GST returns, Accounts payable and receivable, Bank reconciliation, MS Excel (VLOOKUP, Pivot Tables), MS Word"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "excel",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "statutory-audit-support",
+      "income-tax-compliance",
+      "sap-fi-configuration",
+      "financial-modelling"
+    ]
+  },
+  "reviewedBy": null
+}

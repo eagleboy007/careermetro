@@ -1,0 +1,47 @@
+{
+  "id": "ar-vr-developer-fresher-campus",
+  "roleSlug": "ar-vr-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Aditya Deshmukh | Pune | aditya.deshmukh@example.com | github.com/aditya-xr\n\nEDUCATION\nB.Tech Computer Engineering, Vishwakarma Institute of Technology, Pune, 2026 | CGPA 8.1/10\n\nINTERNSHIPS\nXR Developer Intern, Lumen Reality Labs, Pune | Jan 2026 - Mar 2026 (10 weeks)\n- Built an AR Foundation furniture placement app in Unity for Android phones using plane detection and anchors.\n- Wrote C# scripts in Unity for pinch-to-scale and rotate gestures on placed models.\n- Used raycasts and quaternion rotations to snap models flush against detected walls.\n- Pushed features through Git branches and pull requests reviewed by the lead developer.\n\nGame Dev Intern, PixelKatha Studio, Remote | June 2025 - July 2025 (8 weeks)\n- Made two hyper-casual levels in Unity and fixed collision bugs reported by testers.\n\nPROJECTS\n- VR Chemistry Lab (final-year project): A Meta Quest 2 app in Unity where students mix virtual chemicals with hand tracking; tested with 15 juniors.\n- AR Campus Guide: Point the phone at a building to see its name and timetable, using ARCore image tracking.\n- Solar System in WebXR: A small three.js scene viewable in a phone browser.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Computer Graphics, Linear Algebra, Data Structures, Human Computer Interaction\n- Unity Certified User: Programmer (2025)\n\nSKILLS\nUnity, C#, AR Foundation, ARCore, Meta XR SDK, Blender (basic), Unity Profiler, Git, C++, JavaScript\n\nACTIVITIES\n- Organised a 24-hour game jam at the college tech fest, 2025.\n- Member, VIT Game Development Club.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "xr-development",
+        "quote": "Built an AR Foundation furniture placement app in Unity"
+      },
+      {
+        "skillId": "unity-engine",
+        "quote": "Built an AR Foundation furniture placement app in Unity"
+      },
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Wrote C# scripts in Unity for pinch-to-scale"
+      },
+      {
+        "skillId": "game-math",
+        "quote": "Used raycasts and quaternion rotations to snap models"
+      },
+      {
+        "skillId": "git",
+        "quote": "Pushed features through Git branches and pull requests"
+      },
+      {
+        "skillId": "performance-profiling",
+        "quote": "Unity, C#, AR Foundation, ARCore, Meta XR SDK, Blender (basic), Unity Profiler, Git, C++, JavaScript"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "performance-profiling",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "unreal-engine",
+      "computer-vision",
+      "game-networking"
+    ]
+  },
+  "reviewedBy": null
+}

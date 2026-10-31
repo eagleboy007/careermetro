@@ -1,0 +1,55 @@
+{
+  "id": "medical-representative-fresher-campus",
+  "roleSlug": "medical-representative",
+  "persona": "fresher-campus",
+  "resumeText": "Pooja Patil | Nagpur | pooja.patil@example.com | +91 98230 59471\n\nEDUCATION\nB.Pharm, Shrimati Kishoritai Bhoyar College of Pharmacy, Nagpur, 2022 - 2026, CGPA 7.9/10\n\nINTERNSHIPS\nSales Trainee Intern, Vidarbha Lifesciences, Nagpur (May 2025 - June 2025, 6 weeks)\n- Accompanied a senior MR on doctor calls and detailed an antidiabetic brand to 12 general physicians.\n- Visited 15 chemists in Dharampeth to check stock of the company's brands.\n- Filled daily call reports in the field app with the senior MR.\n\nHospital Pharmacy Intern, Care Plus Hospital, Nagpur (Dec 2024 - Jan 2025, 6 weeks)\n- Dispensed prescriptions and checked drug interactions with the hospital pharmacist.\n\nPROJECTS\n- Prepared product notes comparing metformin, glimepiride and sitagliptin dosing and side effects.\n- Final-year project: formulation and evaluation of a herbal antacid suspension.\n\nCOURSEWORK AND CERTIFICATIONS\nPharmacology, Pharmacotherapeutics, Pharmaceutical Marketing\n\nSKILLS\nProduct detailing, Pharmacology, Daily call reporting, MS Excel, Marathi, Hindi, English\n\nACTIVITIES\nPresented a seminar on hypertension management to 80 classmates and faculty.\nVolunteer, World Diabetes Day screening camp.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "medical-detailing",
+        "quote": "detailed an antidiabetic brand to 12 general physicians"
+      },
+      {
+        "skillId": "chemist-stockist-coverage",
+        "quote": "Visited 15 chemists in Dharampeth to check stock"
+      },
+      {
+        "skillId": "therapy-product-knowledge",
+        "quote": "Prepared product notes comparing metformin, glimepiride and sitagliptin"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented a seminar on hypertension management to 80 classmates"
+      },
+      {
+        "skillId": "field-call-reporting",
+        "quote": "Product detailing, Pharmacology, Daily call reporting, MS Excel, Marathi, Hindi, English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "prescription-generation",
+        "status": "missing"
+      },
+      {
+        "skillId": "territory-sales-planning",
+        "status": "missing"
+      },
+      {
+        "skillId": "primary-secondary-sales",
+        "status": "missing"
+      },
+      {
+        "skillId": "field-call-reporting",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "ucpmp-compliance",
+      "crm-tools",
+      "sales-forecasting"
+    ]
+  },
+  "reviewedBy": null
+}

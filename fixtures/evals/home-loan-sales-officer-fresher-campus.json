@@ -1,0 +1,55 @@
+{
+  "id": "home-loan-sales-officer-fresher-campus",
+  "roleSlug": "home-loan-sales-officer",
+  "persona": "fresher-campus",
+  "resumeText": "Vikram Singh Chauhan | Lucknow | vikram.chauhan@example.com | +91 94150 88xxx\n\nEDUCATION\nBBA (Banking and Finance), Amity University, Lucknow (2023 - 2026) | CGPA 7.4/10\nClass XII (Commerce), City Montessori School, Lucknow (2023) | 81%\n\nINTERNSHIPS\nSales Intern, Griha Housing Finance, Lucknow branch (May 2025 - July 2025, 8 weeks)\n- Went with the sales officer to builder sites and customer homes to explain home loan offers.\n- Collected PAN, Aadhaar, salary slips and bank statements and checked them against the application form.\n- Arranged loan file documents in the branch checklist order before credit review.\n- Worked out rough eligibility from net salary and existing EMIs using the branch FOIR sheet.\n\nMarketing Intern, Awadh Realtors, Lucknow (December 2024 - January 2025, 6 weeks)\n- Called walk-in enquiries from a property expo to fix site visits.\n\nPROJECTS\nHome Loan vs Loan Against Property (semester project, 2025)\n- Compared interest rates, tenure and processing fees of home loans and loan against property from six lenders.\n\nFinancial Literacy Survey (group project, 2024)\n- Surveyed 80 salaried people in Lucknow about EMIs and credit scores.\n\nCOURSEWORK\nBanking Operations, Retail Lending, Principles of Marketing, Business Communication\n\nSKILLS\nMS Excel, EMI calculation, CIBIL score basics, Hindi, English, two-wheeler with licence\n\nACTIVITIES\nOrganised a blood donation camp with the NSS unit, speaking to 150 donors on the day.\nCollege cricket team\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "field-sales-meetings",
+        "quote": "Went with the sales officer to builder sites and customer homes"
+      },
+      {
+        "skillId": "kyc-verification",
+        "quote": "Collected PAN, Aadhaar, salary slips and bank statements"
+      },
+      {
+        "skillId": "loan-file-documentation",
+        "quote": "Arranged loan file documents in the branch checklist order"
+      },
+      {
+        "skillId": "loan-eligibility-assessment",
+        "quote": "Worked out rough eligibility from net salary and existing EMIs"
+      },
+      {
+        "skillId": "home-loan-lap-products",
+        "quote": "Compared interest rates, tenure and processing fees of home loans"
+      },
+      {
+        "skillId": "communication",
+        "quote": "speaking to 150 donors on the day"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "mortgage-channel-sourcing",
+        "status": "missing"
+      },
+      {
+        "skillId": "login-to-disbursement-tracking",
+        "status": "missing"
+      },
+      {
+        "skillId": "third-party-product-distribution",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "credit-bureau-analysis",
+      "crm-tools",
+      "b2b-prospecting"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,44 @@
+{
+  "id": "android-developer-fresher-campus",
+  "roleSlug": "android-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Aditya Kulkarni | Pune, Maharashtra | aditya.kulkarni.dev@example.com | github.com/adityak-example\n\nEDUCATION\nB.Tech, Computer Engineering, Vishwakarma Institute of Engineering and Technology, Pune (2022 - 2026) | CGPA 8.1/10\n\nINTERNSHIP\nAndroid Developer Intern, Sahyadri Grocery Tech, Pune (Jun 2025 - Aug 2025, 10 weeks)\n- Fixed UI bugs in the Android app's login, cart and address screens written in Kotlin.\n- Added pull-to-refresh and empty states to the order history screen.\n- Raised 14 pull requests on GitHub and resolved merge conflicts with the team before each sprint demo.\n\nPROJECTS\n- MessMate (personal): Built a Kotlin Android app for tracking hostel mess menus and meal ratings, used by 150 students in my hostel.\n- RailBuddy (academic, Mobile Computing course): Fetched live train running status from a public REST API using Retrofit and showed delays on a RecyclerView list.\n- Expense Splitter (hackathon, Smart India Hackathon internal round): Built an Android app with Room database to split hostel trip expenses among friends.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Data Structures, Object Oriented Programming, DBMS, Operating Systems, Mobile Computing\n- Android Basics with Compose (Google, online course)\n\nSKILLS\nKotlin, Java, Android SDK, Jetpack libraries, MVVM, Retrofit, Room, Git, Firebase basics, XML layouts\n\nACTIVITIES\n- Core member, Google Developer Student Club, ran an Android study jam for 60 juniors\n- College football team\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "android",
+        "quote": "Fixed UI bugs in the Android app's login, cart and address screens"
+      },
+      {
+        "skillId": "kotlin",
+        "quote": "Built a Kotlin Android app for tracking hostel mess menus"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Fetched live train running status from a public REST API using Retrofit"
+      },
+      {
+        "skillId": "git",
+        "quote": "Raised 14 pull requests on GitHub and resolved merge conflicts"
+      },
+      {
+        "skillId": "mobile-architecture",
+        "quote": "Kotlin, Java, Android SDK, Jetpack libraries, MVVM, Retrofit, Room, Git, Firebase basics, XML layouts"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "mobile-architecture",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "flutter",
+      "swift-ios",
+      "mobile-release",
+      "unit-testing"
+    ]
+  },
+  "reviewedBy": null
+}

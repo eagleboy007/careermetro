@@ -1,0 +1,47 @@
+{
+  "id": "cross-platform-mobile-developer-fresher-campus",
+  "roleSlug": "cross-platform-mobile-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Karthika Ramesh | Coimbatore | karthika.r@example.com | github.com/karthika-dev\n\nEDUCATION\nB.E. Computer Science and Engineering, PSG College of Technology, Coimbatore, 2026 | CGPA 8.6/10\n\nINTERNSHIPS\nFlutter Developer Intern, Kovai Apps Studio, Coimbatore | Jan 2026 - Mar 2026 (12 weeks)\n- Built the order history and profile screens of a grocery delivery app in Flutter.\n- Called the shop's REST APIs with the http package and showed cached orders when the phone was offline.\n- Moved the cart state from setState to Provider so three screens share one cart.\n- Raised every change as a Git pull request and fixed review comments from the senior developer.\n\nWeb Intern, Thinkgrid Solutions, Remote | June 2025 - July 2025 (6 weeks)\n- Fixed layout bugs on a company website built with HTML, CSS and JavaScript.\n\nPROJECTS\n- CampusEats: A Flutter app for ordering from the college canteen with Firebase login; published the app on the Google Play Store with 300+ installs.\n- Expense Splitter: A Flutter app using Bloc to split trip expenses among friends.\n- Weather Now: A small React Native app built while following an online course.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Mobile Application Development, Software Engineering, DBMS, Computer Networks\n- Flutter and Dart: The Complete Guide (Udemy), 2025\n\nSKILLS\nFlutter, Dart, Provider, Bloc, Firebase, REST APIs, Git, flutter_test, Android Studio, Java (basic)\n\nACTIVITIES\n- Lead, Google Developer Student Club mobile track, 2025-26.\n- Ran a Flutter workshop for 80 second-year students.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "flutter",
+        "quote": "Built the order history and profile screens of a grocery delivery app in Flutter"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Called the shop's REST APIs with the http package"
+      },
+      {
+        "skillId": "mobile-architecture",
+        "quote": "Moved the cart state from setState to Provider"
+      },
+      {
+        "skillId": "git",
+        "quote": "Raised every change as a Git pull request"
+      },
+      {
+        "skillId": "mobile-release",
+        "quote": "published the app on the Google Play Store with 300+ installs"
+      },
+      {
+        "skillId": "unit-testing",
+        "quote": "Flutter, Dart, Provider, Bloc, Firebase, REST APIs, Git, flutter_test, Android Studio, Java (basic)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "unit-testing",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "swift-ios",
+      "nosql",
+      "android"
+    ]
+  },
+  "reviewedBy": null
+}

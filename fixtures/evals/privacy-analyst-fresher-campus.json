@@ -1,0 +1,48 @@
+{
+  "id": "privacy-analyst-fresher-campus",
+  "roleSlug": "privacy-analyst",
+  "persona": "fresher-campus",
+  "resumeText": "Meera Krishnan | Bengaluru, Karnataka | meera.krishnan.law@example.com\n\nEDUCATION\nBA LLB (Hons), Deccan National Law School, Bengaluru (2021 - 2026) | CGPA 6.9/8\n\nINTERNSHIPS\nIntern, Technology and Data Practice, Lalbagh Legal Partners, Bengaluru (May 2025 - Jun 2025, 6 weeks)\n- Summarised the obligations of data fiduciaries under the DPDP Act, 2023 into a two-page client note.\n- Helped draft a records of processing activities (RoPA) template for a fintech client's customer data.\n- Reviewed 15 vendor contracts for data processing and security clauses and listed gaps in a tracker.\n\nIntern, Cyber Law Cell, Karnataka Legal Aid Clinic, Bengaluru (Dec 2024 - Jan 2025, 6 weeks)\n- Prepared research notes on consumer complaints about loan app data misuse.\n\nPROJECTS AND RESEARCH\n- Seminar paper: Consent and notice requirements under the DPDP Act compared with GDPR (25 pages).\n- Moot court: Researched and argued the respondent side in an inter-college moot on the right to privacy.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Constitutional Law, Contract Law, Information Technology Law, Law of Torts\n- Certificate course in Data Protection and Privacy Law (online, 2025)\n\nSKILLS\nDPDP Act, GDPR basics, Privacy notices, Contract review, Breach notification, Legal research, MS Word\n\nACTIVITIES\n- Presented a seminar on DPDP Act consent rules to 60 students at the law school's tech law society\n- Editorial board, student law review\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "data-privacy",
+        "quote": "Summarised the obligations of data fiduciaries under the DPDP Act"
+      },
+      {
+        "skillId": "privacy-program-management",
+        "quote": "Helped draft a records of processing activities (RoPA) template"
+      },
+      {
+        "skillId": "third-party-risk",
+        "quote": "Reviewed 15 vendor contracts for data processing and security clauses"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Researched and argued the respondent side in an inter-college moot"
+      },
+      {
+        "skillId": "data-breach-response",
+        "quote": "DPDP Act, GDPR basics, Privacy notices, Contract review, Breach notification, Legal research, MS Word"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-breach-response",
+        "status": "weak"
+      },
+      {
+        "skillId": "data-governance",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "security-policies",
+      "security-audits",
+      "python",
+      "identity-access-management"
+    ]
+  },
+  "reviewedBy": null
+}

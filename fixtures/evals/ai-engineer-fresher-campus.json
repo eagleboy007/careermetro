@@ -1,0 +1,59 @@
+{
+  "id": "ai-engineer-fresher-campus",
+  "roleSlug": "ai-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Rohan Kulkarni | Pune | rohan.kulkarni@example.com | +91 98220 11223\n\nEDUCATION\nB.Tech Computer Science (AI & ML), Vishwakarma Institute of Technology, Pune, 2022 - 2026, CGPA 8.4/10\n\nINTERNSHIPS\nAI Intern, Saarthi Data Labs, Pune (May 2025 - July 2025, 10 weeks)\n- Built a document question-answering chatbot over HR policy PDFs using the OpenAI API and LangChain.\n- Chunked 300 PDFs and stored embeddings in a Chroma vector database for semantic retrieval.\n- Exposed the chatbot through a FastAPI REST endpoint used by the internal HR portal.\n\nPROJECTS\n- Lecture Notes Assistant: wrote a Python pipeline that transcribes lecture audio with Whisper and summarises it with an LLM.\n- Resume Screener: ranked 500 sample resumes against a job description using sentence-transformer embeddings and FAISS similarity search.\n- Sentiment classifier for Marathi movie reviews using a fine-tuned BERT model (final-year mini project).\n\nCOURSEWORK AND CERTIFICATIONS\nMachine Learning, Deep Learning, Natural Language Processing, Database Systems\nDeepLearning.AI - Generative AI with Large Language Models (Coursera, 2025)\n\nSKILLS\nPython, LangChain, OpenAI API, Hugging Face, FAISS, ChromaDB, FastAPI, Docker, AWS (basics), Git, SQL\n\nACTIVITIES\nCore member, VIT AI Club; organised a 24-hour GenAI hackathon with 200 participants.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "python",
+        "quote": "wrote a Python pipeline that transcribes lecture audio"
+      },
+      {
+        "skillId": "llm-apps",
+        "quote": "Built a document question-answering chatbot over HR policy PDFs"
+      },
+      {
+        "skillId": "vector-search",
+        "quote": "stored embeddings in a Chroma vector database for semantic retrieval"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Exposed the chatbot through a FastAPI REST endpoint"
+      },
+      {
+        "skillId": "aws",
+        "quote": "Python, LangChain, OpenAI API, Hugging Face, FAISS, ChromaDB, FastAPI, Docker, AWS (basics), Git, SQL"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Python, LangChain, OpenAI API, Hugging Face, FAISS, ChromaDB, FastAPI, Docker, AWS (basics), Git, SQL"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "ai-agents",
+        "status": "missing"
+      },
+      {
+        "skillId": "llm-evaluation",
+        "status": "missing"
+      },
+      {
+        "skillId": "aws",
+        "status": "weak"
+      },
+      {
+        "skillId": "docker",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "kubernetes",
+      "model-serving",
+      "azure"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,59 @@
+{
+  "id": "collections-officer-fresher-campus",
+  "roleSlug": "collections-officer",
+  "persona": "fresher-campus",
+  "resumeText": "Rahul Patidar | Indore | rahul.patidar@example.com | +91 98260 00000\n\nEDUCATION\nBBA (Finance), Prestige Institute of Management and Research, Indore, 2026 | CGPA 7.4/10\nClass XII (Commerce), MP Board, 2023 | 81%\n\nINTERNSHIPS\nCollections Intern, Narmada Fincorp Pvt Ltd (two-wheeler loans NBFC), Indore | May 2025 - July 2025 (10 weeks)\n- Called 50 overdue two-wheeler loan borrowers daily and recorded promises to pay in the CRM.\n- Explained EMI dates, bounce charges and foreclosure terms to borrowers who had missed one EMI.\n- Updated the daily collection MIS in Excel for the branch collections manager.\n- Joined a senior field officer on 15 home visits to borrowers in the 30+ days bucket.\n\nSales Intern, Malwa Microfinance, Dewas | June 2024 - July 2024 (6 weeks)\n- Surveyed 80 women self-help group members about loan needs and repayment habits.\n\nPROJECTS\n- BBA research project: Compared bounce rates of salaried and self-employed two-wheeler borrowers using a sample of 200 accounts.\n- Group project for the Banking course: Prepared a presentation on how NBFCs recover dues on personal loans.\n\nCERTIFICATIONS AND COURSEWORK\n- IIBF Debt Recovery Agent certificate, 2025\n- Coursework: Banking and Insurance, Business Law, Financial Management\n\nSKILLS\nTele-calling, MS Excel, Bucket-wise collections (0-30, 30+, 60+), RBI Fair Practices Code, CRM software, Hindi, English\n\nACTIVITIES\n- Spoke to borrowers in Hindi and Malwi during calls and visits to keep conversations calm.\n- Volunteer, college NSS unit, 2023-25.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "field-tele-collections",
+        "quote": "Called 50 overdue two-wheeler loan borrowers daily"
+      },
+      {
+        "skillId": "domain-bfsi",
+        "quote": "Explained EMI dates, bounce charges and foreclosure terms"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Updated the daily collection MIS in Excel"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Spoke to borrowers in Hindi and Malwi during calls"
+      },
+      {
+        "skillId": "collections-portfolio-management",
+        "quote": "Tele-calling, MS Excel, Bucket-wise collections (0-30, 30+, 60+), RBI Fair Practices Code, CRM software, Hindi, English"
+      },
+      {
+        "skillId": "collections-regulatory-conduct",
+        "quote": "Tele-calling, MS Excel, Bucket-wise collections (0-30, 30+, 60+), RBI Fair Practices Code, CRM software, Hindi, English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "collections-portfolio-management",
+        "status": "weak"
+      },
+      {
+        "skillId": "collections-regulatory-conduct",
+        "status": "weak"
+      },
+      {
+        "skillId": "npa-recovery-legal",
+        "status": "missing"
+      },
+      {
+        "skillId": "collection-agency-oversight",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "credit-bureau-analysis",
+      "people-management",
+      "financial-modelling"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,76 @@
+{
+  "id": "devops-engineer-fresher-campus",
+  "roleSlug": "devops-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Nikhil Hegde | Bengaluru | nikhil.hegde@example.com | github.com/nikhil-ops\n\nEDUCATION\nB.E. Information Science and Engineering, BMS College of Engineering, Bengaluru, 2026 | CGPA 8.0/10\n\nINTERNSHIPS\nDevOps Intern, Cubbon Cloud Works Pvt Ltd, Bengaluru | Jan 2026 - Apr 2026 (12 weeks)\n- Wrote Bash scripts to rotate application logs and clean old builds on Ubuntu servers.\n- Built a GitHub Actions workflow that runs tests and pushes Docker images on every merge.\n- Wrote Dockerfiles for a Node.js API and a React front end and ran them together with Docker Compose.\n- Launched EC2 instances and S3 buckets on AWS for the staging environment under guidance.\n- Wrote a Python script that reports unused EBS volumes to the team every Monday.\n\nLinux Support Intern, Netrix IT Services, Bengaluru | June 2025 - July 2025 (6 weeks)\n- Created user accounts and fixed file permissions on lab Linux machines.\n\nPROJECTS\n- Portfolio site pipeline: Deployed a personal site to EC2 with a Jenkins job triggered by Git pushes.\n- Kubernetes practice: Ran a three-service demo app on minikube following an online course.\n- Network lab: Set up a small LAN in Cisco Packet Tracer for the Computer Networks course.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Operating Systems, Computer Networks, Cloud Computing\n- AWS Certified Cloud Practitioner, 2025\n\nSKILLS\nLinux, Bash, Git, Docker, GitHub Actions, Jenkins, AWS (EC2, S3), Kubernetes (basics), Terraform (basics), Python, DNS and TCP/IP\n\nACTIVITIES\n- Core member, college open-source club; ran a Git workshop for 100 juniors.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "linux",
+        "quote": "Wrote Bash scripts to rotate application logs and clean old builds on Ubuntu servers"
+      },
+      {
+        "skillId": "ci-cd",
+        "quote": "Built a GitHub Actions workflow that runs tests"
+      },
+      {
+        "skillId": "docker",
+        "quote": "Wrote Dockerfiles for a Node.js API and a React front end"
+      },
+      {
+        "skillId": "aws",
+        "quote": "Launched EC2 instances and S3 buckets on AWS"
+      },
+      {
+        "skillId": "python",
+        "quote": "Wrote a Python script that reports unused EBS volumes"
+      },
+      {
+        "skillId": "git",
+        "quote": "Jenkins job triggered by Git pushes"
+      },
+      {
+        "skillId": "kubernetes",
+        "quote": "Linux, Bash, Git, Docker, GitHub Actions, Jenkins, AWS (EC2, S3), Kubernetes (basics), Terraform (basics), Python, DNS and TCP/IP"
+      },
+      {
+        "skillId": "terraform",
+        "quote": "Linux, Bash, Git, Docker, GitHub Actions, Jenkins, AWS (EC2, S3), Kubernetes (basics), Terraform (basics), Python, DNS and TCP/IP"
+      },
+      {
+        "skillId": "networking-basics",
+        "quote": "Linux, Bash, Git, Docker, GitHub Actions, Jenkins, AWS (EC2, S3), Kubernetes (basics), Terraform (basics), Python, DNS and TCP/IP"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "kubernetes",
+        "status": "weak"
+      },
+      {
+        "skillId": "terraform",
+        "status": "weak"
+      },
+      {
+        "skillId": "networking-basics",
+        "status": "weak"
+      },
+      {
+        "skillId": "monitoring",
+        "status": "missing"
+      },
+      {
+        "skillId": "sre-practices",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "gcp",
+      "gitops",
+      "go",
+      "azure"
+    ]
+  },
+  "reviewedBy": null
+}

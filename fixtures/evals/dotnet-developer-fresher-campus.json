@@ -1,0 +1,56 @@
+{
+  "id": "dotnet-developer-fresher-campus",
+  "roleSlug": "dotnet-developer",
+  "persona": "fresher-campus",
+  "resumeText": "Neha Sharma | Noida | neha.sharma@example.com | +91 98110 34572\n\nEDUCATION\nB.Tech Computer Science, JSS Academy of Technical Education, Noida, 2022 - 2026, CGPA 8.2/10\n\nINTERNSHIPS\n.NET Developer Intern, Yamuna Softworks, Noida (June 2025 - August 2025, 10 weeks)\n- Built ASP.NET Core Web API endpoints in C# for a leave management module.\n- Used Entity Framework Core code-first migrations to map leave and employee tables in SQL Server.\n- Wrote SQL Server queries and a stored procedure for the monthly leave balance report.\n\nPROJECTS\n- Bookstore Inventory: C# Windows Forms app with classes for books, suppliers and orders.\n- Hostel Mess Feedback portal in ASP.NET MVC with a SQL Server database.\n\nCOURSEWORK AND CERTIFICATIONS\nObject Oriented Programming, Database Management Systems, Software Engineering\nMicrosoft Learn - Build web apps with ASP.NET Core (2025)\n\nSKILLS\nC#, .NET 8, ASP.NET Core, Entity Framework Core, SQL Server, OOP, HTML, CSS, JavaScript, Git\n\nACTIVITIES\nMember, college coding club; volunteer at the annual cultural fest.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Built ASP.NET Core Web API endpoints in C#"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "ASP.NET Core Web API endpoints in C# for a leave management module"
+      },
+      {
+        "skillId": "orm-databases",
+        "quote": "Used Entity Framework Core code-first migrations"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL Server queries and a stored procedure"
+      },
+      {
+        "skillId": "oop",
+        "quote": "C#, .NET 8, ASP.NET Core, Entity Framework Core, SQL Server, OOP, HTML, CSS, JavaScript, Git"
+      },
+      {
+        "skillId": "git",
+        "quote": "C#, .NET 8, ASP.NET Core, Entity Framework Core, SQL Server, OOP, HTML, CSS, JavaScript, Git"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "oop",
+        "status": "weak"
+      },
+      {
+        "skillId": "unit-testing",
+        "status": "missing"
+      },
+      {
+        "skillId": "git",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "azure",
+      "microservices",
+      "docker",
+      "react"
+    ]
+  },
+  "reviewedBy": null
+}

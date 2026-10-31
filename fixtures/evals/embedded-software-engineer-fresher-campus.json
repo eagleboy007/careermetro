@@ -1,0 +1,47 @@
+{
+  "id": "embedded-software-engineer-fresher-campus",
+  "roleSlug": "embedded-software-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Vignesh Murugan | Chennai | vignesh.murugan@example.com\n\nEDUCATION\nB.E. Electronics and Communication Engineering, Sri Sivasubramaniya Nadar College of Engineering, Chennai, 2026 | CGPA 8.5/10\n\nINTERNSHIPS\nFirmware Intern, Marina Embedded Systems Pvt Ltd, Chennai | Jan 2026 - Apr 2026 (12 weeks)\n- Wrote embedded C drivers for a temperature sensor on an STM32F4 board over I2C.\n- Configured timers, GPIO and external interrupts on the STM32 to read a flow meter.\n- Debugged I2C timing problems with a logic analyser and the ST-Link SWD debugger.\n- Kept firmware in Git and fixed review comments from the senior engineer.\n\nSummer Intern, Ambattur Electronics, Chennai | June 2025 - July 2025 (6 weeks)\n- Tested and soldered PCB assemblies for a power meter and logged faults.\n\nPROJECTS\n- Smart Irrigation Controller: ESP32 reads soil moisture and switches a pump, sending readings over UART to a GSM module.\n- Line Follower Robot: Arduino based robot with IR sensors and PID control, 2nd place at the college robotics event.\n- Digital Thermometer: 8051 microcontroller with LCD for the Microprocessors lab.\n\nCOURSEWORK AND CERTIFICATIONS\n- Coursework: Microprocessors and Microcontrollers, Embedded Systems, Digital Electronics, Real-Time Operating Systems\n- NPTEL: Embedded System Design with ARM (Elite), 2025\n\nSKILLS\nEmbedded C, STM32, ESP32, Arduino, I2C, SPI, UART, FreeRTOS (basics), Keil, STM32CubeIDE, Git, Python (basic)\n\nACTIVITIES\n- Treasurer, IEEE student branch, 2025-26.\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "embedded-c",
+        "quote": "Wrote embedded C drivers for a temperature sensor"
+      },
+      {
+        "skillId": "microcontrollers",
+        "quote": "Configured timers, GPIO and external interrupts on the STM32"
+      },
+      {
+        "skillId": "embedded-protocols",
+        "quote": "drivers for a temperature sensor on an STM32F4 board over I2C"
+      },
+      {
+        "skillId": "embedded-debugging",
+        "quote": "Debugged I2C timing problems with a logic analyser"
+      },
+      {
+        "skillId": "git",
+        "quote": "Kept firmware in Git and fixed review comments"
+      },
+      {
+        "skillId": "rtos",
+        "quote": "Embedded C, STM32, ESP32, Arduino, I2C, SPI, UART, FreeRTOS (basics), Keil, STM32CubeIDE, Git, Python (basic)"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rtos",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "embedded-linux",
+      "cpp",
+      "unit-testing"
+    ]
+  },
+  "reviewedBy": null
+}
