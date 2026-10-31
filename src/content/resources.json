@@ -15748,17 +15748,6 @@
     "free": true
   },
   {
-    "title": "IDEA tutorial videos",
-    "url": "https://idea.caseware.com/learn/tutorial-videos/",
-    "provider": "Caseware IDEA",
-    "kind": "video",
-    "skillIds": [
-      "audit-software"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
     "title": "Audit in an Automated Environment (CA Intermediate study material)",
     "url": "https://resource.cdn.icai.org/66602bos53774-cp6.pdf",
     "provider": "ICAI Board of Studies",
@@ -16051,17 +16040,6 @@
     "free": true
   },
   {
-    "title": "Your simple guide to the Indian debt market: money market, G-Secs and corporate bonds",
-    "url": "https://www.nism.ac.in/blog/your-simple-guide-to-the-indian-debt-market-how-to-learn-more",
-    "provider": "National Institute of Securities Markets (NISM)",
-    "kind": "docs",
-    "skillIds": [
-      "surplus-fund-investments"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "What are different types of debt funds?",
     "url": "https://www.mutualfundssahihai.com/en/what-are-different-types-debt-funds",
     "provider": "AMFI (Mutual Funds Sahi Hai)",
@@ -16330,28 +16308,6 @@
     "free": true
   },
   {
-    "title": "Frequently asked questions on the ESI scheme",
-    "url": "https://esic.gov.in/attachments/files/faq.pdf",
-    "provider": "ESIC",
-    "kind": "docs",
-    "skillIds": [
-      "payroll-statutory-filings"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Professional Tax employer FAQ (Karnataka e-Prerana)",
-    "url": "https://pt.kar.nic.in/ptemployer/FAQ",
-    "provider": "Commercial Taxes Department, Government of Karnataka",
-    "kind": "docs",
-    "skillIds": [
-      "payroll-statutory-filings"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
     "title": "Circular No. 3/2025: Income-tax deduction from salaries under section 192",
     "url": "https://www.incometaxindia.gov.in/w/circular-no.-3/2025-income-tax-deduction-from-salaries-during-the-financial-year-2024-25-under-section-192-of-the-income-tax-act-1961",
     "provider": "Income Tax Department (CBDT)",
@@ -16555,17 +16511,6 @@
       "eway-bill-compliance"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "CGST Rule 55: Transportation of goods without issue of invoice (delivery challan)",
-    "url": "https://taxinformation.cbic.gov.in/content/html/tax_repository/gst/rules/cgst_rules/active/chapter6/rule55_v1.00.html",
-    "provider": "CBIC",
-    "kind": "docs",
-    "skillIds": [
-      "eway-bill-compliance"
-    ],
-    "minutes": 10,
     "free": true
   },
   {

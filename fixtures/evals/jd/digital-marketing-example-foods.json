@@ -5,8 +5,8 @@
   "text": "Digital Marketing Executive - Example Foods Pvt Ltd, Mumbai\n0 to 2 years (freshers welcome)\n\nYou will\n- Run Google Ads campaigns and track cost per lead\n- Plan posts and Meta Ads for Instagram and Facebook\n- Improve on-page SEO for our recipe blog\n- Report traffic from Google Analytics (GA4) every week\n- Send monthly email campaigns in Mailchimp\n\nYou need\n- Google Ads\n- SEO basics\n- Social media marketing\n- Google Analytics\n\nGood to have\n- Content writing in English and Hindi\n- Canva for creatives\n\nSalary: 2.4 to 3.6 LPA. Work from office, Andheri.",
   "expected": {
     "required": ["sem-google-ads", "social-media-marketing", "seo", "web-analytics", "email-marketing"],
-    "nice": ["content-marketing"],
-    "unknown": ["Canva"],
+    "nice": ["content-marketing", "social-creative-design"],
+    "unknown": [],
     "mustNotClaim": ["java", "kubernetes", "sql"]
   },
   "reviewedBy": null
