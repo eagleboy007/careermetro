@@ -5968,6 +5968,268 @@ await step("smoke 6: the settings Download link, Sign out from the menu, and bac
     await ctxS.close();
   }
 });
+// Junction, the community board (FR-61, docs/plans/junction-plan.md section 5): runs only when this run's app has
+// JUNCTION_ENABLED=1 (CI sets it for the e2e job's app server and this walk; production stays off). Without it, the
+// signed-in walk person gets the not-found page. With it: signed out goes to sign-in; A posts a Question (a phone number
+// and a bit.ly link refused first); B sees it on New and My interests, upvotes, comments, saves and reshares; A sees the
+// comment in the bell; A pins it and B sees it under On Junction until A turns Junction posts off; B reports it, the
+// admin hides it, A appeals and the admin shows it again; a block hides it both ways; A deletes it. axe in light and dark
+// after a reload, 390 px with no side scroll, and the composer by keyboard.
+if (process.env.JUNCTION_ENABLED?.trim() !== "1") {
+  await step("junction: off without JUNCTION_ENABLED, so /junction is the not-found page", async () => {
+    // The browser logs the 404 asked for here on purpose.
+    failingOnPurpose = true;
+    const res = await p.goto(BASE + "/junction").finally(() => {
+      failingOnPurpose = false;
+    });
+    if (res?.status() !== 404) throw new Error(`/junction answered ${res?.status()} with Junction off, not 404`);
+    await p.getByRole("heading", { name: "We can't find that page" }).waitFor();
+  });
+} else if (!process.env.DATABASE_URL) {
+  await step("junction: needs DATABASE_URL", async () => {
+    throw new Error("the Junction steps need DATABASE_URL to set up two members");
+  });
+} else {
+  await step("junction: signed out, /junction goes to sign-in", async () => {
+    const out = await b.newContext({ viewport: { width: 1280, height: 900 } });
+    try {
+      const q = await out.newPage();
+      await q.goto(BASE + "/junction");
+      await q.waitForURL(/\/sign-in/, { timeout: 15000 });
+    } finally {
+      await out.close();
+    }
+  });
+  await step("junction: post, read, vote, comment, pin, report, hide, appeal, block and delete", async () => {
+    const { default: postgres } = await import("postgres");
+    const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+    const stamp = Date.now().toString(36);
+    const title = `Walk question ${stamp}: is the SIEM goal worth it?`;
+    const topic = `Walk topic ${stamp}`;
+    const contexts = [];
+    const page = async () => {
+      const c = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+      contexts.push(c);
+      const q = await c.newPage();
+      q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+      q.on("console", (m) => consoleError(m) && !failingOnPurpose && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+      q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+      return q;
+    };
+    const made = [];
+    try {
+      const qa = await page();
+      const qb = await page();
+      const adm = await page();
+      await signInAs(qa, "Asha Junction", `junction-a-${testEmail}`);
+      await signInAs(qb, "Bina Junction", `junction-b-${testEmail}`);
+      const [a] = await sql`select id from users where email like ${`junction-a-${testEmail}%`}`;
+      const [bb] = await sql`select id from users where email like ${`junction-b-${testEmail}%`}`;
+      if (!a || !bb) throw new Error("the two Junction members were not made");
+      made.push(a.id, bb.id);
+      // Posting needs an account a day old (links a week); A gets a username and a profile signed-in members may open.
+      const handle = `jn-${stamp}`;
+      await sql`update users set created_at = now() - interval '8 days' where id in ${sql(made)}`;
+      await sql`update users set username = ${handle} where id = ${a.id}`;
+      await sql`insert into user_settings (user_id, profile_visibility) values (${a.id}, 'signed_in') on conflict (user_id) do update set profile_visibility = 'signed_in'`;
+
+      // A: the house rules once, then the composer refuses a phone number and a link shortener before it posts.
+      await qa.goto(BASE + "/junction");
+      await qa.waitForLoadState("networkidle");
+      await qa.getByRole("heading", { name: "Junction", level: 1 }).waitFor({ timeout: 15000 });
+      const rules = qa.getByRole("button", { name: "I’ll follow these rules" });
+      if (await rules.count()) {
+        await rules.click();
+        await qa.getByRole("heading", { name: "Write a post" }).waitFor({ timeout: 15000 });
+      }
+      const composer = qa.locator("form", { has: qa.getByRole("heading", { name: "Write a post" }) });
+      await composer.getByRole("button", { name: "Question", exact: true }).click();
+      await composer.getByLabel("Title", { exact: true }).fill(title);
+      await composer.getByLabel("Text (optional)").fill("Call me on +91 98765 43210 to talk it over.");
+      await composer.getByLabel("Add another interest to this post").fill(topic);
+      await composer.getByRole("button", { name: "Add", exact: true }).click();
+      await composer.getByText(`${topic} (new)`).waitFor();
+      await composer.getByRole("button", { name: "Post", exact: true }).click();
+      await composer.getByText(/Leave out phone numbers and email addresses/).waitFor({ timeout: 10000 });
+      await composer.getByLabel("Text (optional)").fill("Three weeks in. Did it help anyone land a first analyst role?");
+      await composer.getByLabel(/^Link/).fill("https://bit.ly/3abcdef");
+      await composer.getByRole("button", { name: "Post", exact: true }).click();
+      await composer.getByText(/no link shorteners/).waitFor({ timeout: 10000 });
+      await composer.getByLabel(/^Link/).fill("");
+      await composer.getByRole("button", { name: "Post", exact: true }).click();
+      await composer.getByRole("status").getByText(/^Posted/).waitFor({ timeout: 15000 });
+      const [post] = await sql`select id, body from junction_posts where author_id = ${a.id} and title = ${title}`;
+      if (!post) throw new Error("the post was not saved");
+      if (/98765/.test(post.body)) throw new Error("the phone number was saved");
+
+      // B: no resume, so My route asks for one; the post is on New.
+      await qb.goto(BASE + "/junction?feed=route");
+      await qb.getByText("Add your resume to see posts from people aiming for the same role.").waitFor({ timeout: 15000 });
+      await qb.goto(BASE + "/junction?feed=new");
+      await qb.waitForLoadState("networkidle");
+      const card = qb.locator("article", { hasText: title });
+      await card.waitFor({ timeout: 15000 });
+      await axeOn(qb, "junction-new");
+      await card.getByRole("button", { name: /^Upvote/ }).click();
+      await card.getByRole("button", { name: "Upvoted 1" }).waitFor({ timeout: 10000 });
+      await card.getByRole("button", { name: "Save", exact: true }).click();
+      await card.getByRole("button", { name: "Saved", exact: true }).waitFor({ timeout: 10000 });
+      await card.getByRole("button", { name: /^Reshare/ }).click();
+      await card.getByRole("button", { name: "Reshared 1" }).waitFor({ timeout: 10000 });
+
+      // B adds the post's interest in the rail (Me's rows): My interests shows it, and the chip narrows to it.
+      const rail = qb.getByRole("complementary", { name: "Junction" });
+      await rail.getByLabel("Add an interest").fill(topic);
+      await rail.getByRole("button", { name: "Add", exact: true }).click();
+      await rail.getByRole("list", { name: "Your interests" }).getByText(topic).waitFor({ timeout: 10000 });
+      await qb.goto(BASE + "/junction?feed=interests");
+      await qb.locator("article", { hasText: title }).waitFor({ timeout: 15000 });
+      await qb.getByRole("navigation", { name: "Filter by interest" }).getByRole("link", { name: topic }).click();
+      await qb.waitForURL(/interest=/, { timeout: 10000 });
+      await qb.locator("article", { hasText: title }).waitFor({ timeout: 15000 });
+
+      // B comments on the post's page; A sees it in the bell.
+      await qb.locator("article", { hasText: title }).getByRole("link", { name: title }).click();
+      await qb.waitForURL(/\/junction\/p\//, { timeout: 15000 });
+      await qb.waitForLoadState("networkidle");
+      await qb.getByLabel("Add a comment").fill("Following this. The Kaggle course helped me.");
+      await qb.getByRole("button", { name: "Post comment" }).click();
+      await qb.getByRole("status").getByText("Comment posted.").waitFor({ timeout: 10000 });
+      await qb.getByRole("list", { name: "Comments" }).getByText("Following this.").waitFor({ timeout: 10000 });
+      await axeOn(qb, "junction-post");
+      await qa.goto(BASE + "/today");
+      await qa.waitForLoadState("networkidle");
+      await qa.getByRole("button", { name: /^Notifications, \d+ new$/ }).click();
+      await qa.getByText(/commented on your post/).first().waitFor({ timeout: 10000 });
+
+      // A pins it; B sees it under On Junction on A's profile until A turns Junction posts off on Me.
+      await qa.goto(BASE + "/junction/mine");
+      await qa.waitForLoadState("networkidle");
+      const own = qa.locator("article", { hasText: title });
+      await own.getByRole("button", { name: "Pin to profile" }).click();
+      await own.getByRole("button", { name: /^Pinned \(1 of 3\)/ }).waitFor({ timeout: 10000 });
+      await axeOn(qa, "junction-mine");
+      await qb.goto(BASE + `/u/${handle}`);
+      await qb.getByRole("region", { name: "On Junction" }).getByText(title).waitFor({ timeout: 15000 });
+      await qa.goto(BASE + "/me");
+      await qa.waitForLoadState("networkidle");
+      const onJunction = qa.getByRole("region", { name: "On Junction" });
+      await onJunction.getByText(title).waitFor({ timeout: 15000 });
+      await onJunction.getByRole("checkbox", { name: /^Show Junction posts on my profile/ }).click({ force: true });
+      await onJunction.getByRole("status").getByText("Your Junction posts no longer show on your profile.").waitFor({ timeout: 10000 });
+      await qb.goto(BASE + `/u/${handle}`);
+      await qb.waitForLoadState("networkidle");
+      if (await qb.getByRole("region", { name: "On Junction" }).count()) throw new Error("On Junction shows with Junction posts off");
+
+      // B reports it (Harassment) and gets a reference and a deadline at once.
+      await qb.goto(BASE + `/junction/p/${post.id}`);
+      await qb.waitForLoadState("networkidle");
+      const shown = qb.locator("article", { hasText: title });
+      await shown.getByRole("button", { name: "Report", exact: true }).first().click();
+      await qb.getByLabel("Harassment, threats or bullying").check();
+      await qb.getByRole("button", { name: "Send report" }).click();
+      await qb.getByRole("status").getByText(/Your reference is R-[0-9A-F]{10}\. We act on it by /).waitFor({ timeout: 10000 });
+
+      // The admin hides it with a reason and closes the report; it leaves B's feed and A gets the notice.
+      await signInAs(adm, "Admin Tester", "admin@careermetro.test");
+      await adm.goto(BASE + "/admin/reports");
+      await adm.getByRole("heading", { name: "Reports", level: 1 }).waitFor({ timeout: 15000 });
+      const row = adm.locator("article", { hasText: title }).filter({ has: adm.getByRole("button", { name: /^Hide post: / }) });
+      await row.getByRole("button", { name: /^Hide post: / }).click();
+      await row.getByLabel("Reason").fill("Walk check: harassment.");
+      await row.getByRole("button", { name: "Hide post", exact: true }).click();
+      await adm.locator("article", { hasText: title }).getByText(/^Post hidden/).first().waitFor({ timeout: 15000 });
+      const closeIt = adm.locator("article", { hasText: title }).getByRole("button", { name: /^Action taken: / });
+      if (await closeIt.count()) {
+        await closeIt.first().click();
+        await adm.getByRole("status").filter({ hasText: "Marked as action taken." }).waitFor({ timeout: 10000 });
+      }
+      await qb.goto(BASE + "/junction?feed=new");
+      await qb.getByRole("heading", { name: "Junction", level: 1 }).waitFor({ timeout: 15000 });
+      if (await qb.locator("article", { hasText: title }).count()) throw new Error("the hidden post is still on B's feed");
+
+      // A sees the notice on Your Junction and appeals; the admin shows it again; both hear back.
+      await qa.goto(BASE + "/junction/mine");
+      await qa.waitForLoadState("networkidle");
+      const notices = qa.getByRole("region", { name: "Notices" });
+      await notices.getByText(/CareerMetro hid your post/).waitFor({ timeout: 15000 });
+      await notices.getByRole("button", { name: "Appeal", exact: true }).first().click();
+      await notices.getByLabel("Why should it come back?").fill("It was a question about a course, not about anyone.");
+      await notices.getByRole("button", { name: "Send appeal" }).click();
+      await notices.getByText(/^Appeal sent/).waitFor({ timeout: 10000 });
+      await axeOn(qa, "junction-mine-appealed");
+      await adm.goto(BASE + "/admin/reports");
+      const appeal = adm.locator("article", { hasText: "Appeal: Post by" }).filter({ hasText: title });
+      await appeal.getByRole("button", { name: /^Show again: / }).click();
+      await appeal.getByLabel("Reason").fill("Walk check: no rule broken.");
+      await appeal.getByRole("button", { name: "Show again", exact: true }).click();
+      let back = null;
+      for (let n = 0; n < 30 && back?.status !== "visible"; n++) {
+        if (n) await new Promise((r) => setTimeout(r, 500));
+        [back] = await sql`select status from junction_posts where id = ${post.id}`;
+      }
+      if (back?.status !== "visible") throw new Error(`after the appeal the post is ${back?.status}`);
+      const told = await sql`select kind from notifications where (user_id = ${a.id} and kind = 'junction_appeal_decided') or (user_id = ${bb.id} and kind = 'report_decided')`;
+      if (!told.some((n) => n.kind === "junction_appeal_decided")) throw new Error("A wasn't told the appeal's outcome");
+      if ((await closeIt.count()) === 0 && !told.some((n) => n.kind === "report_decided")) a11yNotes.push("junction: the report was closed without Action taken, so B's outcome notice wasn't checked");
+
+      // A block hides the post from B; lifting it brings it back.
+      await sql`insert into blocks (blocker_id, blocked_id) values (${a.id}, ${bb.id})`;
+      await qb.goto(BASE + "/junction?feed=new");
+      await qb.getByRole("heading", { name: "Junction", level: 1 }).waitFor({ timeout: 15000 });
+      if (await qb.locator("article", { hasText: title }).count()) throw new Error("a blocked author's post shows");
+      // The post's page is the not-found page, the same as for a post that isn't there (its 404 is logged on purpose).
+      failingOnPurpose = true;
+      const blocked = await qb.goto(BASE + `/junction/p/${post.id}`).finally(() => {
+        failingOnPurpose = false;
+      });
+      if (blocked?.status() !== 404) throw new Error(`a blocked author's post page answered ${blocked?.status()}, not 404`);
+      await sql`delete from blocks where blocker_id = ${a.id} and blocked_id = ${bb.id}`;
+
+      // Keyboard through the composer; axe in dark after a reload; 390 px with no side scroll.
+      await qb.goto(BASE + "/junction?feed=new");
+      await qb.waitForLoadState("networkidle");
+      const gate = qb.getByRole("button", { name: "I’ll follow these rules" });
+      if (await gate.count()) {
+        await gate.focus();
+        await qb.keyboard.press("Enter");
+        await qb.getByRole("heading", { name: "Write a post" }).waitFor({ timeout: 15000 });
+      }
+      await qb.getByLabel("Title", { exact: true }).focus();
+      await qb.keyboard.type("Keyboard title");
+      await qb.keyboard.press("Tab");
+      if ((await qb.evaluate(() => document.activeElement?.tagName)) !== "TEXTAREA") throw new Error("Tab from the title doesn't reach the text box");
+      await qb.emulateMedia({ colorScheme: "dark" });
+      await qb.reload();
+      await qb.waitForLoadState("networkidle");
+      await qb.locator("article", { hasText: title }).waitFor({ timeout: 15000 });
+      await axeOn(qb, "junction-dark");
+      await qb.setViewportSize({ width: 390, height: 844 });
+      await qb.reload();
+      await qb.waitForLoadState("networkidle");
+      await noSideScroll(qb, "Junction (dark)");
+      await axeOn(qb, "junction-phone-dark");
+      await qb.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-junction-phone-dark.png`, fullPage: true });
+      await qb.setViewportSize({ width: 1280, height: 900 });
+      await qb.emulateMedia({ colorScheme: "light" });
+
+      // A deletes it: gone from B's feed at once.
+      await qa.goto(BASE + "/junction/mine");
+      await qa.waitForLoadState("networkidle");
+      const mine = qa.locator("article", { hasText: title });
+      await mine.getByRole("button", { name: "Delete", exact: true }).click();
+      await qa.getByRole("group", { name: "Delete this post?" }).getByRole("button", { name: "Delete", exact: true }).click();
+      await qa.getByText("Post deleted. It is gone for everyone.").waitFor({ timeout: 10000 });
+      await qb.goto(BASE + "/junction?feed=new");
+      await qb.getByRole("heading", { name: "Junction", level: 1 }).waitFor({ timeout: 15000 });
+      if (await qb.locator("article", { hasText: title }).count()) throw new Error("the deleted post is still on B's feed");
+    } finally {
+      for (const c of contexts) await c.close();
+      if (made.length) await sql`delete from users where id in ${sql(made)}`;
+      await sql.end();
+    }
+  });
+}
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
 // The page event and Chromium's console line both describe a violation; with the event seen, the console copies add nothing.
 const cspEventSeen = [...cspSeen.keys()].some((k) => !k.startsWith("console: "));

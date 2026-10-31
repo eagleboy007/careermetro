@@ -553,3 +553,31 @@ export async function acceptJunctionRules(userId: string, deps: Deps = {}): Prom
   logEvent("info", "junction_rules_accepted", { version: JUNCTION_RULES_VERSION });
   return { ok: true };
 }
+
+/* The profile switch (part 4) -------------------------------------------------------------------------------------- */
+
+/**
+ * "Junction posts" on the profile (user_settings.show_junction_posts): off hides "On Junction" and its pinned posts from
+ * everyone who opens the profile. The person's own row only, counted against the day's settings saves; a first save
+ * makes the settings row with a new user's other defaults, as the other profile switches do.
+ */
+export async function setJunctionPostsShown(userId: string, raw: unknown, deps: Deps = {}): Promise<JunctionWrite<{ on: boolean }>> {
+  if (typeof raw !== "boolean") return fail("invalid");
+  const on = raw;
+  const db = deps.db ?? getDb();
+  const now = deps.now ?? new Date();
+  const out = await db.transaction(async (tx): Promise<JunctionWrite<{ on: boolean }>> => {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`junction-posts-shown:${userId}`}))`);
+    if (!(await activeAccount(userId, tx))) return fail("unavailable");
+    if (!(await takeShared(LIMITS.settingsSavesPerUserDay, userId, { db: tx, now: now.getTime() }))) return fail("limit");
+    const { visibility, ...rest } = DEFAULT_SETTINGS;
+    const [row] = await tx
+      .insert(userSettings)
+      .values({ userId, profileVisibility: visibility, ...rest, showJunctionPosts: on, updatedAt: now })
+      .onConflictDoUpdate({ target: userSettings.userId, set: { showJunctionPosts: on, updatedAt: now } })
+      .returning({ on: userSettings.showJunctionPosts });
+    return { ok: true, on: row?.on ?? on };
+  });
+  logEvent("info", "junction_posts_shown", { outcome: out.ok ? (out.on ? "on" : "off") : out.error });
+  return out;
+}

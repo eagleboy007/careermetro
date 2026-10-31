@@ -220,6 +220,30 @@ export const authorView = z.strictObject({
   isYou: z.boolean(),
 });
 
+/**
+ * The Library catalog card on a post whose link matches a catalog item (plan section 1): title, provider, kind and
+ * minutes, read live from `resources`, so a catalog item an admin hid drops the card.
+ */
+export const catalogCardView = z.strictObject({
+  title: z.string().min(1).max(300),
+  provider: z.string().min(1).max(120),
+  kind: z.string().min(1).max(40),
+  minutes: z.number().int().nonnegative(),
+});
+export type CatalogCardView = z.infer<typeof catalogCardView>;
+
+/**
+ * "Show where I am on my line" (plan section 1, off by default): the author's goal drawn live from `user_goals` on read,
+ * never stored as text. The step, the line's length, the skill's name and whether it is met. Never a gap list.
+ */
+export const goalLineView = z.strictObject({
+  step: z.number().int().min(1),
+  of: z.number().int().min(1),
+  skill: z.string().min(1).max(120),
+  met: z.boolean(),
+});
+export type GoalLineView = z.infer<typeof goalLineView>;
+
 /** One post as a feed shows it. Text of a hidden or held post reaches only its author. */
 export const postCardView = z.strictObject({
   id: z.uuid(),
@@ -227,6 +251,8 @@ export const postCardView = z.strictObject({
   title: z.string().min(1).max(JUNCTION_TITLE_MAX),
   body: z.string().max(JUNCTION_BODY_MAX),
   link: z.strictObject({ url: z.url().max(500), host: z.string().min(1).max(253) }).nullable(),
+  catalog: catalogCardView.nullable(),
+  goal: goalLineView.nullable(),
   author: authorView,
   routeLabel: z.string().max(120).nullable(),
   interests: z.array(z.strictObject({ id: z.uuid(), name: z.string().min(1).max(INTEREST_MAX) })).max(JUNCTION_TAGS_MAX),

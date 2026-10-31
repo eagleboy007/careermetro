@@ -20,6 +20,8 @@ import { greetingAt } from "@/lib/today/board";
 import { departuresBoard } from "@/lib/departures/store";
 import { jobPrep, nextInterview } from "@/lib/my-jobs/store";
 import { daysUntil, leadSkills } from "@/lib/my-jobs/view";
+import { lineTipFor } from "@/lib/junction/feed";
+import { junctionEnabled } from "@/lib/preview";
 import { onYourLineFor, todayBoardFor } from "@/lib/today/live";
 import { timetableTeaserFor } from "@/lib/timetable/store";
 import { currentAnalysis, todayStateFor } from "@/lib/today/state";
@@ -104,7 +106,15 @@ async function Today({ searchParams }: PageProps<"/today">) {
             ? todayBoardFor(account.id, now, undefined, { analysis, posts: openPosts }).catch(failed<Departure[]>("today_board_failed", []))
             : Promise.resolve<Departure[]>([]),
           found.current
-            ? onYourLineFor(account.id, found.current, { firstDay: found.state === "first", now }).catch(failed<OnYourLine | null>("today_line_failed", null))
+            ? onYourLineFor(account.id, found.current, { firstDay: found.state === "first", now })
+                // The tip (FR-61, part 4): from a Junction post on the same goal, only while Junction is on and on a
+                // returning day (the first day shows none). If it can't be read, the card shows without it.
+                .then(async (l) =>
+                  l && junctionEnabled() && found.state === "returning" && found.current
+                    ? { ...l, tip: await lineTipFor(account.id, found.current.skillId, { now }).catch(failed("today_line_tip_failed", null)) }
+                    : l,
+                )
+                .catch(failed<OnYourLine | null>("today_line_failed", null))
             : Promise.resolve(null),
           // "Interview in 2 days" from My jobs (handoff 12m), counted in India days here so the page and the card agree.
           nextInterview(account.id, { now }).catch(failed<NextInterviewView | null>("today_interview_failed", null)),
@@ -174,7 +184,7 @@ async function Today({ searchParams }: PageProps<"/today">) {
       <JobSearchProvider initialOn={searching} action={switchJobSearch}>
         <TodayView
           state={found.state}
-          data={own}
+          data={{ ...own, junction: junctionEnabled() }}
           // Only the No resume state shows the upload form; leaving it out otherwise keeps it out of the page's payload.
           upload={found.state === "no_resume" ? <Upload key="upload" /> : null}
           departuresHref="/departures"

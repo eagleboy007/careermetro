@@ -42,9 +42,10 @@ export function TimetableTeaser({ events }: { events: EventTeaser[] }) {
 
 /**
  * People on the same goal right now, from people who show their pitstop on the map (src/lib/today/live.ts): a count, up to four
- * initials and, once Junction exists, a tip. "See people" opens Network; Junction comes later (build step 11).
+ * initials and, while Junction is on, a tip from a Junction post on the same goal (FR-61). "See people" opens Network;
+ * "Ask on Junction" opens My route while Junction is on and says "soon" otherwise.
  */
-export function OnYourLineCard({ line, firstDay = false, label = "On your line" }: { line: OnYourLine; firstDay?: boolean; label?: string }) {
+export function OnYourLineCard({ line, firstDay = false, label = "On your line", junction = false }: { line: OnYourLine; firstDay?: boolean; label?: string; junction?: boolean }) {
   const extra = line.count - line.initials.length;
   return (
     <section aria-label={label} className={card}>
@@ -74,10 +75,17 @@ export function OnYourLineCard({ line, firstDay = false, label = "On your line" 
         </div>
       )}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-[11px] py-1.5 text-[0.8rem] font-semibold text-muted">
-          <MessageSquare size={16} strokeWidth={1.75} aria-hidden="true" />
-          Ask on Junction · soon
-        </span>
+        {junction ? (
+          <Link href="/junction?feed=route" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface px-[11px] text-[0.8rem] font-semibold text-ink hover:bg-surface-2">
+            <MessageSquare size={16} strokeWidth={1.75} aria-hidden="true" />
+            Ask on Junction
+          </Link>
+        ) : (
+          <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-[11px] py-1.5 text-[0.8rem] font-semibold text-muted">
+            <MessageSquare size={16} strokeWidth={1.75} aria-hidden="true" />
+            Ask on Junction · soon
+          </span>
+        )}
         <Link href="/network" className="inline-flex min-h-11 items-center gap-1 px-2 text-[0.8rem] font-semibold text-ink hover:text-muted">
           See people
           <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />

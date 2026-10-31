@@ -19,7 +19,8 @@ Last updated: 2026-10-31 (small fixes: /design hydration, map store test, this p
 - Scale check (`docs/scale-check.md`, `.github/workflows/scale.yml`, CI Postgres only): 10,000 synthetic members, page p95 budget 2.5 s, crons at 80% of maxDuration. Open: the events digest may never reach people behind opted-in members with no event that week.
 - CSP: the host allow-list policy is report-only (`src/proxy.ts`, `src/lib/csp.ts`); the walk prints `CSP: none` or each violation. Enforcing waits on the log drain and on Milin (`docs/dev/security-sweep-2026-10-20.md`).
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/`; every role, certificate and question above waits on it.
-- Junction (FR-61, `docs/plans/junction-plan.md`): parts 1–2 (data, rules, moderation, admin rows, drafts behind `JUNCTION_ENABLED`) committed on branch `junction-a`, not pushed; parts 3–4 (screens, profile) next on top of it.
+- Junction (FR-61, `docs/plans/junction-plan.md`): parts 1–2 (data, rules, moderation, admin rows, drafts behind `JUNCTION_ENABLED`) committed on branch `junction-a`, not pushed.
+- Junction parts 3–4 on branch `junction-b` (on top of `junction-a`, not pushed): `/junction`, `/junction/p/[id]`, `/junction/mine`, the rail, pins and the "Junction posts" switch on Me and `/u`, the Today tip, `/design` entries; CI's e2e app server and walk run with `JUNCTION_ENABLED=1`, production stays off.
 - Departures boards: two Greenhouse EU-host candidates (RISA Labs, Currencies Direct) are in `scripts/departures/board-candidates.csv` for the next manual run of the Departures board check workflow; they join `job-boards.json` only if it passes them.
 
 ## Queue (all waiting on someone else)

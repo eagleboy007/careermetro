@@ -56,6 +56,8 @@ export type TodayData = {
   events: EventTeaser[];
   /** Null hides the card: fewer than three people on the goal who can be counted. */
   onYourLine: OnYourLine | null;
+  /** JUNCTION_ENABLED, read on the server: the line card's "Ask on Junction" is a link only while it is on. */
+  junction?: boolean;
   /** The soonest interview set in My jobs (handoff 12m); null or absent hides the card. */
   nextInterview?: NextInterview | null;
   /** "Morning", "Afternoon" or "Evening" in the user's time zone. */
@@ -187,7 +189,7 @@ export function TodayView({
         )}
         {/* Hidden when no event matches the person (docs/plans/timetable-plan.md section 7). */}
         {data.events.length > 0 && <TimetableTeaser events={data.events} />}
-        {state !== "no_resume" && data.onYourLine && <OnYourLineCard line={data.onYourLine} firstDay={state === "first"} />}
+        {state !== "no_resume" && data.onYourLine && <OnYourLineCard line={data.onYourLine} firstDay={state === "first"} junction={data.junction} />}
       </div>
     </div>
   );

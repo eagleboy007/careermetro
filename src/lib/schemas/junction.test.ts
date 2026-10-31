@@ -166,6 +166,8 @@ describe("postCardView", () => {
     title: "How do I read Splunk alerts?",
     body: "",
     link: null,
+    catalog: null,
+    goal: null,
     author: { name: "Priya Sharma", handle: "priya-s", initials: "PS", route: null, isYou: false },
     routeLabel: null,
     interests: [{ id: I1, name: "AI" }],
@@ -185,5 +187,12 @@ describe("postCardView", () => {
     expect(postCardView.safeParse(card).success).toBe(true);
     expect(postCardView.safeParse({ ...card, authorId: P }).success).toBe(false);
     expect(postCardView.safeParse({ ...card, author: { ...card.author, email: "p@example.com" } }).success).toBe(false);
+  });
+
+  it("carries the catalog card and the goal line as live values, never a gap list", () => {
+    const full = { ...card, catalog: { title: "SQL for data analysis", provider: "Kaggle Learn", kind: "course", minutes: 240 }, goal: { step: 6, of: 9, skill: "Python scripting", met: false } };
+    expect(postCardView.safeParse(full).success).toBe(true);
+    expect(postCardView.safeParse({ ...full, goal: { ...full.goal, gaps: ["SQL"] } }).success).toBe(false);
+    expect(postCardView.safeParse({ ...full, goal: { ...full.goal, step: 0 } }).success).toBe(false);
   });
 });
