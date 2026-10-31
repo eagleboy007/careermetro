@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { eventCard, eventTeaser, timetableView, type EventCard, type TimetableGroup } from "@/lib/schemas";
 import { exampleTimetable, exampleTimetableEmpty, exampleTimetableEvents, exampleTimetableNoCity } from "./fixtures";
-import { dateBlock, eventPlace, eventWhen, namesLine, shownGroups, teaserRows } from "./view";
+import { dateBlock, eventPlace, eventWhen, goalTagName, namesLine, shownGroups, teaserRows } from "./view";
 
 // Synthetic cards only.
 let n = 0;
@@ -95,6 +95,19 @@ describe("shownGroups", () => {
   it("works from a saved 100 km radius without the switch", () => {
     expect(shownGroups(groups, { ...all, radiusKm: 100 }).outside).toBe(0);
   });
+
+  it("keeps a prep task's goal only while its tag shows, so every card stays valid", () => {
+    const going = card({ tags: [goal.tags[0], interest.tags[0]], rsvp: "going", prepGoal: goal.tags[0].topic });
+    const week: TimetableGroup[] = [{ key: "week", label: "This week", events: [going] }];
+    expect(shownGroups(week, all).groups[0].events[0].prepGoal).toBe(going.prepGoal);
+    expect(shownGroups(week, { ...all, filter: "goals" }).groups[0].events[0].prepGoal).toBe(going.prepGoal);
+    const interestsOnly = shownGroups(week, { ...all, filter: "interests" }).groups[0].events[0];
+    expect(interestsOnly.prepGoal).toBeUndefined();
+    expect("prepGoal" in interestsOnly).toBe(false);
+    for (const filter of ["all", "goals", "interests"] as const) {
+      for (const e of shownGroups(week, { ...all, filter }).groups.flatMap((g) => g.events)) expect(eventCard.safeParse(e).error).toBeUndefined();
+    }
+  });
 });
 
 describe("teaserRows", () => {
@@ -112,6 +125,13 @@ describe("teaserRows", () => {
     const [row] = teaserRows([long]);
     expect(row.detail.length).toBeLessThanOrEqual(120);
     expect(eventTeaser.safeParse(row).error).toBeUndefined();
+  });
+});
+
+describe("goalTagName", () => {
+  it("drops the tag's lead", () => {
+    expect(goalTagName("Goal: SIEM and log analysis")).toBe("SIEM and log analysis");
+    expect(goalTagName("Python")).toBe("Python");
   });
 });
 
@@ -135,5 +155,7 @@ describe("example timetable", () => {
     expect(exampleTimetableEmpty.groups).toEqual([]);
     for (const e of exampleTimetable.groups.flatMap((g) => g.events)) expect(eventCard.safeParse(e).error).toBeUndefined();
     expect(exampleTimetableEvents.length).toBeGreaterThan(titles.length);
+    // The example going event is a prep task for the SIEM goal.
+    expect(exampleTimetable.groups.flatMap((g) => g.events).find((e) => e.title === "Python for log analysis")?.prepGoal).toBe("siem");
   });
 });

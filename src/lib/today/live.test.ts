@@ -156,6 +156,53 @@ describe.skipIf(!db)("Today's live cards (database)", () => {
       expect(await answerSignal(userId, bank[0].id, "A", now, db!, { bank: drafts, allowUnreviewed: false })).toBe("stale");
       expect(await ticks(userId)).toEqual([]);
     });
+
+    it("puts an event prep task on the ride on its India day: tickable, a ride day, and never the train (Timetable PR 3)", async () => {
+      const userId = await lineFor("Event Rider");
+      const before = (await todayRideFor(userId, now, db!, "", { bank }))!;
+      const skillId = before.current!.skillId;
+      // 18:30 to 20:30 IST on 20 October; a made-up organiser.
+      const [ev] = await db!
+        .insert(schema.events)
+        .values({
+          source: "feed",
+          sourceKey: `${run}-event`,
+          sourceUrl: "https://events.example.org/pune/evening",
+          title: "Evening practice night",
+          organiser: "Example Data Circle",
+          kind: "meetup",
+          startsAt: new Date("2026-10-20T13:00:00Z"),
+          endsAt: new Date("2026-10-20T15:00:00Z"),
+          city: "Pune",
+          cost: "Free",
+          status: "live",
+        })
+        .returning({ id: schema.events.id });
+      try {
+        await db!.insert(schema.eventRsvps).values({ userId, eventId: ev.id, state: "going", goalSkillId: skillId });
+        const id = `event:${ev.id}`;
+        const day = (await todayRideFor(userId, now, db!, "", { bank }))!;
+        expect(day.ride.tasks[0]).toMatchObject({ id, title: "Go to Evening practice night", minutes: 120, done: false, locked: false, eventUrl: "https://events.example.org/pune/evening" });
+        expect(day.ride).toMatchObject({ pitstop: before.ride.pitstop, weekTasksDone: before.ride.weekTasksDone });
+
+        expect(await tickTask(userId, id, true, now, db!)).toBe(true);
+        expect(await ticks(userId)).toEqual([`2026-10-20 ${id}`]);
+        const ticked = (await todayRideFor(userId, now, db!, "", { bank }))!;
+        expect(ticked.streak.todayCounted).toBe(true);
+        expect(ticked.ride.tasks[0]).toMatchObject({ id, done: true });
+        expect(ticked.ride).toMatchObject({ pitstop: before.ride.pitstop, weekTasksDone: before.ride.weekTasksDone, goalName: before.ride.goalName });
+        expect(await tickTask(userId, id, false, now, db!)).toBe(true);
+
+        // Not on another day, and not once the person goes back to Save.
+        const tomorrow = new Date(now.getTime() + DAY);
+        expect((await todayRideFor(userId, tomorrow, db!, "", { bank }))!.ride.tasks.some((t) => t.eventUrl)).toBe(false);
+        expect(await tickTask(userId, id, true, tomorrow, db!)).toBe(false);
+        await db!.update(schema.eventRsvps).set({ state: "saved", goalSkillId: null }).where(eq(schema.eventRsvps.userId, userId));
+        expect((await todayRideFor(userId, now, db!, "", { bank }))!.ride.tasks.some((t) => t.eventUrl)).toBe(false);
+      } finally {
+        await db!.delete(schema.events).where(eq(schema.events.id, ev.id));
+      }
+    });
   });
 
   describe("on your line", () => {

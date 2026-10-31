@@ -1,7 +1,9 @@
-import { goalsSummary, ride as rideSchema, type Gap, type Goal, type GoalsSummary, type NotForMeOffer, type Ride, type RideTask, type TrackPicker } from "@/lib/schemas";
+import { goalsSummary, ride as rideSchema, rideTask, type Gap, type Goal, type GoalsSummary, type NotForMeOffer, type Ride, type RideTask, type TrackPicker } from "@/lib/schemas";
 import { certificatesFor } from "@/lib/proofs/eligible";
 import { RIDE_PART_MINUTES, RIDE_SPLIT_OVER_MINUTES } from "@/lib/schemas/constants";
 import { clip } from "@/lib/text";
+import { eventWhen } from "@/lib/timetable/view";
+import { indiaDay } from "./days";
 
 /** A catalog resource as a ride task is made from it. */
 export type RideResource = { id: string; title: string; provider: string; kind: string; minutes: number };
@@ -159,6 +161,15 @@ export function attachAdded(goals: RideGoal[], added: (RideResource & { skillIds
   }
 }
 
+/**
+ * An event the person is going to and made a prep task for one of their goals ("Add it as a prep task?", Timetable,
+ * docs/plans/timetable-plan.md section 4). `goalSkillId` is the skill the event's goal tag named.
+ */
+export type RideEvent = { eventId: string; title: string; organiser: string; startsAt: Date; endsAt: Date; sourceUrl: string; goalSkillId: string };
+
+/** Today's India date and the prep events to look at; `chosen` are the person's "Your choice" goals, which an event may also be for. */
+export type RidePrep = { day: string; events: readonly RideEvent[]; chosen?: readonly RideGoal[] };
+
 export type RideInput = {
   goals: RideGoal[];
   path: RidePath;
@@ -167,7 +178,52 @@ export type RideInput = {
   /** Task ids ticked today. */
   doneToday: ReadonlySet<string>;
   doneThisWeek: ReadonlySet<string>;
+  /** Event prep tasks (Timetable PR 3); left out, the ride has none. */
+  prep?: RidePrep;
 };
+
+/** An event prep task's id. One event is one task, on its day only. */
+export const eventTaskId = (eventId: string) => `event:${eventId}`;
+
+/** Minutes an event task takes: the event's length, at least 1 and at most 240; an hour when the source gave no end. */
+export function eventMinutes(startsAt: Date, endsAt: Date): number {
+  const ms = endsAt.getTime() - startsAt.getTime();
+  return ms > 0 ? Math.min(240, Math.max(1, Math.round(ms / 60_000))) : 60;
+}
+
+/** An https link the ride task's schema takes. */
+const eventLink = (url: string) => rideTask.shape.eventUrl.safeParse(url).success;
+
+/**
+ * The day's event prep task (docs/plans/timetable-plan.md section 4): the earliest event starting on today's India date
+ * whose goal is still open (not proved, not skipped) on the line or among the "Your choice" goals, by the goal's own
+ * skill or the one "Not for me" swapped it to. One a day. Optional: it never belongs to a pitstop, so it never moves
+ * the train, the week's ring or a gap, and going is never proof. Null when there is none.
+ */
+export function eventTask(goals: readonly RideGoal[], prep: RidePrep | undefined): Omit<RideTask, "done"> | null {
+  if (!prep?.events.length) return null;
+  const open = [...goals, ...(prep.chosen ?? [])].filter((g) => !g.proved && !g.skipped);
+  const goalFor = (skillId: string) => open.find((g) => g.skillId === skillId || (g.learnSkillId ?? g.skillId) === skillId);
+  const found = prep.events
+    .filter((e) => indiaDay(e.startsAt) === prep.day && eventLink(e.sourceUrl) && e.title.trim())
+    .flatMap((e) => {
+      const goal = goalFor(e.goalSkillId);
+      return goal ? [{ e, goal }] : [];
+    })
+    .sort((a, b) => a.e.startsAt.getTime() - b.e.startsAt.getTime() || a.e.eventId.localeCompare(b.e.eventId))[0];
+  if (!found) return null;
+  const { e, goal } = found;
+  return {
+    id: eventTaskId(e.eventId),
+    title: clip(`Go to ${e.title.trim()}`, 120),
+    detail: clip(`Optional prep for ${goal.name} · ${eventWhen(e.startsAt.toISOString(), e.endsAt.toISOString())}`, 120),
+    minutes: eventMinutes(e.startsAt, e.endsAt),
+    locked: false,
+    signal: false,
+    href: null,
+    eventUrl: e.sourceUrl,
+  };
+}
 
 /** The task that sends someone to the departures board when there is nothing left to learn or prove. */
 export function boardTask(title: string): RideTask {
@@ -256,7 +312,7 @@ export function withSignalTask(tasks: RideTask[], day: string, done: boolean): R
 export function rideWithSignal(ride: Ride, day: string, done: boolean): Ride {
   const tasks = withSignalTask(ride.tasks, day, done);
   const kept = new Set(tasks.map((t) => t.id));
-  const hidden = ride.tasks.filter((t) => !t.signal && !t.done && !kept.has(t.id)).length;
+  const hidden = ride.tasks.filter((t) => !t.signal && !t.eventUrl && !t.done && !kept.has(t.id)).length;
   return { ...ride, tasks, weekTasksTotal: Math.max(1, ride.weekTasksDone, ride.weekTasksTotal - hidden) };
 }
 
@@ -279,13 +335,18 @@ export function buildRide(input: RideInput): Ride | null {
   const today = left(current);
   // Every task done: show them done and fixed, waiting for proof. An earlier day's tick can't be taken back.
   // Added resources come first; a ride shows three tasks, and the rest follow once those are done.
-  const tasks: RideTask[] = (
+  const learn: RideTask[] = (
     today.length ? today.map((t) => ({ ...t, done: input.doneToday.has(t.id) })) : tasksFor(current).map((t) => ({ ...t, done: true, locked: true }))
   ).slice(0, MAX_TASKS);
+  // On an event's day its optional prep task comes first (Timetable PR 3). It belongs to no pitstop, so it is left out
+  // of the week's count and of whether the goal is ready for proof.
+  const prep = eventTask(input.goals, input.prep);
+  const tasks: RideTask[] = prep ? [{ ...prep, done: input.doneToday.has(prep.id) }, ...learn].slice(0, MAX_TASKS) : learn;
+  const shownLearn = tasks.filter((t) => !t.eventUrl);
   // This week's share of the pitstop: tasks of this goal ticked this week, out of those plus the ones still open.
   const weekDone = tasksFor(current).filter((t) => input.doneThisWeek.has(t.id)).length;
   const emphasis = `your ${name} goal.`;
-  const ready = !unfinished && tasks.every((t) => t.done);
+  const ready = !unfinished && learn.every((t) => t.done);
   const certificates = certificatesFor(current.proofSkills ?? [current.skillId]);
   return rideSchema.parse({
     pitstop,
@@ -325,7 +386,7 @@ export function buildRide(input: RideInput): Ride | null {
     },
     tasks,
     weekTasksDone: weekDone,
-    weekTasksTotal: Math.max(1, weekDone + tasks.filter((t) => !t.done).length),
+    weekTasksTotal: Math.max(1, weekDone + shownLearn.filter((t) => !t.done).length),
   });
 }
 

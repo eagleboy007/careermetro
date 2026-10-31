@@ -335,7 +335,11 @@ async function seed() {
     eventRows.flatMap((e) => eventGoals.map((topic) => ({ eventId: e.id, kind: "skill" as const, topic }))),
     (rows) => db.insert(schema.eventTopics).values(rows),
   );
-  const marks = eventRows.flatMap((e, i) => (i % 4 === 1 ? [{ userId, eventId: e.id, state: "saved" as const }] : i % 4 === 2 ? [{ userId, eventId: e.id, state: "going" as const }] : []));
+  // Going rows are prep tasks for the first goal (Timetable PR 3), so Today's ride shows one at its caps on event 50's day.
+  const prepGoal = goals[0]?.skillId ?? null;
+  const marks = eventRows.flatMap((e, i) =>
+    i % 4 === 1 ? [{ userId, eventId: e.id, state: "saved" as const }] : i % 4 === 2 ? [{ userId, eventId: e.id, state: "going" as const, goalSkillId: prepGoal }] : [],
+  );
   await db.insert(schema.eventRsvps).values(marks);
 
   // ---- Builder draft at its caps --------------------------------------------------------------------------------

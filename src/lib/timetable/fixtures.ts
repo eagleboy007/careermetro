@@ -114,6 +114,8 @@ export const exampleTimetableEvents: TimetableEvent[] = [
       { kind: "interest", topic: "python" },
     ],
     rsvp: "going",
+    // Made a prep task for the SIEM goal: the card says so, and the ride shows it on the day.
+    prep: "siem",
   },
   {
     ...base,

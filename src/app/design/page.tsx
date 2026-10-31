@@ -167,6 +167,7 @@ import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-
 import type { EventCard, Gap, GoalsSummary, Profile, TimetableView as TimetableViewData } from "@/lib/schemas";
 import {
   exampleDepartures,
+  exampleEventDayRide,
   exampleEvents,
   exampleFirstTally,
   exampleFirstTasks,
@@ -569,6 +570,12 @@ export default function DesignPage() {
           <OnYourLineCard line={{ ...exampleOnYourLine, tip: null }} firstDay label="On your line, first day" />
           <NextInterviewCard next={{ ...exampleNextInterview, days: 1 }} />
         </div>
+        <p className="text-sm text-muted">
+          The day of an event the person made a prep task (Timetable PR 3, docs/plans/timetable-plan.md section 4): one optional task first, with the
+          organiser&apos;s page under it and minutes from the event&apos;s length. Ticking it makes a ride day, but it never moves the train or the
+          week&apos;s ring, and going never fills a gap.
+        </p>
+        <RideCard name={exampleName} greeting="Evening" ride={exampleEventDayRide} week={exampleWeek} />
         <p className="text-sm text-muted">Every goal proved: the train is at Match and the ride points to the roles to board.</p>
         <RideCard name={exampleName} greeting="Evening" ride={arrivedRide(10)} week={exampleWeek} />
         <p className="text-sm text-muted">Your goals with a &quot;Your choice&quot; goal, added from a job check: listed apart, its own spur, never moving the train.</p>
@@ -868,7 +875,9 @@ export default function DesignPage() {
           in the neutral style (an event is not progress), Save, I&apos;m going, Add to calendar (a .ics file with a reminder the evening before) and
           the organiser&apos;s page. The rail says why these show; the Monday digest and Suggest an event are soon. Made-up events; the cricket
           meetup matches nothing, so it never shows, and the Mumbai summit is beyond 100 km. Then the same with no profile city (online only), with
-          a long title and long place to check wrapping, and with nothing matching.
+          a long title and long place to check wrapping, and with nothing matching. I&apos;m going on an event with a goal tag asks once,
+          &ldquo;Add it as a prep task for your SIEM goal?&rdquo; (one button a goal when it has several); yes puts one optional task on the ride on
+          the event&apos;s day, and the card then says so with Take it off. &ldquo;Python for log analysis&rdquo; shows that state.
         </p>
         <TimetableView view={exampleTimetable} why={exampleTimetableWhy} choices={exampleTimetableChoices} />
         <TimetableView view={exampleTimetableNoCity} why={{ ...exampleTimetableWhy, interests: [] }} choices={exampleTimetableChoices} />

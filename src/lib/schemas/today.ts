@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EVENT_TITLE_MAX, GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS, USER_STATES } from "./constants";
+import { EVENT_TITLE_MAX, EVENT_URL_MAX, GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS, USER_STATES } from "./constants";
 import { trackPicker } from "./role-track";
 import { goalChoice, notForMeOffer } from "./goals";
 export { USER_STATES } from "./constants";
@@ -31,6 +31,12 @@ export const rideTask = z.object({
     .regex(/^\/(?![\/\\])/, "a path inside the app")
     .nullable()
     .default(null),
+  /**
+   * Set only on an event prep task (Timetable, docs/plans/timetable-plan.md section 4): the organiser's https page. The
+   * task shows on the event's India day only and is optional: ticking it makes a ride day, but it never moves the
+   * train, the week's ring or a gap. Id "event:<event id>".
+   */
+  eventUrl: z.string().max(EVENT_URL_MAX).pipe(z.url({ protocol: /^https$/ })).optional(),
 });
 
 /** The prove pitstop after this week's learn pitstop: any one option fills the gap. Only proof moves the train. */
@@ -96,6 +102,10 @@ export const ride = z
   })
   .refine((r) => r.tasks.every((t, i) => (!t.signal || (t.locked && i === r.tasks.length - 1))), {
     message: "the signal check task is locked and comes last",
+    path: ["tasks"],
+  })
+  .refine((r) => r.tasks.filter((t) => t.eventUrl).length <= 1 && r.tasks.every((t) => !t.eventUrl || (!t.signal && !t.locked && t.href === null && t.id.startsWith("event:"))), {
+    message: "at most one event task, which can be ticked by hand and links only to its source",
     path: ["tasks"],
   });
 

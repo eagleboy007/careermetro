@@ -128,6 +128,8 @@ export type TimetableEvent = {
   status: "pending" | "live" | "hidden" | "cancelled";
   topics: readonly EventTopic[];
   rsvp: EventRsvpState | null;
+  /** The goal's skill the person made it a prep task for (`event_rsvps.goal_skill_id`), if any. */
+  prep?: string | null;
 };
 
 /** What the matcher knows about the person: from the profile, Settings, open goals and Me's interests. */
@@ -261,6 +263,8 @@ export function timetableFor(
       tags,
       distanceKm,
       rsvp: e.rsvp,
+      // A prep task shows on the card only while the person is going and that goal is still one of its tags.
+      ...(e.prep && e.rsvp === "going" && tags.some((t) => t.kind === "goal" && t.topic === e.prep) ? { prepGoal: e.prep } : {}),
     });
   }
 

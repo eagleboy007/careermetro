@@ -1,10 +1,13 @@
 "use client";
 
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import type { RideTask } from "@/lib/schemas";
 
-/** Today's prep tasks as checkboxes. Ticking one moves the train; prep never fills a gap on its own. */
+/**
+ * Today's prep tasks as checkboxes. Ticking one moves the train; prep never fills a gap on its own. An event's optional
+ * prep task (Timetable) is ticked the same way, with a link to the organiser's page under it; it never moves the train.
+ */
 export function TaskList({ tasks, done, onToggle }: { tasks: RideTask[]; done: ReadonlySet<string>; onToggle: (id: string) => void }) {
   return (
     <ul className="flex flex-col gap-2">
@@ -31,7 +34,7 @@ export function TaskList({ tasks, done, onToggle }: { tasks: RideTask[]; done: R
           );
         }
         return (
-          <li key={t.id}>
+          <li key={t.id} className={t.eventUrl ? "flex flex-col" : undefined}>
             <label
               className={`grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 rounded-[14px] border border-line bg-bg px-3.5 py-2.5 transition-colors ${
                 t.locked ? "cursor-default" : "cursor-pointer hover:border-ink"
@@ -53,6 +56,17 @@ export function TaskList({ tasks, done, onToggle }: { tasks: RideTask[]; done: R
               </span>
               <span className="whitespace-nowrap font-mono text-[0.72rem] text-muted">{t.minutes} min</span>
             </label>
+            {t.eventUrl && (
+              <a
+                href={t.eventUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-1.5 self-start pl-[54px] text-[0.78rem] font-[550] text-ink underline underline-offset-2"
+              >
+                <ExternalLink size={14} strokeWidth={1.75} aria-hidden="true" />
+                Event page<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            )}
           </li>
         );
       })}
