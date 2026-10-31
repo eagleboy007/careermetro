@@ -163,6 +163,9 @@ describe.skipIf(!db)("Timetable rows (database)", () => {
   });
 
   it("shows only live matches with the person's own marks, wide for the filter row, and the teaser under the saved choices", async () => {
+    // Earlier tests leave SIEM events in Pune at NOW + 3 days until afterAll; as the real clock nears that time they
+    // sort ahead of this test's events and fill the two-row teaser, so start from none of this file's events.
+    await db!.delete(schema.events).where(like(schema.events.sourceKey, `${run}%`));
     const me = await person();
     await db!.update(schema.users).set({ city: "Pune" }).where(eq(schema.users.id, me));
     await db!.insert(schema.userGoals).values({ userId: me, skillId: "siem", position: 0 });
