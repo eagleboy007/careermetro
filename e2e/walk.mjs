@@ -6184,12 +6184,14 @@ if (process.env.JUNCTION_ENABLED?.trim() !== "1") {
       await qb.goto(BASE + "/junction?feed=new");
       await qb.getByRole("heading", { name: "Junction", level: 1 }).waitFor({ timeout: 15000 });
       if (await qb.locator("article", { hasText: title }).count()) throw new Error("a blocked author's post shows");
-      // The post's page is the not-found page, the same as for a post that isn't there (its 404 is logged on purpose).
+      // The post's page is the not-found page, the same as for a post that isn't there. The page streams (Cache
+      // Components), so the not-found it reaches after the shell is sent keeps a 200 status: the page is what's checked.
       failingOnPurpose = true;
-      const blocked = await qb.goto(BASE + `/junction/p/${post.id}`).finally(() => {
+      await qb.goto(BASE + `/junction/p/${post.id}`).finally(() => {
         failingOnPurpose = false;
       });
-      if (blocked?.status() !== 404) throw new Error(`a blocked author's post page answered ${blocked?.status()}, not 404`);
+      await qb.getByRole("heading", { name: "We can't find that page" }).waitFor({ timeout: 15000 });
+      if (await qb.getByText(title).count()) throw new Error("a blocked author's post shows on its page");
       await sql`delete from blocks where blocker_id = ${a.id} and blocked_id = ${bb.id}`;
 
       // Keyboard through the composer; axe in dark after a reload; 390 px with no side scroll.
