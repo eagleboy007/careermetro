@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (Role suggestions count Excel and pivot tables once)
+Last updated: 2026-10-31 (Add a pitstop on the Map)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -38,6 +38,7 @@ Last updated: 2026-10-31 (Role suggestions count Excel and pivot tables once)
   - Pasted-job check (#109–#117). Nearby lines (#123). Market (#125, #130; live counts from Market trends PR 2, below). AI-ready resume check (#126).
   - v44 fixes, Today No resume (gap list items 1 to 4, no migration): target role chips above the upload box, carried to the role step in sessionStorage and shown first there (FR-8); the four reading steps while a resume uploads; the drop zone's "Drop your resume here" copy and Choose file; the full subline. "Try a sample resume" is left out: it needs new server code that sends a fixture through the parser.
   - Not for me per goal, FR-48 (2026-10-17): skip a required goal (it stays a gap; the train passes it; Bring back restores it) or swap a "one of these" goal to another skill of its group, on the Map (#154) and in an open goal on Today (#155). After Testing Run 4 (T58 to T60, T67, T68), a swapped goal learns its new skill on Path and Practice too, keeps its learn tick, and Me and the Map's stop labels pass skipped goals; asking twice is fine, and someone else's goal is 404. No migration; export version 19. Tracks wait for role tracks. See `docs/plans/not-for-me-plan.md`.
+  - Add a pitstop on the Map, FR-58 (2026-10-31, no migration; export version 38): a pitstop of your own on an open goal (a name of up to 40 characters and an optional free catalog course), stored as `path_steps.source = 'user'`, drawn as a dashed ADDED BY YOU spur with Edit and Remove; every other path-step reader takes source app only, so gaps, match, ride, train and path hours never move (`src/lib/pitstops/store.ts`).
 - **Proof**
   - Shared app-email budget and weekly email fixes (Testing Run 7 part 2, T151 and T153; migration 0054 `app_email_days`): app emails share 40 an India day (`APP_EMAIL_DAILY_BUDGET`; the Monday digest will take at most `APP_EMAIL_DIGEST_SHARE` 20) and sign-in codes keep 60, each send taking one atomically (`src/lib/email/budget.ts`). The weekly email starts with the people sent longest ago, claims the week row before sending with `Idempotency-Key: weekly-<userId>-<week>` (an unsure send is retried once with the key and never sent again), waits and retries on Resend's per-second 429 and stops only at its daily quota.
   - Run 7 part 2 lows: customer, HR and travel desk titles no longer go to IT support (T152); the closest-role sentence counts key skills and prefers roles whose years fit (T154); the Next interview card names only skills on today's ride (T155); "It never expires" only for the 15 catalogue certificates marked `lifetime` (T156); retired DP-100 off three roles' lists, still credited (T157); the review pack README and `read-review.mjs` check whole Refs (T158).

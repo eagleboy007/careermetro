@@ -166,7 +166,7 @@ describe.skipIf(!db)("held-proof review (database)", () => {
     expect((await notConfirmedSkills(b.userId, db!)).size).toBe(0);
     // A's download shows the rejection and why.
     const data = await exportAccountData(a.userId, db! as never);
-    expect(EXPORT_VERSION).toBe(37);
+    expect(EXPORT_VERSION).toBe(38);
     expect(data!.proofs[0]).toMatchObject({ status: "rejected", heldReason: "claimed_elsewhere" });
     expect(await audit(heldRow!.id)).toEqual([{ actor: `admin:${adminId}`, action: "proof_accepted" }]);
     expect(await audit(aRow!.id)).toEqual([{ actor: `admin:${adminId}`, action: "proof_rejected_claimed_elsewhere" }]);

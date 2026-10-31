@@ -1,5 +1,5 @@
 import "server-only";
-import { asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paths, pathSteps, resources, users } from "@/db/schema";
 import { roleProfiles } from "@/content";
@@ -19,6 +19,7 @@ import { clip, currentAnalysis, type Db } from "@/lib/today/state";
 import { trackRank } from "@/lib/tracks/apply";
 import { trackedCurrentAnalysis } from "@/lib/tracks/store";
 import { interestsOf } from "@/lib/me/edit-store";
+import { learningSkill, ownPitstopsByGoal, pitstopOptionsFor } from "@/lib/pitstops/store";
 import { lifeFromProfile } from "./life";
 import { otherLines } from "./other-lines";
 
@@ -50,7 +51,8 @@ export async function mapLineFor(
       ? await db
           .select({ skillId: pathSteps.skillId, resourceIds: pathSteps.resourceIds, proofTask: pathSteps.proofTask, doneAt: pathSteps.doneAt })
           .from(pathSteps)
-          .where(eq(pathSteps.pathId, path.id))
+          // The path's own steps; the person's own pitstops (FR-58) are read by goal below.
+          .where(and(eq(pathSteps.pathId, path.id), eq(pathSteps.source, "app")))
           .orderBy(asc(pathSteps.position))
       : [];
     const resourceIds = [...new Set(steps.flatMap((s) => s.resourceIds.slice(0, 3)))];
@@ -71,13 +73,14 @@ export async function mapLineFor(
     return { path, steps, rows };
   };
   // Nearby lines read the same confirmed profile and proof as the gaps; they only ever add crossings, never goals.
-  const [userGoals, notConfirmed, { path, steps, rows }, resume, proved] = await Promise.all([
+  const [userGoals, notConfirmed, { path, steps, rows }, resume, proved, ownByGoal] = await Promise.all([
     syncGoals(userId, analysis, db),
     // Certificates rejected after review (FR-44): their goals say so until proved.
     notConfirmedSkills(userId, db),
     pathAndSteps(),
     getResumeForOwner(analysis.resumeId, { userId }, db),
     provedSkills(userId, db),
+    ownPitstopsByGoal(userId, db),
   ]);
   const isNotConfirmed = (own: (typeof userGoals)[number] | undefined, skillId: string) =>
     !own?.proved && (own ? fillingSkills(own, skillGroupMembers) : [skillId]).some((id) => notConfirmed.has(id));
@@ -151,6 +154,24 @@ export async function mapLineFor(
     choice: own.choice ?? { company: null },
   }));
 
+  // The person's own pitstops (FR-58) on each goal, and for each open goal the free courses offered when adding one:
+  // the next unused catalog links for the skill it is learning. They never change the line, the train or the counts.
+  const goalById = new Map(userGoals.map((g) => [g.id, g]));
+  const openGoals = [...gapGoals, ...choiceGoals].flatMap((g) => {
+    const mine = g.goalId ? goalById.get(g.goalId) : undefined;
+    const skillId = mine && !g.skipped ? learningSkill(mine) : null;
+    if (!mine || !skillId) return [];
+    const used = [...(stepBySkill.get(mine.skillId)?.resourceIds ?? []), ...(ownByGoal.get(mine.id) ?? []).flatMap((p) => (p.course ? [p.course.id] : []))];
+    return [{ goalId: mine.id, skillId, used }];
+  });
+  const options = await pitstopOptionsFor(openGoals, db);
+  const withOwn = (g: MapGoal): MapGoal => {
+    if (!g.goalId) return g;
+    const mine = ownByGoal.get(g.goalId) ?? [];
+    const offered = options.get(g.goalId);
+    return { ...g, ...(mine.length ? { ownPitstops: mine } : {}), ...(offered ? { pitstopOptions: offered } : {}) };
+  };
+
   const role = roleProfiles.find((r) => r.slug === result.roleSlug);
   // If they can't be worked out, the Map and Me render without them (logged as nearby_failed, field paths only).
   const nearby = resume
@@ -163,8 +184,8 @@ export async function mapLineFor(
     resumeId: analysis.resumeId,
     // What the resume shows against the whole role, as on the Gaps page; the track changes the line, not the reading.
     skillsFound: analysis.base.metSkillIds.length,
-    goals: gapGoals,
-    choiceGoals,
+    goals: gapGoals.map(withOwn),
+    choiceGoals: choiceGoals.map(withOwn),
     // Other lines cross at the line's gaps: Nearby lines first, as interchanges.
     otherLines: otherLines(result.roleSlug, gapGoals, nearby),
     nearby,

@@ -9,6 +9,7 @@ import { refIn, reserveCall, runReserved, usedToday } from "@/lib/ai/reserve";
 import { getGapsForOwner, type GapsForOwner } from "@/lib/gaps/store";
 import { swappedSkill } from "@/lib/goals/not-for-me";
 import { goalsOf, resourcesForSkills } from "@/lib/goals/store";
+import { moveOwnPitstops } from "@/lib/pitstops/store";
 import { ownerKey, ownsResume, uploadedBy, type Owner } from "@/lib/owner";
 import { singleFlight } from "@/lib/single-flight";
 import type { GapStatus, PlannedPath, RoleProfile } from "@/lib/schemas";
@@ -166,7 +167,7 @@ async function buildForOwner(
       .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
       .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
       .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-      .where(and(ownsResume(owner), isNotNull(pathSteps.doneAt), eq(pathSteps.kind, "learn")))
+      .where(and(ownsResume(owner), isNotNull(pathSteps.doneAt), eq(pathSteps.kind, "learn"), eq(pathSteps.source, "app")))
       .orderBy(asc(pathSteps.doneAt));
     const doneBySkill = new Map<string, Date | null>();
     for (const r of doneRows) if (!doneBySkill.has(r.skillId)) doneBySkill.set(r.skillId, r.doneAt);
@@ -186,6 +187,8 @@ async function buildForOwner(
         doneAt: doneBySkill.get(s.skillId) ?? null,
       })),
     );
+    // The person's own pitstops (FR-58) move to the newest path, so deleting an older resume never takes them away.
+    if (owner.userId !== undefined) await moveOwnPitstops(tx, owner.userId, row.id);
     return view(tx, row.id);
   });
   return second === "busy" ? { ok: false, reason: "busy" } : second;
@@ -199,7 +202,12 @@ async function readPath(
   gapCount: number,
   owner: Owner,
 ): Promise<PathView> {
-  const steps = await tx.select().from(pathSteps).where(eq(pathSteps.pathId, pathId)).orderBy(asc(pathSteps.position));
+  // The path's own steps only: pitstops the person added (FR-58) never change its hours, weeks or done count.
+  const steps = await tx
+    .select()
+    .from(pathSteps)
+    .where(and(eq(pathSteps.pathId, pathId), eq(pathSteps.source, "app")))
+    .orderBy(asc(pathSteps.position));
   // A goal swapped to another skill of its group ("Not for me", FR-48) learns that skill from the catalog here too,
   // as on the Map and Today (T58). Only a signed-in person has goals.
   const swapBySkill = new Map<string, string>();
@@ -263,7 +271,7 @@ export async function markStepDone(stepId: string, owner: Owner, done: boolean, 
     .innerJoin(gapAnalyses, eq(gapAnalyses.id, paths.gapAnalysisId))
     .innerJoin(profiles, eq(profiles.id, gapAnalyses.profileId))
     .innerJoin(resumes, eq(resumes.id, profiles.resumeId))
-    .where(and(eq(pathSteps.id, stepId), ownsResume(owner)));
+    .where(and(eq(pathSteps.id, stepId), eq(pathSteps.source, "app"), ownsResume(owner)));
   if (!step) return false;
   // The same skill on every one of the person's paths (other hours, earlier uploads) moves together, so a path built
   // later starts from the same progress and an undo doesn't come back. Marking again keeps the first date.
@@ -277,6 +285,6 @@ export async function markStepDone(stepId: string, owner: Owner, done: boolean, 
   await db
     .update(pathSteps)
     .set({ doneAt: done ? sql`coalesce(${pathSteps.doneAt}, now())` : null })
-    .where(and(eq(pathSteps.skillId, step.skillId), eq(pathSteps.kind, "learn"), inArray(pathSteps.pathId, ownPaths)));
+    .where(and(eq(pathSteps.skillId, step.skillId), eq(pathSteps.kind, "learn"), eq(pathSteps.source, "app"), inArray(pathSteps.pathId, ownPaths)));
   return true;
 }

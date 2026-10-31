@@ -124,7 +124,7 @@ function unlinkedSteps(db: Db | Tx, analysisId: string): Promise<{ id: string; s
     .select({ id: pathSteps.id, skillId: pathSteps.skillId })
     .from(pathSteps)
     .innerJoin(paths, eq(paths.id, pathSteps.pathId))
-    .where(and(eq(paths.gapAnalysisId, analysisId), isNull(pathSteps.goalId)));
+    .where(and(eq(paths.gapAnalysisId, analysisId), isNull(pathSteps.goalId), eq(pathSteps.source, "app")));
 }
 
 /** The goal changes ./sync.ts plans for these rows. */
