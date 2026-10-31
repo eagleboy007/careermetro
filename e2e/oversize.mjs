@@ -36,6 +36,12 @@ const PAGES = [
   { name: "today", path: "/today" },
   // The seed's own pitstops draw spurs on the line (T172): each spur label must stay inside the map's viewBox.
   { name: "map", path: "/map", spurs: true },
+  // T176: the Map with a side panel open, each at the Map's own limit (DEFAULT_LIMIT; the panel sits beside the map at
+  // 1280 and under it at 390). The earlier line's panel (C25) lists the seed's MAX_GAPS waiting goals, 80-character
+  // names, the first with "3 pitstops added by you, kept": about 20 rows of 60 to 100 px at 390 plus the map, a first
+  // estimate. The On your line panel (C13) shows the count and three 40-character connection names, a few hundred px.
+  { name: "map-earlier", path: "/map", open: "earlier" },
+  { name: "map-people", path: "/map", open: "people" },
   // My jobs: 20 full rows at 1280 px. At 390 px (C24) 10 folded rows of about 80 px before Show more, plus the header,
   // tabs, filters and the add box: about 2,500, an estimate, so 4,000 is the phone height check.
   { name: "my-jobs", path: "/departures?tab=mine", limit: 12_000, phoneLimit: 4_000 },
@@ -136,6 +142,37 @@ const spurLabels = (q) =>
     return { count: texts.length, outside };
   });
 
+/**
+ * Opens one of the Map's side panels (T176) from the keyboard, as a person would, so a mark under another one still
+ * opens: "earlier" is the earlier line (C25), "people" the On your line count and names (C13), on the pitstop the Map
+ * opens on or, failing that, the "you are here" one. Throws when the panel doesn't show what the seed put there.
+ */
+async function openPanel(q, open) {
+  const aside = q.locator('aside[aria-label="Pitstop details"]');
+  if (open === "earlier") {
+    const mark = q.locator("svg g[data-earlier]").first();
+    if (!(await mark.count())) throw new Error("no earlier line on the map, though the seed changes destination");
+    await mark.focus();
+    await q.keyboard.press("Enter");
+    await aside.getByText("Stayed on this line", { exact: true }).waitFor({ timeout: 5000 });
+    const rows = await aside.locator("ul > li").count();
+    if (rows < 20) throw new Error(`the earlier line's panel lists ${rows} goals, not the seed's 20`);
+    return;
+  }
+  const people = aside.locator("[data-pitstop-people]");
+  if (!(await people.count())) {
+    const here = q.locator('svg g[role="button"][aria-label*="you are here"]').first();
+    if (await here.count()) {
+      await here.focus();
+      await q.keyboard.press("Enter");
+    }
+  }
+  await people.first().waitFor({ timeout: 5000 });
+  const text = (await people.first().textContent()) ?? "";
+  if (!/\d+ people on this pitstop/.test(text)) throw new Error("the people panel shows no count");
+  if (!(await people.first().locator("li").count())) throw new Error("the people panel names no connections, though the seed connects riders");
+}
+
 /** Waits for the page's own loading states to end, as the walk does. */
 async function settle(q) {
   await q.locator("main").first().waitFor({ timeout: 20000 });
@@ -187,6 +224,7 @@ try {
               await group.getByRole("button", { name: page.layout, exact: true }).click();
               await group.getByRole("button", { name: page.layout, exact: true, pressed: true }).waitFor({ timeout: 5000 });
             }
+            if (page.open) await openPanel(q, page.open);
             if (await q.getByText("Something went wrong").count()) throw new Error("error page");
             const m = await measure(q);
             const ms = Date.now() - started;
