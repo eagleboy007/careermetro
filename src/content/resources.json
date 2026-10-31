@@ -18585,5 +18585,27 @@
     ],
     "minutes": 45,
     "free": true
+  },
+  {
+    "title": "Master circular for compliance with SEBI (LODR) Regulations 2015 by listed entities (exchange copy, Nov 2024)",
+    "url": "https://msei.in/SX-Content/Company-Circulars/2024/November/EXCHANGE-18-NOV-2024-MASTER-CIRCULAR-FOR-COMPLIANCE-WITH-THE-PROVISIONS-OF-THE-SEBI-(LODR)-REGULATIONS--2015-BY-LISTED-ENTITIES.pdf",
+    "provider": "Metropolitan Stock Exchange of India (SEBI circular)",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-lodr-compliance"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Financial underwriting explained (insurance dictionary)",
+    "url": "https://lifeinsurance.adityabirlacapital.com/insurance-dictionary/f/financial-underwriting/",
+    "provider": "Aditya Birla Sun Life Insurance",
+    "kind": "docs",
+    "skillIds": [
+      "financial-underwriting"
+    ],
+    "minutes": 10,
+    "free": true
   }
 ]
