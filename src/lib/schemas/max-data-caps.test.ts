@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  LONE_PITSTOPS,
   MANY_LINES_NOTE,
   maxBuilderAnswers,
   maxEvent,
@@ -9,8 +10,10 @@ import {
   maxMeEducation,
   maxMeRoles,
   maxMessage,
+  maxOwnPitstops,
   maxProfile,
   maxStories,
+  OWN_PITSTOP_GOALS,
   peerName,
   SIZES,
   textOf,
@@ -27,12 +30,16 @@ import {
   MY_JOB_CITY_MAX,
   MY_JOB_NOTE_MAX,
   MY_JOBS_MAX,
+  OWN_PITSTOP_TITLE_MAX,
+  OWN_PITSTOPS_MAX,
+  OWN_PITSTOPS_PER_GOAL,
   PROFILE_HIGHLIGHT_MAX,
   PROFILE_TEXT_MAX,
   STORIES_MAX,
   STORY_PART_MAX,
   TIMETABLE_EVENTS_MAX,
 } from "./constants";
+import { ownPitstopTitle } from "./pitstops";
 import { profile } from "./profile";
 import { eventRow } from "./timetable";
 
@@ -93,6 +100,20 @@ describe("max-data seed text", () => {
     expect(MANY_LINES_NOTE.split("\n")).toHaveLength(201);
     expect(MANY_LINES_NOTE.length).toBeLessThanOrEqual(MY_JOB_NOTE_MAX);
     expect(maxMessage(0)).toMatch(/^[A-Za-z]{2000}$/);
+  });
+
+  it("gives own pitstop names the add form's check keeps whole, at the cap, the lone ones last (T172)", () => {
+    const names = maxOwnPitstops();
+    expect(names).toHaveLength(OWN_PITSTOPS_MAX);
+    for (const name of names) expect(ownPitstopTitle.parse(name)).toBe(name);
+    expect(names.filter((n) => n.length === OWN_PITSTOP_TITLE_MAX).length).toBeGreaterThanOrEqual(OWN_PITSTOPS_MAX - 1);
+    const lone = names.slice(-LONE_PITSTOPS);
+    expect(lone[0]).toMatch(/^[A-Za-z]{40}$/);
+    expect(lone[1]).toMatch(/[ऀ-ॿ]/);
+    expect(lone[2]).toMatch(/\p{Extended_Pictographic}/u);
+    expect(names[0]).toContain(" ");
+    expect((OWN_PITSTOPS_MAX - LONE_PITSTOPS) % OWN_PITSTOPS_PER_GOAL).toBe(0);
+    expect(OWN_PITSTOP_GOALS).toBe((OWN_PITSTOPS_MAX - LONE_PITSTOPS) / OWN_PITSTOPS_PER_GOAL + LONE_PITSTOPS);
   });
 
   it("gives a builder draft the builder's own schema keeps whole", () => {

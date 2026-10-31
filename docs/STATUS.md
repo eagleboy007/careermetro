@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (T170: walk covers the Timetable)
+Last updated: 2026-10-31 (T171: walk retries a reset socket once; T172: max-data own pitstops, oversize spur labels)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -102,6 +102,8 @@ Last updated: 2026-10-31 (T170: walk covers the Timetable)
 - C24: My jobs rows close to two lines below 760 px (title + status chip; company · date that matters · gap count), tap to open; phones page at 10; oversize my-jobs limit 4,000.
 - T168: the Timetable pages at 10 events on phones too (`usePhonePage`, below 760 px); oversize timetable phone limit 12,000 (was 15,038 px of 20,000).
 - T169: the walk scans Corporate Messages only once Send is enabled again after the question (axe caught the dimmed button mid-send, main red on 32bd9af).
+- T171: every `request.*` call in `e2e/walk.mjs` and `e2e/oversize.mjs` goes through `api()`, which sends it again once on ECONNRESET or "socket hang up" (never on an HTTP status); "add a pitstop" reads the download only once the Map's Add a pitstop button shows.
+- T172: the max-data seed adds 30 own pitstops through `addOwnPitstop` (3 on each of 9 gap goals, then 1 each on 3 more so their spurs show the name: a 40-letter word, Hindi, emoji; names at 40, the first with a free course); oversize fails when a Map spur label's getBBox leaves the SVG viewBox, at 390 and 1280.
 - Re-test 34 fixes T115 to T118: the staging smoke scripts go on only when `/api/health` says `"env": "preview"` (T115).
 - The dry run's deadline also respects the job's limit; a stuck step is given up and the account deleted in a fresh browser context within the 15-minute step (T116). A sample's job check is not found once the owner has gaps of their own (T117).
 - `/api/csp-report` logs each directive and host once an hour, with an hourly `csp_violation_summary` of repeats and addresses; the report-only CSP is set per request in `src/proxy.ts`, so a promoted preview build no longer sends toolbar hosts on production (T118).
