@@ -1,0 +1,118 @@
+{
+  "slug": "billing-quantity-engineer-civil",
+  "title": "Billing Engineer - Civil",
+  "summary": "A billing engineer measures what has been built on a construction project and turns it into bills, so the contractor is paid and subcontractors are paid correctly. They sit in the project's billing or quantity surveying (QS) team, working from drawings, the BOQ (bill of quantities) and site measurements.",
+  "dailyDuties": [
+    "Take off quantities from architectural and structural drawings",
+    "Prepare client RA bills and check subcontractor bills against measurements",
+    "Record joint measurements with the site team and update measurement sheets",
+    "Prepare rate analysis for extra and non-BOQ items",
+    "Prepare bar bending schedules for steel work",
+    "Reconcile cement and steel issued against work done",
+    "Keep billing trackers and measurement sheets in Excel"
+  ],
+  "typicalTitles": [
+    "Billing Engineer",
+    "Quantity Surveyor - Civil",
+    "QS Engineer - Civil",
+    "Junior Quantity Surveyor",
+    "Billing and QS Engineer",
+    "Site Billing Engineer - Civil",
+    "Trainee Billing Engineer",
+    "Estimation and Billing Engineer - Civil"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "quantity-takeoff",
+      "importance": "required",
+      "expectation": "Take off quantities from architectural and structural drawings",
+      "postingShare": null
+    },
+    {
+      "skillId": "boq-rate-analysis",
+      "importance": "required",
+      "expectation": "Prepare a BOQ and do rate analysis for items",
+      "postingShare": null
+    },
+    {
+      "skillId": "ra-subcontractor-billing",
+      "importance": "required",
+      "expectation": "Prepare RA bills and check subcontractor bills against measurements",
+      "postingShare": null
+    },
+    {
+      "skillId": "is-1200-measurement-rules",
+      "importance": "required",
+      "expectation": "Measure work using IS 1200 rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "civil-drawing-reading",
+      "importance": "required",
+      "expectation": "Read civil drawings well enough to measure from them",
+      "postingShare": null
+    },
+    {
+      "skillId": "bar-bending-schedule",
+      "importance": "required",
+      "expectation": "Prepare and check bar bending schedules",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build measurement sheets and bills in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Agree measurements with site teams, clients and subcontractors",
+      "postingShare": null
+    },
+    {
+      "skillId": "measurement-book-records",
+      "importance": "nice_to_have",
+      "expectation": "Keep measurement books and joint measurement sheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "material-reconciliation",
+      "importance": "nice_to_have",
+      "expectation": "Reconcile cement, steel and other materials",
+      "postingShare": null
+    },
+    {
+      "skillId": "autocad-2d-drafting",
+      "importance": "nice_to_have",
+      "expectation": "Measure areas and lengths from drawings in AutoCAD",
+      "postingShare": null
+    },
+    {
+      "skillId": "construction-contract-conditions",
+      "importance": "nice_to_have",
+      "expectation": "Know CPWD or FIDIC contract terms for billing",
+      "postingShare": null
+    },
+    {
+      "skillId": "site-progress-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Use site progress reports to check billed work",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

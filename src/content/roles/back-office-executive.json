@@ -1,0 +1,109 @@
+{
+  "slug": "back-office-executive",
+  "title": "Back Office Executive",
+  "summary": "A back office executive does the non-customer-facing processing work in a bank, insurer, broker, BPO or e-commerce company: entering and checking data, scrutinising forms and documents, and preparing MIS reports. They work in an operations team to turnaround time (TAT) and accuracy targets set in a written procedure (SOP).",
+  "dailyDuties": [
+    "Enter and verify customer and transaction data in the core system",
+    "Check account opening forms, proposals or KYC documents against the SOP",
+    "Raise and track discrepancies with branches or internal teams",
+    "Prepare daily MIS reports on volumes, pending cases and TAT",
+    "Update client master records and upload documents to registries",
+    "Meet daily accuracy and turnaround targets in rotational shifts"
+  ],
+  "typicalTitles": [
+    "Back Office Associate",
+    "Operations Associate - Back Office",
+    "Banking Operations Executive",
+    "Policy Issuance Executive",
+    "Data Verification Executive",
+    "Non-Voice Process Associate"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 2
+  },
+  "skills": [
+    {
+      "skillId": "data-entry-verification",
+      "importance": "required",
+      "expectation": "Enter and check customer and transaction data quickly and accurately",
+      "postingShare": null
+    },
+    {
+      "skillId": "back-office-document-processing",
+      "importance": "required",
+      "expectation": "Scrutinise forms and supporting documents against the SOP",
+      "postingShare": null
+    },
+    {
+      "skillId": "operations-mis-reporting",
+      "importance": "required",
+      "expectation": "Prepare daily and weekly MIS reports on volumes, pendencies and TAT",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep trackers in Excel with formulas, sorting and filters",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "required",
+      "expectation": "Use VLOOKUP and pivot tables for MIS reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-tat-accuracy",
+      "importance": "required",
+      "expectation": "Meet turnaround time and accuracy targets for each case",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear emails to internal teams about pending documents",
+      "postingShare": null
+    },
+    {
+      "skillId": "kyc-verification",
+      "importance": "nice_to_have",
+      "expectation": "Check KYC documents for account opening or policy issuance",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know basic banking, insurance or broking products and processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "account-reconciliations",
+      "importance": "nice_to_have",
+      "expectation": "Match records between systems and flag differences",
+      "postingShare": null
+    },
+    {
+      "skillId": "tally-accounting-software",
+      "importance": "nice_to_have",
+      "expectation": "Post simple entries where the back office also handles accounts",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "mos-excel-associate",
+      "importance": "optional",
+      "why": "Shows Excel skill for MIS work"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

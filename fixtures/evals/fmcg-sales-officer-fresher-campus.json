@@ -1,0 +1,52 @@
+{
+  "id": "fmcg-sales-officer-fresher-campus",
+  "roleSlug": "fmcg-sales-officer",
+  "persona": "fresher-campus",
+  "resumeText": "Rohit Yadav | Lucknow | rohit.yadav@example.com\n\nEDUCATION\nBBA (Marketing), Awadh College of Management, Lucknow, 2026\n\nSUMMER INTERNSHIP\nSales Intern, Gomti Consumer Products Pvt Ltd, Lucknow (May 2025 - Jul 2025)\n- Followed the beat planning set by the sales officer in Aminabad and Chowk markets.\n- Did retailer visits and outlet order booking for 40 kirana stores a day.\n- Joined field sales rounds with the distributor salesman twice a week.\n- Set up in-store displays and checked shelf placement in 25 general stores.\n- Ran a market research survey of 200 retailers on a new biscuit pack.\n\nSKILLS\nExcel, Hindi, English, two-wheeler with licence\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "primary-secondary-sales",
+        "quote": "Followed the beat planning set by the sales officer"
+      },
+      {
+        "skillId": "retailer-order-booking",
+        "quote": "retailer visits and outlet order booking for 40 kirana stores"
+      },
+      {
+        "skillId": "field-sales-meetings",
+        "quote": "Joined field sales rounds with the distributor salesman"
+      },
+      {
+        "skillId": "visual-merchandising",
+        "quote": "Set up in-store displays and checked shelf placement"
+      },
+      {
+        "skillId": "customer-market-research",
+        "quote": "Ran a market research survey of 200 retailers"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Excel, Hindi, English, two-wheeler with licence"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "excel",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "dms-sfa-tools",
+      "distributor-management",
+      "trade-spend-management",
+      "channel-credit-collections"
+    ]
+  },
+  "reviewedBy": null
+}

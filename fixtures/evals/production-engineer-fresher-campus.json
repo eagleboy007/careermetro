@@ -1,0 +1,52 @@
+{
+  "id": "production-engineer-fresher-campus",
+  "roleSlug": "production-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Karthik Subramanian\nHosur, Tamil Nadu | karthik.s@example.com\n\nEDUCATION\nB.E. Production Engineering, Thenpennai College of Engineering (made-up), Hosur, 2026, 7.9 CGPA\n\nINTERNSHIP\nProduction Intern, Velan Auto Components Pvt Ltd (made-up), Hosur | May 2025 - Jul 2025\n- Prepared the daily production plan for a brake caliper assembly line against shift targets\n- Calculated OEE for two CNC cells and listed the top downtime losses for the shift engineer\n- Mapped machining processes for caliper brackets and noted cycle times per station\n- Suggested a kaizen to cut operator walking on the line, which the shift engineer adopted\n- Used why-why analysis to find the cause of a repeat torque failure at station 4\n- Kept the hourly production board data in MS Excel for the line\n\nSKILLS\nOEE, kaizen, AutoCAD, MS Excel, Tamil, English\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "production-planning-control",
+        "quote": "Prepared the daily production plan for a brake caliper assembly line"
+      },
+      {
+        "skillId": "oee-productivity-tracking",
+        "quote": "Calculated OEE for two CNC cells"
+      },
+      {
+        "skillId": "materials-manufacturing-processes",
+        "quote": "Mapped machining processes for caliper brackets"
+      },
+      {
+        "skillId": "lean-waste-elimination",
+        "quote": "Suggested a kaizen to cut operator walking"
+      },
+      {
+        "skillId": "root-cause-analysis-tools",
+        "quote": "Used why-why analysis to find the cause"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Kept the hourly production board data in MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "industrial-safety-practices",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-pp-configuration",
+      "dmaic-six-sigma",
+      "statistical-process-analysis",
+      "plc-iec-61131-programming"
+    ]
+  },
+  "reviewedBy": null
+}

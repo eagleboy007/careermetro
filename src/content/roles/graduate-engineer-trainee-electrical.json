@@ -1,0 +1,123 @@
+{
+  "slug": "graduate-engineer-trainee-electrical",
+  "title": "Graduate Engineer Trainee - Electrical",
+  "summary": "A graduate engineer trainee (GET) in electrical joins a power utility, EPC contractor (a firm that designs, buys and builds projects) or factory straight from college. Trainees rotate through sites and teams, supporting senior engineers with substation work, drawings, testing and commissioning before taking a permanent post.",
+  "dailyDuties": [
+    "Study single line diagrams and substation layout drawings for the current project",
+    "Support testing of transformers, breakers, CTs and relays during commissioning",
+    "Check equipment installation against drawings and schedules",
+    "Follow permit and safety procedures before work on live or isolated equipment",
+    "Update test records and progress trackers in Excel",
+    "Coordinate with vendors and contractors on site",
+    "Attend training and rotation sessions across project departments"
+  ],
+  "typicalTitles": [
+    "GET Electrical",
+    "Engineer Trainee - Electrical",
+    "Trainee Engineer - Electrical",
+    "Engineering Executive Trainee - Electrical",
+    "Graduate Trainee Engineer - Power Distribution",
+    "Junior Electrical Engineer - Substation",
+    "Electrical Engineer Trainee - EPC"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 2
+  },
+  "skills": [
+    {
+      "skillId": "electrical-machines-transformers",
+      "importance": "required",
+      "expectation": "Know how motors, generators and transformers work and are rated",
+      "postingShare": null
+    },
+    {
+      "skillId": "substation-switchgear-basics",
+      "importance": "required",
+      "expectation": "Recognise substation equipment such as breakers, isolators, CTs, PTs and panels",
+      "postingShare": null
+    },
+    {
+      "skillId": "electrical-drawings-sld",
+      "importance": "required",
+      "expectation": "Read single line diagrams, schematics and layout drawings",
+      "postingShare": null
+    },
+    {
+      "skillId": "electrical-testing-commissioning",
+      "importance": "required",
+      "expectation": "Support tests such as insulation resistance and transformer checks during commissioning",
+      "postingShare": null
+    },
+    {
+      "skillId": "electrical-safety-ie-rules",
+      "importance": "required",
+      "expectation": "Follow electrical safety practice and the CEA safety regulations (formerly IE Rules)",
+      "postingShare": null
+    },
+    {
+      "skillId": "electrical-cad-tools",
+      "importance": "required",
+      "expectation": "Make or edit electrical drawings in AutoCAD Electrical or a similar tool",
+      "postingShare": null
+    },
+    {
+      "skillId": "electrical-load-calculations",
+      "importance": "required",
+      "expectation": "Do basic load, cable sizing and earthing calculations",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep test records, checklists and progress trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Report to site leads and coordinate with vendors and contractors",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-system-protection",
+      "importance": "nice_to_have",
+      "expectation": "Understand relays and protection schemes",
+      "postingShare": null
+    },
+    {
+      "skillId": "industrial-control-systems",
+      "importance": "nice_to_have",
+      "expectation": "Work with PLC or SCADA systems in plants or substations",
+      "postingShare": null
+    },
+    {
+      "skillId": "matlab-simulink",
+      "importance": "nice_to_have",
+      "expectation": "Simulate simple power system or machine models",
+      "postingShare": null
+    },
+    {
+      "skillId": "site-progress-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Write daily site and progress reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "nice_to_have",
+      "expectation": "Help find the cause of equipment faults",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

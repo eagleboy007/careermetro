@@ -17,6 +17,7 @@ export const FIELDS = [
   { file: "roles-testing.csv", name: "Testing and quality", families: ["quality"] },
   { file: "roles-other.csv", name: "Software, hardware, delivery and marketing", families: ["backend", "frontend-mobile", "hardware", "delivery", "marketing"] },
   { file: "roles-business.csv", name: "Sales, finance, HR and operations", families: ["sales", "finance", "hr", "operations"] },
+  { file: "roles-core-engineering.csv", name: "Core engineering (mechanical, electrical and civil)", families: ["core-engineering"] },
 ];
 
 export const ANSWER_COLUMNS = ["Agree (yes / no)", "Change to", "Comment"];
@@ -25,7 +26,7 @@ const ROLE_COLUMNS = ["Ref", "Role", "Section", "Item", "Detail", ...ANSWER_COLU
 const IMPORTANCE = { required: "Required", nice_to_have: "Nice to have" };
 
 /**
- * Changes Development made to a drafted role after an eval showed a problem (F0, 2026-10-31). Each one waits for the
+ * Changes Development made to a drafted role after an eval showed a problem (F0 and F1, 2026-10-31). Each one waits for the
  * field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
  */
 export const SIGN_OFF = [
@@ -33,6 +34,9 @@ export const SIGN_OFF = [
   { ref: "it-auditor#skill:domain-bfsi", note: "Nice to have (was Required): IT auditors work in every sector, not only banking and insurance." },
   { ref: "salesforce-developer#skill:salesforce-clouds", note: "Required (was Nice to have): developers build on Sales or Service Cloud from day one." },
   { ref: "salesforce-developer#skill:salesforce-security-model", note: "New Required skill: profiles, permission sets, sharing, and CRUD/FLS checks in code." },
+  { ref: "management-trainee#title", note: "Grouped with sales roles (drafted under operations): most campus management trainee programmes start in sales." },
+  { ref: "management-trainee#skill:financial-statement-analysis", note: "Nice to have (was Required): trainees learn it on the programme." },
+  { ref: "site-reliability-engineer#titles", note: "\"Production Engineer\" removed: in India it usually means a manufacturing role, now its own profile." },
 ];
 const signOffNote = new Map(SIGN_OFF.map((c) => [c.ref, c.note]));
 

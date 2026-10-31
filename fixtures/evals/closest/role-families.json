@@ -195,7 +195,9 @@
       "channel-sales-manager",
       "real-estate-sales-executive",
       "home-loan-sales-officer",
-      "category-manager-ecommerce"
+      "category-manager-ecommerce",
+      "fmcg-sales-officer",
+      "management-trainee"
     ],
     "finance": [
       "financial-analyst",
@@ -210,7 +212,9 @@
       "insurance-underwriter",
       "company-secretary-associate",
       "investment-banking-analyst",
-      "cost-accountant"
+      "cost-accountant",
+      "article-assistant-ca",
+      "bank-probationary-officer"
     ],
     "hr": [
       "hr-generalist",
@@ -232,7 +236,17 @@
       "admin-facilities-executive",
       "customer-service-team-leader",
       "quality-control-inspector",
-      "export-import-executive"
+      "export-import-executive",
+      "back-office-executive"
+    ],
+    "core-engineering": [
+      "graduate-engineer-trainee-mechanical",
+      "production-engineer",
+      "maintenance-engineer",
+      "graduate-engineer-trainee-electrical",
+      "mechanical-design-engineer",
+      "site-engineer-civil",
+      "billing-quantity-engineer-civil"
     ]
   },
   "neighbours": [
@@ -355,6 +369,18 @@
     [
       "hr",
       "operations"
+    ],
+    [
+      "core-engineering",
+      "hardware"
+    ],
+    [
+      "core-engineering",
+      "operations"
+    ],
+    [
+      "core-engineering",
+      "quality"
     ]
   ],
   "alsoNear": [

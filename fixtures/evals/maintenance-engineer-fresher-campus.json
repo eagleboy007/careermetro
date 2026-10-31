@@ -1,0 +1,56 @@
+{
+  "id": "maintenance-engineer-fresher-campus",
+  "roleSlug": "maintenance-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Mohammed Irfan Shaikh\nVadodara, Gujarat | irfan.shaikh@example.com\n\nEDUCATION\nB.E. Mechanical Engineering, Vishwamitri Institute of Technology (made-up), Vadodara, 2026, 7.6 CGPA\n\nINTERNSHIP\nMaintenance Intern, Narmada Polymers Ltd (made-up), Vadodara | Jun 2025 - Aug 2025\n- Assisted preventive maintenance of injection moulding machines using the PM checklists\n- Logged breakdowns and calculated MTTR and MTBF for six machines over the internship\n- Traced leaks in hydraulic systems of two presses and replaced faulty seals with the technician\n- Helped with bearing replacement and shaft alignment on a cooling tower pump\n- Followed lock out tag out before every job on the press line\n\nSKILLS\n5 Whys, AutoCAD, MS Excel, Gujarati, Hindi, English\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "preventive-maintenance",
+        "quote": "Assisted preventive maintenance of injection moulding machines"
+      },
+      {
+        "skillId": "maintenance-reliability-metrics",
+        "quote": "calculated MTTR and MTBF for six machines"
+      },
+      {
+        "skillId": "hydraulics-pneumatics",
+        "quote": "Traced leaks in hydraulic systems of two presses"
+      },
+      {
+        "skillId": "mechanical-equipment-maintenance",
+        "quote": "Helped with bearing replacement and shaft alignment"
+      },
+      {
+        "skillId": "industrial-safety-practices",
+        "quote": "Followed lock out tag out before every job"
+      },
+      {
+        "skillId": "root-cause-analysis-tools",
+        "quote": "5 Whys, AutoCAD, MS Excel, Gujarati, Hindi, English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "root-cause-analysis-tools",
+        "status": "weak"
+      },
+      {
+        "skillId": "engineering-drawing-reading",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "plc-iec-61131-programming",
+      "sap-pm-maintenance",
+      "inventory-planning-optimization",
+      "industrial-control-systems"
+    ]
+  },
+  "reviewedBy": null
+}

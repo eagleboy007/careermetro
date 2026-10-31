@@ -1,0 +1,133 @@
+{
+  "slug": "management-trainee",
+  "title": "Management Trainee",
+  "summary": "A management trainee joins a large company straight from an MBA or PGDM and spends 12 to 24 months rotating through functions such as sales, supply chain and finance, with live projects in each. At the end the trainee is placed as a junior manager, often first in frontline sales.",
+  "dailyDuties": [
+    "Spend a rotation in the field with frontline sales teams and distributors",
+    "Work on a live project set by a business mentor",
+    "Analyse sales, cost or supply data in Excel",
+    "Visit plants, depots or warehouses during the supply chain stint",
+    "Present project findings and recommendations to leaders",
+    "Join monthly business reviews with the finance team"
+  ],
+  "typicalTitles": [
+    "Management Trainee - Sales and Marketing",
+    "Management Trainee - Supply Chain",
+    "Management Trainee - Finance",
+    "Graduate Management Trainee",
+    "Executive Trainee - Corporate Functions",
+    "Leadership Programme Trainee - FMCG"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 2
+  },
+  "skills": [
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build clean Excel sheets to analyse sales, cost and supply data",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "required",
+      "expectation": "Use pivot tables and lookups to summarise large data sets",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-presentation-decks",
+      "importance": "required",
+      "expectation": "Present project findings to senior managers in a short slide deck",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-statement-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Read a P&L and balance sheet and work out basic ratios",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-market-research",
+      "importance": "required",
+      "expectation": "Run field or survey research with retailers and consumers",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-case",
+      "importance": "required",
+      "expectation": "Put together a cost-benefit case for a project recommendation",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write and speak clearly with frontline teams and leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work across sales, supply chain and finance teams during rotations",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "required",
+      "expectation": "Break an open business problem into steps and data checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "primary-secondary-sales",
+      "importance": "nice_to_have",
+      "expectation": "Learn distributor and retailer sales during the frontline sales stint",
+      "postingShare": null
+    },
+    {
+      "skillId": "demand-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Support demand planning during a supply chain rotation",
+      "postingShare": null
+    },
+    {
+      "skillId": "inventory-planning-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Look at stock levels and service at depots or plants",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpa-variance-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Help with monthly business reviews during a finance rotation",
+      "postingShare": null
+    },
+    {
+      "skillId": "dmaic-six-sigma",
+      "importance": "nice_to_have",
+      "expectation": "Use Lean or Six Sigma tools on a plant or process project",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build a simple dashboard for a project",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "mos-excel-associate",
+      "importance": "optional",
+      "why": "Shows Excel skill before campus interviews; not usually asked"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

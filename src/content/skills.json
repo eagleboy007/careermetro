@@ -11427,5 +11427,880 @@
     ],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "business-presentation-decks",
+    "name": "Business presentations in PowerPoint",
+    "category": "tools",
+    "aliases": [
+      "powerpoint",
+      "ms powerpoint",
+      "microsoft powerpoint",
+      "powerpoint presentations",
+      "presentation decks",
+      "google slides"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "data-entry-verification",
+    "name": "Data entry and verification",
+    "category": "business",
+    "aliases": [
+      "data entry",
+      "data entry operations",
+      "data verification",
+      "typing speed",
+      "maker-checker",
+      "maker checker"
+    ],
+    "ambiguous": [
+      "data verification",
+      "maker-checker",
+      "maker checker"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "operations-mis-reporting",
+    "name": "Operations MIS reports",
+    "category": "business",
+    "aliases": [
+      "mis reports",
+      "mis report",
+      "daily mis reports",
+      "mis preparation",
+      "operations mis",
+      "tat reports"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "back-office-document-processing",
+    "name": "Back-office document processing and scrutiny",
+    "category": "business",
+    "aliases": [
+      "document processing",
+      "document scrutiny",
+      "document verification",
+      "account opening forms",
+      "form scrutiny",
+      "policy issuance"
+    ],
+    "ambiguous": [
+      "document processing",
+      "document verification"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "process-tat-accuracy",
+    "name": "Working to turnaround time and accuracy targets",
+    "category": "business",
+    "aliases": [
+      "tat adherence",
+      "turnaround time targets",
+      "accuracy targets",
+      "processing accuracy",
+      "sop adherence"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "tax-audit-form-3cd",
+    "name": "Tax audit under section 44AB (Form 3CD)",
+    "category": "business",
+    "aliases": [
+      "tax audit",
+      "tax audit report",
+      "form 3cd",
+      "form 3ca",
+      "form 3cb",
+      "section 44ab"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "tds-return-filing",
+    "name": "TDS return preparation and filing",
+    "category": "business",
+    "aliases": [
+      "tds returns",
+      "tds return filing",
+      "form 26q",
+      "form 27q",
+      "traces portal",
+      "form 16a"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "retailer-order-booking",
+    "name": "Retailer visits and order booking",
+    "category": "business",
+    "aliases": [
+      "retailer order booking",
+      "outlet order booking",
+      "retailer visits",
+      "outlet visits",
+      "retail outlet visits",
+      "productive calls",
+      "lines per call",
+      "new outlet opening"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bank-branch-operations",
+    "name": "Bank branch operations (deposits, cash and clearing)",
+    "category": "business",
+    "aliases": [
+      "branch banking operations",
+      "bank branch operations",
+      "cheque clearing",
+      "cts clearing",
+      "cash and clearing operations",
+      "teller operations",
+      "deposit account opening"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "core-banking-systems",
+    "name": "Core banking systems (Finacle, BaNCS, Flexcube)",
+    "category": "tools",
+    "aliases": [
+      "finacle",
+      "infosys finacle",
+      "tcs bancs",
+      "oracle flexcube",
+      "flexcube",
+      "core banking solution",
+      "core banking system"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "autocad-2d-drafting",
+    "name": "AutoCAD 2D drafting",
+    "category": "tools",
+    "aliases": [
+      "autocad",
+      "autocad 2d",
+      "autocad drafting",
+      "2d drafting in autocad"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "electrical-machines-transformers",
+    "name": "Electrical machines and transformers",
+    "category": "business",
+    "aliases": [
+      "electrical machines",
+      "induction motors",
+      "transformer fundamentals",
+      "dc machines",
+      "synchronous machines"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "substation-switchgear-basics",
+    "name": "Substation equipment and switchgear basics",
+    "category": "business",
+    "aliases": [
+      "substation equipment",
+      "switchgear",
+      "hv switchgear",
+      "lt panels",
+      "ht panels",
+      "circuit breakers and isolators",
+      "gis substation",
+      "ais substation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "electrical-drawings-sld",
+    "name": "Electrical drawings and single line diagrams (SLDs)",
+    "category": "business",
+    "aliases": [
+      "single line diagram",
+      "single line diagrams",
+      "sld preparation",
+      "electrical schematics",
+      "control wiring diagrams",
+      "electrical layout drawings"
+    ],
+    "ambiguous": [
+      "electrical schematics"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "electrical-testing-commissioning",
+    "name": "Electrical testing and commissioning",
+    "category": "business",
+    "aliases": [
+      "testing and commissioning",
+      "pre-commissioning tests",
+      "insulation resistance test",
+      "megger test",
+      "relay testing",
+      "transformer testing",
+      "ct pt testing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "electrical-safety-ie-rules",
+    "name": "Electrical safety and CEA safety regulations (IE Rules)",
+    "category": "business",
+    "aliases": [
+      "indian electricity rules",
+      "ie rules",
+      "cea safety regulations",
+      "electrical safety",
+      "lockout tagout",
+      "electrical earthing safety"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "electrical-cad-tools",
+    "name": "Electrical CAD (AutoCAD Electrical, EPLAN)",
+    "category": "tools",
+    "aliases": [
+      "autocad electrical",
+      "eplan",
+      "eplan electric p8",
+      "zuken e3"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "autocad-2d-drafting"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "electrical-load-calculations",
+    "name": "Electrical load, cable sizing and earthing calculations",
+    "category": "business",
+    "aliases": [
+      "cable sizing",
+      "load calculation",
+      "load calculations",
+      "voltage drop calculation",
+      "earthing calculation",
+      "etap"
+    ],
+    "ambiguous": [
+      "load calculation",
+      "load calculations"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "power-system-protection",
+    "name": "Power system protection and relays",
+    "category": "business",
+    "aliases": [
+      "power system protection",
+      "protection relays",
+      "numerical relays",
+      "protection schemes",
+      "relay coordination"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "3d-cad-modelling",
+    "name": "3D CAD modelling (SolidWorks, Creo, CATIA, NX)",
+    "category": "tools",
+    "aliases": [
+      "solidworks",
+      "creo",
+      "creo parametric",
+      "catia",
+      "catia v5",
+      "siemens nx",
+      "unigraphics",
+      "part and assembly modelling",
+      "3d cad modelling"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mechanical-2d-drafting",
+    "name": "2D manufacturing drawings and drafting standards",
+    "category": "business",
+    "aliases": [
+      "2d drawings",
+      "manufacturing drawings",
+      "detail drawings",
+      "assembly drawings",
+      "drafting standards",
+      "drawing creation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "tolerance-stack-up-analysis",
+    "name": "Fits, tolerances and tolerance stack-up",
+    "category": "business",
+    "aliases": [
+      "tolerance stack-up",
+      "tolerance stackup",
+      "tolerance stack-up analysis",
+      "worst case tolerance analysis",
+      "rss tolerance analysis",
+      "fits and tolerances"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bom-management",
+    "name": "Bill of materials (BOM) preparation",
+    "category": "business",
+    "aliases": [
+      "bill of materials",
+      "bom preparation",
+      "bom creation",
+      "engineering bom",
+      "ebom"
+    ],
+    "ambiguous": [
+      "bill of materials"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mechanical-design-calculations",
+    "name": "Mechanical design calculations",
+    "category": "business",
+    "aliases": [
+      "design calculations",
+      "machine design calculations",
+      "strength calculations",
+      "shaft design",
+      "bearing selection",
+      "stress calculations"
+    ],
+    "ambiguous": [
+      "design calculations"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "materials-manufacturing-processes",
+    "name": "Engineering materials and manufacturing processes",
+    "category": "business",
+    "aliases": [
+      "manufacturing processes",
+      "material selection",
+      "machining processes",
+      "sheet metal design",
+      "casting and forging processes"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dfm-dfa",
+    "name": "Design for manufacturing and assembly (DFM/DFA)",
+    "category": "business",
+    "aliases": [
+      "dfm",
+      "dfma",
+      "dfm/dfa",
+      "design for manufacturing",
+      "design for assembly",
+      "design for manufacturability"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fea-basics",
+    "name": "Finite element analysis basics (ANSYS, simulation)",
+    "category": "tools",
+    "aliases": [
+      "ansys",
+      "ansys workbench",
+      "finite element analysis",
+      "fea",
+      "solidworks simulation",
+      "hypermesh"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "design-fmea",
+    "name": "Design FMEA",
+    "category": "business",
+    "aliases": [
+      "dfmea",
+      "design fmea",
+      "fmea"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "civil-drawing-reading",
+    "name": "Reading structural and architectural drawings",
+    "category": "business",
+    "aliases": [
+      "structural drawings",
+      "architectural drawings",
+      "rcc drawings",
+      "reinforcement detailing drawings",
+      "gfc drawings",
+      "good for construction drawings"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "site-execution-supervision",
+    "name": "Construction site execution and supervision",
+    "category": "business",
+    "aliases": [
+      "site execution",
+      "site supervision",
+      "construction supervision",
+      "rcc work execution",
+      "shuttering and reinforcement checking",
+      "formwork and reinforcement checks"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "concrete-quality-tests",
+    "name": "Concrete and material quality tests (cube, slump)",
+    "category": "business",
+    "aliases": [
+      "cube test",
+      "cube tests",
+      "slump test",
+      "slump cone test",
+      "concrete cube testing",
+      "compressive strength test",
+      "sieve analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "surveying-levelling",
+    "name": "Surveying, levelling and setting out",
+    "category": "business",
+    "aliases": [
+      "total station",
+      "auto level",
+      "dumpy level",
+      "surveying and levelling",
+      "setting out",
+      "site layout marking"
+    ],
+    "ambiguous": [
+      "setting out"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "is-456-concrete-codes",
+    "name": "IS codes for concrete work (IS 456 and related)",
+    "category": "business",
+    "aliases": [
+      "is 456",
+      "is 456:2000",
+      "is 10262",
+      "is 383",
+      "is 516"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "quantity-takeoff",
+    "name": "Quantity take-off and estimation from drawings",
+    "category": "business",
+    "aliases": [
+      "quantity take-off",
+      "quantity takeoff",
+      "quantity estimation",
+      "estimation and costing",
+      "material quantity estimation",
+      "quantity calculations from drawings"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bar-bending-schedule",
+    "name": "Bar bending schedules (BBS)",
+    "category": "business",
+    "aliases": [
+      "bar bending schedule",
+      "bar bending schedules",
+      "bbs preparation",
+      "steel bbs"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "site-progress-reporting",
+    "name": "Daily progress reports and site records",
+    "category": "business",
+    "aliases": [
+      "daily progress report",
+      "daily progress reports",
+      "site diary",
+      "weekly progress reports",
+      "daily site reports"
+    ],
+    "ambiguous": [
+      "weekly progress reports"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "construction-site-safety",
+    "name": "Construction site safety",
+    "category": "business",
+    "aliases": [
+      "construction safety",
+      "site safety",
+      "toolbox talks",
+      "scaffolding safety",
+      "work at height safety"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "labour-contractor-coordination",
+    "name": "Labour and subcontractor coordination at site",
+    "category": "business",
+    "aliases": [
+      "labour coordination",
+      "subcontractor coordination",
+      "contractor coordination",
+      "labour management at site"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "boq-rate-analysis",
+    "name": "BOQ preparation and rate analysis",
+    "category": "business",
+    "aliases": [
+      "boq",
+      "boq preparation",
+      "bill of quantities",
+      "rate analysis",
+      "schedule of rates",
+      "dsr rates"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ra-subcontractor-billing",
+    "name": "RA bills and subcontractor billing",
+    "category": "business",
+    "aliases": [
+      "ra bills",
+      "ra bill",
+      "running account bills",
+      "running account bill",
+      "subcontractor bills",
+      "subcontractor billing",
+      "client billing"
+    ],
+    "ambiguous": [
+      "client billing"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "is-1200-measurement-rules",
+    "name": "IS 1200 methods of measurement",
+    "category": "business",
+    "aliases": [
+      "is 1200",
+      "is 1200 measurement",
+      "mode of measurement",
+      "method of measurement of building works"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "measurement-book-records",
+    "name": "Measurement books and joint measurement records",
+    "category": "business",
+    "aliases": [
+      "measurement book",
+      "measurement books",
+      "joint measurement sheet",
+      "joint measurement sheets",
+      "measurement sheets"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "material-reconciliation",
+    "name": "Construction material reconciliation",
+    "category": "business",
+    "aliases": [
+      "material reconciliation",
+      "cement reconciliation",
+      "steel reconciliation",
+      "cement and steel reconciliation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "construction-contract-conditions",
+    "name": "Construction contract conditions (CPWD, FIDIC)",
+    "category": "business",
+    "aliases": [
+      "fidic",
+      "cpwd contract conditions",
+      "general conditions of contract",
+      "cpwd works manual"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "industrial-safety-practices",
+    "name": "Plant safety practices (PPE, work permits, LOTO, HIRA)",
+    "category": "business",
+    "aliases": [
+      "industrial safety",
+      "loto",
+      "lock out tag out",
+      "loto procedures",
+      "work permit system",
+      "hira",
+      "hazard identification and risk assessment",
+      "job safety analysis",
+      "near miss reporting"
+    ],
+    "ambiguous": [
+      "hira"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "production-planning-control",
+    "name": "Production planning and line targets",
+    "category": "business",
+    "aliases": [
+      "production planning and control",
+      "daily production plan",
+      "daily production planning",
+      "shift production targets",
+      "line balancing",
+      "production scheduling",
+      "takt time"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "oee-productivity-tracking",
+    "name": "OEE and line loss tracking",
+    "category": "business",
+    "aliases": [
+      "oee",
+      "overall equipment effectiveness",
+      "oee improvement",
+      "oee tracking",
+      "cycle time reduction",
+      "downtime analysis",
+      "machine utilisation"
+    ],
+    "ambiguous": [
+      "cycle time reduction",
+      "downtime analysis",
+      "machine utilisation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "preventive-maintenance",
+    "name": "Preventive and breakdown maintenance (incl. TPM)",
+    "category": "business",
+    "aliases": [
+      "preventive maintenance",
+      "breakdown maintenance",
+      "planned maintenance",
+      "pm checklists",
+      "pm schedule",
+      "total productive maintenance",
+      "tpm pillars",
+      "autonomous maintenance",
+      "jishu hozen",
+      "predictive maintenance"
+    ],
+    "ambiguous": [
+      "predictive maintenance",
+      "planned maintenance"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "maintenance-reliability-metrics",
+    "name": "Maintenance KPIs (MTTR, MTBF, downtime)",
+    "category": "business",
+    "aliases": [
+      "mttr",
+      "mtbf",
+      "mean time between failures",
+      "mean time to repair",
+      "breakdown analysis",
+      "maintenance kpis"
+    ],
+    "ambiguous": [
+      "mttr",
+      "mtbf",
+      "mean time between failures",
+      "mean time to repair"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hydraulics-pneumatics",
+    "name": "Hydraulic and pneumatic systems",
+    "category": "business",
+    "aliases": [
+      "hydraulics and pneumatics",
+      "hydraulic systems",
+      "pneumatic systems",
+      "hydraulic circuits",
+      "pneumatic circuits",
+      "fluid power",
+      "hydraulic power packs",
+      "pneumatic cylinders"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "mechanical-equipment-maintenance",
+    "name": "Mechanical equipment maintenance (bearings, alignment, lubrication)",
+    "category": "business",
+    "aliases": [
+      "bearing replacement",
+      "gearbox maintenance",
+      "shaft alignment",
+      "laser alignment",
+      "lubrication schedule",
+      "condition monitoring",
+      "vibration analysis",
+      "pump and compressor maintenance",
+      "mechanical maintenance"
+    ],
+    "ambiguous": [
+      "condition monitoring",
+      "vibration analysis"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sap-pm-maintenance",
+    "name": "SAP PM and CMMS (maintenance orders and notifications)",
+    "category": "tools",
+    "aliases": [
+      "sap pm",
+      "sap plant maintenance",
+      "sap pm end user",
+      "maintenance notifications",
+      "maintenance work orders",
+      "cmms",
+      "ibm maximo",
+      "maximo"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

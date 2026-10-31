@@ -1,0 +1,55 @@
+{
+  "id": "mechanical-design-engineer-fresher-campus",
+  "roleSlug": "mechanical-design-engineer",
+  "persona": "fresher-campus",
+  "resumeText": "Rohan Deshpande | Pune | rohan.deshpande@example.com\n\nEDUCATION\nB.E. Mechanical Engineering, Sahyadri College of Engineering, Pune, 2026, CGPA 7.9\n\nINTERNSHIP\nDesign Intern, Indrayani Agro Machines, Chakan, Jan - Jun 2026\n- Modelled a gearbox housing and its assembly in SolidWorks for a rotary tiller.\n- Created detail drawings and assembly drawings with GD&T callouts for 18 machined parts.\n- Prepared the bill of materials for the tiller gearbox and kept it updated after design changes.\n- Did design calculations for the output shaft and bearing selection using the PSG data book.\n\nPROJECTS\n- Final year: designed a sheet metal enclosure and chose material and manufacturing processes for low-volume production.\n- Team member, college SAE BAJA team: wishbone design and fabrication support.\n\nSKILLS\nSolidWorks, AutoCAD, ANSYS, tolerance stack-up, MS Excel\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "3d-cad-modelling",
+        "quote": "Modelled a gearbox housing and its assembly in SolidWorks"
+      },
+      {
+        "skillId": "mechanical-2d-drafting",
+        "quote": "Created detail drawings and assembly drawings with GD&T callouts"
+      },
+      {
+        "skillId": "engineering-drawing-reading",
+        "quote": "assembly drawings with GD&T callouts for 18 machined parts"
+      },
+      {
+        "skillId": "bom-management",
+        "quote": "Prepared the bill of materials for the tiller gearbox"
+      },
+      {
+        "skillId": "mechanical-design-calculations",
+        "quote": "Did design calculations for the output shaft and bearing selection"
+      },
+      {
+        "skillId": "materials-manufacturing-processes",
+        "quote": "chose material and manufacturing processes for low-volume production"
+      },
+      {
+        "skillId": "tolerance-stack-up-analysis",
+        "quote": "SolidWorks, AutoCAD, ANSYS, tolerance stack-up, MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "tolerance-stack-up-analysis",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "design-fmea",
+      "teamcenter-customization",
+      "electrical-cad-tools"
+    ]
+  },
+  "reviewedBy": null
+}
