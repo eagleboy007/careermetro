@@ -56,10 +56,12 @@ jobs:
       - run: npm ci
       - run: npm run db:migrate
       - run: npm run db:seed
-      # Built as the walk runs it (a preview, like staging), so pages rendered at build and at request agree.
+      # Built as the walk runs it (a preview, like staging, with Junction on), so pages rendered at build and at request
+      # agree: with cacheComponents, a shell built with JUNCTION_ENABLED off and served with it on fails to hydrate.
       - run: npm run build
         env:
           VERCEL_ENV: preview
+          JUNCTION_ENABLED: "1"
       - name: Install the browser
         # Not a project dependency: only this job needs it.
         run: npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
@@ -79,8 +81,8 @@ jobs:
           # The walk calls the daily clean-up the way Vercel Cron does (corporate build step 7). Test-only value.
           CRON_SECRET: e2e-only-cron-secret
           BASE: http://localhost:3211
-        # Junction (FR-61) is switched on for this app server only, and the walk is told so it walks Junction's steps; the
-        # build, the other jobs and production keep JUNCTION_ENABLED unset (off).
+        # Junction (FR-61) is switched on for this job's build and app server, and the walk is told so it walks Junction's
+        # steps; the other jobs and production keep JUNCTION_ENABLED unset (off).
         run: |
           node e2e/mock-ai.mjs > e2e-mock-ai.log 2>&1 &
           JUNCTION_ENABLED=1 npx next start -p 3211 > e2e-server.log 2>&1 &
