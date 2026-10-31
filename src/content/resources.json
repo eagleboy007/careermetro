@@ -27001,18 +27001,6 @@
     "free": true
   },
   {
-    "title": "Lab 2: scan chain insertion and ATPG with Tessent (VLSI Testing)",
-    "url": "https://tiger.iee.nycu.edu.tw/course/Testing2023Fall/notes/pdf/lab2_2023F.pdf",
-    "provider": "National Yang Ming Chiao Tung University",
-    "kind": "practice",
-    "skillIds": [
-      "dft-scan-atpg",
-      "dft-pattern-validation"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Memory testing: MBIST, BIRA and BISR",
     "url": "https://www.design-reuse.com/articles/45915/memory-testing-self-repair-mechanism.html",
     "provider": "Design & Reuse",
@@ -27021,28 +27009,6 @@
       "dft-memory-bist"
     ],
     "minutes": 25,
-    "free": true
-  },
-  {
-    "title": "Testing Digital Systems II, Lecture 7: logic BIST",
-    "url": "https://cdnc.itec.kit.edu/downloads/tds2_ws1011_lecture7.pdf",
-    "provider": "Karlsruhe Institute of Technology",
-    "kind": "docs",
-    "skillIds": [
-      "dft-memory-bist"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "SoC testing, Chapter 4: built-in self-test (BIST)",
-    "url": "https://www.ee.ncu.edu.tw/jfli/public_html/soctest/lecture/ch04.pdf",
-    "provider": "National Central University",
-    "kind": "docs",
-    "skillIds": [
-      "dft-memory-bist"
-    ],
-    "minutes": 75,
     "free": true
   },
   {
@@ -27227,18 +27193,6 @@
     "free": true
   },
   {
-    "title": "Virtuoso tutorial: layout, DRC, LVS, xRC and HSPICE (EE434)",
-    "url": "https://eecs.wsu.edu/~daehyun/teaching/2016_EE434/Sp2015/Labs/tut-virtuoso.pdf",
-    "provider": "Washington State University",
-    "kind": "practice",
-    "skillIds": [
-      "analog-custom-layout",
-      "parasitic-extraction"
-    ],
-    "minutes": 150,
-    "free": true
-  },
-  {
     "title": "Parasitic extraction technology (StarRC white paper)",
     "url": "https://www.synopsys.com/content/dam/synopsys/implementation&signoff/white-papers/extraction_tech_wp.pdf",
     "provider": "Synopsys",
@@ -27269,17 +27223,6 @@
       "parasitic-extraction"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Post-layout simulation tutorial (TSMC 90nm, INF4420)",
-    "url": "https://www.uio.no/studier/emner/matnat/ifi/INF4420/v12/PostLayoutTutorialTSMC90nm.pdf",
-    "provider": "University of Oslo",
-    "kind": "practice",
-    "skillIds": [
-      "parasitic-extraction"
-    ],
-    "minutes": 60,
     "free": true
   },
   {
@@ -27333,17 +27276,6 @@
     "kind": "docs",
     "skillIds": [
       "finfet-layout"
-    ],
-    "minutes": 10,
-    "free": true
-  },
-  {
-    "title": "Protect against ESD by ensuring latch-up guard rings",
-    "url": "https://semiwiki.com/eda/siemens-eda/362551-protect-against-esd-by-ensuring-latch-up-guard-rings/",
-    "provider": "SemiWiki",
-    "kind": "docs",
-    "skillIds": [
-      "layout-reliability-esd-latchup"
     ],
     "minutes": 10,
     "free": true
@@ -27404,17 +27336,6 @@
     "free": true
   },
   {
-    "title": "A closer look at state of charge (SOC) and state of health (SOH) estimation techniques",
-    "url": "https://www.analog.com/en/resources/technical-articles/a-closer-look-at-state-of-charge-and-state-health-estimation-tech.html",
-    "provider": "Analog Devices",
-    "kind": "docs",
-    "skillIds": [
-      "bms-state-estimation"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Estimate battery SOC using a Kalman filter (example)",
     "url": "https://www.mathworks.com/help/simscape-battery/ug/estimate-battery-soc-using-kalman-filter-example.html",
     "provider": "MathWorks",
@@ -27468,17 +27389,6 @@
       "bms-cell-monitoring-balancing"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Passive battery cell balancing",
-    "url": "https://www.analog.com/en/resources/technical-articles/passive-battery-cell-balancing.html",
-    "provider": "Analog Devices",
-    "kind": "docs",
-    "skillIds": [
-      "bms-cell-monitoring-balancing"
-    ],
-    "minutes": 15,
     "free": true
   },
   {
@@ -29183,17 +29093,6 @@
     "free": true
   },
   {
-    "title": "Cadence tutorial: schematic capture and Spectre simulation (Brown ENGN1600)",
-    "url": "https://www.brown.edu/Departments/Engineering/Courses/engn1600/Assignments/Cadence_Tutorial_EN1600.pdf",
-    "provider": "Brown University",
-    "kind": "practice",
-    "skillIds": [
-      "ic-spice-simulation"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Cadence analog basics tutorial: Virtuoso and Spectre (York University EMIL)",
     "url": "https://wiki.eecs.yorku.ca/lab/emil/_media/tutorials:cad:t1analogbasics.pdf",
     "provider": "York University",
@@ -29202,17 +29101,6 @@
       "ic-spice-simulation"
     ],
     "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "ECE 483 Cadence lecture: DC, AC and transient simulation of a differential amplifier",
-    "url": "https://courses.grainger.illinois.edu/ece483/data/Cadence_Lecture_SP17.pdf",
-    "provider": "University of Illinois",
-    "kind": "docs",
-    "skillIds": [
-      "ic-spice-simulation"
-    ],
-    "minutes": 60,
     "free": true
   },
   {
@@ -29315,17 +29203,6 @@
     "free": true
   },
   {
-    "title": "MT-229: quantization noise and the bandwidth of interest",
-    "url": "https://www.analog.com/MT-229",
-    "provider": "Analog Devices",
-    "kind": "docs",
-    "skillIds": [
-      "data-converter-design"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Phase-Locked Loops (IIT Madras, Saurabh Saxena)",
     "url": "https://nptel.ac.in/courses/108106184",
     "provider": "NPTEL",
@@ -29367,17 +29244,6 @@
       "pll-clocking-design"
     ],
     "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "EE6324 course page: PLL and clocking (IIT Madras ICS group)",
-    "url": "https://www.ee.iitm.ac.in/vlsi/courses/ee6324a_may2020/start",
-    "provider": "IIT Madras",
-    "kind": "course",
-    "skillIds": [
-      "pll-clocking-design"
-    ],
-    "minutes": 600,
     "free": true
   },
   {
@@ -29450,17 +29316,6 @@
     "title": "The Designer's Guide to Verilog-AMS: companion models and chapters",
     "url": "https://designers-guide.org/verilog-ams/dg-vams/index.html",
     "provider": "Designer's Guide Community",
-    "kind": "docs",
-    "skillIds": [
-      "ams-behavioral-modelling"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Verilog-AMS and Verilog-A reference and examples",
-    "url": "https://verilogams.com",
-    "provider": "verilogams.com",
     "kind": "docs",
     "skillIds": [
       "ams-behavioral-modelling"
@@ -30337,17 +30192,6 @@
     "free": true
   },
   {
-    "title": "Experience Study Calculations (Atkinson and McGarry)",
-    "url": "https://www.soa.org/Files/Research/2016-10-experience-study-calculations.pdf",
-    "provider": "Society of Actuaries",
-    "kind": "docs",
-    "skillIds": [
-      "experience-studies"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "Experience study calculations educational tool",
     "url": "https://www.soa.org/resources/tables-calcs-tools/experience-study-tool/",
     "provider": "Society of Actuaries",
@@ -30367,17 +30211,6 @@
       "experience-studies"
     ],
     "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "Experience studies session slides (SOA Life and Annuity Symposium 2017)",
-    "url": "https://www.soa.org/Files/e-business/pd/events/2017/las/pd-2017-05-las-session-016.pdf",
-    "provider": "Society of Actuaries",
-    "kind": "docs",
-    "skillIds": [
-      "experience-studies"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -30447,17 +30280,6 @@
     "free": true
   },
   {
-    "title": "Actuarial modeling controls research report (2017)",
-    "url": "https://www.soa.org/Files/Research/Projects/2017-01-actuarial-modeling-controls-research-report.pdf",
-    "provider": "Society of Actuaries",
-    "kind": "docs",
-    "skillIds": [
-      "actuarial-modelling-software"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
     "title": "Model governance practice note",
     "url": "https://actuary.org/content/model-governance-practice-note",
     "provider": "American Academy of Actuaries",
@@ -30510,17 +30332,6 @@
       "excel-vba"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "STAT 509: Design and Analysis of Clinical Trials (course notes)",
-    "url": "https://online.stat.psu.edu/stat509/book/export/html/792",
-    "provider": "Penn State",
-    "kind": "course",
-    "skillIds": [
-      "clinical-trial-design"
-    ],
-    "minutes": 900,
     "free": true
   },
   {
@@ -30636,17 +30447,6 @@
     "free": true
   },
   {
-    "title": "STAT 502: Analysis of Variance and Design of Experiments (ANCOVA, mixed models)",
-    "url": "https://online.stat.psu.edu/stat502/",
-    "provider": "Penn State",
-    "kind": "course",
-    "skillIds": [
-      "clinical-statistical-modelling"
-    ],
-    "minutes": 900,
-    "free": true
-  },
-  {
     "title": "Mixed model repeated measures (MMRM) worked example",
     "url": "https://bookdown.org/genproresearch/catalog/mmrm.html",
     "provider": "Genpro Research (bookdown)",
@@ -30671,17 +30471,6 @@
   {
     "title": "Introducing CompositeProviders - Implementing a Data Warehouse using SAP BW/4HANA",
     "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana/introducing-compositeproviders_ddb52eb5-86c0-42ca-97f0-9aca6b3ddfd4",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-bw4hana-modelling"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Use Different Types of DataStore Objects (advanced)",
-    "url": "https://learning.sap.com/courses/implementing-modeling-scenarios-in-sap-bw-4hana/use-different-types-of-datastore-objects-advanced-",
     "provider": "SAP Learning",
     "kind": "course",
     "skillIds": [
@@ -30788,18 +30577,6 @@
       "sap-bw-process-chains"
     ],
     "minutes": 25,
-    "free": true
-  },
-  {
-    "title": "Monitoring Process Chain Runs (SAP Datasphere, SAP BW bridge)",
-    "url": "https://learning.sap.com/courses/sap-datasphere-sap-bw-bridge/monitoring-process-chain-runs_a6bcc556-5799-42d7-a577-2cb32b4b02df",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-bw-process-chains",
-      "sap-datasphere"
-    ],
-    "minutes": 20,
     "free": true
   },
   {
@@ -30968,17 +30745,6 @@
     "free": true
   },
   {
-    "title": "Create Your First SAP Analytics Cloud Story",
-    "url": "https://developers.sap.com/group.create-first-sac-story.html",
-    "provider": "SAP Developers",
-    "kind": "practice",
-    "skillIds": [
-      "sap-analytics-cloud"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "Getting Started with SAP Analytics Cloud Stories",
     "url": "https://help.sap.com/doc/00f68c2e08b941f081002fd3691d86a7/2023.9/en-us/fa31c0480f1f4c39af0692cd9a80f95b.html",
     "provider": "SAP Help Portal",
@@ -31035,28 +30801,6 @@
     "free": true
   },
   {
-    "title": "Basic Data Modeling with a Graphical View (SAP Datasphere)",
-    "url": "https://developers.sap.com/group.data-warehouse-cloud-data-modeling.html",
-    "provider": "SAP Developers",
-    "kind": "practice",
-    "skillIds": [
-      "sap-datasphere"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Create a Graphical View in SAP Datasphere",
-    "url": "https://developers.sap.com/tutorials/data-warehouse-cloud-7-graphicalview.html",
-    "provider": "SAP Developers",
-    "kind": "practice",
-    "skillIds": [
-      "sap-datasphere"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Exploring SAP Datasphere",
     "url": "https://learning.sap.com/courses/exploring-sap-datasphere",
     "provider": "SAP Learning",
@@ -31098,18 +30842,6 @@
       "sap-datasphere"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Creating a Graphical View and Analytic Model in SAP Datasphere",
-    "url": "https://learning.sap.com/courses/performing-manual-planning-with-sap-analytics-cloud/creating-a-graphical-view-and-analytic-model-in-sap-datasphere",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-datasphere",
-      "sap-analytics-cloud"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -31176,17 +30908,6 @@
       "duck-creek-manuscripts"
     ],
     "minutes": 10,
-    "free": true
-  },
-  {
-    "title": "Duck Creek Rating in detail",
-    "url": "https://duckcreek.com/duck-creek-rating-in-detail",
-    "provider": "Duck Creek Technologies",
-    "kind": "docs",
-    "skillIds": [
-      "duck-creek-manuscripts"
-    ],
-    "minutes": 15,
     "free": true
   },
   {
@@ -31405,17 +31126,6 @@
       "clinical-query-management"
     ],
     "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "Clinical trial basics: understanding query management",
-    "url": "https://vial.com/blog/articles/clinical-trial-basics-understanding-query-management/",
-    "provider": "Vial",
-    "kind": "docs",
-    "skillIds": [
-      "clinical-query-management"
-    ],
-    "minutes": 10,
     "free": true
   },
   {
@@ -32184,17 +31894,6 @@
     "free": true
   },
   {
-    "title": "What is lead scoring?",
-    "url": "https://business.adobe.com/resources/articles/lead-scoring.html",
-    "provider": "Adobe",
-    "kind": "docs",
-    "skillIds": [
-      "lead-scoring"
-    ],
-    "minutes": 10,
-    "free": true
-  },
-  {
     "title": "RF Integrated Circuits (NPTEL, IIT Delhi)",
     "url": "https://nptel.ac.in/courses/117102012",
     "provider": "NPTEL",
@@ -32261,28 +31960,6 @@
       "rf-ic-circuit-design"
     ],
     "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "Understand Wireless Data Sheet Specifications, Part 1 (noise figure, IP3)",
-    "url": "https://www.analog.com/en/resources/technical-articles/understand-wireless-data-sheet-specifications--part-1.html",
-    "provider": "Analog Devices",
-    "kind": "docs",
-    "skillIds": [
-      "rf-performance-analysis"
-    ],
-    "minutes": 25,
-    "free": true
-  },
-  {
-    "title": "MT-012: Intermodulation Distortion Considerations (IP2, IP3)",
-    "url": "https://www.analog.com/media/en/training-seminars/tutorials/MT-012.pdf",
-    "provider": "Analog Devices",
-    "kind": "docs",
-    "skillIds": [
-      "rf-performance-analysis"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -32408,18 +32085,6 @@
     "free": true
   },
   {
-    "title": "AIS-039 Rev.1: electrical energy consumption of electric power train vehicles",
-    "url": "https://emobility.araiindia.com/wp-content/uploads/2018/06/AIS_039_Rev_1.pdf",
-    "provider": "ARAI",
-    "kind": "docs",
-    "skillIds": [
-      "ev-powertrain-integration",
-      "powertrain-dyno-testing"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "EV: Vehicle Dynamics and Electric Motor Drives (NPTEL, IIT Delhi)",
     "url": "https://onlinecourses.nptel.ac.in/noc25_ee33/preview",
     "provider": "NPTEL",
@@ -32465,17 +32130,6 @@
     "free": true
   },
   {
-    "title": "AIS-040 Rev.1 Amendments 1 and 2: range test for battery-operated vehicles",
-    "url": "https://emobility.araiindia.com/wp-content/uploads/2022/05/AIS_040_Rev1_Amd_1_n_-2.pdf",
-    "provider": "ARAI",
-    "kind": "docs",
-    "skillIds": [
-      "powertrain-dyno-testing"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "Simulate five-cycle energy consumption tests using Virtual Vehicle Composer",
     "url": "https://www.mathworks.com/help/autoblks/ug/simulate-five-cycle-energy-consumption-tests-using-vvc.html",
     "provider": "MathWorks",
@@ -32484,17 +32138,6 @@
       "vehicle-energy-simulation"
     ],
     "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "FASTSim documentation (NREL vehicle energy simulator)",
-    "url": "https://nrel.github.io/fastsim/print.html",
-    "provider": "NREL",
-    "kind": "docs",
-    "skillIds": [
-      "vehicle-energy-simulation"
-    ],
-    "minutes": 60,
     "free": true
   },
   {
@@ -32539,17 +32182,6 @@
       "3d-modelling-dcc"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Maya intro course: Modeling basics",
-    "url": "https://area.autodesk.com/learn/courses/maya-intro/03-modeling-basics/",
-    "provider": "Autodesk AREA",
-    "kind": "course",
-    "skillIds": [
-      "3d-modelling-dcc"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -32949,17 +32581,6 @@
     "free": true
   },
   {
-    "title": "Describing Maintenance Plans (Preventive Maintenance in SAP S/4HANA Asset Management)",
-    "url": "https://learning.sap.com/courses/exploring-preventive-maintenance-in-sap-s-4hana-asset-management/describing-maintenance-plans",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-pm-configuration"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "Customizing Notification Types and Assigning Order Types (SAP Help, PM)",
     "url": "https://help.sap.com/saphelp_erp60_sp/helpdata/en/5d/30ba538c95b54ce10000000a174cb4/content.htm",
     "provider": "SAP Help Portal",
@@ -33205,17 +32826,6 @@
     "free": true
   },
   {
-    "title": "Deluge Overview",
-    "url": "https://www.zoho.com/deluge/help/overview.html",
-    "provider": "Zoho",
-    "kind": "docs",
-    "skillIds": [
-      "zoho-deluge-scripting"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Deluge Data Types (Deluge guide for Zoho Creator)",
     "url": "https://help.zoho.com/portal/en/kb/zoho-crm-platform/deluge-guide-for-zoho-creator/data-types/articles/data-type",
     "provider": "Zoho",
@@ -33223,17 +32833,6 @@
     "skillIds": [
       "zoho-deluge-scripting",
       "zoho-creator-development"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "invokeUrl task for API calls (Deluge)",
-    "url": "https://www.zoho.com/deluge/help/deluge-invoke-url.html",
-    "provider": "Zoho",
-    "kind": "docs",
-    "skillIds": [
-      "zoho-deluge-scripting"
     ],
     "minutes": 20,
     "free": true
@@ -33475,62 +33074,6 @@
     "free": true
   },
   {
-    "title": "Nasdaq Calypso: Capital Markets and Treasury Platform",
-    "url": "https://www.nasdaq.com/products/fintech/calypso",
-    "provider": "Nasdaq",
-    "kind": "docs",
-    "skillIds": [
-      "calypso-platform"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Nasdaq Calypso: Middle Office and Trading Risk",
-    "url": "https://www.nasdaq.com/products/fintech/calypso/middle-office-trading-risk",
-    "provider": "Nasdaq",
-    "kind": "docs",
-    "skillIds": [
-      "calypso-platform",
-      "market-risk-pnl"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Nasdaq Calypso Treasury",
-    "url": "https://www.nasdaq.com/solutions/fintech/nasdaq-calypso/treasury",
-    "provider": "Nasdaq",
-    "kind": "docs",
-    "skillIds": [
-      "calypso-platform"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Simplifying Complexity: How Nasdaq Calypso Unlocks Efficiency and Innovation",
-    "url": "https://www.nasdaq.com/videos/simplifying-complexity-how-nasdaq-calypso-unlocks-efficiency-and-innovation",
-    "provider": "Nasdaq",
-    "kind": "video",
-    "skillIds": [
-      "calypso-platform"
-    ],
-    "minutes": 10,
-    "free": true
-  },
-  {
-    "title": "Nasdaq Calypso Resources (case studies, guides)",
-    "url": "https://www.nasdaq.com/solutions/fintech/nasdaq-calypso/resources",
-    "provider": "Nasdaq",
-    "kind": "docs",
-    "skillIds": [
-      "calypso-platform"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "CDM Event Model: Trade Lifecycle Events",
     "url": "https://cdm.finos.org/docs/event-model",
     "provider": "FINOS",
@@ -33664,17 +33207,6 @@
     "free": true
   },
   {
-    "title": "ISO 20022: What You Need to Know (FedNow)",
-    "url": "https://www.frbservices.org/financial-services/fednow/iso-20022-what-you-need-to-know.html",
-    "provider": "Federal Reserve Financial Services",
-    "kind": "docs",
-    "skillIds": [
-      "payment-switch-integration"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
     "title": "Harmonisation of TAT and Customer Compensation for Failed Transactions (RBI)",
     "url": "https://rbi.org.in/Scripts/NotificationUser.aspx?Id=11693",
     "provider": "Reserve Bank of India",
@@ -33726,6 +33258,17 @@
     "kind": "docs",
     "skillIds": [
       "payment-reconciliation-settlement"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Calypso Technology (the platform, its modules and history)",
+    "url": "https://en.wikipedia.org/wiki/Calypso_Technology",
+    "provider": "Wikipedia",
+    "kind": "docs",
+    "skillIds": [
+      "calypso-platform"
     ],
     "minutes": 10,
     "free": true
