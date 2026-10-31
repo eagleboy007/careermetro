@@ -18345,17 +18345,6 @@
     "free": true
   },
   {
-    "title": "Compliance Calendar - Main Board (regulation-wise LODR deadlines)",
-    "url": "https://www.nseindia.com/static/companies-listing/compliance-information-compliance-calendar-main-board",
-    "provider": "NSE India",
-    "kind": "docs",
-    "skillIds": [
-      "sebi-lodr-compliance"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "Companies Act, 2013 - Section 204: Secretarial audit for bigger companies",
     "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=49130&sectionno=204&orderno=208",
     "provider": "India Code",
@@ -18529,18 +18518,6 @@
       "roc-mca-filings"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "IC-38 Insurance Agents Study Material - Life (underwriting and financial underwriting chapters)",
-    "url": "https://insuranceinstituteofindia.com/documents/d/guest/ic-38-ia-eng-life",
-    "provider": "Insurance Institute of India",
-    "kind": "docs",
-    "skillIds": [
-      "financial-underwriting",
-      "insurance-risk-assessment"
-    ],
-    "minutes": 120,
     "free": true
   },
   {
