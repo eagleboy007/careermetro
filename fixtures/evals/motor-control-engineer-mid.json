@@ -1,0 +1,56 @@
+{
+  "id": "motor-control-engineer-mid",
+  "roleSlug": "motor-control-engineer",
+  "persona": "Mid-level motor control firmware engineer at a drives company",
+  "resumeText": "Rohit Deshmukh | Pune | rohit.deshmukh@example.com\n\nEXPERIENCE\nMotor Control Engineer, Sahyadri Drives Pvt Ltd, Pune (2020 - present)\n- Developed field oriented control with SVPWM for a 3 kW PMSM traction motor on a TI C2000 microcontroller.\n- Tuned current and speed PI loops on the dynamometer for stable torque response.\n- Wrote embedded C interrupt routines for the PWM and ADC control cycle.\n- Built motor and inverter plant models in MATLAB/Simulink and generated code with Embedded Coder.\n- Implemented sensorless control with a sliding-mode observer for ceiling fan BLDC motors.\n- Debugged gate driver faults and IGBT desaturation trips on the three-phase inverter with an oscilloscope.\n\nEDUCATION\nBE Electrical Engineering, College of Engineering Pune, 2020\n\nSKILLS\nPython, Git\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "motor-control-algorithms",
+        "quote": "Developed field oriented control with SVPWM"
+      },
+      {
+        "skillId": "electrical-machines-transformers",
+        "quote": "for a 3 kW PMSM traction motor"
+      },
+      {
+        "skillId": "microcontrollers",
+        "quote": "on a TI C2000 microcontroller"
+      },
+      {
+        "skillId": "control-loop-design",
+        "quote": "Tuned current and speed PI loops on the dynamometer"
+      },
+      {
+        "skillId": "embedded-c",
+        "quote": "Wrote embedded C interrupt routines"
+      },
+      {
+        "skillId": "matlab-simulink",
+        "quote": "Built motor and inverter plant models in MATLAB/Simulink"
+      },
+      {
+        "skillId": "power-electronics-inverters",
+        "quote": "Debugged gate driver faults and IGBT desaturation trips"
+      },
+      {
+        "skillId": "embedded-debugging",
+        "quote": "on the three-phase inverter with an oscilloscope"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "embedded-protocols",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "autosar-classic",
+      "hil-testing",
+      "bms-state-estimation",
+      "rtos"
+    ]
+  },
+  "reviewedBy": null
+}

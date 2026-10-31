@@ -30,7 +30,7 @@ const IMPORTANCE = { required: "Required", nice_to_have: "Nice to have" };
 
 /**
  * Changes Development made to a drafted role after an eval showed a problem, or when a new profile took over some of its
- * titles (F0, F1, TG1, B5 and TG2, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
+ * titles (F0, F1, TG1, B5, TG2 and TG3, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
  */
 export const SIGN_OFF = [
   { ref: "export-import-executive#years", note: "Starts at 1 year (was 2): EXIM and export documentation executives are commonly hired at 0-2 years." },
@@ -47,6 +47,10 @@ export const SIGN_OFF = [
   { ref: "sap-security-grc-consultant#title", note: "Grouped with security roles (drafted under enterprise apps): its key skills are security ones (SAP authorizations, GRC Access Control, access audits), and the nearest roles for its resume are information security analyst and IT auditor." },
   { ref: "fraud-analyst#skill:data-visualization", note: "Nice to have (was Required): none of the posts the draft cites asks for dashboards. As required, it made Fraud Analyst the closest role for data analyst and BPO quality resumes on SQL, Excel and dashboards alone." },
   { ref: "trust-and-safety-analyst#skill:data-visualization", note: "Nice to have (was Required): only Google analyst posts seen through aggregators ask for dashboards. As required, it made Trust and Safety Analyst a Nearby line for every data analyst resume." },
+  { ref: "motor-control-engineer#skill:electrical-machines-transformers", note: "The live Electrical machines and transformers skill (drafted as a new skill, Traction and drive motors): the two overlap, so the live skill takes the draft's PMSM, BLDC and IPM motor phrases instead of a near duplicate." },
+  { ref: "actuarial-analyst#skill:sql", note: "Nice to have (was Required): one of the three posts the draft cites asks for SQL (Munich Re) and one lists it as preferred (WTW). As required, it made Actuarial Analyst a Nearby line for the e2e walk's data analyst resume (on SQL, Excel and Python) and for the data scientist switcher persona." },
+  { ref: "game-designer#title", note: "Grouped with delivery roles (drafted under frontend-mobile, next to game developer): it shares no programming skill with game developer, and its resume's nearest roles share A/B tests and spreadsheets, as product roles do." },
+  { ref: "marketing-automation-specialist#title", note: "Grouped with data and analytics roles (drafted under marketing): no live marketing role asks for its CRM, segmentation and SQL skills, so its resume's nearest roles are data scientist and analytics roles." },
 ];
 const signOffNote = new Map(SIGN_OFF.map((c) => [c.ref, c.note]));
 

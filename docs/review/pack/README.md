@@ -27,10 +27,10 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Cloud and infrastructure | `roles-cloud.csv` | 29 |
 | Security | `roles-security.csv` | 26 |
-| Data, analytics and AI | `roles-data.csv` | 27 |
-| Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 32 |
+| Data, analytics and AI | `roles-data.csv` | 31 |
+| Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 34 |
 | Testing and quality | `roles-testing.csv` | 5 |
-| Software, hardware, delivery and marketing | `roles-other.csv` | 71 |
+| Software, hardware, delivery and marketing | `roles-other.csv` | 77 |
 | Sales, finance, HR and operations | `roles-business.csv` | 46 |
 | Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
 | Legal and compliance | `roles-legal.csv` | 4 |
@@ -46,7 +46,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
 
-255 role profiles await review in all.
+267 role profiles await review in all.
 
 ## Changed since the draft, awaiting sign-off
 
@@ -66,6 +66,10 @@ Development changed these lines after a test showed a problem. Their **Detail** 
 - `sap-security-grc-consultant#title`: Grouped with security roles (drafted under enterprise apps): its key skills are security ones (SAP authorizations, GRC Access Control, access audits), and the nearest roles for its resume are information security analyst and IT auditor.
 - `fraud-analyst#skill:data-visualization`: Nice to have (was Required): none of the posts the draft cites asks for dashboards. As required, it made Fraud Analyst the closest role for data analyst and BPO quality resumes on SQL, Excel and dashboards alone.
 - `trust-and-safety-analyst#skill:data-visualization`: Nice to have (was Required): only Google analyst posts seen through aggregators ask for dashboards. As required, it made Trust and Safety Analyst a Nearby line for every data analyst resume.
+- `motor-control-engineer#skill:electrical-machines-transformers`: The live Electrical machines and transformers skill (drafted as a new skill, Traction and drive motors): the two overlap, so the live skill takes the draft's PMSM, BLDC and IPM motor phrases instead of a near duplicate.
+- `actuarial-analyst#skill:sql`: Nice to have (was Required): one of the three posts the draft cites asks for SQL (Munich Re) and one lists it as preferred (WTW). As required, it made Actuarial Analyst a Nearby line for the e2e walk's data analyst resume (on SQL, Excel and Python) and for the data scientist switcher persona.
+- `game-designer#title`: Grouped with delivery roles (drafted under frontend-mobile, next to game developer): it shares no programming skill with game developer, and its resume's nearest roles share A/B tests and spreadsheets, as product roles do.
+- `marketing-automation-specialist#title`: Grouped with data and analytics roles (drafted under marketing): no live marketing role asks for its CRM, segmentation and SQL skills, so its resume's nearest roles are data scientist and analytics roles.
 
 ## How answers flow back into the app
 

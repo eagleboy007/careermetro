@@ -1,0 +1,116 @@
+{
+  "slug": "clinical-data-manager",
+  "title": "Clinical Data Manager",
+  "summary": "Clinical data managers make sure the data collected in a drug or vaccine trial is complete, correct and ready for analysis. They sit in a pharma company or a contract research organisation (CRO, a firm that runs trials for drug makers), between the trial sites, the safety team and the statisticians.",
+  "dailyDuties": [
+    "Build and test study forms and edit checks in the EDC system",
+    "Review data listings and raise queries with trial sites",
+    "Follow up open queries and update tracking reports",
+    "Code adverse events and medications with MedDRA and WHODrug",
+    "Reconcile safety and lab data with the clinical database",
+    "Prepare documents and checklists for database lock",
+    "Join study team calls to report data cleaning status"
+  ],
+  "typicalTitles": [
+    "Clinical Data Coordinator",
+    "Clinical Data Associate",
+    "Clinical Data Specialist",
+    "Project Data Manager",
+    "Clinical Data Management Associate",
+    "Clinical Data Management Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "clinical-edc-systems",
+      "importance": "required",
+      "expectation": "Build, test and run studies in an EDC such as Medidata Rave, Oracle InForm or Veeva Vault",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-crf-design",
+      "importance": "required",
+      "expectation": "Design CRFs and eCRFs with completion guidelines that match the protocol",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-edit-checks",
+      "importance": "required",
+      "expectation": "Write the data validation plan and specify and test edit checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-query-management",
+      "importance": "required",
+      "expectation": "Raise, track and close data queries with sites until data is clean",
+      "postingShare": null
+    },
+    {
+      "skillId": "meddra-whodrug-coding",
+      "importance": "required",
+      "expectation": "Code adverse events and medications with MedDRA and WHODrug, or review the coding",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-database-lock",
+      "importance": "required",
+      "expectation": "Reconcile SAE, lab and external data and lead the study to database lock",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-trials-knowledge",
+      "importance": "required",
+      "expectation": "Work to ICH-GCP and 21 CFR Part 11 and know how trial phases run",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain data issues clearly to sites, monitors, statisticians and sponsors",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Agree timelines with the study team and sponsor",
+      "postingShare": null
+    },
+    {
+      "skillId": "cdisc-sdtm",
+      "importance": "nice_to_have",
+      "expectation": "Know how collected data maps to SDTM for submission",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull listings and check data with simple queries",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Track metrics and review listings in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "sas-programming",
+      "importance": "nice_to_have",
+      "expectation": "Read or write simple SAS listings for data review",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

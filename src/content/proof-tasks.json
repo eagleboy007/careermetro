@@ -3226,5 +3226,225 @@
   {
     "skillId": "software-licensing-models",
     "task": "Write a two-page note comparing Microsoft per-user, Oracle per-core and IBM sub-capacity licensing for a synthetic server estate, with a worked count of licences needed under each. Share it."
+  },
+  {
+    "skillId": "actuarial-pricing",
+    "task": "Price a synthetic motor insurance portfolio in Python or R: fit frequency and severity GLMs on a public dataset (such as freMTPL on CRAN), build a premium table and explain three rating factors. Share the notebook and note."
+  },
+  {
+    "skillId": "actuarial-reserving",
+    "task": "Build a chain ladder reserve in Excel or Python on a public or synthetic claims triangle: development factors, ultimate claims and IBNR, then compare with Bornhuetter-Ferguson and write a one-page note. Share it."
+  },
+  {
+    "skillId": "ad-delivery-troubleshooting",
+    "task": "Diagnose three synthetic under-delivering line items (narrow targeting, low bid, creative rejected): for each, list the checks you ran, the cause and the fix, with a pacing table before and after. Share it."
+  },
+  {
+    "skillId": "ad-server-trafficking",
+    "task": "Write a trafficking sheet for a synthetic display campaign: orders, line items, targeting, frequency caps, creatives and sizes, and a QA checklist, as you would set it up in Google Ad Manager. Share the sheet."
+  },
+  {
+    "skillId": "ad-tags-pixels",
+    "task": "Set up a test page with a Google Ad Manager sample tag or a VAST sample in the IAB VAST inspector, add a conversion pixel through Google Tag Manager, and document how you verified each fired. Share screenshots and notes."
+  },
+  {
+    "skillId": "ad-verification-brand-safety",
+    "task": "Write a brand safety and viewability plan for a synthetic FMCG campaign: exclusion lists, viewability targets, invalid traffic checks and a weekly report template with sample numbers. Share it."
+  },
+  {
+    "skillId": "analog-ic-circuit-design",
+    "task": "Design a two-stage CMOS op-amp in an open PDK (SkyWater 130 or GF180) with ngspice or Xschem: size it for a stated gain, bandwidth and phase margin, and show the AC and transient results. Share the schematic, netlist and a one-page design note."
+  },
+  {
+    "skillId": "audience-segmentation",
+    "task": "Segment a public e-commerce dataset (such as the UCI Online Retail set) by RFM in SQL or Python, describe each segment and propose one campaign for each. Share the notebook and a one-page summary."
+  },
+  {
+    "skillId": "audio-post-production",
+    "task": "Clean and mix the audio of a free interview clip: noise reduction, EQ, compression, music ducking and loudness to -14 LUFS, with a short note on each step. Share the before and after audio."
+  },
+  {
+    "skillId": "cae-test-correlation",
+    "task": "Compare a simulated cantilever beam's natural frequencies and strains with measured values from a published or synthetic test, tabulate the error, update one model input to close the gap, and write a one-page correlation note. Share it."
+  },
+  {
+    "skillId": "clinical-crf-design",
+    "task": "Design eCRF pages for a synthetic trial's screening, vital signs and adverse event visits: fields, formats, codelists and completion guidelines, as a CRF spec. Share it."
+  },
+  {
+    "skillId": "clinical-database-lock",
+    "task": "Write a database lock checklist for a synthetic trial: SAE reconciliation, external data reconciliation, open queries, coding and sign-offs, then reconcile a synthetic SAE list against CRF data. Share the checklist and sheet."
+  },
+  {
+    "skillId": "clinical-edc-systems",
+    "task": "On a free EDC such as OpenClinica Community or REDCap, build a small synthetic study (two visits, five forms), enter test data and export it. Share screenshots, the study definition and a one-page note."
+  },
+  {
+    "skillId": "clinical-edit-checks",
+    "task": "Write a data validation plan for a synthetic trial: 15 edit checks (range, missing, cross-form, date logic) with the query text each raises, and test data that triggers each. Share it."
+  },
+  {
+    "skillId": "clinical-query-management",
+    "task": "Raise and resolve 10 queries on a synthetic CRF dataset: the discrepancy, query text to the site, a plausible site answer and the close-out, plus an ageing report. Share it."
+  },
+  {
+    "skillId": "clinical-statistical-modelling",
+    "task": "Analyse a synthetic two-arm trial dataset with ANCOVA for a continuous endpoint and logistic regression for a responder endpoint in R or SAS, with tables as in a clinical study report. Share the code and tables."
+  },
+  {
+    "skillId": "clinical-trial-design",
+    "task": "Write the statistics section of a protocol for a synthetic two-arm trial: endpoints, hypotheses, sample size with the calculation in R or SAS, randomisation and stratification. Share the section and the code."
+  },
+  {
+    "skillId": "colour-grading",
+    "task": "Grade three free stock clips shot in different light to match one look in DaVinci Resolve: correction first, then a look, with scopes screenshots before and after. Share the exports and a short note."
+  },
+  {
+    "skillId": "control-loop-design",
+    "task": "Model a DC motor speed loop in Python or MATLAB, design a PI controller to a stated overshoot and settling time with Bode and step plots, then add anti-windup and show the difference under saturation. Share the code and a short note."
+  },
+  {
+    "skillId": "customer-engagement-platforms",
+    "task": "Plan a push, in-app and email campaign for a synthetic food delivery app in the style of MoEngage or CleverTap: segments, triggers, message copy, frequency caps and success metrics. Share the plan as a sheet and flow."
+  },
+  {
+    "skillId": "data-converter-design",
+    "task": "Model an 8-bit SAR ADC in Python or ngspice (capacitive DAC, comparator, SAR logic), feed it a sine wave, and plot the FFT with SNDR and ENOB. Share the model and a one-page note on what limits accuracy."
+  },
+  {
+    "skillId": "duck-creek-manuscripts",
+    "task": "Write a rating spec for a synthetic two-wheeler insurance product: rating factors, base rates, a rule for discounts and a validation rule, as you would build it in a product manuscript, with five test quotes and expected premiums. Share it."
+  },
+  {
+    "skillId": "duck-creek-platform",
+    "task": "Map the life of a synthetic motor insurance policy across policy, billing and claims systems: quote, issue, endorsement, renewal, an instalment bill and a claim, with the data passed at each step. Share the flow and a one-page note."
+  },
+  {
+    "skillId": "email-deliverability",
+    "task": "Write a deliverability checklist for a synthetic brand's new sending domain: SPF, DKIM and DMARC records, a warm-up plan, list hygiene and the metrics you would watch, with sample DNS records. Share it."
+  },
+  {
+    "skillId": "experience-studies",
+    "task": "Run a mortality or lapse experience study on a synthetic policy file in Python, R or Excel: exposure, actual against expected by age band, and a one-page note on which assumption you would change. Share it."
+  },
+  {
+    "skillId": "fatigue-durability-analysis",
+    "task": "Estimate fatigue life of a synthetic welded bracket under a stated load history: S-N curve, mean stress correction and rainflow counting in Python, with damage and life results and a note on assumptions. Share the code and note."
+  },
+  {
+    "skillId": "fe-meshing-preprocessing",
+    "task": "Mesh a synthetic sheet-metal bracket in a free tool (Gmsh, FreeCAD FEM or a student licence) twice, coarse and refined, report element quality (aspect ratio, Jacobian) and show how peak stress changes. Share the meshes and a short note."
+  },
+  {
+    "skillId": "fea-basics",
+    "task": "Model a synthetic steel bracket in a free FEA tool (FreeCAD FEM, Code_Aster or a student licence) under a stated load, run a static analysis, compare peak stress with a hand calculation, and share the model, plots and a one-page note."
+  },
+  {
+    "skillId": "game-economy-balancing",
+    "task": "Model a synthetic mobile game's economy in a spreadsheet: sources and sinks of two currencies, item prices and a 30-day player simulation, then rebalance one inflation problem. Share the sheet and a note."
+  },
+  {
+    "skillId": "game-mechanics-design",
+    "task": "Write a one-page design document for a synthetic mobile puzzle game: core loop, three mechanics, win and lose rules, and progression, then build a paper or simple Unity prototype of one level. Share the document and prototype."
+  },
+  {
+    "skillId": "ic-spice-simulation",
+    "task": "Simulate a bandgap reference or current mirror in ngspice on an open PDK: DC operating point, temperature sweep and line regulation, with plots and a table of results against a target spec. Share the netlist, plots and a short note."
+  },
+  {
+    "skillId": "level-design",
+    "task": "Design three levels for a synthetic platformer or puzzle game, each teaching one new mechanic, with top-down maps, difficulty curve and intended player path, and build one in a free engine. Share the maps and build."
+  },
+  {
+    "skillId": "lifecycle-journey-orchestration",
+    "task": "Map a lifecycle journey for a synthetic edtech app from sign-up to paid: stages, triggers, messages per channel, exit rules and an A/B test, as a journey diagram and a campaign sheet. Share it."
+  },
+  {
+    "skillId": "live-ops-events",
+    "task": "Design a two-week live-ops event for a synthetic mobile game: theme, rewards, event currency, schedule, target KPIs and a post-event report template. Share it."
+  },
+  {
+    "skillId": "marketing-automation-platforms",
+    "task": "On a free HubSpot account, build a three-email nurture workflow for a synthetic SaaS lead magnet with enrolment triggers, a branch on opens and a lead status update. Share screenshots and a one-page flow diagram."
+  },
+  {
+    "skillId": "meddra-whodrug-coding",
+    "task": "Code 20 synthetic adverse event terms and 10 concomitant medications to the right level of a public hierarchy summary (MedDRA SOC and preferred terms, ATC classes), flagging terms to query with the site. Share the coding sheet."
+  },
+  {
+    "skillId": "motion-graphics",
+    "task": "Animate a synthetic brand's logo sting and a lower-third title in After Effects or a free tool (Blender, Natron), with eased keyframes, and export for video. Share the project files and exports."
+  },
+  {
+    "skillId": "motor-control-algorithms",
+    "task": "Build field oriented control for a PMSM in Simulink or Python: Clarke and Park transforms, current PI loops and SVPWM, with a step in speed and load torque. Share the model, plots and a one-page note on tuning."
+  },
+  {
+    "skillId": "nonlinear-fea",
+    "task": "Run a non-linear analysis of a synthetic plastic snap-fit or crush tube in a free or student solver (CalculiX, Code_Aster): plasticity and contact, with a load-displacement curve and a note on convergence settings. Share it."
+  },
+  {
+    "skillId": "playtesting",
+    "task": "Run a playtest of a free or your own game with five players: a test plan, observation sheet and short survey, then a one-page findings report with three design changes. Share it."
+  },
+  {
+    "skillId": "pll-clocking-design",
+    "task": "Build a behavioural model of a charge-pump PLL in Python or Simulink (PFD, charge pump, loop filter, VCO, divider), choose loop filter values for a stated bandwidth, and plot lock time and phase margin. Share the model and a short note."
+  },
+  {
+    "skillId": "power-electronics-inverters",
+    "task": "Simulate a three-phase two-level inverter driving an RL load in Simulink, PLECS (free viewer) or Python with sine PWM, then add dead time and show its effect on output current. Share the model and plots."
+  },
+  {
+    "skillId": "power-management-ic-design",
+    "task": "Design an LDO regulator at transistor level in an open PDK with ngspice: error amplifier, pass device and feedback, and show dropout, load regulation, PSRR and stability across load. Share the netlist, plots and a design note."
+  },
+  {
+    "skillId": "programmatic-platforms",
+    "task": "Plan a synthetic programmatic campaign: deal types (open auction, PMP, programmatic guaranteed), audience and inventory targeting, bids, budget pacing and KPIs, as a one-page plan and a setup sheet. Share it."
+  },
+  {
+    "skillId": "pvt-monte-carlo-analysis",
+    "task": "Run your own open-PDK op-amp or comparator across process, voltage and temperature corners and a 200-run Monte Carlo in ngspice, then tabulate worst-case offset, gain and delay and say which corner limits it. Share the scripts and results."
+  },
+  {
+    "skillId": "r-programming",
+    "task": "Clean a public dataset in R with dplyr, make three ggplot2 charts and a summary table, and knit it as an R Markdown or Quarto report with a short note on findings. Share the report and code."
+  },
+  {
+    "skillId": "sap-bw-data-flows",
+    "task": "Draw a data flow for a synthetic SAP sales extractor into BW: DataSource, transformation rules (with one routine in pseudo-ABAP), DTPs and delta handling, plus a test plan for a full and a delta load. Share it."
+  },
+  {
+    "skillId": "sap-bw-process-chains",
+    "task": "Design a nightly process chain for a synthetic sales model: load steps, DTPs, activation, index and cache steps, error handling and alerts, as a chain diagram and a runbook for three common failures. Share it."
+  },
+  {
+    "skillId": "sap-bw-reporting",
+    "task": "Design two BEx or BW queries on a synthetic sales model (a monthly sales report with a restricted and a calculated key figure, and a variance report with variables), with mock-ups in Excel. Share the spec and mock-ups."
+  },
+  {
+    "skillId": "sap-bw4hana-modelling",
+    "task": "Design a BW/4HANA model for synthetic sales data: ADSOs for orders and deliveries, InfoObjects, a composite provider joining them and the reasoning for each choice, as a model diagram and design note. Share it."
+  },
+  {
+    "skillId": "sap-hana-modelling",
+    "task": "On the free SAP HANA Express or a trial, or as a written spec, build a calculation view joining synthetic orders and customers, with a calculated column and an input parameter, and the SQL to test it. Share it."
+  },
+  {
+    "skillId": "structural-dynamics-nvh",
+    "task": "Run a modal analysis of a synthetic mounting bracket in a free solver (CalculiX or Code_Aster), report the first five modes with shapes, then stiffen it to move the first mode above a stated frequency. Share results and a note."
+  },
+  {
+    "skillId": "survival-analysis",
+    "task": "Analyse a public survival dataset (such as lung in R's survival package): Kaplan-Meier curves, log-rank test and a Cox model with one covariate, checking proportional hazards. Share the code, plots and a one-page note."
+  },
+  {
+    "skillId": "video-delivery-specs",
+    "task": "Write a delivery spec sheet for a synthetic campaign across YouTube, Instagram Reels, OTT and cinema: resolution, frame rate, codec, bitrate, loudness and captions, then export one clip to two of the specs. Share it."
+  },
+  {
+    "skillId": "video-editing-nle",
+    "task": "Edit a 60-second promo for a synthetic brand from free stock footage in DaVinci Resolve or another editor: story cut, music, titles and a 9:16 version. Share both exports and a short note on the edit choices."
   }
 ]

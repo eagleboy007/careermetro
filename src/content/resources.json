@@ -623,7 +623,8 @@
     "provider": "Google",
     "kind": "docs",
     "skillIds": [
-      "email-marketing"
+      "email-marketing",
+      "email-deliverability"
     ],
     "minutes": 30,
     "free": true
@@ -11462,7 +11463,8 @@
     "provider": "NPTEL (IISc Bangalore)",
     "kind": "course",
     "skillIds": [
-      "analog-power-circuit-design"
+      "analog-power-circuit-design",
+      "power-electronics-inverters"
     ],
     "minutes": 1800,
     "free": true
@@ -11885,7 +11887,8 @@
     "provider": "NPTEL (IIT Delhi)",
     "kind": "course",
     "skillIds": [
-      "ev-hev-systems"
+      "ev-hev-systems",
+      "electrical-machines-transformers"
     ],
     "minutes": 1800,
     "free": true
@@ -14291,7 +14294,9 @@
     "provider": "HubSpot Academy",
     "kind": "video",
     "skillIds": [
-      "lead-qualification"
+      "lead-qualification",
+      "lead-scoring",
+      "audience-segmentation"
     ],
     "minutes": 35,
     "free": true
@@ -17378,7 +17383,8 @@
     "kind": "docs",
     "skillIds": [
       "insurance-pricing-rating",
-      "loss-ratio-analysis"
+      "loss-ratio-analysis",
+      "actuarial-pricing"
     ],
     "minutes": 900,
     "free": true
@@ -17390,7 +17396,8 @@
     "kind": "docs",
     "skillIds": [
       "loss-ratio-analysis",
-      "insurance-pricing-rating"
+      "insurance-pricing-rating",
+      "actuarial-reserving"
     ],
     "minutes": 900,
     "free": true
@@ -28927,6 +28934,3097 @@
       "software-asset-management"
     ],
     "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Analog IC Design (IIT Madras, Nagendra Krishnapura)",
+    "url": "https://nptel.ac.in/courses/117106030",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "analog-ic-circuit-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Analog IC Design: CMOS op-amps, noise and mismatch (IIT Madras)",
+    "url": "https://onlinecourses.nptel.ac.in/noc23_ee10/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "analog-ic-circuit-design",
+      "pvt-monte-carlo-analysis"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "TI Precision Labs: Op amps (video series)",
+    "url": "https://ti.com/video/series/precision-labs/ti-precision-labs-op-amps.html",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "analog-ic-circuit-design"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Analog Integrated Circuit Design (TU Delft OpenCourseWare): voltage references, translinear circuits, oscillators",
+    "url": "https://ocw.tudelft.nl/courses/analog-integrated-circuit-design/",
+    "provider": "TU Delft",
+    "kind": "course",
+    "skillIds": [
+      "analog-ic-circuit-design",
+      "power-management-ic-design"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Analog IC design teaching notes and lecture material (Nagendra Krishnapura, IIT Madras)",
+    "url": "https://ee.iitm.ac.in/~nagendra/teaching.html",
+    "provider": "IIT Madras",
+    "kind": "docs",
+    "skillIds": [
+      "analog-ic-circuit-design"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Tutorial: ngspice for beginners",
+    "url": "https://ngspice.sourceforge.io/ngspice-tutorial.html",
+    "provider": "ngspice",
+    "kind": "docs",
+    "skillIds": [
+      "ic-spice-simulation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "SPICE simulation tutorial for chip design (open PDK flow)",
+    "url": "https://vlsida.github.io/chip-tutorials/spice.html",
+    "provider": "VLSIDA (UC Santa Cruz)",
+    "kind": "practice",
+    "skillIds": [
+      "ic-spice-simulation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Cadence tutorial: schematic capture and Spectre simulation (Brown ENGN1600)",
+    "url": "https://www.brown.edu/Departments/Engineering/Courses/engn1600/Assignments/Cadence_Tutorial_EN1600.pdf",
+    "provider": "Brown University",
+    "kind": "practice",
+    "skillIds": [
+      "ic-spice-simulation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Cadence analog basics tutorial: Virtuoso and Spectre (York University EMIL)",
+    "url": "https://wiki.eecs.yorku.ca/lab/emil/_media/tutorials:cad:t1analogbasics.pdf",
+    "provider": "York University",
+    "kind": "practice",
+    "skillIds": [
+      "ic-spice-simulation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "ECE 483 Cadence lecture: DC, AC and transient simulation of a differential amplifier",
+    "url": "https://courses.grainger.illinois.edu/ece483/data/Cadence_Lecture_SP17.pdf",
+    "provider": "University of Illinois",
+    "kind": "docs",
+    "skillIds": [
+      "ic-spice-simulation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Monte Carlo analysis in Cadence Spectre (lab tutorial)",
+    "url": "https://vision.lakeheadu.ca/eele5131/tut/montecarlo.pdf",
+    "provider": "Lakehead University",
+    "kind": "practice",
+    "skillIds": [
+      "pvt-monte-carlo-analysis"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Mismatch simulation with Monte Carlo using Virtuoso",
+    "url": "https://lci.ufsc.br/pdf/Mismatch_Simulation_with_Monte_Carlo_using_Virtuoso.pdf",
+    "provider": "UFSC LCI",
+    "kind": "practice",
+    "skillIds": [
+      "pvt-monte-carlo-analysis"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "The Art of Analog Design Part 5: DC mismatch versus Monte Carlo",
+    "url": "https://community.cadence.com/cadence_blogs_8/b/cic/posts/the-art-of-analog-design-part-5-response-to-frank-s-question",
+    "provider": "Cadence",
+    "kind": "docs",
+    "skillIds": [
+      "pvt-monte-carlo-analysis"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Introducing Spectre FMC (fast Monte Carlo) analysis",
+    "url": "https://community.cadence.com/cadence_blogs_8/b/cic/posts/introducing-spectre-fmc-analysis",
+    "provider": "Cadence",
+    "kind": "docs",
+    "skillIds": [
+      "pvt-monte-carlo-analysis"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "VLSI Data Conversion Circuits (IIT Madras)",
+    "url": "https://nptel.ac.in/courses/117106034",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "data-converter-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "SAR and delta-sigma ADCs: basic operation (TI Precision Labs)",
+    "url": "https://www.ti.com/video/6228191712001",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "data-converter-design"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "TI Precision Labs: Digital-to-analog converters (DACs) video series",
+    "url": "https://ti.com/video/series/digital-to-analog-converters--dacs-.html",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "data-converter-design"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Types of noise in ADCs (TI Precision Labs)",
+    "url": "https://training.ti.com/types-noise-adcs",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "data-converter-design"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Delta-sigma data converters: modules 1 and 2 slides (ECE1371, University of Toronto)",
+    "url": "https://www.eecg.utoronto.ca/~johns/ece1371/slides/Mod1+Mod2-2.pdf",
+    "provider": "University of Toronto",
+    "kind": "docs",
+    "skillIds": [
+      "data-converter-design"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "MT-229: quantization noise and the bandwidth of interest",
+    "url": "https://www.analog.com/MT-229",
+    "provider": "Analog Devices",
+    "kind": "docs",
+    "skillIds": [
+      "data-converter-design"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Phase-Locked Loops (IIT Madras, Saurabh Saxena)",
+    "url": "https://nptel.ac.in/courses/108106184",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "pll-clocking-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Phase-locked loops (NPTEL course preview)",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_ee92/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "pll-clocking-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Basics of Phase Locked Loop (NPTEL, IIT Roorkee)",
+    "url": "https://innovationspace.ansys.com/product/basics-of-phase-locked-loop/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "pll-clocking-design"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "ECEN620 Lecture 3: PLL overview and linear analysis",
+    "url": "https://people.engr.tamu.edu/spalermo/ecen620/lecture03_ee620_pll_analysis.pdf",
+    "provider": "Texas A&M University",
+    "kind": "docs",
+    "skillIds": [
+      "pll-clocking-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "EE6324 course page: PLL and clocking (IIT Madras ICS group)",
+    "url": "https://www.ee.iitm.ac.in/vlsi/courses/ee6324a_may2020/start",
+    "provider": "IIT Madras",
+    "kind": "course",
+    "skillIds": [
+      "pll-clocking-design"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Power Management Integrated Circuits (IIT Madras): LDOs and switched-capacitor DC-DC",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_ee78/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "power-management-ic-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Learn the basics of linear and low-dropout regulators (LDOs) video series",
+    "url": "https://ti.com/video/series/learn-the-basics-of-linear-and-low-drop-out-regulators-ldos.html",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "power-management-ic-design"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "A topical index of TI LDO application notes (SBVA026)",
+    "url": "https://ti.com/lit/SBVA026",
+    "provider": "Texas Instruments",
+    "kind": "docs",
+    "skillIds": [
+      "power-management-ic-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Topology tutorial: what is a buck converter?",
+    "url": "https://www.ti.com/video/5028006390001",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "power-management-ic-design"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Verilog-A modelling lecture notes (ECE517, University of Delaware)",
+    "url": "https://www.eecis.udel.edu/~vsaxena/courses/ece517/s17/Lecture%20Notes/VerilogA%20Modeling.pdf",
+    "provider": "University of Delaware",
+    "kind": "docs",
+    "skillIds": [
+      "ams-behavioral-modelling"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Verilog-AMS Language Reference Manual (download page)",
+    "url": "https://accellera.org/downloads/standards/v-ams",
+    "provider": "Accellera",
+    "kind": "docs",
+    "skillIds": [
+      "ams-behavioral-modelling"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "The Designer's Guide to Verilog-AMS: companion models and chapters",
+    "url": "https://designers-guide.org/verilog-ams/dg-vams/index.html",
+    "provider": "Designer's Guide Community",
+    "kind": "docs",
+    "skillIds": [
+      "ams-behavioral-modelling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Verilog-AMS and Verilog-A reference and examples",
+    "url": "https://verilogams.com",
+    "provider": "verilogams.com",
+    "kind": "docs",
+    "skillIds": [
+      "ams-behavioral-modelling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Understanding field-oriented control (Motor Control, Part 4)",
+    "url": "https://mathworks.com/videos/motor-control-part-4-understanding-field-oriented-control-1587967749983.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "motor-control-algorithms"
+    ],
+    "minutes": 11,
+    "free": true
+  },
+  {
+    "title": "Field-oriented control of PMSMs with Simulink (video series)",
+    "url": "https://ch.mathworks.com/videos/series/field-oriented-control-of-pmsms-with-simulink.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "motor-control-algorithms",
+      "control-loop-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "C2000 InstaSPIN: what is FOC? (sensorless FOC)",
+    "url": "https://www.ti.com/video/4445675758001",
+    "provider": "Texas Instruments",
+    "kind": "video",
+    "skillIds": [
+      "motor-control-algorithms"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "AN955: V/f control of a 3-phase induction motor using space vector modulation",
+    "url": "https://www.microchip.com/en-us/application-notes/an955",
+    "provider": "Microchip",
+    "kind": "docs",
+    "skillIds": [
+      "motor-control-algorithms"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Pulse Width Modulation for Power Electronic Converters (IISc, G. Narayanan)",
+    "url": "https://nptel.ac.in/courses/108108035",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "motor-control-algorithms",
+      "power-electronics-inverters"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "AN885: Brushless DC (BLDC) motor fundamentals",
+    "url": "https://microchip.com/en-us/application-notes/an885",
+    "provider": "Microchip",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-machines-transformers"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "An introduction to brushless DC motors (Motor Control, Part 1)",
+    "url": "https://uk.mathworks.com/videos/brushless-dc-motors-introduction-1564728874059.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "electrical-machines-transformers"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Electrical Machines - II: induction and synchronous machines (IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc23_ee55/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "electrical-machines-transformers"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Steady state and dynamic modeling of induction machines (NPTEL, IIT Madras)",
+    "url": "https://innovationspace.ansys.com/product/steady-state-and-dynamic-modeling-of-induction-machines/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "electrical-machines-transformers"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Power Electronics (IIT Delhi): rectifiers, DC-DC converters and inverters",
+    "url": "https://onlinecourses.nptel.ac.in/noc19_ee37/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "power-electronics-inverters"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Modeling a three-phase inverter (How to Design Motor Controllers Using Simscape Electrical, Part 2)",
+    "url": "https://in.mathworks.com/videos/how-to-design-motor-controllers-using-simscape-electrical-part-2-modeling-a-three-phase-inverter-1567758371716.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "power-electronics-inverters"
+    ],
+    "minutes": 8,
+    "free": true
+  },
+  {
+    "title": "TIDM-02017: 5 kW 48 V traction inverter reference design",
+    "url": "https://www.ti.com/tool/TIDM-02017",
+    "provider": "Texas Instruments",
+    "kind": "docs",
+    "skillIds": [
+      "power-electronics-inverters"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Developing and implementing digital control for power converters",
+    "url": "https://in.mathworks.com/videos/developing-and-implementing-digital-control-for-power-converters-1561733465388.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "power-electronics-inverters",
+      "control-loop-design"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "What is PID control? (Understanding PID Control, Part 1)",
+    "url": "https://au.mathworks.com/videos/understanding-pid-control-part-1-what-is-pid-control--1527089264373.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "control-loop-design"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "A PID tuning guide (Understanding PID Control, Part 4)",
+    "url": "https://ch.mathworks.com/videos/understanding-pid-control-part-4-a-pid-tuning-guide-1531124725727.html",
+    "provider": "MathWorks",
+    "kind": "video",
+    "skillIds": [
+      "control-loop-design"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "PID control: overview, tutorials and examples",
+    "url": "https://www.mathworks.com/discovery/pid-control.html",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "control-loop-design"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Intelligent Feedback and Control (IIT Bombay): PID structure and tuning",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_ge57/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "control-loop-design"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "HyperMesh tutorials (Altair help)",
+    "url": "https://help.altair.com/hwdesktop/hwx/topics/tutorials/hwx/hypermesh_tutorials_r.htm",
+    "provider": "Altair",
+    "kind": "practice",
+    "skillIds": [
+      "fe-meshing-preprocessing"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Topics in meshing for structural analysis",
+    "url": "https://innovationspace.ansys.com/product/topics-in-meshing-for-structural-analysis/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "fe-meshing-preprocessing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Advanced topics in Ansys Mechanical meshing (shell and beam meshing)",
+    "url": "https://innovationspace.ansys.com/product/advanced-topics-in-ansys-mechanical-meshing/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "fe-meshing-preprocessing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of Finite Element (FE) Method (NPTEL)",
+    "url": "https://innovationspace.ansys.com/product/fundamentals-of-finite-element-fe-method/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "fe-meshing-preprocessing",
+      "nonlinear-fea"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Introduction to LS-DYNA and LS-PrePost for explicit and implicit analysis (tutorials)",
+    "url": "https://lsdyna.ansys.com/introduction-ls-dyna-ls-prepost-for-explicit-and-implicit-analysis-2/",
+    "provider": "Ansys LS-DYNA",
+    "kind": "practice",
+    "skillIds": [
+      "nonlinear-fea"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Foundations in structural nonlinearities (learning track)",
+    "url": "https://innovationspace.ansys.com/product/foundations-in-structural-nonlinearities/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "nonlinear-fea"
+    ],
+    "minutes": 400,
+    "free": true
+  },
+  {
+    "title": "Structural nonlinearity",
+    "url": "https://innovationspace.ansys.com/product/structural-nonlinearity/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "nonlinear-fea"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Introduction to explicit dynamics using LS-DYNA (teaching resource)",
+    "url": "https://www.ansys.com/academic/educators/education-resources/introduction-to-explicit-dynamics-using-ls-dyna",
+    "provider": "Ansys",
+    "kind": "course",
+    "skillIds": [
+      "nonlinear-fea"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Heat transfer modeling in Ansys Fluent",
+    "url": "https://innovationspace.ansys.com/product/heat-transfer-modeling-in-ansys-fluent/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "cfd-analysis"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Cornell SimCafe Fluids learning track (Ansys Fluent)",
+    "url": "https://innovationspace.ansys.com/product/cornell-simcafe-fluids",
+    "provider": "Ansys Innovation Space",
+    "kind": "practice",
+    "skillIds": [
+      "cfd-analysis"
+    ],
+    "minutes": 400,
+    "free": true
+  },
+  {
+    "title": "Computational Fluid Dynamics (IIT Kharagpur, Suman Chakraborty)",
+    "url": "https://nptel.ac.in/courses/112105045/",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "cfd-analysis"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Computational Fluid Dynamics and Heat Transfer (IIT Kanpur, Gautam Biswas)",
+    "url": "https://nptel.ac.in/courses/112104030",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "cfd-analysis"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Computational Fluid Dynamics (IIT Madras, Sreenivas Jayanti)",
+    "url": "https://onlinecourses.nptel.ac.in/noc20_ch05/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "cfd-analysis"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Topics in fatigue analysis in Ansys Mechanical",
+    "url": "https://innovationspace.ansys.com/product/topics-in-fatigue-analysis-in-ansys-mechanical/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "fatigue-durability-analysis"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Fracture, Fatigue and Failure of Materials (IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_mm42/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "fatigue-durability-analysis"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Variable amplitude fatigue: stress-life and strain-life background",
+    "url": "https://efatigue.com/variable/",
+    "provider": "eFatigue",
+    "kind": "docs",
+    "skillIds": [
+      "fatigue-durability-analysis"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Practical introduction to fatigue analysis using rainflow counting",
+    "url": "https://www.mathworks.com/help/signal/ug/practical-introduction-to-fatigue-analysis-using-rainflow-counting.html",
+    "provider": "MathWorks",
+    "kind": "practice",
+    "skillIds": [
+      "fatigue-durability-analysis"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Rainflow counting (Simcenter knowledge article)",
+    "url": "https://community.sw.siemens.com/articles/en_US/Knowledge/rainflow-counting",
+    "provider": "Siemens",
+    "kind": "docs",
+    "skillIds": [
+      "fatigue-durability-analysis"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Modal analysis in Ansys Mechanical",
+    "url": "https://innovationspace.ansys.com/product/modal-analysis-in-ansys-mechanical/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "structural-dynamics-nvh"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Linear dynamics using Ansys Mechanical (learning path: modal, harmonic, random vibration)",
+    "url": "https://innovationspace.ansys.com/product/linear-dynamics-using-ansys-mechanical-2/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "structural-dynamics-nvh"
+    ],
+    "minutes": 400,
+    "free": true
+  },
+  {
+    "title": "Harmonic analysis of structures",
+    "url": "https://innovationspace.ansys.com/product/harmonic-analysis-of-structures/",
+    "provider": "Ansys Innovation Space",
+    "kind": "course",
+    "skillIds": [
+      "structural-dynamics-nvh"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Vibration and Structural Dynamics (IIT Kharagpur, Mira Mitra)",
+    "url": "https://onlinecourses.nptel.ac.in/noc23_ae17/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "structural-dynamics-nvh"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Modal Assurance Criterion (MAC)",
+    "url": "https://community.sw.siemens.com/articles/en_US/Knowledge/modal-assurance-criterion-mac",
+    "provider": "Siemens",
+    "kind": "docs",
+    "skillIds": [
+      "cae-test-correlation",
+      "structural-dynamics-nvh"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Correlating simulation and modal test results with Simcenter 3D",
+    "url": "https://community.sw.siemens.com/articles/en_US/Knowledge/correlating-simulation-modal-test-results-with-simcenter-3d",
+    "provider": "Siemens",
+    "kind": "practice",
+    "skillIds": [
+      "cae-test-correlation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Simcenter Testlab Neo modal correlation",
+    "url": "https://community.sw.siemens.com/articles/en_US/Knowledge/Simcenter-Testlab-Neo-Modal-Correlation",
+    "provider": "Siemens",
+    "kind": "docs",
+    "skillIds": [
+      "cae-test-correlation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Verification and Validation in Computational Fluid Dynamics (Oberkampf and Trucano, Sandia)",
+    "url": "https://www.osti.gov/servlets/purl/793406",
+    "provider": "OSTI (Sandia National Laboratories)",
+    "kind": "docs",
+    "skillIds": [
+      "cae-test-correlation"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Concepts of Model Verification and Validation (Los Alamos LA-14167-MS)",
+    "url": "https://digital.library.unt.edu/ark:/67531/metadc785130/m2/1/high_res_d/835920.pdf",
+    "provider": "UNT Digital Library (Los Alamos)",
+    "kind": "docs",
+    "skillIds": [
+      "cae-test-correlation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Line items (Google Ad Manager Help)",
+    "url": "https://support.google.com/admanager/answer/82236",
+    "provider": "Google Ad Manager Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-server-trafficking"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Delivery basics: orders, line items and creatives (Google Ad Manager Help)",
+    "url": "https://support.google.com/admanager/answer/6027116",
+    "provider": "Google Ad Manager Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-server-trafficking",
+      "ad-delivery-troubleshooting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Trafficking workflow (Campaign Manager 360 Help)",
+    "url": "https://support.google.com/campaignmanager/answer/3419088",
+    "provider": "Campaign Manager 360 Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-server-trafficking"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Manage placement tags (Campaign Manager 360 Help)",
+    "url": "https://support.google.com/campaignmanager/answer/2826636",
+    "provider": "Campaign Manager 360 Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-server-trafficking",
+      "ad-tags-pixels"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Trafficking overview (Campaign Manager 360 API guide)",
+    "url": "https://developers.google.com/doubleclick-advertisers/guides/trafficking_overview",
+    "provider": "Google for Developers",
+    "kind": "docs",
+    "skillIds": [
+      "ad-server-trafficking"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Purchase private inventory: preferred deals and private auctions (Display & Video 360 Help)",
+    "url": "https://support.google.com/displayvideo/answer/3415113",
+    "provider": "Display & Video 360 Help",
+    "kind": "docs",
+    "skillIds": [
+      "programmatic-platforms"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Programmatic Guaranteed deals (Display & Video 360 Help)",
+    "url": "https://support.google.com/bidmanager/answer/7067656",
+    "provider": "Display & Video 360 Help",
+    "kind": "docs",
+    "skillIds": [
+      "programmatic-platforms"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Discover publishers and inventory in Marketplace (Display & Video 360 Help)",
+    "url": "https://support.google.com/displayvideo/answer/6224745",
+    "provider": "Display & Video 360 Help",
+    "kind": "docs",
+    "skillIds": [
+      "programmatic-platforms"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "OpenRTB API Specification 2.5 (PMP and Deal objects)",
+    "url": "https://www.iab.com/wp-content/uploads/2016/03/OpenRTB-API-Specification-Version-2-5-FINAL.pdf",
+    "provider": "IAB Tech Lab",
+    "kind": "docs",
+    "skillIds": [
+      "programmatic-platforms"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "OpenRTB 3.0 specification",
+    "url": "https://github.com/InteractiveAdvertisingBureau/openrtb/blob/main/OpenRTB%20v3.0%20FINAL.md",
+    "provider": "IAB Tech Lab",
+    "kind": "docs",
+    "skillIds": [
+      "programmatic-platforms"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "VAST: Video Ad Serving Template (IAB Tech Lab repository)",
+    "url": "https://github.com/InteractiveAdvertisingBureau/VAST",
+    "provider": "IAB Tech Lab",
+    "kind": "docs",
+    "skillIds": [
+      "ad-tags-pixels"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "VAST 4.0 specification",
+    "url": "https://www.iab.com/wp-content/uploads/2016/01/VAST_4-0_2016-01-21.pdf",
+    "provider": "IAB Tech Lab",
+    "kind": "docs",
+    "skillIds": [
+      "ad-tags-pixels"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "IMA HTML5 Video Suite Inspector (test VAST tags)",
+    "url": "https://developers.google.com/interactive-media-ads/docs/vastinspector",
+    "provider": "Google for Developers",
+    "kind": "practice",
+    "skillIds": [
+      "ad-tags-pixels",
+      "ad-delivery-troubleshooting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Create Floodlight activities and tags (Campaign Manager 360 Help)",
+    "url": "https://support.google.com/campaignmanager/answer/6100588",
+    "provider": "Campaign Manager 360 Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-tags-pixels"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Troubleshoot Ad Manager line item delivery",
+    "url": "https://support.google.com/admanager/answer/7066157",
+    "provider": "Google Ad Manager Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-delivery-troubleshooting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Why isn't my line item delivering? (troubleshooter)",
+    "url": "https://support.google.com/admanager/troubleshooter/7476595",
+    "provider": "Google Ad Manager Help",
+    "kind": "practice",
+    "skillIds": [
+      "ad-delivery-troubleshooting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Inspect webpage ad delivery (Google Ad Manager Help)",
+    "url": "https://support.google.com/admanager/answer/7045211",
+    "provider": "Google Ad Manager Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-delivery-troubleshooting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Line item delivery pacing: evenly, frontloaded, as fast as possible (Google Ad Manager Help)",
+    "url": "https://support.google.com/admanager/answer/82244",
+    "provider": "Google Ad Manager Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-delivery-troubleshooting",
+      "ad-server-trafficking"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "MRC Viewable Ad Impression Measurement Guidelines",
+    "url": "https://www.iab.com/wp-content/uploads/2015/06/MRC-Viewable-Ad-Impression-Measurement-Guideline.pdf",
+    "provider": "IAB / Media Rating Council",
+    "kind": "docs",
+    "skillIds": [
+      "ad-verification-brand-safety"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Open Measurement SDK (OM SDK)",
+    "url": "https://www.iab.com/omsdk",
+    "provider": "IAB Tech Lab",
+    "kind": "docs",
+    "skillIds": [
+      "ad-verification-brand-safety"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Active View reporting: improve and troubleshoot viewability (Google Ad Manager Help)",
+    "url": "https://support.google.com/admanager/answer/6123466",
+    "provider": "Google Ad Manager Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-verification-brand-safety"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Prevent invalid clicks and impressions (Google Ad Manager Help)",
+    "url": "https://support.google.com/admanager/answer/1298900",
+    "provider": "Google Ad Manager Help",
+    "kind": "docs",
+    "skillIds": [
+      "ad-verification-brand-safety"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Ad traffic quality: resources for publishers",
+    "url": "https://www.google.co.in/ads/adtrafficquality/publishers",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "ad-verification-brand-safety"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Prebid.js: Getting started for developers",
+    "url": "https://docs.prebid.org/dev-docs/getting-started",
+    "provider": "Prebid.org",
+    "kind": "docs",
+    "skillIds": [
+      "header-bidding"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Google Ad Manager with Prebid step by step",
+    "url": "https://docs.prebid.org/adops/step-by-step",
+    "provider": "Prebid.org",
+    "kind": "practice",
+    "skillIds": [
+      "header-bidding"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Price granularity (Prebid ad ops)",
+    "url": "https://docs.prebid.org/adops/price-granularity.html",
+    "provider": "Prebid.org",
+    "kind": "docs",
+    "skillIds": [
+      "header-bidding"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Prebid Server overview",
+    "url": "https://docs.prebid.org/prebid-server/overview/prebid-server-overview.html",
+    "provider": "Prebid.org",
+    "kind": "docs",
+    "skillIds": [
+      "header-bidding"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Video overview of Prebid and ad operations",
+    "url": "https://docs.prebid.org/adops/adops-overview-video.html",
+    "provider": "Prebid.org",
+    "kind": "video",
+    "skillIds": [
+      "header-bidding"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "ChainLadder: claims reserving with R (vignette)",
+    "url": "https://cran.rstudio.com/web/packages/ChainLadder/vignettes/ChainLadder.html",
+    "provider": "CRAN",
+    "kind": "practice",
+    "skillIds": [
+      "actuarial-reserving"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "ChainLadder package documentation site",
+    "url": "https://mages.github.io/ChainLadder/",
+    "provider": "ChainLadder project",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-reserving"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Parameter estimation for Bornhuetter/Ferguson (Mack, CAS E-Forum)",
+    "url": "https://casact.org/abstract/parameter-estimation-bornhuetterferguson",
+    "provider": "Casualty Actuarial Society",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-reserving"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "CAS Monograph No. 5: Generalized Linear Models for Insurance Rating",
+    "url": "https://www.casact.org/monograph/cas-monograph-no-5",
+    "provider": "Casualty Actuarial Society",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-pricing"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "insurancerating: getting started (GLM frequency and severity pricing in R)",
+    "url": "https://cran.nics.utk.edu/cran/web/packages/insurancerating/vignettes/getting-started.html",
+    "provider": "CRAN",
+    "kind": "practice",
+    "skillIds": [
+      "actuarial-pricing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "An introduction to the lifecontingencies package (life insurance pricing in R)",
+    "url": "https://search.r-project.org/CRAN/packages/lifecontingencies/vignettes/an_introduction_to_lifecontingencies_package.pdf",
+    "provider": "CRAN",
+    "kind": "practice",
+    "skillIds": [
+      "actuarial-pricing",
+      "actuarial-modelling-software"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Experience Study Calculations (Atkinson and McGarry)",
+    "url": "https://www.soa.org/Files/Research/2016-10-experience-study-calculations.pdf",
+    "provider": "Society of Actuaries",
+    "kind": "docs",
+    "skillIds": [
+      "experience-studies"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Experience study calculations educational tool",
+    "url": "https://www.soa.org/resources/tables-calcs-tools/experience-study-tool/",
+    "provider": "Society of Actuaries",
+    "kind": "practice",
+    "skillIds": [
+      "experience-studies"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "actxps: R package for actuarial experience studies",
+    "url": "https://mattheaphy.r-universe.dev/actxps",
+    "provider": "r-universe",
+    "kind": "practice",
+    "skillIds": [
+      "experience-studies"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Experience studies session slides (SOA Life and Annuity Symposium 2017)",
+    "url": "https://www.soa.org/Files/e-business/pd/events/2017/las/pd-2017-05-las-session-016.pdf",
+    "provider": "Society of Actuaries",
+    "kind": "docs",
+    "skillIds": [
+      "experience-studies"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "IFRS 17 Effects Analysis",
+    "url": "https://www.ifrs.org/-/media/project/insurance-contracts/ifrs-standard/ifrs-17-effects-analysis.pdf",
+    "provider": "IFRS Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-valuation-reporting"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "IFRS 17 Insurance Contracts fact sheet",
+    "url": "https://www.ifrs.org/-/media/project/insurance-contracts/ifrs-standard/ifrs-17-factsheet.pdf",
+    "provider": "IFRS Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-valuation-reporting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "IFRS 17 (Ind AS 117) working group",
+    "url": "https://actuariesindia.org/working-group-ifrs-17-ind-117",
+    "provider": "Institute of Actuaries of India",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-valuation-reporting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Introduction to Ind AS (presentation)",
+    "url": "https://actuariesindia.org/sites/default/files/2023-07/Introduction%20to%20IndAS.pdf",
+    "provider": "Institute of Actuaries of India",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-valuation-reporting"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "APS 2: additional guidance for appointed actuaries in life insurance",
+    "url": "https://actuariesindia.org/sites/default/files/inline-files/IAI-APS2.pdf",
+    "provider": "Institute of Actuaries of India",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-valuation-reporting"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "lifelib: open-source actuarial projection models in Python",
+    "url": "https://pypi.org/project/lifelib",
+    "provider": "lifelib",
+    "kind": "practice",
+    "skillIds": [
+      "actuarial-modelling-software"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Actuarial modeling controls research report (2017)",
+    "url": "https://www.soa.org/Files/Research/Projects/2017-01-actuarial-modeling-controls-research-report.pdf",
+    "provider": "Society of Actuaries",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-modelling-software"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Model governance practice note",
+    "url": "https://actuary.org/content/model-governance-practice-note",
+    "provider": "American Academy of Actuaries",
+    "kind": "docs",
+    "skillIds": [
+      "actuarial-modelling-software"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Getting started with VBA in Office",
+    "url": "https://learn.microsoft.com/en-us/office/vba/library-reference/concepts/getting-started-with-vba-in-office",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "excel-vba"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Excel VBA object model reference",
+    "url": "https://learn.microsoft.com/en-us/office/vba/api/overview/excel/object-model",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "excel-vba"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Free VBA course (Excel macros)",
+    "url": "https://excel-pratique.com/en/vba",
+    "provider": "Excel-Pratique",
+    "kind": "course",
+    "skillIds": [
+      "excel-vba"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Getting started with Excel VBA",
+    "url": "https://devtut.github.io/excelvba/getting-started-with-excel-vba/",
+    "provider": "DevTut",
+    "kind": "practice",
+    "skillIds": [
+      "excel-vba"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "STAT 509: Design and Analysis of Clinical Trials (course notes)",
+    "url": "https://online.stat.psu.edu/stat509/book/export/html/792",
+    "provider": "Penn State",
+    "kind": "course",
+    "skillIds": [
+      "clinical-trial-design"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "E9 Statistical Principles for Clinical Trials (FDA guidance)",
+    "url": "https://www.hhs.gov/guidance/sites/default/files/hhs-guidance-documents/FDA/E9-Statistical-Principles-for-Clinical-Trials.pdf",
+    "provider": "FDA / ICH",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-trial-design",
+      "clinical-statistical-modelling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "ICH E9 statistical principles for clinical trials (scientific guideline)",
+    "url": "https://www.ema.europa.eu/en/ich-e9-statistical-principles-clinical-trials-scientific-guideline",
+    "provider": "European Medicines Agency",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-trial-design"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Getting started with rpact (group sequential design and sample size)",
+    "url": "https://rpact-com.r-universe.dev/rpact/doc/rpact_getting_started.html",
+    "provider": "rpact",
+    "kind": "practice",
+    "skillIds": [
+      "clinical-trial-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "CRAN Task View: Survival Analysis",
+    "url": "https://cran.r-project.org/web/views/Survival.html",
+    "provider": "CRAN",
+    "kind": "docs",
+    "skillIds": [
+      "survival-analysis"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "A package for survival analysis in R (Therneau vignette)",
+    "url": "https://search.r-project.org/CRAN/packages/survival/vignettes/survival.pdf",
+    "provider": "CRAN",
+    "kind": "docs",
+    "skillIds": [
+      "survival-analysis"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Introduction to survival analysis procedures (SAS/STAT)",
+    "url": "https://support.sas.com/documentation/onlinedoc/stat/121/introsurv.pdf",
+    "provider": "SAS",
+    "kind": "docs",
+    "skillIds": [
+      "survival-analysis"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Survival analysis in R (David Diez, OpenIntro)",
+    "url": "https://bo.folk.ntnu.no/TMA4275/Download/R.tutorialDiez.pdf",
+    "provider": "NTNU (OpenIntro)",
+    "kind": "practice",
+    "skillIds": [
+      "survival-analysis"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Adjusting for covariates in randomized clinical trials (FDA guidance)",
+    "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/adjusting-covariates-randomized-clinical-trials-drugs-and-biological-products",
+    "provider": "FDA",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-statistical-modelling"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "ICH E9(R1) addendum on estimands and sensitivity analysis",
+    "url": "https://www.ema.europa.eu/documents/scientific-guideline/ich-e9-r1-addendum-estimands-sensitivity-analysis-clinical-trials-guideline-statistical-principles_en.pdf",
+    "provider": "European Medicines Agency",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-statistical-modelling",
+      "clinical-trial-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "The MIXED procedure (SAS/STAT 14.3 user's guide)",
+    "url": "https://support.sas.com/documentation/onlinedoc/stat/143/mixed.pdf",
+    "provider": "SAS",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-statistical-modelling"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "STAT 502: Analysis of Variance and Design of Experiments (ANCOVA, mixed models)",
+    "url": "https://online.stat.psu.edu/stat502/",
+    "provider": "Penn State",
+    "kind": "course",
+    "skillIds": [
+      "clinical-statistical-modelling"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Mixed model repeated measures (MMRM) worked example",
+    "url": "https://bookdown.org/genproresearch/catalog/mmrm.html",
+    "provider": "Genpro Research (bookdown)",
+    "kind": "practice",
+    "skillIds": [
+      "clinical-statistical-modelling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Introducing DataStore Objects (advanced) - Implementing a Data Warehouse using SAP BW/4HANA",
+    "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana/introducing-datastore-objects-advanced-_c3654f29-5291-4f8c-8d51-113884eeb6a6",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw4hana-modelling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Introducing CompositeProviders - Implementing a Data Warehouse using SAP BW/4HANA",
+    "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana/introducing-compositeproviders_ddb52eb5-86c0-42ca-97f0-9aca6b3ddfd4",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw4hana-modelling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Use Different Types of DataStore Objects (advanced)",
+    "url": "https://learning.sap.com/courses/implementing-modeling-scenarios-in-sap-bw-4hana/use-different-types-of-datastore-objects-advanced-",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw4hana-modelling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Implementing mixed modeling in BW/4HANA using a CompositeProvider",
+    "url": "https://community.sap.com/t5/technology-blog-posts-by-members/implementing-mixed-modeling-in-bw4hana-using-composite-provider/ba-p/13399289",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-bw4hana-modelling"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Overview: SAP Data Warehouse - BW/4HANA and SAP Data Warehouse Cloud",
+    "url": "https://www.youtube.com/watch?v=7Yo3IJ8J6Ac",
+    "provider": "YouTube (SAP Enterprise Support)",
+    "kind": "video",
+    "skillIds": [
+      "sap-bw4hana-modelling",
+      "sap-datasphere"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Creating Transformations and Data Transfer Processes",
+    "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana/creating-transformations-and-data-transfer-processes_f772de2b-15ca-41ae-993d-da2e00e748b3",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw-data-flows"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Operational Data Provisioning simplified",
+    "url": "https://community.sap.com/t5/technology-blog-posts-by-members/operational-data-provisioning-simplified/ba-p/13483334",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-bw-data-flows"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How to extract data into SAP BW/4HANA using generic DataSources",
+    "url": "https://blog.sap-press.com/how-to-extract-data-into-sap-bw4hana-using-generic-datasources",
+    "provider": "SAP PRESS blog",
+    "kind": "docs",
+    "skillIds": [
+      "sap-bw-data-flows"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Logistics (LO) extraction with the ODP framework",
+    "url": "https://blogs.sap.com/2016/12/08/logisticslo-extraction-with-odp-framework/",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-bw-data-flows"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SAP BW/4HANA data flow explained with a practical demo",
+    "url": "https://www.youtube.com/watch?v=63BEiXsmOUM",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "sap-bw-data-flows"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Using Process Chains - Implementing a Data Warehouse using SAP BW/4HANA",
+    "url": "https://learning.sap.com/courses/implementing-a-data-warehouse-using-sap-bw-4hana/using-process-chains_b7071e55-3d5e-4a43-bd38-40e549f04918",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw-process-chains"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Maintaining Process Chains - Upgrading your SAP BW skills to SAP BW/4HANA",
+    "url": "https://learning.sap.com/courses/upgrading-your-sap-bw-skills-to-sap-bw-4hana/maintaining-process-chains_c9c611c1-24db-4b17-82e5-79df4371438b",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw-process-chains"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Monitoring Process Chain Runs (SAP Datasphere, SAP BW bridge)",
+    "url": "https://learning.sap.com/courses/sap-datasphere-sap-bw-bridge/monitoring-process-chain-runs_a6bcc556-5799-42d7-a577-2cb32b4b02df",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw-process-chains",
+      "sap-datasphere"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Monitoring process chain runs (SAP NetWeaver BW help)",
+    "url": "https://help.sap.com/saphelp_nw73/helpdata/en/47/9e9290dac60985e10000000a42189c/content.htm",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-bw-process-chains"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Stop boring with process chain monitoring: start passive monitoring (RSPCM)",
+    "url": "https://blogs.sap.com/2008/05/29/stop-boring-with-process-chain-monitoring-start-passive-monitoring/",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-bw-process-chains"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Process chain errors and fixes",
+    "url": "https://blogs.sap.com/2008/01/13/process-chain-errors/",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-bw-process-chains"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Creating Simple Queries - Creating Queries in SAP BW/4HANA",
+    "url": "https://learning.sap.com/courses/creating-queries-in-sap-bw-4hana/creating-simple-queries_c7050a49-817d-4b2e-943c-c4ab8636be4e",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw-reporting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Working with BW Queries - Upgrading your SAP BW skills to SAP BW/4HANA",
+    "url": "https://learning.sap.com/courses/upgrading-your-sap-bw-skills-to-sap-bw-4hana/working-with-bw-queries_fa23356a-e4c6-4ec6-87eb-2adc39fd9a2f",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw-reporting"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Presenting Analytics (Analysis for Office workbook on BW queries)",
+    "url": "https://learning.sap.com/courses/getting-started-building-an-on-premise-data-warehouse-using-sap-bw-4hana/presenting-analytics_f8fbddf3-e23e-436f-b5e6-3e4f3fb51b9b",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-bw-reporting"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "SAP Analysis for Microsoft Office (help)",
+    "url": "https://help.sap.com/doc/00f68c2e08b941f081002fd3691d86a7/2021.20/en-US/bb267fb6908f4bcabac4b84476cc2b5e.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-bw-reporting"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "SAP BW/4HANA with SAP S/4HANA and Analysis for Office (demo)",
+    "url": "https://www.youtube.com/watch?v=vERagE56mP4",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "sap-bw-reporting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Create a Calculation View of Type Cube in SAP HANA Cloud",
+    "url": "https://developers.sap.com/tutorials/hana-cloud-create-cube-calculation-view",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-hana-modelling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Create a calculation view and expose it via CAP",
+    "url": "https://developers.sap.com/tutorials/hana-cloud-cap-calc-view.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-hana-modelling"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SQLScript: intermediate table variables in procedures",
+    "url": "https://developers.sap.com/tutorials/hana-cloud-sqlscript-table-var.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-hana-modelling"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SQLScript: parallel execution with table variables",
+    "url": "https://developers.sap.com/tutorials/hana-cloud-sqlscript-parallel.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-hana-modelling"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Modeling in SAP HANA Cloud part 3: building calculation views",
+    "url": "https://blogs.sap.com/2021/04/23/modeling-in-sap-hana-cloud-part-3-building-calculation-views/",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-hana-modelling"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "SAP HANA Academy: create calculation view - joins and testing",
+    "url": "https://www.youtube.com/watch?v=g9zw8v1labo",
+    "provider": "YouTube (SAP HANA Academy)",
+    "kind": "video",
+    "skillIds": [
+      "sap-hana-modelling"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Tutorial video: create a calculation view of type cube in SAP HANA Cloud",
+    "url": "https://www.youtube.com/watch?v=fwwPcYZb-jQ",
+    "provider": "YouTube (SAP Developers)",
+    "kind": "video",
+    "skillIds": [
+      "sap-hana-modelling"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Create Your First SAP Analytics Cloud Story",
+    "url": "https://developers.sap.com/group.create-first-sac-story.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-analytics-cloud"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Getting Started with SAP Analytics Cloud Stories",
+    "url": "https://help.sap.com/doc/00f68c2e08b941f081002fd3691d86a7/2023.9/en-us/fa31c0480f1f4c39af0692cd9a80f95b.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-analytics-cloud"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Building Your First Model (SAP Analytics Cloud)",
+    "url": "https://help.sap.com/doc/00f68c2e08b941f081002fd3691d86a7/2021.2/en-US/bdd0c64fad8945999d0a705a4d6b1b19.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-analytics-cloud"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Building Simple Stories - Exploring SAP Analytics Cloud",
+    "url": "https://learning.sap.com/courses/exploring-sap-analytics-cloud/building-simple-stories_afbcd98a-09c6-4acc-bb8b-13e43efed63e",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-analytics-cloud"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Consume a SAP HANA Cloud live model in an SAP Analytics Cloud story",
+    "url": "https://developers.sap.com/tutorials/hana-cloud-analytics-cloud-consume-3.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-analytics-cloud",
+      "sap-hana-modelling"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Video: Discover what stories can do for you",
+    "url": "https://help.sap.com/doc/00f68c2e08b941f081002fd3691d86a7/2021.2/en-US/f097b626fd92423a93a9dd0098226106.html",
+    "provider": "SAP Help Portal",
+    "kind": "video",
+    "skillIds": [
+      "sap-analytics-cloud"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Basic Data Modeling with a Graphical View (SAP Datasphere)",
+    "url": "https://developers.sap.com/group.data-warehouse-cloud-data-modeling.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-datasphere"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Create a Graphical View in SAP Datasphere",
+    "url": "https://developers.sap.com/tutorials/data-warehouse-cloud-7-graphicalview.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-datasphere"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Exploring SAP Datasphere",
+    "url": "https://learning.sap.com/courses/exploring-sap-datasphere",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-datasphere"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Acquiring, Preparing, and Modeling Data (SAP Datasphere help)",
+    "url": "https://help.sap.com/doc/d4f3c5a0bb074d09ae9b42b2b9bd7a08/cloud/en-US/83a5259b699e4bd4894470adf91192a7.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-datasphere"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Introduction to the Analytic Model in SAP Datasphere",
+    "url": "https://community.sap.com/t5/technology-blog-posts-by-sap/introduction-to-analytic-model-in-sap-datasphere/ba-p/13547856",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-datasphere"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Get Started with SAP Datasphere",
+    "url": "https://www.youtube.com/watch?v=vogqxB4_0tU",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "sap-datasphere"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Creating a Graphical View and Analytic Model in SAP Datasphere",
+    "url": "https://learning.sap.com/courses/performing-manual-planning-with-sap-analytics-cloud/creating-a-graphical-view-and-analytic-model-in-sap-datasphere",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-datasphere",
+      "sap-analytics-cloud"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Duck Creek Policy",
+    "url": "https://www.duckcreek.com/core/policy",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-platform"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "The Duck Creek Platform (in detail)",
+    "url": "https://www.duckcreek.com/duck-creek-platform-in-detail",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-platform"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Duck Creek Claims",
+    "url": "https://duckcreek.com/core/claims",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-platform"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Duck Creek Billing",
+    "url": "https://www.duckcreek.com/product/billing/",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-platform"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Duck Creek Suite brochure",
+    "url": "https://www.duckcreek.com/resource/brochure/duck-creek-suite",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-platform"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Duck Creek Rating",
+    "url": "https://www.duckcreek.com/core/rating/",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-manuscripts"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Duck Creek Rating in detail",
+    "url": "https://duckcreek.com/duck-creek-rating-in-detail",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-manuscripts"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Low-code as a decision point: what it really means across the Duck Creek suite",
+    "url": "https://www.duckcreek.com/resource/blog/low-code-as-a-decision-point-what-it-really-means-across-the-duck-creek-suite/",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-manuscripts",
+      "duck-creek-platform"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Duck Creek Rating data sheet",
+    "url": "https://www.duckcreek.com/wp-content/uploads/2017/10/DCT_Rating_DS_F12-1-25.pdf",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-manuscripts"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Duck Creek OnDemand brochure",
+    "url": "https://www.duckcreek.com/resource/brochure/duck-creek-ondemand/",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-ondemand"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Duck Creek OnDemand brochure 2024 (PDF)",
+    "url": "https://www.duckcreek.com/wp-content/uploads/2024/06/20013_DuckCreek_Brochure_OnDemand_2024.pdf",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-ondemand"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "OnDemand Control Hub",
+    "url": "https://duckcreek.com/product/ondemand-control-hub/",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-ondemand"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Duck Creek transitions Distinguished Programs from on-prem to cloud-native SaaS",
+    "url": "https://www.duckcreek.com/blog/duck-creek-transitions-distinguished-programs-from-on-prem-to-cloud-native-saas-solution/",
+    "provider": "Duck Creek Technologies",
+    "kind": "docs",
+    "skillIds": [
+      "duck-creek-ondemand"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Basics of case report form designing in clinical research (Bellary et al., 2014)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4170533/",
+    "provider": "Perspectives in Clinical Research (PMC)",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-crf-design"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "How to design a case report form: 7 best-practice steps",
+    "url": "https://certara.com/blog/how-to-design-a-case-report-form-7-best-practice-steps",
+    "provider": "Certara",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-crf-design"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "How CDISC and CDASH (CRF standards) streamline clinical trials",
+    "url": "https://cytel.com/perspectives/how-cdisc-and-cdash-crf-standards-streamline-clinical-trials/",
+    "provider": "Cytel",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-crf-design"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "OpenClinica eCRF specifications (build study: create CRFs)",
+    "url": "https://docs.openclinica.com/3-1/study-setup/study-setup-build-study-create-case-report-forms-crfs/study-setup-build-study-create-case-report-forms-crfs-openclinica-ecrf-specifications/",
+    "provider": "OpenClinica",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-crf-design",
+      "clinical-edc-systems"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Data management in clinical research: an overview (Krishnankutty et al., 2012)",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3326906",
+    "provider": "Indian Journal of Pharmacology (PMC)",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-crf-design",
+      "clinical-query-management",
+      "clinical-database-lock",
+      "meddra-whodrug-coding",
+      "clinical-edit-checks"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Medidata Rave EDC eLearning modules",
+    "url": "https://www.medidata.com/en/product-focus/medidata-rave-edc-elearning-modules/",
+    "provider": "Medidata",
+    "kind": "course",
+    "skillIds": [
+      "clinical-edc-systems"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "REDCap training videos",
+    "url": "https://projectredcap.org/resources/videos/",
+    "provider": "Vanderbilt (Project REDCap)",
+    "kind": "video",
+    "skillIds": [
+      "clinical-edc-systems",
+      "clinical-crf-design"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Veeva EDC study build best practices (VCU SOP)",
+    "url": "https://research.vcu.edu/media/office-of-research-and-innovation/veeva/VeevaEDC_StudyBuildBestPractices.pdf",
+    "provider": "Virginia Commonwealth University",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-edc-systems",
+      "clinical-edit-checks"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Oracle InForm user guide for site users (Release 7.0.1)",
+    "url": "https://docs.oracle.com/en/industries/life-sciences/inform/7.0.1/site-users/inform-user-guide-site-users.pdf",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-edc-systems",
+      "clinical-query-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Edit Check Design Principles (Journal of the SCDM)",
+    "url": "https://scdm.org/wp-content/uploads/2024/05/Edit-Check-Design-Principles.pdf",
+    "provider": "Society for Clinical Data Management",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-edit-checks"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Creating rules for edit checks (OpenClinica)",
+    "url": "https://docs.openclinica.com/3.1/rules/creating-rules",
+    "provider": "OpenClinica",
+    "kind": "practice",
+    "skillIds": [
+      "clinical-edit-checks"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Where do rules for cross-field and cross-form edit checks run? (OpenClinica)",
+    "url": "https://docs.openclinica.com/3-1/rules/rules-abc/",
+    "provider": "OpenClinica",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-edit-checks"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Query management in clinical trials (video)",
+    "url": "https://www.quanticate.com/videos/query-management-in-clinical-trials-video",
+    "provider": "Quanticate",
+    "kind": "video",
+    "skillIds": [
+      "clinical-query-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Clinical trial basics: understanding query management",
+    "url": "https://vial.com/blog/articles/clinical-trial-basics-understanding-query-management/",
+    "provider": "Vial",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-query-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "CDM presentation at investigator meetings (GCDMP chapter)",
+    "url": "https://scdm.org/wp-content/uploads/2024/07/CDM-Presentation-at-Investigator-Meetings.pdf",
+    "provider": "Society for Clinical Data Management",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-query-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "What are the five levels of the MedDRA dictionary? (Argus Safety docs)",
+    "url": "https://docs.oracle.com/en/industries/health-sciences/argus-safety/8.4/aeoaf/what-are-five-levels-meddra-dictionary.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "meddra-whodrug-coding"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Good practice in MedDRA coding of case reports (EMA presentation)",
+    "url": "https://www.ema.europa.eu/en/documents/presentation/presentation-good-practice-medical-dictionary-regulatory-activities-coding-case-reports-resulting-harm-sabine-brosch_en.pdf",
+    "provider": "European Medicines Agency",
+    "kind": "docs",
+    "skillIds": [
+      "meddra-whodrug-coding"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Medical coding and SAE reconciliation in clinical trials",
+    "url": "https://bioforumgroup.com/medical-coding-and-sae-reconciliation-in-clinical-trials/",
+    "provider": "Bioforum",
+    "kind": "docs",
+    "skillIds": [
+      "meddra-whodrug-coding",
+      "clinical-database-lock"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Database Closure (GCDMP chapter)",
+    "url": "https://scdm.org/wp-content/uploads/2024/07/Database-Closure.pdf",
+    "provider": "Society for Clinical Data Management",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-database-lock"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Database lock in clinical trials: how to make the process easier and faster",
+    "url": "https://medrio.com/blog/clinical-trial-database-locks/",
+    "provider": "Medrio",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-database-lock"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "ICH E6(R3) Good Clinical Practice - final consolidated guideline",
+    "url": "https://database.ich.org/sites/default/files/ICH%20E6%28R3%29_Step4_FinalConsolidatedGuideline_2026_0616_.pdf",
+    "provider": "ICH",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-database-lock",
+      "clinical-edc-systems"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "DaVinci Resolve training (free official guides and lesson files)",
+    "url": "https://blackmagicdesign.com/products/davinciresolve/training",
+    "provider": "Blackmagic Design",
+    "kind": "course",
+    "skillIds": [
+      "video-editing-nle",
+      "colour-grading",
+      "audio-post-production"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "DaVinci Resolve course: video editing for beginners (freeCodeCamp)",
+    "url": "https://www.youtube.com/watch?v=mgCqndlTWFU",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "video-editing-nle",
+      "colour-grading"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Edit videos in Premiere Pro (beginner tutorial)",
+    "url": "https://www.adobe.com/learn/premiere-pro/web/edit-videos",
+    "provider": "Adobe",
+    "kind": "practice",
+    "skillIds": [
+      "video-editing-nle"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Intro to editing (Final Cut Pro User Guide)",
+    "url": "https://support.apple.com/guide/final-cut-pro/intro-to-editing-ver3b4d5a6/10.5.1/mac",
+    "provider": "Apple",
+    "kind": "docs",
+    "skillIds": [
+      "video-editing-nle"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How to use the Lumetri panel for basic color correction in Premiere Pro",
+    "url": "https://helpx.adobe.com/premiere-pro/using/video/color-workflows-video.html",
+    "provider": "Adobe HelpX",
+    "kind": "video",
+    "skillIds": [
+      "colour-grading"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Secondary color correction (Frame.io Workflow Guide)",
+    "url": "https://workflow.frame.io/guide/secondary-color-correction",
+    "provider": "Frame.io",
+    "kind": "docs",
+    "skillIds": [
+      "colour-grading"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Reduce noise and restore audio (Adobe Audition)",
+    "url": "https://helpx.adobe.com/hk_en/audition/desktop/effects-reference/noise-reduction-restoration-effects.html",
+    "provider": "Adobe HelpX",
+    "kind": "docs",
+    "skillIds": [
+      "audio-post-production"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Essential Sound panel in Premiere Pro",
+    "url": "https://www.adobe.com/learn/premiere-pro/web/essential-sound-panel",
+    "provider": "Adobe",
+    "kind": "practice",
+    "skillIds": [
+      "audio-post-production"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Near-field 2.0 stereo delivery specifications and mixing guidelines",
+    "url": "https://backlothelp.netflix.com/hc/en-us/articles/23506749090323-Near-Field-2-0-Stereo-Delivery-Specifications-and-Guidelines-for-Titles-Mixed-Natively-in-2-0",
+    "provider": "Netflix Partner Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "audio-post-production",
+      "video-delivery-specs"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "YouTube recommended upload encoding settings",
+    "url": "https://support.google.com/youtube/answer/1722171",
+    "provider": "YouTube Help",
+    "kind": "docs",
+    "skillIds": [
+      "video-delivery-specs"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Netflix delivery specifications v5.1 (IMF and video)",
+    "url": "https://backlothelp.netflix.com/hc/en-us/articles/7262346654995",
+    "provider": "Netflix Partner Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "video-delivery-specs"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Apple ProRes white paper",
+    "url": "https://www.apple.com/cl/final-cut-pro/docs/Apple_ProRes.pdf",
+    "provider": "Apple",
+    "kind": "docs",
+    "skillIds": [
+      "video-delivery-specs"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Compare 50 intermediate codecs",
+    "url": "https://blog.frame.io/2017/02/13/compare-50-intermediate-codecs/",
+    "provider": "Frame.io",
+    "kind": "docs",
+    "skillIds": [
+      "video-delivery-specs"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "The Turducken Method of Game Design (GDC Europe 2011)",
+    "url": "https://gdcvault.com/play/1014958/The-Turducken-Method-of-Game",
+    "provider": "GDC Vault",
+    "kind": "video",
+    "skillIds": [
+      "game-mechanics-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Designing Downwell around one key mechanic (GDC talk)",
+    "url": "https://gamedeveloper.com/design/video-designing-i-downwell-i-around-one-key-mechanic",
+    "provider": "Game Developer",
+    "kind": "video",
+    "skillIds": [
+      "game-mechanics-design"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "How to write a game design document",
+    "url": "https://www.gamedeveloper.com/business/how-to-write-a-game-design-document",
+    "provider": "Game Developer",
+    "kind": "docs",
+    "skillIds": [
+      "game-mechanics-design"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "A GDD template for the indie developer",
+    "url": "https://www.gamedeveloper.com/design/a-gdd-template-for-the-indie-developer",
+    "provider": "Game Developer",
+    "kind": "docs",
+    "skillIds": [
+      "game-mechanics-design"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Fear, Love and Great Big Ideas: game loops and meta loops (GDC Europe 2015)",
+    "url": "https://gdcvault.com/play/1022750/Fear-Love-and-Great-Big",
+    "provider": "GDC Vault",
+    "kind": "video",
+    "skillIds": [
+      "game-mechanics-design",
+      "game-economy-balancing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Blockout (The Level Design Book)",
+    "url": "https://book.leveldesignbook.com/process/blockout",
+    "provider": "The Level Design Book",
+    "kind": "docs",
+    "skillIds": [
+      "level-design"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Designer 01: project setup and level blockout in Unreal Engine",
+    "url": "https://dev.epicgames.com/documentation/unreal-engine/designer-01-project-setup-and-level-blockout-in-unreal-engine?lang=en-US",
+    "provider": "Epic Games",
+    "kind": "practice",
+    "skillIds": [
+      "level-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Design your own level (Creator Kit: FPS)",
+    "url": "https://learn.unity.com/course/creator-kit-fps/tutorial/design-your-own-level?version=2022.3",
+    "provider": "Unity Learn",
+    "kind": "practice",
+    "skillIds": [
+      "level-design"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Exploring Level Design for Game Development",
+    "url": "https://dev.epicgames.com/community/learning/courses/rQ/unreal-engine-exploring-level-design-for-game-development",
+    "provider": "Epic Developer Community",
+    "kind": "course",
+    "skillIds": [
+      "level-design"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "An architectural approach to video game level design (GDC talk)",
+    "url": "https://gamedeveloper.com/design/video-an-architectural-approach-to-video-game-level-design",
+    "provider": "Game Developer",
+    "kind": "video",
+    "skillIds": [
+      "level-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "What is game economy design",
+    "url": "https://machinations.io/articles/what-is-game-economy-design",
+    "provider": "Machinations",
+    "kind": "docs",
+    "skillIds": [
+      "game-economy-balancing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Game economy design in free-to-play games",
+    "url": "https://machinations.io/articles/game-economy-design-free-to-play-games",
+    "provider": "Machinations",
+    "kind": "docs",
+    "skillIds": [
+      "game-economy-balancing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "The Designer's Notebook: Machinations, a new way to design game mechanics",
+    "url": "https://gamedeveloper.com/design/the-designer-s-notebook-machinations-a-new-way-to-design-game-mechanics",
+    "provider": "Game Developer",
+    "kind": "docs",
+    "skillIds": [
+      "game-economy-balancing",
+      "game-mechanics-design"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Game Mechanics: Advanced Game Design - sample chapter 5 (internal economy)",
+    "url": "https://ptgmedia.pearsoncmg.com/imprint_downloads/peachpit/peachpit/samplechapters/0321820274/0321820274_gamemechanics_ch05section.pdf",
+    "provider": "Peachpit (Adams and Dormans)",
+    "kind": "docs",
+    "skillIds": [
+      "game-economy-balancing"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Where the whales live: the pyramid model of F2P design (GDC talk)",
+    "url": "https://gamedeveloper.com/business/video-where-the-whales-live-the-pyramid-model-of-f2p-design-",
+    "provider": "Game Developer",
+    "kind": "video",
+    "skillIds": [
+      "game-economy-balancing",
+      "live-ops-events"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "A practical game dev guide to ethical playtesting (GDC talk)",
+    "url": "https://gamedeveloper.com/production/video-a-practical-game-dev-guide-for-doing-ethical-playtesting",
+    "provider": "Game Developer",
+    "kind": "video",
+    "skillIds": [
+      "playtesting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Doing good user research at the end of game production (GDC talk)",
+    "url": "https://gamedeveloper.com/production/video-doing-good-user-research-at-the-end-of-game-production",
+    "provider": "Game Developer",
+    "kind": "video",
+    "skillIds": [
+      "playtesting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "The definitive guide to playtest questions",
+    "url": "https://schellgames.com/blog/the-definitive-guide-to-playtest-questions-for-video-game-playtesters",
+    "provider": "Schell Games",
+    "kind": "docs",
+    "skillIds": [
+      "playtesting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "The imposter's guide to taking feedback",
+    "url": "https://gamedeveloper.com/design/the-imposter-s-guide-to-taking-feedback",
+    "provider": "Game Developer",
+    "kind": "docs",
+    "skillIds": [
+      "playtesting"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Lean Live Ops: free your devs! (GDC 2017)",
+    "url": "https://gdcvault.com/play/1024185/Lean-Live-Ops-Free-Your",
+    "provider": "GDC Vault",
+    "kind": "video",
+    "skillIds": [
+      "live-ops-events"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Effective LiveOps (GDC 2015)",
+    "url": "https://gdcvault.com/play/1021947/Effective-LiveOps",
+    "provider": "GDC Vault",
+    "kind": "video",
+    "skillIds": [
+      "live-ops-events"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "How to drive up your revenues with seasonal events",
+    "url": "https://gamerefinery.com/drive-up-your-revenues-with-seasonal-events",
+    "provider": "GameRefinery",
+    "kind": "docs",
+    "skillIds": [
+      "live-ops-events"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "LiveOps for the holiday season",
+    "url": "https://sensortower.com/blog/liveops-for-the-holiday-season",
+    "provider": "Sensor Tower",
+    "kind": "docs",
+    "skillIds": [
+      "live-ops-events"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Why mobile gaming has shifted from core-first to event-first",
+    "url": "https://www.pocketgamer.biz/why-mobile-gaming-has-shifted-from-a-core-first-to-an-event-first-model/",
+    "provider": "PocketGamer.biz",
+    "kind": "docs",
+    "skillIds": [
+      "live-ops-events"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Business Automation course (HubSpot Marketing Automation)",
+    "url": "https://academy.hubspot.com/courses/automation-strategy",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "marketing-automation-platforms",
+      "lifecycle-journey-orchestration"
+    ],
+    "minutes": 35,
+    "free": true
+  },
+  {
+    "title": "Understanding Workflows in HubSpot",
+    "url": "https://academy.hubspot.com/lessons/understanding-workflows-in-hubspot-en",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "marketing-automation-platforms",
+      "lifecycle-journey-orchestration"
+    ],
+    "minutes": 46,
+    "free": true
+  },
+  {
+    "title": "Get Started with Journey Builder (Marketing Cloud Engagement)",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/journey-builder-basics/get-started-with-journey-builder",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "marketing-automation-platforms",
+      "lifecycle-journey-orchestration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Journey Builder Strategies trail",
+    "url": "https://trailhead.salesforce.com/content/learn/trails/journey-builder-strategies",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "lifecycle-journey-orchestration"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Get started with Marketo Engage for new marketing practitioners",
+    "url": "https://experienceleague.adobe.com/en/playlists/marketo-engage-get-started-for-new-marketing-practitioners",
+    "provider": "Adobe Experience League",
+    "kind": "video",
+    "skillIds": [
+      "marketing-automation-platforms"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Smart Campaigns 101 (Marketo Engage)",
+    "url": "https://experienceleague.adobe.com/en/docs/marketo-learn/tutorials/programs-and-campaigns/smart-campaigns-101",
+    "provider": "Adobe Experience League",
+    "kind": "video",
+    "skillIds": [
+      "marketing-automation-platforms",
+      "lifecycle-journey-orchestration"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Adobe Marketo Engage documentation",
+    "url": "https://experienceleague.adobe.com/en/docs/marketo-engage",
+    "provider": "Adobe Experience League",
+    "kind": "docs",
+    "skillIds": [
+      "marketing-automation-platforms"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Braze Learning (free courses)",
+    "url": "https://learning.braze.com",
+    "provider": "Braze",
+    "kind": "course",
+    "skillIds": [
+      "customer-engagement-platforms"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Create a Canvas (Braze docs)",
+    "url": "https://www.braze.com/docs/user_guide/messaging/canvas/create_a_canvas",
+    "provider": "Braze",
+    "kind": "docs",
+    "skillIds": [
+      "customer-engagement-platforms",
+      "lifecycle-journey-orchestration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Create a segment (Braze docs)",
+    "url": "https://www.braze.com/docs/user_guide/engagement_tools/segments/creating_a_segment/",
+    "provider": "Braze",
+    "kind": "docs",
+    "skillIds": [
+      "audience-segmentation",
+      "customer-engagement-platforms"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "MoEngage Growth Marketer certification path",
+    "url": "https://academy.moengage.com/student/path/3328685-moengage-growth-marketer",
+    "provider": "MoEngage Academy",
+    "kind": "course",
+    "skillIds": [
+      "customer-engagement-platforms"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Segments (CleverTap docs)",
+    "url": "https://docs.clevertap.com/docs/segments",
+    "provider": "CleverTap",
+    "kind": "docs",
+    "skillIds": [
+      "customer-engagement-platforms",
+      "audience-segmentation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Types of segments (CleverTap docs)",
+    "url": "https://docs.clevertap.com/docs/types-of-segments",
+    "provider": "CleverTap",
+    "kind": "docs",
+    "skillIds": [
+      "audience-segmentation"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Journey Designer key concepts (WebEngage)",
+    "url": "https://knowledgebase.webengage.com/docs/journey-designer-concepts",
+    "provider": "WebEngage",
+    "kind": "docs",
+    "skillIds": [
+      "customer-engagement-platforms",
+      "lifecycle-journey-orchestration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Introducing segments (WebEngage blog)",
+    "url": "https://webengage.com/blog/introducing-segments/",
+    "provider": "WebEngage",
+    "kind": "docs",
+    "skillIds": [
+      "audience-segmentation"
+    ],
+    "minutes": 6,
+    "free": true
+  },
+  {
+    "title": "Understanding Segmentation in HubSpot",
+    "url": "https://academy.hubspot.com/lessons/understanding-segmentation-in-hubspot",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "audience-segmentation"
+    ],
+    "minutes": 21,
+    "free": true
+  },
+  {
+    "title": "Understanding Permissions and Deliverability",
+    "url": "https://academy.hubspot.com/lessons/understanding-permissions-and-deliverability",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "email-deliverability"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Yahoo Sender Hub best practices",
+    "url": "https://senders.yahooinc.com/best-practices",
+    "provider": "Yahoo",
+    "kind": "docs",
+    "skillIds": [
+      "email-deliverability"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "M3AAWG Sender Best Common Practices v4.0",
+    "url": "https://www.m3aawg.org/sites/default/files/doc_files/m3aawg-sender-best-common-practices-aug-27-2026.pdf",
+    "provider": "M3AAWG",
+    "kind": "docs",
+    "skillIds": [
+      "email-deliverability"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Google Postmaster Tools (Dynamics 365 Customer Insights guide)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/marketing/google-postmaster",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "email-deliverability"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Post up with our guide to Google Postmaster Tools",
+    "url": "https://www.validity.com/blog/post-up-with-our-guide-to-google-postmaster-tools/",
+    "provider": "Validity",
+    "kind": "docs",
+    "skillIds": [
+      "email-deliverability"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Build lead scores (HubSpot Knowledge Base)",
+    "url": "https://knowledge.hubspot.com/scoring/build-lead-scores",
+    "provider": "HubSpot",
+    "kind": "docs",
+    "skillIds": [
+      "lead-scoring"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Lead Scoring and Grading in Account Engagement",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/lead-scoring-and-grading-in-account-engagement",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "lead-scoring"
+    ],
+    "minutes": 50,
+    "free": true
+  },
+  {
+    "title": "Marketo and Mochas: lead scoring (webinar recording)",
+    "url": "https://experienceleague.adobe.com/en/docs/events/marketo-and-mochas-recordings/2023/lead-scoring",
+    "provider": "Adobe Experience League",
+    "kind": "video",
+    "skillIds": [
+      "lead-scoring"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "What is lead scoring?",
+    "url": "https://business.adobe.com/resources/articles/lead-scoring.html",
+    "provider": "Adobe",
+    "kind": "docs",
+    "skillIds": [
+      "lead-scoring"
+    ],
+    "minutes": 10,
     "free": true
   }
 ]

@@ -1,0 +1,56 @@
+{
+  "id": "marketing-automation-specialist-mid",
+  "roleSlug": "marketing-automation-specialist",
+  "persona": "mid",
+  "resumeText": "Priya Raghavan | Bengaluru | priya.raghavan@example.com\n\nEXPERIENCE\nCRM Executive, Thali Box Foods (food delivery app), Bengaluru (2022 - present)\n- Run push notification campaigns and in-app messaging campaigns in CleverTap for 3 million monthly users.\n- Built onboarding journeys and win-back campaigns triggered by order behaviour.\n- Created RFM segmentation and behavioural segmentation for city and cuisine offers.\n- Ran A/B tests on send time and creatives, lifting repeat orders by 6 percent.\n- Wrote SQL queries in Redshift to report campaign conversions every week.\n- Plan monthly campaign calendars with the product and growth teams.\n\nEmail Marketing Associate, Kaveri Retail, Bengaluru (2020 - 2022)\n- Sent weekly email campaigns to loyalty members using a drag-and-drop editor.\n\nEDUCATION\nMBA Marketing, Christ University, Bengaluru, 2020\n\nSKILLS\nCleverTap, MoEngage, SQL, Excel, email deliverability\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "customer-engagement-platforms",
+        "quote": "Run push notification campaigns and in-app messaging campaigns in CleverTap"
+      },
+      {
+        "skillId": "lifecycle-journey-orchestration",
+        "quote": "Built onboarding journeys and win-back campaigns triggered by order behaviour"
+      },
+      {
+        "skillId": "audience-segmentation",
+        "quote": "Created RFM segmentation and behavioural segmentation"
+      },
+      {
+        "skillId": "ab-testing",
+        "quote": "Ran A/B tests on send time and creatives"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries in Redshift to report campaign conversions"
+      },
+      {
+        "skillId": "email-marketing",
+        "quote": "Sent weekly email campaigns to loyalty members"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Plan monthly campaign calendars with the product and growth teams"
+      },
+      {
+        "skillId": "email-deliverability",
+        "quote": "email deliverability"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "email-deliverability",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "marketing-automation-platforms",
+      "lead-scoring",
+      "html-css",
+      "salesforce-apex"
+    ]
+  },
+  "reviewedBy": null
+}

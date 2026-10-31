@@ -1,0 +1,52 @@
+{
+  "id": "video-editor-mid",
+  "roleSlug": "video-editor",
+  "persona": "mid",
+  "resumeText": "Arjun Menon | Kochi | arjun.menon@example.com\n\nEXPERIENCE\nVideo Editor, Backwater Media Works, Kochi (2022 - present)\n- Edit brand films and YouTube videos in Adobe Premiere Pro for 12 consumer brands.\n- Cut 30 vertical Instagram Reels and YouTube Shorts a month with fast hooks and captions.\n- Build lower thirds and logo animation in After Effects for product launch videos.\n- Do colour correction and colour grading in DaVinci Resolve to match multi-camera shoots.\n- Export final masters to platform delivery specs for YouTube, Instagram and OTT ads.\n\nJunior Editor, Lagoon Studio, Kochi (2021 - 2022)\n- Assembled rough cuts for wedding and event films from client footage.\n- Organised client footage and project bins for the senior editor.\n\nEDUCATION\nBSc Visual Communication, St. Albert's College, 2021\n\nSKILLS\nPremiere Pro, After Effects, DaVinci Resolve, Adobe Audition\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "video-editing-nle",
+        "quote": "Edit brand films and YouTube videos in Adobe Premiere Pro"
+      },
+      {
+        "skillId": "short-form-video-content",
+        "quote": "Cut 30 vertical Instagram Reels and YouTube Shorts a month"
+      },
+      {
+        "skillId": "motion-graphics",
+        "quote": "Build lower thirds and logo animation in After Effects"
+      },
+      {
+        "skillId": "colour-grading",
+        "quote": "Do colour correction and colour grading in DaVinci Resolve"
+      },
+      {
+        "skillId": "video-delivery-specs",
+        "quote": "Export final masters to platform delivery specs"
+      },
+      {
+        "skillId": "audio-post-production",
+        "quote": "Adobe Audition"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "audio-post-production",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "adobe-photoshop",
+      "adobe-illustrator",
+      "social-media-analytics",
+      "influencer-creator-marketing"
+    ]
+  },
+  "reviewedBy": null
+}

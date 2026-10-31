@@ -1,0 +1,129 @@
+{
+  "slug": "sap-bw-consultant",
+  "title": "SAP BW Consultant",
+  "summary": "Builds and runs the SAP BW data warehouse (BW/4HANA or BW on HANA) that pulls data out of SAP and other systems and turns it into reports for finance, sales and supply chain teams. Sits in an SAP analytics or data team, between business users, SAP functional consultants and ABAP developers.",
+  "dailyDuties": [
+    "Model ADSOs and composite providers for new reports",
+    "Build extractors, transformations and DTPs to load source data",
+    "Monitor process chains and fix failed loads",
+    "Write ABAP routines to clean and derive fields",
+    "Build BEx queries and Analysis for Office workbooks",
+    "Meet business users to capture reporting requirements",
+    "Tune slow queries and loads"
+  ],
+  "typicalTitles": [
+    "SAP BW/4HANA Consultant",
+    "SAP BW on HANA Consultant",
+    "SAP BW Developer",
+    "SAP BW HANA Developer",
+    "SAP BI/BW Consultant",
+    "SAP BW Support Consultant",
+    "SAP BW/4HANA Developer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 9
+  },
+  "skills": [
+    {
+      "skillId": "sap-bw4hana-modelling",
+      "importance": "required",
+      "expectation": "Model data in BW/4HANA or BW on HANA with ADSOs, composite providers and Open ODS views",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-bw-data-flows",
+      "importance": "required",
+      "expectation": "Build data flows from SAP and non-SAP sources with extractors, ODP, transformations and DTPs",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-bw-process-chains",
+      "importance": "required",
+      "expectation": "Schedule and monitor process chains and fix failed data loads",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-bw-reporting",
+      "importance": "required",
+      "expectation": "Build BEx queries and Analysis for Office workbooks for business users",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-hana-modelling",
+      "importance": "required",
+      "expectation": "Build native HANA calculation views and SQLScript where BW alone is not enough",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "required",
+      "expectation": "Write ABAP in start, end and expert routines and custom extractors",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "required",
+      "expectation": "Query and reconcile data between BW and source systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "requirements-gathering",
+      "importance": "required",
+      "expectation": "Turn business reporting needs into functional and technical specs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain data issues and designs to business and SAP functional teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-analytics-cloud",
+      "importance": "nice_to_have",
+      "expectation": "Build SAP Analytics Cloud stories on top of BW models",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap-hana",
+      "importance": "nice_to_have",
+      "expectation": "Use ABAP CDS views and AMDP for extraction and HANA-optimised logic",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-datasphere",
+      "importance": "nice_to_have",
+      "expectation": "Work with SAP Datasphere as BW workloads move to the cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "query-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Tune slow queries and data loads",
+      "postingShare": null
+    },
+    {
+      "skillId": "application-support",
+      "importance": "nice_to_have",
+      "expectation": "Handle L2 and L3 support tickets for BW loads and reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-modeling",
+      "importance": "nice_to_have",
+      "expectation": "Apply dimensional modelling ideas such as star schemas and layered architectures",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

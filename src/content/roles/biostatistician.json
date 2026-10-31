@@ -1,0 +1,123 @@
+{
+  "slug": "biostatistician",
+  "title": "Biostatistician",
+  "summary": "Plans the statistics of clinical trials (how many patients, which tests) and analyses the results that show whether a medicine works and is safe. Sits in the biostatistics team of a drug company or contract research organisation, leading statistical programmers and working with doctors, data managers and medical writers.",
+  "dailyDuties": [
+    "Calculate sample size and power for new trial protocols",
+    "Write statistical analysis plans and table shells",
+    "Run survival and mixed-model analyses in SAS or R",
+    "Review ADaM specifications and derived datasets",
+    "Check tables, listings and figures from programmers",
+    "Write statistical sections of study reports",
+    "Answer statistical questions from sponsors and regulators"
+  ],
+  "typicalTitles": [
+    "Study Statistician",
+    "Clinical Trial Statistician",
+    "Clinical Biostatistician",
+    "Biostatistics Associate",
+    "Statistician - Clinical Research",
+    "Trial Statistician"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "clinical-trials-knowledge",
+      "importance": "required",
+      "expectation": "Write and follow statistical analysis plans within ICH GCP and trial protocols",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-trial-design",
+      "importance": "required",
+      "expectation": "Calculate sample size and power and set up randomisation for trial protocols",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "required",
+      "expectation": "Choose and apply the right inferential methods for efficacy and safety endpoints",
+      "postingShare": null
+    },
+    {
+      "skillId": "survival-analysis",
+      "importance": "required",
+      "expectation": "Analyse time-to-event endpoints with Kaplan-Meier, log-rank tests and Cox models",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-statistical-modelling",
+      "importance": "required",
+      "expectation": "Fit ANCOVA, logistic and mixed models such as MMRM for trial endpoints",
+      "postingShare": null
+    },
+    {
+      "skillId": "sas-programming",
+      "importance": "required",
+      "expectation": "Run analyses in SAS or R and check programmers' outputs",
+      "postingShare": null,
+      "oneOf": "biostat-language"
+    },
+    {
+      "skillId": "r-programming",
+      "importance": "required",
+      "expectation": "Run analyses in SAS or R and check programmers' outputs",
+      "postingShare": null,
+      "oneOf": "biostat-language"
+    },
+    {
+      "skillId": "cdisc-adam",
+      "importance": "required",
+      "expectation": "Review ADaM specifications and derived analysis datasets",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain results to clinical teams and sponsors and write statistical sections of reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-tlf-programming",
+      "importance": "nice_to_have",
+      "expectation": "Review and QC tables, listings and figures against the plan",
+      "postingShare": null
+    },
+    {
+      "skillId": "cdisc-sdtm",
+      "importance": "nice_to_have",
+      "expectation": "Understand SDTM data that feeds analysis datasets",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Use Python for simulations or exploratory analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate with programming, data management and medical writing teams",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "biostat-language",
+      "label": "A statistics language (SAS or R)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -40,6 +40,8 @@ import resourcesJson from "./resources.json";
 import roleTracksJson from "./role-tracks.json";
 import skillsJson from "./skills.json";
 import accountsExecutive from "./roles/accounts-executive.json";
+import actuarialAnalyst from "./roles/actuarial-analyst.json";
+import adOperationsSpecialist from "./roles/ad-operations-specialist.json";
 import adasEngineer from "./roles/adas-engineer.json";
 import adminFacilitiesExecutive from "./roles/admin-facilities-executive.json";
 import aiArchitect from "./roles/ai-architect.json";
@@ -47,6 +49,7 @@ import aiEngineer from "./roles/ai-engineer.json";
 import aiProductManager from "./roles/ai-product-manager.json";
 import aiResearchScientist from "./roles/ai-research-scientist.json";
 import amlKycAnalyst from "./roles/aml-kyc-analyst.json";
+import analogIcDesignEngineer from "./roles/analog-ic-design-engineer.json";
 import analogLayoutEngineer from "./roles/analog-layout-engineer.json";
 import analyticsEngineer from "./roles/analytics-engineer.json";
 import androidDeveloper from "./roles/android-developer.json";
@@ -62,14 +65,17 @@ import backOfficeExecutive from "./roles/back-office-executive.json";
 import bankProbationaryOfficer from "./roles/bank-probationary-officer.json";
 import biDeveloper from "./roles/bi-developer.json";
 import billingQuantityEngineerCivil from "./roles/billing-quantity-engineer-civil.json";
+import biostatistician from "./roles/biostatistician.json";
 import blockchainDeveloper from "./roles/blockchain-developer.json";
 import bmsEngineer from "./roles/bms-engineer.json";
 import brandManager from "./roles/brand-manager.json";
 import buildReleaseEngineer from "./roles/build-release-engineer.json";
 import businessAnalyst from "./roles/business-analyst.json";
 import businessDevelopmentExecutive from "./roles/business-development-executive.json";
+import caeSimulationEngineer from "./roles/cae-simulation-engineer.json";
 import categoryManagerEcommerce from "./roles/category-manager-ecommerce.json";
 import channelSalesManager from "./roles/channel-sales-manager.json";
+import clinicalDataManager from "./roles/clinical-data-manager.json";
 import clinicalSasProgrammer from "./roles/clinical-sas-programmer.json";
 import cloudArchitect from "./roles/cloud-architect.json";
 import cloudEngineer from "./roles/cloud-engineer.json";
@@ -116,6 +122,7 @@ import digitalForensicsAnalyst from "./roles/digital-forensics-analyst.json";
 import digitalMarketingExecutive from "./roles/digital-marketing-executive.json";
 import dlpEngineer from "./roles/dlp-engineer.json";
 import dotnetDeveloper from "./roles/dotnet-developer.json";
+import duckCreekDeveloper from "./roles/duck-creek-developer.json";
 import dynamics365Developer from "./roles/dynamics-365-developer.json";
 import ecommerceDeveloper from "./roles/ecommerce-developer.json";
 import embeddedSoftwareEngineer from "./roles/embedded-software-engineer.json";
@@ -136,6 +143,7 @@ import frontendArchitect from "./roles/frontend-architect.json";
 import frontendDeveloper from "./roles/frontend-developer.json";
 import fullStackDeveloper from "./roles/full-stack-developer.json";
 import functionalSafetyEngineer from "./roles/functional-safety-engineer.json";
+import gameDesigner from "./roles/game-designer.json";
 import gameDeveloper from "./roles/game-developer.json";
 import gisDeveloper from "./roles/gis-developer.json";
 import golangDeveloper from "./roles/golang-developer.json";
@@ -186,6 +194,7 @@ import malwareAnalyst from "./roles/malware-analyst.json";
 import managementTrainee from "./roles/management-trainee.json";
 import manualTestEngineer from "./roles/manual-test-engineer.json";
 import marketResearchAnalyst from "./roles/market-research-analyst.json";
+import marketingAutomationSpecialist from "./roles/marketing-automation-specialist.json";
 import mechanicalDesignEngineer from "./roles/mechanical-design-engineer.json";
 import medicalBillingSpecialist from "./roles/medical-billing-specialist.json";
 import medicalCoder from "./roles/medical-coder.json";
@@ -195,6 +204,7 @@ import middlewareAdministrator from "./roles/middleware-administrator.json";
 import mlEngineer from "./roles/ml-engineer.json";
 import mlEngineeringManager from "./roles/ml-engineering-manager.json";
 import mlopsEngineer from "./roles/mlops-engineer.json";
+import motorControlEngineer from "./roles/motor-control-engineer.json";
 import networkEngineer from "./roles/network-engineer.json";
 import networkSecurityEngineer from "./roles/network-security-engineer.json";
 import nlpEngineer from "./roles/nlp-engineer.json";
@@ -244,6 +254,7 @@ import salesforceDeveloper from "./roles/salesforce-developer.json";
 import sapAbapDeveloper from "./roles/sap-abap-developer.json";
 import sapBasisAdministrator from "./roles/sap-basis-administrator.json";
 import sapBtpIntegrationDeveloper from "./roles/sap-btp-integration-developer.json";
+import sapBwConsultant from "./roles/sap-bw-consultant.json";
 import sapEwmConsultant from "./roles/sap-ewm-consultant.json";
 import sapFicoConsultant from "./roles/sap-fico-consultant.json";
 import sapFioriUi5Developer from "./roles/sap-fiori-ui5-developer.json";
@@ -289,6 +300,7 @@ import trustAndSafetyAnalyst from "./roles/trust-and-safety-analyst.json";
 import uiUxDesigner from "./roles/ui-ux-designer.json";
 import unifiedCommunicationsEngineer from "./roles/unified-communications-engineer.json";
 import uxResearcher from "./roles/ux-researcher.json";
+import videoEditor from "./roles/video-editor.json";
 import virtualizationEngineer from "./roles/virtualization-engineer.json";
 import vlsiDesignEngineer from "./roles/vlsi-design-engineer.json";
 import vulnerabilityManagementAnalyst from "./roles/vulnerability-management-analyst.json";
@@ -361,6 +373,8 @@ export const roleProfiles: RoleProfile[] = z
   .array(roleProfile)
   .parse([
     accountsExecutive,
+    actuarialAnalyst,
+    adOperationsSpecialist,
     adasEngineer,
     adminFacilitiesExecutive,
     aiArchitect,
@@ -368,6 +382,7 @@ export const roleProfiles: RoleProfile[] = z
     aiProductManager,
     aiResearchScientist,
     amlKycAnalyst,
+    analogIcDesignEngineer,
     analogLayoutEngineer,
     analyticsEngineer,
     androidDeveloper,
@@ -383,14 +398,17 @@ export const roleProfiles: RoleProfile[] = z
     bankProbationaryOfficer,
     biDeveloper,
     billingQuantityEngineerCivil,
+    biostatistician,
     blockchainDeveloper,
     bmsEngineer,
     brandManager,
     buildReleaseEngineer,
     businessAnalyst,
     businessDevelopmentExecutive,
+    caeSimulationEngineer,
     categoryManagerEcommerce,
     channelSalesManager,
+    clinicalDataManager,
     clinicalSasProgrammer,
     cloudArchitect,
     cloudEngineer,
@@ -437,6 +455,7 @@ export const roleProfiles: RoleProfile[] = z
     digitalMarketingExecutive,
     dlpEngineer,
     dotnetDeveloper,
+    duckCreekDeveloper,
     dynamics365Developer,
     ecommerceDeveloper,
     embeddedSoftwareEngineer,
@@ -457,6 +476,7 @@ export const roleProfiles: RoleProfile[] = z
     frontendDeveloper,
     fullStackDeveloper,
     functionalSafetyEngineer,
+    gameDesigner,
     gameDeveloper,
     gisDeveloper,
     golangDeveloper,
@@ -507,6 +527,7 @@ export const roleProfiles: RoleProfile[] = z
     managementTrainee,
     manualTestEngineer,
     marketResearchAnalyst,
+    marketingAutomationSpecialist,
     mechanicalDesignEngineer,
     medicalBillingSpecialist,
     medicalCoder,
@@ -516,6 +537,7 @@ export const roleProfiles: RoleProfile[] = z
     mlEngineer,
     mlEngineeringManager,
     mlopsEngineer,
+    motorControlEngineer,
     networkEngineer,
     networkSecurityEngineer,
     nlpEngineer,
@@ -565,6 +587,7 @@ export const roleProfiles: RoleProfile[] = z
     sapAbapDeveloper,
     sapBasisAdministrator,
     sapBtpIntegrationDeveloper,
+    sapBwConsultant,
     sapEwmConsultant,
     sapFicoConsultant,
     sapFioriUi5Developer,
@@ -610,6 +633,7 @@ export const roleProfiles: RoleProfile[] = z
     uiUxDesigner,
     unifiedCommunicationsEngineer,
     uxResearcher,
+    videoEditor,
     virtualizationEngineer,
     vlsiDesignEngineer,
     vulnerabilityManagementAnalyst,

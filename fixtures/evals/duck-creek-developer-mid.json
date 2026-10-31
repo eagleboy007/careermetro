@@ -1,0 +1,56 @@
+{
+  "id": "duck-creek-developer-mid",
+  "roleSlug": "duck-creek-developer",
+  "persona": "Mid-level Duck Creek Policy developer at an insurance IT services firm",
+  "resumeText": "Sneha Reddy | Hyderabad | sneha.reddy@example.com\n\nSUMMARY\nDuck Creek developer with 8 years in insurance software, 6 of them on Duck Creek Policy for US P&C carriers.\n\nEXPERIENCE\nDuck Creek Developer, Godavari Insurance Technologies, Hyderabad (2020 - present)\n- Configure Duck Creek Policy for commercial auto and general liability lines in Duck Creek Author.\n- Built manuscripts for rating, underwriting rules and forms for three US states.\n- Wrote XSLT and XML transformations for policy documents and downstream feeds.\n- Wrote SQL queries to validate policy and premium data in SQL Server.\n- Fixed defects found in QA and UAT cycles for each release.\n\nSoftware Engineer, Charminar Soft, Hyderabad (2018 - 2020)\n- Built C# .NET web services for an insurance agency portal.\n- Worked on property and casualty insurance policy quote screens.\n\nSKILLS\nDuck Creek Author, Express, Manuscripts, XSLT, SQL, C#, REST APIs\n\nEDUCATION\nBTech Information Technology, JNTU Hyderabad, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "duck-creek-platform",
+        "quote": "Configure Duck Creek Policy for commercial auto and general liability lines"
+      },
+      {
+        "skillId": "duck-creek-manuscripts",
+        "quote": "Built manuscripts for rating, underwriting rules and forms"
+      },
+      {
+        "skillId": "soap-xml",
+        "quote": "Wrote XSLT and XML transformations for policy documents"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries to validate policy and premium data"
+      },
+      {
+        "skillId": "pc-insurance-domain",
+        "quote": "Worked on property and casualty insurance policy quote screens"
+      },
+      {
+        "skillId": "csharp-dotnet",
+        "quote": "Built C# .NET web services for an insurance agency portal"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "REST APIs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rest-apis",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "duck-creek-ondemand",
+      "guidewire-insurancesuite",
+      "javascript",
+      "data-migration"
+    ]
+  },
+  "reviewedBy": null
+}
