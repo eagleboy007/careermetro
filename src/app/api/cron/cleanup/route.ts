@@ -12,7 +12,7 @@ import { clearOldWeeklyEmails } from "@/lib/my-jobs/weekly-store";
 import { clearUnsavedJobText } from "@/lib/my-jobs/store";
 import { clearOldNotifications } from "@/lib/notifications/store";
 import { clearOldPracticeAnswers } from "@/lib/practice/store";
-import { clearEndedEvents, clearOldEventsDigests } from "@/lib/timetable/store";
+import { clearEndedEvents, clearEndedEventSuggestions, clearOldEventsDigests } from "@/lib/timetable/store";
 import { deleteExpiredAnonymousResumes } from "@/lib/resume/ingest";
 import { errorFields, logEvent, type LogFields } from "@/lib/log";
 import { hasBearer } from "@/lib/secret";
@@ -34,7 +34,8 @@ import { clearOldRateLimits } from "@/lib/shared-limit";
  * saved to My jobs, after 24 hours (docs/plans/application-tracker-plan.md), and jobs shared from a phone that no one
  * opened within the hour (section 5 of that plan), and the weekly email's sent rows over 90 days old (section 6), and
  * the Monday events digest's sent rows over 90 days old (docs/plans/timetable-plan.md section 5), and Timetable events
- * 90 days after they end, with their topics and everyone's Save and I'm going rows (T164).
+ * 90 days after they end, with their topics and everyone's Save and I'm going rows (T164), and event suggestions 90 days
+ * after their event ends (Timetable PR 6).
  */
 export async function GET(request: Request) {
   // Vercel Cron sends this header when CRON_SECRET is set in the project.
@@ -68,6 +69,7 @@ export async function GET(request: Request) {
     weeklyEmails: clearOldWeeklyEmails(),
     eventsDigests: clearOldEventsDigests(),
     events: clearEndedEvents(),
+    eventSuggestions: clearEndedEventSuggestions(),
   };
   const empty: Record<string, Record<string, null>> = {
     anonymous: { anonymousResumesDeleted: null },
@@ -91,6 +93,7 @@ export async function GET(request: Request) {
     weeklyEmails: { weeklyRowsCleared: null },
     eventsDigests: { eventsDigestRowsCleared: null },
     events: { endedEventsDeleted: null },
+    eventSuggestions: { endedSuggestionsDeleted: null },
   };
   const names = Object.keys(jobs);
   const settled = await Promise.allSettled(Object.values(jobs));

@@ -229,8 +229,8 @@ describe.skipIf(!db)("notifications (database)", () => {
     const b = await person("Yusuf");
     await requestConnection(b, a, "same_line", deps());
     const data = await exportAccountData(a, db! as never);
-    expect(EXPORT_VERSION).toBe(36);
-    expect(data!.exportVersion).toBe(36);
+    expect(EXPORT_VERSION).toBe(37);
+    expect(data!.exportVersion).toBe(37);
     expect(data!.notifications.map((x) => notificationExport.parse(x))).toEqual([{ kind: "connection_request", created_at: now.toISOString(), read_at: null }]);
     expect(JSON.stringify(data!.notifications)).not.toContain(tag);
 
