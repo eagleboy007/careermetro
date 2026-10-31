@@ -10,6 +10,8 @@ import { refIn, RESERVATION_MINUTES, reserveCall, runReserved, usedToday } from 
 import { eliteOn } from "@/lib/elite/store";
 import { practiceCapFor } from "@/lib/elite/rules";
 import { swappedSkill } from "@/lib/goals/not-for-me";
+import { currentAnalysis } from "@/lib/gaps/current";
+import { gapSkillsOf, leftOnEarlierLine } from "@/lib/gaps/destination";
 import { goalsOf, indiaToday } from "@/lib/goals/store";
 import { errorFields, logEvent } from "@/lib/log";
 import { jobPrep, savedJobNames } from "@/lib/my-jobs/store";
@@ -218,15 +220,18 @@ async function ratingsBySkill(db: Db, userId: string): Promise<Map<string, numbe
  * goals first, then the skills only the job asks for (tagged `job`, never goals), then the other goals.
  */
 export async function practiceFor(userId: string, now = new Date(), db: Db = getDb(), jobRef: MyJobRef | null = null): Promise<PracticeView> {
-  const [goals, ratings, used, elite, prep] = await Promise.all([
+  const [goals, ratings, used, elite, prep, analysis] = await Promise.all([
     goalsOf(userId, db),
     ratingsBySkill(db, userId),
     usedAnswers(db, userId, now),
     eliteOn(userId, db),
     jobRef ? jobPrep(userId, jobRef, { db, now }) : null,
+    currentAnalysis(userId, db),
   ]);
   const cap = practiceCapFor(elite);
-  const open = goals.filter((g) => g.status !== "skipped");
+  // Goals left on the earlier line after a change of destination wait there; they come back on a switch back.
+  const gapSkills = gapSkillsOf(analysis);
+  const open = goals.filter((g) => g.status !== "skipped" && !leftOnEarlierLine(g, gapSkills));
   const current = open.find((g) => g.status !== "met" && !g.proved);
   const skillsOut: PracticeSkill[] = [];
   const noQuestions: string[] = [];

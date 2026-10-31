@@ -187,9 +187,12 @@ export async function mapLineFor(
   const previous = before
     ? earlierLine({
         previous: before.result,
+        analysisId: before.id,
         title: roleProfiles.find((r) => r.slug === before.result.roleSlug)?.title ?? before.result.roleSlug,
         currentRoleSlug: result.roleSlug,
         lineSkillIds: new Set(gapGoals.map((g) => g.skillId)),
+        learnDone: new Set(gapGoals.filter((g) => g.learnDone).map((g) => g.skillId)),
+        changedAt: analysis.base.chosenAt ?? null,
         goals: new Map(userGoals.map((g) => [g.skillId, { id: g.id, proved: g.proved }])),
         ownByGoal: new Map([...ownByGoal].map(([id, list]) => [id, list.length])),
       })

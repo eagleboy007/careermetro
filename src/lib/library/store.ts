@@ -6,6 +6,7 @@ import { resourceReports, resources, resourceSuggestions, rideDays, userGoals, u
 import { resources as catalog, eliteShelfEntries, roleProfiles, skillGroupMembers, skills } from "@/content";
 import { eliteOn } from "@/lib/elite/store";
 import { swappedSkill } from "@/lib/goals/not-for-me";
+import { goalOnCurrentLine } from "@/lib/gaps/current";
 import { goalsOf } from "@/lib/goals/store";
 import { unreviewedAllowed } from "@/lib/mock/rules";
 import { addedTaskId, buildRide, goalForAdded, MAX_COURSES, rideParts } from "@/lib/ride/build";
@@ -285,12 +286,15 @@ export async function reportResource(userId: string, raw: unknown, deps: Deps = 
   });
 }
 
-/** The skills of the person's open goals (not skipped or met), the swapped-to skill included: what a suggestion may name (FR-51, T88). */
+/**
+ * The skills of the person's open goals (not skipped or met), the swapped-to skill included: what a suggestion may name
+ * (FR-51, T88). Goals left on the earlier line after a change of destination don't count (`goalOnCurrentLine`).
+ */
 async function openGoalSkills(userId: string, db: Db): Promise<Set<string>> {
   const rows = await db
     .select({ skillId: userGoals.skillId, swappedTo: userGoals.swappedTo })
     .from(userGoals)
-    .where(and(eq(userGoals.userId, userId), inArray(userGoals.status, ["active", "renew"])));
+    .where(and(eq(userGoals.userId, userId), inArray(userGoals.status, ["active", "renew"]), goalOnCurrentLine));
   return new Set(rows.flatMap((r) => (r.swappedTo ? [r.skillId, r.swappedTo] : [r.skillId])));
 }
 

@@ -10,6 +10,7 @@ import { errorFields, logEvent } from "@/lib/log";
 import {
   AVAILABILITY_SAVES_PER_DAY,
   DEPARTURE_CHANGES_PER_DAY,
+  DESTINATION_CHANGES_PER_DAY,
   DIRECT_MESSAGES_PER_DAY,
   ELITE_CHANGES_PER_DAY,
   EVENT_SUGGESTIONS_PER_DAY,
@@ -155,6 +156,8 @@ export const LIMITS = {
   signalAnswersPerUserDay: { bucket: "signal-answer", max: 100, windowMs: 24 * HOUR },
   /** Track switches on Your goals (docs/plans/tracks-plan.md), each try counted. */
   trackChangesPerUserDay: { bucket: "track-change", max: TRACK_CHANGES_PER_DAY, windowMs: 24 * HOUR },
+  /** "Make this my destination" on Gaps and "Switch back" on the Map (docs/plans/change-destination-plan.md), each try counted. */
+  destinationChangesPerUserDay: { bucket: "destination-change", max: DESTINATION_CHANGES_PER_DAY, windowMs: 24 * HOUR },
   /**
    * Account settings saves a day per person, each try counted (launch-readiness pass, docs/plans/launch-readiness-pass.md).
    * One Save sends the whole form, so 100 is far more than anyone needs, while a script can't turn "Let companies find

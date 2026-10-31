@@ -4,6 +4,7 @@ import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { jobFeedRuns, jobPosts, jobSaves, userSettings } from "@/db/schema";
 import { currentAnalysis, type CurrentAnalysis } from "@/lib/gaps/current";
+import { gapSkillsOf, leftOnEarlierLine } from "@/lib/gaps/destination";
 import { goalsOf, provedSkills } from "@/lib/goals/store";
 import { getResumeForOwner } from "@/lib/resume/store";
 import { clearStageInput, saveInput, stageInput, type DepartureExport } from "@/lib/schemas";
@@ -168,7 +169,13 @@ export async function fitContextFor(userId: string, db: Db = getDb(), read?: Cur
   if (!analysis) return null;
   const [resume, goals, proved] = await Promise.all([getResumeForOwner(analysis.resumeId, { userId }, db), goalsOf(userId, db), provedSkills(userId, db)]);
   if (!resume?.confirmed) return null;
-  const goalSkillIds = new Set(goals.filter((g) => g.status === "active" || g.status === "renew").flatMap((g) => (g.swappedTo ? [g.skillId, g.swappedTo] : [g.skillId])));
+  // Goals left on the earlier line after a change of destination don't count toward fit.
+  const gapSkills = gapSkillsOf(analysis);
+  const goalSkillIds = new Set(
+    goals
+      .filter((g) => (g.status === "active" || g.status === "renew") && !leftOnEarlierLine(g, gapSkills))
+      .flatMap((g) => (g.swappedTo ? [g.skillId, g.swappedTo] : [g.skillId])),
+  );
   return { profile: resume.profile, targetSlug: analysis.result.roleSlug, goalSkillIds, proved: new Set(proved) };
 }
 

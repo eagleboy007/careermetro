@@ -51,13 +51,20 @@ export type Spur = {
 export type EarlierBranch = {
   /** The branch itself, from the Gaps station. */
   d: string;
-  /** Where the level run starts and ends. */
+  /** Where the level run starts and ends; a short end bar closes it (C25). */
   start: { x: number; y: number };
   end: { x: number; y: number };
-  stops: { x: number; y: number }[];
-  /** "EARLIER LINE · title", under the level run. */
+  /** One stop per goal left behind, labelled "Left here" and the goal's name (clipped) under it. */
+  stops: { x: number; y: number; name: string }[];
+  /** "{role} · earlier line · closed end", under the stops' labels. */
   label: { x: number; y: number };
 };
+
+/**
+ * "Hide earlier line" (C25): the earlier line is hidden for this visit, and a short dotted stub stays at Gaps, labelled
+ * "Earlier line hidden". Tapping it shows the line again. The new line doesn't move.
+ */
+export type EarlierStub = { d: string; label: { x: number; y: number } };
 
 export type Layout = {
   width: number;
@@ -77,6 +84,8 @@ export type Layout = {
   ownCount: number;
   /** The earlier line, when the person changed destination; null otherwise. */
   earlier: EarlierBranch | null;
+  /** The stub left at Gaps while the earlier line is hidden; null otherwise. */
+  earlierStub: EarlierStub | null;
 };
 
 export const MAP_HEIGHT = 560;
@@ -100,11 +109,17 @@ const SPUR = 80;
 const EARLIER_DROP = 40;
 /** The 45 degree bend into the earlier line's level run. */
 const EARLIER_BEND = 40;
-/** The earlier line's level run: at least long enough for its label, at most this long. */
+/** The earlier line's level run: at least long enough for its label, stretched toward this length on a wide map. */
 const EARLIER_MIN = 420;
 const EARLIER_MAX = 640;
-/** Room under the earlier line for its label. */
-const EARLIER_BELOW = 48;
+/** Room for each stop's "Left here" label and goal name, so neighbours never touch. */
+const EARLIER_STOP_GAP = 120;
+/** Characters of a goal name under its stop (about 100 units of 11px mono). */
+export const EARLIER_NAME_MAX = 14;
+/** Room under the earlier line for the stops' labels and the line's name. */
+const EARLIER_BELOW = 84;
+/** Room under the stub's label when the earlier line is hidden. */
+const STUB_BELOW = 28;
 /** Small stops drawn on the earlier line; the panel lists every goal left there. */
 export const EARLIER_STOPS_MAX = 8;
 
@@ -134,7 +149,10 @@ export function nowPitstop<G extends PitstopGoal>(pitstops: readonly Pitstop<G>[
 type Point = { x: number; y: number };
 type Unplaced = Station extends infer S ? (S extends Station ? Omit<S, "x" | "y" | "above"> : never) : never;
 
-export function layoutLine(line: Pick<MapLine, "goals" | "otherLines"> & Partial<Pick<MapLine, "previous">>): Layout {
+export function layoutLine(
+  line: Pick<MapLine, "goals" | "otherLines"> & Partial<Pick<MapLine, "previous">>,
+  { hideEarlier = false }: { hideEarlier?: boolean } = {},
+): Layout {
   const pitstops = pitstopsFor(line.goals);
   const goalCount = line.goals.length;
   const climbs = Math.min(MAX_CLIMBS, Math.max(0, goalCount - 1));
@@ -199,19 +217,29 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines"> & Partial
   let height = MAP_HEIGHT;
   // The earlier line (handoff section 14): down from Gaps, then level under the map. The map grows to hold it.
   let earlier: EarlierBranch | null = null;
-  if (line.previous) {
-    const gaps = stations[1];
-    const levelY = MAP_HEIGHT + EARLIER_DROP;
+  let earlierStub: EarlierStub | null = null;
+  const gaps = stations[1];
+  const levelY = MAP_HEIGHT + EARLIER_DROP;
+  if (line.previous && hideEarlier) {
+    // Hidden for this visit: a short dotted stub down from Gaps, with its label at the earlier line's depth.
+    earlierStub = { d: d([{ x: gaps.x, y: gaps.y }, { x: gaps.x, y: levelY - 8 }]), label: { x: gaps.x + 14, y: levelY + 4 } };
+    height = levelY + STUB_BELOW;
+  } else if (line.previous) {
     const start = { x: gaps.x + EARLIER_BEND, y: levelY };
-    const end = { x: start.x + Math.max(EARLIER_MIN, Math.min(EARLIER_MAX, width - 60 - start.x)), y: levelY };
     const n = Math.min(EARLIER_STOPS_MAX, line.previous.left.length);
-    const stops = Array.from({ length: n }, (_, k) => ({ x: round(start.x + ((k + 1) * (end.x - start.x)) / (n + 1)), y: levelY }));
+    const run = Math.max(EARLIER_MIN, (n + 1) * EARLIER_STOP_GAP, Math.min(EARLIER_MAX, width - 60 - start.x));
+    const end = { x: start.x + run, y: levelY };
+    const stops = line.previous.left.slice(0, n).map((g, k) => ({
+      x: round(start.x + ((k + 1) * run) / (n + 1)),
+      y: levelY,
+      name: g.name.length > EARLIER_NAME_MAX ? `${g.name.slice(0, EARLIER_NAME_MAX - 1).trimEnd()}…` : g.name,
+    }));
     earlier = {
       d: d([{ x: gaps.x, y: gaps.y }, { x: gaps.x, y: levelY - EARLIER_BEND }, start, end]),
       start,
       end,
       stops,
-      label: { x: start.x + 16, y: levelY + 28 },
+      label: { x: start.x + 16, y: levelY + 64 },
     };
     width = Math.max(width, end.x + 50);
     height = levelY + EARLIER_BELOW;
@@ -262,6 +290,7 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines"> & Partial
     spurs,
     ownCount: spurs.reduce((n, sp) => n + sp.count, 0),
     earlier,
+    earlierStub,
   };
 }
 

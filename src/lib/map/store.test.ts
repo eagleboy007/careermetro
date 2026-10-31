@@ -11,7 +11,8 @@ import { ingestResume } from "@/lib/resume/ingest";
 import type { ParseClient } from "@/lib/resume/parse";
 import { confirmProfile } from "@/lib/resume/store";
 import { lifeLine, mapLine, type Profile } from "@/lib/schemas";
-import { currentAnalysis } from "@/lib/gaps/current";
+import { makeDestination } from "@/lib/gaps/choose";
+import { currentAnalysis, goalOnCurrentLine } from "@/lib/gaps/current";
 import { addProof, setProofStatus } from "@/lib/goals/store";
 import { lifeLineFor, mapLineFor, otherLines } from "./store";
 
@@ -191,6 +192,9 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
 
     const b = await getGapsForOwner(r.resumeId, owner, second, { db: db! });
     if (!b.ok) throw new Error(b.reason);
+    // Opening the second role's Gaps page switches nothing (C25): the Map stays on the first role.
+    expect((await mapLineFor(userId, db!))!.role.slug).toBe(first.slug);
+    expect(await makeDestination(userId, { analysisId: b.analysisId }, { db: db! })).toEqual({ ok: true, changed: true });
     const onSecond = await mapLineFor(userId, db!);
     expect(mapLine.safeParse(onSecond).success).toBe(true);
     expect(onSecond!.role.slug).toBe(second.slug);
@@ -202,17 +206,36 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     }
     // The earlier line: the first role, with its gaps the new line doesn't need.
     const lineIds = new Set(onSecond!.goals.map((g) => g.skillId));
-    expect(onSecond!.previous).toMatchObject({ role: { slug: first.slug, title: first.title } });
+    expect(onSecond!.previous).toMatchObject({ role: { slug: first.slug, title: first.title }, analysisId: a.analysisId });
+    expect(onSecond!.previous!.changedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(onSecond!.previous!.came.map((g) => g.skillId)).toEqual(ownLeft.filter((id) => lineIds.has(id)));
     expect(onSecond!.previous!.left.map((g) => g.skillId)).toEqual(ownLeft.filter((id) => !lineIds.has(id)));
     expect(onSecond!.previous!.shared).toBe(ownLeft.filter((id) => lineIds.has(id)).length);
     // Goals left behind are kept, not removed.
     const goals = await db!.select().from(schema.userGoals).where(eq(schema.userGoals.userId, userId));
     for (const g of onSecond!.previous!.left) expect(goals.some((x) => x.skillId === g.skillId)).toBe(true);
 
+    // Goals only the first role needs stop counting for the destination (c): Library suggestions, Timetable and
+    // On your line read only goals on the current line, and they come back on a switch back. Nothing is changed.
+    const counted = async () =>
+      (await db!.select({ skillId: schema.userGoals.skillId }).from(schema.userGoals).where(and(eq(schema.userGoals.userId, userId), goalOnCurrentLine))).map((g) => g.skillId);
+    const leftIds = onSecond!.previous!.left.map((g) => g.skillId);
+    const onLine = await counted();
+    for (const id of leftIds) expect(onLine).not.toContain(id);
+    for (const g of onSecond!.goals) expect(onLine).toContain(g.skillId);
+    const statuses = await db!.select({ skillId: schema.userGoals.skillId, status: schema.userGoals.status }).from(schema.userGoals).where(eq(schema.userGoals.userId, userId));
+
     // Switching back: the first role is the destination again, its analysis reused, and the second is the earlier line.
     const back = await getGapsForOwner(r.resumeId, owner, first, { db: db! });
     if (!back.ok) throw new Error(back.reason);
     expect(back.analysisId).toBe(a.analysisId);
+    expect(back.choosable).toBe(true);
+    expect(await makeDestination(userId, { analysisId: onSecond!.previous!.analysisId }, { db: db! })).toEqual({ ok: true, changed: true });
+    const backOnLine = await counted();
+    for (const id of leftIds) expect(backOnLine).toContain(id);
+    // The left goals were never changed: the same rows, the same statuses.
+    const statusesAfter = await db!.select({ skillId: schema.userGoals.skillId, status: schema.userGoals.status }).from(schema.userGoals).where(eq(schema.userGoals.userId, userId));
+    for (const g of statuses.filter((x) => leftIds.includes(x.skillId))) expect(statusesAfter).toContainEqual(g);
     const onFirstAgain = await mapLineFor(userId, db!);
     expect(onFirstAgain!.role.slug).toBe(first.slug);
     expect(onFirstAgain!.previous!.role.slug).toBe(second.slug);
