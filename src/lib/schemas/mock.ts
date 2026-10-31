@@ -78,12 +78,13 @@ export type MockFollowUp = z.infer<typeof mockFollowUp>;
 /**
  * An open question for the bank: the Practice bank's question, its "look for" as "a strong answer covers", and up to
  * two follow-ups. `followUpsReviewed` is true once someone who works in the role has checked them; production asks
- * only reviewed ones.
+ * only reviewed ones. `reviewed` copies its Practice question's mark: a draft (`false`) is left out in production.
  */
 export const mockOpenQuestion = z.strictObject({
   ...common,
   kind: z.literal("open"),
   strongCovers: text(600),
+  reviewed: z.boolean().optional(),
   followUps: z.array(mockFollowUp).max(MOCK_FOLLOW_UPS_PER_QUESTION).optional(),
   followUpsReviewed: z.boolean().optional(),
 });

@@ -27,6 +27,7 @@ import {
   type RoleTracks,
   type Skill,
 } from "@/lib/schemas";
+import { unreviewedAllowed } from "@/lib/mock/rules";
 import certificationsJson from "./certifications.json";
 import cityCentresJson from "./city-centres.json";
 import eventFeedsJson from "./event-feeds.json";
@@ -336,17 +337,29 @@ export const proofTasks: ProofTask[] = z.array(proofTask).parse(proofTasksJson);
  * Data research's practice-questions-v1 (2026-10-15); 4 data-analyst skills (statistics, data cleaning, data
  * visualization, Excel) were added by Development so the most common target role has questions for its gaps. Content, never written by the model. v1 is self-checked only:
  * no expert has reviewed it yet, so it isn't called "reviewed" in the app. `lookFor` guides the person; nothing scores
- * an answer by matching its words.
+ * an answer by matching its words. 107 more skills, drafted by Development on 2026-10-31 so every role has Practice
+ * and timed-test questions of its own, carry `reviewed: false`: local, preview and tests only, never production, until
+ * someone who works in the role checks them (`withoutDrafts`).
  */
-export const practiceQuestions: PracticeQuestion[] = z.array(practiceQuestion).parse(practiceQuestionsJson);
+export const practiceQuestions: PracticeQuestion[] = withoutDrafts(z.array(practiceQuestion).parse(practiceQuestionsJson), unreviewedAllowed());
 
 /**
  * The interview prep bank (`/mock`, FR-50, handoff 12l). Open questions are the Practice bank's, with "a strong answer
- * covers" taken from its `lookFor` (a test keeps them the same). Multiple-choice questions for the timed test were
- * hand-written by Development and carry `reviewed: false` until someone who works in the role checks them; production
- * uses only reviewed ones (src/lib/mock/rules.ts). Never written by the model.
+ * covers" taken from its `lookFor` and the same `reviewed` mark (a test keeps them the same); draft open questions are
+ * left out in production like their Practice twins. Multiple-choice questions for the timed test were hand-written by
+ * Development and carry `reviewed: false` until someone who works in the role checks them; production uses only
+ * reviewed ones (src/lib/mock/rules.ts). Never written by the model.
  */
-export const mockQuestions: MockQuestion[] = mockBankFile.parse(mockBankJson).questions;
+export const mockQuestions: MockQuestion[] = withoutDrafts(mockBankFile.parse(mockBankJson).questions, unreviewedAllowed());
+
+/**
+ * Practice questions and open bank questions marked `reviewed: false`, left out unless unreviewed content is allowed
+ * (local, preview and tests; never production, `unreviewedAllowed`). Multiple-choice questions stay: the timed test and
+ * the signal card already pick only reviewed ones in production.
+ */
+export function withoutDrafts<Q extends { kind?: string; reviewed?: boolean }>(questions: Q[], allowUnreviewed: boolean): Q[] {
+  return allowUnreviewed ? questions : questions.filter((q) => q.kind === "choice" || q.reviewed !== false);
+}
 
 /**
  * The Elite shelf (Library's Elite tab, FR-50 part 5, handoff 12l): free catalog sources by URL, playbooks and drills

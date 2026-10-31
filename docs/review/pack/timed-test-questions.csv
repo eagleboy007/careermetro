@@ -215,3 +215,1731 @@ cpp-mc-1,C++,L1,Which smart pointer allows only one owner of an object?,"A. shar
 B. weak_ptr
 C. auto_ptr
 D. unique_ptr",D. unique_ptr,"unique_ptr has sole ownership and can only be moved, not copied. shared_ptr allows many owners, and auto_ptr is removed from modern C++.",,,
+compensation-planning-mc-1,Compensation planning and salary benchmarking,L1,An employee earns ₹9 lakh a year and the band midpoint is ₹10 lakh. What is the compa-ratio?,"A. 1.10
+B. 0.90
+C. 0.10
+D. 1.00",B. 0.90,"Compa-ratio is salary divided by the midpoint: 9 ÷ 10 = 0.90, so the person sits 10% below the middle of the band.",,,
+compensation-planning-mc-2,Compensation planning and salary benchmarking,L1,"In a salary survey, what does the 50th percentile show?","A. The highest salary reported
+B. The average of the top half
+C. The figure half the reported salaries fall below
+D. The lowest salary reported",C. The figure half the reported salaries fall below,"The 50th percentile is the median: half the data points sit below it and half above, so a few very high salaries don't pull it up the way they pull up the mean.",,,
+compensation-planning-mc-3,Compensation planning and salary benchmarking,L1,What does a merit matrix usually set?,"A. The increment % by performance rating and position in the band
+B. The number of leaves by grade
+C. The notice period by level
+D. The bonus paid to the sales team only",A. The increment % by performance rating and position in the band,"A merit matrix gives a higher increment to better ratings and to people lower in their band, so pay moves towards the midpoint for good performers.",,,
+compensation-planning-mc-4,Compensation planning and salary benchmarking,L1,Survey data was collected on 1 April. Increments take effect on 1 October and the market moves about 8% a year. What should you do with the data?,"A. Use it as it is
+B. Cut it by 8%
+C. Ignore the survey
+D. Age it forward by about 4% to October",D. Age it forward by about 4% to October,"Ageing moves survey figures to the date you use them: half a year at 8% a year is about 4%, so the comparison isn't out of date.",,,
+pay-structure-design-mc-1,Pay structures and salary bands,L1,A band has a minimum of ₹8 lakh and a maximum of ₹12 lakh. What is the midpoint?,"A. ₹9 lakh
+B. ₹11 lakh
+C. ₹10 lakh
+D. ₹12 lakh",C. ₹10 lakh,The midpoint is halfway between the minimum and the maximum: (8 + 12) ÷ 2 = ₹10 lakh.,,,
+pay-structure-design-mc-2,Pay structures and salary bands,L1,A band runs from ₹8 lakh to ₹12 lakh. What is its range spread?,"A. 50%
+B. 40%
+C. 33%
+D. 25%",A. 50%,"Range spread is (maximum − minimum) ÷ minimum: (12 − 8) ÷ 8 = 0.5, or 50%.",,,
+pay-structure-design-mc-3,Pay structures and salary bands,L1,What is a 'red-circled' employee?,"A. Someone on a performance improvement plan
+B. Someone paid below the band minimum
+C. Someone serving notice
+D. Someone paid above the band maximum",D. Someone paid above the band maximum,Red-circled means paid above the band's maximum; green-circled means paid below its minimum.,,,
+pay-structure-design-mc-4,Pay structures and salary bands,L1,Why do the salary bands of neighbouring grades usually overlap?,"A. To make every grade pay the same
+B. So a strong performer in a lower grade can earn more than a new joiner in the grade above
+C. Because the law requires it
+D. So that no one ever needs a promotion",B. So a strong performer in a lower grade can earn more than a new joiner in the grade above,"Overlap lets pay reward experience within a grade, while the higher midpoint of the next grade still rewards promotion.",,,
+employee-benefits-administration-mc-1,Employee benefits and group insurance programmes,L1,"Under the Payment of Gratuity Act, after how many years of continuous service does an employee usually become eligible for gratuity?","A. One
+B. Three
+C. Five
+D. Ten",C. Five,"The Act sets five years of continuous service as the usual condition, with exceptions such as death or disablement.",,,
+employee-benefits-administration-mc-2,Employee benefits and group insurance programmes,L1,What does a TPA do in a group health insurance policy?,"A. Sets salary bands
+B. Handles claims and cashless approvals for the insurer
+C. Pays provident fund to employees
+D. Audits the company's accounts",B. Handles claims and cashless approvals for the insurer,"A third-party administrator processes claims, issues health cards and approves cashless treatment on the insurer's behalf.",,,
+employee-benefits-administration-mc-3,Employee benefits and group insurance programmes,L1,What is the claims ratio of a group health policy?,"A. Claims paid divided by premium earned
+B. Number of employees divided by claims
+C. Premium divided by number of employees
+D. Claims rejected divided by claims made",A. Claims paid divided by premium earned,"It is claims paid over premium earned. A ratio well above 100% means the insurer paid out more than it took in, so expect a higher renewal quote.",,,
+employee-benefits-administration-mc-4,Employee benefits and group insurance programmes,L1,Which of these is a statutory benefit in India rather than a company choice?,"A. Gym membership
+B. Group health top-up cover
+C. Meal vouchers
+D. Employees' Provident Fund for covered establishments",D. Employees' Provident Fund for covered establishments,EPF is required under the EPF and Miscellaneous Provisions Act for covered establishments; the others are benefits a company may choose to give.,,,
+content-marketing-mc-1,Content marketing,L1,What is a content calendar mainly used for?,"A. Tracking employee leave
+B. Planning what to publish, where and when, with owners
+C. Billing clients for articles
+D. Storing passwords for social accounts","B. Planning what to publish, where and when, with owners","A content calendar plans topics, channels, dates and owners, so publishing is steady and nothing clashes or slips.",,,
+content-marketing-mc-2,Content marketing,L1,Which goal fits a 'top of the funnel' blog post best?,"A. Closing a sale with a discount code
+B. Renewing existing customers
+C. Making new readers aware of a problem and the brand
+D. Collecting payment details",C. Making new readers aware of a problem and the brand,Top-of-funnel content attracts people who don't know the brand yet; offers and renewals belong further down the funnel.,,,
+content-marketing-mc-3,Content marketing,L1,A newsletter has a 30% open rate and a 1% click rate. Where should you look first to get more clicks?,"A. The subject line only
+B. The sender's name
+C. The send time only
+D. The content and call to action inside the email",D. The content and call to action inside the email,"People are opening it, so the subject line works. Few clicks points to the body: relevance, layout and a clear call to action.",,,
+content-marketing-mc-4,Content marketing,L1,What is evergreen content?,"A. Content that stays useful for a long time
+B. News about a festival sale
+C. A post that expires after 24 hours
+D. Content written only for paid ads",A. Content that stays useful for a long time,"Evergreen pieces, such as how-to guides, keep bringing readers long after they are published, unlike timely news.",,,
+seo-content-writing-mc-1,SEO content writing and keyword research,L1,What does search intent mean?,"A. The number of searches a keyword gets
+B. What the person searching actually wants to find or do
+C. The cost of a keyword in ads
+D. How fast a page loads",B. What the person searching actually wants to find or do,"Intent is the need behind the search: to learn, compare, buy or reach a site. A page ranks best when it matches that need.",,,
+seo-content-writing-mc-2,SEO content writing and keyword research,L1,Which HTML element is usually the clickable headline in search results?,"A. The meta keywords tag
+B. The H3 heading
+C. The image alt text
+D. The title tag",D. The title tag,"Search engines usually show the title tag as the link, so it needs the topic up front and a clear reason to click.",,,
+seo-content-writing-mc-3,SEO content writing and keyword research,L1,What is an internal link?,"A. A link from one page of a site to another page of the same site
+B. A link from another website to yours
+C. A link that opens an email
+D. A link hidden from readers",A. A link from one page of a site to another page of the same site,Internal links help readers and search engines find related pages and show which pages matter most on the site.,,,
+seo-content-writing-mc-4,SEO content writing and keyword research,L1,"A keyword has high volume, but every top result is a product page. You plan a long how-to post for it. What is the risk?","A. None, volume is all that matters
+B. The post may break the site
+C. The post may not match what searchers want, so it struggles to rank
+D. Search engines ban blog posts","C. The post may not match what searchers want, so it struggles to rank","The results show buying intent. A guide doesn't match it, so it is unlikely to rank however well it is written.",,,
+editing-proofreading-mc-1,Editing and proofreading,L1,Which sentence is correct?,"A. Its a busy week for the team.
+B. It's a busy week for the team.
+C. Its' a busy week for the team.
+D. It is' a busy week for the team.",B. It's a busy week for the team.,"""It's"" is short for ""it is"". ""Its"" without an apostrophe shows possession, as in ""the team and its plans"".",,,
+editing-proofreading-mc-2,Editing and proofreading,L1,"In Indian number style, how is 1,50,00,000 read?","A. 15 lakh
+B. 1.5 million
+C. 1.5 crore
+D. 150 crore",C. 1.5 crore,"One crore is 1,00,00,000 (ten million), so 1,50,00,000 is 1.5 crore.",,,
+editing-proofreading-mc-3,Editing and proofreading,L1,What is the main job of a style guide?,"A. To list the writer's sources
+B. To set the deadline
+C. To check for plagiarism
+D. To keep spelling, tone and formatting consistent across writers","D. To keep spelling, tone and formatting consistent across writers","A style guide records the choices a publication makes, so every writer and editor follows the same rules.",,,
+editing-proofreading-mc-4,Editing and proofreading,L1,"Which edit fixes the dangling modifier in 'Walking into the office, the printer was broken'?","A. Walking into the office, I found the printer broken.
+B. Walking into the office the printer was broken.
+C. The printer, walking into the office, was broken.
+D. Walking into the office, the printer was broken today.","A. Walking into the office, I found the printer broken.","The opening phrase has to describe the subject that follows. A printer doesn't walk, so the sentence needs a person as its subject.",,,
+social-media-marketing-mc-1,Social media marketing,L1,What does 'reach' measure on a social post?,"A. How many unique people saw it
+B. How many times it was shared
+C. How many clicks it got
+D. How many followers the account has",A. How many unique people saw it,"Reach counts unique people who saw the post. Impressions count every time it was shown, including repeat views.",,,
+social-media-marketing-mc-2,Social media marketing,L1,"Under ASCI's influencer guidelines, what must an influencer do in a paid post?","A. Nothing, if the product is good
+B. Mention the price
+C. Clearly label it as an ad or partnership
+D. Post it only at night",C. Clearly label it as an ad or partnership,"The guidelines ask for a clear disclosure label, such as #ad or Paid Partnership, that the audience can easily see.",,,
+social-media-marketing-mc-3,Social media marketing,L1,A campaign's goal is website sales. Which number matters most?,"A. Likes
+B. Followers gained
+C. Video views
+D. Purchases or conversions from the campaign",D. Purchases or conversions from the campaign,"When the goal is sales, measure sales. Likes and views can rise while no one buys.",,,
+social-media-marketing-mc-4,Social media marketing,L1,What is A/B testing in social ads?,"A. Posting the same ad twice a day
+B. Running two versions that differ in one thing to see which does better
+C. Testing ads in only one city
+D. Asking the team which ad they like",B. Running two versions that differ in one thing to see which does better,"Changing one thing at a time, such as the image or headline, shows what actually caused the difference in results.",,,
+social-media-analytics-mc-1,Social media analytics and reporting,L1,"A post reached 10,000 people and got 500 likes, comments, shares and saves. What is its engagement rate by reach?","A. 0.5%
+B. 5%
+C. 50%
+D. 2%",B. 5%,"Engagement rate by reach is engagements divided by reach: 500 ÷ 10,000 = 0.05, or 5%.",,,
+social-media-analytics-mc-2,Social media analytics and reporting,L1,What is the difference between reach and impressions?,"A. They are the same
+B. Reach counts clicks; impressions count likes
+C. Reach counts unique people; impressions count every time the post was shown
+D. Impressions count only paid views",C. Reach counts unique people; impressions count every time the post was shown,One person who sees a post three times adds 1 to reach and 3 to impressions.,,,
+social-media-analytics-mc-3,Social media analytics and reporting,L1,What are UTM parameters used for?,"A. Speeding up page load
+B. Hiding links
+C. Shortening URLs
+D. Tagging links so web analytics shows which campaign and source a visit came from",D. Tagging links so web analytics shows which campaign and source a visit came from,Tags such as utm_source and utm_campaign on a link let web analytics credit each visit to the right post or campaign.,,,
+social-media-analytics-mc-4,Social media analytics and reporting,L1,Which is a 'vanity metric' when the goal is leads?,"A. Follower count
+B. Cost per lead
+C. Lead form completions
+D. Leads that became customers",A. Follower count,Follower count can grow without bringing a single lead; the other three measure the goal directly.,,,
+product-positioning-messaging-mc-1,Product positioning and messaging,L1,Which part of a positioning statement says who the product is for?,"A. The tagline
+B. The price
+C. The target customer or segment
+D. The logo",C. The target customer or segment,A positioning statement starts with the target customer and their need; everything else is framed for them.,,,
+product-positioning-messaging-mc-2,Product positioning and messaging,L1,What is a value proposition?,"A. A clear statement of the benefit a customer gets and why it beats the alternatives
+B. A list of all product features
+C. The product's price list
+D. The company's mission statement",A. A clear statement of the benefit a customer gets and why it beats the alternatives,A value proposition says what the customer gains and why this product does it better than the other options.,,,
+product-positioning-messaging-mc-3,Product positioning and messaging,L1,What are win-loss interviews mainly used for?,"A. Hiring sales staff
+B. Setting office budgets
+C. Training new joiners
+D. Learning why buyers chose or rejected the product",D. Learning why buyers chose or rejected the product,"Talking to buyers after a deal is won or lost shows which messages, features and objections actually decided it.",,,
+product-positioning-messaging-mc-4,Product positioning and messaging,L1,Which message is benefit-led rather than feature-led?,"A. Built on a microservices architecture
+B. Close your books two days faster each month
+C. Has 40 report templates
+D. Supports single sign-on",B. Close your books two days faster each month,"It says what the customer gets, time saved, rather than what the product has.",,,
+go-to-market-launches-mc-1,Go-to-market planning and product launches,L1,What is a soft launch?,"A. A launch with no marketing at all
+B. A limited release to a small group to learn before the full launch
+C. A launch only on social media
+D. Cancelling a launch",B. A limited release to a small group to learn before the full launch,"A soft launch tests the product, pricing and support with a small audience, so problems are fixed before the full launch.",,,
+go-to-market-launches-mc-2,Go-to-market planning and product launches,L1,Which team most needs a launch FAQ and an escalation path on launch day?,"A. Customer support
+B. Facilities
+C. Payroll
+D. Legal only",A. Customer support,"Support hears from customers first, so it needs answers and a route to the product team from the first hour.",,,
+go-to-market-launches-mc-3,Go-to-market planning and product launches,L1,What does 'ICP' usually stand for in go-to-market planning?,"A. Internal cost plan
+B. Indian corporate price
+C. Initial channel partner
+D. Ideal customer profile",D. Ideal customer profile,"The ideal customer profile describes the companies or people most likely to buy and succeed, so the launch targets them first.",,,
+go-to-market-launches-mc-4,Go-to-market planning and product launches,L1,A launch goal says 'make the product a success'. What is wrong with it?,"A. It is too long
+B. It names a competitor
+C. It isn't measurable or time-bound
+D. Nothing",C. It isn't measurable or time-bound,"A useful goal names a number and a date, such as 200 paying customers in 90 days, so the team knows whether it worked.",,,
+data-loss-prevention-mc-1,Data loss prevention (DLP),L1,Why start a new DLP rule in audit or monitor mode?,"A. To see matches and false positives before blocking anyone
+B. Because block mode is illegal
+C. To save licence cost
+D. Because audit mode encrypts data",A. To see matches and false positives before blocking anyone,"Monitor mode shows what the rule would catch, so it can be tuned before it stops real work.",,,
+data-loss-prevention-mc-2,Data loss prevention (DLP),L1,Which check helps a DLP rule tell a real card number from a random 16-digit number?,"A. The file size
+B. The Luhn checksum
+C. The sender's job title
+D. The time of day",B. The Luhn checksum,"Card numbers pass the Luhn check digit test; most random 16-digit numbers don't, so false positives drop.",,,
+data-loss-prevention-mc-3,Data loss prevention (DLP),L1,What is a false positive in DLP?,"A. Data that leaked without an alert
+B. A blocked attacker
+C. An alert on content that isn't actually sensitive
+D. A user who passed training",C. An alert on content that isn't actually sensitive,A false positive flags harmless content. Too many of them slow the business and teach people to ignore alerts.,,,
+data-loss-prevention-mc-4,Data loss prevention (DLP),L1,Which is the best first step before writing DLP policies?,"A. Buying more licences
+B. Blocking all USB drives
+C. Turning on block mode everywhere
+D. Finding where sensitive data lives and who owns it",D. Finding where sensitive data lives and who owns it,"Policies protect specific data. Without knowing where it sits and who owns it, rules are guesses.",,,
+compliance-frameworks-mc-1,Security compliance frameworks,L1,How many controls does Annex A of ISO 27001:2022 list?,"A. 114
+B. 93
+C. 50
+D. 200",B. 93,"The 2022 revision groups 93 controls into four themes: organisational, people, physical and technological. The 2013 version had 114.",,,
+compliance-frameworks-mc-2,Security compliance frameworks,L1,What does a SOC 2 Type II report cover?,"A. Only control design on one day
+B. Financial statements
+C. How well controls operated over a period, often 6 to 12 months
+D. Only physical security","C. How well controls operated over a period, often 6 to 12 months",Type I looks at control design at one point in time; Type II tests that the controls actually worked over a period.,,,
+compliance-frameworks-mc-3,Security compliance frameworks,L1,"Which standard applies to organisations that store, process or transmit card payment data?","A. ISO 9001
+B. SOC 1
+C. GDPR
+D. PCI DSS",D. PCI DSS,PCI DSS is the card industry's security standard for anyone handling cardholder data.,,,
+compliance-frameworks-mc-4,Security compliance frameworks,L1,What does the Statement of Applicability in ISO 27001 list?,"A. Which Annex A controls apply, whether they are in place, and why any are excluded
+B. The names of all employees
+C. The audit fee
+D. The company's yearly revenue","A. Which Annex A controls apply, whether they are in place, and why any are excluded","The Statement of Applicability links the risk treatment to Annex A: each control is included or excluded, with the reason.",,,
+m365-administration-mc-1,Microsoft 365 and Google Workspace administration,L1,Which tool shows whether an email reached a user's mailbox?,"A. Message trace in the Exchange admin centre
+B. The Teams admin centre
+C. OneDrive sync settings
+D. Windows Event Viewer",A. Message trace in the Exchange admin centre,"Message trace follows a message through Exchange Online and shows whether it was delivered, quarantined or failed.",,,
+m365-administration-mc-2,Microsoft 365 and Google Workspace administration,L1,What does a shared mailbox in Exchange Online usually need?,"A. Its own paid licence, always
+B. No licence below its size limit, with access given to users
+C. A separate tenant
+D. A Teams phone number","B. No licence below its size limit, with access given to users",A shared mailbox needs no licence up to its size limit unless it needs an archive or a hold; users get access through permissions.,,,
+m365-administration-mc-3,Microsoft 365 and Google Workspace administration,L1,Where would you require MFA only when users sign in from outside the office network?,"A. Mail flow rules
+B. OneDrive settings
+C. Conditional Access in Microsoft Entra ID
+D. Teams meeting policies",C. Conditional Access in Microsoft Entra ID,"Conditional Access policies apply conditions such as location, device and risk, and can ask for MFA only off the trusted network.",,,
+m365-administration-mc-4,Microsoft 365 and Google Workspace administration,L1,A user needs a file back that they deleted from OneDrive two weeks ago. Where do you look first?,"A. Exchange quarantine
+B. The Teams chat
+C. The laptop's recycle bin only
+D. The OneDrive recycle bin",D. The OneDrive recycle bin,"OneDrive keeps deleted files in its recycle bin for a set time (93 days by default), so the user or an admin can restore them.",,,
+risk-assessment-mc-1,Security risk assessment,L1,"A risk is rated likelihood 4 and impact 5 on 1–5 scales, and scored by multiplying them. What is its score?","A. 9
+B. 1
+C. 20
+D. 25",C. 20,"Likelihood times impact: 4 × 5 = 20 out of a possible 25, which most heat maps show as high.",,,
+risk-assessment-mc-2,Security risk assessment,L1,Buying cyber insurance is an example of which risk treatment?,"A. Transfer
+B. Avoid
+C. Accept
+D. Reduce",A. Transfer,"Insurance moves some of the financial impact to the insurer. The risk itself still exists, so controls are still needed.",,,
+risk-assessment-mc-3,Security risk assessment,L1,What is residual risk?,"A. Risk before any controls
+B. Risk from a third party only
+C. Risk that has been insured
+D. The risk left after controls are applied",D. The risk left after controls are applied,Residual risk is what remains once controls are in place; it is what the risk owner accepts or treats further.,,,
+risk-assessment-mc-4,Security risk assessment,L1,What is risk appetite?,"A. The number of risks in the register
+B. The amount and type of risk an organisation is willing to accept
+C. The budget of the security team
+D. How often audits happen",B. The amount and type of risk an organisation is willing to accept,"Risk appetite, set by leadership, says how much risk is acceptable, so teams know when a risk must be treated.",,,
+third-party-risk-mc-1,Third-party (vendor) risk,L1,What is the main reason to tier vendors by risk?,"A. To spend review effort where the risk is highest
+B. To pay low-risk vendors less
+C. To avoid contracts
+D. To skip high-risk vendors",A. To spend review effort where the risk is highest,Tiering puts deep reviews on vendors with sensitive data or critical access and lighter checks on the rest.,,,
+third-party-risk-mc-2,Third-party (vendor) risk,L1,Which document gives independent evidence of a vendor's controls over a period?,"A. The vendor's marketing brochure
+B. A SOC 2 Type II report
+C. An invoice
+D. A non-disclosure agreement",B. A SOC 2 Type II report,A SOC 2 Type II report is an independent auditor's test of how the vendor's controls worked over months.,,,
+third-party-risk-mc-3,Third-party (vendor) risk,L1,What is a 'fourth party'?,"A. A regulator
+B. A customer's customer
+C. A vendor's own vendor or subcontractor
+D. An internal auditor",C. A vendor's own vendor or subcontractor,"Your vendor's suppliers can also touch your data, so contracts should require notice and controls for subcontractors.",,,
+third-party-risk-mc-4,Third-party (vendor) risk,L1,Which contract clause lets you check a vendor's controls yourself?,"A. Payment terms
+B. Force majeure
+C. Non-compete
+D. Right to audit",D. Right to audit,"A right-to-audit clause lets you, or an auditor you appoint, inspect the vendor's controls and records.",,,
+data-privacy-mc-1,Data privacy and protection law,L1,"Under the DPDP Act, 2023, what is the person whose personal data is processed called?","A. Data Fiduciary
+B. Data Principal
+C. Data Processor
+D. Consent Manager",B. Data Principal,The Act calls the individual the Data Principal; the organisation deciding why and how data is processed is the Data Fiduciary.,,,
+data-privacy-mc-2,Data privacy and protection law,L1,"Under the DPDP Act, 2023, who decides the purpose and means of processing personal data?","A. The Data Principal
+B. The Data Protection Board
+C. The Data Fiduciary
+D. The cloud provider",C. The Data Fiduciary,The Data Fiduciary decides why and how personal data is processed and carries the main duties under the Act.,,,
+data-privacy-mc-3,Data privacy and protection law,L1,What does purpose limitation mean?,"A. Using personal data only for the purpose it was collected for
+B. Limiting the number of staff
+C. Deleting all data each year
+D. Encrypting every file",A. Using personal data only for the purpose it was collected for,Data collected for one purpose shouldn't be reused for an unrelated one without a fresh lawful basis.,,,
+data-privacy-mc-4,Data privacy and protection law,L1,Which is an example of data minimisation?,"A. Collecting Aadhaar for a newsletter sign-up
+B. Keeping all data forever
+C. Sharing data with every team
+D. Asking only for an email address to send a newsletter",D. Asking only for an email address to send a newsletter,"Data minimisation means collecting only what the purpose needs; a newsletter needs an email address, nothing more.",,,
+data-breach-response-mc-1,Personal data breach response,L1,"Under CERT-In's 2022 directions, within how many hours of noticing must a reportable cyber incident be reported?","A. 72
+B. 24
+C. 6
+D. 48",C. 6,The April 2022 directions ask organisations to report listed incidents to CERT-In within 6 hours of noticing them.,,,
+data-breach-response-mc-2,Personal data breach response,L1,What is the first priority when a breach is discovered?,"A. Contain it to stop more data leaving
+B. Issue a press release
+C. Delete all logs
+D. Fire the person responsible",A. Contain it to stop more data leaving,"Containment limits the harm. Evidence is kept for the investigation, and notices follow the legal timelines.",,,
+data-breach-response-mc-3,Personal data breach response,L1,"Under the DPDP Act, 2023, whom must a Data Fiduciary inform of a personal data breach?","A. Only the police
+B. Nobody, if it is small
+C. Only the company's board
+D. The Data Protection Board and each affected Data Principal",D. The Data Protection Board and each affected Data Principal,"The Act asks the Data Fiduciary to inform both the Board and every affected Data Principal, in the form the rules prescribe.",,,
+data-breach-response-mc-4,Personal data breach response,L1,Why keep logs and evidence untouched during a breach?,"A. To save storage
+B. To find the cause and support any legal or regulatory follow-up
+C. Because deleting them is slow
+D. To share them on social media",B. To find the cause and support any legal or regulatory follow-up,"Untouched evidence shows what happened, supports regulator questions and helps stop it happening again.",,,
+identity-access-management-mc-1,Identity and access management,L1,Which is an example of multi-factor authentication?,"A. A password and a code from an authenticator app
+B. A long password
+C. Two passwords
+D. A password and a security question",A. A password and a code from an authenticator app,"MFA combines different kinds of factor: something you know, have or are. Two things you know are still one factor.",,,
+identity-access-management-mc-2,Identity and access management,L1,What is RBAC?,"A. Giving each user rights one by one
+B. Giving access through roles that match job functions
+C. Removing all access every month
+D. Using biometrics only",B. Giving access through roles that match job functions,"Role-based access control gives rights to roles and puts people in roles, so access follows the job and is easier to review.",,,
+identity-access-management-mc-3,Identity and access management,L1,What should happen to a leaver's accounts?,"A. Keep them for a year in case they return
+B. Pass the password to their manager
+C. Disable them on the last working day and remove access
+D. Nothing until the next audit",C. Disable them on the last working day and remove access,"Prompt disabling stops a former employee, or anyone with their password, from getting in. Data is handed over through proper access.",,,
+identity-access-management-mc-4,Identity and access management,L1,What does single sign-on (SSO) let a user do?,"A. Skip passwords forever
+B. Share their account
+C. Reset other users' passwords
+D. Sign in once and reach many applications",D. Sign in once and reach many applications,"SSO uses one identity provider sign-in for many apps, so there are fewer passwords and access can be removed in one place.",,,
+security-incident-response-mc-1,Security incident response,L1,"In the NIST incident response cycle, what comes after detection and analysis?","A. Preparation
+B. Containment, eradication and recovery
+C. Lessons learned
+D. Procurement","B. Containment, eradication and recovery","NIST SP 800-61 runs preparation; detection and analysis; containment, eradication and recovery; then post-incident activity.",,,
+security-incident-response-mc-2,Security incident response,L1,What is a playbook in incident response?,"A. A step-by-step guide for a type of incident
+B. A list of employees
+C. The SIEM licence
+D. A training game",A. A step-by-step guide for a type of incident,"A playbook sets out the checks, actions and contacts for a type of incident, such as phishing or ransomware, so responders don't start from scratch.",,,
+security-incident-response-mc-3,Security incident response,L1,Why should responders keep a timeline during an incident?,"A. It is needed for payroll
+B. To decorate the report
+C. To know what happened when, for the root cause and any reports
+D. Because the SIEM cannot store logs","C. To know what happened when, for the root cause and any reports","A timeline written as you go supports the root cause, regulator reports and the review afterwards.",,,
+security-incident-response-mc-4,Security incident response,L1,Which action best contains a compromised user account?,"A. Send the user an email
+B. Wait for the next audit
+C. Delete all their files
+D. Disable the account and revoke its sessions",D. Disable the account and revoke its sessions,"Disabling the account and revoking sessions and tokens stops the attacker using it, while keeping the evidence.",,,
+siem-mc-1,SIEM and log analysis,L1,What does a SIEM mainly do?,"A. Collects, stores and correlates logs to raise security alerts
+B. Blocks all traffic
+C. Backs up laptops
+D. Manages payroll","A. Collects, stores and correlates logs to raise security alerts","A SIEM gathers logs from many systems, links related events and raises alerts for analysts to investigate.",,,
+siem-mc-2,SIEM and log analysis,L1,"Under CERT-In's 2022 directions, how long must logs of ICT systems be kept?","A. 30 days
+B. 90 days
+C. Two years
+D. 180 days, within India","D. 180 days, within India","The directions ask for logs to be kept for a rolling 180 days, maintained within India.",,,
+siem-mc-3,SIEM and log analysis,L1,"Many failed logins on many different accounts from one IP, with one or two tries each, suggest what?","A. A backup job
+B. A forgotten password
+C. Password spraying
+D. A printer fault",C. Password spraying,Password spraying tries a few common passwords across many accounts to stay under lockout limits.,,,
+siem-mc-4,SIEM and log analysis,L1,What is a false positive alert?,"A. A real attack the SIEM missed
+B. An alert raised on activity that is actually harmless
+C. An alert closed late
+D. A log with no timestamp",B. An alert raised on activity that is actually harmless,A false positive fires on harmless activity. A real attack that raises no alert is a false negative.,,,
+itsm-mc-1,IT service management (ITIL),L1,"In ITIL, what is the main goal of incident management?","A. Find the root cause of every issue
+B. Approve changes
+C. Restore normal service as quickly as possible
+D. Buy new hardware",C. Restore normal service as quickly as possible,Incident management restores service fast; finding and removing root causes is the job of problem management.,,,
+itsm-mc-2,IT service management (ITIL),L1,Which ITIL practice aims to find and remove the root cause of repeated incidents?,"A. Problem management
+B. Request fulfilment
+C. The service desk
+D. Asset management",A. Problem management,"Problem management looks for the underlying cause and a permanent fix, often through a known error and a change.",,,
+itsm-mc-3,IT service management (ITIL),L1,Priority in most service desks is worked out from which two factors?,"A. Cost and time
+B. Impact and urgency
+C. Department and location
+D. The user's grade and age",B. Impact and urgency,A priority matrix combines impact (how many and how badly affected) with urgency (how fast it gets worse).,,,
+itsm-mc-4,IT service management (ITIL),L1,What is a standard change?,"A. Any change made on a weekend
+B. An emergency fix
+C. A change that needs board approval
+D. A low-risk, pre-approved change done often in the same way","D. A low-risk, pre-approved change done often in the same way","Standard changes, such as adding a user to a group, are pre-approved and follow a set procedure, so they skip the change board.",,,
+desktop-support-mc-1,Desktop and end-user support,L1,Which Windows tool shows which processes use the most CPU and memory?,"A. Task Manager
+B. Disk Cleanup
+C. Paint
+D. Control Panel's fonts",A. Task Manager,"Task Manager's Processes tab sorts by CPU, memory, disk and network use, so the heavy process is easy to spot.",,,
+desktop-support-mc-2,Desktop and end-user support,L1,A Windows PC has the IP address 169.254.10.20. What does this usually mean?,"A. It has a static IP
+B. It is on a VPN
+C. It couldn't get an address from DHCP
+D. It is the DNS server",C. It couldn't get an address from DHCP,"Windows gives itself a 169.254.x.x (APIPA) address when no DHCP server answers, so check the cable, Wi-Fi or DHCP server.",,,
+desktop-support-mc-3,Desktop and end-user support,L1,Which command shows the IP address settings of a Windows PC?,"A. ping
+B. ipconfig
+C. tracert
+D. chkdsk",B. ipconfig,"ipconfig shows the IP address, subnet mask and gateway; ipconfig /all adds DNS servers and the MAC address.",,,
+desktop-support-mc-4,Desktop and end-user support,L1,What is the first step when a user reports a problem?,"A. Reinstall Windows
+B. Replace the laptop
+C. Escalate to L3
+D. Ask questions to understand the problem and what changed",D. Ask questions to understand the problem and what changed,"Knowing the exact symptom, when it started and what changed points to the cause and avoids needless fixes.",,,
+networking-basics-mc-1,Networking basics,L1,Which protocol turns a website name into an IP address?,"A. DHCP
+B. DNS
+C. FTP
+D. SNMP",B. DNS,"DNS resolves names to IP addresses. DHCP hands out addresses, FTP moves files and SNMP monitors devices.",,,
+networking-basics-mc-2,Networking basics,L1,How many usable host addresses does a /24 IPv4 subnet have?,"A. 256
+B. 128
+C. 254
+D. 24",C. 254,"A /24 has 256 addresses; the network and broadcast addresses can't be given to hosts, which leaves 254.",,,
+networking-basics-mc-3,Networking basics,L1,Which port does HTTPS use by default?,"A. 443
+B. 80
+C. 25
+D. 21",A. 443,"HTTPS uses TCP 443. Port 80 is plain HTTP, 25 is SMTP and 21 is FTP.",,,
+networking-basics-mc-4,Networking basics,L1,Which device forwards traffic between different networks?,"A. A switch
+B. A hub
+C. A patch panel
+D. A router",D. A router,A router moves packets between networks by IP address; a switch connects devices within one network.,,,
+endpoint-management-mc-1,"Endpoint management (Intune, SCCM, Jamf)",L1,What does MDM stand for?,"A. Mobile device management
+B. Main data model
+C. Managed DNS mapping
+D. Multi-domain mail",A. Mobile device management,"Mobile device management enrols devices and pushes settings, apps and security policies to them, and can lock or wipe them.",,,
+endpoint-management-mc-2,"Endpoint management (Intune, SCCM, Jamf)",L1,What is the usual purpose of a pilot ring for updates?,"A. To skip updates
+B. To test updates on a small group before everyone
+C. To update servers only
+D. To block users",B. To test updates on a small group before everyone,"A pilot ring catches problems on a few devices first, so a bad update doesn't reach the whole company.",,,
+endpoint-management-mc-3,"Endpoint management (Intune, SCCM, Jamf)",L1,Which Windows feature encrypts the whole disk and is often required by compliance policies?,"A. Defender SmartScreen
+B. Windows Hello
+C. Storage Sense
+D. BitLocker",D. BitLocker,"BitLocker encrypts the drive, so data on a lost or stolen laptop can't be read without the key.",,,
+endpoint-management-mc-4,"Endpoint management (Intune, SCCM, Jamf)",L1,What does a selective wipe remove from a personal phone?,"A. Everything on the phone
+B. Only the photos
+C. Company apps and data only
+D. The SIM card",C. Company apps and data only,A selective wipe removes managed apps and company data and leaves the person's own photos and apps alone.,,,
+wireframing-mc-1,Wireframing,L1,What is the main purpose of a low-fidelity wireframe?,"A. To agree layout and structure quickly before visual detail
+B. To pick brand colours
+C. To write code
+D. To test server speed",A. To agree layout and structure quickly before visual detail,"Rough wireframes are quick to change, so the team settles structure and flow before spending time on visuals.",,,
+wireframing-mc-2,Wireframing,L1,Which is usually left out of a low-fidelity wireframe?,"A. The layout of content blocks
+B. Navigation
+C. Final colours and images
+D. The main buttons",C. Final colours and images,"Low-fi wireframes use greys and boxes, so feedback stays on structure rather than colour or imagery.",,,
+wireframing-mc-3,Wireframing,L1,What is an annotation on a wireframe?,"A. A brand logo
+B. A user's password
+C. The final copy
+D. A note explaining behaviour or a decision",D. A note explaining behaviour or a decision,"Annotations tell developers and reviewers what happens on tap, what the rules are and why a choice was made.",,,
+wireframing-mc-4,Wireframing,L1,What does a user flow show?,"A. The colour palette
+B. The steps a user takes across screens to reach a goal
+C. The code structure
+D. The server layout",B. The steps a user takes across screens to reach a goal,"A user flow maps each step and decision from start to goal, so missing screens and dead ends show up early.",,,
+usability-testing-mc-1,Usability testing,L1,"In a usability test, what does 'think aloud' mean?","A. The moderator explains the design
+B. Participants say what they are thinking as they use the product
+C. The team discusses results aloud
+D. Participants read the terms aloud",B. Participants say what they are thinking as they use the product,"Hearing what people expect and notice as they go shows why they get stuck, not only where.",,,
+usability-testing-mc-2,Usability testing,L1,What does a task success rate measure?,"A. How fast pages load
+B. How many users liked the colours
+C. The share of participants who complete a task
+D. How many tasks were written",C. The share of participants who complete a task,"Task success is the share of people who finish a task correctly, a simple measure to compare designs.",,,
+usability-testing-mc-3,Usability testing,L1,Which is a leading question?,"A. What did you expect to happen?
+B. How would you find a coupon?
+C. What are you looking for here?
+D. Don't you think this button is easy to find?",D. Don't you think this button is easy to find?,It suggests the answer the moderator wants. Neutral questions let participants say what they really think.,,,
+usability-testing-mc-4,Usability testing,L1,What is the main advantage of moderated testing?,"A. The facilitator can probe and ask follow-up questions live
+B. It needs no participants
+C. It is always cheaper
+D. It needs no planning",A. The facilitator can probe and ask follow-up questions live,"A facilitator can ask why someone hesitated and explore surprises, which a recorded session can't.",,,
+interaction-design-mc-1,Interaction and visual design,L1,Which button state helps keyboard users see where they are?,"A. Hover
+B. Focus
+C. Disabled
+D. Visited",B. Focus,A visible focus state shows which element the keyboard is on; hover only helps mouse users.,,,
+interaction-design-mc-2,Interaction and visual design,L1,What minimum contrast ratio does WCAG 2.1 AA ask for normal body text?,"A. 2:1
+B. 3:1
+C. 7:1
+D. 4.5:1",D. 4.5:1,AA asks for 4.5:1 for normal text and 3:1 for large text; 7:1 is the stricter AAA level.,,,
+interaction-design-mc-3,Interaction and visual design,L1,What does Fitts's law say about targets?,"A. Larger and closer targets are faster to hit
+B. More colours mean faster clicks
+C. Users read pages left to right
+D. Menus should have seven items",A. Larger and closer targets are faster to hit,"The time to reach a target grows with distance and falls with size, so key actions should be big and near.",,,
+interaction-design-mc-4,Interaction and visual design,L1,Where should an error message for a single form field usually appear?,"A. In a pop-up after the page reloads
+B. At the bottom of the page only
+C. Next to the field, saying how to fix it
+D. In the browser console","C. Next to the field, saying how to fix it","An error beside the field, in plain words, shows what is wrong and how to fix it without hunting.",,,
+voip-sip-sbc-mc-1,"VoIP, SIP trunking and session border controllers",L1,Which SIP response means the call was answered?,"A. 180 Ringing
+B. 200 OK
+C. 404 Not Found
+D. 486 Busy Here",B. 200 OK,200 OK to an INVITE means the called party answered; the caller then sends ACK and media starts.,,,
+voip-sip-sbc-mc-2,"VoIP, SIP trunking and session border controllers",L1,Which protocol usually carries the voice itself in a SIP call?,"A. RTP
+B. SMTP
+C. LDAP
+D. SNMP",A. RTP,SIP sets up and ends the call; the audio travels as RTP packets on the ports agreed in the SDP.,,,
+voip-sip-sbc-mc-3,"VoIP, SIP trunking and session border controllers",L1,Which problem does an SBC commonly solve?,"A. Disk encryption
+B. Email spam
+C. Printer drivers
+D. Getting SIP and media through NAT and firewalls",D. Getting SIP and media through NAT and firewalls,"An SBC anchors signalling and media at the edge, fixing NAT addresses and protecting the voice network.",,,
+voip-sip-sbc-mc-4,"VoIP, SIP trunking and session border controllers",L1,Roughly how much one-way delay is generally acceptable for good voice quality?,"A. Up to about 1 second
+B. Up to about 5 seconds
+C. Up to about 150 milliseconds
+D. Any delay is fine",C. Up to about 150 milliseconds,"ITU-T G.114 suggests keeping one-way delay under about 150 ms; beyond that, people start talking over each other.",,,
+sap-pp-configuration-mc-1,SAP PP configuration (Production Planning),L1,Which transaction shows the stock and requirements list for a material?,"A. MD04
+B. VA01
+C. FB60
+D. ME21N",A. MD04,"MD04 shows current stock, requirements and receipts for a material at a plant, as MRP sees them.",,,
+sap-pp-configuration-mc-2,SAP PP configuration (Production Planning),L1,What does a routing define in SAP PP?,"A. The material's price
+B. The operations and work centers used to make a product
+C. The customer's address
+D. The sales tax rate",B. The operations and work centers used to make a product,"A routing lists the operations in order, the work center for each and their standard times.",,,
+sap-pp-configuration-mc-3,SAP PP configuration (Production Planning),L1,What does MRP usually create for a material produced in-house?,"A. Purchase orders
+B. Sales orders
+C. Invoices
+D. Planned orders",D. Planned orders,"For in-house production MRP creates planned orders, which are converted to production orders; for bought items it creates purchase requisitions.",,,
+sap-pp-configuration-mc-4,SAP PP configuration (Production Planning),L1,What is a bill of materials?,"A. A vendor invoice
+B. A list of sales orders
+C. The list of components and quantities needed to make a product
+D. A routing step",C. The list of components and quantities needed to make a product,"The BOM lists every component and its quantity, so MRP knows what to plan and the order knows what to issue.",,,
+sap-mm-configuration-mc-1,SAP MM configuration (Materials Management),L1,Which transaction creates a purchase order?,"A. ME21N
+B. MIGO
+C. MIRO
+D. MM01",A. ME21N,"ME21N creates a purchase order. MIGO posts goods movements, MIRO enters vendor invoices and MM01 creates a material.",,,
+sap-mm-configuration-mc-2,SAP MM configuration (Materials Management),L1,Which transaction is used to post a goods receipt against a purchase order?,"A. ME51N
+B. MIRO
+C. MIGO
+D. MD04",C. MIGO,MIGO posts the goods receipt (movement type 101) against the purchase order and updates stock and valuation.,,,
+sap-mm-configuration-mc-3,SAP MM configuration (Materials Management),L1,Which transaction configures automatic account determination for inventory postings?,"A. OB52
+B. SE38
+C. MM60
+D. OBYC",D. OBYC,"OBYC maps transaction keys and valuation classes to G/L accounts, so each goods movement posts to the right account.",,,
+sap-mm-configuration-mc-4,SAP MM configuration (Materials Management),L1,What does movement type 101 usually post?,"A. A goods issue to a cost center
+B. A goods receipt for a purchase order
+C. A transfer between plants
+D. A physical inventory difference",B. A goods receipt for a purchase order,101 is the goods receipt for a purchase order or production order; 201 is a goods issue to a cost center.,,,
+uat-mc-1,User acceptance testing,L1,Who usually performs user acceptance testing?,"A. Developers only
+B. Business users or their representatives
+C. The database team
+D. External auditors",B. Business users or their representatives,"UAT is done by the people who will use the system, to confirm it supports their work before go-live.",,,
+uat-mc-2,User acceptance testing,L1,What are UAT exit criteria?,"A. Agreed conditions, such as no open critical defects, that must be met to finish UAT
+B. The list of testers
+C. The project budget
+D. The go-live party date","A. Agreed conditions, such as no open critical defects, that must be met to finish UAT",Exit criteria agreed up front make sign-off a check against facts rather than a debate.,,,
+uat-mc-3,User acceptance testing,L1,A tester finds a report lacks a field the requirements never mentioned. What is this most likely?,"A. A critical defect
+B. A system crash
+C. A change request or enhancement, not a defect
+D. A data breach","C. A change request or enhancement, not a defect",A defect is a failure to meet agreed requirements. A new need is logged as a change and assessed separately.,,,
+uat-mc-4,User acceptance testing,L1,What does UAT mainly confirm?,"A. Code style
+B. Server capacity
+C. Unit test coverage
+D. That the system supports the business process as agreed",D. That the system supports the business process as agreed,"UAT asks whether the business can do its work with the system, not how the code is written.",,,
+application-security-mc-1,Application security,L1,Which OWASP Top 10 risk comes from putting user input straight into a SQL query?,"A. Injection
+B. Cryptographic failures
+C. Security misconfiguration
+D. Vulnerable and outdated components",A. Injection,"Input mixed into a query can change its meaning. That is injection, and parameterised queries prevent it.",,,
+application-security-mc-2,Application security,L1,What is the best fix for SQL injection?,"A. Hiding error messages
+B. Parameterised queries
+C. Longer passwords
+D. A bigger server",B. Parameterised queries,"Parameterised queries send data separately from the SQL, so input is never run as code. Hiding errors only hides the symptom.",,,
+application-security-mc-3,Application security,L1,What does a Content Security Policy header help prevent?,"A. SQL injection
+B. Slow page loads
+C. Cross-site scripting, by limiting where scripts can load from
+D. Weak passwords","C. Cross-site scripting, by limiting where scripts can load from","A CSP tells the browser which sources may run scripts, so injected scripts are blocked even if output encoding is missed.",,,
+application-security-mc-4,Application security,L1,A user changes /orders/1043 to /orders/1044 in the URL and sees someone else's order. What kind of flaw is this?,"A. Cross-site scripting
+B. Clickjacking
+C. Weak encryption
+D. Broken access control (IDOR)",D. Broken access control (IDOR),The server doesn't check that the order belongs to the signed-in user. Every request must check ownership on the server.,,,
+gst-tds-compliance-mc-1,Indian GST and TDS,L1,Which GST return is the monthly summary return through which tax is paid?,"A. GSTR-1
+B. GSTR-2B
+C. GSTR-3B
+D. GSTR-9",C. GSTR-3B,"GSTR-3B is the summary return in which output tax, input tax credit and the cash payment are reported. GSTR-1 lists outward supplies and GSTR-9 is the annual return.",,,
+gst-tds-compliance-mc-2,Indian GST and TDS,L1,A company in Maharashtra sells goods to a customer in Karnataka. Which tax applies?,"A. CGST and SGST
+B. IGST
+C. Only SGST of Karnataka
+D. No GST, as it is an export",B. IGST,"A supply between two states is an inter-state supply, so IGST is charged. CGST and SGST apply to supplies within one state.",,,
+gst-tds-compliance-mc-3,Indian GST and TDS,L1,Under which section is TDS deducted on payments to a contractor for carrying out work?,"A. 194J
+B. 194I
+C. 194A
+D. 194C",D. 194C,"Section 194C covers payments to contractors and sub-contractors for work. 194J is professional or technical fees, 194I rent and 194A interest.",,,
+gst-tds-compliance-mc-4,Indian GST and TDS,L1,By when must TDS deducted in a month (other than March) be deposited with the government?,"A. The 7th of the next month
+B. The 15th of the next month
+C. The end of the quarter
+D. The 20th of the next month",A. The 7th of the next month,TDS deducted in any month other than March is due by the 7th of the following month; for March it is due by 30 April.,,,
+financial-accounting-mc-1,Financial accounting,L1,"Under Ind AS 2, inventory is valued at:","A. Market price
+B. The lower of cost and net realisable value
+C. Cost always
+D. The higher of cost and net realisable value",B. The lower of cost and net realisable value,"Ind AS 2 values inventories at the lower of cost and net realisable value, so expected losses are recognised early.",,,
+financial-accounting-mc-2,Financial accounting,L1,"Rent of ₹40,000 for March is unpaid on 31 March. Which entry is passed?","A. Debit rent payable, credit rent
+B. Debit prepaid rent, credit bank
+C. Debit rent expense, credit rent payable
+D. No entry until payment","C. Debit rent expense, credit rent payable","Under accrual accounting the March expense is booked in March with a liability for the unpaid amount: debit rent expense, credit rent payable (outstanding expenses).",,,
+financial-accounting-mc-3,Financial accounting,L1,"Which schedule of the Companies Act, 2013 sets the format of a company's balance sheet and profit and loss statement?","A. Schedule II
+B. Schedule VII
+C. Schedule V
+D. Schedule III",D. Schedule III,Schedule III prescribes the format of financial statements. Schedule II covers useful lives for depreciation and Schedule VII lists CSR activities.,,,
+financial-accounting-mc-4,Financial accounting,L1,"A bad debt of ₹25,000 is written off against an existing provision for doubtful debts. What is the effect on profit this year?","A. No effect on profit
+B. Profit falls by ₹25,000
+C. Profit rises by ₹25,000
+D. Profit falls by ₹50,000",A. No effect on profit,"The loss was charged to profit when the provision was made. Writing the debt off against it reduces both the debtor and the provision, with no new charge.",,,
+account-reconciliations-mc-1,Ledger and account reconciliations,L1,"In a bank reconciliation, a cheque issued to a vendor but not yet presented to the bank:","A. Is deducted from the bank balance to reach the book balance
+B. Is added to the bank balance to reach the book balance
+C. Is written off
+D. Needs no adjustment",A. Is deducted from the bank balance to reach the book balance,"Books already show the payment but the bank does not. Starting from the bank balance, you deduct unpresented cheques to arrive at the book balance.",,,
+account-reconciliations-mc-2,Ledger and account reconciliations,L1,Bank charges of ₹500 appear on the bank statement but not in the books. What is the right action?,"A. Ask the bank to reverse them
+B. Leave them as a reconciling item every month
+C. Book them as an expense in the books
+D. Add them to the next deposit",C. Book them as an expense in the books,"Bank charges are genuine expenses the books don't have yet, so they are booked; only timing differences should stay as reconciling items.",,,
+account-reconciliations-mc-3,Ledger and account reconciliations,L1,Which statement lists the TDS deducted against a taxpayer's PAN by deductors?,"A. Form 16
+B. Form 26AS
+C. GSTR-2B
+D. Form 15G",B. Form 26AS,"Form 26AS (with the AIS) shows tax deducted and deposited against a PAN, so it is used to reconcile TDS receivable in the books.",,,
+account-reconciliations-mc-4,Ledger and account reconciliations,L1,An invoice appears in GSTR-2B but has not been booked. What is the most likely reason to check first?,"A. The GST rate changed
+B. The vendor filed late
+C. The bank rejected the payment
+D. The goods or the invoice haven't reached accounts yet",D. The goods or the invoice haven't reached accounts yet,"If the vendor has reported it, the usual gap is on your side: goods or the bill not received or not yet passed to accounts, so check with stores and the buyer first.",,,
+cost-records-audit-compliance-mc-1,Cost records and cost audit compliance,L1,Which form does a company use to file the cost audit report with the central government?,"A. CRA-1
+B. CRA-2
+C. CRA-3
+D. CRA-4",D. CRA-4,"CRA-4 is the company's filing of the cost audit report. CRA-1 is the format of cost records, CRA-2 intimates the auditor's appointment and CRA-3 is the auditor's report.",,,
+cost-records-audit-compliance-mc-2,Cost records and cost audit compliance,L1,Who can be appointed as a company's cost auditor?,"A. A chartered accountant in practice
+B. A cost accountant in practice
+C. The company's own cost accountant
+D. Any member of the board",B. A cost accountant in practice,Section 148 requires the cost auditor to be a cost accountant in practice; an employee of the company cannot audit its own cost records.,,,
+cost-records-audit-compliance-mc-3,Cost records and cost audit compliance,L1,Who issues the Cost Accounting Standards followed in cost records and cost audit in India?,"A. The Institute of Cost Accountants of India
+B. SEBI
+C. The Ministry of Finance
+D. ICAI",A. The Institute of Cost Accountants of India,The Cost Accounting Standards are issued by the Institute of Cost Accountants of India (ICMAI) and apply to cost statements under the rules.,,,
+cost-records-audit-compliance-mc-4,Cost records and cost audit compliance,L1,"Which section of the Companies Act, 2013 empowers the government to require cost records and cost audit?","A. Section 135
+B. Section 143
+C. Section 148
+D. Section 186",C. Section 148,"Section 148 deals with cost records and cost audit. Section 135 is CSR, 143 the statutory auditor's powers and 186 loans and investments.",,,
+fpa-variance-reporting-mc-1,Variance analysis and management reporting,L1,"Standard price ₹50 a kg, actual price ₹48 a kg, actual quantity 1,000 kg. What is the material price variance?","A. ₹2,000 adverse
+B. ₹2,000 favourable
+C. ₹48,000 favourable
+D. ₹50,000 adverse","B. ₹2,000 favourable","(Standard price minus actual price) times actual quantity = (50 − 48) × 1,000 = ₹2,000, favourable because the material cost less than standard.",,,
+fpa-variance-reporting-mc-2,Variance analysis and management reporting,L1,Actual sales volume is above budget but revenue is below budget. Which variance most likely explains it?,"A. A favourable volume variance only
+B. A labour efficiency variance
+C. An adverse price or mix variance
+D. A fixed overhead variance",C. An adverse price or mix variance,"More units with less revenue means lower prices or a shift to cheaper products, so the price or mix variance is adverse and larger than the volume gain.",,,
+fpa-variance-reporting-mc-3,Variance analysis and management reporting,L1,Why do analysts compare actual costs with a flexed budget rather than the original budget?,"A. To remove the effect of volume and see spending and efficiency
+B. Because the original budget is never approved
+C. To make variances look smaller
+D. Because fixed costs are excluded from reports",A. To remove the effect of volume and see spending and efficiency,"Flexing the budget to actual volume separates the volume effect, so cost variances show spending and efficiency only.",,,
+fpa-variance-reporting-mc-4,Variance analysis and management reporting,L1,A labour efficiency variance is adverse. What does it mean?,"A. Wage rates were higher than standard
+B. Fewer units were sold
+C. Overheads were under-absorbed
+D. More hours were used than standard for the output",D. More hours were used than standard for the output,"The efficiency variance compares standard hours for the actual output with actual hours worked, valued at the standard rate; adverse means more hours were used.",,,
+employee-onboarding-exits-mc-1,Employee onboarding and exit formalities,L1,Which form does a new employee fill to declare past PF membership when joining?,"A. Form 16
+B. Form 11
+C. Form 12BB
+D. Form 19",B. Form 11,"Form 11 is the EPF declaration on joining, recording past membership and UAN. Form 19 is for PF withdrawal and Form 12BB for investment declarations.",,,
+employee-onboarding-exits-mc-2,Employee onboarding and exit formalities,L1,"Under the Payment of Gratuity Act, how many days' wages are paid for each completed year of service?","A. 15 days
+B. 26 days
+C. 30 days
+D. 10 days",A. 15 days,"Gratuity is 15 days' last drawn wages (basic plus DA) for each completed year of service, using 26 working days a month.",,,
+employee-onboarding-exits-mc-3,Employee onboarding and exit formalities,L1,What is the usual minimum continuous service for gratuity on resignation?,"A. One year
+B. Three years
+C. Five years
+D. Ten years",C. Five years,Gratuity on resignation needs five years of continuous service; death or disablement removes the condition.,,,
+employee-onboarding-exits-mc-4,Employee onboarding and exit formalities,L1,Which is NOT usually part of a full and final settlement?,"A. Leave encashment
+B. Unpaid salary for days worked
+C. Recovery of advances
+D. The next year's increment",D. The next year's increment,"F&F settles what is due up to the last day: salary, leave encashment, bonus and gratuity, less recoveries. A future increment is not owed.",,,
+3d-cad-modelling-mc-1,"3D CAD modelling (SolidWorks, Creo, CATIA, NX)",L1,"In parametric CAD, why are fillets usually added near the end of the feature tree?","A. They cannot be edited later
+B. They make the file smaller
+C. Later features would otherwise reference fillet edges and break more easily
+D. The software does not allow early fillets",C. Later features would otherwise reference fillet edges and break more easily,"Fillet edges change when geometry changes, so features that reference them break. Adding fillets last keeps the model robust.",,,
+3d-cad-modelling-mc-2,"3D CAD modelling (SolidWorks, Creo, CATIA, NX)",L1,Which assembly check finds parts occupying the same space?,"A. Interference detection
+B. Mass properties
+C. Draft analysis
+D. Section view",A. Interference detection,Interference detection reports volumes where parts overlap. Draft analysis checks mould draft and mass properties weigh the model.,,,
+3d-cad-modelling-mc-3,"3D CAD modelling (SolidWorks, Creo, CATIA, NX)",L1,Why is a draft angle added to the walls of a casting or moulded part?,"A. To reduce material cost
+B. To improve the surface finish only
+C. To meet a drawing standard
+D. So the part can be removed from the mould or pattern",D. So the part can be removed from the mould or pattern,Draft tapers the walls so the pattern or part comes out of the mould without damage.,,,
+3d-cad-modelling-mc-4,"3D CAD modelling (SolidWorks, Creo, CATIA, NX)",L1,"In sheet metal design, what does the K-factor describe?","A. The thickness of the sheet
+B. Where the neutral axis lies within the thickness during bending
+C. The bend angle
+D. The material's tensile strength",B. Where the neutral axis lies within the thickness during bending,"The K-factor is the ratio of the neutral axis position to the thickness, used to work out bend allowance and the flat length.",,,
+autocad-2d-drafting-mc-1,AutoCAD 2D drafting,L1,"Which AutoCAD command removes unused layers, blocks and styles from a drawing?","A. AUDIT
+B. PURGE
+C. OVERKILL
+D. RECOVER",B. PURGE,"PURGE deletes unused named objects. AUDIT checks for errors, OVERKILL removes duplicate lines and RECOVER repairs a damaged file.",,,
+autocad-2d-drafting-mc-2,AutoCAD 2D drafting,L1,In which space should the geometry of a part normally be drawn?,"A. Model space, at full size
+B. Paper space, at print scale
+C. Inside a viewport, scaled down
+D. In a block editor only","A. Model space, at full size",Geometry is drawn at full size in model space; paper space layouts and viewports set the print scale.,,,
+autocad-2d-drafting-mc-3,AutoCAD 2D drafting,L1,"In first-angle projection, where is the top view (plan) placed?","A. Above the front view
+B. To the right of the front view
+C. Below the front view
+D. Anywhere on the sheet",C. Below the front view,"In first angle, used in India under SP 46, the plan goes below the front view; in third angle it goes above.",,,
+autocad-2d-drafting-mc-4,AutoCAD 2D drafting,L1,Which object snap helps you start a line exactly at the middle of another line?,"A. Endpoint
+B. Perpendicular
+C. Nearest
+D. Midpoint",D. Midpoint,The Midpoint snap picks the exact middle of a line or arc segment.,,,
+engineering-drawing-reading-mc-1,Reading engineering drawings and tolerances (GD&T),L1,What does the GD&T symbol of a single straight-edged parallelogram (a flat rhombus) mean?,"A. Flatness
+B. Parallelism
+C. Profile of a surface
+D. Position",A. Flatness,"The parallelogram is flatness, a form tolerance needing no datum. Parallelism is two parallel lines and position a circle with a cross.",,,
+engineering-drawing-reading-mc-2,Reading engineering drawings and tolerances (GD&T),L1,"In a hole-basis system such as H7/g6, what is constant?","A. The shaft's tolerance
+B. The fit type
+C. The hole's lower limit equals the basic size
+D. The surface finish",C. The hole's lower limit equals the basic size,"In the hole-basis system the hole's lower deviation is zero (H), so the hole's minimum equals the basic size and the shaft is varied to get the fit.",,,
+engineering-drawing-reading-mc-3,Reading engineering drawings and tolerances (GD&T),L1,A dimension reads 25 ± 0.05. Which measured size is out of tolerance?,"A. 25.04
+B. 24.96
+C. 25.05
+D. 25.06",D. 25.06,The limits are 24.95 to 25.05. 25.06 is above the upper limit; 25.05 sits on the limit and is accepted.,,,
+engineering-drawing-reading-mc-4,Reading engineering drawings and tolerances (GD&T),L1,What does MMC (maximum material condition) mean for a hole?,"A. Its largest permitted size
+B. Its smallest permitted size
+C. Its nominal size
+D. Its size after finishing",B. Its smallest permitted size,"At MMC a feature holds the most material: for a hole that is its smallest size, for a shaft its largest.",,,
+dimensional-inspection-instruments-mc-1,Dimensional inspection with measuring instruments,L1,A vernier caliper has a main scale division of 1 mm and 50 vernier divisions spanning 49 mm. What is its least count?,"A. 0.1 mm
+B. 0.01 mm
+C. 0.05 mm
+D. 0.02 mm",D. 0.02 mm,Least count = 1 main division − 1 vernier division = 1 − 49/50 = 0.02 mm.,,,
+dimensional-inspection-instruments-mc-2,Dimensional inspection with measuring instruments,L1,A micrometer shows +0.02 mm when its faces are closed. A part reads 12.48 mm. What is the true size?,"A. 12.46 mm
+B. 12.50 mm
+C. 12.48 mm
+D. 12.44 mm",A. 12.46 mm,A positive zero error is subtracted: 12.48 − 0.02 = 12.46 mm.,,,
+dimensional-inspection-instruments-mc-3,Dimensional inspection with measuring instruments,L1,What is the job of the ratchet on a micrometer?,"A. To lock the spindle for storage
+B. To apply the same measuring force each time
+C. To move the spindle faster
+D. To set the zero",B. To apply the same measuring force each time,"The ratchet slips at a set force, so every reading uses the same pressure and operators get the same result.",,,
+dimensional-inspection-instruments-mc-4,Dimensional inspection with measuring instruments,L1,Calibration of measuring instruments in India is usually done by labs accredited by:,"A. BIS
+B. ARAI
+C. NABL
+D. CPCB",C. NABL,"NABL accredits testing and calibration labs, giving traceability to national standards; BIS sets standards and ARAI tests vehicles.",,,
+civil-drawing-reading-mc-1,Reading structural and architectural drawings,L1,"On a structural drawing, 'M25' in the notes refers to:","A. The steel grade
+B. The cement brand
+C. Concrete with a characteristic strength of 25 N/mm²
+D. A 25 mm cover",C. Concrete with a characteristic strength of 25 N/mm²,"Under IS 456, M25 is concrete with a characteristic compressive strength of 25 N/mm² at 28 days.",,,
+civil-drawing-reading-mc-2,Reading structural and architectural drawings,L1,Which Indian standard is the main code for plain and reinforced concrete?,"A. IS 456
+B. IS 800
+C. IS 1893
+D. IS 875",A. IS 456,"IS 456 covers plain and reinforced concrete. IS 800 is structural steel, IS 1893 earthquake design and IS 875 loads.",,,
+civil-drawing-reading-mc-3,Reading structural and architectural drawings,L1,'10 # @ 150 c/c' on a slab drawing means:,"A. 10 bars spaced 150 mm apart
+B. Bars at 10 mm cover with 150 mm laps
+C. Ten bars of 150 mm length
+D. 10 mm diameter bars at 150 mm centre to centre",D. 10 mm diameter bars at 150 mm centre to centre,It reads as 10 mm diameter bars placed at 150 mm centre-to-centre spacing.,,,
+civil-drawing-reading-mc-4,Reading structural and architectural drawings,L1,What is shown by an RL (reduced level) on a drawing?,"A. The length of a member
+B. The height of a point relative to a benchmark
+C. The reinforcement location
+D. The road level only",B. The height of a point relative to a benchmark,"A reduced level gives the height of a point above or below a reference benchmark, used to set heights on site.",,,
+electrical-machines-transformers-mc-1,Electrical machines and transformers,L1,A 4-pole induction motor runs on a 50 Hz supply. What is its synchronous speed?,"A. 3000 rpm
+B. 1500 rpm
+C. 1000 rpm
+D. 750 rpm",B. 1500 rpm,Synchronous speed = 120 f / P = 120 × 50 / 4 = 1500 rpm; the rotor runs slightly slower.,,,
+electrical-machines-transformers-mc-2,Electrical machines and transformers,L1,Which transformer test gives the core (iron) losses?,"A. Short-circuit test
+B. Insulation resistance test
+C. Open-circuit test
+D. Polarity test",C. Open-circuit test,The open-circuit test at rated voltage on one winding draws mainly core loss; the short-circuit test gives copper loss.,,,
+electrical-machines-transformers-mc-3,Electrical machines and transformers,L1,Why is star-delta starting used for induction motors?,"A. To cut the starting current to about one third
+B. To increase starting torque
+C. To reverse the motor
+D. To improve the power factor at full load",A. To cut the starting current to about one third,"Starting in star puts 1/√3 of line voltage on each winding, cutting starting current and torque to about one third of direct-on-line.",,,
+electrical-machines-transformers-mc-4,Electrical machines and transformers,L1,A transformer's efficiency is highest when:,"A. It runs at no load
+B. It runs above rated load
+C. Core loss is zero
+D. Copper loss equals core loss",D. Copper loss equals core loss,Efficiency peaks at the load where variable copper loss equals the constant core loss.,,,
+hydraulics-pneumatics-mc-1,Hydraulic and pneumatic systems,L1,"In a hydraulic system, what sets the maximum system pressure?","A. The pump size
+B. The relief valve
+C. The cylinder bore
+D. The reservoir size",B. The relief valve,"The pump delivers flow; pressure builds until the relief valve opens, so the relief setting caps system pressure.",,,
+hydraulics-pneumatics-mc-2,Hydraulic and pneumatic systems,L1,A hydraulic cylinder has a bore area of 50 cm² and the system pressure is 100 bar. What force can it give (ignoring losses)?,"A. 5 kN
+B. 500 N
+C. 50 kN
+D. 5000 kN",C. 50 kN,"100 bar = 10 N/mm²; 50 cm² = 5000 mm². Force = 10 × 5000 = 50,000 N = 50 kN.",,,
+hydraulics-pneumatics-mc-3,Hydraulic and pneumatic systems,L1,What does an FRL unit do in a pneumatic line?,"A. Filters, regulates pressure and lubricates the air
+B. Fills, releases and locks the cylinder
+C. Controls flow, reverses and limits stroke
+D. Measures flow rate and leakage","A. Filters, regulates pressure and lubricates the air","FRL stands for filter, regulator and lubricator, which prepare compressed air before it reaches valves and cylinders.",,,
+hydraulics-pneumatics-mc-4,Hydraulic and pneumatic systems,L1,Cylinder speed in a hydraulic circuit is mainly controlled by:,"A. Pressure
+B. Oil colour
+C. The relief valve setting
+D. Flow rate",D. Flow rate,"Speed depends on flow divided by area, so flow control valves set it; pressure sets the force.",,,
+design-fmea-mc-1,Design FMEA,L1,"In an FMEA, which rating cannot normally be reduced without changing the design or function?","A. Occurrence
+B. Detection
+C. Severity
+D. Action priority",C. Severity,Severity is about the effect of the failure; it changes only if the design removes or changes that effect. Better controls lower occurrence or detection.,,,
+design-fmea-mc-2,Design FMEA,L1,What is the RPN in a traditional FMEA?,"A. Severity × Occurrence × Detection
+B. Severity + Occurrence + Detection
+C. Severity × Occurrence
+D. The highest of the three ratings",A. Severity × Occurrence × Detection,"RPN is the product of severity, occurrence and detection, each usually rated 1 to 10.",,,
+design-fmea-mc-3,Design FMEA,L1,A design verification test that finds a weakness before release mainly improves which rating?,"A. Severity
+B. Occurrence
+C. Customer rating
+D. Detection",D. Detection,Detection rates how well current controls find the cause or mode before release; a stronger verification test lowers it.,,,
+design-fmea-mc-4,Design FMEA,L1,The AIAG-VDA FMEA handbook replaces RPN ranking with:,"A. Failure rate
+B. Action Priority
+C. Risk matrix by cost
+D. Pareto ranking",B. Action Priority,"AIAG-VDA uses Action Priority (high, medium, low) built from severity, occurrence and detection.",,,
+cae-test-correlation-mc-1,Simulation-to-test correlation,L1,Which measure is commonly used to compare test and simulation mode shapes?,"A. RMS error
+B. Modal Assurance Criterion (MAC)
+C. Factor of safety
+D. Damping ratio",B. Modal Assurance Criterion (MAC),MAC compares two mode shape vectors; a value near 1 means the shapes match.,,,
+cae-test-correlation-mc-2,Simulation-to-test correlation,L1,A model's natural frequencies are all higher than test. Which is a likely cause?,"A. The model is too stiff, such as joints modelled as fully bonded
+B. The model is too heavy
+C. The test used too few sensors
+D. The material density is too high in the model","A. The model is too stiff, such as joints modelled as fully bonded",Higher frequencies mean too much stiffness or too little mass; bonded joints that really slip are a common reason.,,,
+cae-test-correlation-mc-3,Simulation-to-test correlation,L1,Strain gauges measure strain:,"A. Over the whole part
+B. Only in the direction normal to the surface
+C. In every direction at once
+D. At a point, along the gauge's direction","D. At a point, along the gauge's direction",A single gauge reads surface strain at its location along its grid direction; rosettes are needed for full surface strain.,,,
+cae-test-correlation-mc-4,Simulation-to-test correlation,L1,Why should the test rig's supports be modelled in the simulation?,"A. They reduce mesh size
+B. They only matter for thermal tests
+C. They change stiffness and therefore results
+D. Standards require it",C. They change stiffness and therefore results,"Real fixtures are not perfectly rigid or free; their stiffness changes stresses and frequencies, so they are part of the comparison.",,,
+matlab-simulink-mc-1,MATLAB and Simulink,L1,Which MATLAB data type is best suited to time-stamped test signals that need resampling?,"A. cell array
+B. struct
+C. timetable
+D. char array",C. timetable,A timetable keeps rows tied to time stamps and supports retime and synchronize for resampling and alignment.,,,
+matlab-simulink-mc-2,MATLAB and Simulink,L1,"In Simulink, which solver type is required for most code generation targets?","A. Fixed-step
+B. Variable-step
+C. Stiff variable-step only
+D. No solver",A. Fixed-step,"Embedded and real-time targets run at a fixed rate, so models for code generation use a fixed-step solver.",,,
+matlab-simulink-mc-3,MATLAB and Simulink,L1,Stateflow is mainly used to model:,"A. Finite element meshes
+B. PCB layouts
+C. Frequency spectra
+D. State machines and mode logic",D. State machines and mode logic,"Stateflow models states, transitions and events, as in mode managers and fault handling.",,,
+matlab-simulink-mc-4,MATLAB and Simulink,L1,"In HIL testing, what runs on the real-time simulator?","A. The production ECU software
+B. The plant model of the vehicle or system
+C. The test report generator
+D. The requirements database",B. The plant model of the vehicle or system,"In HIL the real ECU is connected to a real-time simulator running the plant model, so the ECU behaves as if in the vehicle.",,,
+people-management-mc-1,People management,L1,A team member's performance has dropped suddenly after years of good work. What is the best first step?,"A. Start a formal warning
+B. Have a private conversation to understand what changed
+C. Move them to another team
+D. Reduce their responsibilities without telling them",B. Have a private conversation to understand what changed,"A sudden drop in a good performer usually has a cause; a private, open conversation finds it before any formal step.",,,
+people-management-mc-2,People management,L1,Which goal is best written?,"A. Improve customer service
+B. Work harder on collections
+C. Reduce average first response time from 4 hours to 2 hours by 31 March
+D. Be more proactive",C. Reduce average first response time from 4 hours to 2 hours by 31 March,"It is specific, measurable and time-bound, so both the manager and the person know when it is met.",,,
+people-management-mc-3,People management,L1,What does delegation mean for a team lead?,"A. Handing over a task with the authority and support to complete it, while staying accountable
+B. Giving away tasks you don't like
+C. Assigning work without follow-up
+D. Asking HR to manage a task","A. Handing over a task with the authority and support to complete it, while staying accountable","Delegation passes the task and authority, with clear outcomes and check-ins; the lead still answers for the result.",,,
+people-management-mc-4,People management,L1,Feedback works best when it is:,"A. Saved for the annual appraisal
+B. Given in front of the team
+C. General, so it isn't personal
+D. Specific, timely and about behaviour","D. Specific, timely and about behaviour","Specific, timely feedback on behaviour and its impact can be acted on; delayed or general feedback cannot.",,,
+commercial-negotiation-mc-1,"Commercial negotiation (terms, margins, contracts)",L1,What does BATNA stand for in negotiation?,"A. Best agreement to negotiate again
+B. Basic alternative terms and new agreements
+C. Best alternative to a negotiated agreement
+D. Bottom amount to accept",C. Best alternative to a negotiated agreement,BATNA is your best option if this negotiation fails; knowing it sets your walk-away point.,,,
+commercial-negotiation-mc-2,"Commercial negotiation (terms, margins, contracts)",L1,A buyer asks for a lower price. Which response protects margin best?,"A. Ask what they can give in return, such as volume or faster payment
+B. Agree to keep the relationship
+C. Refuse to discuss price
+D. Offer the lowest price at once to save time","A. Ask what they can give in return, such as volume or faster payment",Trading a concession for something of value keeps the deal balanced and protects margin.,,,
+commercial-negotiation-mc-3,"Commercial negotiation (terms, margins, contracts)",L1,Moving payment terms from 30 to 90 days on the same price mainly affects the seller's:,"A. Gross margin
+B. Product quality
+C. Delivery schedule
+D. Working capital and cost of finance",D. Working capital and cost of finance,"Longer credit means the seller funds the customer for longer, raising working capital needs and interest cost.",,,
+commercial-negotiation-mc-4,"Commercial negotiation (terms, margins, contracts)",L1,'Anchoring' in a negotiation means:,"A. Refusing to move
+B. Setting a first number that shapes the rest of the talks
+C. Agreeing quickly
+D. Bringing a senior person",B. Setting a first number that shapes the rest of the talks,"The first figure on the table tends to pull the final outcome toward it, so a well-prepared opening helps.",,,
+requirements-gathering-mc-1,Requirements gathering,L1,Which of these is a non-functional requirement?,"A. The system shall calculate GST on each invoice
+B. The system shall let a manager approve leave
+C. Pages shall load within 3 seconds for 95% of requests
+D. The system shall email a payslip",C. Pages shall load within 3 seconds for 95% of requests,"Performance targets describe how well the system works, so they are non-functional; the others describe what it does.",,,
+requirements-gathering-mc-2,Requirements gathering,L1,What is the main purpose of a requirements traceability matrix?,"A. To link each requirement to its design, build and test cases
+B. To list project costs
+C. To record meeting attendance
+D. To track team leave","A. To link each requirement to its design, build and test cases","Traceability shows every requirement is designed, built and tested, and what a change affects.",,,
+requirements-gathering-mc-3,Requirements gathering,L1,"In a fit-gap analysis, a 'gap' is:","A. A requirement the standard product meets
+B. A missing meeting
+C. A delay in the plan
+D. A requirement the standard product doesn't meet without change",D. A requirement the standard product doesn't meet without change,"A gap needs configuration, a workaround or custom development, so it is estimated and decided separately.",,,
+requirements-gathering-mc-4,Requirements gathering,L1,Which acceptance criterion is testable?,"A. The report should be user-friendly
+B. The report shows totals by state and matches the GSTR-1 summary to the rupee
+C. The report should be fast
+D. The report should look modern",B. The report shows totals by state and matches the GSTR-1 summary to the rupee,It states a checkable outcome; the others are opinions that testers cannot pass or fail.,,,
+customer-query-resolution-mc-1,Customer query and complaint resolution,L1,What is the first thing to do when a customer calls with an angry complaint?,"A. Explain the policy straight away
+B. Transfer to a supervisor
+C. Listen without interrupting and acknowledge the problem
+D. Offer compensation",C. Listen without interrupting and acknowledge the problem,Listening and acknowledging calms the customer and gives you the facts you need before solving anything.,,,
+customer-query-resolution-mc-2,Customer query and complaint resolution,L1,First contact resolution (FCR) measures:,"A. Cases solved in the first interaction without follow-up
+B. The time to answer a call
+C. Customer satisfaction scores
+D. Calls handled per hour",A. Cases solved in the first interaction without follow-up,"FCR is the share of queries resolved fully on the first contact, a strong driver of satisfaction.",,,
+customer-query-resolution-mc-3,Customer query and complaint resolution,L1,A bank customer in India is not satisfied with the bank's reply to a complaint within 30 days. Where can they go next?,"A. SEBI
+B. The consumer helpline only
+C. The bank's auditor
+D. The RBI Integrated Ombudsman",D. The RBI Integrated Ombudsman,"Under the RBI Integrated Ombudsman Scheme, a customer can complain if the bank rejects the complaint or doesn't reply within 30 days.",,,
+customer-query-resolution-mc-4,Customer query and complaint resolution,L1,Which promise to a customer is best?,"A. We will look into it soon
+B. I will call you back by 4 pm tomorrow with the status
+C. Someone will contact you
+D. It should be fixed shortly",B. I will call you back by 4 pm tomorrow with the status,A named owner and a specific time builds trust and can be checked; vague promises lead to repeat calls.,,,
+crm-tools-mc-1,CRM tools,L1,"In a CRM, a 'lead' usually becomes an 'opportunity' when:","A. It is created
+B. The customer pays
+C. A need, budget or buying interest has been confirmed (qualified)
+D. It is assigned to a manager","C. A need, budget or buying interest has been confirmed (qualified)",Qualification turns a lead into an opportunity worth tracking in the pipeline and forecast.,,,
+crm-tools-mc-2,CRM tools,L1,What is a weighted pipeline?,"A. Deal values multiplied by the probability of their stage
+B. The number of deals per rep
+C. Only deals above ₹10 lakh
+D. Deals sorted by age",A. Deal values multiplied by the probability of their stage,Weighting each deal by stage probability gives a more realistic forecast than the raw total.,,,
+crm-tools-mc-3,CRM tools,L1,Which practice keeps CRM data most reliable?,"A. Updating it at the end of the quarter
+B. Leaving notes in personal email
+C. Letting managers enter everything
+D. Logging activity and next steps the same day",D. Logging activity and next steps the same day,"Same-day updates keep the record current, so forecasts, handovers and reports can be trusted.",,,
+crm-tools-mc-4,CRM tools,L1,CTI integration between a contact centre and a CRM lets agents:,"A. Make video calls only
+B. See the caller's record as the call arrives
+C. Avoid logging calls
+D. Skip authentication",B. See the caller's record as the call arrives,"Computer telephony integration pops the caller's CRM record on screen, so the agent starts with context.",,,
+technical-leadership-mc-1,Technical leadership,L1,What is an architecture decision record (ADR)?,"A. A short document of a decision, its context, options and consequences
+B. A diagram of all services
+C. A list of bugs
+D. A sprint report","A. A short document of a decision, its context, options and consequences","An ADR records why a decision was made, so later engineers understand it and can revisit it knowingly.",,,
+technical-leadership-mc-2,Technical leadership,L1,A blameless postmortem focuses on:,"A. Finding who caused the incident
+B. Writing the incident off as bad luck
+C. Punishing late responders
+D. What in the system and process allowed the failure and how to prevent it",D. What in the system and process allowed the failure and how to prevent it,"Blameless reviews look at causes and fixes, which encourages honest reporting and real prevention.",,,
+technical-leadership-mc-3,Technical leadership,L1,Which is the best way to keep code quality consistent across a team?,"A. Rely on each engineer's judgement
+B. Have the lead rewrite weak code
+C. Automate checks in CI and keep reviews focused on design
+D. Ban new libraries",C. Automate checks in CI and keep reviews focused on design,"Automated linting, tests and checks catch the routine issues; reviews can then focus on design and clarity.",,,
+technical-leadership-mc-4,Technical leadership,L1,Technical debt is best described as:,"A. Money owed to vendors
+B. Shortcuts in code or design that make future change slower or riskier
+C. Unpaid cloud bills
+D. Any old code",B. Shortcuts in code or design that make future change slower or riskier,"Debt is the extra future cost from shortcuts taken now; like interest, it grows if not paid down.",,,
+agile-scrum-mc-1,Agile and Scrum,L1,Who is responsible for ordering the product backlog in Scrum?,"A. The Scrum Master
+B. The development team lead
+C. The project sponsor
+D. The product owner",D. The product owner,The product owner owns the backlog and decides its order to maximise value.,,,
+agile-scrum-mc-2,Agile and Scrum,L1,What is the maximum length of a sprint in Scrum?,"A. One month
+B. Two weeks
+C. Three months
+D. Six weeks",A. One month,The Scrum Guide caps sprints at one month; many teams use one or two weeks.,,,
+agile-scrum-mc-3,Agile and Scrum,L1,What is the purpose of the sprint review?,"A. To assess team members' performance
+B. To inspect the work done with stakeholders and adapt the backlog
+C. To plan the next release date only
+D. To discuss the team's way of working",B. To inspect the work done with stakeholders and adapt the backlog,The review shows the increment to stakeholders and updates the backlog; improving the way of working is the retrospective.,,,
+agile-scrum-mc-4,Agile and Scrum,L1,Velocity in Scrum is:,"A. A target set by management
+B. Hours worked per sprint
+C. The amount of work a team completes per sprint, used for planning
+D. The number of bugs fixed","C. The amount of work a team completes per sprint, used for planning","Velocity is the team's completed points per sprint over time, a planning aid, not a performance target.",,,
+employee-relations-mc-1,Employee relations and grievance handling,L1,"Under the POSH Act, 2013, which body inquires into a sexual harassment complaint at a workplace with 10 or more employees?","A. The HR head alone
+B. The Internal Committee
+C. The labour court
+D. The local police station",B. The Internal Committee,Employers with 10 or more employees must set up an Internal Committee to inquire into complaints under the POSH Act.,,,
+employee-relations-mc-2,Employee relations and grievance handling,L1,"In a domestic enquiry, what document first sets out the allegations against the employee?","A. The charge sheet
+B. The relieving letter
+C. The appointment letter
+D. The full and final statement",A. The charge sheet,"The charge sheet (after or with a show cause notice) states the specific misconduct, so the employee can reply.",,,
+employee-relations-mc-3,Employee relations and grievance handling,L1,Which principle of natural justice says no one should be a judge in their own cause?,"A. Audi alteram partem
+B. Res judicata
+C. Ultra vires
+D. Nemo judex in causa sua",D. Nemo judex in causa sua,Nemo judex in causa sua is the rule against bias; audi alteram partem is the right to be heard.,,,
+employee-relations-mc-4,Employee relations and grievance handling,L1,Model standing orders for a factory mainly set out:,"A. Production targets
+B. Salary bands
+C. Conditions of service such as classification of workers, leave and misconduct
+D. Shareholder rights","C. Conditions of service such as classification of workers, leave and misconduct","Standing orders define service conditions, including misconduct and the disciplinary procedure, for industrial establishments.",,,
+field-sales-meetings-mc-1,Field sales and face-to-face client meetings,L1,What is the main purpose of a beat plan in FMCG field sales?,"A. A fixed route and day for visiting each outlet regularly
+B. A list of products
+C. A pricing sheet
+D. The distributor's invoice",A. A fixed route and day for visiting each outlet regularly,"A beat plan sets which outlets are visited on which day, so every outlet is covered at a regular frequency.",,,
+field-sales-meetings-mc-2,Field sales and face-to-face client meetings,L1,Which question is the best opener for discovering a prospect's needs?,"A. Do you want to buy today?
+B. Are you happy with your supplier?
+C. Can I show you our price list?
+D. What are the biggest problems you face with your current setup?",D. What are the biggest problems you face with your current setup?,Open questions about their problems reveal needs you can address; yes/no questions end the conversation.,,,
+field-sales-meetings-mc-3,Field sales and face-to-face client meetings,L1,Why log visits in the CRM on the same day?,"A. It is required by law
+B. Notes are accurate and the next steps aren't forgotten
+C. It improves the product
+D. It saves fuel",B. Notes are accurate and the next steps aren't forgotten,Details fade quickly; same-day logging keeps notes accurate and follow-ups on time.,,,
+field-sales-meetings-mc-4,Field sales and face-to-face client meetings,L1,"In home loan sales, a DSA is:","A. A government scheme
+B. A type of loan
+C. A direct selling agent who sources customers for the lender
+D. A credit score",C. A direct selling agent who sources customers for the lender,"Direct selling agents bring in loan customers for banks and NBFCs, an important lead source for field sales officers.",,,
+operations-mis-reporting-mc-1,Operations MIS reports,L1,Pendency in an operations MIS means:,"A. Cases closed today
+B. Cases received but not yet completed
+C. Cases rejected
+D. Staff on leave",B. Cases received but not yet completed,"Pendency is the open work not yet completed, usually shown with ageing.",,,
+operations-mis-reporting-mc-2,Operations MIS reports,L1,A team completed 450 of 500 cases within TAT. What is the TAT adherence?,"A. 50%
+B. 95%
+C. 90%
+D. 45%",C. 90%,"450 ÷ 500 = 0.9, so 90% of cases were completed within the turnaround time.",,,
+operations-mis-reporting-mc-3,Operations MIS reports,L1,Why are ageing buckets used in a pendency report?,"A. To show how long cases have been open, so old ones get attention
+B. To calculate salaries
+C. To rank employees
+D. To hide old cases","A. To show how long cases have been open, so old ones get attention",Buckets show where work is piling up and which cases are at risk of breaching TAT.,,,
+operations-mis-reporting-mc-4,Operations MIS reports,L1,Which Excel feature is best for summarising daily case data by team and status?,"A. Conditional formatting
+B. Data validation
+C. Freeze panes
+D. PivotTable",D. PivotTable,"A PivotTable summarises large data by any field, such as team and status, in seconds.",,,
+financial-statement-analysis-mc-1,Financial statement and ratio analysis,L1,A company has current assets of ₹60 lakh and current liabilities of ₹40 lakh. What is its current ratio?,"A. 0.67
+B. 1.5
+C. 2.0
+D. 20",B. 1.5,Current ratio = current assets ÷ current liabilities = 60 ÷ 40 = 1.5.,,,
+financial-statement-analysis-mc-2,Financial statement and ratio analysis,L1,Debt service coverage ratio (DSCR) compares:,"A. Cash available for debt service with the principal and interest due
+B. Debt with equity
+C. Sales with total assets
+D. Interest with revenue",A. Cash available for debt service with the principal and interest due,DSCR measures whether operating cash flow covers the loan repayments and interest due; below 1 means it doesn't.,,,
+financial-statement-analysis-mc-3,Financial statement and ratio analysis,L1,Debtor days rising from 45 to 90 while sales are flat most likely means:,"A. Faster collection
+B. Lower inventory
+C. Better margins
+D. Slower collection from customers",D. Slower collection from customers,"Rising debtor days with flat sales means customers are taking longer to pay, tying up cash.",,,
+financial-statement-analysis-mc-4,Financial statement and ratio analysis,L1,"EBITDA ₹20 crore, interest ₹5 crore. What is the interest coverage on EBITDA?","A. 0.25 times
+B. 15 times
+C. 4 times
+D. 25 times",C. 4 times,Interest coverage = EBITDA ÷ interest = 20 ÷ 5 = 4 times.,,,
+irdai-regulations-mc-1,IRDAI regulations and underwriting guidelines,L1,Who regulates insurance companies in India?,"A. SEBI
+B. RBI
+C. IRDAI
+D. PFRDA",C. IRDAI,The Insurance Regulatory and Development Authority of India regulates insurers and intermediaries. PFRDA regulates pensions.,,,
+irdai-regulations-mc-2,IRDAI regulations and underwriting guidelines,L1,The 'free-look period' lets a policyholder:,"A. Cancel a new policy within a set period and get a refund less permitted deductions
+B. Skip premium payments
+C. Change the nominee only
+D. Claim without documents",A. Cancel a new policy within a set period and get a refund less permitted deductions,"During the free-look period a buyer can return the policy and get the premium back, less proportionate risk premium and certain costs.",,,
+irdai-regulations-mc-3,IRDAI regulations and underwriting guidelines,L1,IRDAI's online portal for insurance complaints is called:,"A. SCORES
+B. CMS
+C. SAMADHAN
+D. Bima Bharosa",D. Bima Bharosa,Bima Bharosa is IRDAI's grievance system. SCORES is SEBI's and CMS is RBI's complaint portal.,,,
+irdai-regulations-mc-4,IRDAI regulations and underwriting guidelines,L1,"Under IRDAI's health insurance rules, after the moratorium period an insurer cannot contest a claim on non-disclosure except for:","A. Pre-existing disease
+B. Proven fraud
+C. Late intimation
+D. Room rent limits",B. Proven fraud,"Once the moratorium period of continuous cover has passed, the policy can't be contested for non-disclosure or misrepresentation, except for established fraud.",,,
+aml-regulations-mc-1,"Indian AML and KYC regulations (PMLA, RBI KYC directions)",L1,Which Act is the main anti-money laundering law in India?,"A. FEMA, 1999
+B. PMLA, 2002
+C. The Companies Act, 2013
+D. The Banking Regulation Act, 1949","B. PMLA, 2002","The Prevention of Money Laundering Act, 2002 and its rules set reporting and KYC duties for banks and other reporting entities.",,,
+aml-regulations-mc-2,"Indian AML and KYC regulations (PMLA, RBI KYC directions)",L1,Suspicious Transaction Reports from Indian banks are filed with:,"A. FIU-IND
+B. SEBI
+C. The Income Tax Department directly
+D. The local police",A. FIU-IND,Reporting entities file STRs and CTRs with the Financial Intelligence Unit-India.,,,
+aml-regulations-mc-3,"Indian AML and KYC regulations (PMLA, RBI KYC directions)",L1,Breaking a large cash deposit into several smaller deposits to avoid reporting is called:,"A. Layering
+B. Integration
+C. Smurfing only when done abroad
+D. Structuring",D. Structuring,Structuring splits transactions to stay under reporting limits; it is itself a red flag.,,,
+aml-regulations-mc-4,"Indian AML and KYC regulations (PMLA, RBI KYC directions)",L1,A Cash Transaction Report covers cash transactions above what amount in a month?,"A. ₹1 lakh
+B. ₹5 lakh
+C. ₹10 lakh
+D. ₹50 lakh",C. ₹10 lakh,"CTRs cover cash transactions above ₹10 lakh, or connected transactions adding up to more than that in a month.",,,
+insurance-pricing-rating-mc-1,Insurance premium rating and loadings,L1,A building worth ₹1 crore is insured for ₹60 lakh. A loss of ₹20 lakh occurs and average applies. What is paid?,"A. ₹20 lakh
+B. ₹12 lakh
+C. ₹6 lakh
+D. ₹60 lakh",B. ₹12 lakh,"Claim = loss × sum insured ÷ value = 20 × 60 ÷ 100 = ₹12 lakh, because the property was under-insured.",,,
+insurance-pricing-rating-mc-2,Insurance premium rating and loadings,L1,A 'loading' in underwriting means:,"A. An extra premium for higher-than-standard risk
+B. A discount for good claims history
+C. The cost of issuing the policy
+D. A refund at renewal",A. An extra premium for higher-than-standard risk,Loadings add premium for features that raise the risk above the standard rate.,,,
+insurance-pricing-rating-mc-3,Insurance premium rating and loadings,L1,A higher deductible on a policy usually leads to:,"A. A higher premium
+B. More small claims
+C. No change
+D. A lower premium",D. A lower premium,"The insured keeps more of each loss, so the insurer's cost and the premium fall.",,,
+insurance-pricing-rating-mc-4,Insurance premium rating and loadings,L1,The incurred claims ratio of a group health policy is:,"A. Premium ÷ claims
+B. Number of claims ÷ members
+C. Claims incurred ÷ premium earned
+D. Claims paid ÷ sum insured",C. Claims incurred ÷ premium earned,It shows what share of premium went to claims; it drives renewal pricing.,,,
+capital-markets-transactions-mc-1,Equity and debt capital markets transactions (ECM/DCM),L1,Which document is filed with SEBI first in an Indian IPO?,"A. The Red Herring Prospectus
+B. The Draft Red Herring Prospectus
+C. The final prospectus
+D. The allotment advice",B. The Draft Red Herring Prospectus,The DRHP is filed with SEBI and the exchanges for observations; the RHP and prospectus come later.,,,
+capital-markets-transactions-mc-2,Equity and debt capital markets transactions (ECM/DCM),L1,A QIP can be offered to:,"A. Qualified institutional buyers only
+B. Retail investors only
+C. Promoters
+D. Employees only",A. Qualified institutional buyers only,A qualified institutions placement is a private placement by a listed company to QIBs only.,,,
+capital-markets-transactions-mc-3,Equity and debt capital markets transactions (ECM/DCM),L1,"In book building, the final issue price is set:","A. By SEBI
+B. Before the issue opens
+C. By the stock exchange alone
+D. Based on bids received within the price band",D. Based on bids received within the price band,Investors bid within a price band and the issuer and bankers fix the price from the demand in the book.,,,
+capital-markets-transactions-mc-4,Equity and debt capital markets transactions (ECM/DCM),L1,"If a company's credit rating improves before its bond issue, the coupon it must offer is likely to be:","A. Higher
+B. Unchanged by law
+C. Lower
+D. Zero",C. Lower,"A better rating means lower credit risk, so investors accept a lower spread and coupon.",,,
+companies-act-compliance-mc-1,Companies Act 2013 compliance,L1,Which form is used to file a company's financial statements with the ROC?,"A. MGT-7
+B. DIR-12
+C. AOC-4
+D. INC-22",C. AOC-4,"AOC-4 files the financial statements. MGT-7 is the annual return, DIR-12 records director changes and INC-22 the registered office.",,,
+companies-act-compliance-mc-2,Companies Act 2013 compliance,L1,"Under section 135, a qualifying company must spend on CSR at least:","A. 2% of average net profits of the last three years
+B. 1% of turnover
+C. 5% of net worth
+D. 2% of last year's revenue",A. 2% of average net profits of the last three years,Section 135 requires 2% of the average net profit of the three preceding years to be spent on CSR.,,,
+companies-act-compliance-mc-3,Companies Act 2013 compliance,L1,The minimum number of directors for a private limited company is:,"A. One
+B. Three
+C. Seven
+D. Two",D. Two,"A private company needs at least two directors, a public company three and a one person company one.",,,
+companies-act-compliance-mc-4,Companies Act 2013 compliance,L1,Within how many days of a director's appointment must DIR-12 be filed?,"A. 7 days
+B. 30 days
+C. 60 days
+D. 180 days",B. 30 days,DIR-12 is filed within 30 days of the appointment or change.,,,
+board-meeting-administration-mc-1,Board and general meeting administration and minutes,L1,"How many board meetings must a company hold in a year under the Companies Act, 2013?","A. Two, with no gap
+B. Four, with no more than 120 days between two meetings
+C. Six
+D. Twelve","B. Four, with no more than 120 days between two meetings",Section 173 requires at least four board meetings a year with no more than 120 days between two consecutive meetings.,,,
+board-meeting-administration-mc-2,Board and general meeting administration and minutes,L1,What is the minimum notice for a board meeting?,"A. Seven days in writing
+B. Twenty-one days
+C. One day
+D. Fourteen days",A. Seven days in writing,"Section 173(3) requires at least seven days' written notice, with shorter notice possible for urgent business under conditions.",,,
+board-meeting-administration-mc-3,Board and general meeting administration and minutes,L1,Board minutes should be prepared and signed within:,"A. 7 days
+B. 90 days
+C. 60 days
+D. 30 days of the meeting",D. 30 days of the meeting,Secretarial Standard 1 requires minutes to be entered within 30 days of the meeting.,,,
+board-meeting-administration-mc-4,Board and general meeting administration and minutes,L1,What notice period applies to an AGM?,"A. 7 days
+B. 14 days
+C. 21 clear days
+D. 30 days",C. 21 clear days,"Section 101 requires at least 21 clear days' notice for a general meeting, unless members agree to shorter notice.",,,
+commercial-contract-drafting-mc-1,Commercial contract drafting,L1,"Under the Indian Contract Act, 1872, an agreement without lawful consideration is generally:","A. Valid
+B. Void
+C. Voidable at the option of either party
+D. Illegal and punishable",B. Void,"Section 25 makes an agreement without consideration void, with narrow exceptions such as natural love and affection in writing.",,,
+commercial-contract-drafting-mc-2,Commercial contract drafting,L1,A typical limitation of liability clause caps a supplier's liability at:,"A. An amount linked to the fees, such as the fees paid in the last 12 months
+B. The customer's annual revenue
+C. No limit
+D. The supplier's share capital","A. An amount linked to the fees, such as the fees paid in the last 12 months",Linking the cap to fees is common; carve-outs keep certain risks uncapped.,,,
+commercial-contract-drafting-mc-3,Commercial contract drafting,L1,Which Act governs arbitration agreements in India?,"A. The Code of Civil Procedure, 1908
+B. The Companies Act, 2013
+C. The Indian Evidence Act
+D. The Arbitration and Conciliation Act, 1996","D. The Arbitration and Conciliation Act, 1996","The Arbitration and Conciliation Act, 1996 governs domestic and international arbitration seated in India.",,,
+commercial-contract-drafting-mc-4,Commercial contract drafting,L1,A 'force majeure' clause mainly deals with:,"A. Payment discounts
+B. Intellectual property ownership
+C. Events beyond the parties' control that prevent performance
+D. Hiring of employees",C. Events beyond the parties' control that prevent performance,Force majeure excuses or suspends performance when listed events such as natural disasters or government action prevent it.,,,
+cause-list-tracking-mc-1,Cause list and hearing tracking,L1,A cause list is:,"A. A list of matters to be heard by a court on a given day
+B. A list of judgments
+C. A register of advocates
+D. A list of court fees",A. A list of matters to be heard by a court on a given day,"Courts publish cause lists showing which matters each bench will hear, with item numbers.",,,
+cause-list-tracking-mc-2,Cause list and hearing tracking,L1,A matter added after the main cause list is published usually appears in:,"A. The weekly gazette
+B. A supplementary cause list
+C. The order sheet
+D. The caveat register",B. A supplementary cause list,"Supplementary lists carry matters added after the regular list, so both must be checked.",,,
+cause-list-tracking-mc-3,Cause list and hearing tracking,L1,Most Indian courts publish cause lists and case status through:,"A. Only notice boards
+B. Newspapers
+C. The eCourts services and the court's own website
+D. Bar council offices",C. The eCourts services and the court's own website,"eCourts services and court websites carry cause lists, case status and orders for most courts.",,,
+cause-list-tracking-mc-4,Cause list and hearing tracking,L1,Where do you find the directions given by the judge at a hearing?,"A. The cause list
+B. The vakalatnama
+C. The court fee receipt
+D. The order or proceedings sheet for that date",D. The order or proceedings sheet for that date,The daily order records what happened and the directions; it is the source for the next steps and deadlines.,,,
+court-efiling-registry-mc-1,Court e-filing and registry work,L1,A vakalatnama is:,"A. A court fee stamp
+B. The document authorising an advocate to act for a party
+C. A list of dates
+D. An affidavit of service",B. The document authorising an advocate to act for a party,"The vakalatnama, signed by the client and accepted by the advocate, lets the advocate appear and act in the case.",,,
+court-efiling-registry-mc-2,Court e-filing and registry work,L1,The Supreme Court and many High Courts in India require e-filed documents to be:,"A. Searchable PDFs, often with bookmarks
+B. Word documents
+C. Scanned images only
+D. Handwritten","A. Searchable PDFs, often with bookmarks","Courts ask for text-searchable PDFs, often bookmarked and in set formats, so they can be read and indexed.",,,
+court-efiling-registry-mc-3,Court e-filing and registry work,L1,A petition filed after the limitation period usually needs:,"A. A fresh vakalatnama
+B. A caveat
+C. A higher court fee
+D. An application for condonation of delay",D. An application for condonation of delay,"A delayed filing needs an application, with reasons, asking the court to condone the delay.",,,
+court-efiling-registry-mc-4,Court e-filing and registry work,L1,What is a caveat in Indian civil procedure?,"A. An appeal
+B. A stay order
+C. A notice asking to be heard before any order is passed against the caveator
+D. A court fee waiver",C. A notice asking to be heard before any order is passed against the caveator,"Under section 148A CPC, a caveator is entitled to notice before the court passes an order in the expected matter.",,,
+collection-agency-oversight-mc-1,Collection agency management,L1,"Under RBI's guidance, recovery agents should normally call borrowers only between:","A. 6 am and 10 pm
+B. 8 am and 7 pm
+C. 9 am and 9 pm
+D. Any time",B. 8 am and 7 pm,RBI directs that recovery agents should not call borrowers before 8 am or after 7 pm.,,,
+collection-agency-oversight-mc-2,Collection agency management,L1,Who is responsible for a recovery agent's conduct towards a borrower?,"A. The lender that engaged the agency
+B. The agent only
+C. The borrower
+D. No one",A. The lender that engaged the agency,RBI holds the bank or NBFC responsible for the actions of the agents it engages.,,,
+collection-agency-oversight-mc-3,Collection agency management,L1,'Roll-back' in collections means:,"A. A loan written off
+B. A customer moving to a later bucket
+C. A refund
+D. A customer moving back to an earlier, less overdue bucket","D. A customer moving back to an earlier, less overdue bucket",Roll-back is when an overdue customer pays enough to move to a lower delinquency bucket.,,,
+collection-agency-oversight-mc-4,Collection agency management,L1,Which is the most useful measure to compare agencies on the same bucket?,"A. Number of agents
+B. Office size
+C. Resolution rate on the cases allocated
+D. Number of calls made",C. Resolution rate on the cases allocated,Resolution on allocated cases measures outcomes; calls and headcount are inputs.,,,
+home-loan-lap-products-mc-1,"Home loan, LAP and balance-transfer products",L1,FOIR in home loan eligibility stands for:,"A. Fixed obligation to income ratio
+B. Fixed own investment ratio
+C. Floating offer interest rate
+D. Final outstanding interest rate",A. Fixed obligation to income ratio,"FOIR compares a customer's monthly EMIs, including the new loan, with income; lenders cap it to keep repayment affordable.",,,
+home-loan-lap-products-mc-2,"Home loan, LAP and balance-transfer products",L1,Interest on a home loan for a self-occupied property can be claimed under the old tax regime under:,"A. Section 80C
+B. Section 80D
+C. Section 10(13A)
+D. Section 24(b)",D. Section 24(b),Section 24(b) allows the interest deduction; principal repayment falls under section 80C.,,,
+home-loan-lap-products-mc-3,"Home loan, LAP and balance-transfer products",L1,"Compared with a home loan, a loan against property usually has:","A. A lower interest rate
+B. Longer tenure and tax benefits
+C. A higher interest rate and lower loan-to-value
+D. No property security",C. A higher interest rate and lower loan-to-value,"LAP is secured by property but used for any purpose, so lenders price it higher and lend a smaller share of value.",,,
+home-loan-lap-products-mc-4,"Home loan, LAP and balance-transfer products",L1,What is a balance transfer in home loans?,"A. Moving salary to another bank
+B. Moving an existing home loan to another lender, usually for a lower rate
+C. Paying a loan in full
+D. Transferring property ownership","B. Moving an existing home loan to another lender, usually for a lower rate","A balance transfer moves the outstanding loan to a new lender, often with a top-up, to cut the interest cost.",,,
+embedded-protocols-mc-1,Embedded communication protocols,L1,How many wires does I2C use for data and clock?,"A. One
+B. Two: SDA and SCL
+C. Four: MOSI, MISO, SCK, CS
+D. Three",B. Two: SDA and SCL,"I2C uses a data line (SDA) and a clock line (SCL), both open-drain with pull-ups.",,,
+embedded-protocols-mc-2,Embedded communication protocols,L1,"In CAN arbitration, which message wins when two nodes start together?","A. The one with the lowest identifier
+B. The one with the highest identifier
+C. The longest message
+D. The first node powered on",A. The one with the lowest identifier,"Dominant bits (0) override recessive ones, so the lower identifier wins arbitration.",,,
+embedded-protocols-mc-3,Embedded communication protocols,L1,What is the maximum data payload in a classic CAN frame?,"A. 64 bytes
+B. 16 bytes
+C. 1 byte
+D. 8 bytes",D. 8 bytes,Classic CAN carries up to 8 bytes of data; CAN FD raises it to 64.,,,
+embedded-protocols-mc-4,Embedded communication protocols,L1,Why are 120 Ω resistors placed at both ends of a CAN bus?,"A. To limit current
+B. To set the node address
+C. To terminate the line and stop reflections
+D. To pull the bus high",C. To terminate the line and stop reflections,Termination matching the cable's impedance at both ends prevents signal reflections.,,,
+parasitic-extraction-mc-1,"Parasitic extraction and post-layout analysis (StarRC, Quantus)",L1,Which tool family is commonly used for parasitic extraction in IC design?,"A. StarRC or Quantus
+B. Spectre or HSPICE
+C. Virtuoso schematic editor
+D. PrimeTime only",A. StarRC or Quantus,StarRC (Synopsys) and Quantus (Cadence) extract parasitic R and C from layout; Spectre and HSPICE simulate circuits.,,,
+parasitic-extraction-mc-2,"Parasitic extraction and post-layout analysis (StarRC, Quantus)",L1,What must pass before parasitic extraction is meaningful?,"A. Timing signoff
+B. LVS
+C. Tape-out
+D. Packaging",B. LVS,"Extraction maps parasitics to schematic nets, so layout must match schematic (LVS clean) first.",,,
+parasitic-extraction-mc-3,"Parasitic extraction and post-layout analysis (StarRC, Quantus)",L1,Coupling capacitance between two long parallel wires increases when:,"A. Spacing increases
+B. Wires are on different layers far apart
+C. They are shorter
+D. Spacing decreases and parallel length increases",D. Spacing decreases and parallel length increases,Coupling grows with parallel run length and falls with spacing.,,,
+parasitic-extraction-mc-4,"Parasitic extraction and post-layout analysis (StarRC, Quantus)",L1,A C-only extraction ignores:,"A. Wire capacitance
+B. Device sizes
+C. Wire resistance
+D. Coupling capacitance",C. Wire resistance,"C-only extraction includes capacitances but not resistances, so IR drop and RC delay are missed.",,,
+ic-spice-simulation-mc-1,"Transistor-level SPICE simulation (Spectre, HSPICE)",L1,Which Spectre analysis is used to find a circuit's frequency response?,"A. Transient
+B. DC sweep
+C. AC analysis
+D. Monte Carlo",C. AC analysis,AC small-signal analysis linearises the circuit around its operating point to give gain and phase versus frequency.,,,
+ic-spice-simulation-mc-2,"Transistor-level SPICE simulation (Spectre, HSPICE)",L1,"For an amplifier MOSFET to give good gain, it usually operates in:","A. Saturation
+B. Cut-off
+C. Triode
+D. Breakdown",A. Saturation,"In saturation the drain current depends mainly on gate voltage, giving high output resistance and gain.",,,
+ic-spice-simulation-mc-3,"Transistor-level SPICE simulation (Spectre, HSPICE)",L1,Monte Carlo simulation in IC design is mainly used to study:,"A. Layout area
+B. Logic timing
+C. Power-up order
+D. The effect of random process and mismatch variation",D. The effect of random process and mismatch variation,Monte Carlo samples statistical models of process and mismatch to show how specs spread across chips.,,,
+ic-spice-simulation-mc-4,"Transistor-level SPICE simulation (Spectre, HSPICE)",L1,The 'SS' process corner means:,"A. Standard supply
+B. Slow NMOS and slow PMOS
+C. Small signal
+D. Single stage",B. Slow NMOS and slow PMOS,"SS is slow NMOS and slow PMOS, typically the worst case for speed.",,,
+analog-custom-layout-mc-1,Analog and custom IC layout (Cadence Virtuoso),L1,Common-centroid layout is mainly used to:,"A. Reduce area
+B. Cancel the effect of linear process gradients on matched devices
+C. Increase speed
+D. Simplify routing",B. Cancel the effect of linear process gradients on matched devices,Placing matched devices around a common centre averages out linear gradients across the die.,,,
+analog-custom-layout-mc-2,Analog and custom IC layout (Cadence Virtuoso),L1,Dummy devices at the ends of a transistor array help because:,"A. They give every active device the same surroundings during manufacturing
+B. They add current
+C. They are needed for LVS
+D. They reduce leakage",A. They give every active device the same surroundings during manufacturing,Edge devices etch and stress differently; dummies make the active devices see the same neighbours.,,,
+analog-custom-layout-mc-3,Analog and custom IC layout (Cadence Virtuoso),L1,Which check confirms the layout matches the schematic?,"A. DRC
+B. ERC
+C. Antenna check
+D. LVS",D. LVS,Layout versus schematic compares devices and connections; DRC checks geometric rules.,,,
+analog-custom-layout-mc-4,Analog and custom IC layout (Cadence Virtuoso),L1,A guard ring around a sensitive block mainly helps with:,"A. Lowering capacitance on gates
+B. Speeding up digital logic
+C. Collecting substrate noise and preventing latch-up
+D. Reducing chip area",C. Collecting substrate noise and preventing latch-up,"Guard rings tie the substrate or well firmly, collecting injected carriers and reducing latch-up and noise.",,,
+dft-boundary-scan-ijtag-mc-1,"Boundary scan and IJTAG (IEEE 1149.1, 1500, 1687)",L1,Which pins make up the standard JTAG TAP?,"A. SDA, SCL
+B. TCK, TMS, TDI, TDO, with optional TRST
+C. MOSI, MISO, SCK, CS
+D. TX, RX","B. TCK, TMS, TDI, TDO, with optional TRST","IEEE 1149.1 defines TCK, TMS, TDI and TDO, with an optional TRST reset.",,,
+dft-boundary-scan-ijtag-mc-2,"Boundary scan and IJTAG (IEEE 1149.1, 1500, 1687)",L1,The BYPASS register in boundary scan is how many bits long?,"A. 1
+B. 8
+C. 32
+D. Equal to the number of I/Os",A. 1,BYPASS is a single-bit register that shortens the scan path through a device not being tested.,,,
+dft-boundary-scan-ijtag-mc-3,"Boundary scan and IJTAG (IEEE 1149.1, 1500, 1687)",L1,Which IEEE standard covers access to embedded instruments through reconfigurable networks (IJTAG)?,"A. IEEE 1500
+B. IEEE 1149.6
+C. IEEE 802.3
+D. IEEE 1687",D. IEEE 1687,IEEE 1687 (IJTAG) defines instrument access networks using ICL and PDL.,,,
+dft-boundary-scan-ijtag-mc-4,"Boundary scan and IJTAG (IEEE 1149.1, 1500, 1687)",L1,Which instruction drives values out of the boundary cells to test board interconnects?,"A. BYPASS
+B. IDCODE
+C. EXTEST
+D. SAMPLE",C. EXTEST,"EXTEST drives preloaded values from the output boundary cells and captures inputs, testing board connections.",,,
+dft-memory-bist-mc-1,"Memory and logic BIST (MBIST, LBIST)",L1,"In logic BIST, which block compacts the circuit responses into a signature?","A. LFSR
+B. MISR
+C. TAP
+D. PLL",B. MISR,A multiple-input signature register compacts responses; the LFSR generates pseudo-random patterns.,,,
+dft-memory-bist-mc-2,"Memory and logic BIST (MBIST, LBIST)",L1,March algorithms are used in memory BIST mainly to detect:,"A. Stuck-at, transition, address decoder and coupling faults
+B. Timing violations in logic
+C. Clock jitter
+D. Power supply noise","A. Stuck-at, transition, address decoder and coupling faults",March sequences of reads and writes in set address orders target the main memory fault models.,,,
+dft-memory-bist-mc-3,"Memory and logic BIST (MBIST, LBIST)",L1,Memory repair information found by BIST is commonly stored in:,"A. The scan chains
+B. The cache
+C. DRAM
+D. eFuses",D. eFuses,eFuses keep repair data across power cycles; it is loaded into the repair registers at start-up.,,,
+dft-memory-bist-mc-4,"Memory and logic BIST (MBIST, LBIST)",L1,Why do LBIST designs need X-bounding?,"A. To reduce area
+B. To speed up the clock
+C. Unknown values would corrupt the signature
+D. To meet LVS",C. Unknown values would corrupt the signature,"Any unknown value reaching the MISR makes the signature unpredictable, so X sources are blocked.",,,
+automotive-functional-safety-mc-1,Automotive functional safety (ISO 26262),L1,ASIL in ISO 26262 is determined from:,"A. Cost, schedule and quality
+B. Severity, exposure and controllability
+C. Failure rate only
+D. Supplier ratings","B. Severity, exposure and controllability","HARA rates severity, exposure and controllability for each hazardous event to find the ASIL.",,,
+automotive-functional-safety-mc-2,Automotive functional safety (ISO 26262),L1,Which ASIL has the most demanding requirements?,"A. ASIL D
+B. ASIL A
+C. QM
+D. ASIL B",A. ASIL D,ASIL D is the highest integrity level; QM means normal quality management is enough.,,,
+automotive-functional-safety-mc-3,Automotive functional safety (ISO 26262),L1,An FMEDA is mainly used to calculate:,"A. Software test coverage
+B. Project cost
+C. Code complexity
+D. Hardware architectural metrics and failure rates",D. Hardware architectural metrics and failure rates,"FMEDA lists failure modes, rates and diagnostic coverage to compute SPFM, LFM and PMHF.",,,
+automotive-functional-safety-mc-4,Automotive functional safety (ISO 26262),L1,'Freedom from interference' in ISO 26262 means:,"A. No electromagnetic emissions
+B. Teams work separately
+C. Lower-ASIL elements cannot cause failure of higher-ASIL elements
+D. All software is ASIL D",C. Lower-ASIL elements cannot cause failure of higher-ASIL elements,"Mixed-ASIL systems must show that faults in lower-integrity parts cannot propagate to higher ones, through memory, timing and data protection.",,,
+automotive-spice-mc-1,Automotive SPICE (ASPICE) processes,L1,Automotive SPICE is primarily a model for:,"A. Assessing development process capability
+B. Calculating hardware failure rates
+C. Vehicle emission testing
+D. Crash testing",A. Assessing development process capability,ASPICE assesses how capable a supplier's processes are; it does not test the product itself.,,,
+automotive-spice-mc-2,Automotive SPICE (ASPICE) processes,L1,"In ASPICE, capability level 1 means the process is:","A. Optimising
+B. Established
+C. Performed: its outcomes are achieved
+D. Predictable",C. Performed: its outcomes are achieved,"Level 1 is performed; level 2 managed, level 3 established, level 4 predictable and level 5 innovating.",,,
+automotive-spice-mc-3,Automotive SPICE (ASPICE) processes,L1,"In the ASPICE V-model, software qualification testing verifies against:","A. The unit design
+B. The source code
+C. The hardware schematic
+D. The software requirements",D. The software requirements,Qualification testing checks the integrated software against its software requirements.,,,
+automotive-spice-mc-4,Automotive SPICE (ASPICE) processes,L1,Bidirectional traceability in ASPICE means:,"A. Two teams review each document
+B. Links run from requirements to tests and back
+C. Tests are run twice
+D. Code is reviewed in both languages",B. Links run from requirements to tests and back,"Each requirement links forward to design and tests, and each test or design element links back to its requirement.",,,
+android-automotive-aosp-mc-1,"Android Automotive OS and AOSP platform (framework, HAL)",L1,"In Android Automotive, vehicle data such as speed reaches apps through:","A. The Vehicle HAL and CarService
+B. Bluetooth only
+C. The phone's GPS
+D. A web API",A. The Vehicle HAL and CarService,"The VHAL exposes vehicle properties to CarService, which apps access through car APIs such as CarPropertyManager.",,,
+android-automotive-aosp-mc-2,"Android Automotive OS and AOSP platform (framework, HAL)",L1,Android Auto differs from Android Automotive OS because Android Auto:,"A. Runs natively on the head unit
+B. Projects apps from a connected phone
+C. Has no apps
+D. Is only for trucks",B. Projects apps from a connected phone,Android Auto runs on the phone and projects to the car display; AAOS is the car's own operating system.,,,
+android-automotive-aosp-mc-3,"Android Automotive OS and AOSP platform (framework, HAL)",L1,Which tool is used to sync the many AOSP repositories?,"A. svn
+B. npm
+C. maven
+D. repo",D. repo,repo manages the many git repositories described in the AOSP manifest.,,,
+android-automotive-aosp-mc-4,"Android Automotive OS and AOSP platform (framework, HAL)",L1,An 'avc: denied' line in the logs usually means:,"A. A network timeout
+B. A memory leak
+C. An SELinux policy blocked an access
+D. A CAN bus error",C. An SELinux policy blocked an access,AVC denials are SELinux messages; the policy must be fixed rather than switching to permissive mode in production.,,,
+mobile-architecture-mc-1,Mobile app architecture,L1,"In MVVM on Android, which component survives a screen rotation and holds UI state?","A. The Activity
+B. The ViewModel
+C. The layout XML
+D. The Adapter",B. The ViewModel,"A ViewModel is retained across configuration changes, so state isn't lost when the activity is recreated.",,,
+mobile-architecture-mc-2,Mobile app architecture,L1,A repository in a mobile architecture is responsible for:,"A. Deciding where data comes from, such as network or local cache
+B. Drawing the UI
+C. Navigation between screens
+D. Handling touch events","A. Deciding where data comes from, such as network or local cache",The repository hides data sources from the rest of the app and decides between cache and network.,,,
+mobile-architecture-mc-3,Mobile app architecture,L1,Which Android library is meant for deferrable background work that must run even if the app exits?,"A. AsyncTask
+B. Handler
+C. LiveData
+D. WorkManager",D. WorkManager,WorkManager schedules guaranteed background work that survives app exits and reboots.,,,
+mobile-architecture-mc-4,Mobile app architecture,L1,Why is unidirectional data flow popular in mobile apps?,"A. It reduces app size
+B. It removes the need for a backend
+C. State changes are predictable and easier to debug
+D. It makes animations faster",C. State changes are predictable and easier to debug,"With events going up and state flowing down, every change has one path, so bugs are easier to trace.",,,
+unity-engine-mc-1,Unity game engine,L1,Which Unity method should apply forces to a Rigidbody?,"A. Update
+B. FixedUpdate
+C. LateUpdate
+D. OnGUI",B. FixedUpdate,"Physics runs on a fixed timestep, so forces belong in FixedUpdate to stay consistent.",,,
+unity-engine-mc-2,Unity game engine,L1,Object pooling in Unity mainly helps by:,"A. Reducing garbage collection from frequent instantiate and destroy
+B. Improving lighting
+C. Making textures sharper
+D. Reducing build size",A. Reducing garbage collection from frequent instantiate and destroy,"Reusing objects avoids repeated allocation and destruction, which causes GC spikes.",,,
+unity-engine-mc-3,Unity game engine,L1,What is a prefab in Unity?,"A. A shader type
+B. A physics material
+C. A lighting setting
+D. A reusable template of a GameObject",D. A reusable template of a GameObject,Prefabs store a configured GameObject that can be instanced many times and updated from one source.,,,
+unity-engine-mc-4,Unity game engine,L1,Which technique reduces draw calls for many objects sharing a material?,"A. Increasing shadow distance
+B. Using more lights
+C. Batching (static, dynamic or GPU instancing)
+D. Higher texture resolution","C. Batching (static, dynamic or GPU instancing)","Batching and instancing combine objects that share materials, cutting draw calls.",,,
+sap-abap-mc-1,SAP ABAP,L1,Which transaction shows ABAP runtime errors (short dumps)?,"A. SE38
+B. SM37
+C. ST22
+D. SE11",C. ST22,"ST22 lists short dumps with the error, program and variable values. SE38 edits programs, SM37 shows jobs and SE11 the dictionary.",,,
+sap-abap-mc-2,SAP ABAP,L1,What happens if the driver table in FOR ALL ENTRIES is empty?,"A. The WHERE conditions on it are ignored and all rows matching the rest are read
+B. The SELECT returns nothing
+C. A syntax error occurs
+D. Only the first row is read",A. The WHERE conditions on it are ignored and all rows matching the rest are read,"An empty driver table makes the condition drop out, so the SELECT can read the whole table.",,,
+sap-abap-mc-3,SAP ABAP,L1,A BAdI is:,"A. A database table
+B. A background job
+C. A report type
+D. An object-oriented enhancement point for adding custom logic",D. An object-oriented enhancement point for adding custom logic,Business Add-Ins are enhancement interfaces where custom implementations plug into standard SAP code.,,,
+sap-abap-mc-4,SAP ABAP,L1,"On S/4HANA, CDS views mainly help performance by:","A. Caching data on the application server
+B. Pushing joins and calculations down to the database
+C. Removing indexes
+D. Running only at night",B. Pushing joins and calculations down to the database,Code pushdown lets HANA do the heavy work close to the data instead of looping in ABAP.,,,
+ab-testing-mc-1,A/B testing,L1,What does a p-value of 0.03 mean in an A/B test?,"A. There is a 97% chance B is better
+B. If there were no real difference, results this extreme would appear 3% of the time
+C. The lift is 3%
+D. 3% of users saw the test","B. If there were no real difference, results this extreme would appear 3% of the time",The p-value is the probability of seeing data this extreme if the null hypothesis were true; it is not the chance B is better.,,,
+ab-testing-mc-2,A/B testing,L1,Stopping a test the moment it becomes significant mainly increases:,"A. False positives
+B. Sample size
+C. Statistical power
+D. Test duration",A. False positives,"Peeking repeatedly gives more chances to cross the threshold by luck, inflating false positives.",,,
+ab-testing-mc-3,A/B testing,L1,"To detect a smaller effect with the same power, you need:","A. Fewer users
+B. A higher significance level only
+C. A shorter test
+D. More users",D. More users,Smaller effects need larger samples to tell them from noise.,,,
+ab-testing-mc-4,A/B testing,L1,Why run an A/B test for full weeks rather than three days?,"A. Tools require it
+B. It reduces cost
+C. Behaviour differs by day of week, so short tests can be biased
+D. It increases the lift","C. Behaviour differs by day of week, so short tests can be biased",Weekday and weekend users behave differently; full weeks average that out.,,,
+application-support-mc-1,Application and product support,L1,"In ITIL, the main goal of incident management is:","A. To restore normal service as quickly as possible
+B. To find the root cause
+C. To plan releases
+D. To approve changes",A. To restore normal service as quickly as possible,Incident management restores service quickly; problem management finds and removes root causes.,,,
+application-support-mc-2,Application and product support,L1,A mainframe job ends with an abend. What does that mean?,"A. It completed normally
+B. It was cancelled by the scheduler only
+C. It ended abnormally due to an error
+D. It is waiting for input",C. It ended abnormally due to an error,"An abend (abnormal end) is a failure, with a code such as S0C7 telling you what went wrong.",,,
+application-support-mc-3,Application and product support,L1,Which is the best first check when an application fails right after a release?,"A. Restart the database
+B. Ask users to clear cache
+C. Raise a new feature request
+D. Review what changed in the release and consider rolling back",D. Review what changed in the release and consider rolling back,Recent change is the most likely cause; rollback restores service while the fix is found.,,,
+application-support-mc-4,Application and product support,L1,A problem record in ITIL is raised to:,"A. Log a single user's password reset
+B. Investigate the underlying cause of one or more incidents
+C. Request new hardware
+D. Record overtime",B. Investigate the underlying cause of one or more incidents,Problems track root cause analysis and permanent fixes for recurring or major incidents.,,,
+cloud-cost-mc-1,Cloud cost management (FinOps),L1,Which pricing option suits a workload that can be interrupted at short notice?,"A. Reserved instances
+B. Spot instances
+C. Dedicated hosts
+D. On-demand only",B. Spot instances,"Spot capacity is much cheaper but can be reclaimed, so it fits batch and fault-tolerant work.",,,
+cloud-cost-mc-2,Cloud cost management (FinOps),L1,Right-sizing in FinOps means:,"A. Matching instance sizes to actual utilisation
+B. Buying the largest instances
+C. Moving everything to one region
+D. Deleting all test servers",A. Matching instance sizes to actual utilisation,"Right-sizing changes resources to the size their real usage needs, cutting waste.",,,
+cloud-cost-mc-3,Cloud cost management (FinOps),L1,Resource tags help cloud cost management mainly by:,"A. Speeding up instances
+B. Encrypting data
+C. Reducing egress
+D. Assigning costs to teams, projects and environments","D. Assigning costs to teams, projects and environments","Tags let cost reports split spend by owner, project or environment for showback and accountability.",,,
+cloud-cost-mc-4,Cloud cost management (FinOps),L1,Savings plans or reserved instances save money when:,"A. Usage is unpredictable and short-lived
+B. Workloads run only once
+C. There is steady baseline usage over the commitment term
+D. Data is stored in cold storage",C. There is steady baseline usage over the commitment term,Discounts come from committing to steady usage; unused commitment is still paid for.,,,
+hugging-face-transformers-mc-1,Hugging Face Transformers and fine-tuning,L1,Which Hugging Face class adds a classification head on top of a pre-trained encoder?,"A. AutoTokenizer
+B. AutoModelForSequenceClassification
+C. pipeline('translation')
+D. DataCollatorForLanguageModeling",B. AutoModelForSequenceClassification,AutoModelForSequenceClassification loads the encoder with a classification head sized to the labels.,,,
+hugging-face-transformers-mc-2,Hugging Face Transformers and fine-tuning,L1,The attention mask passed with the input IDs tells the model:,"A. Which tokens are real and which are padding
+B. Which layers to freeze
+C. The learning rate
+D. The label of each token",A. Which tokens are real and which are padding,Padding tokens are masked out so they don't affect attention.,,,
+hugging-face-transformers-mc-3,Hugging Face Transformers and fine-tuning,L1,LoRA fine-tuning reduces memory mainly by:,"A. Removing the tokenizer
+B. Training on CPU
+C. Using fewer training examples
+D. Training small low-rank adapter matrices while freezing the base weights",D. Training small low-rank adapter matrices while freezing the base weights,"LoRA keeps the base model frozen and learns small low-rank updates, so far fewer parameters need gradients.",,,
+hugging-face-transformers-mc-4,Hugging Face Transformers and fine-tuning,L1,"For a named entity recognition task, which metric is usually reported?","A. BLEU
+B. Perplexity
+C. Entity-level precision, recall and F1
+D. Mean squared error","C. Entity-level precision, recall and F1","NER is evaluated on correctly identified entity spans with precision, recall and F1.",,,
+sap-grc-access-control-mc-1,"SAP GRC Access Control (ARA, ARM, EAM, BRM)",L1,A segregation of duties conflict means:,"A. One user can perform two functions that together allow fraud or error
+B. Two users share a password
+C. A role has no transactions
+D. A user is locked",A. One user can perform two functions that together allow fraud or error,"SoD prevents one person from, for example, both creating a vendor and paying it.",,,
+sap-grc-access-control-mc-2,"SAP GRC Access Control (ARA, ARM, EAM, BRM)",L1,Which GRC Access Control component handles emergency elevated access?,"A. ARA
+B. ARM
+C. BRM
+D. EAM (firefighter)",D. EAM (firefighter),"Emergency Access Management provides logged, time-bound firefighter access reviewed afterwards.",,,
+sap-grc-access-control-mc-3,"SAP GRC Access Control (ARA, ARM, EAM, BRM)",L1,A mitigating control in GRC is used when:,"A. A role is deleted
+B. A risk cannot be removed but is accepted with a compensating check
+C. A user leaves the company
+D. A system is upgraded",B. A risk cannot be removed but is accepted with a compensating check,"If the conflicting access is needed, a documented control (such as a periodic review) mitigates the risk.",,,
+sap-grc-access-control-mc-4,"SAP GRC Access Control (ARA, ARM, EAM, BRM)",L1,"In ARM, risk analysis during an access request helps approvers:","A. Reset passwords
+B. Design new transactions
+C. See SoD risks the new roles would create before approving
+D. Run payroll",C. See SoD risks the new roles would create before approving,"The request shows which risks the requested roles would add, so approvers can reject or mitigate.",,,
+ai-response-rating-mc-1,LLM response rating and RLHF data work,L1,"When comparing two AI answers, which matters most if one contains a clear factual error?","A. Length
+B. Accuracy, since a wrong answer can mislead the user
+C. Use of bullet points
+D. Friendly tone","B. Accuracy, since a wrong answer can mislead the user",A fluent but wrong answer is worse than a plain correct one; accuracy usually outweighs style.,,,
+ai-response-rating-mc-2,LLM response rating and RLHF data work,L1,Good rater feedback is:,"A. Specific and tied to the guidelines
+B. As short as possible
+C. Based on personal taste
+D. The same for every task",A. Specific and tied to the guidelines,"Specific, guideline-based feedback tells trainers exactly what to change.",,,
+ai-response-rating-mc-3,LLM response rating and RLHF data work,L1,An answer refuses a harmless request for a recipe. How should it usually be rated?,"A. Highest, because it is safe
+B. Ignored
+C. Equal to a helpful answer
+D. Lower, because unnecessary refusal is unhelpful","D. Lower, because unnecessary refusal is unhelpful","Over-refusal fails the user without any safety benefit, so it is rated down.",,,
+ai-response-rating-mc-4,LLM response rating and RLHF data work,L1,RLHF stands for:,"A. Real-time learning from hardware feedback
+B. Rapid labelling for high fidelity
+C. Reinforcement learning from human feedback
+D. Ranked lists for human feedback",C. Reinforcement learning from human feedback,Reinforcement learning from human feedback trains models using human ratings and rankings of their outputs.,,,
+adobe-illustrator-mc-1,Adobe Illustrator,L1,Which file format keeps a logo fully scalable for the web?,"A. JPG
+B. PNG
+C. SVG
+D. GIF",C. SVG,"SVG stores vector paths, so the logo stays sharp at any size; the others are raster formats.",,,
+adobe-illustrator-mc-2,Adobe Illustrator,L1,What colour mode should a file for offset printing use?,"A. CMYK
+B. RGB
+C. Indexed
+D. LAB only",A. CMYK,"Offset presses print with cyan, magenta, yellow and black inks, so print files are set up in CMYK.",,,
+adobe-illustrator-mc-3,Adobe Illustrator,L1,Converting text to outlines before sending a file to print ensures:,"A. Smaller file size always
+B. Editable text for the printer
+C. Better colour
+D. The printer's computer doesn't need the font",D. The printer's computer doesn't need the font,"Outlined text becomes shapes, so missing fonts can't substitute and change the design.",,,
+adobe-illustrator-mc-4,Adobe Illustrator,L1,Bleed in print design is:,"A. A colour error
+B. Artwork extended beyond the trim line so no white edge shows after cutting
+C. A type of paper
+D. A font style",B. Artwork extended beyond the trim line so no white edge shows after cutting,"Extending artwork past the trim, usually 3 mm, covers small cutting shifts.",,,
+adobe-photoshop-mc-1,Adobe Photoshop,L1,Which Photoshop feature hides parts of a layer without deleting pixels?,"A. Eraser tool
+B. Layer mask
+C. Crop tool
+D. Flatten image",B. Layer mask,A layer mask hides and reveals non-destructively; the eraser deletes pixels permanently.,,,
+adobe-photoshop-mc-2,Adobe Photoshop,L1,Adjustment layers are preferred over direct adjustments because they:,"A. Can be changed or removed later without harming the image
+B. Make files smaller
+C. Work only in CMYK
+D. Are faster to print",A. Can be changed or removed later without harming the image,"Adjustment layers apply changes on top, so they can be edited or removed at any time.",,,
+adobe-photoshop-mc-3,Adobe Photoshop,L1,"For web images, which colour profile should usually be used?","A. Adobe RGB
+B. CMYK
+C. ProPhoto RGB
+D. sRGB",D. sRGB,"Browsers and most screens assume sRGB, so other profiles can look dull or shifted.",,,
+adobe-photoshop-mc-4,Adobe Photoshop,L1,What resolution is usually needed for printed photos?,"A. 72 ppi
+B. 96 ppi
+C. 300 ppi at the printed size
+D. 1200 ppi",C. 300 ppi at the printed size,About 300 ppi at final size gives sharp print; 72 ppi is a screen convention.,,,
+motion-graphics-mc-1,Motion graphics (After Effects),L1,Which After Effects panel lets you shape the speed of an animation between keyframes?,"A. Character panel
+B. Graph editor
+C. Effects & Presets
+D. Render queue",B. Graph editor,The graph editor shows value and speed curves to shape easing between keyframes.,,,
+motion-graphics-mc-2,Motion graphics (After Effects),L1,Pre-composing in After Effects means:,"A. Grouping layers into a nested composition
+B. Rendering the final video
+C. Importing audio
+D. Deleting unused layers",A. Grouping layers into a nested composition,"A precomp nests layers into their own composition, keeping the timeline organised and reusable.",,,
+motion-graphics-mc-3,Motion graphics (After Effects),L1,Which expression makes a property move randomly over time?,"A. loopOut()
+B. time*0
+C. valueAtTime()
+D. wiggle()",D. wiggle(),"wiggle(freq, amp) adds random motion; loopOut repeats keyframes.",,,
+motion-graphics-mc-4,Motion graphics (After Effects),L1,Title-safe margins exist to:,"A. Speed up rendering
+B. Make text larger
+C. Keep text away from edges that some screens crop
+D. Add a border",C. Keep text away from edges that some screens crop,"Some displays crop the frame edges, so key text stays inside the safe area.",,,
+clinical-trials-knowledge-mc-1,Clinical trial process and ICH-GCP basics,L1,Which phase of a clinical trial is mainly about safety and dosing in a small group?,"A. Phase I
+B. Phase II
+C. Phase III
+D. Phase IV",A. Phase I,"Phase I studies safety, tolerability and dosing, often in healthy volunteers.",,,
+clinical-trials-knowledge-mc-2,Clinical trial process and ICH-GCP basics,L1,"In India, clinical trials are approved by:","A. The FSSAI
+B. SEBI
+C. The ICMR alone
+D. The CDSCO (DCGI)",D. The CDSCO (DCGI),"The Central Drugs Standard Control Organisation, headed by the DCGI, approves trials under the New Drugs and Clinical Trials Rules, 2019.",,,
+clinical-trials-knowledge-mc-3,Clinical trial process and ICH-GCP basics,L1,ICH E6 is the guideline on:,"A. Statistical analysis
+B. Drug pricing
+C. Good Clinical Practice
+D. Manufacturing",C. Good Clinical Practice,ICH E6 sets out Good Clinical Practice; ICH E9 covers statistical principles.,,,
+clinical-trials-knowledge-mc-4,Clinical trial process and ICH-GCP basics,L1,21 CFR Part 11 concerns:,"A. Drug labelling
+B. Electronic records and electronic signatures
+C. Patient recruitment
+D. Sample sizes",B. Electronic records and electronic signatures,"Part 11 sets FDA requirements for trustworthy electronic records and signatures, including audit trails.",,,
+hipaa-phi-handling-mc-1,HIPAA and PHI handling,L1,Which of these is PHI under HIPAA?,"A. A hospital's annual revenue
+B. A patient's name with their diagnosis
+C. Anonymous national disease statistics
+D. A doctor's published article",B. A patient's name with their diagnosis,PHI is health information linked to an identifiable individual; aggregate or anonymous data is not.,,,
+hipaa-phi-handling-mc-2,HIPAA and PHI handling,L1,The HIPAA 'minimum necessary' standard means:,"A. Use or share only the PHI needed for the task
+B. Keep at least one copy of every record
+C. Store data for the minimum time
+D. Share PHI with anyone who asks",A. Use or share only the PHI needed for the task,Staff access and disclose only the PHI needed for the purpose.,,,
+hipaa-phi-handling-mc-3,HIPAA and PHI handling,L1,"A US hospital's offshore medical coding vendor is, under HIPAA:","A. A covered entity
+B. Exempt from HIPAA
+C. A health plan
+D. A business associate",D. A business associate,Vendors handling PHI on behalf of covered entities are business associates bound by a business associate agreement.,,,
+hipaa-phi-handling-mc-4,HIPAA and PHI handling,L1,You accidentally email a patient file to the wrong address. What is the right first step?,"A. Delete your sent copy and say nothing
+B. Wait to see if the recipient complains
+C. Report it to the privacy or security officer immediately
+D. Email the patient yourself",C. Report it to the privacy or security officer immediately,Prompt internal reporting lets the organisation contain the breach and decide on notification.,,,
+coding-audit-qa-mc-1,Coding quality audits,L1,An auditor checks 200 codes and finds 8 wrong. What is the coding accuracy?,"A. 92%
+B. 96%
+C. 98%
+D. 8%",B. 96%,(200 − 8) ÷ 200 = 96% accuracy.,,,
+coding-audit-qa-mc-2,Coding quality audits,L1,Unbundling in medical coding means:,"A. Billing separately for procedures that should be reported under one combined code
+B. Using an older code set
+C. Adding a modifier
+D. Coding only the primary diagnosis",A. Billing separately for procedures that should be reported under one combined code,Unbundling splits a bundled service into separate codes; NCCI edits are designed to catch it.,,,
+coding-audit-qa-mc-3,Coding quality audits,L1,Which source is authoritative for ICD-10-CM coding guidance?,"A. A coder's personal notes
+B. A billing team email
+C. The insurer's website
+D. The ICD-10-CM Official Guidelines and AHA Coding Clinic",D. The ICD-10-CM Official Guidelines and AHA Coding Clinic,The Official Guidelines and AHA Coding Clinic are the recognised references.,,,
+coding-audit-qa-mc-4,Coding quality audits,L1,A physician query should be raised when:,"A. The coder wants a higher-paying code
+B. The patient asks
+C. Documentation is unclear or conflicting
+D. The chart is long",C. Documentation is unclear or conflicting,Queries clarify documentation; they must not lead the physician to a particular answer.,,,
+hotel-pms-operations-mc-1,"Hotel property management system (Opera, IDS)",L1,Which form must Indian hotels submit for foreign guests?,"A. Form 16
+B. Form C
+C. Form A1
+D. Form 26AS",B. Form C,Hotels report foreign nationals' stays through Form C to the immigration authorities (FRRO system).,,,
+hotel-pms-operations-mc-2,"Hotel property management system (Opera, IDS)",L1,"A hotel has 100 rooms, sells 80 at an average rate of ₹5,000. What is RevPAR?","A. ₹4,000
+B. ₹5,000
+C. ₹6,250
+D. ₹8,000","A. ₹4,000","RevPAR = room revenue ÷ available rooms = (80 × 5,000) ÷ 100 = ₹4,000, or ADR × occupancy.",,,
+hotel-pms-operations-mc-3,"Hotel property management system (Opera, IDS)",L1,The night audit's main purpose is to:,"A. Clean the lobby
+B. Plan staff rosters
+C. Order supplies
+D. Close the day's accounts and roll the business date",D. Close the day's accounts and roll the business date,"The night audit posts charges, balances accounts and moves the PMS to the next business date.",,,
+hotel-pms-operations-mc-4,"Hotel property management system (Opera, IDS)",L1,A room shown as occupied in the PMS but found empty with no luggage is called:,"A. A sleeper
+B. A skipper
+C. A walk-in
+D. A house use room",A. A sleeper,A sleeper is a room the PMS thinks is occupied but is actually vacant; a skipper left without paying.,,,
+exim-documentation-mc-1,Import and export shipping documentation,L1,"Under CIF, who pays the main freight and insurance to the destination port?","A. The buyer
+B. The seller
+C. The bank
+D. The customs broker",B. The seller,"Cost, Insurance and Freight puts the main carriage and minimum insurance on the seller, though risk passes when goods are on board.",,,
+exim-documentation-mc-2,Import and export shipping documentation,L1,Export shipping bills in India are filed electronically through:,"A. ICEGATE
+B. The GST portal only
+C. MCA21
+D. TRACES",A. ICEGATE,"Shipping bills are filed on ICEGATE, the customs portal, usually by the CHA.",,,
+exim-documentation-mc-3,Import and export shipping documentation,L1,"To export services or goods without paying IGST, an exporter files:","A. A shipping bill only
+B. Form 26AS
+C. An e-way bill
+D. A Letter of Undertaking (LUT)",D. A Letter of Undertaking (LUT),"With an LUT filed on the GST portal, exports go out zero-rated without paying IGST.",,,
+exim-documentation-mc-4,Import and export shipping documentation,L1,A negotiable bill of lading serves as:,"A. An insurance policy
+B. A tax invoice
+C. A document of title to the goods
+D. A packing list",C. A document of title to the goods,"A negotiable bill of lading gives the holder the right to take delivery, which is why banks hold it under an LC.",,,
+applicant-tracking-systems-mc-1,Applicant tracking systems (ATS),L1,The 'source of hire' report in an ATS shows:,"A. Where hired candidates came from, such as referrals or job boards
+B. The salary of each hire
+C. Interviewers' ratings
+D. The joining date","A. Where hired candidates came from, such as referrals or job boards","Source of hire tells you which channels produce hires, so spend can move to what works.",,,
+applicant-tracking-systems-mc-2,Applicant tracking systems (ATS),L1,Time to fill measures:,"A. Days from offer to joining
+B. Hours spent interviewing
+C. Days from requisition approval to offer acceptance
+D. Number of applicants",C. Days from requisition approval to offer acceptance,Time to fill runs from the open requisition to accepted offer; time to hire often starts when the candidate applies.,,,
+applicant-tracking-systems-mc-3,Applicant tracking systems (ATS),L1,Knockout questions in an ATS are used to:,"A. Rank interviewers
+B. Send offer letters
+C. Book meeting rooms
+D. Screen out applicants who don't meet a must-have requirement",D. Screen out applicants who don't meet a must-have requirement,"They automatically filter applicants who fail essential criteria, such as a required licence.",,,
+applicant-tracking-systems-mc-4,Applicant tracking systems (ATS),L1,Why should rejection reasons be recorded in the ATS?,"A. They are shown to the candidate publicly
+B. They help analyse the funnel and defend fair hiring decisions
+C. They reduce storage
+D. They are required for payroll",B. They help analyse the funnel and defend fair hiring decisions,"Recorded reasons show where candidates drop and support fair, consistent decisions.",,,
+candidate-screening-interviewing-mc-1,Candidate screening and interviewing,L1,A structured interview mainly improves:,"A. Interview length
+B. Fairness and comparability between candidates
+C. The number of applicants
+D. Offer acceptance only",B. Fairness and comparability between candidates,Asking everyone the same job-related questions with a scoring guide reduces bias and makes answers comparable.,,,
+candidate-screening-interviewing-mc-2,Candidate screening and interviewing,L1,The STAR method asks candidates to describe:,"A. Situation, Task, Action, Result
+B. Skills, Training, Aptitude, References
+C. Strengths, Targets, Ambition, Role
+D. Salary, Tenure, Availability, Relocation","A. Situation, Task, Action, Result","STAR structures behavioural answers around a real situation, what was needed, what they did and what happened.",,,
+candidate-screening-interviewing-mc-3,Candidate screening and interviewing,L1,Which screening question is appropriate?,"A. Are you married?
+B. Which religion do you follow?
+C. Do you plan to have children soon?
+D. Can you walk me through a recent project you led?",D. Can you walk me through a recent project you led?,It is job-related; the others are personal and unrelated to the ability to do the job.,,,
+candidate-screening-interviewing-mc-4,Candidate screening and interviewing,L1,Why agree must-have criteria with the hiring manager before screening?,"A. To reduce the job's salary
+B. To avoid using an ATS
+C. So screening decisions are consistent and match the role
+D. To shorten the job description",C. So screening decisions are consistent and match the role,Agreed criteria stop drifting standards and mismatched shortlists.,,,
+instructional-design-mc-1,Instructional design and training content development,L1,"In the ADDIE model, which phase comes first?","A. Design
+B. Development
+C. Analysis
+D. Evaluation",C. Analysis,"ADDIE starts with Analysis of the need and learners, then Design, Development, Implementation and Evaluation.",,,
+instructional-design-mc-2,Instructional design and training content development,L1,Which learning objective is best written?,"A. Learners will know about Excel
+B. Learners will appreciate data
+C. Learners will be exposed to pivot tables
+D. Learners will build a pivot table summarising sales by region",D. Learners will build a pivot table summarising sales by region,It uses an observable action with a clear outcome that can be assessed.,,,
+instructional-design-mc-3,Instructional design and training content development,L1,Kirkpatrick's Level 3 evaluation measures:,"A. Learners' reaction to the session
+B. Change in behaviour on the job
+C. Test scores at the end
+D. Return on investment",B. Change in behaviour on the job,Level 3 looks at whether people apply the learning at work; Level 4 looks at business results.,,,
+instructional-design-mc-4,Instructional design and training content development,L1,Microlearning modules are usually:,"A. Short, focused pieces of a few minutes each
+B. Full-day workshops
+C. Books
+D. Annual conferences","A. Short, focused pieces of a few minutes each","Microlearning breaks content into short, focused units that fit into the working day.",,,
+contract-labour-compliance-mc-1,Contract labour management and compliance,L1,"Under contract labour law, if a contractor fails to pay wages, the principal employer must:","A. Ignore it
+B. Pay the wages and recover them from the contractor
+C. Close the contract only
+D. Ask the workers to file a case",B. Pay the wages and recover them from the contractor,The principal employer is liable to pay unpaid wages and can recover the amount from the contractor's dues.,,,
+contract-labour-compliance-mc-2,Contract labour management and compliance,L1,Who must hold a licence to supply contract labour to an establishment?,"A. The contractor
+B. Each contract worker
+C. The principal employer's HR head
+D. The trade union",A. The contractor,The contractor needs a licence; the principal employer registers the establishment.,,,
+contract-labour-compliance-mc-3,Contract labour management and compliance,L1,"Before clearing a contractor's bill, which document best shows PF was paid for the workers?","A. The purchase order
+B. The gate pass
+C. The contractor's visiting card
+D. The PF challan and ECR listing the workers",D. The PF challan and ECR listing the workers,"The ECR and challan show PF was deposited for named workers, which can be matched to attendance.",,,
+contract-labour-compliance-mc-4,Contract labour management and compliance,L1,Contract workers in a factory must be paid at least:,"A. Whatever the contractor decides
+B. The company's management trainee rate
+C. The applicable minimum wage
+D. Half the permanent workers' wage",C. The applicable minimum wage,Minimum wage laws apply to contract workers; some settlements and rules require parity for similar work.,,,
+atl-btl-campaigns-mc-1,ATL and BTL campaign management,L1,Which of these is a BTL activity?,"A. A TV commercial
+B. A mall sampling activation
+C. A national newspaper ad
+D. A radio jingle",B. A mall sampling activation,"BTL is targeted, direct activity such as sampling and activations; mass media like TV and radio is ATL.",,,
+atl-btl-campaigns-mc-2,ATL and BTL campaign management,L1,GRP in media planning equals:,"A. Reach (%) × average frequency
+B. Budget ÷ reach
+C. Impressions ÷ clicks
+D. Frequency ÷ reach",A. Reach (%) × average frequency,Gross rating points add up the ratings delivered: reach percentage multiplied by average frequency.,,,
+atl-btl-campaigns-mc-3,ATL and BTL campaign management,L1,POSM in retail marketing stands for:,"A. Point of sale margin
+B. Product order sales manager
+C. Price on stock management
+D. Point of sale material",D. Point of sale material,"POSM is in-store material such as danglers, standees and shelf strips.",,,
+atl-btl-campaigns-mc-4,ATL and BTL campaign management,L1,The best measure of a sampling campaign's success is usually:,"A. The number of staff deployed
+B. The cost of the stalls
+C. Repeat purchase or sales uplift after trial
+D. The size of the banners",C. Repeat purchase or sales uplift after trial,"Sampling aims at trial that turns into purchase, so repeat buying and uplift show success.",,,
+keyword-strategy-mc-1,Keyword strategy and mapping,L1,Keyword cannibalisation means:,"A. Two or more of your pages compete for the same query
+B. A competitor copies your keywords
+C. Keywords are stuffed in text
+D. A keyword has no searches",A. Two or more of your pages compete for the same query,"When several pages target the same term, they split signals and none ranks well.",,,
+keyword-strategy-mc-2,Keyword strategy and mapping,L1,Which free tool shows the actual queries that bring your site impressions and clicks?,"A. Google Analytics only
+B. Bing Maps
+C. Google Search Console
+D. Canva",C. Google Search Console,"Search Console reports queries, impressions, clicks and average position for your site.",,,
+keyword-strategy-mc-3,Keyword strategy and mapping,L1,A search for 'best laptop under 50000' shows mostly:,"A. Navigational intent
+B. Informational intent only
+C. Local intent
+D. Commercial investigation intent",D. Commercial investigation intent,"The searcher is comparing options before buying, so comparison pages and reviews rank.",,,
+keyword-strategy-mc-4,Keyword strategy and mapping,L1,Long-tail keywords are usually:,"A. Single words with huge volume
+B. Longer, more specific phrases with lower volume and clearer intent
+C. Brand names only
+D. Keywords in the footer","B. Longer, more specific phrases with lower volume and clearer intent","Long-tail phrases are specific, less competitive and often convert better.",,,
+link-building-mc-1,Link building and backlink analysis,L1,Which practice breaks Google's spam policies?,"A. Writing original research
+B. Fixing broken links on your site
+C. Buying links that pass ranking signals
+D. Getting cited by a news article",C. Buying links that pass ranking signals,Paid links meant to pass ranking signals are link spam and can lead to penalties.,,,
+link-building-mc-2,Link building and backlink analysis,L1,A 'nofollow' attribute on a link tells search engines:,"A. Not to index the linking page
+B. Not to treat the link as an endorsement (a hint)
+C. To follow it twice
+D. To block crawling of the whole site",B. Not to treat the link as an endorsement (a hint),rel=nofollow signals the link shouldn't pass ranking credit; Google treats it as a hint.,,,
+link-building-mc-3,Link building and backlink analysis,L1,Which backlink is likely most valuable for an Indian fintech blog?,"A. A link from a relevant Indian finance news site
+B. A link from a random directory
+C. Hundreds of forum signature links
+D. A link from an unrelated gambling site",A. A link from a relevant Indian finance news site,"Relevance and trust matter more than volume; a related, reputable site is worth far more.",,,
+link-building-mc-4,Link building and backlink analysis,L1,Anchor text is:,"A. The page's title tag
+B. The URL slug
+C. The alt text of an image
+D. The clickable text of a link",D. The clickable text of a link,"Anchor text is the visible clickable text; natural, varied anchors look healthiest.",,,
+chemist-stockist-coverage-mc-1,Chemist and stockist coverage,L1,Secondary sales in pharma field sales means:,"A. Sales from the company to the stockist
+B. Sales from the stockist to chemists and retailers
+C. Sales to hospitals abroad
+D. Returns from chemists",B. Sales from the stockist to chemists and retailers,"Secondary sales track movement from stockist to retailer, closer to real demand.",,,
+chemist-stockist-coverage-mc-2,Chemist and stockist coverage,L1,Which code governs ethical marketing practices for pharma companies in India?,"A. UCPMP
+B. FSSAI code
+C. SEBI LODR
+D. ICH E6",A. UCPMP,"The Uniform Code for Pharmaceutical Marketing Practices sets rules on promotion, gifts and samples.",,,
+chemist-stockist-coverage-mc-3,Chemist and stockist coverage,L1,A chemist has stock expiring next month. The best action is to:,"A. Ignore it
+B. Hide it from the chemist
+C. Tell the doctor to stop prescribing
+D. Arrange expiry return or liquidation as per company policy",D. Arrange expiry return or liquidation as per company policy,Timely returns or liquidation per policy protect the relationship and avoid expired medicines on shelves.,,,
+chemist-stockist-coverage-mc-4,Chemist and stockist coverage,L1,Primary sales rising sharply while secondary sales stay flat suggests:,"A. Strong demand
+B. Better prescriptions
+C. Stock piling up at the stockist
+D. Competitor exit",C. Stock piling up at the stockist,"If stock isn't moving to retailers, it accumulates with the stockist and returns or slow orders follow.",,,
+retail-customer-experience-mc-1,In-store customer experience,L1,Net Promoter Score is calculated as:,"A. Percentage of promoters minus percentage of detractors
+B. Average rating out of 10
+C. Number of complaints
+D. Promoters plus passives",A. Percentage of promoters minus percentage of detractors,NPS subtracts the share of detractors (0–6) from the share of promoters (9–10).,,,
+retail-customer-experience-mc-2,In-store customer experience,L1,A mystery shopper is:,"A. A loyalty card member
+B. A shoplifter
+C. A trained person who visits as a customer to assess service
+D. A supplier",C. A trained person who visits as a customer to assess service,Mystery shoppers check service standards as ordinary customers and report against a checklist.,,,
+retail-customer-experience-mc-3,In-store customer experience,L1,"In a survey of 200 customers, 120 are promoters, 50 passives and 30 detractors. What is the NPS?","A. 60
+B. 75
+C. 90
+D. 45",D. 45,Promoters 60% minus detractors 15% gives an NPS of 45.,,,
+retail-customer-experience-mc-4,In-store customer experience,L1,Which is the best way to plan staff for peak hours?,"A. Equal staff every hour
+B. Use footfall and bills-per-hour data to roster
+C. Ask staff to choose
+D. Close counters at peak",B. Use footfall and bills-per-hour data to roster,Data on when customers come lets the roster match staff to demand.,,,
+inbound-receiving-putaway-mc-1,"Inbound receiving, GRN and put-away",L1,A GRN in a warehouse records:,"A. Goods received against a purchase order
+B. Goods dispatched to customers
+C. Monthly rent
+D. Staff attendance",A. Goods received against a purchase order,"The goods receipt note confirms what was received, updating stock and enabling vendor payment.",,,
+inbound-receiving-putaway-mc-2,"Inbound receiving, GRN and put-away",L1,FEFO put-away and picking means:,"A. First in, first out
+B. Last in, first out
+C. Fastest moving first
+D. First expiry, first out","D. First expiry, first out","FEFO issues the stock that expires first, important for food and pharma.",,,
+inbound-receiving-putaway-mc-3,"Inbound receiving, GRN and put-away",L1,Fast-moving items are usually stored:,"A. On the highest racks
+B. At the back of the warehouse
+C. Near the dispatch area at easy picking height
+D. In the damaged goods area",C. Near the dispatch area at easy picking height,Placing fast movers close to dispatch at easy heights cuts travel and picking time.,,,
+inbound-receiving-putaway-mc-4,"Inbound receiving, GRN and put-away",L1,An ASN from a supplier is:,"A. A quality certificate
+B. An advance shipping notice listing what is coming
+C. A payment receipt
+D. A tax return",B. An advance shipping notice listing what is coming,"The advance shipping notice tells the warehouse what will arrive, so receiving can be planned and checked.",,,
+facility-vendor-management-mc-1,"Facility services vendor management (housekeeping, security, pantry)",L1,A service level agreement (SLA) with a housekeeping vendor should include:,"A. Only the monthly price
+B. Measurable standards such as staffing, cleanliness scores and response times
+C. The vendor's office address only
+D. No penalties","B. Measurable standards such as staffing, cleanliness scores and response times",SLAs need measurable standards so performance can be checked and linked to payments.,,,
+facility-vendor-management-mc-2,"Facility services vendor management (housekeeping, security, pantry)",L1,Which licence must a food vendor running an office cafeteria hold?,"A. An FSSAI licence or registration
+B. A GST LUT
+C. A trade mark
+D. A drug licence",A. An FSSAI licence or registration,Food businesses need FSSAI licensing or registration under the Food Safety and Standards Act.,,,
+facility-vendor-management-mc-3,"Facility services vendor management (housekeeping, security, pantry)",L1,"Before paying a manpower vendor's monthly bill, the best check is:","A. The vendor's website
+B. The number of uniforms
+C. The vendor's brochure
+D. Attendance records and PF/ESI challans matching the billed headcount",D. Attendance records and PF/ESI challans matching the billed headcount,Matching attendance and statutory challans to the bill confirms people were deployed and paid legally.,,,
+facility-vendor-management-mc-4,"Facility services vendor management (housekeeping, security, pantry)",L1,Security guards supplied by a private agency should have:,"A. Only a uniform
+B. A driving licence
+C. Police verification and training as required under the state's private security rules
+D. A university degree",C. Police verification and training as required under the state's private security rules,"The Private Security Agencies (Regulation) Act and state rules require licensed agencies and verified, trained guards.",,,
+amc-contract-management-mc-1,AMC and facility equipment maintenance contracts,L1,A comprehensive AMC usually covers:,"A. Only preventive visits
+B. Labour and most spare parts
+C. Only emergency calls
+D. Only consumables",B. Labour and most spare parts,Comprehensive contracts include parts as well as labour; non-comprehensive ones bill parts separately.,,,
+amc-contract-management-mc-2,AMC and facility equipment maintenance contracts,L1,Fire extinguishers in an office should be:,"A. Checked and serviced at regular intervals with records kept
+B. Replaced every month
+C. Kept locked away
+D. Checked only after a fire",A. Checked and serviced at regular intervals with records kept,Regular inspection and servicing with tagged records keep extinguishers ready and meet fire safety norms.,,,
+amc-contract-management-mc-3,AMC and facility equipment maintenance contracts,L1,Why keep an AMC register with renewal dates?,"A. To claim tax refunds
+B. To decide salaries
+C. For the canteen menu
+D. To renew contracts on time and avoid uncovered breakdowns",D. To renew contracts on time and avoid uncovered breakdowns,A register with reminders prevents lapses that leave critical equipment without support.,,,
+amc-contract-management-mc-4,AMC and facility equipment maintenance contracts,L1,Repeated breakdowns of the same equipment under AMC should lead you to:,"A. Pay more without question
+B. Stop using the equipment immediately in all cases
+C. Ask the vendor for a root cause and fix, and review the contract
+D. Remove the AMC","C. Ask the vendor for a root cause and fix, and review the contract","Repeat faults need root cause analysis and vendor accountability, and may affect renewal or replacement decisions.",,,
