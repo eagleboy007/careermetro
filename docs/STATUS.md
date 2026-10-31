@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (Change of destination follow-ups, C25, FR-59)
+Last updated: 2026-10-31 (scale check)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -90,6 +90,8 @@ Last updated: 2026-10-31 (Change of destination follow-ups, C25, FR-59)
 
 ## In progress
 
+- Scale check (`docs/scale-check.md`, `.github/workflows/scale.yml`, CI Postgres only): `scripts/scale/seed.mjs` writes 10,000 synthetic members with goals, ride days, My jobs, Settings, Timetable marks, connections and chats, plus 9,000 feed posts and 1,200 events; `time.mjs` times nine signed-in pages (p95 budget 2.5 s) and the four crons (80% of maxDuration), with EXPLAIN ANALYZE and pg_stat_statements; `cleanup.mjs` removes exactly the seed. The first CI run gives the numbers; no index added before them.
+- Same PR: the cleanup cron now sets `maxDuration = 60` (it had Hobby's default, 10 s without Fluid compute). Open question for the run: the events digest may never reach people behind opted-in members with no event that week (they get no row, so stay first).
 - CSP report-only (#210): host allow-list `Content-Security-Policy-Report-Only`, set per request in `src/proxy.ts` (`src/lib/csp.ts`; T118), reports to `POST /api/csp-report`, logged as `csp_violation` with directive and blocked host only.
 - CSP check (2026-10-31): a code read found no violation of ours (every script, style, font, image and fetch is same-origin; no inline script, `eval` or third-party host of ours; Next's inline scripts need the policy's `'unsafe-inline'`, as nonces would end prerendering). The e2e walk now prints `CSP: none` or each report-only violation at its end without failing (`e2e/walk.mjs`), and report-only console lines no longer count as console errors. The CI job log couldn't be read here (its storage host is blocked from this sandbox), so the walk's next CI run is the first CSP read.
 - Enforce waits on the log drain (launch readiness 6) for production reports and on Milin; the policy stays report-only until then. Criteria in `docs/dev/security-sweep-2026-10-20.md`.

@@ -46,3 +46,6 @@ next-env.d.ts
 
 # end-to-end walk screenshots
 /e2e/results
+
+# scale check report
+/scripts/scale/results
