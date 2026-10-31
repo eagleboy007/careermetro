@@ -2741,17 +2741,6 @@
     "free": true
   },
   {
-    "title": "Autopsy user guide",
-    "url": "https://sleuthkit.org/autopsy/docs/user-docs/latest/",
-    "provider": "The Sleuth Kit",
-    "kind": "docs",
-    "skillIds": [
-      "digital-forensics"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "RE101: reverse engineering workshop",
     "url": "https://malwareunicorn.org/workshops/re101.html",
     "provider": "Malware Unicorn",
@@ -4482,7 +4471,9 @@
     "provider": "NPTEL",
     "kind": "course",
     "skillIds": [
-      "domain-bfsi"
+      "domain-bfsi",
+      "credit-appraisal",
+      "rbi-credit-norms"
     ],
     "minutes": 1800,
     "free": true
@@ -6175,7 +6166,10 @@
     "provider": "Freshworks Academy",
     "kind": "course",
     "skillIds": [
-      "support-ticketing-tools"
+      "support-ticketing-tools",
+      "case-documentation",
+      "omnichannel-support",
+      "order-returns-refunds"
     ],
     "minutes": 120,
     "free": true
@@ -7977,17 +7971,6 @@
       "iot-protocols"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Mosquitto documentation",
-    "url": "https://mosquitto.org/documentation/",
-    "provider": "Eclipse Mosquitto",
-    "kind": "docs",
-    "skillIds": [
-      "iot-protocols"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -10554,7 +10537,9 @@
     "provider": "SAP Learning",
     "kind": "course",
     "skillIds": [
-      "sap-successfactors-talent-modules"
+      "sap-successfactors-talent-modules",
+      "full-cycle-recruitment",
+      "interview-coordination"
     ],
     "minutes": 900,
     "free": true
@@ -12132,7 +12117,8 @@
     "provider": "SAP Learning",
     "kind": "course",
     "skillIds": [
-      "sap-successfactors-employee-central"
+      "sap-successfactors-employee-central",
+      "hrms-tools"
     ],
     "minutes": 540,
     "free": true
@@ -12468,17 +12454,6 @@
     "free": true
   },
   {
-    "title": "Autopsy user documentation",
-    "url": "https://sleuthkit.org/autopsy/docs/user-docs/4.23.0/pages.html",
-    "provider": "Sleuth Kit",
-    "kind": "docs",
-    "skillIds": [
-      "forensic-tool-suites"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Bellingcat Online Investigations Toolkit",
     "url": "https://bellingcat.gitbook.io/toolkit",
     "provider": "Bellingcat",
@@ -12759,7 +12734,8 @@
     "provider": "MIT OpenCourseWare",
     "kind": "course",
     "skillIds": [
-      "business-case"
+      "business-case",
+      "financial-modelling"
     ],
     "minutes": 1200,
     "free": true
@@ -12828,6 +12804,1974 @@
       "scripting-bash"
     ],
     "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Explore and Create Account Plans (Account-Based Selling)",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/account-based-selling/explore-and-create-account-plans",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "key-account-planning"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Business to Business Marketing (B2B)",
+    "url": "https://nptel.ac.in/courses/110107168",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "key-account-planning"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Trade Promotion Management in Consumer Goods Cloud",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/trade-promotion-management-in-consumer-goods-cloud",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "trade-spend-management"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Promotions Setup in Trade Promotion Management",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/promotions-setup-in-trade-promotion-management",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "trade-spend-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Adopt Trade Promotion Management in Consumer Goods Cloud (trail)",
+    "url": "https://trailhead.salesforce.com/content/learn/trails/adopt-trade-promotion-management-in-consumer-goods-cloud",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "trade-spend-management"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Sales and Distribution Management",
+    "url": "https://nptel.ac.in/courses/110105122",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "channel-credit-collections",
+      "distributor-management",
+      "primary-secondary-sales",
+      "territory-sales-planning"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Manage Partner Relationships (trail)",
+    "url": "https://trailhead.salesforce.com/content/learn/trails/manage-partner-relationships",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "distributor-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Distributor Management (FieldAssist help article)",
+    "url": "https://fieldassistsupport.freshdesk.com/support/solutions/articles/14000091423-distributor-management",
+    "provider": "FieldAssist",
+    "kind": "docs",
+    "skillIds": [
+      "dms-sfa-tools"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Retail Execution in Consumer Goods Cloud",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/retail-execution-in-consumer-goods-cloud",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "dms-sfa-tools"
+    ],
+    "minutes": 35,
+    "free": true
+  },
+  {
+    "title": "Plan and Manage Store Visits with Consumer Goods Cloud",
+    "url": "https://trailhead.salesforce.com/content/learn/projects/plan-and-manage-store-visits-with-consumer-goods-cloud",
+    "provider": "Salesforce Trailhead",
+    "kind": "practice",
+    "skillIds": [
+      "dms-sfa-tools"
+    ],
+    "minutes": 95,
+    "free": true
+  },
+  {
+    "title": "Prospecting to Improve Sales",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/prospecting-to-improve-sales",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "b2b-prospecting",
+      "sales-engagement-tools"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Apollo Academy: Outbound courses",
+    "url": "https://www.apollo.io/academy/outbound",
+    "provider": "Apollo.io Academy",
+    "kind": "course",
+    "skillIds": [
+      "sales-engagement-tools"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Segmentation, Targeting and Positioning (15.810 Marketing Management, Lecture 6)",
+    "url": "https://ocw.mit.edu/courses/15-810-marketing-management-fall-2010/resources/mit15_810f10_lec06",
+    "provider": "MIT OpenCourseWare",
+    "kind": "docs",
+    "skillIds": [
+      "product-positioning-messaging"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "15.835 Entrepreneurial Marketing: course materials",
+    "url": "https://ocw.mit.edu/courses/15-835-entrepreneurial-marketing-spring-2002/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "docs",
+    "skillIds": [
+      "product-positioning-messaging"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Product and Brand Management",
+    "url": "https://nptel.ac.in/courses/110107161",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "product-positioning-messaging"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Strategic Management for Competitive Advantage",
+    "url": "https://nptel.ac.in/courses/110105161",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "competitive-intelligence"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Competitor Tracking in Salesforce: Track the Competition",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/competitor-tracking-in-salesforce/track-the-competition",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "competitive-intelligence"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Valuation online class (free webcasts)",
+    "url": "https://pages.stern.nyu.edu/%7eadamodar/New_Home_Page/webcastvalonline.htm",
+    "provider": "Aswath Damodaran, NYU Stern",
+    "kind": "video",
+    "skillIds": [
+      "financial-modelling"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Damodaran Online: valuation and corporate finance spreadsheets",
+    "url": "https://pages.stern.nyu.edu/%7eadamodar/New_Home_Page/tools.html",
+    "provider": "Aswath Damodaran, NYU Stern",
+    "kind": "practice",
+    "skillIds": [
+      "financial-modelling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Getting Started with TallyPrime",
+    "url": "https://help.tallysolutions.com/getting-started-with-tallyprime/",
+    "provider": "Tally Solutions",
+    "kind": "docs",
+    "skillIds": [
+      "tally-accounting-software"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Tally tutorial videos (Tally Studio)",
+    "url": "https://tallysolutions.com/tally-anchors/studio/",
+    "provider": "Tally Solutions",
+    "kind": "video",
+    "skillIds": [
+      "tally-accounting-software"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Navigating Zoho Books",
+    "url": "https://www.zoho.com/books/help/getting-started/navigating-zoho-books.html",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "tally-accounting-software"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Study Material: Intermediate Paper 5, Auditing and Ethics",
+    "url": "https://www.icai.org/post/22156",
+    "provider": "ICAI Board of Studies",
+    "kind": "course",
+    "skillIds": [
+      "statutory-audit-support"
+    ],
+    "minutes": 2400,
+    "free": true
+  },
+  {
+    "title": "Approach to Tax Audit under Section 44AB (checklist)",
+    "url": "https://www.icai.org/post/approach-to-tax-audit-under-section-44ab-of-the-income-tax-act-1961",
+    "provider": "ICAI",
+    "kind": "practice",
+    "skillIds": [
+      "statutory-audit-support"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Understand the key features of your CIBIL report",
+    "url": "https://www.cibil.com/blog/understand-the-key-features-of-your-cibil-report",
+    "provider": "TransUnion CIBIL",
+    "kind": "docs",
+    "skillIds": [
+      "credit-bureau-analysis"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Understanding Your CIBIL Score and Report (brochure)",
+    "url": "https://www.cibil.com/content/dam/cibil/consumer/cibil-score-and-report-brochure-1-9-25.pdf",
+    "provider": "TransUnion CIBIL",
+    "kind": "docs",
+    "skillIds": [
+      "credit-bureau-analysis"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How to read and interpret your CIBIL report",
+    "url": "https://moneylife.in/article/how-to-read-and-interpret-your-cibil-report/62740.html",
+    "provider": "Moneylife",
+    "kind": "docs",
+    "skillIds": [
+      "credit-bureau-analysis"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Master Circular: Basel III Capital Regulations",
+    "url": "https://rbi.org.in/Scripts/BS_ViewMasCirculardetails.aspx?id=12815",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "rbi-credit-norms"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "High-level summary of Basel III reforms",
+    "url": "https://www.bis.org/bcbs/publ/d424_hlsummary.htm",
+    "provider": "Bank for International Settlements",
+    "kind": "docs",
+    "skillIds": [
+      "rbi-credit-norms"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "FATF Guidance: Politically Exposed Persons (Recommendations 12 and 22)",
+    "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Peps-r12-r22.html",
+    "provider": "FATF",
+    "kind": "docs",
+    "skillIds": [
+      "sanctions-screening"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "A Framework for OFAC Compliance Commitments",
+    "url": "https://ofac.treasury.gov/recent-actions/20190502_33",
+    "provider": "U.S. Treasury OFAC",
+    "kind": "docs",
+    "skillIds": [
+      "sanctions-screening"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "OFAC Sanctions List Search tool",
+    "url": "https://ofac.treasury.gov/sanctions-list-search-tool",
+    "provider": "U.S. Treasury OFAC",
+    "kind": "practice",
+    "skillIds": [
+      "sanctions-screening"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Acas guide to induction",
+    "url": "https://www.acas.org.uk/acas-guide-to-staff-induction",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "employee-onboarding-exits"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Template checklist for induction of new staff",
+    "url": "https://Www.acas.org.uk/template-checklist-for-induction-of-new-staff",
+    "provider": "Acas",
+    "kind": "practice",
+    "skillIds": [
+      "employee-onboarding-exits"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Full and final settlement: rules, components and format",
+    "url": "https://www.zoho.com/in/payroll/academy/payroll-administration/fnf.html",
+    "provider": "Zoho Payroll Academy",
+    "kind": "docs",
+    "skillIds": [
+      "employee-onboarding-exits"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Acas Code of Practice on disciplinary and grievance procedures",
+    "url": "https://www.acas.org.uk/acas-code-of-practice-on-disciplinary-and-grievance-procedures",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "employee-relations"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Labour Welfare and Industrial Relations",
+    "url": "https://nptel.ac.in/courses/110103506",
+    "provider": "NPTEL (IIT Guwahati)",
+    "kind": "course",
+    "skillIds": [
+      "employee-relations",
+      "indian-labour-law-compliance"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Acas guide to conducting workplace investigations",
+    "url": "https://acas.org.uk/acas-guide-to-conducting-workplace-investigations",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "employee-relations"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Strategic Performance Management",
+    "url": "https://nptel.ac.in/courses/109105127",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "performance-appraisal-administration"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Refine Google searches (search operators)",
+    "url": "https://support.google.com/websearch/answer/2466433",
+    "provider": "Google Search Help",
+    "kind": "docs",
+    "skillIds": [
+      "candidate-sourcing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Talent Acquisition and Management",
+    "url": "https://nptel.ac.in/courses/110107152",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "candidate-sourcing",
+      "full-cycle-recruitment",
+      "recruitment-metrics"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Search on GitHub: searching users and other qualifiers",
+    "url": "https://docs.github.com/en/search-github/searching-on-github",
+    "provider": "GitHub Docs",
+    "kind": "docs",
+    "skillIds": [
+      "candidate-sourcing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "15.067 Competitive Decision-Making and Negotiation: course materials",
+    "url": "https://ocw.mit.edu/courses/15-067-competitive-decision-making-and-negotiation-spring-2011/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "docs",
+    "skillIds": [
+      "offer-negotiation"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "11.011 The Art and Science of Negotiation: course materials",
+    "url": "https://ocw.mit.edu/courses/11-011-the-art-and-science-of-negotiation-spring-2006/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "docs",
+    "skillIds": [
+      "commercial-negotiation",
+      "offer-negotiation"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Negotiating a job offer (career guide)",
+    "url": "https://www.umass.edu/humanities-arts/careers/career-guides/negotiating",
+    "provider": "University of Massachusetts Amherst",
+    "kind": "docs",
+    "skillIds": [
+      "offer-negotiation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Employee value proposition toolkit",
+    "url": "https://www.respectatwork.gov.au/node/468",
+    "provider": "Respect@Work (Australian Government)",
+    "kind": "docs",
+    "skillIds": [
+      "employer-branding"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Fact sheet: Employer value proposition (February 2019)",
+    "url": "https://cct.mycpd.co.za/SABPP/FactSheets/2019/fact-sheet_february-2019_wit.pdf",
+    "provider": "SABPP (South African Board for People Practices)",
+    "kind": "docs",
+    "skillIds": [
+      "employer-branding"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Free employer branding courses (EBAx)",
+    "url": "https://universumglobal.com/resources/news-press/free-employer-branding-courses",
+    "provider": "Universum Employer Branding Academy",
+    "kind": "course",
+    "skillIds": [
+      "employer-branding"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "ESD.260J Logistics Systems: lecture notes (demand forecasting)",
+    "url": "https://ocw.mit.edu/courses/esd-260j-logistics-systems-fall-2006/pages/lecture-notes",
+    "provider": "MIT OpenCourseWare",
+    "kind": "docs",
+    "skillIds": [
+      "demand-forecasting"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Supply Chain Analytics",
+    "url": "https://nptel.ac.in/courses/110107074",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "demand-forecasting",
+      "logistics-analytics"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "15.772J D-Lab: Supply Chains: lecture notes (demand management and forecasting)",
+    "url": "https://ocw.mit.edu/courses/15-772j-d-lab-supply-chains-fall-2014/pages/lecture-notes/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "docs",
+    "skillIds": [
+      "demand-forecasting"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Best Practices: Using Spend Analysis to Help Agencies Take a More Strategic Approach to Procurement (GAO-04-870)",
+    "url": "https://gao.gov/assets/gao-04-870.pdf",
+    "provider": "U.S. Government Accountability Office",
+    "kind": "docs",
+    "skillIds": [
+      "procurement-analytics"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Exploring Procurement Analytics in SAP Ariba",
+    "url": "https://learning.sap.com/courses/procurement-process-overview/exploring-procurement-analytics-in-sap-ariba",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "procurement-analytics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SAP Ariba Procurement Reports",
+    "url": "https://learning.sap.com/courses/sap-ariba-procurement-reports",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "procurement-analytics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Exploring Planning Processes in SAP IBP",
+    "url": "https://learning.sap.com/courses/exploring-planning-processes-in-sap-ibp",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sales-operations-planning",
+      "supply-planning-tools"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Oracle Advanced Supply Chain Planning Implementation and User's Guide (Release 12.2)",
+    "url": "https://docs.oracle.com/cd/E26401_01/doc.122/e48756/T309464T309466.htm",
+    "provider": "Oracle Docs",
+    "kind": "docs",
+    "skillIds": [
+      "supply-planning-tools"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Summary dashboard (Customer Service historical analytics KPIs)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/customer-service/summary-dashboard-cs",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "contact-centre-metrics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Voice channel historical analytics, reports and call insights",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/customer-service/use/voice-channel-reports-analytics",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "contact-centre-metrics"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Upsell and cross-sell in call centers",
+    "url": "https://learn.microsoft.com/en-us/training/modules/configure-call-center-channel/04-upsell-cross-sell",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "cross-selling-upselling"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Managing Your Sales to Customer Success Handoff",
+    "url": "https://academy.hubspot.com/lessons/sales-customer-success-handoff",
+    "provider": "HubSpot Academy",
+    "kind": "video",
+    "skillIds": [
+      "cross-selling-upselling"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Management of Field Sales",
+    "url": "https://nptel.ac.in/courses/110104117",
+    "provider": "NPTEL (IIT Kanpur)",
+    "kind": "course",
+    "skillIds": [
+      "key-account-planning"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Marketing Management - II (marketing channels and distribution)",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_mg05/preview",
+    "provider": "NPTEL (IIT Kanpur)",
+    "kind": "course",
+    "skillIds": [
+      "distributor-management"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Principles of Human Resource Management",
+    "url": "https://onlinecourses-archive.nptel.ac.in/noc16_mg03",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "performance-appraisal-administration"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Performance management: text-based supervisor training",
+    "url": "https://www.opm.gov/policy-data-oversight/performance-management/performance-management-toolkit/supervisor-training/text-based-supervisor-training.pdf",
+    "provider": "U.S. Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "performance-appraisal-administration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Guidance Note on Audit of Banks (2026 Edition)",
+    "url": "https://www.icai.org/post/guidance-note-on-audit-of-banks-2026-edition-details",
+    "provider": "ICAI (Auditing and Assurance Standards Board)",
+    "kind": "docs",
+    "skillIds": [
+      "statutory-audit-support"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Soft Skills for Business Negotiations and Marketing Strategies",
+    "url": "https://nptel.ac.in/courses/110105090/",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "commercial-negotiation",
+      "deal-closing"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "15.665 Power and Negotiation",
+    "url": "https://ocw.mit.edu/courses/15-665-power-and-negotiation-spring-2014",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "commercial-negotiation"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Retail Management",
+    "url": "https://nptel.ac.in/courses/110105158",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "modern-trade-retail"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Retail Industry in India",
+    "url": "https://ibef.org/industry/retail-india",
+    "provider": "IBEF (India Brand Equity Foundation)",
+    "kind": "docs",
+    "skillIds": [
+      "modern-trade-retail"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Inbound Sales Certification Course",
+    "url": "https://academy.hubspot.com/courses/inbound-sales",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "b2b-prospecting"
+    ],
+    "minutes": 186,
+    "free": true
+  },
+  {
+    "title": "Opportunity Management",
+    "url": "https://trailhead.salesforce.com/en/content/learn/modules/opportunity-management",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "pipeline-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Sell Smarter with Pipeline Inspection",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/sell-smarter-with-pipeline-inspection",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "pipeline-management"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Manage Your Sales Pipeline Records with HubSpot",
+    "url": "https://openclassrooms.com/en/courses/9075976-manage-your-sales-pipeline-records-with-hubspot",
+    "provider": "OpenClassrooms",
+    "kind": "course",
+    "skillIds": [
+      "pipeline-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Go-to-Market Planning",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/go-to-market-planning",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "go-to-market-launches"
+    ],
+    "minutes": 35,
+    "free": true
+  },
+  {
+    "title": "Product Launch Strategy: Quick Look",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/product-launch-strategy-quick-look",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "go-to-market-launches"
+    ],
+    "minutes": 5,
+    "free": true
+  },
+  {
+    "title": "Understanding your customers",
+    "url": "https://www.open.edu/openlearn/money-business/understanding-your-customers",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "customer-market-research"
+    ],
+    "minutes": 360,
+    "free": true
+  },
+  {
+    "title": "Marketing Research and Analysis",
+    "url": "https://onlinecourses.nptel.ac.in/noc19_mg49/preview",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "customer-market-research"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Buyer Persona lesson",
+    "url": "https://academy.hubspot.com/lessons/buyer-personas",
+    "provider": "HubSpot Academy",
+    "kind": "video",
+    "skillIds": [
+      "customer-market-research"
+    ],
+    "minutes": 24,
+    "free": true
+  },
+  {
+    "title": "Standard Costing: CA Intermediate virtual coaching class notes",
+    "url": "https://live.icai.org/bos/vcc-2nd-batch-recorded-lectures/pdf/STANDARD%20COSTING.pdf",
+    "provider": "ICAI Board of Studies",
+    "kind": "docs",
+    "skillIds": [
+      "fpa-variance-reporting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to bookkeeping and accounting",
+    "url": "https://www.open.edu/openlearn/money-business/introduction-bookkeeping-and-accounting",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "accounts-payable-receivable"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Perform accounts payable daily procedures in Dynamics 365 Finance",
+    "url": "https://learn.microsoft.com/en-us/training/modules/accounts-payable-daily-procedures-dyn365-finance/1-introduction",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "accounts-payable-receivable"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Get started with accounts receivable daily procedures in Dynamics 365 Finance",
+    "url": "https://learn.microsoft.com/en-us/training/modules/accounts-receivable-daily-procedures-dyn365-finance",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "accounts-payable-receivable"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Financial Statement Analysis and Reporting",
+    "url": "https://nptel.ac.in/courses/110107073",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "credit-appraisal",
+      "financial-statement-analysis"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Master Circular: Prudential norms on Income Recognition, Asset Classification and Provisioning (IRAC, SMA, NPA)",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasCirculardetails.aspx?id=12822",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "credit-portfolio-monitoring"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Roll Rates",
+    "url": "https://openriskmanual.org/wiki/Roll_Rates",
+    "provider": "Open Risk Manual",
+    "kind": "docs",
+    "skillIds": [
+      "credit-portfolio-monitoring"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Credit Risk: Vintage Analysis",
+    "url": "https://listendata.com/2019/09/credit-risk-vintage-analysis.html",
+    "provider": "ListenData",
+    "kind": "docs",
+    "skillIds": [
+      "credit-portfolio-monitoring"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Master Direction: Know Your Customer (KYC) Direction, 2016 (updated)",
+    "url": "https://rbi.org.in/Scripts/NotificationUser.aspx?Id=11566",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "kyc-due-diligence",
+      "kyc-verification"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Guidance on Beneficial Ownership of Legal Persons",
+    "url": "https://fatf-gafi.org/en/publications/Fatfrecommendations/Guidance-Beneficial-Ownership-Legal-Persons.html",
+    "provider": "FATF",
+    "kind": "docs",
+    "skillIds": [
+      "kyc-due-diligence"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "FINnet 2.0: user manuals and guides for reporting entities",
+    "url": "https://fiuindia.gov.in/files/misc/finnet2.html",
+    "provider": "FIU-IND",
+    "kind": "docs",
+    "skillIds": [
+      "str-regulatory-reporting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Brochure on FIU-IND and reporting obligations",
+    "url": "https://fiuindia.gov.in/pdfs/downloads/Brochures%20on%20FIU.pdf",
+    "provider": "FIU-IND",
+    "kind": "docs",
+    "skillIds": [
+      "str-regulatory-reporting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Red Flag Indicators handout (financial and non-financial sectors)",
+    "url": "https://www.fatf-gafi.org/content/dam/fatf-gafi/brochures/Handout-Red-Flags-VA-Financial-Non-Financial.pdf",
+    "provider": "FATF",
+    "kind": "docs",
+    "skillIds": [
+      "aml-transaction-monitoring",
+      "str-regulatory-reporting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Online ECR process flow for employers",
+    "url": "https://www.epfindia.gov.in/site_docs/PDFs/OnlineECR_PDFs/ProcessFlowECR.pdf",
+    "provider": "EPFO",
+    "kind": "docs",
+    "skillIds": [
+      "indian-labour-law-compliance",
+      "payroll-inputs-processing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Principles of Human Resource Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_mg21/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "hr-policy-administration"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "The right to a written statement (employment terms)",
+    "url": "https://acas.org.uk/written-statements",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "hr-policy-administration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What the written statement must include",
+    "url": "https://www.acas.org.uk/what-must-be-written-in-an-employment-contract/what-the-written-statement-must-include",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "hr-policy-administration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Employee Engagement Toolkit for Supervisors",
+    "url": "https://chcoc.gov/sites/default/files/employee-engagement-toolkit-supervisors_10-21-2019_508.pdf",
+    "provider": "US Office of Personnel Management (via CHCO Council)",
+    "kind": "docs",
+    "skillIds": [
+      "employee-engagement"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Organizational Behaviour",
+    "url": "https://nptel.ac.in/courses/110106145",
+    "provider": "NPTEL (IIT Hyderabad)",
+    "kind": "course",
+    "skillIds": [
+      "employee-engagement"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "What is employee engagement and how can I find out more?",
+    "url": "https://coanalysis.blog.gov.uk/2015/03/02/what-is-employee-engagement-and-how-can-i-find-out-more/",
+    "provider": "UK Government (Civil Service blog)",
+    "kind": "docs",
+    "skillIds": [
+      "employee-engagement"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Human resources: recruitment and selection",
+    "url": "https://www.open.edu/openlearn/money-business/human-resources/human-resources-recruitment-and-selection",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "candidate-screening-interviewing"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "Structured Interviews: A Practical Guide",
+    "url": "https://www.opm.gov/chcoc/transmittals/2008/structured-interview-guide_508.pdf",
+    "provider": "US Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "candidate-screening-interviewing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Interview and assess job applicants",
+    "url": "https://www.nibusinessinfo.co.uk/content/interview-and-assess-job-applicants",
+    "provider": "nibusinessinfo.co.uk (Invest NI)",
+    "kind": "docs",
+    "skillIds": [
+      "candidate-screening-interviewing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Introduction to Zoho Recruit",
+    "url": "https://help.zoho.com/portal/en/kb/recruit/introduction-to-zoho-recruit/articles/zoho-recruit-introduction",
+    "provider": "Zoho Recruit Help",
+    "kind": "docs",
+    "skillIds": [
+      "applicant-tracking-systems"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "An introduction to structured recruiting and Greenhouse",
+    "url": "https://www.greenhouse.com/guidance/an-introduction-to-structured-recruiting-and-greenhouse",
+    "provider": "Greenhouse",
+    "kind": "docs",
+    "skillIds": [
+      "applicant-tracking-systems"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Dynamics 365 Human Resources recruitment overview",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/human-resources/hr-recruit-overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "applicant-tracking-systems"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "AICTE Internship Policy (training and placement cell guidelines)",
+    "url": "https://aicte.gov.in/sites/default/files/AICTE%20Internship%20Policy.pdf",
+    "provider": "AICTE",
+    "kind": "docs",
+    "skillIds": [
+      "campus-hiring"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "NACE recruiting best practices for new college graduates",
+    "url": "https://www.k-state.edu/careercenter/conference/documents/nacerecruitingbestpracticesjuly2011.pdf",
+    "provider": "NACE (hosted by Kansas State University)",
+    "kind": "docs",
+    "skillIds": [
+      "campus-hiring"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "NACE Principles for Employment Professionals",
+    "url": "https://career.ecu.edu/wp-content/pv-uploads/sites/58/2018/11/NACEPrinciplesforEmploymentProfessions.pdf",
+    "provider": "NACE (hosted by East Carolina University)",
+    "kind": "docs",
+    "skillIds": [
+      "campus-hiring"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Management of Inventory Systems",
+    "url": "https://nptel.ac.in/courses/110105095",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "inventory-planning-optimization"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "15.762J Supply Chain Planning",
+    "url": "https://ocw.mit.edu/courses/15-762j-supply-chain-planning-spring-2011/pages/syllabus/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "inventory-planning-optimization"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "ESD.260J Logistics Systems",
+    "url": "https://ocw.mit.edu/courses/esd-260j-logistics-systems-fall-2006",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "inventory-planning-optimization",
+      "logistics-analytics"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Modelling and Analytics for Supply Chain Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_mg48/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "logistics-analytics"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Inbound Service Fundamentals",
+    "url": "https://academy.hubspot.com/lessons/inbound-service-fundamentals",
+    "provider": "HubSpot Academy",
+    "kind": "video",
+    "skillIds": [
+      "customer-query-resolution",
+      "omnichannel-support"
+    ],
+    "minutes": 71,
+    "free": true
+  },
+  {
+    "title": "Managing unreasonable conduct by a complainant: manual",
+    "url": "https://cmsassets.ombo.nsw.gov.au/assets/Managing-unreasonable-conduct-by-a-complainant-manual.pdf",
+    "provider": "NSW Ombudsman",
+    "kind": "docs",
+    "skillIds": [
+      "escalation-handling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Guide to principles of good complaint handling",
+    "url": "https://www.ombudsmanassociation.org/sites/default/files/2021-03/BIOAGoodComplaintHandling.pdf",
+    "provider": "Ombudsman Association",
+    "kind": "docs",
+    "skillIds": [
+      "escalation-handling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Amendment to Master Direction on KYC: Video based Customer Identification Process (V-CIP)",
+    "url": "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=11783",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "kyc-verification"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Retail Marketing Strategy",
+    "url": "https://nptel.ac.in/courses/110107167",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "modern-trade-retail"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "Marketing Management - II (Week 7: Marketing channels and distribution)",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_mg68/preview",
+    "provider": "NPTEL (IIT Kanpur)",
+    "kind": "course",
+    "skillIds": [
+      "primary-secondary-sales"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "Lead Qualification: Quick Look",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/lead-qualification-quick-look",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "b2b-prospecting",
+      "lead-qualification"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Master Direction: Lending to Micro, Small and Medium Enterprises (MSME) Sector",
+    "url": "https://website.rbi.org.in/web/rbi/-/notifications/master-direction-lending-to-micro-small-amp-medium-enterprises-msme-sector-updated-as-on-july-29-2022-11060",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "credit-appraisal"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Sales Forecasting (lesson)",
+    "url": "https://academy.hubspot.com/lessons/sales-forecasting",
+    "provider": "HubSpot Academy",
+    "kind": "video",
+    "skillIds": [
+      "sales-forecasting"
+    ],
+    "minutes": 21,
+    "free": true
+  },
+  {
+    "title": "Salesforce Forecasting",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/sales-forecasting",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "sales-forecasting"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Business Forecasting (IIT Bombay)",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_mg66/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "sales-forecasting"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Working Capital Management (IIT Roorkee): receivables and credit policy",
+    "url": "https://nptel.ac.in/courses/110107093",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "channel-credit-collections"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Collect outstanding balances (Business Central)",
+    "url": "https://learn.microsoft.com/en-US/dynamics365/business-central/receivables-collect-outstanding-balances",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "channel-credit-collections"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Send reminders to customers in Dynamics 365 Business Central",
+    "url": "https://learn.microsoft.com/en-us/training/modules/send-reminders-dynamics-365-business-central",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "channel-credit-collections"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Salesforce Maps Territory Planning",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/salesforce-maps-territory-planning",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "territory-sales-planning"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Learn About Planning (territories, key accounts, quota)",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/cert-prep-salesforce-certified-sales-representative/learn-about-planning",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "territory-sales-planning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Management of Field Sales (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/110107163",
+    "provider": "NPTEL",
+    "kind": "video",
+    "skillIds": [
+      "territory-sales-planning",
+      "deal-closing"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "HubSpot Lead Qualification and Lead Segmentation",
+    "url": "https://academy.hubspot.com/lessons/segmenting-qualifying-leads-hubspot",
+    "provider": "HubSpot Academy",
+    "kind": "video",
+    "skillIds": [
+      "lead-qualification"
+    ],
+    "minutes": 35,
+    "free": true
+  },
+  {
+    "title": "Create a Lead Qualification Model (scoring and grading)",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/lead-qualification-with-scoring-and-grading/create-a-lead-qualification-model",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "lead-qualification"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Closing Sales With HubSpot",
+    "url": "https://academy.hubspot.com/lessons/closing-sales-with-hubspot",
+    "provider": "HubSpot Academy",
+    "kind": "video",
+    "skillIds": [
+      "deal-closing"
+    ],
+    "minutes": 16,
+    "free": true
+  },
+  {
+    "title": "Sales Deal Structures",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/sales-deal-structures",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "deal-closing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Sales Enablement certification course",
+    "url": "https://academy.hubspot.com/courses/sales-enablement",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "sales-enablement"
+    ],
+    "minutes": 440,
+    "free": true
+  },
+  {
+    "title": "Salesforce Enablement Basics",
+    "url": "https://trailhead.salesforce.com/content/learn/modules/saleforce-enablement-basics",
+    "provider": "Salesforce Trailhead",
+    "kind": "course",
+    "skillIds": [
+      "sales-enablement"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Sales Battle Cards: The Ultimate Guide",
+    "url": "https://www.salesforce.com/sales/battle-cards/",
+    "provider": "Salesforce",
+    "kind": "docs",
+    "skillIds": [
+      "sales-enablement"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "15.818 Pricing (MIT Sloan) course materials",
+    "url": "https://ocw.mit.edu/courses/15-818-pricing-spring-2010/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "pricing-packaging"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "15.810 Marketing Management course materials (see the Principles of Pricing session)",
+    "url": "https://ocw.mit.edu/courses/15-810-marketing-management-analytics-frameworks-and-applications-fall-2015/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "docs",
+    "skillIds": [
+      "pricing-packaging"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "SaaS pricing and packaging strategy: model, metric and tier structure",
+    "url": "https://stripe.com/resources/more/saas-pricing-and-packaging-strategy",
+    "provider": "Stripe",
+    "kind": "docs",
+    "skillIds": [
+      "pricing-packaging"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Get Started with Planning (tutorial)",
+    "url": "https://docs.oracle.com/en/cloud/saas/planning-budgeting-cloud/planning-tutorial-get-started/index.html",
+    "provider": "Oracle Help Center",
+    "kind": "practice",
+    "skillIds": [
+      "fpa-planning-tools"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Oracle Cloud EPM Planning: tours, videos and tutorials",
+    "url": "https://docs.oracle.com/en/cloud/saas/planning-budgeting-cloud/training.html",
+    "provider": "Oracle Help Center",
+    "kind": "video",
+    "skillIds": [
+      "fpa-planning-tools"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Mastering SAP Analytics Cloud for Planning",
+    "url": "https://learning.sap.com/learning-journeys/mastering-sap-analytics-cloud-for-planning",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "fpa-planning-tools"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Perform a bank reconciliation in Dynamics 365 Business Central",
+    "url": "https://learn.microsoft.com/en-us/training/modules/bank-reconciliation-dynamics-365-business-central",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "account-reconciliations"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "GSTR-2B user manual",
+    "url": "https://tutorial.gst.gov.in/userguide/returns/Manual_gstr2b.htm",
+    "provider": "GST Portal (GSTN)",
+    "kind": "docs",
+    "skillIds": [
+      "account-reconciliations"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "View Tax Credit Statement (Form 26AS)",
+    "url": "https://incometaxindia.gov.in/tax-services/online-26as-e-filing-website",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "account-reconciliations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Financial statement analysis and interpretation",
+    "url": "https://www.open.edu/openlearn/money-business/financial-statement-analysis-and-interpretation",
+    "provider": "OpenLearn",
+    "kind": "course",
+    "skillIds": [
+      "financial-statement-analysis"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "15.511 Financial Accounting (MIT Sloan) course materials",
+    "url": "https://ocw.mit.edu/courses/15-511-financial-accounting-summer-2004/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "financial-statement-analysis"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "An Explanatory Note on the Basel II IRB Risk Weight Functions (PD, LGD, EAD)",
+    "url": "https://bis.org/bcbs/irbriskweight.htm",
+    "provider": "Bank for International Settlements",
+    "kind": "docs",
+    "skillIds": [
+      "credit-risk-modelling"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "The Credit Market: Modeling Default Risk (15.433 lecture notes)",
+    "url": "https://ocw.mit.edu/courses/15-433-investments-spring-2003/resources/1543317creditrisk1",
+    "provider": "MIT OpenCourseWare",
+    "kind": "docs",
+    "skillIds": [
+      "credit-risk-modelling"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "IFRS 9 Financial Instruments (technical article)",
+    "url": "https://www.accaglobal.com/uk/en/technical-activities/technical-resources-search/2014/august/ifrs9-financial-instruments.html",
+    "provider": "ACCA",
+    "kind": "docs",
+    "skillIds": [
+      "credit-risk-modelling"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Risk-Based Approach for the Banking Sector",
+    "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Risk-based-approach-banking-sector.html",
+    "provider": "FATF",
+    "kind": "docs",
+    "skillIds": [
+      "aml-transaction-monitoring"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "IMoLIN AML eLearning resources",
+    "url": "https://www.imolin.org/imolin/en/elearning.html",
+    "provider": "UNODC IMoLIN",
+    "kind": "course",
+    "skillIds": [
+      "aml-transaction-monitoring"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Master Direction - Know Your Customer (KYC) Direction, 2016",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasterDirections.aspx?id=11566",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "aml-regulations"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "The FATF Recommendations",
+    "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+    "provider": "FATF",
+    "kind": "docs",
+    "skillIds": [
+      "aml-regulations"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Prevention of Money Laundering Act, 2002",
+    "url": "https://fiuindia.gov.in/files/AML_Legislation/pmla_2002.html",
+    "provider": "FIU-IND",
+    "kind": "docs",
+    "skillIds": [
+      "aml-regulations"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Overview of the Prevention of Money Laundering Act",
+    "url": "https://dor.gov.in/overview-prevention-of-money-laundering",
+    "provider": "Department of Revenue, Ministry of Finance",
+    "kind": "docs",
+    "skillIds": [
+      "aml-regulations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Labour Codes (Code on Wages and others)",
+    "url": "https://labour.gov.in/labour-codes",
+    "provider": "Ministry of Labour & Employment",
+    "kind": "docs",
+    "skillIds": [
+      "payroll-inputs-processing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Manage leave and absence in Dynamics 365 Human Resources",
+    "url": "https://learn.microsoft.com/en-us/training/modules/hr-leave-absence",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "hrms-tools",
+      "payroll-inputs-processing"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Get started with Dynamics 365 Human Resources",
+    "url": "https://learn.microsoft.com/en-us/training/modules/introduction-human-resources",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "hrms-tools"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Zoho People Employee Handbook",
+    "url": "https://help.zoho.com/portal/en/kb/articles/zoho-people-employee-handbook-an-introduction",
+    "provider": "Zoho",
+    "kind": "docs",
+    "skillIds": [
+      "hrms-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Principles of Human Resource Management (IIT Kharagpur): recruitment, selection, interviewing",
+    "url": "https://nptel.ac.in/courses/110105069",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "full-cycle-recruitment",
+      "interview-coordination"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Discovering SAP IBP for S&OP",
+    "url": "https://learning.sap.com/courses/discovering-sap-ibp-for-s-op",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sales-operations-planning"
+    ],
+    "minutes": 150,
+    "free": true
+  },
+  {
+    "title": "Returns and exchanges",
+    "url": "https://help.shopify.com/en/manual/orders/refunds-returns",
+    "provider": "Shopify Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "order-returns-refunds"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Manage customer returns in Dynamics 365 Business Central",
+    "url": "https://learn.microsoft.com/en-us/training/modules/manage-customer-returns-dynamics-365-business-central",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "order-returns-refunds"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Process sales returns or cancellations",
+    "url": "https://learn.microsoft.com/dynamics365/business-central/sales-how-process-sales-returns-cancellations",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "order-returns-refunds"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Get started with Omnichannel for Customer Service",
+    "url": "https://learn.microsoft.com/en-us/learn/modules/getting-started-omnichannel/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "omnichannel-support"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Using Tickets in HubSpot",
+    "url": "https://academy.hubspot.com/lessons/using-tickets-in-hubspot",
+    "provider": "HubSpot Academy",
+    "kind": "video",
+    "skillIds": [
+      "case-documentation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Setting up Tickets for Success",
+    "url": "https://academy.hubspot.com/lessons/setting-up-tickets-for-success",
+    "provider": "HubSpot Academy",
+    "kind": "video",
+    "skillIds": [
+      "case-documentation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "2025 Recruiting Benchmarking Report",
+    "url": "https://www.shrm.org/content/dam/en/shrm/research/2025-recruiting-benchmarking-report.pdf",
+    "provider": "SHRM",
+    "kind": "docs",
+    "skillIds": [
+      "recruitment-metrics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "HR Analytics (IIT Roorkee and XLRI)",
+    "url": "https://nptel.ac.in/courses/110107492",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "recruitment-metrics"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Structured Interviews",
+    "url": "https://opm.gov/policy-data-oversight/assessment-and-selection/structured-interviews",
+    "provider": "US Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "interview-coordination"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Automate scheduling with Microsoft Bookings",
+    "url": "https://learn.microsoft.com/training/modules/automate-scheduling-microsoft-bookings/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "interview-coordination"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Police Clearance Certificate for employee verification",
+    "url": "https://digitalpolice.gov.in/writereaddata/PoliceClearanceCertificate.pdf",
+    "provider": "National Crime Records Bureau (MHA)",
+    "kind": "docs",
+    "skillIds": [
+      "background-verification"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "DBS checks: guidance for employers",
+    "url": "https://www.gov.uk/dbs-check-requests-guidance-for-employers",
+    "provider": "GOV.UK (Disclosure and Barring Service)",
+    "kind": "docs",
+    "skillIds": [
+      "background-verification"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "The Digital Personal Data Protection Act 2023 and associated rules",
+    "url": "https://egovernance.vikaspedia.in/viewcontent/e-governance/digital-india/data-protection-and-privacy/the-digital-personal-data-protection-act-(dpdp-act)-2023-and-associated-rules?lgn=en",
+    "provider": "Vikaspedia (MeitY)",
+    "kind": "docs",
+    "skillIds": [
+      "background-verification"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Use inventory reports in Dynamics 365 Supply Chain Management",
+    "url": "https://learn.microsoft.com/en-us/training/modules/use-inventory-reports-dyn365-supply-chain-mgmt",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "supply-chain-erp-reporting"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Defining a Saved Search (NetSuite)",
+    "url": "https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_N676039.html",
+    "provider": "Oracle NetSuite Help Center",
+    "kind": "docs",
+    "skillIds": [
+      "supply-chain-erp-reporting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Analyze list data using data analysis mode in Business Central",
+    "url": "https://learn.microsoft.com/en-us/training/modules/analyze-list-data",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "supply-chain-erp-reporting"
+    ],
+    "minutes": 30,
     "free": true
   }
 ]

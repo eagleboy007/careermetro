@@ -1,0 +1,60 @@
+{
+  "id": "product-marketing-manager-from-pmm-associate",
+  "roleSlug": "product-marketing-manager",
+  "persona": "B2B SaaS product marketing associate moving up to product marketing manager",
+  "resumeText": "Karan Mehta | Bengaluru | karan.mehta@example.com\n\nEXPERIENCE\nProduct Marketing Associate, Tallyrise Technologies, Bengaluru (2022 - present)\n- Wrote positioning and messaging for the expense management product for CFOs and finance teams.\n- Ran the go-to-market plan for two product launches with product, sales and design teams.\n- Built pitch decks and battlecards and ran monthly sales enablement sessions for 30 account executives.\n- Wrote launch blogs, case studies and product web pages for each release.\n- Worked with product managers and customer success leads to agree launch dates and scope.\n- Presented launch results to the leadership team each quarter.\n- Tracked activation and feature adoption after each launch in Mixpanel dashboards.\n\nContent Marketing Executive, Leafline Media, Bengaluru (2020 - 2022)\n- Wrote blogs and email newsletters for B2B software clients.\n\nEDUCATION\nBA English, Christ University, 2020\n\nSKILLS\nCompetitive analysis, HubSpot, Google Analytics\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "product-positioning-messaging",
+        "quote": "Wrote positioning and messaging for the expense management product"
+      },
+      {
+        "skillId": "go-to-market-launches",
+        "quote": "Ran the go-to-market plan for two product launches"
+      },
+      {
+        "skillId": "sales-enablement",
+        "quote": "ran monthly sales enablement sessions for 30 account executives"
+      },
+      {
+        "skillId": "content-marketing",
+        "quote": "Wrote launch blogs, case studies and product web pages"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Worked with product managers and customer success leads"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented launch results to the leadership team"
+      },
+      {
+        "skillId": "product-metrics",
+        "quote": "Tracked activation and feature adoption after each launch"
+      },
+      {
+        "skillId": "competitive-intelligence",
+        "quote": "Competitive analysis"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "competitive-intelligence",
+        "status": "weak"
+      },
+      {
+        "skillId": "customer-market-research",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "pricing-packaging",
+      "sem-google-ads",
+      "seo",
+      "roadmapping"
+    ]
+  },
+  "reviewedBy": null
+}

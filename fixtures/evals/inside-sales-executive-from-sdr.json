@@ -1,0 +1,52 @@
+{
+  "id": "inside-sales-executive-from-sdr",
+  "roleSlug": "inside-sales-executive",
+  "persona": "SaaS sales development representative with two and a half years of outbound work",
+  "resumeText": "Sneha Reddy | Hyderabad | sneha.reddy@example.com\n\nEXPERIENCE\nSales Development Representative, LedgerLoop Software, Hyderabad (2023 - present)\n- Run outbound prospecting into finance teams at US mid-market companies by phone and email.\n- Make 60 cold calls a day and write personalised cold email campaigns for each segment.\n- Qualify leads using BANT on discovery calls before booking meetings for account executives.\n- Log every call, email and meeting in HubSpot CRM and keep deal stages up to date.\n- Review the sales pipeline weekly with my manager and clean up stale opportunities.\n- Booked 14 qualified meetings a month on average over the last year.\n\nCustomer Support Associate, Brightdesk Services, Hyderabad (2022 - 2023)\n- Answered billing and account questions for a SaaS accounting product over chat and phone.\n\nEDUCATION\nB.Com, Osmania University, 2022\n\nSKILLS\nApollo.io, LinkedIn Sales Navigator, Excel\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "b2b-prospecting",
+        "quote": "Run outbound prospecting into finance teams at US mid-market companies"
+      },
+      {
+        "skillId": "lead-qualification",
+        "quote": "Qualify leads using BANT on discovery calls"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Log every call, email and meeting in HubSpot CRM"
+      },
+      {
+        "skillId": "pipeline-management",
+        "quote": "Review the sales pipeline weekly with my manager"
+      },
+      {
+        "skillId": "communication",
+        "quote": "write personalised cold email campaigns for each segment"
+      },
+      {
+        "skillId": "sales-engagement-tools",
+        "quote": "Apollo.io, LinkedIn Sales Navigator"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "sales-engagement-tools",
+        "status": "weak"
+      },
+      {
+        "skillId": "solution-demos-poc",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "deal-closing",
+      "commercial-negotiation",
+      "sales-forecasting",
+      "salesforce-clouds"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,110 @@
+{
+  "slug": "credit-risk-analyst",
+  "title": "Credit Risk Analyst",
+  "summary": "Credit risk analysts decide whether a borrower can repay, by studying financial statements, bank statements and credit bureau reports, and then write a credit note with a recommendation. They sit in the credit or risk team of a bank, NBFC (non-bank lender) or bank back office and also watch existing loans for early signs of stress.",
+  "dailyDuties": [
+    "Spread borrower financials and calculate key ratios",
+    "Review CIBIL and other bureau reports for repayment history",
+    "Write credit appraisal memos with a rating and recommendation",
+    "Discuss proposals with relationship managers and the credit committee",
+    "Track overdue, SMA and early warning accounts in the portfolio",
+    "Check proposals against credit policy and RBI norms"
+  ],
+  "typicalTitles": [
+    "Credit Analyst - SME",
+    "Credit Underwriter",
+    "Wholesale Credit Risk Analyst",
+    "Credit Appraisal Officer",
+    "Retail Credit Risk Analyst",
+    "Credit Portfolio Analyst",
+    "Corporate Credit Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "credit-appraisal",
+      "importance": "required",
+      "expectation": "Appraise loan proposals and write credit appraisal memos with a recommendation",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-statement-analysis",
+      "importance": "required",
+      "expectation": "Spread financials and analyse ratios, cash flow and debt service cover",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-bureau-analysis",
+      "importance": "required",
+      "expectation": "Read CIBIL and other bureau reports to judge repayment track record",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-portfolio-monitoring",
+      "importance": "required",
+      "expectation": "Track delinquency, SMA and early warning signals on the loan book",
+      "postingShare": null
+    },
+    {
+      "skillId": "rbi-credit-norms",
+      "importance": "required",
+      "expectation": "Apply RBI asset classification and prudential lending norms",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build spreading templates and portfolio trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear credit notes and present cases to the credit committee",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-risk-modelling",
+      "importance": "nice_to_have",
+      "expectation": "Work with PD, LGD, scorecard or ECL models",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query loan and bureau data with SQL",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Analyse portfolio data with Python or SAS",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know lending products across retail, SME or corporate banking",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with relationship managers, collections and policy teams",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

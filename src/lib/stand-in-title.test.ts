@@ -15,16 +15,16 @@ afterEach(() => vi.unstubAllGlobals());
 describe("carrying the typed title to My role isn't listed", () => {
   it("hands over one tidy line until it is cleared", () => {
     vi.stubGlobal("sessionStorage", memoryStorage());
-    saveStandInTitle("  Supply   Chain Analyst ");
-    expect(peekStandInTitle()).toBe("Supply Chain Analyst");
-    expect(peekStandInTitle()).toBe("Supply Chain Analyst");
+    saveStandInTitle("  Fleet   Planning Analyst ");
+    expect(peekStandInTitle()).toBe("Fleet Planning Analyst");
+    expect(peekStandInTitle()).toBe("Fleet Planning Analyst");
     clearStandInTitle();
     expect(peekStandInTitle()).toBe("");
   });
 
   it("clears an earlier title when the box is empty", () => {
     vi.stubGlobal("sessionStorage", memoryStorage());
-    saveStandInTitle("Supply Chain Analyst");
+    saveStandInTitle("Fleet Planning Analyst");
     saveStandInTitle("   ");
     expect(peekStandInTitle()).toBe("");
   });
@@ -34,7 +34,7 @@ describe("carrying the typed title to My role isn't listed", () => {
       throw new Error("blocked");
     };
     vi.stubGlobal("sessionStorage", { getItem: blocked, setItem: blocked, removeItem: blocked });
-    expect(() => saveStandInTitle("Supply Chain Analyst")).not.toThrow();
+    expect(() => saveStandInTitle("Fleet Planning Analyst")).not.toThrow();
     expect(() => clearStandInTitle()).not.toThrow();
     expect(peekStandInTitle()).toBe("");
   });

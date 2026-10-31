@@ -13,7 +13,7 @@ const levelLabel: Record<RoleCertificationView["level"], string> = {
 /** Certifications for a role, recommended first. */
 export function CertificationList({ certifications }: { certifications: RoleCertificationView[] }) {
   if (certifications.length === 0) {
-    return <p className="text-sm text-muted">No certification is commonly asked for in this role. Projects count for more.</p>;
+    return <p className="text-sm text-muted">No certification is commonly asked for in this role. Work you can show counts for more.</p>;
   }
   return (
     <ul className="grid gap-3 sm:grid-cols-2">

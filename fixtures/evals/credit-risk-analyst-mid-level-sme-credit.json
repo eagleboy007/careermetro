@@ -1,0 +1,55 @@
+{
+  "id": "credit-risk-analyst-mid-level-sme-credit",
+  "roleSlug": "credit-risk-analyst",
+  "persona": "Mid-level SME credit analyst at an NBFC with a few gaps",
+  "resumeText": "Vikram Reddy | Hyderabad | vikram.reddy@example.com\n\nEXPERIENCE\nCredit Analyst - SME Loans, Godavari Finance Ltd (NBFC), Hyderabad (2022 - present)\n- Prepare credit appraisal memos for SME loans of Rs 50 lakh to Rs 5 crore.\n- Spread three years of financials and run ratio analysis including DSCR and current ratio.\n- Review CIBIL commercial reports and bank statements for every proposal.\n- Track SMA-1 and SMA-2 accounts each month and flag early warning signals to relationship managers.\n- Present proposals to the credit committee with a clear recommendation.\n\nCredit Officer, Krishna Urban Co-operative Bank, Vijayawada (2020 - 2022)\n- Appraised working capital and term loan proposals for traders and small manufacturers.\n\nSKILLS\nCredit appraisal, Financial analysis, RBI IRAC norms, Advanced Excel\n\nEDUCATION\nMBA Finance, Osmania University, Hyderabad, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "credit-appraisal",
+        "quote": "Prepare credit appraisal memos for SME loans"
+      },
+      {
+        "skillId": "financial-statement-analysis",
+        "quote": "run ratio analysis including DSCR and current ratio"
+      },
+      {
+        "skillId": "credit-bureau-analysis",
+        "quote": "Review CIBIL commercial reports and bank statements"
+      },
+      {
+        "skillId": "credit-portfolio-monitoring",
+        "quote": "flag early warning signals to relationship managers"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present proposals to the credit committee"
+      },
+      {
+        "skillId": "rbi-credit-norms",
+        "quote": "RBI IRAC norms"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Advanced Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rbi-credit-norms",
+        "status": "weak"
+      },
+      {
+        "skillId": "excel",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "credit-risk-modelling",
+      "sql",
+      "python"
+    ]
+  },
+  "reviewedBy": null
+}

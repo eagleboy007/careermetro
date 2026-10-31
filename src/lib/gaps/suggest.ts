@@ -1,6 +1,6 @@
 import type { Profile, RoleProfile } from "@/lib/schemas";
 import { formatExperience } from "@/lib/role-view";
-import { matchProfile } from "./match";
+import { profileMatcher } from "./match";
 
 /** A role is only suggested once the resume shows at least this share of its required skills. */
 export const MIN_SHARE = 0.25;
@@ -24,9 +24,10 @@ export type RoleSuggestion = {
  */
 export function suggestRoles(profile: Profile, roles: RoleProfile[], now = new Date(), limit = 3): RoleSuggestion[] {
   const years = profile.totalYearsExperience ?? 0;
+  const matchRole = profileMatcher(profile, now);
   return roles
     .map((role) => {
-      const match = matchProfile(profile, role, now);
+      const match = matchRole(role);
       const { requiredMet, requiredTotal, estimatedHours } = match.readiness;
       return {
         suggestion: {

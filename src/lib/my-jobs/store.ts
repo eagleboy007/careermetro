@@ -5,6 +5,7 @@ import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
 import { jobChecks, jobPosts, jobSaves, resumes } from "@/db/schema";
 import { currentAnalysis } from "@/lib/gaps/current";
+import { profileMatcher } from "@/lib/gaps/match";
 import { provedSkills } from "@/lib/goals/store";
 import { jobCheckView } from "@/lib/jobs/groups";
 import { checkPosting, type CreateJobCheckResult, type JobCheckDeps } from "@/lib/jobs/store";
@@ -212,7 +213,9 @@ async function checkFits(userId: string, checkIds: string[], db: Db, now = new D
     .from(jobChecks)
     .innerJoin(resumes, eq(resumes.id, jobChecks.resumeId))
     .where(and(inArray(jobChecks.id, checkIds), eq(resumes.userId, userId)));
-  return new Map(rows.map((r) => [r.id, checkFit(jobCheckView(r, context.profile, context.target, context.proved, { now }))]));
+  // The resume is read once for all the checks (T161): read again for each of 300 saved jobs, My jobs took 30 s.
+  const matchRole = profileMatcher(context.profile, now);
+  return new Map(rows.map((r) => [r.id, checkFit(jobCheckView(r, context.profile, context.target, context.proved, { now, matchRole }))]));
 }
 
 /** The person's current analysis's confirmed profile, target gaps and current proof; null with no confirmed resume. */

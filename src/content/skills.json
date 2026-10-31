@@ -6631,5 +6631,1266 @@
     ],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "key-account-planning",
+    "name": "Key account management and account planning",
+    "category": "business",
+    "aliases": [
+      "key account management",
+      "key account planning",
+      "strategic account planning",
+      "account planning",
+      "joint business planning",
+      "joint business plans",
+      "kam strategy"
+    ],
+    "ambiguous": [
+      "account planning"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "commercial-negotiation",
+    "name": "Commercial negotiation (terms, margins, contracts)",
+    "category": "business",
+    "aliases": [
+      "commercial negotiation",
+      "commercial negotiations",
+      "contract negotiation",
+      "contract negotiations",
+      "trade terms negotiation",
+      "negotiated trade terms",
+      "margin negotiation",
+      "price negotiation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sales-forecasting",
+    "name": "Sales forecasting and target planning",
+    "category": "business",
+    "aliases": [
+      "sales forecasting",
+      "sales forecast",
+      "revenue forecasting",
+      "sales target planning",
+      "monthly sales forecast"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "trade-spend-management",
+    "name": "Trade spend, schemes and promotion ROI",
+    "category": "business",
+    "aliases": [
+      "trade spend",
+      "trade spends",
+      "trade spend management",
+      "promotion roi",
+      "trade schemes",
+      "scheme roi",
+      "trade promotions",
+      "account profitability"
+    ],
+    "ambiguous": [
+      "account profitability"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "modern-trade-retail",
+    "name": "Modern trade and quick commerce channels",
+    "category": "business",
+    "aliases": [
+      "modern trade",
+      "modern trade channel",
+      "modern trade accounts",
+      "quick commerce",
+      "q-commerce",
+      "planogram compliance",
+      "national retail chains"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "channel-credit-collections",
+    "name": "Channel credit, collections and claims",
+    "category": "business",
+    "aliases": [
+      "distributor collections",
+      "dealer collections",
+      "channel collections",
+      "outstanding recovery",
+      "debtor days",
+      "claim settlement",
+      "claims settlement",
+      "credit limit management"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "distributor-management",
+    "name": "Distributor and channel partner management",
+    "category": "business",
+    "aliases": [
+      "distributor management",
+      "distributor appointment",
+      "super stockist",
+      "super stockists",
+      "channel partner management",
+      "dealer network management",
+      "distributor roi",
+      "dsa network"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "primary-secondary-sales",
+    "name": "Primary and secondary sales in general trade",
+    "category": "business",
+    "aliases": [
+      "primary and secondary sales",
+      "secondary sales",
+      "general trade",
+      "numeric distribution",
+      "outlet coverage",
+      "retail outlet coverage",
+      "beat planning",
+      "permanent journey plan"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "territory-sales-planning",
+    "name": "Territory sales planning",
+    "category": "business",
+    "aliases": [
+      "territory planning",
+      "territory management",
+      "territory sales plan",
+      "route-to-market",
+      "market mapping",
+      "territory expansion"
+    ],
+    "ambiguous": [
+      "market mapping"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "dms-sfa-tools",
+    "name": "Distributor management system (DMS) and sales force automation apps",
+    "category": "tools",
+    "aliases": [
+      "distributor management system",
+      "sales force automation",
+      "sfa app",
+      "bizom",
+      "fieldassist"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "b2b-prospecting",
+    "name": "B2B outbound prospecting",
+    "category": "business",
+    "aliases": [
+      "outbound prospecting",
+      "cold calling",
+      "cold calls",
+      "cold emailing",
+      "cold email campaigns",
+      "sales prospecting",
+      "outbound sequences",
+      "outbound lead generation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "lead-qualification",
+    "name": "Lead qualification (BANT, MEDDIC)",
+    "category": "business",
+    "aliases": [
+      "lead qualification",
+      "bant",
+      "meddic",
+      "meddpicc",
+      "discovery calls",
+      "qualified meetings",
+      "sales qualified leads"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sales-engagement-tools",
+    "name": "Sales engagement and prospecting tools",
+    "category": "tools",
+    "aliases": [
+      "outreach.io",
+      "salesloft",
+      "apollo.io",
+      "sales navigator",
+      "linkedin sales navigator",
+      "zoominfo",
+      "lusha",
+      "hubspot sequences"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pipeline-management",
+    "name": "Sales pipeline management",
+    "category": "business",
+    "aliases": [
+      "pipeline management",
+      "sales pipeline",
+      "pipeline hygiene",
+      "deal pipeline",
+      "opportunity management",
+      "pipeline reviews"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "deal-closing",
+    "name": "Closing deals against a sales quota",
+    "category": "business",
+    "aliases": [
+      "quota attainment",
+      "quota carrying",
+      "deal closure",
+      "closing deals",
+      "closed-won deals",
+      "achieved quota"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "product-positioning-messaging",
+    "name": "Product positioning and messaging",
+    "category": "marketing",
+    "aliases": [
+      "product positioning",
+      "positioning and messaging",
+      "messaging framework",
+      "messaging frameworks",
+      "value proposition",
+      "messaging architecture"
+    ],
+    "ambiguous": [
+      "value proposition"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "go-to-market-launches",
+    "name": "Go-to-market planning and product launches",
+    "category": "marketing",
+    "aliases": [
+      "go-to-market strategy",
+      "gtm strategy",
+      "go-to-market plan",
+      "product launches",
+      "product launch",
+      "launch plans",
+      "gtm launches"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sales-enablement",
+    "name": "Sales enablement",
+    "category": "marketing",
+    "aliases": [
+      "sales enablement",
+      "battlecards",
+      "battle cards",
+      "sales collateral",
+      "sales playbooks",
+      "sales playbook",
+      "demo scripts"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "competitive-intelligence",
+    "name": "Competitive intelligence and win/loss analysis",
+    "category": "marketing",
+    "aliases": [
+      "competitive intelligence",
+      "competitor analysis",
+      "competitive analysis",
+      "win/loss analysis",
+      "win-loss analysis",
+      "competitive landscape analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "customer-market-research",
+    "name": "Market and buyer research",
+    "category": "marketing",
+    "aliases": [
+      "market research",
+      "buyer personas",
+      "buyer persona",
+      "persona development",
+      "ideal customer profile",
+      "customer segmentation research"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "pricing-packaging",
+    "name": "Pricing and packaging",
+    "category": "marketing",
+    "aliases": [
+      "pricing and packaging",
+      "pricing strategy",
+      "packaging tiers",
+      "pricing page"
+    ],
+    "ambiguous": [
+      "pricing page"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "financial-modelling",
+    "name": "Financial modelling",
+    "category": "business",
+    "aliases": [
+      "financial modelling",
+      "financial modeling",
+      "three statement model",
+      "3-statement model",
+      "dcf valuation model",
+      "driver-based forecasting model"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fpa-variance-reporting",
+    "name": "Variance analysis and management reporting",
+    "category": "business",
+    "aliases": [
+      "variance analysis",
+      "flux analysis",
+      "variance commentary",
+      "management reporting",
+      "monthly mis reporting",
+      "board pack"
+    ],
+    "ambiguous": [
+      "management reporting"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "fpa-planning-tools",
+    "name": "Corporate planning tools (Anaplan, Hyperion, SAP BPC)",
+    "category": "tools",
+    "aliases": [
+      "anaplan",
+      "oracle hyperion",
+      "hyperion planning",
+      "oracle epm cloud",
+      "sap bpc",
+      "workday adaptive planning",
+      "adaptive insights",
+      "onestream",
+      "ibm planning analytics",
+      "tm1"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "tally-accounting-software",
+    "name": "Tally and SME accounting software",
+    "category": "tools",
+    "aliases": [
+      "tally erp 9",
+      "tally erp",
+      "tallyprime",
+      "tally prime",
+      "zoho books",
+      "busy accounting software"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "accounts-payable-receivable",
+    "name": "Accounts payable and receivable",
+    "category": "business",
+    "aliases": [
+      "accounts payable",
+      "accounts receivable",
+      "ap/ar",
+      "vendor invoice processing",
+      "vendor payment processing",
+      "customer collections follow-up"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "account-reconciliations",
+    "name": "Ledger and account reconciliations",
+    "category": "business",
+    "aliases": [
+      "vendor reconciliation",
+      "customer reconciliation",
+      "ledger reconciliation",
+      "ledger scrutiny",
+      "intercompany reconciliation",
+      "balance sheet reconciliation",
+      "gstr-2b reconciliation",
+      "26as reconciliation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "statutory-audit-support",
+    "name": "Statutory and tax audit support",
+    "category": "business",
+    "aliases": [
+      "statutory audit support",
+      "audit schedules preparation",
+      "statutory audit coordination",
+      "tax audit support"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "credit-appraisal",
+    "name": "Credit appraisal and underwriting",
+    "category": "business",
+    "aliases": [
+      "credit appraisal",
+      "credit underwriting",
+      "credit appraisal memo",
+      "credit appraisal note",
+      "loan underwriting",
+      "obligor risk rating",
+      "internal credit rating"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "financial-statement-analysis",
+    "name": "Financial statement and ratio analysis",
+    "category": "business",
+    "aliases": [
+      "financial statement analysis",
+      "ratio analysis",
+      "financial spreading",
+      "balance sheet analysis",
+      "dscr analysis",
+      "working capital assessment"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "credit-bureau-analysis",
+    "name": "Credit bureau report analysis",
+    "category": "business",
+    "aliases": [
+      "cibil",
+      "cibil report",
+      "credit bureau reports",
+      "crif high mark",
+      "experian bureau report",
+      "equifax bureau report",
+      "bureau data analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "credit-portfolio-monitoring",
+    "name": "Credit portfolio monitoring",
+    "category": "business",
+    "aliases": [
+      "credit portfolio monitoring",
+      "loan portfolio monitoring",
+      "early warning signals",
+      "delinquency analysis",
+      "vintage analysis",
+      "roll rate analysis",
+      "npa monitoring",
+      "sma reporting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "credit-risk-modelling",
+    "name": "Credit risk modelling (PD, LGD, scorecards, ECL)",
+    "category": "business",
+    "aliases": [
+      "credit risk modelling",
+      "credit risk modeling",
+      "pd lgd ead",
+      "probability of default model",
+      "application scorecard",
+      "scorecard development",
+      "ifrs 9 ecl",
+      "ecl modelling"
+    ],
+    "ambiguous": [],
+    "implies": [
+      "statistics"
+    ],
+    "scoring": "gap"
+  },
+  {
+    "id": "rbi-credit-norms",
+    "name": "RBI lending and prudential norms",
+    "category": "business",
+    "aliases": [
+      "irac norms",
+      "rbi prudential norms",
+      "npa classification",
+      "basel iii",
+      "rbi lending guidelines"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "kyc-due-diligence",
+    "name": "KYC and customer due diligence",
+    "category": "business",
+    "aliases": [
+      "kyc due diligence",
+      "customer due diligence",
+      "enhanced due diligence",
+      "kyc remediation",
+      "periodic kyc review",
+      "re-kyc",
+      "beneficial ownership verification"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "aml-transaction-monitoring",
+    "name": "AML transaction monitoring and alert investigation",
+    "category": "business",
+    "aliases": [
+      "transaction monitoring",
+      "aml alert investigation",
+      "aml alerts",
+      "alert disposition",
+      "actimize",
+      "nice actimize",
+      "oracle mantas",
+      "aml investigations"
+    ],
+    "ambiguous": [
+      "transaction monitoring"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sanctions-screening",
+    "name": "Sanctions, PEP and adverse media screening",
+    "category": "business",
+    "aliases": [
+      "sanctions screening",
+      "ofac screening",
+      "name screening",
+      "pep screening",
+      "adverse media screening",
+      "world-check",
+      "fircosoft"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "str-regulatory-reporting",
+    "name": "Suspicious transaction reporting (STR, FIU-IND)",
+    "category": "business",
+    "aliases": [
+      "str filing",
+      "suspicious transaction report",
+      "suspicious transaction reports",
+      "sar filing",
+      "suspicious activity report",
+      "fiu-ind reporting",
+      "ctr filing",
+      "goaml"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "aml-regulations",
+    "name": "Indian AML and KYC regulations (PMLA, RBI KYC directions)",
+    "category": "business",
+    "aliases": [
+      "pmla",
+      "prevention of money laundering act",
+      "kyc master direction",
+      "rbi kyc master direction",
+      "fatf recommendations",
+      "aml/cft regulations"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "employee-onboarding-exits",
+    "name": "Employee onboarding and exit formalities",
+    "category": "business",
+    "aliases": [
+      "joining formalities",
+      "new joiner onboarding",
+      "new hire onboarding",
+      "induction programme",
+      "exit formalities",
+      "exit interviews",
+      "full and final settlement",
+      "f&f settlement",
+      "offboarding formalities"
+    ],
+    "ambiguous": [
+      "new hire onboarding",
+      "new joiner onboarding"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "indian-labour-law-compliance",
+    "name": "Indian labour law and statutory compliance (PF, ESI, POSH)",
+    "category": "business",
+    "aliases": [
+      "labour law compliance",
+      "labor law compliance",
+      "pf and esi",
+      "pf & esi",
+      "epf and esic",
+      "pf compliance",
+      "esic compliance",
+      "pf and esic challans",
+      "shops and establishments act",
+      "posh compliance",
+      "posh act",
+      "payment of gratuity act",
+      "minimum wages act",
+      "contract labour act",
+      "labour codes"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "payroll-inputs-processing",
+    "name": "Payroll inputs and processing",
+    "category": "business",
+    "aliases": [
+      "payroll inputs",
+      "payroll processing",
+      "salary processing",
+      "payroll reconciliation",
+      "payroll coordination",
+      "attendance and leave management",
+      "monthly payroll inputs"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "employee-relations",
+    "name": "Employee relations and grievance handling",
+    "category": "business",
+    "aliases": [
+      "employee relations",
+      "grievance handling",
+      "employee grievances",
+      "grievance redressal mechanism",
+      "disciplinary proceedings",
+      "domestic enquiry",
+      "workplace investigations",
+      "industrial relations"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hr-policy-administration",
+    "name": "HR policies and documentation",
+    "category": "business",
+    "aliases": [
+      "hr policies",
+      "hr policy drafting",
+      "hr policy formulation",
+      "employee handbook",
+      "hr documentation",
+      "appointment letters",
+      "hr audits"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hrms-tools",
+    "name": "HRMS / HRIS software (user level)",
+    "category": "tools",
+    "aliases": [
+      "hrms",
+      "hris",
+      "greythr",
+      "keka hrms",
+      "darwinbox",
+      "zoho people",
+      "bamboohr",
+      "hibob",
+      "adp workforce now",
+      "peoplestrong",
+      "hrms software"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "performance-appraisal-administration",
+    "name": "Performance appraisal administration",
+    "category": "business",
+    "aliases": [
+      "performance appraisals",
+      "appraisal cycle",
+      "annual appraisal process",
+      "kra setting",
+      "pms cycle",
+      "performance management system"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "employee-engagement",
+    "name": "Employee engagement programmes",
+    "category": "business",
+    "aliases": [
+      "employee engagement",
+      "employee engagement activities",
+      "engagement surveys",
+      "employee engagement initiatives"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "full-cycle-recruitment",
+    "name": "End-to-end (full-cycle) recruitment",
+    "category": "business",
+    "aliases": [
+      "end-to-end recruitment",
+      "end to end recruitment",
+      "full cycle recruiting",
+      "full-cycle recruiting",
+      "full life cycle recruiting",
+      "full-cycle recruitment",
+      "recruitment life cycle",
+      "requisition to joining"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "candidate-sourcing",
+    "name": "Candidate sourcing (Boolean, passive talent)",
+    "category": "business",
+    "aliases": [
+      "boolean search",
+      "boolean sourcing",
+      "x-ray search",
+      "linkedin recruiter",
+      "passive candidate sourcing",
+      "candidate sourcing",
+      "talent sourcing",
+      "headhunting",
+      "employee referral programme"
+    ],
+    "ambiguous": [
+      "boolean search"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "candidate-screening-interviewing",
+    "name": "Candidate screening and interviewing",
+    "category": "business",
+    "aliases": [
+      "candidate screening",
+      "telephonic screening",
+      "phone screening",
+      "resume screening",
+      "competency-based interviewing",
+      "behavioural interviewing",
+      "behavioral interviewing",
+      "structured interviews"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "interview-coordination",
+    "name": "Interview scheduling and coordination",
+    "category": "business",
+    "aliases": [
+      "interview scheduling",
+      "interview coordination",
+      "interview panel coordination",
+      "candidate experience"
+    ],
+    "ambiguous": [
+      "candidate experience"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "offer-negotiation",
+    "name": "Offer and salary negotiation",
+    "category": "business",
+    "aliases": [
+      "offer negotiation",
+      "salary negotiation",
+      "ctc negotiation",
+      "offer rollout",
+      "offer management",
+      "offer closure",
+      "notice period buyout"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "applicant-tracking-systems",
+    "name": "Applicant tracking systems (ATS)",
+    "category": "tools",
+    "aliases": [
+      "applicant tracking system",
+      "applicant tracking systems",
+      "greenhouse ats",
+      "lever ats",
+      "workday recruiting",
+      "icims",
+      "taleo",
+      "zoho recruit",
+      "smartrecruiters"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "recruitment-metrics",
+    "name": "Recruitment metrics and hiring MIS",
+    "category": "business",
+    "aliases": [
+      "time to fill",
+      "time to hire",
+      "cost per hire",
+      "offer-to-join ratio",
+      "offer to joining ratio",
+      "recruitment mis",
+      "hiring funnel metrics",
+      "quality of hire",
+      "recruitment dashboards"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "employer-branding",
+    "name": "Employer branding",
+    "category": "marketing",
+    "aliases": [
+      "employer branding",
+      "employer brand",
+      "campus branding",
+      "employer value proposition"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "campus-hiring",
+    "name": "Campus hiring",
+    "category": "business",
+    "aliases": [
+      "campus hiring",
+      "campus recruitment",
+      "campus drives",
+      "university relations",
+      "campus placement drives"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "background-verification",
+    "name": "Background verification and reference checks",
+    "category": "business",
+    "aliases": [
+      "background verification",
+      "background checks",
+      "reference checks",
+      "pre-employment screening",
+      "bgv checks"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "demand-forecasting",
+    "name": "Demand forecasting and planning",
+    "category": "business",
+    "aliases": [
+      "demand forecasting",
+      "demand planning",
+      "statistical forecasting",
+      "forecast accuracy",
+      "forecast bias",
+      "baseline forecasting",
+      "demand sensing"
+    ],
+    "ambiguous": [
+      "statistical forecasting",
+      "forecast accuracy"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "inventory-planning-optimization",
+    "name": "Inventory planning and optimisation",
+    "category": "business",
+    "aliases": [
+      "inventory planning",
+      "inventory optimization",
+      "inventory optimisation",
+      "safety stock",
+      "reorder point",
+      "reorder points",
+      "abc analysis",
+      "abc-xyz analysis",
+      "economic order quantity",
+      "stock replenishment",
+      "inventory ageing",
+      "days of inventory"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sales-operations-planning",
+    "name": "Sales and operations planning (S&OP)",
+    "category": "business",
+    "aliases": [
+      "s&op",
+      "sales and operations planning",
+      "s&op process",
+      "integrated business planning"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "procurement-analytics",
+    "name": "Procurement and spend analytics",
+    "category": "business",
+    "aliases": [
+      "spend analysis",
+      "spend analytics",
+      "procurement analytics",
+      "supplier performance analysis",
+      "purchase order tracking",
+      "supplier lead time analysis"
+    ],
+    "ambiguous": [
+      "spend analysis",
+      "spend analytics"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "logistics-analytics",
+    "name": "Logistics and transportation analytics",
+    "category": "business",
+    "aliases": [
+      "logistics analytics",
+      "freight cost analysis",
+      "transportation analytics",
+      "otif reporting",
+      "otif analysis",
+      "fill rate analysis",
+      "warehouse kpis",
+      "delivery lead time analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "supply-chain-erp-reporting",
+    "name": "ERP supply chain data and reports (end user)",
+    "category": "tools",
+    "aliases": [
+      "sap erp reports",
+      "sap end user",
+      "erp data extraction",
+      "erp reports extraction",
+      "sap mm reports",
+      "oracle erp reports",
+      "netsuite reports",
+      "sap data extraction"
+    ],
+    "ambiguous": [
+      "sap erp reports",
+      "sap mm reports",
+      "oracle erp reports",
+      "netsuite reports",
+      "sap data extraction"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "supply-planning-tools",
+    "name": "Supply chain planning tools (APS)",
+    "category": "tools",
+    "aliases": [
+      "sap ibp",
+      "sap apo",
+      "kinaxis",
+      "kinaxis rapidresponse",
+      "o9 solutions",
+      "blue yonder",
+      "jda demand planning",
+      "oracle ascp",
+      "anaplan supply chain"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "customer-query-resolution",
+    "name": "Customer query and complaint resolution",
+    "category": "business",
+    "aliases": [
+      "customer query resolution",
+      "complaint resolution",
+      "complaint handling",
+      "customer complaint handling",
+      "inbound customer calls",
+      "customer grievance resolution"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "omnichannel-support",
+    "name": "Voice, chat and email customer support",
+    "category": "business",
+    "aliases": [
+      "voice process",
+      "non-voice process",
+      "chat support",
+      "email support",
+      "live chat support",
+      "voice and non-voice",
+      "blended process",
+      "international voice process",
+      "domestic voice process",
+      "inbound voice process"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "contact-centre-metrics",
+    "name": "Contact centre KPIs (AHT, CSAT, FCR, SLA)",
+    "category": "business",
+    "aliases": [
+      "aht",
+      "average handle time",
+      "csat",
+      "customer satisfaction score",
+      "first call resolution",
+      "first contact resolution",
+      "sla adherence",
+      "call quality score"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "escalation-handling",
+    "name": "Customer escalation handling",
+    "category": "business",
+    "aliases": [
+      "escalation handling",
+      "escalation management",
+      "handling escalations",
+      "irate customer handling",
+      "de-escalation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "case-documentation",
+    "name": "Case notes and call disposition",
+    "category": "business",
+    "aliases": [
+      "case notes",
+      "call disposition",
+      "call logging",
+      "ticket documentation",
+      "interaction logging"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cross-selling-upselling",
+    "name": "Cross-selling and upselling in service",
+    "category": "business",
+    "aliases": [
+      "cross-selling",
+      "cross selling",
+      "upselling",
+      "up-selling",
+      "cross-sell targets"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "kyc-verification",
+    "name": "KYC document verification",
+    "category": "business",
+    "aliases": [
+      "kyc verification",
+      "kyc documentation",
+      "video kyc",
+      "ckyc",
+      "kyc checks"
+    ],
+    "ambiguous": [
+      "video kyc"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "order-returns-refunds",
+    "name": "Order, return and refund handling",
+    "category": "business",
+    "aliases": [
+      "order status queries",
+      "returns and refunds",
+      "refund processing",
+      "return requests",
+      "replacement requests"
+    ],
+    "ambiguous": [
+      "refund processing"
+    ],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

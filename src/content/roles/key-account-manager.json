@@ -1,0 +1,116 @@
+{
+  "slug": "key-account-manager",
+  "title": "Key Account Manager",
+  "summary": "A key account manager owns a company's biggest customers, such as national retail chains, quick commerce apps or large business buyers, and grows sales and profit from each one. The role sits in the sales team, works with supply chain, marketing and finance, and usually reports to a national or regional sales head.",
+  "dailyDuties": [
+    "Review weekly sales, fill rate and stock for each account",
+    "Negotiate margins, listings and promotions with buyers",
+    "Update joint business plans and the monthly forecast",
+    "Track trade spend and promotion ROI against budget",
+    "Resolve billing, claims and short-supply issues with internal teams",
+    "Run business reviews with buyers and category managers"
+  ],
+  "typicalTitles": [
+    "Key Account Manager - Modern Trade",
+    "Key Accounts Manager",
+    "National Key Account Manager",
+    "Regional Key Account Manager",
+    "Corporate Key Account Manager",
+    "Modern Trade Manager",
+    "Key Account Executive - Modern Trade"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "key-account-planning",
+      "importance": "required",
+      "expectation": "Own a set of large accounts and run joint business plans with each",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "required",
+      "expectation": "Negotiate margins, trade terms, listings and annual contracts",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-forecasting",
+      "importance": "required",
+      "expectation": "Forecast monthly volume by account and track it against target",
+      "postingShare": null
+    },
+    {
+      "skillId": "trade-spend-management",
+      "importance": "required",
+      "expectation": "Manage trade spend and account profitability and report promotion ROI",
+      "postingShare": null
+    },
+    {
+      "skillId": "channel-credit-collections",
+      "importance": "required",
+      "expectation": "Resolve billing and claims issues and keep account receivables on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build account trackers, sales reports and promotion analysis in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with supply chain, marketing and finance to serve the account",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Run periodic business reviews with buyers and category managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "modern-trade-retail",
+      "importance": "nice_to_have",
+      "expectation": "Know modern trade chains and quick commerce platforms and their store-level execution",
+      "postingShare": null
+    },
+    {
+      "skillId": "distributor-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate with distributors or stockists who service the accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Keep account plans and opportunities in a CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Track fill rates and account sales in dashboards",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-retention-expansion",
+      "importance": "nice_to_have",
+      "expectation": "Grow share of wallet and renew contracts in existing accounts",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

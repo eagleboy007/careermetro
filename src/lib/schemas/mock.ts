@@ -56,7 +56,7 @@ const text = (max: number) => z.string().min(3).max(max);
 
 const common = {
   id: questionId,
-  roleSlugs: z.array(z.string().regex(slug)).min(1).max(500), // A shared question can file under every role (153 on 30 Oct), with room to grow.
+  roleSlugs: z.array(z.string().regex(slug)).min(1).max(500), // A shared question can file under every role (165 on 30 Oct), with room to grow.
   skillId: z.string().regex(slug),
   topic,
   question: text(300),
@@ -334,7 +334,7 @@ export type MockInterviewEndResult = { ok: true; result: MockSessionResult } | {
 export const mockPageView = z.strictObject({
   elite: z.boolean(),
   role: mockRole,
-  roles: z.array(mockRole).max(500), // every role profile (153 on 30 Oct), with room to grow
+  roles: z.array(mockRole).max(500), // every role profile (165 on 30 Oct), with room to grow
   bank: mockBankView,
   test: timedTestView.nullable(),
   interview: mockSessionView.nullable(),

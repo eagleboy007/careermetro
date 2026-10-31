@@ -6,6 +6,7 @@ import { getDb } from "@/db";
 import { jobChecks, jobPosts, jobSaves, users, userSettings, weeklyEmails } from "@/db/schema";
 import { giveBackAppEmail, takeAppEmail } from "@/lib/email/budget";
 import { eliteOn } from "@/lib/elite/store";
+import { profileMatcher } from "@/lib/gaps/match";
 import { jobCheckView } from "@/lib/jobs/groups";
 import { indiaDay, mondayOf } from "@/lib/ride/days";
 import { APP_EMAIL_DAILY_BUDGET } from "@/lib/schemas/constants";
@@ -48,6 +49,7 @@ export async function weeklyJobs(userId: string, { db = getDb(), now = new Date(
   const listed = rows.filter((r) => r.company && r.title);
   if (!listed.length) return [];
   const ctx = await fitContext(userId, db);
+  const matchRole = ctx ? profileMatcher(ctx.profile, now) : undefined;
   return listed.map((r) => {
     let open: string[] = [];
     let only: string[] = [];
@@ -65,7 +67,7 @@ export async function weeklyJobs(userId: string, { db = getDb(), now = new Date(
         ctx.profile,
         ctx.target,
         ctx.proved,
-        { now },
+        { now, matchRole },
       );
       const names = (list: { skillId: string; skillName: string }[]) => list.map((s) => skillName.get(s.skillId) ?? s.skillName);
       open = names(view.alsoGoals);

@@ -35,16 +35,19 @@ import proofTasksJson from "./proof-tasks.json";
 import resourcesJson from "./resources.json";
 import roleTracksJson from "./role-tracks.json";
 import skillsJson from "./skills.json";
+import accountsExecutive from "./roles/accounts-executive.json";
 import adasEngineer from "./roles/adas-engineer.json";
 import aiArchitect from "./roles/ai-architect.json";
 import aiEngineer from "./roles/ai-engineer.json";
 import aiProductManager from "./roles/ai-product-manager.json";
 import aiResearchScientist from "./roles/ai-research-scientist.json";
+import amlKycAnalyst from "./roles/aml-kyc-analyst.json";
 import analyticsEngineer from "./roles/analytics-engineer.json";
 import androidDeveloper from "./roles/android-developer.json";
 import applicationSupportEngineer from "./roles/application-support-engineer.json";
 import appsecEngineer from "./roles/appsec-engineer.json";
 import arVrDeveloper from "./roles/ar-vr-developer.json";
+import areaSalesManager from "./roles/area-sales-manager.json";
 import automotiveDiagnosticsEngineer from "./roles/automotive-diagnostics-engineer.json";
 import autosarEngineer from "./roles/autosar-engineer.json";
 import biDeveloper from "./roles/bi-developer.json";
@@ -60,8 +63,10 @@ import cloudSupportEngineer from "./roles/cloud-support-engineer.json";
 import computerVisionEngineer from "./roles/computer-vision-engineer.json";
 import contactCenterDeveloper from "./roles/contact-center-developer.json";
 import cppDeveloper from "./roles/cpp-developer.json";
+import creditRiskAnalyst from "./roles/credit-risk-analyst.json";
 import crossPlatformMobileDeveloper from "./roles/cross-platform-mobile-developer.json";
 import customerSuccessManager from "./roles/customer-success-manager.json";
+import customerSupportExecutive from "./roles/customer-support-executive.json";
 import cyberSecurityAnalyst from "./roles/cyber-security-analyst.json";
 import dataAnalyst from "./roles/data-analyst.json";
 import dataArchitect from "./roles/data-architect.json";
@@ -86,6 +91,7 @@ import embeddedSoftwareEngineer from "./roles/embedded-software-engineer.json";
 import engineeringManager from "./roles/engineering-manager.json";
 import etlDeveloper from "./roles/etl-developer.json";
 import eucEngineer from "./roles/euc-engineer.json";
+import financialAnalyst from "./roles/financial-analyst.json";
 import forwardDeployedEngineer from "./roles/forward-deployed-engineer.json";
 import fpgaEngineer from "./roles/fpga-engineer.json";
 import frontendArchitect from "./roles/frontend-architect.json";
@@ -98,10 +104,12 @@ import grcManager from "./roles/grc-manager.json";
 import hardwareDesignEngineer from "./roles/hardware-design-engineer.json";
 import hilTestEngineer from "./roles/hil-test-engineer.json";
 import hpcGpuEngineer from "./roles/hpc-gpu-engineer.json";
+import hrGeneralist from "./roles/hr-generalist.json";
 import iamEngineer from "./roles/iam-engineer.json";
 import implementationConsultant from "./roles/implementation-consultant.json";
 import incidentResponseAnalyst from "./roles/incident-response-analyst.json";
 import informationSecurityAnalyst from "./roles/information-security-analyst.json";
+import insideSalesExecutive from "./roles/inside-sales-executive.json";
 import integrationDeveloper from "./roles/integration-developer.json";
 import iosDeveloper from "./roles/ios-developer.json";
 import iotEngineer from "./roles/iot-engineer.json";
@@ -110,6 +118,7 @@ import itProjectManager from "./roles/it-project-manager.json";
 import itSupportEngineer from "./roles/it-support-engineer.json";
 import javaBackendDeveloper from "./roles/java-backend-developer.json";
 import kafkaStreamingEngineer from "./roles/kafka-streaming-engineer.json";
+import keyAccountManager from "./roles/key-account-manager.json";
 import linuxKernelDeveloper from "./roles/linux-kernel-developer.json";
 import lowCodeDeveloper from "./roles/low-code-developer.json";
 import m365Administrator from "./roles/m365-administrator.json";
@@ -139,6 +148,7 @@ import powerPlatformDeveloper from "./roles/power-platform-developer.json";
 import presalesEngineer from "./roles/presales-engineer.json";
 import privacyAnalyst from "./roles/privacy-analyst.json";
 import productManager from "./roles/product-manager.json";
+import productMarketingManager from "./roles/product-marketing-manager.json";
 import pythonDeveloper from "./roles/python-developer.json";
 import qaAutomationEngineer from "./roles/qa-automation-engineer.json";
 import qaLead from "./roles/qa-lead.json";
@@ -172,7 +182,9 @@ import socLead from "./roles/soc-lead.json";
 import softwareEngineer from "./roles/software-engineer.json";
 import solutionsArchitect from "./roles/solutions-architect.json";
 import storageBackupEngineer from "./roles/storage-backup-engineer.json";
+import supplyChainAnalyst from "./roles/supply-chain-analyst.json";
 import systemAdministrator from "./roles/system-administrator.json";
+import talentAcquisitionSpecialist from "./roles/talent-acquisition-specialist.json";
 import techLead from "./roles/tech-lead.json";
 import technicalAccountManager from "./roles/technical-account-manager.json";
 import technicalProgramManager from "./roles/technical-program-manager.json";
@@ -241,16 +253,19 @@ export const interestTopics: InterestTopic[] = interestTopicsFile.parse(interest
 export const roleProfiles: RoleProfile[] = z
   .array(roleProfile)
   .parse([
+    accountsExecutive,
     adasEngineer,
     aiArchitect,
     aiEngineer,
     aiProductManager,
     aiResearchScientist,
+    amlKycAnalyst,
     analyticsEngineer,
     androidDeveloper,
     applicationSupportEngineer,
     appsecEngineer,
     arVrDeveloper,
+    areaSalesManager,
     automotiveDiagnosticsEngineer,
     autosarEngineer,
     biDeveloper,
@@ -266,8 +281,10 @@ export const roleProfiles: RoleProfile[] = z
     computerVisionEngineer,
     contactCenterDeveloper,
     cppDeveloper,
+    creditRiskAnalyst,
     crossPlatformMobileDeveloper,
     customerSuccessManager,
+    customerSupportExecutive,
     cyberSecurityAnalyst,
     dataAnalyst,
     dataArchitect,
@@ -292,6 +309,7 @@ export const roleProfiles: RoleProfile[] = z
     engineeringManager,
     etlDeveloper,
     eucEngineer,
+    financialAnalyst,
     forwardDeployedEngineer,
     fpgaEngineer,
     frontendArchitect,
@@ -304,10 +322,12 @@ export const roleProfiles: RoleProfile[] = z
     hardwareDesignEngineer,
     hilTestEngineer,
     hpcGpuEngineer,
+    hrGeneralist,
     iamEngineer,
     implementationConsultant,
     incidentResponseAnalyst,
     informationSecurityAnalyst,
+    insideSalesExecutive,
     integrationDeveloper,
     iosDeveloper,
     iotEngineer,
@@ -316,6 +336,7 @@ export const roleProfiles: RoleProfile[] = z
     itSupportEngineer,
     javaBackendDeveloper,
     kafkaStreamingEngineer,
+    keyAccountManager,
     linuxKernelDeveloper,
     lowCodeDeveloper,
     m365Administrator,
@@ -345,6 +366,7 @@ export const roleProfiles: RoleProfile[] = z
     presalesEngineer,
     privacyAnalyst,
     productManager,
+    productMarketingManager,
     pythonDeveloper,
     qaAutomationEngineer,
     qaLead,
@@ -378,7 +400,9 @@ export const roleProfiles: RoleProfile[] = z
     softwareEngineer,
     solutionsArchitect,
     storageBackupEngineer,
+    supplyChainAnalyst,
     systemAdministrator,
+    talentAcquisitionSpecialist,
     techLead,
     technicalAccountManager,
     technicalProgramManager,

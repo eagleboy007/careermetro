@@ -1,0 +1,110 @@
+{
+  "slug": "financial-analyst",
+  "title": "Financial Analyst (FP&A)",
+  "summary": "Financial analysts in FP&A (financial planning and analysis) build the company's budget and forecasts, track actual results against them and explain why numbers moved. They sit in the finance team and work closely with business heads and the CFO to guide spending and targets.",
+  "dailyDuties": [
+    "Update the rolling forecast with inputs from business teams",
+    "Compare actual results with budget and explain the variances",
+    "Build or update financial models for new plans and investments",
+    "Prepare the monthly management report and leadership deck",
+    "Review cost centre spending with department heads",
+    "Work with accounting on month-end accruals and close numbers"
+  ],
+  "typicalTitles": [
+    "FP&A Analyst",
+    "Financial Planning and Analysis Analyst",
+    "Senior Financial Analyst - FP&A",
+    "Business Finance Analyst",
+    "Budgeting and Forecasting Analyst",
+    "Commercial Finance Analyst",
+    "FP&A Associate"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "spend-forecasting",
+      "importance": "required",
+      "expectation": "Build the annual budget and rolling forecasts with business teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-modelling",
+      "importance": "required",
+      "expectation": "Build driver-based and scenario models for plans and investments",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpa-variance-reporting",
+      "importance": "required",
+      "expectation": "Explain budget-versus-actual variances and prepare monthly management reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-accounting",
+      "importance": "required",
+      "expectation": "Read the P&L, balance sheet and cash flow and work with accounting at month-end",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Work in advanced Excel every day",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Partner with business and department heads on costs and targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present numbers and insights clearly to senior leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "nice_to_have",
+      "expectation": "Use pivot tables and lookups to shape large data sets",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpa-planning-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use a planning tool such as Anaplan, Hyperion, SAP BPC or Adaptive Planning",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build finance dashboards in Power BI",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-case",
+      "importance": "nice_to_have",
+      "expectation": "Build business cases and ROI analysis for new investments",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Pull finance data with simple SQL queries",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

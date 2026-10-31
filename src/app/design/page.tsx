@@ -418,7 +418,7 @@ const manySaved = Array.from({ length: 24 }, (_, i) => {
   const base = exampleLibrary.items[i % exampleLibrary.items.length];
   return { ...base, id: `${base.id}-long-${i}`, title: `${base.title} (${i + 1})` };
 });
-// Me and /u past one page (T150): 14 roles, education rows and stories each show 10, then "Show more".
+// Me and /u with long sections (C23): 14 roles, education rows and stories, each section folded to 3 with "Show N more".
 const manyMe = {
   ...exampleMe,
   experience: Array.from({ length: 14 }, (_, i) => {
@@ -433,6 +433,16 @@ const manyMe = {
     const base = exampleMe.stories[i % exampleMe.stories.length];
     return { ...base, id: `${base.id}-long-${i}`, title: `${base.title} (${i + 1})` };
   }),
+};
+// The short state (C23): every section at 3 items or fewer, so no fold control shows.
+const shortMe = {
+  ...exampleMe,
+  experience: exampleMe.experience.slice(0, 3),
+  education: exampleMe.education.slice(0, 3),
+  stories: exampleMe.stories.slice(0, 3),
+  interests: exampleMe.interests.slice(0, 3),
+  certifications: exampleMe.certifications.slice(0, 3),
+  skills: { have: exampleMe.skills.have.slice(0, 3), weak: exampleMe.skills.weak.slice(0, 3), missing: exampleMe.skills.missing.slice(0, 3) },
 };
 
 const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5", "elite", "elite-soft", "on-elite"] as const;
@@ -997,11 +1007,15 @@ export default function DesignPage() {
         <NetworkView data={{ ...exampleNetwork, connections: manyConnections }} example={exampleSearch} />
         <LibraryView view={{ ...exampleLibrary, items: [...exampleLibrary.items, ...manySaved], saved: manySaved.map((i) => i.id) }} shelf={exampleEliteShelf(false)} tab="saved" />
         <p className="text-sm text-muted">
-          A profile (Me and /u) with 14 roles, 14 education rows and 14 stories: each shows 10, then &ldquo;Show more roles&rdquo;, &ldquo;Show more
-          education&rdquo; and &ldquo;Show more stories&rdquo; (T150). Stories page by story, in Board and List alike; a box whose stories are all on a
-          later page says so, and its count is the whole box&apos;s. The first role&apos;s company starts with an emoji, whose initial stays whole.
+          Folded sections (C23, handoff section 11): a profile (Me, &ldquo;View as others&rdquo; and /u) with 14 roles, 14 education rows and 14
+          stories. Every list section shows its first 3, newest first, then an outlined ink pill &ldquo;Show N more&rdquo; with a chevron
+          (aria-expanded; focus stays on it); opened, it reads &ldquo;Show less&rdquo; and the section stays open until pressed again. Each story box
+          folds on its own, in Board and List alike, and its count is the whole box&apos;s. The first role&apos;s company starts with an emoji, whose
+          initial stays whole.
         </p>
         <MeView me={manyMe} mode="public" />
+        <p className="text-sm text-muted">The short state: every section at 3 items or fewer shows them all, with no control.</p>
+        <MeView me={shortMe} mode="public" />
       </section>
 
       <section className="flex flex-col gap-4">
@@ -1532,7 +1546,7 @@ export default function DesignPage() {
               { slug: "full-stack-developer", title: "Full Stack Developer (MERN)", experience: "1 to 5 years", met: 5, total: 10, shown: ["JavaScript", "Node.js", "SQL"], fits: true },
               { slug: "senior-backend-engineer", title: "Senior Backend Engineer", experience: "5 to 10 years", met: 4, total: 9, shown: ["Node.js", "SQL"], fits: false },
             ]}
-            standIns={[{ id: "example-stand-in", title: "Supply Chain Analyst", company: "Example Freight Pvt Ltd" }]}
+            standIns={[{ id: "example-stand-in", title: "Fleet Planning Analyst", company: "Example Freight Pvt Ltd" }]}
             demo
           />
           <p className="text-sm text-muted">With a target role picked on Today before the upload: it shows first.</p>
@@ -1597,11 +1611,11 @@ export default function DesignPage() {
       <section className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">My role isn&apos;t listed</h2>
-          <StandInForm resumeId="example" initialTitle="Supply Chain Analyst" demo />
+          <StandInForm resumeId="example" initialTitle="Fleet Planning Analyst" demo />
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">A job standing in for the role</h2>
-          <StandInNote title="Supply Chain Analyst" />
+          <StandInNote title="Fleet Planning Analyst" />
           <ReadinessCard
             readiness={{
               headline: "You cover 2 of the 5 skills this job asks for.",
@@ -1637,6 +1651,10 @@ export default function DesignPage() {
         </div>
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">Resume check</h2>
+          <p className="text-sm text-muted">
+            Folded by section (C23): one section open at a time, starting with About you; the others show their heading and a one-line summary
+            (&ldquo;1 role&rdquo;, &ldquo;2 degrees&rdquo;). The heading is the button (aria-expanded). A save that stops opens the section to fix.
+          </p>
           <ProfileEditor resumeId="example" initial={exampleProfile} demo />
           <p className="text-sm text-muted">Shown above the check once the resume is confirmed.</p>
           <ResumeDownload resumeId="example" named={false} demo />

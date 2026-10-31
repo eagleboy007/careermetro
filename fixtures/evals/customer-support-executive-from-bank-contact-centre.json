@@ -1,0 +1,60 @@
+{
+  "id": "customer-support-executive-from-bank-contact-centre",
+  "roleSlug": "customer-support-executive",
+  "persona": "Mid-level bank contact centre executive with a few gaps",
+  "resumeText": "Ayesha Khan | Hyderabad | ayesha.khan@example.com\n\nEXPERIENCE\nCustomer Service Executive, Phone Banking, Golconda Unity Bank, Hyderabad (2023 - present)\n- Handled 80 to 100 inbound customer calls a day on card and savings account queries.\n- Resolved complaints on failed transactions, card charges and statement errors on the first call where possible.\n- Met AHT and CSAT targets for 10 straight months in the phone banking team.\n- Raised and tracked service requests in the bank's CRM.\n- Explained card charges and EMI options to customers in English, Hindi and Telugu.\n- Verified KYC documents for address and mobile number update requests.\n\nCustomer Support Associate, Kirana Kart Online, Hyderabad (2021 - 2023)\n- Answered order and delivery questions over chat and email for an online grocery store.\n- Processed return and refund requests within the returns policy.\n\nEDUCATION\nBCom, Osmania University, 2021\n\nSKILLS\nCRM, escalation handling, MS Excel\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "omnichannel-support",
+        "quote": "Handled 80 to 100 inbound customer calls a day"
+      },
+      {
+        "skillId": "customer-query-resolution",
+        "quote": "Resolved complaints on failed transactions, card charges and statement errors"
+      },
+      {
+        "skillId": "contact-centre-metrics",
+        "quote": "Met AHT and CSAT targets for 10 straight months"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Raised and tracked service requests in the bank's CRM"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Explained card charges and EMI options to customers in English, Hindi and Telugu"
+      },
+      {
+        "skillId": "kyc-verification",
+        "quote": "Verified KYC documents for address and mobile number update requests"
+      },
+      {
+        "skillId": "order-returns-refunds",
+        "quote": "Processed return and refund requests within the returns policy"
+      },
+      {
+        "skillId": "escalation-handling",
+        "quote": "escalation handling"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "escalation-handling",
+        "status": "weak"
+      },
+      {
+        "skillId": "case-documentation",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "cross-selling-upselling",
+      "desktop-support",
+      "itsm",
+      "application-support"
+    ]
+  },
+  "reviewedBy": null
+}

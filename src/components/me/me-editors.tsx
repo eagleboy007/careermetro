@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { useEffect, useId, useRef, useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
 import { ICON } from "@/components/map/map-parts";
 import { FieldError } from "@/components/ui/field-error";
+import { FoldToggle, useFold } from "@/components/ui/show-more";
 import type { MeExperience, MeEducationItem, Story, StoryBox } from "@/lib/schemas";
 import {
   INTEREST_MAX,
@@ -438,6 +439,9 @@ export function InterestsEditor({ interests, onAdd, onRemove, say }: { interests
   // With actions the list is the server's, sent again after each change; example data keeps its own copy.
   const [local, setLocal] = useState(interests);
   const shown = onAdd ? interests : local;
+  // Newest added first, folded to 3 (C23): the one just added always shows.
+  const fold = useFold([...shown].reverse());
+  const listId = useId();
   const [text, setText] = useState("");
   const input = useRef<HTMLInputElement>(null);
   const { pending, error, setError, run } = useSave();
@@ -467,8 +471,8 @@ export function InterestsEditor({ interests, onAdd, onRemove, say }: { interests
   return (
     <div className="flex flex-col gap-2">
       {shown.length > 0 && (
-        <ul className="flex flex-wrap gap-1.5" aria-label="Your interests">
-          {shown.map((t) => (
+        <ul id={listId} className="flex flex-wrap gap-1.5" aria-label="Your interests">
+          {fold.shown.map((t) => (
             <li key={t} className="inline-flex items-center gap-0.5 rounded-full bg-surface-2 py-0.5 pl-2.5 pr-0.5 text-[0.78rem]">
               {t}
               <button type="button" aria-label={`Remove ${t}`} aria-disabled={pending} onClick={() => remove(t)} className="grid size-8 place-items-center rounded-full text-muted hover:text-ink">
@@ -478,6 +482,7 @@ export function InterestsEditor({ interests, onAdd, onRemove, say }: { interests
           ))}
         </ul>
       )}
+      <FoldToggle fold={fold} noun="interests" controls={listId} />
       <form onSubmit={add} className="flex flex-wrap items-start gap-2">
         <input
           ref={input}

@@ -1,0 +1,122 @@
+{
+  "slug": "area-sales-manager",
+  "title": "Area Sales Manager",
+  "summary": "An area sales manager runs sales in a territory of several towns or districts through distributors (wholesale partners who stock and deliver to shops) and a team of field sales officers. The role is common in FMCG, pharma, consumer durables and lending, and reports to a regional or zonal sales manager.",
+  "dailyDuties": [
+    "Travel the territory with sales officers to visit distributors and outlets",
+    "Review distributor stock, claims and outstanding payments",
+    "Track primary and secondary sales against monthly targets",
+    "Plan beats and coverage for new towns and outlets",
+    "Coach the field team and review their daily numbers",
+    "Report the month's performance to the regional manager"
+  ],
+  "typicalTitles": [
+    "Area Sales Manager - General Trade",
+    "Area Sales Manager - FMCG",
+    "Area Manager - Sales",
+    "Area Business Manager",
+    "Territory Sales Manager",
+    "Senior Area Sales Manager",
+    "Area Sales Manager - Home Loans"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "distributor-management",
+      "importance": "required",
+      "expectation": "Appoint, review and replace distributors and track their ROI",
+      "postingShare": null
+    },
+    {
+      "skillId": "primary-secondary-sales",
+      "importance": "required",
+      "expectation": "Drive primary billing and secondary sales to retail outlets in the area",
+      "postingShare": null
+    },
+    {
+      "skillId": "territory-sales-planning",
+      "importance": "required",
+      "expectation": "Plan coverage, beats and expansion across towns in the territory",
+      "postingShare": null
+    },
+    {
+      "skillId": "channel-credit-collections",
+      "importance": "required",
+      "expectation": "Collect distributor outstandings and settle claims on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "trade-spend-management",
+      "importance": "required",
+      "expectation": "Run trade schemes within budget and check their ROI",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Track targets, secondary sales and distributor stock in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead, coach and review a team of sales officers or field executives",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Run monthly reviews with the team and report to the regional manager",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Break regional targets into monthly plans by distributor",
+      "postingShare": null
+    },
+    {
+      "skillId": "dms-sfa-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use a distributor management system or sales app for orders and attendance",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "nice_to_have",
+      "expectation": "Negotiate terms with distributors and large retailers",
+      "postingShare": null
+    },
+    {
+      "skillId": "modern-trade-retail",
+      "importance": "nice_to_have",
+      "expectation": "Handle local modern trade stores in the area",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "For loan or insurance roles, know the product and DSA channel",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Read territory dashboards to spot gaps",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

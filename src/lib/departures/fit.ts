@@ -1,7 +1,7 @@
 import { skillGroupMembers } from "@/content";
-import { matchProfile } from "@/lib/gaps/match";
+import { profileMatcher, type MatchResult } from "@/lib/gaps/match";
 import { postingRole } from "@/lib/jobs/groups";
-import { jobPost, type JobPost, type Profile } from "@/lib/schemas";
+import { jobPost, type JobPost, type Profile, type RoleProfile } from "@/lib/schemas";
 import { JOB_WORK_TYPE_LABELS } from "@/lib/schemas/constants";
 
 /*
@@ -69,9 +69,10 @@ function why(gaps: number, onYourLine: number, destination: boolean): string {
 /**
  * One post as a Departures row. With a context, its required skills are matched: "You have" lists what the resume
  * shows or proof covers, the gaps name each skill whose goal closes it, and readiness counts them. A post with fewer
- * than two required skills found shows no fit, and says why.
+ * than two required skills found shows no fit, and says why. `matchRole` is `profileMatcher(ctx.profile, now)` when
+ * many posts are read against the same context.
  */
-export function postView(post: StoredPost, ctx: FitContext | null, now = new Date()): JobPost {
+export function postView(post: StoredPost, ctx: FitContext | null, now = new Date(), matchRole?: (role: RoleProfile) => MatchResult): JobPost {
   const base = {
     id: post.id,
     role: post.title,
@@ -87,7 +88,7 @@ export function postView(post: StoredPost, ctx: FitContext | null, now = new Dat
   if (!ctx) return jobPost.parse({ ...base, gaps: [], have: [], goalsBefore: 0, why: "" });
   if (new Set(post.requiredSkillIds).size < MIN_FIT_SKILLS) return jobPost.parse({ ...base, gaps: [], have: [], goalsBefore: 0, why: "", fitNote: TOO_FEW_SKILLS });
 
-  const match = matchProfile(ctx.profile, postingRole(post, now), now);
+  const match = (matchRole ?? profileMatcher(ctx.profile, now))(postingRole(post, now));
   const have = match.met.map((m) => m.skillName);
   const gaps: JobPost["gaps"] = [];
   let onYourLine = 0;
@@ -117,9 +118,11 @@ export function postView(post: StoredPost, ctx: FitContext | null, now = new Dat
 export function postViews(posts: readonly StoredPost[], ctx: FitContext | null, now = new Date()): { jobs: JobPost[]; skipped: string[] } {
   const jobs: JobPost[] = [];
   const skipped: string[] = [];
+  // The resume is read once for every post (T161).
+  const matchRole = ctx ? profileMatcher(ctx.profile, now) : undefined;
   for (const p of posts) {
     try {
-      jobs.push(postView(p, ctx, now));
+      jobs.push(postView(p, ctx, now, matchRole));
     } catch {
       skipped.push(p.id);
     }
