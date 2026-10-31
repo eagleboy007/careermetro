@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (Add a pitstop on the Map)
+Last updated: 2026-10-31 (Add a pitstop on the Map; plans for manager/colleague proof and the on-camera check, parked)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -150,6 +150,10 @@ Waiting: the end of Milin's name-search message ("city or …"); photo and certi
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 
 Numbers: the next migration is **0058**. `EXPORT_VERSION` (37) lives in `src/lib/account/export.ts`. The latest FR is FR-57 (FR-36 filled a number that was never used).
+
+## Plans awaiting review
+
+- Proof confirmed by a manager or colleague (`docs/plans/proof-confirm-plan.md`) and the on-camera skill check (`docs/plans/on-camera-check-plan.md`): proposed 2026-10-31, PM reviewed, parked until Milin decides reviewer pay and Supabase Pro and a lawyer advises on consent and emailing non-users (his pending items 31 and 32); not approved; nothing is built.
 
 ## Decisions log (newest first)
 
