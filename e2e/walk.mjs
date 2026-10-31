@@ -15,6 +15,29 @@ const NEARBY_WALK_SWITCHER = [
   ["Senior Data Scientist", 5, 7],
 ];
 const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+// CSP (src/lib/csp.ts): the host allow-list policy is report-only, so what it would block is listed at the end of the
+// walk ("CSP: none" or one line per directive and blocked source) and fails nothing, like the policy itself. Every
+// context the walk opens gets the listener; Chromium's own "[Report Only] Refused to ..." console line is a fallback
+// for what the page event can't see (workers), and no console-error check counts it as a problem.
+const cspSeen = new Map();
+const cspNote = (key, at) => cspSeen.set(key, { count: (cspSeen.get(key)?.count ?? 0) + 1, at: cspSeen.get(key)?.at ?? at });
+const consoleError = (m) => m.type() === "error" && !m.text().includes("[Report Only]");
+const newContext = b.newContext.bind(b);
+b.newContext = async (options) => {
+  const c = await newContext(options);
+  await c.addInitScript(() =>
+    document.addEventListener("securitypolicyviolation", (e) =>
+      console.debug(`[csp-violation] ${e.disposition} ${e.effectiveDirective} ${/^https?:/.test(e.blockedURI) ? new URL(e.blockedURI).origin : e.blockedURI || "inline"}`),
+    ),
+  );
+  c.on("console", (m) => {
+    const at = (() => { try { return new URL(m.page()?.url() ?? "").pathname; } catch { return "?"; } })();
+    const event = m.text().match(/^\[csp-violation\] (.+)$/);
+    if (event) cspNote(event[1], at);
+    else if (m.text().includes("[Report Only]") && m.text().includes("Content Security Policy")) cspNote(`console: ${m.text().slice(0, 160)}`, at);
+  });
+  return c;
+};
 // Reduced motion: axe reads colours mid fade-in otherwise and reports contrast the finished page doesn't have.
 const ctx = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
 const p = await ctx.newPage();
@@ -30,7 +53,7 @@ p.on("response", (r) => r.status() === 404 && recent404.push(`${r.request().meth
 p.on(
   "console",
   (m) =>
-    m.type() === "error" &&
+    consoleError(m) &&
     !failingOnPurpose &&
     !(new URL(p.url()).pathname === expected404 && m.text().includes("404")) &&
     problems.push(`console@${p.url()}: ${m.text().slice(0, 200)}${m.text().includes("404") ? ` (resource: ${m.location()?.url ?? "?"}; recent 404s: ${recent404.join(", ")})` : ""}`),
@@ -1812,7 +1835,7 @@ await step("nearby lines: a switcher sees them on Me and as an interchange on th
   const ctx2 = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
   const q = await ctx2.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
-  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  q.on("console", (m) => consoleError(m) && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
   const qSettled = () => q.getByText(/Comparing your resume|Building your path|Loading…/).first().waitFor({ state: "detached", timeout: 60000 }).catch(() => {});
   try {
@@ -3289,7 +3312,7 @@ await step("corporate: set up a company, confirm the code, wait for verification
   q = await corp.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
-  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  q.on("console", (m) => consoleError(m) && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
   corpDomain = domain;
   {
     await q.goto(BASE + "/today");
@@ -3411,7 +3434,7 @@ await step("company review: not found for others; the admin verifies the new com
   const q = await adm.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
-  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  q.on("console", (m) => consoleError(m) && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
   try {
     await signInAs(q, "Admin Tester", "admin@careermetro.test");
     await q.getByRole("button", { name: /open menu$/ }).click();
@@ -3492,7 +3515,7 @@ await step("held proofs: the admin accepts one, and focus moves to the next row"
   const q = await adm.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
-  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  q.on("console", (m) => consoleError(m) && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
   try {
     const person = async (n, first, last) =>
       (await sql`insert into users (email, first_name, last_name, name) values (${`${run}-${n}@example.test`}, ${first}, ${last}, ${`${first} ${last}`}) returning id`)[0].id;
@@ -3572,7 +3595,7 @@ await step("reports: the admin acknowledges one, then closes it", async () => {
   const q = await adm.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
-  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  q.on("console", (m) => consoleError(m) && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
   try {
     const person = async (n, first, last) =>
       (await sql`insert into users (email, first_name, last_name, name) values (${`${run}-${n}@example.test`}, ${first}, ${last}, ${`${first} ${last}`}) returning id`)[0].id;
@@ -3648,7 +3671,7 @@ await step("reports: the admin hides the reported message, and the other side se
   for (const pg of [r, q]) {
     pg.on("pageerror", (e) => problems.push(`pageerror@${pg.url()}: ${e.message.slice(0, 200)}`));
     pg.on("response", (x) => x.status() >= 500 && problems.push(`${x.status()} ${x.request().method()} ${x.url()}`));
-    pg.on("console", (m) => m.type() === "error" && problems.push(`console@${pg.url()}: ${m.text().slice(0, 200)}`));
+    pg.on("console", (m) => consoleError(m) && problems.push(`console@${pg.url()}: ${m.text().slice(0, 200)}`));
   }
   try {
     // The person who reports it signs in for real, so their Inbox can be read; the sender is set up in the database.
@@ -3738,7 +3761,7 @@ await step("library review: the admin hides the reported link, and the Library n
   const q = await adm.newPage();
   q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
   q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
-  q.on("console", (m) => m.type() === "error" && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+  q.on("console", (m) => consoleError(m) && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
   let hiddenId = null;
   try {
     await signInAs(q, "Admin Tester", "admin@careermetro.test");
@@ -4006,7 +4029,7 @@ await step("timetable: matched events, Save, I'm going with a prep task, the Mon
     const a = await adm.newPage();
     a.on("pageerror", (e) => problems.push(`pageerror@${a.url()}: ${e.message.slice(0, 200)}`));
     a.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
-    a.on("console", (m) => m.type() === "error" && problems.push(`console@${a.url()}: ${m.text().slice(0, 200)}`));
+    a.on("console", (m) => consoleError(m) && problems.push(`console@${a.url()}: ${m.text().slice(0, 200)}`));
     await signInAs(a, "Admin Tester", "admin@careermetro.test");
     await a.goto(BASE + "/admin/reports");
     await a.getByRole("heading", { name: "Reports", level: 1 }).waitFor({ timeout: 15000 });
@@ -5670,6 +5693,10 @@ await step("smoke 6: the settings Download link, Sign out from the menu, and bac
   }
 });
 if (a11yNotes.length) console.log("ACCESSIBILITY (moderate/minor, not failing):\n" + a11yNotes.join("\n"));
+// The page event and Chromium's console line both describe a violation; with the event seen, the console copies add nothing.
+const cspEventSeen = [...cspSeen.keys()].some((k) => !k.startsWith("console: "));
+const cspLines = [...cspSeen].filter(([k]) => !cspEventSeen || !k.startsWith("console: "));
+console.log(cspLines.length ? "CSP (report-only, not failing):\n" + cspLines.map(([k, v]) => `  ${k} x${v.count} (first at ${v.at})`).join("\n") : "CSP: none");
 console.log("PROBLEMS:\n" + (problems.join("\n") || "none"));
 if (process.env.GITHUB_ACTIONS) for (const pr of problems) console.log(`::error title=e2e problem::${pr.split("\n")[0]}`);
 await b.close();

@@ -174,6 +174,12 @@ What production answered on 2026-10-20 (`curl -sSI`, one GET each):
   - Expected noise: browser extensions (`chrome-extension`, `moz-extension`, `safari-web-extension`), scripts injected by ISPs or antivirus, and the Vercel Toolbar (`vercel.live`), which team members signed in to Vercel may see on production too.
 - **Switch to enforce when:** the live reads across Testing Run 6 and the spot checks show only known causes that are fixed or accepted, such as extensions; or, once the log drain is set up (launch readiness item 6), a few days of drained reports show the same. Then rename the header to `Content-Security-Policy`, merge it with the enforced one, and keep `report-uri`/`report-to` so new violations still show.
 
+### CSP clean-up, 2026-10-31
+
+- **Our violations.** A code read of `src` found none: no inline `<script>`, `dangerouslySetInnerHTML`, inline event handler, `eval` or `new Function` (zod, which compiles validators with `new Function`, stays off the client: `src/lib/client-bundle.test.ts`), no `<img>`, `<iframe>`, `next/image`, `next/script` or analytics, and every client `fetch` and form posts to our own origin. `blob:` is used only for `.ics` downloads. Next's inline bootstrap and RSC scripts are what `'unsafe-inline'` is for; nonces would end prerendering (above), so it stays. No policy change was needed.
+- **The walk reads it.** `e2e/walk.mjs` listens for `securitypolicyviolation` in every context it opens (plus Chromium's `[Report Only]` console line as a fallback) and prints `CSP: none` or each directive and blocked source at the end. It fails nothing, like the policy; report-only console lines are no longer counted as console errors (`e2e/oversize.mjs` too).
+- **Still open.** Production reports need the Vercel log drain (launch readiness 6), which only Milin can set up. The policy stays report-only; switching to enforce waits on the drained reports and on Milin.
+
 ## 4. Next 16 deprecations (code search; the build log needs auth)
 
 - **`middleware.ts` → `proxy.ts`:** done. `src/proxy.ts` exports `proxy` and `config.matcher`, with no edge runtime. No `middleware.*` file.

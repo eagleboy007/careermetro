@@ -168,7 +168,7 @@ try {
     const q = await ctx.newPage();
     let at = "";
     q.on("pageerror", (e) => fail(`${at}: page error: ${e.message.slice(0, 200)}`));
-    q.on("console", (m) => m.type() === "error" && fail(`${at}: console error: ${m.text().slice(0, 200)}`));
+    q.on("console", (m) => m.type() === "error" && !m.text().includes("[Report Only]") && fail(`${at}: console error: ${m.text().slice(0, 200)}`));
     q.on("response", (r) => r.status() >= 500 && fail(`${at}: ${r.status()} ${r.request().method()} ${new URL(r.url()).pathname}`));
     try {
       for (const size of SIZES) {
