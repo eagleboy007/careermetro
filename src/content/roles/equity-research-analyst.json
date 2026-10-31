@@ -98,7 +98,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "nism-xv-research-analyst",
+      "importance": "recommended",
+      "why": "SEBI's Research Analyst rules require NISM XV for people who write research, and posts often name it."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",

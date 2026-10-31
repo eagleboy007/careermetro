@@ -110,6 +110,11 @@
       "certId": "mos-excel-associate",
       "importance": "optional",
       "why": "Shows the Excel skills used for HR MIS reports"
+    },
+    {
+      "certId": "shrm-cp",
+      "importance": "optional",
+      "why": "A known HR credential in Indian MNCs; it covers HR practice broadly but not Indian labour law."
     }
   ],
   "sources": [

@@ -91,7 +91,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "tally-essential",
+      "importance": "optional",
+      "why": "Smaller firms post salary and statutory entries in Tally."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",

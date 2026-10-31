@@ -18,7 +18,7 @@
   },
   {
     "id": "aws-solutions-architect-associate",
-    "name": "AWS Certified Solutions Architect \u2013 Associate",
+    "name": "AWS Certified Solutions Architect – Associate",
     "issuer": "Amazon Web Services",
     "level": "associate",
     "cost": "paid",
@@ -42,7 +42,7 @@
   },
   {
     "id": "aws-developer-associate",
-    "name": "AWS Certified Developer \u2013 Associate",
+    "name": "AWS Certified Developer – Associate",
     "issuer": "Amazon Web Services",
     "level": "associate",
     "cost": "paid",
@@ -61,7 +61,7 @@
   },
   {
     "id": "aws-devops-professional",
-    "name": "AWS Certified DevOps Engineer \u2013 Professional",
+    "name": "AWS Certified DevOps Engineer – Professional",
     "issuer": "Amazon Web Services",
     "level": "professional",
     "cost": "paid",
@@ -82,7 +82,7 @@
   },
   {
     "id": "aws-security-specialty",
-    "name": "AWS Certified Security \u2013 Specialty",
+    "name": "AWS Certified Security – Specialty",
     "issuer": "Amazon Web Services",
     "level": "specialty",
     "cost": "paid",
@@ -103,7 +103,7 @@
   },
   {
     "id": "aws-ml-engineer-associate",
-    "name": "AWS Certified Machine Learning Engineer \u2013 Associate",
+    "name": "AWS Certified Machine Learning Engineer – Associate",
     "issuer": "Amazon Web Services",
     "level": "associate",
     "cost": "paid",
@@ -1012,7 +1012,7 @@
   },
   {
     "id": "pcep",
-    "name": "PCEP \u2013 Certified Entry-Level Python Programmer",
+    "name": "PCEP – Certified Entry-Level Python Programmer",
     "issuer": "Python Institute",
     "level": "entry",
     "cost": "paid",
@@ -1029,7 +1029,7 @@
   },
   {
     "id": "pcap",
-    "name": "PCAP \u2013 Certified Associate Python Programmer",
+    "name": "PCAP – Certified Associate Python Programmer",
     "issuer": "Python Institute",
     "level": "associate",
     "cost": "paid",
@@ -1278,7 +1278,7 @@
   },
   {
     "id": "aws-data-engineer-associate",
-    "name": "AWS Certified Data Engineer \u2013 Associate",
+    "name": "AWS Certified Data Engineer – Associate",
     "issuer": "Amazon Web Services",
     "level": "associate",
     "cost": "paid",
@@ -2132,7 +2132,7 @@
   },
   {
     "id": "aws-solutions-architect-professional",
-    "name": "AWS Certified Solutions Architect \u2013 Professional",
+    "name": "AWS Certified Solutions Architect – Professional",
     "issuer": "Amazon Web Services",
     "level": "professional",
     "cost": "paid",
@@ -2158,7 +2158,7 @@
   },
   {
     "id": "aws-cloudops-engineer-associate",
-    "name": "AWS Certified CloudOps Engineer \u2013 Associate",
+    "name": "AWS Certified CloudOps Engineer – Associate",
     "issuer": "Amazon Web Services",
     "level": "associate",
     "cost": "paid",
@@ -2183,7 +2183,7 @@
   },
   {
     "id": "aws-advanced-networking-specialty",
-    "name": "AWS Certified Advanced Networking \u2013 Specialty",
+    "name": "AWS Certified Advanced Networking – Specialty",
     "issuer": "Amazon Web Services",
     "level": "professional",
     "cost": "paid",
@@ -2358,7 +2358,7 @@
   },
   {
     "id": "fortinet-nse4",
-    "name": "Fortinet NSE 4 \u2013 FortiOS Administrator",
+    "name": "Fortinet NSE 4 – FortiOS Administrator",
     "issuer": "Fortinet",
     "level": "associate",
     "cost": "paid",
@@ -2767,12 +2767,12 @@
   },
   {
     "id": "tuv-sud-functional-safety-engineer",
-    "name": "T\u00dcV S\u00dcD Functional Safety Engineer (ISO 26262 Automotive)",
-    "issuer": "T\u00dcV S\u00dcD",
+    "name": "TÜV SÜD Functional Safety Engineer (ISO 26262 Automotive)",
+    "issuer": "TÜV SÜD",
     "level": "associate",
     "cost": "paid",
     "aliases": [
-      "t\u00fcv s\u00fcd functional safety engineer",
+      "tüv süd functional safety engineer",
       "tuv sud functional safety engineer",
       "iso 26262 functional safety engineer",
       "fscp level 1",
@@ -2825,7 +2825,7 @@
   },
   {
     "id": "adobe-commerce-developer-professional",
-    "name": "Adobe Certified Professional \u2013 Adobe Commerce Developer (AD0-E724)",
+    "name": "Adobe Certified Professional – Adobe Commerce Developer (AD0-E724)",
     "issuer": "Adobe",
     "level": "professional",
     "cost": "paid",
@@ -3149,7 +3149,7 @@
   },
   {
     "id": "cyberark-defender-pam",
-    "name": "CyberArk Defender \u2013 PAM",
+    "name": "CyberArk Defender – PAM",
     "issuer": "CyberArk (Idira)",
     "level": "associate",
     "cost": "paid",
@@ -3167,7 +3167,7 @@
   },
   {
     "id": "cyberark-sentry-pam",
-    "name": "CyberArk Sentry \u2013 PAM",
+    "name": "CyberArk Sentry – PAM",
     "issuer": "CyberArk (Idira)",
     "level": "professional",
     "cost": "paid",
@@ -3348,7 +3348,7 @@
   },
   {
     "id": "vcp-vcf-administrator",
-    "name": "VMware Certified Professional \u2013 VMware Cloud Foundation Administrator (VCP-VCF Administrator)",
+    "name": "VMware Certified Professional – VMware Cloud Foundation Administrator (VCP-VCF Administrator)",
     "issuer": "Broadcom (VMware)",
     "level": "professional",
     "cost": "paid",
@@ -3370,7 +3370,7 @@
   },
   {
     "id": "citrix-cca-v",
-    "name": "Citrix Certified Associate \u2013 Virtualization (CCA-V)",
+    "name": "Citrix Certified Associate – Virtualization (CCA-V)",
     "issuer": "Citrix (Cloud Software Group)",
     "level": "associate",
     "cost": "paid",
@@ -3389,7 +3389,7 @@
   },
   {
     "id": "nutanix-ncp-mci",
-    "name": "Nutanix Certified Professional \u2013 Multicloud Infrastructure (NCP-MCI)",
+    "name": "Nutanix Certified Professional – Multicloud Infrastructure (NCP-MCI)",
     "issuer": "Nutanix",
     "level": "professional",
     "cost": "paid",
@@ -3442,6 +3442,162 @@
     "partial": [
       "machine-learning",
       "azure"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "tally-essential",
+    "name": "TallyEssential Comprehensive (Tally Education)",
+    "issuer": "Tally Education",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "tallyessential",
+      "tally essential",
+      "tallyessential comprehensive",
+      "tally essential comprehensive",
+      "tally education certified",
+      "tally certified accountant"
+    ],
+    "proves": [
+      "tally-accounting-software"
+    ],
+    "partial": [
+      "financial-accounting",
+      "gst-tds-compliance"
+    ],
+    "reviewed": false,
+    "lifetime": true
+  },
+  {
+    "id": "gst-practitioner-exam",
+    "name": "GST Practitioner Examination (NACIN)",
+    "issuer": "NACIN (CBIC)",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "gst practitioner examination",
+      "gst practitioner exam",
+      "gstp exam",
+      "gstp examination",
+      "nacin gst practitioner exam",
+      "qualified gst practitioner exam"
+    ],
+    "proves": [],
+    "partial": [
+      "gst-tds-compliance"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "nism-va-mutual-fund-distributors",
+    "name": "NISM-Series-V-A: Mutual Fund Distributors Certification",
+    "issuer": "NISM",
+    "level": "entry",
+    "cost": "paid",
+    "aliases": [
+      "nism series v-a",
+      "nism series va",
+      "nism v-a",
+      "nism va",
+      "nism mutual fund distributors certification",
+      "nism mutual fund distributor",
+      "nism-series-v-a",
+      "amfi certified",
+      "amfi certification"
+    ],
+    "proves": [
+      "investment-suitability-compliance"
+    ],
+    "partial": [
+      "banking-client-portfolio-management"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "nism-xv-research-analyst",
+    "name": "NISM-Series-XV: Research Analyst Certification",
+    "issuer": "NISM",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "nism series xv",
+      "nism xv",
+      "nism-series-xv",
+      "nism research analyst",
+      "nism research analyst certification",
+      "nism series 15"
+    ],
+    "proves": [
+      "equity-valuation"
+    ],
+    "partial": [
+      "equity-research-reports"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "shrm-cp",
+    "name": "SHRM Certified Professional (SHRM-CP)",
+    "issuer": "SHRM",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "shrm-cp",
+      "shrm cp",
+      "shrm certified professional"
+    ],
+    "proves": [],
+    "partial": [
+      "hr-policy-administration",
+      "employee-relations",
+      "full-cycle-recruitment",
+      "compensation-planning",
+      "hr-analytics",
+      "hr-business-partnering"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "cswa",
+    "name": "SOLIDWORKS Design Associate (CSWA)",
+    "issuer": "Dassault Systèmes SOLIDWORKS",
+    "level": "associate",
+    "cost": "paid",
+    "aliases": [
+      "cswa",
+      "certified solidworks associate",
+      "solidworks associate",
+      "solidworks design associate",
+      "cswa mechanical design"
+    ],
+    "proves": [
+      "3d-cad-modelling"
+    ],
+    "partial": [
+      "mechanical-2d-drafting"
+    ],
+    "reviewed": false
+  },
+  {
+    "id": "autodesk-autocad-professional",
+    "name": "Autodesk Certified Professional in AutoCAD for Design and Drafting",
+    "issuer": "Autodesk",
+    "level": "professional",
+    "cost": "paid",
+    "aliases": [
+      "autodesk certified professional autocad",
+      "autodesk certified professional in autocad",
+      "autocad certified professional",
+      "acp autocad",
+      "autodesk autocad certification",
+      "autocad for design and drafting professional"
+    ],
+    "proves": [
+      "autocad-2d-drafting"
+    ],
+    "partial": [
+      "mechanical-2d-drafting"
     ],
     "reviewed": false
   }

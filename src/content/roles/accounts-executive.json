@@ -80,7 +80,18 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "tally-essential",
+      "importance": "recommended",
+      "why": "Accounts executive posts in India ask for Tally almost every time, and this is Tally's own assessed certificate."
+    },
+    {
+      "certId": "gst-practitioner-exam",
+      "importance": "optional",
+      "why": "Shows GST law and return filing beyond doing data entry in Tally."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
