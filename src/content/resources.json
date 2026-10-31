@@ -21947,17 +21947,6 @@
     "free": true
   },
   {
-    "title": "How important is dependent failure analysis in ISO 26262?",
-    "url": "https://www.embitel.com/blog/embedded-blog/how-important-is-dependent-failure-analysis-in-iso-26262",
-    "provider": "Embitel",
-    "kind": "docs",
-    "skillIds": [
-      "fault-tree-analysis"
-    ],
-    "minutes": 15,
-    "free": true
-  },
-  {
     "title": "ISO 26262 dependent failure analysis using PSS (DVCon paper)",
     "url": "https://dvcon-proceedings.org/wp-content/uploads/iso-26262-dependent-failure-analysis-using-pss.pdf",
     "provider": "DVCon",
@@ -27035,6 +27024,28 @@
       "revenue-management-systems"
     ],
     "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Fault Tree Handbook (NUREG-0492)",
+    "url": "https://www.nrc.gov/reading-rm/doc-collections/nuregs/staff/sr0492/index",
+    "provider": "US Nuclear Regulatory Commission",
+    "kind": "docs",
+    "skillIds": [
+      "fault-tree-analysis"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Microsoft Multipath I/O (MPIO)",
+    "url": "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/dd759254(v=ws.11)",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "san-storage"
+    ],
+    "minutes": 20,
     "free": true
   }
 ]
