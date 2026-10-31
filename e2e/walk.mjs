@@ -6140,8 +6140,10 @@ if (process.env.JUNCTION_ENABLED?.trim() !== "1") {
       await adm.getByRole("heading", { name: "Reports", level: 1 }).waitFor({ timeout: 15000 });
       const row = adm.locator("article", { hasText: title }).filter({ has: adm.getByRole("button", { name: /^Hide post: / }) });
       await row.getByRole("button", { name: /^Hide post: / }).click();
-      await row.getByLabel("Reason").fill("Walk check: harassment.");
-      await row.getByRole("button", { name: "Hide post", exact: true }).click();
+      // The button gives way to its form, so the row is found again by its title alone from here.
+      const open = adm.locator("article", { hasText: title }).filter({ has: adm.getByLabel("Reason", { exact: true }) });
+      await open.getByLabel("Reason", { exact: true }).fill("Walk check: harassment.");
+      await open.getByRole("button", { name: "Hide post", exact: true }).click();
       await adm.locator("article", { hasText: title }).getByText(/^Post hidden/).first().waitFor({ timeout: 15000 });
       const closeIt = adm.locator("article", { hasText: title }).getByRole("button", { name: /^Action taken: / });
       if (await closeIt.count()) {
