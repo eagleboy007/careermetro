@@ -4,6 +4,7 @@ import { ArrowRight, Lock } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { StatusChip } from "@/components/ui/status-chip";
+import { istClock } from "@/lib/day-words";
 import type { Departure } from "@/lib/schemas";
 import { departureTone, departureWhen } from "@/lib/today/board";
 
@@ -102,8 +103,7 @@ export function DeparturesBoard({
 function Clock() {
   const [now, setNow] = useState<string | null>(null);
   useEffect(() => {
-    const format = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
-    const tick = () => setNow(format.format(new Date()));
+    const tick = () => setNow(istClock(new Date()));
     tick();
     const timer = setInterval(tick, 15_000);
     return () => clearInterval(timer);
