@@ -775,7 +775,7 @@ function EarlierPanel({
       {stayed.length > 0 ? <List items={stayed} /> : <p>Every goal of this line came along.</p>}
       <p>
         Proved goals keep their place and proof. The pitstop you are on keeps its progress, so your train doesn&apos;t move. Goals the new role also asks
-        for stay, and its new goals take the freed pitstops.
+        for stay, and its new goals join the end of the line.
       </p>
       <div className="flex flex-wrap items-center gap-3">
         <button type="button" className={ghost} aria-disabled={pending || undefined} onClick={switchBack}>
