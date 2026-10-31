@@ -608,6 +608,8 @@ export const BUILDER_JOB_KIND_LABELS: Record<(typeof BUILDER_JOB_KINDS)[number],
  * time (src/components/ui/show-more.tsx). The stores still return every row up to their own cap.
  */
 export const LIST_PAGE_SIZE = 20;
+/** Tall cards (My jobs) show this many at a time on a phone-width screen (T167, until the compact row C24). */
+export const PHONE_PAGE_SIZE = 10;
 /** Inbox chats one person's Inbox loads, newest first. */
 export const INBOX_THREADS_MAX = 500;
 /** Rows each Network list (connections, requests waiting, requests sent) loads, newest first. */

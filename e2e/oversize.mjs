@@ -34,7 +34,8 @@ const DEFAULT_LIMIT = 12_000;
 const PAGES = [
   { name: "today", path: "/today" },
   { name: "map", path: "/map" },
-  { name: "my-jobs", path: "/departures?tab=mine", limit: 16_000 },
+  // My jobs on a phone (T167): 10 cards of about 680 px before Show more, plus the tabs and filters: an estimate.
+  { name: "my-jobs", path: "/departures?tab=mine", limit: 12_000 },
   { name: "me-board", path: "/me", limit: 12_000 },
   { name: "me-list", path: "/me", limit: 14_000, layout: "List" },
   { name: "profile", path: `/u/${seed.username}`, limit: 8_000 },
