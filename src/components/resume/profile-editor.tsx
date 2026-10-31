@@ -1,7 +1,7 @@
 "use client";
 
-import { Check, Plus, Quote, X } from "lucide-react";
-import { useState } from "react";
+import { Check, ChevronDown, Plus, Quote, X } from "lucide-react";
+import { useId, useState } from "react";
 import { ResumeDownload } from "@/components/resume/resume-download";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { readApiReply } from "@/lib/api-reply";
@@ -57,14 +57,91 @@ function RemoveButton({ onClick, what }: { onClick: () => void; what: string }) 
   );
 }
 
-function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+/** The editor's sections, in order. One is open at a time (C23); the others show their heading and a one-line summary. */
+export const EDITOR_SECTIONS = ["about", "work", "skills", "education", "certifications"] as const;
+export type EditorSection = (typeof EDITOR_SECTIONS)[number];
+
+const count = (n: number, one: string, many: string) => (n === 0 ? `No ${many} yet` : `${n} ${n === 1 ? one : many}`);
+
+/** The one-line summary a folded section shows ("3 roles", "2 degrees"), from the profile as edited so far. */
+export function sectionSummary(section: EditorSection, p: Profile, yearsText: string): string {
+  switch (section) {
+    case "about": {
+      const years = yearsText.trim() ? `${yearsText.trim()} ${yearsText.trim() === "1" ? "year" : "years"}` : null;
+      return [p.headline?.trim() || "No headline yet", years].filter(Boolean).join(" · ");
+    }
+    case "work":
+      return count(p.roles.length, "role", "roles");
+    case "skills":
+      return count(p.skills.filter((x) => x.name.trim()).length, "skill", "skills");
+    case "education":
+      return count(p.education.length, "degree", "degrees");
+    case "certifications":
+      return count(p.certifications.filter((c) => c.name.trim()).length, "certification", "certifications");
+  }
+}
+
+/**
+ * The first section holding something that stops the save, so it can be opened with the message: the years box, then
+ * the roles, education and certifications in the order profileProblems reads them. Null when only the message helps.
+ */
+export function sectionWithProblem(p: Profile, yearsBad: boolean): EditorSection | null {
+  if (yearsBad) return "about";
+  const only = (keep: "roles" | "education" | "certifications"): Profile => ({
+    ...p,
+    roles: keep === "roles" ? p.roles : [],
+    education: keep === "education" ? p.education : [],
+    certifications: keep === "certifications" ? p.certifications : [],
+  });
+  if (profileProblems(only("roles")).length) return "work";
+  if (profileProblems(only("education")).length) return "education";
+  if (profileProblems(only("certifications")).length) return "certifications";
+  return null;
+}
+
+/**
+ * One folded section (C23, handoff section 11): the heading is a button that opens or closes it, with aria-expanded,
+ * and keeps focus when pressed. Closed, it shows the summary line under the heading and none of its fields.
+ */
+function Section({
+  title,
+  hint,
+  summary,
+  open,
+  onToggle,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  summary: string;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  const body = useId();
   return (
-    <section className="flex flex-col gap-3">
-      <div className="flex flex-col gap-0.5">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        {hint && <p className="text-sm text-muted">{hint}</p>}
-      </div>
-      {children}
+    <section className="flex flex-col gap-3 border-b border-line pb-4">
+      <h2 className="text-xl font-semibold">
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={body}
+          onClick={onToggle}
+          className="flex min-h-11 w-full min-w-0 items-center gap-3 text-left hover:text-ink"
+        >
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span>{title}</span>
+            {!open && <span className="truncate text-sm font-normal text-muted">{summary}</span>}
+          </span>
+          <ChevronDown size={20} strokeWidth={1.75} aria-hidden="true" className={`shrink-0 text-muted ${open ? "rotate-180" : ""}`} />
+        </button>
+      </h2>
+      {open && (
+        <div id={body} className="flex flex-col gap-3">
+          {hint && <p className="text-sm text-muted">{hint}</p>}
+          {children}
+        </div>
+      )}
     </section>
   );
 }
@@ -90,6 +167,13 @@ export function ProfileEditor({
   const [state, setState] = useState<State>({ kind: "editing" });
   // Kept as typed, so "2." can become "2.5"; converted to a number on save.
   const [yearsText, setYearsText] = useState(initial.totalYearsExperience?.toString() ?? "");
+  // One section open at a time (C23): a full resume as fields ran past 35,000 px on a phone.
+  const [openSection, setOpenSection] = useState<EditorSection | null>("about");
+  const fold = (section: EditorSection) => ({
+    open: openSection === section,
+    summary: sectionSummary(section, profile, yearsText),
+    onToggle: () => setOpenSection((o) => (o === section ? null : section)),
+  });
 
   const set = <K extends keyof Profile>(key: K, value: Profile[K]) => {
     setProfile((p) => ({ ...p, [key]: value }));
@@ -103,11 +187,14 @@ export function ProfileEditor({
   async function save() {
     const years = Number(yearsText);
     if (yearsText.trim() && (Number.isNaN(years) || years < 0)) {
+      setOpenSection("about");
       setState({ kind: "error", message: "Years of experience should be a number, like 3 or 2.5." });
       return;
     }
     const problems = profileProblems(profile);
     if (problems.length) {
+      // The section to fix opens with the message, so its fields are on screen.
+      setOpenSection((o) => sectionWithProblem(profile, false) ?? o);
       setState({ kind: "error", message: problems.join(" ") });
       return;
     }
@@ -127,8 +214,8 @@ export function ProfileEditor({
   return (
     <div className="flex flex-col gap-10">
       {/* Locked while saving, so an edit can't slip in after the snapshot is sent. */}
-      <fieldset disabled={state.kind === "saving"} className="m-0 flex min-w-0 flex-col gap-10 border-0 p-0">
-        <Section title="About you">
+      <fieldset disabled={state.kind === "saving"} className="m-0 flex min-w-0 flex-col gap-4 border-0 p-0">
+        <Section title="About you" {...fold("about")}>
           <div className="grid gap-3 sm:grid-cols-[1fr_160px]">
             <label className={label}>
               Headline
@@ -149,7 +236,7 @@ export function ProfileEditor({
           </div>
         </Section>
 
-        <Section title="Work" hint="Dates as YYYY-MM or YYYY. Leave the end empty for your current job.">
+        <Section title="Work" hint="Dates as YYYY-MM or YYYY. Leave the end empty for your current job." {...fold("work")}>
           {profile.roles.length === 0 && <p className="text-sm text-muted">We didn&apos;t find any jobs.</p>}
           <ul className="flex flex-col gap-3">
             {profile.roles.map((r, i) => (
@@ -187,7 +274,7 @@ export function ProfileEditor({
           </ul>
         </Section>
 
-        <Section title="Skills" hint="Each skill shows the line of your resume it came from. Remove anything that isn't right.">
+        <Section title="Skills" hint="Each skill shows the line of your resume it came from. Remove anything that isn't right." {...fold("skills")}>
           <ul className="divide-y divide-line rounded-lg border border-line bg-surface">
             {profile.skills.map((s, i) => (
               <li key={i} className="flex items-start gap-3 p-3">
@@ -224,7 +311,7 @@ export function ProfileEditor({
           </form>
         </Section>
 
-        <Section title="Education">
+        <Section title="Education" {...fold("education")}>
           {profile.education.length === 0 && <p className="text-sm text-muted">We didn&apos;t find any education.</p>}
           <ul className="flex flex-col gap-3">
             {profile.education.map((e, i) => (
@@ -249,7 +336,7 @@ export function ProfileEditor({
           </ul>
         </Section>
 
-        <Section title="Certifications" hint="Add when you passed each one and when it expires. Tick “Doesn’t expire” if it never does.">
+        <Section title="Certifications" hint="Add when you passed each one and when it expires. Tick “Doesn’t expire” if it never does." {...fold("certifications")}>
           {profile.certifications.length === 0 && <p className="text-sm text-muted">We didn&apos;t find any certifications.</p>}
           <ul className="flex flex-col gap-3">
             {profile.certifications.map((c, i) => (

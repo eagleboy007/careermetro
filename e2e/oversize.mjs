@@ -18,22 +18,26 @@ const seed = JSON.parse(readFileSync(new URL("./results/max-data.json", import.m
  * needs paging. Raised only where the page shows every row by design, at the seed's sizes (record changes here):
  * - My jobs, 16,000: the first CI run (2026-10-30) measured 13,586 at 390 px with its 20-row page (T147), each row with
  *   a three-line note (T148) and 160-character title, company and city that wrap. Already paged, so the limit rises.
- * - /me and /u: the first run measured /me at 53,777 (List) and 37,075 (Board) and /u at 20,075 at 390 px, with 30
- *   roles (10 from the resume with 8 highlights of 300 characters), 24 education rows and 50 stories in up to six boxes
- *   each. Roles, education and stories now show 10 each, then "Show more" (T150). What stays: 5 resume roles with their
- *   highlights (about 1,400 px each at 390), 10 stories that answer every box (60 cards in List, 10 a column on the
- *   Board), 30 skills, 30 interests and 30 certificates in the rail below. Expected about 28,000 (List), 21,000 (Board)
- *   and 11,000 (/u); the limits leave about a quarter of headroom. Retune from the next run's table.
- * - /resume: the profile editor lists every role, skill, education row and certificate as a field. First run: 35,231.
+ * - /me and /u (T162, C23): every list section now shows 3 items, newest first, then "Show N more"; the first run
+ *   measured /me at 53,777 (List) and 37,075 (Board) and /u at 20,075 at 390 px. Estimates at 390 px for the full
+ *   account, folded: header, stats, plan card and journey about 750; Experience about 3,100 (the 3 newest roles: one or
+ *   two resume roles with 8 highlights of 300 characters, about 1,400 each, and added roles with none); Education 3 rows
+ *   about 600; Skills 3 chips a column, stacked, about 700; Nearby lines about 800; Interests, Practice confidence and
+ *   Proof of work about 600; the rail below (resume card, 3 certificates, who sees what) about 1,100. Stories add about
+ *   1,300 on the Board (one row of six columns, 3 closed cards each) or about 3,600 in List (six boxes of 3 cards, about
+ *   180 px each). So me-board about 9,000 (limit 12,000) and me-list about 11,300 (limit 14,000). /u shows no
+ *   resume lines, journey, plan card, practice or Nearby: about 4,600 (limit 8,000). Retune from the next run's table.
+ * - /resume (T162, C23): the profile editor opens one section at a time, About you first, the others a heading and a
+ *   summary line. About 1,500 (limit 6,000); the first run, with every field open, measured 35,231.
  */
 const DEFAULT_LIMIT = 12_000;
 const PAGES = [
   { name: "today", path: "/today" },
   { name: "map", path: "/map" },
   { name: "my-jobs", path: "/departures?tab=mine", limit: 16_000 },
-  { name: "me-board", path: "/me", limit: 26_000 },
-  { name: "me-list", path: "/me", limit: 34_000, layout: "List" },
-  { name: "profile", path: `/u/${seed.username}`, limit: 15_000 },
+  { name: "me-board", path: "/me", limit: 12_000 },
+  { name: "me-list", path: "/me", limit: 14_000, layout: "List" },
+  { name: "profile", path: `/u/${seed.username}`, limit: 8_000 },
   { name: "library", path: "/library" },
   { name: "library-saved", path: "/library?tab=saved" },
   { name: "library-finished", path: "/library?tab=finished" },
@@ -41,7 +45,7 @@ const PAGES = [
   { name: "mock", path: "/mock" },
   { name: "inbox", path: "/inbox" },
   { name: "network", path: "/network" },
-  { name: "resume", path: `/resume/${seed.resumeId}`, limit: 40_000 },
+  { name: "resume", path: `/resume/${seed.resumeId}`, limit: 6_000 },
   { name: "builder", path: "/builder" },
 ];
 const SIZES = [
