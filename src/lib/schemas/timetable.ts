@@ -19,6 +19,7 @@ import {
   EVENT_TOPICS_MAX,
   EVENT_URL_MAX,
   EVENT_VENUE_MAX,
+  EVENTS_DIGEST_EVENTS_MAX,
   INTEREST_MAX,
   INTEREST_TOPIC_ALIASES_MAX,
   INTERESTS_MAX,
@@ -35,6 +36,8 @@ export {
   EVENT_RSVP_STATES,
   EVENT_STATUSES,
   EVENT_WINDOW_DAYS,
+  EVENTS_DIGEST_DAYS,
+  EVENTS_DIGEST_EVENTS_MAX,
   TIMETABLE_EVENTS_MAX,
   TIMETABLE_NO_CITY,
 } from "./constants";
@@ -209,6 +212,39 @@ export type TimetableSettings = z.infer<typeof timetableSettings>;
 
 /** No `user_settings` row means these. The digest is off until the person turns it on, as the weekly email is. */
 export const DEFAULT_TIMETABLE_SETTINGS: TimetableSettings = { radiusKm: EVENT_RADIUS_DEFAULT_KM, online: true, digest: false };
+
+/**
+ * "Send me this week's events" (Timetable PR 5), from /timetable or Settings > Notifications. It saves at once, apart
+ * from the Settings form's Save button, and changes only the person's own `user_settings.events_digest`.
+ */
+export const eventsDigestInput = z.strictObject({ on: z.boolean() });
+export type EventsDigestInput = z.infer<typeof eventsDigestInput>;
+
+/**
+ * One event in the Monday digest (docs/plans/timetable-plan.md section 5): title, organiser, day and time in IST, city or
+ * Online, and the organiser's link. Nothing about any other person.
+ */
+export const eventsDigestEvent = z.strictObject({
+  title: eventText(1, EVENT_TITLE_MAX),
+  organiser: eventText(1, EVENT_ORGANISER_MAX),
+  /** "Sat 7 Nov, 6 to 8 pm IST", or "14 to 15 Nov" across days. */
+  when: z.string().min(1).max(80),
+  /** A profile city, or "Online". */
+  place: z.union([z.enum(PERSON_CITIES), z.literal("Online")]),
+  sourceUrl: https,
+});
+export type EventsDigestEvent = z.infer<typeof eventsDigestEvent>;
+
+/**
+ * One person's Monday digest: the India week (its Monday) it is for, the soonest matching events in the next
+ * EVENTS_DIGEST_DAYS days (at most EVENTS_DIGEST_EVENTS_MAX), and how many more matched. No digest without an event.
+ */
+export const eventsDigestView = z.strictObject({
+  week: z.iso.date(),
+  events: z.array(eventsDigestEvent).min(1).max(EVENTS_DIGEST_EVENTS_MAX),
+  more: z.number().int().min(0).max(TIMETABLE_EVENTS_MAX),
+});
+export type EventsDigestView = z.infer<typeof eventsDigestView>;
 
 /** One entry of src/content/interest-topics.json: a topic key, its label on a tag, and the words that mean it. */
 export const interestTopic = z

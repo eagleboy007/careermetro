@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EVENT_TOPICS_MAX, TIMETABLE_EVENTS_MAX } from "./constants";
+import { APP_EMAIL_DIGEST_SHARE, EVENT_TOPICS_MAX, EVENTS_DIGEST_DAYS, EVENTS_DIGEST_EVENTS_MAX, TIMETABLE_EVENTS_MAX } from "./constants";
 import {
   cityCentre,
   cityCentresFile,
@@ -11,6 +11,9 @@ import {
   eventRsvpInput,
   eventTopic,
   eventTopicList,
+  eventsDigestEvent,
+  eventsDigestInput,
+  eventsDigestView,
   interestTopic,
   interestTopicsFile,
   timetableSettings,
@@ -244,5 +247,44 @@ describe("timetableWhy", () => {
     expect(timetableWhy.safeParse({ goals: [], interests: [] }).success).toBe(true);
     expect(timetableWhy.safeParse({ goals: [], interests: ["x".repeat(41)] }).success).toBe(false);
     expect(timetableWhy.safeParse({ goals: [], interests: Array.from({ length: 31 }, (_, i) => `i${i}`) }).success).toBe(false);
+  });
+});
+
+describe("eventsDigestInput", () => {
+  it("takes on or off and nothing else", () => {
+    expect(eventsDigestInput.safeParse({ on: true }).success).toBe(true);
+    expect(eventsDigestInput.safeParse({ on: false }).success).toBe(true);
+    expect(eventsDigestInput.safeParse({ on: "yes" }).success).toBe(false);
+    expect(eventsDigestInput.safeParse({}).success).toBe(false);
+    expect(eventsDigestInput.safeParse({ on: true, userId: id }).success).toBe(false);
+  });
+});
+
+describe("the Monday digest", () => {
+  const event = { title: "Hunting with a SIEM", organiser: "Example Security Circle", when: "Sat 7 Nov, 6 to 8 pm IST", place: "Pune", sourceUrl: "https://events.example.org/pune/nov" };
+
+  it("keeps its numbers: 7 days, 5 events an email, at most 20 emails a day", () => {
+    expect(EVENTS_DIGEST_DAYS).toBe(7);
+    expect(EVENTS_DIGEST_EVENTS_MAX).toBe(5);
+    expect(APP_EMAIL_DIGEST_SHARE).toBe(20);
+  });
+
+  it("lists title, organiser, when, a city or Online, and an https link only", () => {
+    expect(eventsDigestEvent.safeParse(event).success).toBe(true);
+    expect(eventsDigestEvent.safeParse({ ...event, place: "Online" }).success).toBe(true);
+    expect(eventsDigestEvent.safeParse({ ...event, place: "Baner" }).success).toBe(false);
+    expect(eventsDigestEvent.safeParse({ ...event, sourceUrl: "http://events.example.org/x" }).success).toBe(false);
+    expect(eventsDigestEvent.safeParse({ ...event, title: "<b>Hunting</b>" }).success).toBe(false);
+    // Nobody else's name or count rides along.
+    expect(eventsDigestEvent.safeParse({ ...event, going: 12 }).success).toBe(false);
+  });
+
+  it("has one to five events and a count of the rest", () => {
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: [event], more: 0 }).success).toBe(true);
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: Array(5).fill(event), more: 3 }).success).toBe(true);
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: [], more: 0 }).success).toBe(false);
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: Array(6).fill(event), more: 0 }).success).toBe(false);
+    expect(eventsDigestView.safeParse({ week: "2 Nov", events: [event], more: 0 }).success).toBe(false);
+    expect(eventsDigestView.safeParse({ week: "2026-11-02", events: [event], more: -1 }).success).toBe(false);
   });
 });

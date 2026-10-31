@@ -43,6 +43,7 @@ const m = vi.hoisted(() => ({
     }) => Promise<{ considered: number; sent: number; empty: number; failed: number; capped: boolean }>
   >(async () => ({ considered: 0, sent: 0, empty: 0, failed: 0, capped: false })),
   turnOff: vi.fn<(t: string) => Promise<void>>(async () => {}),
+  turnOffDigest: vi.fn<(t: string) => Promise<void>>(async () => {}),
   holdShared: vi.fn<(job: { text: string; url: string }, userId: string | null) => Promise<string>>(async () => "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f"),
   exportData: vi.fn(),
   signOut: vi.fn(),
@@ -82,6 +83,7 @@ vi.mock("@/lib/library/store", () => ({ clearOldLibraryRecords: m.clearLibrary }
 vi.mock("@/lib/notifications/store", () => ({ clearOldNotifications: m.clearNotifications }));
 vi.mock("@/lib/my-jobs/store", () => ({ clearUnsavedJobText: m.clearJobText }));
 vi.mock("@/lib/my-jobs/weekly-store", () => ({ clearOldWeeklyEmails: m.clearWeekly, runWeeklyEmails: m.runWeekly, turnOffWeeklyEmail: m.turnOff }));
+vi.mock("@/lib/timetable/digest-store", () => ({ turnOffEventsDigest: m.turnOffDigest }));
 vi.mock("@/lib/timetable/store", () => ({ clearOldEventsDigests: m.clearEventsDigests, clearEndedEvents: m.clearEndedEvents, prepEventsOn: vi.fn(async () => []) }));
 vi.mock("@/lib/my-jobs/share", async (original) => ({ ...(await original<typeof import("@/lib/my-jobs/share")>()), clearOldSharedJobs: m.clearShared, holdSharedJob: m.holdShared }));
 vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
@@ -549,6 +551,19 @@ describe("the weekly My jobs email", () => {
     expect(off.status).toBe(303);
     expect(off.headers.get("location")).toBe(`${SITE}/email/off?done=1`);
     expect(m.turnOff).toHaveBeenCalledWith(TOKEN);
+    expect(m.turnOffDigest).not.toHaveBeenCalled();
+  });
+
+  it("turns off the Monday events digest instead with k=events, keeping k on the page it leads to", async () => {
+    m.turnOff.mockClear();
+    const res = emailOffGet(new Request(`${SITE}/api/email/off?t=${TOKEN}&k=events`));
+    expect(res.headers.get("location")).toBe(`${SITE}/email/off?t=${TOKEN}&k=events`);
+    expect(m.turnOffDigest).not.toHaveBeenCalled();
+    const off = await emailOff(new Request(`${SITE}/api/email/off?t=${TOKEN}&k=events`, { method: "POST", body: "List-Unsubscribe=One-Click" }));
+    expect(off.status).toBe(303);
+    expect(off.headers.get("location")).toBe(`${SITE}/email/off?done=1&k=events`);
+    expect(m.turnOffDigest).toHaveBeenCalledWith(TOKEN);
+    expect(m.turnOff).not.toHaveBeenCalled();
   });
 });
 
