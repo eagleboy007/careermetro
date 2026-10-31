@@ -865,6 +865,146 @@ await step("today: live signal check, board and On your line, no example data", 
   await shot("today-signal-answered");
   await a11y("today-signal-answered");
 });
+// On your line (C13, docs/plans/on-your-line-plan.md section 7): the walk's person is D. B and C are made on SQL with
+// goals on D's goal skills; A signs up and turns the switch on in Settings. Counts show from 3 opted-in people, only in
+// the Map's side panel; names only for D's connections, never one whose gaps show to Nobody; a block takes A out.
+if (process.env.DATABASE_URL) {
+  await step("on your line: Show my pitstop on the map, the count from 3, connections by name, a block, the download", async () => {
+    const { default: postgres } = await import("postgres");
+    const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+    const other = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+    const q = await other.newPage();
+    q.on("pageerror", (e) => problems.push(`pageerror@${q.url()}: ${e.message.slice(0, 200)}`));
+    q.on("console", (m) => consoleError(m) && problems.push(`console@${q.url()}: ${m.text().slice(0, 200)}`));
+    q.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+    const made = [];
+    const panel = p.getByRole("complementary", { name: "Pitstop details" });
+    const people = panel.locator("[data-pitstop-people]");
+    const mapSwitch = (page) => page.locator("[data-map-share]").getByRole("checkbox", { name: /^Show my pitstop on the map/ });
+    const openMap = async () => {
+      await p.goto(BASE + "/map");
+      await settled();
+      await panel.waitFor({ timeout: 10000 });
+    };
+    let me = null;
+    try {
+      [me] = await sql`select id from users where email like ${testEmail + "%"} order by created_at desc limit 1`;
+      if (!me) throw new Error("walk account not found");
+      const goals = await sql`select skill_id from user_goals where user_id = ${me.id} and status = 'active'`;
+      if (!goals.length) throw new Error("the walk's person has no active goals");
+      const rider = async (name) => {
+        const [u] = await sql`insert into users (email, name) values (${`rider-${made.length}-${testEmail}`}, ${name}) returning id`;
+        made.push(u.id);
+        await sql`insert into user_settings (user_id, profile_visibility) values (${u.id}, 'connections')`;
+        for (const [n, g] of goals.entries()) await sql`insert into user_goals (user_id, skill_id, status, position) values (${u.id}, ${g.skill_id}, 'active', ${n})`;
+        return u.id;
+      };
+      const bina = await rider("Bina Rao");
+      const chetan = await rider("Chetan Das");
+
+      // D sees the switch off in Settings > Privacy, with its row in Who sees what.
+      await p.goto(BASE + "/settings#acc-privacy");
+      await settled();
+      if (await mapSwitch(p).isChecked()) throw new Error("Show my pitstop on the map starts on");
+      await p.locator("[data-who-sees-what]").getByText("See you at a pitstop on the map").waitFor({ state: "attached" });
+      await p.locator("[data-map-share]").scrollIntoViewIfNeeded();
+      await shot("on-your-line-settings");
+      await a11y("on-your-line-settings");
+
+      // B and C turn it on: two people show nothing at all.
+      await sql`update user_settings set show_on_map = true where user_id in ${sql([bina, chetan])}`;
+      await openMap();
+      if (await people.count()) throw new Error("a count shows with only 2 people on the pitstop");
+      if (await p.locator("main svg").getByText(/people on this pitstop/).count()) throw new Error("the count is on the map drawing");
+
+      // A signs up, takes the same goals and turns it on in Settings > Privacy: D sees 3 people, no names.
+      // Signed up here as the fresh-user step does (signInAs is defined further down the walk).
+      await q.goto(BASE + "/sign-in");
+      await q.locator('input[name="name"]').fill("Asha Kulkarni");
+      await q.locator('input[name="email"]').fill(`asha-line-${testEmail}`);
+      await q.locator('form button[type="submit"]').last().click();
+      await q.waitForURL(/\/sign-up\/finish/, { timeout: 15000 });
+      await q.locator('input[name="age"]').check();
+      await q.locator("form", { has: q.locator('input[name="age"]') }).locator('button[type="submit"]').click();
+      await q.waitForURL(/\/today/, { timeout: 15000 });
+      // The stand-in sign-in stores the email with a ".test" ending, as the walk's own account lookup expects.
+      const [asha] = await sql`select id from users where email like ${`asha-line-${testEmail}%`}`;
+      if (!asha) throw new Error("Asha's account was not made");
+      made.push(asha.id);
+      for (const [n, g] of goals.entries()) await sql`insert into user_goals (user_id, skill_id, status, position) values (${asha.id}, ${g.skill_id}, 'active', ${n}) on conflict do nothing`;
+      await q.goto(BASE + "/settings#acc-privacy");
+      await settled();
+      await Promise.all([
+        q.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/settings")),
+        mapSwitch(q).click({ force: true }),
+      ]);
+      await q.locator("[data-map-share]").getByRole("status").getByText("You now show on the map.").waitFor({ timeout: 10000 });
+      const [saved] = await sql`select show_on_map from user_settings where user_id = ${asha.id}`;
+      if (saved?.show_on_map !== true) throw new Error("Asha's switch wasn't saved");
+      await openMap();
+      await people.getByText("3 people on this pitstop", { exact: true }).waitFor({ timeout: 10000 });
+      if (await people.getByText("Your connections on it").count()) throw new Error("names show with no connection");
+
+      // D connects with B: B's name shows, not A's or C's.
+      const pair = me.id < bina ? [me.id, bina] : [bina, me.id];
+      await sql`insert into connections (user_low, user_high, how) values (${pair[0]}, ${pair[1]}, 'same_line')`;
+      await openMap();
+      await people.getByText("Bina R.", { exact: true }).waitFor({ timeout: 10000 });
+      if (await people.getByText(/Asha|Chetan/).count()) throw new Error("someone who isn't a connection is named");
+      await shot("on-your-line-map");
+      await a11y("on-your-line-map");
+      await p.emulateMedia({ colorScheme: "dark" });
+      await p.reload();
+      await settled();
+      await people.getByText("Bina R.", { exact: true }).waitFor({ timeout: 10000 });
+      await a11y("on-your-line-map-dark");
+      await p.setViewportSize({ width: 390, height: 844 });
+      await p.reload();
+      await settled();
+      await people.getByText("3 people on this pitstop", { exact: true }).waitFor({ timeout: 10000 });
+      await noSideScroll(p, "the Map with people on the pitstop (dark)");
+      await a11y("on-your-line-map-phone-dark");
+      await p.setViewportSize({ width: 1280, height: 900 });
+      await p.emulateMedia({ colorScheme: "light" });
+
+      // B shows gaps to Nobody: out of the names, still in the count.
+      await sql`update user_settings set gaps_visible_to = 'nobody' where user_id = ${bina}`;
+      await openMap();
+      await people.getByText("3 people on this pitstop", { exact: true }).waitFor({ timeout: 10000 });
+      if (await people.getByText("Bina R.").count()) throw new Error("a connection with gaps to Nobody is named");
+
+      // A blocks D: down to 2, so the count goes.
+      await sql`insert into blocks (blocker_id, blocked_id) values (${asha.id}, ${me.id})`;
+      await openMap();
+      if (await people.count()) throw new Error("the count still shows after a block");
+
+      // D turns it on from Me, and the download says so (version 39), with nobody else's names.
+      await p.goto(BASE + "/me");
+      await settled();
+      await Promise.all([
+        p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/me")),
+        mapSwitch(p).click({ force: true }),
+      ]);
+      await p.locator("[data-map-share]").getByRole("status").getByText("You now show on the map.").waitFor({ timeout: 10000 });
+      // The switch stays dimmed until the save's refresh lands; scan it as people see it after that.
+      await p.waitForFunction(() => document.querySelector("fieldset[data-map-share]")?.disabled === false, null, { timeout: 10000 });
+      await a11y("on-your-line-me");
+      const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
+      if (data.exportVersion !== 39) throw new Error(`export version ${data.exportVersion}`);
+      if (data.settings?.showOnMap !== true) throw new Error("the download lacks showOnMap");
+      // Bina is a connection, so she is in the Network part of the download (FR-49); the others on the pitstop are not.
+      if (/Chetan|Asha Kulkarni/.test(JSON.stringify(data))) throw new Error("the download names other people on the pitstop");
+    } finally {
+      await p.setViewportSize({ width: 1280, height: 900 });
+      await p.emulateMedia({ colorScheme: "light" });
+      // Leave the walk's person off the map and nobody else behind, whatever failed.
+      if (me) await sql`update user_settings set show_on_map = false where user_id = ${me.id}`;
+      if (made.length) await sql`delete from users where id in ${sql(made)}`;
+      await other.close();
+      await sql.end();
+    }
+  });
+}
 // The same on Today: skip from an open goal (it leaves the list, focus moves to the card's heading), then bring it back
 // from its pitstop on the Map.
 await step("not for me: skip a goal on Today, bring it back from the Map", async () => {
@@ -1772,7 +1912,7 @@ await step("job search: off pauses Departures, Arrivals and Today's board, back 
   await notice.getByText(/^Last working day: /).waitFor({ timeout: 10000 });
   const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
   const js = data.jobSearch;
-  if (data.exportVersion !== 38 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
+  if (data.exportVersion !== 39 || js?.lookingForAJob !== true || js?.noticeDays !== 60 || js?.resignedOn !== resigned) throw new Error("the download lacks the job search values");
   await ready("Change").waitFor({ timeout: 10000 });
   await notice.getByRole("button", { name: "Change", exact: true }).click();
   await ready("Stop the countdown").waitFor({ timeout: 10000 });
@@ -2118,7 +2258,7 @@ await step("account settings part 2: username, privacy and pay saved, never on t
 
   // The download has it all.
   const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 39) throw new Error(`export version ${data.exportVersion}`);
   if (data.account.username !== handle || data.account.headline !== "Data work, moving into analytics") throw new Error("download lacks username or headline");
   if (data.pay?.currentLakh !== 4.2 || data.pay?.expectedLakh !== 6) throw new Error("download lacks pay");
   if (data.settings?.visibility !== "signed_in") throw new Error("download lacks privacy settings");
@@ -2276,7 +2416,7 @@ await step("settings columns: message requests off, Open to work in filters Depa
     await p.emulateMedia({ colorScheme: "light" });
 
     const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 39) throw new Error(`export version ${data.exportVersion}`);
     if (data.settings?.messageRequests !== false) throw new Error("the download lacks message requests off");
     if (JSON.stringify(data.settings?.openToWorkIn) !== JSON.stringify(["Remote", "Pune"])) throw new Error("the download lacks Open to work in");
     if (JSON.stringify(data.availability?.usuallyFree) !== JSON.stringify(["mon 17:00", "mon 18:00"])) throw new Error("the download lacks Usually free");
@@ -2440,7 +2580,7 @@ await step("me editing: add, edit and delete a role, education, a story and inte
 
   // The download has what is left: one interest.
   const data = await api(p, "get", BASE + "/api/account/export").then((r) => r.json());
-  if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
+  if (data.exportVersion !== 39) throw new Error(`export version ${data.exportVersion}`);
   if (data.interests?.map((x) => x.name).join() !== "Photography" || data.stories?.length || data.meRoles?.length || data.meEducation?.length) throw new Error("the download doesn't match Me");
 
   await p.emulateMedia({ colorScheme: "dark" });
@@ -2926,7 +3066,7 @@ await step("elite: turn it on from /elite, see it in the menu and on the profile
     await plan.getByRole("link", { name: "See Elite", exact: true }).waitFor();
     await axeOn(q, "elite-settings-free");
     const data = await api(q, "get", BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 39) throw new Error(`export version ${data.exportVersion}`);
     if (data.plan?.plan !== "free" || data.plan.eliteSince !== null || data.plan.badgeShown !== false) throw new Error("the download's plan is wrong: " + JSON.stringify(data.plan));
     await q.goto(BASE + "/me");
     await q.getByRole("region", { name: "Your plan" }).getByText("You're on Free", { exact: true }).waitFor({ timeout: 15000 });
@@ -3024,7 +3164,7 @@ await step("mock: the bank opens 5 on Free; with Elite, a timed test and its rev
     await drills.getByText("Show answer").first().waitFor({ timeout: 5000 });
     await axeOn(q, "library-elite-on");
     const data = await api(q, "get", BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 39) throw new Error(`export version ${data.exportVersion}`);
     if (data.timedTests?.length !== 1 || typeof data.timedTests[0].right !== "number" || !data.timedTests[0].endedAt) throw new Error("the download's timed test is wrong");
   } finally {
     await ctxM.close();
@@ -3133,7 +3273,7 @@ await step("mock interview: a full round with follow-ups, answered, ended, with 
     await axeOn(q, "mock-interview-feedback");
 
     const data = await api(q, "get", BASE + "/api/account/export").then((r) => r.json());
-    if (data.exportVersion !== 38) throw new Error(`export version ${data.exportVersion}`);
+    if (data.exportVersion !== 39) throw new Error(`export version ${data.exportVersion}`);
     const round = data.mockSessions?.[0];
     if (data.mockSessions?.length !== 1 || round.length !== "full" || !round.endedAt || round.answers?.length !== 3 || !round.summary) throw new Error("the download's mock interview is wrong");
     const ups = round.answers.map((a) => a.followUp);

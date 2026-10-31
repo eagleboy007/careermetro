@@ -407,6 +407,13 @@
       "when": 1792528800000,
       "tag": "0057_event_suggestions",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1792615200000,
+      "tag": "0058_show_on_map",
+      "breakpoints": true
     }
   ]
 }

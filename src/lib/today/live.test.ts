@@ -214,7 +214,7 @@ describe.skipIf(!db)("Today's live cards (database)", () => {
       createdAt?: Date;
       user?: Partial<typeof schema.users.$inferInsert>;
     };
-    const open = { peopleCanFind: true, profileVisibility: "signed_in", gapsVisibleTo: "profile" } as const;
+    const open = { showOnMap: true, profileVisibility: "signed_in", gapsVisibleTo: "profile" } as const;
     // Goals are stamped with the time they are written (the column default), not the fixed `now` above, so the
     // first-day week is read from the test's real clock.
     const wall = new Date();
@@ -225,16 +225,16 @@ describe.skipIf(!db)("Today's live cards (database)", () => {
       return id;
     }
 
-    it("counts only people who chose to be found, whose profile and gaps the viewer may see, with no block either way", async () => {
+    it("counts only people who show their pitstop on the map, whose profile and gaps the viewer may see, with no block either way", async () => {
       const viewer = await rider({ name: "Viewer Person" });
       await rider({ name: "Arjun Mehta" });
       await rider({ name: "Sana Kapoor" });
       await rider({ name: "Ravi Verma" });
-      const friend = await rider({ name: "Deepa Iyer", settings: { peopleCanFind: true, profileVisibility: "connections", gapsVisibleTo: "connections" } });
+      const friend = await rider({ name: "Deepa Iyer", settings: { showOnMap: true, profileVisibility: "connections", gapsVisibleTo: "connections" } });
       await db!.insert(schema.connections).values({ ...pairOf(viewer, friend), how: "worked_together" });
-      // Not counted: not findable, no settings, Only you, gaps for nobody, gaps for connections only, a line profile
+      // Not counted: off the map (even with "Let people find me" on, the switch Today used before On your line), no settings, Only you, gaps for nobody, gaps for connections only, a line profile
       // without a connection, blocked either way, suspended, deleting, no name, a goal met or skipped.
-      await rider({ settings: { ...open, peopleCanFind: false } });
+      await rider({ settings: { ...open, showOnMap: false, peopleCanFind: true } });
       await rider({ settings: null });
       await rider({ settings: { ...open, profileVisibility: "only_me" } });
       await rider({ settings: { ...open, gapsVisibleTo: "nobody" } });

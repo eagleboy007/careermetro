@@ -9,6 +9,7 @@ import { readAccountSettings } from "@/lib/account/settings-store";
 import { currentAccount } from "@/lib/auth/server";
 import { planFor } from "@/lib/elite/store";
 import { jobSearchOn } from "@/lib/job-search/store";
+import { showOnMapFor } from "@/lib/map/riders";
 import { exampleMe } from "@/lib/me/fixtures";
 import { publicProfile, whoSeesFor } from "@/lib/me/public";
 import { jobCheckOpen } from "@/lib/me/job-email-check";
@@ -20,6 +21,7 @@ import { practiceTrendsFor } from "@/lib/practice/store";
 import { DEFAULT_SETTINGS, type MeProfile, type PlanView } from "@/lib/schemas";
 import { switchEliteBadge } from "../elite/actions";
 import { switchJobSearch } from "../settings/job-search-actions";
+import { switchShowOnMap } from "../settings/map-share-actions";
 import {
   addInterestAction,
   checkCertificateOnCredly,
@@ -64,7 +66,7 @@ async function MeScreen() {
     );
   }
   const now = new Date();
-  const [me, saved, practice, plan, searching, storyGoals] = await Promise.all([
+  const [me, saved, practice, plan, searching, storyGoals, onMap] = await Promise.all([
     meFor(account.id, now),
     readAccountSettings(account.id, now),
     // Practice confidence is a side section: if it can't be read, the rest of the profile still shows.
@@ -86,6 +88,11 @@ async function MeScreen() {
     storyGoalOptions(account.id).catch((error: unknown) => {
       logEvent("error", "story_goals_read_failed", errorFields(error));
       return [];
+    }),
+    // "Show my pitstop on the map" (On your line): if it can't be read, it shows off, which is also the default.
+    showOnMapFor(account.id).catch((error: unknown) => {
+      logEvent("error", "map_share_read_failed", errorFields(error));
+      return false;
     }),
   ]);
   const settings = saved?.settings ?? DEFAULT_SETTINGS;
@@ -109,7 +116,7 @@ async function MeScreen() {
             eliteBadge={plan.badgeShown}
             planCard={<MePlanCard plan={plan} onBadge={switchEliteBadge} />}
             status={<JobSearchStatus employer={currentEmployer(me)} />}
-            searchSwitches={<MeSearchSwitches />}
+            searchSwitches={<MeSearchSwitches showOnMap={onMap} onMapShare={switchShowOnMap} />}
             edits={{
               saveRole: saveMeRoleAction,
               deleteRole: deleteMeRoleAction,

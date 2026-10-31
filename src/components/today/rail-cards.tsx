@@ -41,7 +41,7 @@ export function TimetableTeaser({ events }: { events: EventTeaser[] }) {
 }
 
 /**
- * People on the same goal right now, from people who chose to be found (src/lib/today/live.ts): a count, up to four
+ * People on the same goal right now, from people who show their pitstop on the map (src/lib/today/live.ts): a count, up to four
  * initials and, once Junction exists, a tip. "See people" opens Network; Junction comes later (build step 11).
  */
 export function OnYourLineCard({ line, firstDay = false, label = "On your line" }: { line: OnYourLine; firstDay?: boolean; label?: string }) {

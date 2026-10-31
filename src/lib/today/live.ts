@@ -12,7 +12,7 @@ import { boardRows } from "./live-board";
 
 /*
  * Today's live cards (v44 gap items 9 and 10, docs/plans/departures-live-plan.md): the Departures board from the daily
- * feed's open posts, and "On your line right now" from people who chose to be found. Read only. Nothing here logs:
+ * feed's open posts, and "On your line right now" from people who show their pitstop on the map. Read only. Nothing here logs:
  * names, posts and goals never reach a log.
  */
 
@@ -63,7 +63,8 @@ export function lineInitials(name: string): string {
 
 /**
  * Who "On your line" may count for a viewer, in SQL over `users` and `user_settings`: another active account (not
- * suspended, not deleting, with a name) with no block either way, who turned on "Let people find me", whose profile the
+ * suspended, not deleting, with a name) with no block either way, who turned on "Show my pitstop on the map" (On your
+ * line, C13, decision of 2026-10-31: one rule with the Map; it was "Let people find me" before), whose profile the
  * viewer may open and whose gaps the viewer may see (handoff 12j "Who sees what"): gaps shown to everyone who can open
  * the profile on a profile open to everyone signed in, or gaps shown to connections (or more) for a connection on any
  * profile but Only you. "People on your line" profiles count only for connections, since the goal alone doesn't say
@@ -77,7 +78,7 @@ function countedBy(viewerId: string): SQL {
     isNull(users.suspendedAt),
     sql`${users.name} is not null and btrim(${users.name}) <> ''`,
     sql`not exists (select 1 from ${blocks} b where (b.blocker_id = ${users.id} and b.blocked_id = ${viewerId}) or (b.blocker_id = ${viewerId} and b.blocked_id = ${users.id}))`,
-    eq(userSettings.peopleCanFind, true),
+    eq(userSettings.showOnMap, true),
     sql`${userSettings.profileVisibility} <> 'only_me'`,
     sql`((${userSettings.gapsVisibleTo} = 'profile' and ${userSettings.profileVisibility} = 'signed_in') or (${userSettings.gapsVisibleTo} in ('profile', 'connections') and ${connected}))`,
   )!;

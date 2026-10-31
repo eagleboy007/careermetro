@@ -2,6 +2,7 @@
 
 import { Briefcase, Route, Search, TrainFront } from "lucide-react";
 import { createContext, useContext, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { MapShareSwitch, type MapShareAction } from "@/components/settings/map-share-switch";
 import { Switch } from "@/components/ui/switch";
 import { jobSearchStatus, jobSearchToast } from "@/lib/job-search/rules";
 
@@ -211,16 +212,15 @@ export function JobSearchStatus({ employer }: { employer: string | null }) {
 }
 
 /**
- * Me's "Who sees what" switches (prototype v44): Looking for a job, and "Show my pitstop on the map", which waits for
- * rider counts and stays off. The rest of who sees what is chosen in Account settings.
+ * Me's "Who sees what" switches (prototype v44): Looking for a job, and "Show my pitstop on the map" (On your line,
+ * C13), the same switch as Settings > Privacy. Without an action (example data) it moves here only. The rest of who
+ * sees what is chosen in Account settings.
  */
-export function MeSearchSwitches() {
+export function MeSearchSwitches({ showOnMap = false, onMapShare }: { showOnMap?: boolean; onMapShare?: MapShareAction }) {
   return (
     <div className="flex flex-col">
       <JobSearchSwitch />
-      <Switch checked={false} onChange={() => {}} disabled>
-        Show my pitstop on the map · soon
-      </Switch>
+      <MapShareSwitch initial={showOnMap} action={onMapShare} />
       <small className="text-[0.76rem] text-muted">Job search off pauses Departures and Arrivals; your journey keeps going.</small>
     </div>
   );

@@ -54,7 +54,9 @@ import { CertificateForm } from "@/components/proof/certificate-form";
 import { ProfileCertifications } from "@/components/me/certifications";
 import { MetroMap } from "@/components/map/metro-map";
 import { arrivedRide } from "@/lib/ride/build";
-import { exampleLifeLine, exampleLifeLineNoInterests, exampleLifeLineUndatedInterests, exampleMapLine, exampleOwnMapLine, exampleSwitchedMapLine } from "@/lib/map/fixtures";
+import { exampleLifeLine, exampleLifeLineNoInterests, exampleLifeLineUndatedInterests, exampleMapLine, exampleOwnMapLine, exampleRiders, exampleSwitchedMapLine } from "@/lib/map/fixtures";
+import { PitstopPeople } from "@/components/map/pitstop-people";
+import { MapShareSwitch } from "@/components/settings/map-share-switch";
 import { NotForMe } from "@/components/map/not-for-me";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { DEPARTURES_LEDE } from "@/lib/departures/filter";
@@ -630,6 +632,21 @@ export default function DesignPage() {
           line; hidden, a dotted stub at Gaps shows it again. It never moves the train or counts toward Match. Example data, so nothing is saved.
         </p>
         <MetroMap line={exampleSwitchedMapLine} />
+        <p className="text-sm text-muted">
+          On your line (C13): people who turned on &ldquo;Show my pitstop on the map&rdquo;, in the side panel only, never on the drawing. The current
+          pitstop shows 14 people with three connections by name (a link when they have a profile) and 2 more; Power BI only a count; each Other line
+          panel the count at its crossing. Below 3 people nothing shows. Neutral text, never cobalt. Example data.
+        </p>
+        <MetroMap line={exampleMapLine} riders={exampleRiders} />
+        <div className="grid max-w-md gap-4 rounded-[20px] border border-line bg-surface p-4">
+          <PitstopPeople riders={exampleRiders[0]} />
+          <PitstopPeople riders={exampleRiders[1]} />
+        </div>
+        <p className="text-sm text-muted">The switch, off by default, as in Settings &gt; Privacy (with its hint) and on Me. Example data, so nothing is saved.</p>
+        <div className="grid max-w-xl gap-4">
+          <MapShareSwitch initial={false} legend />
+          <MapShareSwitch initial />
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">

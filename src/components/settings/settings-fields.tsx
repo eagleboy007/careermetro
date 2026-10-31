@@ -359,6 +359,11 @@ const WHO_SEES_WHAT: { what: string; anyone: string; connections: string }[] = [
   { what: "Find you by name", anyone: "Only with “Let people find me”", connections: "Always" },
   { what: "Open your profile", anyone: "As set in “Who can open your profile”", connections: "Unless you picked “Only you”" },
   { what: "See your gaps", anyone: "Only with “Everyone who can open your profile”", connections: "Unless you pick “Nobody”, or your profile is set to “Only you”" },
+  {
+    what: "See you at a pitstop on the map",
+    anyone: "Only in a count of 3 or more, with “Show my pitstop on the map” on",
+    connections: "By name, with the switch on, unless your profile is “Only you” or your gaps “Nobody”",
+  },
   { what: "Ask to connect", anyone: "Unless you pick “Nobody”", connections: "Already connected" },
   { what: "Message you", anyone: "One message request, if you allow it", connections: "Chat freely" },
   { what: "See who you are connected to", anyone: "Never, only how many people you both know", connections: "Never, only how many people you both know" },

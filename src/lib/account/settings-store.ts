@@ -6,7 +6,7 @@ import { blocks, consents, userPay, userSettings, usernameRedirects, users } fro
 import { currentAnalysis } from "@/lib/gaps/current";
 import { areConnected } from "@/lib/network/store";
 import { isSampleResumeId } from "@/lib/resume/sample";
-import { DEFAULT_SETTINGS, type SettingsField, type SettingsInput, type UserSettings } from "@/lib/schemas";
+import { DEFAULT_SETTINGS, DEFAULT_SHOW_ON_MAP, type SettingsField, type SettingsInput, type UserSettings } from "@/lib/schemas";
 import { FIND_CONSENT_PURPOSE, FIND_POLICY_VERSION, USERNAME_CHANGE_DAYS, USERNAME_REDIRECT_DAYS } from "@/lib/schemas/constants";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { normalUsername, USERNAME_MESSAGES, usernameProblem } from "./username";
@@ -292,13 +292,13 @@ async function ownAnalysis(userId: string, db: Db) {
 /** For "Download your data": the settings, pay and old usernames, as stored. */
 export async function exportSettings(userId: string, db: Db = getDb()) {
   const [settings, [pay], oldUsernames] = await Promise.all([
-    db.select({ ...settingsColumns, openToWorkIn: userSettings.openToWorkIn, updatedAt: userSettings.updatedAt }).from(userSettings).where(eq(userSettings.userId, userId)),
+    db.select({ ...settingsColumns, openToWorkIn: userSettings.openToWorkIn, showOnMap: userSettings.showOnMap, updatedAt: userSettings.updatedAt }).from(userSettings).where(eq(userSettings.userId, userId)),
     db.select({ currentLakh: userPay.currentLakh, expectedLakh: userPay.expectedLakh, updatedAt: userPay.updatedAt }).from(userPay).where(eq(userPay.userId, userId)),
     db.select({ username: usernameRedirects.username, redirectsUntil: usernameRedirects.expiresAt }).from(usernameRedirects).where(eq(usernameRedirects.userId, userId)),
   ]);
   return {
     // No saved choices yet means the defaults apply; the download says which.
-    settings: settings[0] ?? { ...DEFAULT_SETTINGS, openToWorkIn: [], savedAt: null },
+    settings: settings[0] ?? { ...DEFAULT_SETTINGS, openToWorkIn: [], showOnMap: DEFAULT_SHOW_ON_MAP, savedAt: null },
     pay: pay ?? null,
     oldUsernames,
   };
