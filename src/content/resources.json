@@ -26797,28 +26797,6 @@
     "free": true
   },
   {
-    "title": "eCourts Services app: help and user guide (cause list, case status)",
-    "url": "https://services.ecourts.gov.in/App/apphelp.html",
-    "provider": "eCourts (e-Committee, Supreme Court of India)",
-    "kind": "docs",
-    "skillIds": [
-      "cause-list-tracking"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "eCourts help videos",
-    "url": "https://ecourts.gov.in/ecourts_home/static/helpvideos.php",
-    "provider": "eCourts (e-Committee, Supreme Court of India)",
-    "kind": "video",
-    "skillIds": [
-      "cause-list-tracking"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "eCourts Services mobile app and user manuals",
     "url": "https://ecommitteesci.gov.in/service/ecourts-services-mobile-application/",
     "provider": "e-Committee, Supreme Court of India",
@@ -26827,17 +26805,6 @@
       "cause-list-tracking"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Supreme Court of India: cause lists (daily and advance lists)",
-    "url": "https://www.main.sci.gov.in/causelist",
-    "provider": "Supreme Court of India",
-    "kind": "practice",
-    "skillIds": [
-      "cause-list-tracking"
-    ],
-    "minutes": 20,
     "free": true
   },
   {
