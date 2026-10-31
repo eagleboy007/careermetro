@@ -18,6 +18,9 @@ const m = vi.hoisted(() => ({
   reopenUnconfirmed: vi.fn(async () => 0),
   removeChoiceGoal: vi.fn(),
   changeGoal: vi.fn(),
+  addOwnPitstop: vi.fn(),
+  editOwnPitstop: vi.fn(),
+  removeOwnPitstop: vi.fn(),
   clearCodes: vi.fn(async () => 0),
   endAccess: vi.fn(async () => ({ accessEnded: 0, readMarksCleared: 0 })),
   erasePhones: vi.fn(async () => 0),
@@ -75,6 +78,7 @@ vi.mock("@/lib/resume/sample", () => ({ createSampleResume: m.createSampleResume
 vi.mock("@/lib/account/delete", () => ({ purgeDeletedAccounts: m.purgeDeleted }));
 vi.mock("@/lib/account/settings-store", () => ({ clearExpiredUsernameRedirects: m.clearOldLinks }));
 vi.mock("@/lib/goals/store", () => ({ renewExpiredGoals: m.renewExpired, reopenUnconfirmedGoals: m.reopenUnconfirmed, removeChoiceGoal: m.removeChoiceGoal, changeGoal: m.changeGoal }));
+vi.mock("@/lib/pitstops/store", () => ({ addOwnPitstop: m.addOwnPitstop, editOwnPitstop: m.editOwnPitstop, removeOwnPitstop: m.removeOwnPitstop }));
 vi.mock("@/lib/corporate/store", () => ({ clearExpiredCodes: m.clearCodes }));
 vi.mock("@/lib/corporate/find-store", () => ({ clearOldProfileViews: m.clearViews }));
 vi.mock("@/lib/practice/store", () => ({ clearOldPracticeAnswers: m.clearPractice }));
@@ -106,6 +110,8 @@ import { POST as checkJob } from "@/app/api/job-checks/route";
 import { DELETE as removeCheck } from "@/app/api/job-checks/[id]/route";
 import { DELETE as removeGoalRoute, PATCH as changeGoalRoute } from "@/app/api/goals/[id]/route";
 import { POST as addCheckGoal } from "@/app/api/job-checks/[id]/goals/route";
+import { POST as addPitstopRoute } from "@/app/api/pitstops/route";
+import { DELETE as removePitstopRoute, PATCH as editPitstopRoute } from "@/app/api/pitstops/[id]/route";
 import { POST as requestRole } from "@/app/api/role-requests/route";
 import { PUT as stepDone } from "@/app/api/path-steps/[id]/route";
 import { GET as exportResume } from "@/app/api/resume/[id]/export/route";
@@ -1011,6 +1017,64 @@ describe("not for me (FR-48)", () => {
     expect((await patch({ action: "skip" })).status).toBe(404);
     m.changeGoal.mockRejectedValueOnce(new Error("Failed query"));
     expect((await patch({ action: "skip" })).status).toBe(500);
+  });
+});
+
+describe("add a pitstop (FR-58)", () => {
+  const send = (method: "POST" | "PATCH" | "DELETE", body: unknown, id = ID, origin: string | null = SITE) => {
+    const init = {
+      method,
+      headers: { ...(origin ? { origin } : {}), "content-type": "application/json" },
+      ...(body === undefined ? {} : { body: typeof body === "string" ? body : JSON.stringify(body) }),
+    };
+    if (method === "POST") return addPitstopRoute(new Request(`${SITE}/api/pitstops`, init));
+    const ctx = { params: Promise.resolve({ id }) } as never;
+    return method === "PATCH" ? editPitstopRoute(new Request(`${SITE}/api/pitstops/${id}`, init), ctx) : removePitstopRoute(new Request(`${SITE}/api/pitstops/${id}`, init), ctx);
+  };
+  const body = { goalId: ID, title: "Blue team labs" };
+
+  it("refuses another site, a large body, a bad id and anyone not signed in, before changing anything", async () => {
+    m.account = { id: "user-1" };
+    for (const method of ["POST", "PATCH", "DELETE"] as const) {
+      expect((await send(method, method === "DELETE" ? undefined : body, ID, null)).status).toBe(403);
+      expect((await send(method, method === "DELETE" ? undefined : body, ID, "https://evil.example")).status).toBe(403);
+    }
+    expect((await send("POST", "x".repeat(5000))).status).toBe(413);
+    expect((await send("PATCH", body, "../../etc")).status).toBe(404);
+    expect((await send("DELETE", undefined, "../../etc")).status).toBe(404);
+    m.account = null;
+    expect((await send("POST", body)).status).toBe(401);
+    expect((await send("PATCH", body)).status).toBe(401);
+    expect((await send("DELETE", undefined)).status).toBe(401);
+    expect(m.addOwnPitstop).not.toHaveBeenCalled();
+    expect(m.editOwnPitstop).not.toHaveBeenCalled();
+    expect(m.removeOwnPitstop).not.toHaveBeenCalled();
+  });
+
+  it("adds, edits and removes the account's own; refusals carry a code and never the name", async () => {
+    m.account = { id: "user-1" };
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+    m.addOwnPitstop.mockResolvedValueOnce({ ok: true, id: ID }).mockResolvedValueOnce({ ok: false, error: "per_goal" }).mockResolvedValueOnce({ ok: false, error: "limit" });
+    expect(await json(await send("POST", body))).toEqual({ status: 200, body: { ok: true, id: ID } });
+    expect(m.addOwnPitstop).toHaveBeenLastCalledWith("user-1", body);
+    const refused = await json(await send("POST", body));
+    expect(refused).toMatchObject({ status: 409, body: { ok: false, code: "per_goal" } });
+    expect((await send("POST", body)).status).toBe(429);
+    m.editOwnPitstop.mockResolvedValueOnce({ ok: true, id: ID }).mockResolvedValueOnce({ ok: false, error: "not_found" }).mockResolvedValueOnce({ ok: false, error: "link" });
+    expect(await json(await send("PATCH", { title: "Labs", resourceId: null }))).toEqual({ status: 200, body: { ok: true } });
+    expect(m.editOwnPitstop).toHaveBeenLastCalledWith("user-1", ID, { title: "Labs", resourceId: null });
+    expect((await send("PATCH", { title: "Labs", resourceId: null })).status).toBe(404);
+    expect((await send("PATCH", { title: "Labs", resourceId: null })).status).toBe(400);
+    m.removeOwnPitstop.mockResolvedValueOnce({ ok: true, id: ID }).mockResolvedValueOnce({ ok: false, error: "not_found" });
+    expect(await json(await send("DELETE", undefined))).toEqual({ status: 200, body: { ok: true } });
+    expect((await send("DELETE", undefined)).status).toBe(404);
+    m.addOwnPitstop.mockRejectedValueOnce(new Error("Failed query: insert … params: Blue team labs"));
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect((await send("POST", body)).status).toBe(500);
+    // Logs hold codes only, never the name the person typed.
+    for (const line of [...log.mock.calls, ...err.mock.calls].flat()) expect(String(line)).not.toContain("Blue team labs");
+    log.mockRestore();
+    err.mockRestore();
   });
 });
 

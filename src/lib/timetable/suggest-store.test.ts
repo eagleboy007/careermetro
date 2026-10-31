@@ -129,7 +129,7 @@ describe.skipIf(!db)("event suggestions (database)", () => {
     await expect(db!.insert(schema.eventSuggestions).values({ ...base, endsAt: new Date(startsAt.getTime() - 1) })).rejects.toThrow();
   });
 
-  it("is in Download your data as version 37, the person's own only, and goes with the account", async () => {
+  it("is in Download your data (from version 37), the person's own only, and goes with the account", async () => {
     const me = await person();
     const other = await person();
     expect(await suggestEvent(me, form({ title: "Mine" }), { db: d(), now: NOW })).toEqual({ ok: true });
@@ -138,8 +138,8 @@ describe.skipIf(!db)("event suggestions (database)", () => {
     expect(mine.map((s) => [s.title, s.status])).toEqual([["Mine", "pending"]]);
     for (const s of mine) expect(eventSuggestionExport.safeParse(s).error).toBeUndefined();
     const data = await exportAccountData(me, d());
-    expect(EXPORT_VERSION).toBe(37);
-    expect(data!.exportVersion).toBe(37);
+    expect(EXPORT_VERSION).toBe(38);
+    expect(data!.exportVersion).toBe(38);
     expect(data!.timetable.suggestions).toEqual(mine);
     await db!.delete(schema.users).where(eq(schema.users.id, me));
     expect(await rowsOf(me)).toEqual([]);

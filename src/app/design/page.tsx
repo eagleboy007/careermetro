@@ -53,7 +53,7 @@ import { CertificateForm } from "@/components/proof/certificate-form";
 import { ProfileCertifications } from "@/components/me/certifications";
 import { MetroMap } from "@/components/map/metro-map";
 import { arrivedRide } from "@/lib/ride/build";
-import { exampleLifeLine, exampleLifeLineNoInterests, exampleLifeLineUndatedInterests, exampleMapLine } from "@/lib/map/fixtures";
+import { exampleLifeLine, exampleLifeLineNoInterests, exampleLifeLineUndatedInterests, exampleMapLine, exampleOwnMapLine } from "@/lib/map/fixtures";
 import { NotForMe } from "@/components/map/not-for-me";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { DEPARTURES_LEDE } from "@/lib/departures/filter";
@@ -616,6 +616,12 @@ export default function DesignPage() {
         <MetroMap line={exampleMapLine} life={exampleLifeLine} sample />
         <p className="text-sm text-muted">With &quot;Your choice&quot; goals: off the line, listed under the key, each with its tag and Remove from my goals.</p>
         <MetroMap line={exampleChoiceMapLine} />
+        <p className="text-sm text-muted">
+          Add a pitstop (FR-58): pitstops the person added hang off their goal&apos;s first pitstop as dashed spurs labelled ADDED BY YOU, in neutral
+          colours. They are never numbered, never hold the train and never change the counts, gaps or match. Tap a spur for Edit and Remove; Add a pitstop
+          opens the form (goal, a name of up to 40 characters, an optional free course from the catalog). Example data, so nothing is saved.
+        </p>
+        <MetroMap line={exampleOwnMapLine} />
       </section>
 
       <section className="flex flex-col gap-4">

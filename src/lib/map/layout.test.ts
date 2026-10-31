@@ -151,4 +151,30 @@ describe("layoutLine", () => {
     const skipped = layoutLine({ ...exampleMapLine, goals: exampleMapLine.goals.map((g, i) => ({ ...g, skipped: i === first })) });
     expect(skipped.stations.flatMap((s) => (s.kind === "end" ? [] : [pitstopLabel(s)])).slice(3, 5)).toEqual(["4 · SKIPPED", "5 · SKIPPED"]);
   });
+
+  it("draws a goal's own pitstops (FR-58) as one spur off its first pitstop, away from its label, never moving the train or the numbers", () => {
+    const own = (n: number) => Array.from({ length: n }, (_, i) => ({ id: `p${i}`, title: `Mine ${i}`, course: null }));
+    const base = { goals: [goal("a", "missing"), goal("b", "weak"), goal("c", "missing")], otherLines: [] };
+    const plain = layoutLine(base);
+    const withOwn = layoutLine({ ...base, goals: [goal("a", "missing", { ownPitstops: own(2) }), goal("b", "weak", { ownPitstops: own(1) }), goal("c", "missing")] });
+    expect(withOwn.spurs.map((sp) => [sp.id, sp.count])).toEqual([
+      ["own-a", 2],
+      ["own-b", 1],
+    ]);
+    expect(withOwn.ownCount).toBe(3);
+    expect(plain.spurs).toEqual([]);
+    expect(plain.ownCount).toBe(0);
+    // The line, its numbers, the train and the counts stay as they were.
+    expect(withOwn.stations.map((s) => [s.id, s.x, s.y, s.state])).toEqual(plain.stations.map((s) => [s.id, s.x, s.y, s.state]));
+    expect([withOwn.train, withOwn.done, withOwn.pitstopCount, withOwn.goalCount]).toEqual([plain.train, plain.done, plain.pitstopCount, plain.goalCount]);
+    // Off the goal's first pitstop (the learn one for a missing skill), on the side away from its label, inside the map.
+    for (const sp of withOwn.spurs) {
+      const at = withOwn.stations.find((s) => s.kind !== "end" && s.goal.skillId === sp.goal.skillId)!;
+      expect(at.id).toBe(sp.goal.status === "missing" ? `${sp.goal.skillId}-learn` : `${sp.goal.skillId}-prove`);
+      expect(sp.x).toBe(at.x);
+      expect(sp.y > at.y).toBe(at.above);
+      expect(sp.y).toBeGreaterThan(40);
+      expect(sp.y + 30).toBeLessThan(540);
+    }
+  });
 });

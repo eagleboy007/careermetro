@@ -313,8 +313,8 @@ describe.skipIf(!db)("Library marks, reports and suggestions (database)", () => 
     await reportResource(me, { resourceId: a, reason: "outdated" }, { db: db! });
     await suggestResource(me, { url: `${linkPrefix}export-suggested`, skillId: null }, { db: db! });
     const data = (await exportAccountData(me, db!))!;
-    expect(EXPORT_VERSION).toBe(37);
-    expect(data.exportVersion).toBe(37);
+    expect(EXPORT_VERSION).toBe(38);
+    expect(data.exportVersion).toBe(38);
     expect(libraryExport.parse(data.library).saved).toEqual([expect.objectContaining({ title: "Marks course export-a", url: `${linkPrefix}export-a` })]);
     expect(data.resourceReports.map((r) => resourceReportExport.parse(r))).toEqual([expect.objectContaining({ title: "Marks course export-a", reason: "outdated", status: "open" })]);
     expect(data.resourceSuggestions.map((s) => resourceSuggestionExport.parse(s))).toEqual([expect.objectContaining({ url: `${linkPrefix}export-suggested`, status: "open" })]);

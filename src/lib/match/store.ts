@@ -47,7 +47,8 @@ async function pathHoursFor(gapAnalysisId: string, db: Db): Promise<Map<string, 
   const steps = await db
     .select({ skillId: pathSteps.skillId, hours: pathSteps.hours, doneAt: pathSteps.doneAt })
     .from(pathSteps)
-    .where(eq(pathSteps.pathId, path.id))
+    // The path's own steps: pitstops the person added (FR-58) never change the weeks to a role.
+    .where(and(eq(pathSteps.pathId, path.id), eq(pathSteps.source, "app")))
     .orderBy(asc(pathSteps.position));
   return new Map(steps.map((s) => [s.skillId, s.doneAt ? 0 : s.hours]));
 }
