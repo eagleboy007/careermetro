@@ -1,0 +1,63 @@
+{
+  "id": "process-excellence-analyst-from-bpo-quality-analyst",
+  "roleSlug": "process-excellence-analyst",
+  "persona": "Quality analyst in a finance-and-accounting BPO moving into process excellence",
+  "resumeText": "Arjun Menon | Bengaluru | arjun.menon@example.com\n\nEXPERIENCE\nSenior Quality Analyst, Nandi Business Process Services, Bengaluru (2021 - present)\n- Led a Green Belt project using DMAIC to cut invoice processing errors from 3.1% to 1.2% for a US client.\n- Mapped the as-is and to-be accounts payable process with swimlane flowcharts for three client processes.\n- Used fishbone diagram and Pareto analysis to find the top causes of SLA breaches.\n- Built control charts in Minitab to track daily accuracy after process changes went live.\n- Built a weekly SLA and KPI dashboard in Power BI for the operations leadership team.\n- Analysed transaction volumes and error logs in Excel to size improvement opportunities.\n- Worked with operations managers and the client process owner to sign off and sustain the new process.\n\nProcess Associate, Nandi Business Process Services, Bengaluru (2019 - 2021)\n- Processed vendor invoices and met daily accuracy targets.\n\nSKILLS\nLean Six Sigma Green Belt, Minitab, Power BI, Excel, kaizen\n\nCERTIFICATIONS\nLean Six Sigma Green Belt (2023)\n\nEDUCATION\nB.Com, Christ University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "dmaic-six-sigma",
+        "quote": "Led a Green Belt project using DMAIC"
+      },
+      {
+        "skillId": "process-mapping",
+        "quote": "Mapped the as-is and to-be accounts payable process with swimlane flowcharts"
+      },
+      {
+        "skillId": "root-cause-analysis-tools",
+        "quote": "Used fishbone diagram and Pareto analysis"
+      },
+      {
+        "skillId": "statistical-process-analysis",
+        "quote": "Built control charts in Minitab"
+      },
+      {
+        "skillId": "data-visualization",
+        "quote": "Built a weekly SLA and KPI dashboard in Power BI"
+      },
+      {
+        "skillId": "power-bi",
+        "quote": "SLA and KPI dashboard in Power BI"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Analysed transaction volumes and error logs in Excel"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Worked with operations managers and the client process owner"
+      },
+      {
+        "skillId": "lean-waste-elimination",
+        "quote": "kaizen"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "lean-waste-elimination",
+        "status": "weak"
+      },
+      {
+        "skillId": "automation-opportunity-assessment",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "robotic-process-automation",
+      "business-case",
+      "sql"
+    ]
+  },
+  "reviewedBy": null
+}

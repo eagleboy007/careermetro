@@ -1,0 +1,56 @@
+{
+  "id": "seo-specialist-from-agency-seo-executive",
+  "roleSlug": "seo-specialist",
+  "persona": "Agency SEO executive with four years of client SEO",
+  "resumeText": "Mohammed Faizan | Hyderabad | faizan.m@example.com\n\nEXPERIENCE\nSEO Executive, Charminar Digital Agency, Hyderabad (2022 - present)\n- Handle on-page SEO for 8 client websites in real estate, edtech and healthcare.\n- Built keyword maps for 600 pages grouped by search intent and funnel stage.\n- Earned 120 backlinks a quarter through guest posting and digital PR outreach.\n- Monitor coverage, indexing and performance reports in Google Search Console every week.\n- Use Ahrefs and Semrush for competitor gap and keyword difficulty research.\n- Set up GA4 conversion events and organic landing page reports for clients.\n- Send monthly reports on keyword rankings and organic traffic to each client.\n\nContent Writer, Lakdi Ka Pul Media, Hyderabad (2021 - 2022)\n- Wrote 15 local news articles a week for the website.\n\nSKILLS\nSEO audits, Schema markup, WordPress, Excel\n\nEDUCATION\nBCom, Osmania University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "seo",
+        "quote": "Handle on-page SEO for 8 client websites"
+      },
+      {
+        "skillId": "keyword-strategy",
+        "quote": "Built keyword maps for 600 pages grouped by search intent"
+      },
+      {
+        "skillId": "link-building",
+        "quote": "Earned 120 backlinks a quarter through guest posting"
+      },
+      {
+        "skillId": "seo-tools-search-console",
+        "quote": "performance reports in Google Search Console every week"
+      },
+      {
+        "skillId": "web-analytics",
+        "quote": "Set up GA4 conversion events"
+      },
+      {
+        "skillId": "seo-performance-reporting",
+        "quote": "Send monthly reports on keyword rankings and organic traffic"
+      },
+      {
+        "skillId": "technical-seo-audits",
+        "quote": "SEO audits"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "technical-seo-audits",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "html-css",
+      "javascript",
+      "sem-google-ads",
+      "web-performance"
+    ]
+  },
+  "reviewedBy": null
+}

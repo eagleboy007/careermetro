@@ -1,0 +1,119 @@
+{
+  "slug": "insurance-underwriter",
+  "title": "Insurance Underwriter",
+  "summary": "Decides whether an insurer should accept a life, health or general insurance proposal, on what terms and at what premium. Sits in the underwriting team of an insurer, broker or reinsurer and works with sales, medical and claims teams.",
+  "dailyDuties": [
+    "Review proposal forms, medical reports and inspection reports",
+    "Accept, load, exclude or decline proposals within authority limits",
+    "Rate risks and apply premium loadings",
+    "Set policy terms, exclusions and endorsements",
+    "Check decisions against IRDAI rules and underwriting guidelines",
+    "Review claims experience before renewals",
+    "Track turnaround time in the underwriting MIS"
+  ],
+  "typicalTitles": [
+    "Health Insurance Underwriter",
+    "Life Insurance Underwriter",
+    "Group Health Underwriter",
+    "Commercial Lines Underwriter",
+    "Motor Insurance Underwriter",
+    "Medical Underwriter - Life Insurance",
+    "Underwriting Executive - General Insurance",
+    "Fire and Engineering Underwriter"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "insurance-risk-assessment",
+      "importance": "required",
+      "expectation": "Assess proposals and decide to accept, accept with terms or decline",
+      "postingShare": null
+    },
+    {
+      "skillId": "medical-underwriting",
+      "importance": "required",
+      "expectation": "Review medical reports and history for life or health proposals",
+      "postingShare": null,
+      "oneOf": "underwriting-line"
+    },
+    {
+      "skillId": "property-casualty-underwriting",
+      "importance": "required",
+      "expectation": "Assess fire, motor, marine, engineering or liability risks for general insurance",
+      "postingShare": null,
+      "oneOf": "underwriting-line"
+    },
+    {
+      "skillId": "insurance-pricing-rating",
+      "importance": "required",
+      "expectation": "Rate risks and apply loadings or discounts within the filed rating structure",
+      "postingShare": null
+    },
+    {
+      "skillId": "policy-terms-wordings",
+      "importance": "required",
+      "expectation": "Set policy terms, exclusions, deductibles and endorsements",
+      "postingShare": null
+    },
+    {
+      "skillId": "irdai-regulations",
+      "importance": "required",
+      "expectation": "Follow IRDAI rules and the insurer's board-approved underwriting policy",
+      "postingShare": null
+    },
+    {
+      "skillId": "loss-ratio-analysis",
+      "importance": "required",
+      "expectation": "Use claims experience and loss ratios to review renewals and portfolios",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Maintain underwriting MIS, turnaround reports and rating sheets in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain decisions to sales teams, agents, brokers and customers",
+      "postingShare": null
+    },
+    {
+      "skillId": "reinsurance-basics",
+      "importance": "nice_to_have",
+      "expectation": "Know treaty and facultative reinsurance and retention limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-underwriting",
+      "importance": "nice_to_have",
+      "expectation": "Check income and sum assured justification for life proposals",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with sales, claims and medical teams on turnaround targets",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "underwriting-line",
+      "label": "Underwriting line (life/health or general insurance)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

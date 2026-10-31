@@ -1,0 +1,132 @@
+{
+  "slug": "seo-specialist",
+  "title": "SEO Specialist",
+  "summary": "An SEO specialist helps a website rank higher in search results by fixing technical issues, choosing keywords and earning links from other sites. The role sits in the marketing or growth team, works with developers and content writers, and reports on rankings and organic traffic.",
+  "dailyDuties": [
+    "Check Search Console for crawl, index and ranking changes",
+    "Run site audits and file fixes with developers",
+    "Research keywords and map them to pages",
+    "Plan and track link building outreach",
+    "Write on-page recommendations and briefs for writers",
+    "Report rankings and organic traffic from GA4"
+  ],
+  "typicalTitles": [
+    "SEO Analyst",
+    "Technical SEO Specialist",
+    "Search Engine Optimization Specialist",
+    "SEO Manager",
+    "Technical SEO Analyst",
+    "SEO Lead"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "seo",
+      "importance": "required",
+      "expectation": "Run on-page, off-page and technical SEO for a website",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-seo-audits",
+      "importance": "required",
+      "expectation": "Audit crawling, indexing, sitemaps, canonicals and schema, and get fixes shipped",
+      "postingShare": null
+    },
+    {
+      "skillId": "keyword-strategy",
+      "importance": "required",
+      "expectation": "Research keywords and map them to pages by search intent",
+      "postingShare": null
+    },
+    {
+      "skillId": "link-building",
+      "importance": "required",
+      "expectation": "Earn quality backlinks and audit the backlink profile",
+      "postingShare": null
+    },
+    {
+      "skillId": "seo-tools-search-console",
+      "importance": "required",
+      "expectation": "Work daily in Google Search Console and a crawler or research tool such as Ahrefs or Semrush",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-analytics",
+      "importance": "required",
+      "expectation": "Read organic traffic and conversions in GA4",
+      "postingShare": null
+    },
+    {
+      "skillId": "seo-performance-reporting",
+      "importance": "required",
+      "expectation": "Track rankings and organic traffic and report them every month",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain SEO changes to developers, writers and clients",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "nice_to_have",
+      "expectation": "Read page HTML to check tags, headings and structured data",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-performance",
+      "importance": "nice_to_have",
+      "expectation": "Find and brief fixes for Core Web Vitals issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "cms-content-publishing",
+      "importance": "nice_to_have",
+      "expectation": "Make on-page changes in WordPress or another CMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "content-briefs-outlines",
+      "importance": "nice_to_have",
+      "expectation": "Write SEO briefs for content writers",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "nice_to_have",
+      "expectation": "Understand how JavaScript rendering affects crawling",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Work with large keyword and crawl exports",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "google-analytics-cert",
+      "importance": "recommended",
+      "why": "Free Google exam that covers GA4 reporting used for organic traffic analysis"
+    },
+    {
+      "certId": "hubspot-seo",
+      "importance": "optional",
+      "why": "Free HubSpot Academy course and exam on SEO fundamentals"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

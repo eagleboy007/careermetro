@@ -1,0 +1,123 @@
+{
+  "slug": "compensation-benefits-analyst",
+  "title": "Compensation and Benefits Analyst",
+  "summary": "Makes sure employees are paid fairly and competitively by comparing salaries with the market, maintaining pay bands and running the yearly increment and bonus cycle. Sits in the HR rewards team and also manages benefits such as group health insurance.",
+  "dailyDuties": [
+    "Benchmark roles against salary survey data",
+    "Update pay bands and check compa-ratios",
+    "Model the increment and bonus budget in Excel",
+    "Calculate bonus and incentive payouts",
+    "Manage group health and accident insurance renewals",
+    "Prepare rewards and headcount cost reports",
+    "Answer pay questions from HR business partners"
+  ],
+  "typicalTitles": [
+    "Compensation Analyst",
+    "C&B Analyst",
+    "Total Rewards Analyst",
+    "Rewards Analyst",
+    "Compensation and Benefits Specialist",
+    "Total Rewards Specialist",
+    "Benefits Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "compensation-planning",
+      "importance": "required",
+      "expectation": "Benchmark salaries against market surveys and run the annual increment cycle",
+      "postingShare": null
+    },
+    {
+      "skillId": "pay-structure-design",
+      "importance": "required",
+      "expectation": "Build and maintain pay bands and track compa-ratios",
+      "postingShare": null
+    },
+    {
+      "skillId": "job-evaluation-levelling",
+      "importance": "required",
+      "expectation": "Evaluate and grade jobs within a job architecture",
+      "postingShare": null
+    },
+    {
+      "skillId": "bonus-incentive-plans",
+      "importance": "required",
+      "expectation": "Model and calculate bonus and incentive payouts",
+      "postingShare": null
+    },
+    {
+      "skillId": "employee-benefits-administration",
+      "importance": "required",
+      "expectation": "Run benefits such as group health, accident and life insurance and their renewals",
+      "postingShare": null
+    },
+    {
+      "skillId": "hr-analytics",
+      "importance": "required",
+      "expectation": "Report on rewards, headcount cost and attrition with clear dashboards",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel-pivot-lookup",
+      "importance": "required",
+      "expectation": "Build compensation models in Excel with pivot tables and lookups",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with HR business partners, finance and leaders on budgets and approvals",
+      "postingShare": null
+    },
+    {
+      "skillId": "compensation-survey-tools",
+      "importance": "nice_to_have",
+      "expectation": "Submit and use data from salary surveys such as Aon, Mercer or WTW",
+      "postingShare": null
+    },
+    {
+      "skillId": "pay-equity-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Check pay equity and internal parity across groups",
+      "postingShare": null
+    },
+    {
+      "skillId": "hrms-tools",
+      "importance": "nice_to_have",
+      "expectation": "Run compensation cycles in an HRMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "indian-labour-law-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Know how PF, gratuity and wage rules affect salary structures",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Publish rewards dashboards in Power BI",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "mos-excel-expert",
+      "importance": "optional",
+      "why": "Shows advanced Excel skills used in compensation modelling"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

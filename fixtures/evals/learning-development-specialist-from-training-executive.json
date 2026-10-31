@@ -1,0 +1,64 @@
+{
+  "id": "learning-development-specialist-from-training-executive",
+  "roleSlug": "learning-development-specialist",
+  "persona": "Training executive in a BPO moving into a broader L&D specialist role",
+  "resumeText": "Sneha Kulkarni | Pune | sneha.kulkarni@example.com\n\nEXPERIENCE\nSenior Training Executive, Sahyadri Customer Services Pvt Ltd, Pune (2021 - present)\n- Conducted training needs analysis with 12 process managers each quarter and built the annual training calendar.\n- Designed product and soft-skills modules and converted 15 classroom sessions into e-learning module development projects in Articulate Rise.\n- Delivered classroom training to batches of 25 new hires and ran virtual instructor-led training for night-shift agents.\n- Ran the two-week induction programme for about 600 new joiners a year.\n- Enrolled learners, assigned courses and pulled monthly completion reports from the Moodle LMS.\n- Partnered with HR business partners and operations heads to agree quarterly learning priorities.\n- Maintained training attendance and MIS in Excel for the leadership review.\n\nTraining Coordinator, Deccan Retail Services, Pune (2019 - 2021)\n- Scheduled trainers and venues and collected post-session feedback forms.\n\nSKILLS\nTraining effectiveness, Kirkpatrick model, MS Excel, Moodle\n\nEDUCATION\nMBA (HR), Savitribai Phule Pune University, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "training-needs-analysis",
+        "quote": "Conducted training needs analysis with 12 process managers"
+      },
+      {
+        "skillId": "instructional-design",
+        "quote": "Designed product and soft-skills modules"
+      },
+      {
+        "skillId": "training-delivery-facilitation",
+        "quote": "Delivered classroom training to batches of 25 new hires"
+      },
+      {
+        "skillId": "employee-onboarding-exits",
+        "quote": "Ran the two-week induction programme for about 600 new joiners"
+      },
+      {
+        "skillId": "lms-administration",
+        "quote": "pulled monthly completion reports from the Moodle LMS"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Partnered with HR business partners and operations heads"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Maintained training attendance and MIS in Excel"
+      },
+      {
+        "skillId": "training-effectiveness-evaluation",
+        "quote": "Kirkpatrick model"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "training-effectiveness-evaluation",
+        "status": "weak"
+      },
+      {
+        "skillId": "leadership-development-programmes",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "hr-analytics",
+      "talent-review-succession",
+      "hrms-tools",
+      "payroll-inputs-processing"
+    ]
+  },
+  "reviewedBy": null
+}

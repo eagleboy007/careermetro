@@ -1,0 +1,55 @@
+{
+  "id": "brand-manager-from-assistant-brand-manager",
+  "roleSlug": "brand-manager",
+  "persona": "Assistant brand manager in personal care moving up to own a brand",
+  "resumeText": "Aditi Menon | Mumbai | aditi.menon@example.com\n\nEXPERIENCE\nAssistant Brand Manager, Konkan Consumer Products Ltd (hair oils and skin care), Mumbai (2022 - present)\n- Wrote the annual brand plan for a coconut hair oil brand with the brand manager.\n- Ran a U&A study and two concept tests with a research agency to find new usage occasions.\n- Briefed the creative agency on a TV and digital campaign and approved storyboards.\n- Planned BTL activations in 400 chemist and grocery outlets in Maharashtra.\n- Launched a non-sticky hair oil variant in six states with R&D, packaging and sales teams.\n- Tracked monthly market share and distribution from Nielsen retail audit data.\n- Presented the launch plan to 150 sales managers at the annual sales conference.\n\nMarketing Executive, Western Foods Ltd, Nagpur (2020 - 2022)\n- Coordinated consumer sampling and in-store promotions for a biscuit brand.\n\nEDUCATION\nMBA Marketing, Narsee Monjee Institute of Management Studies, Mumbai, 2020\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "brand-strategy-planning",
+        "quote": "Wrote the annual brand plan for a coconut hair oil brand"
+      },
+      {
+        "skillId": "consumer-insights",
+        "quote": "Ran a U&A study and two concept tests"
+      },
+      {
+        "skillId": "agency-management",
+        "quote": "Briefed the creative agency on a TV and digital campaign"
+      },
+      {
+        "skillId": "atl-btl-campaigns",
+        "quote": "Planned BTL activations in 400 chemist and grocery outlets"
+      },
+      {
+        "skillId": "go-to-market-launches",
+        "quote": "Launched a non-sticky hair oil variant in six states"
+      },
+      {
+        "skillId": "market-share-tracking",
+        "quote": "Tracked monthly market share and distribution from Nielsen retail audit data"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "with R&D, packaging and sales teams"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Presented the launch plan to 150 sales managers"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "brand-pnl-management",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "performance-marketing",
+      "seo",
+      "channel-incentive-programs"
+    ]
+  },
+  "reviewedBy": null
+}
