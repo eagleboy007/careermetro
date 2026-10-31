@@ -1,4 +1,4 @@
-import { MAX_GAPS, OWN_PITSTOPS_PER_GOAL, type Gap, type PreviousLine } from "@/lib/schemas";
+import { cutText, MAX_GAPS, OWN_PITSTOPS_PER_GOAL, type Gap, type PreviousLine } from "@/lib/schemas";
 
 /*
  * The Map's earlier line after a change of destination (handoff section 7, C25; section 14, open decision 5;
@@ -7,7 +7,8 @@ import { MAX_GAPS, OWN_PITSTOPS_PER_GOAL, type Gap, type PreviousLine } from "@/
  * the pitstops the person added, and the earlier line says what waits there and what came along.
  */
 
-const clip = (s: string, max: number) => (s.length > max ? `${s.slice(0, max - 1).trimEnd()}…` : s);
+// Never half an emoji: the server would write U+FFFD and the Map would fail to hydrate (T176, as T150).
+const clip = (s: string, max: number) => (s.length > max ? `${cutText(s, max - 1).trimEnd()}…` : s);
 
 export function earlierLine(input: {
   /** The earlier destination's analysis: its role and gaps. */

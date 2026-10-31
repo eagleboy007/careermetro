@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (business role batch B3: 12 roles, 74 skills, 151 new links)
+Last updated: 2026-10-31 (T176: the max-data member has an earlier line and opted-in riders; oversize measures both Map panels, which caught half-emoji cuts in the Map's earlier-line names that broke hydration; T177 feed titles; T178 focus and status after Make this my destination)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -112,6 +112,7 @@ Last updated: 2026-10-31 (business role batch B3: 12 roles, 74 skills, 151 new l
 - T169: the walk scans Corporate Messages only once Send is enabled again after the question (axe caught the dimmed button mid-send, main red on 32bd9af).
 - T171: every `request.*` call in `e2e/walk.mjs` and `e2e/oversize.mjs` goes through `api()`, which sends it again once on ECONNRESET or "socket hang up" (never on an HTTP status); "add a pitstop" reads the download only once the Map's Add a pitstop button shows.
 - T172: the max-data seed adds 30 own pitstops through `addOwnPitstop` (3 on each of 9 gap goals, then 1 each on 3 more so their spurs show the name: a 40-letter word, Hindi, emoji; names at 40, the first with a free course); oversize fails when a Map spur label's getBBox leaves the SVG viewBox, at 390 and 1280.
+- T176: the max-data seed changes destination (an earlier role first, then the target via `makeDestination`), so the Map's earlier line holds 20 waiting goals (`MAX_GAPS`, 80-character names; 4 with 3 own pitstops, the other 18 of the 30-pitstop cap stay on the current line's spurs), and adds 6 opted-in riders (`show_on_map`, 40+40-character names, 4 of them connections) on every current-line goal; oversize opens the Map with the earlier-line panel and with the people panel at 390 and 1280, light and dark (limit 12,000). Cleanup covers the riders (`max-data-peer-rider-*`).
 - Re-test 34 fixes T115 to T118: the staging smoke scripts go on only when `/api/health` says `"env": "preview"` (T115).
 - The dry run's deadline also respects the job's limit; a stuck step is given up and the account deleted in a fresh browser context within the 15-minute step (T116). A sample's job check is not found once the owner has gaps of their own (T117).
 - `/api/csp-report` logs each directive and host once an hour, with an hourly `csp_violation_summary` of repeats and addresses; the report-only CSP is set per request in `src/proxy.ts`, so a promoted preview build no longer sends toolbar hosts on production (T118).

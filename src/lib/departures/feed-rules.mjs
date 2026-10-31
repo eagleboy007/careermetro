@@ -362,7 +362,7 @@ export const ROLE_TITLES = {
   "product-manager": /\b(product manager|product owner|associate product manager|product lead|product specialist)\b/i,
   // A user research title before the designer rule, which keeps "UX Writer".
   "ux-researcher": /\b(ux|user|design|product|user experience|usability) research(er| lead| specialist| analyst)\b|\busability (analyst|specialist)\b/i,
-  "ui-ux-designer": /\b(ui ?\/? ?ux|ux ?\/? ?ui|ux|ui|product|interaction|visual|experience|web) designer\b|\bux writer\b/i,
+  "ui-ux-designer": /\b(ui ?\/? ?ux|ux ?\/? ?ui|ux|ui|product|interaction|visual|(?<!learning )experience|web) designer\b|\bux writer\b/i,
   // After the designer rule, which keeps "UX Writer".
   "technical-writer": /\b(technical|api|documentation|docs) (writer|author|editor)\b|\bdocumentation (specialist|engineer|lead)\b|\binformation developer\b|\bcontent developer\b.*\btechnical\b/i,
   "qa-automation-engineer": /\b(qa|sdet|test|testing|quality|automation test)\b.*\b(engineer|analyst|developer)\b|\bsdet\b|\bsoftware (development )?engineer\b.*\b(in test|qa|quality)\b|\bautomation tester\b|\b(manual|automation)( (&|and) (manual|automation))? testing\b|\bselenium\b.*\b(engineer|tester|developer)\b/i,
@@ -440,12 +440,12 @@ export const ROLE_TITLES = {
   // Compensation, benefits and total rewards analysts, never an HR systems one.
   "compensation-benefits-analyst": /^(?!.*\b(engineer|developer|software|systems?|workday|sap|oracle|consultant)\b)((senior|sr\.?|junior|jr\.?|associate|lead) )?(compensation( (and|&) benefits)?|c&b|total rewards?|rewards|benefits) (analyst|specialist|executive|associate)\b/i,
   // Learning and development staff and trainers, never a machine learning one.
-  "learning-development-specialist": /^(?!.*\b(software|engineer|developer|machine learning|deep learning|data)\b)((senior|sr\.?|junior|jr\.?|associate|assistant|lead|corporate) )*(((learning|training) (and|&) development|l ?& ?d|t ?& ?d) (specialist|executive|consultant|partner|associate|coordinator|officer|lead|analyst)|(executive|specialist|trainer|consultant),? ?[-–]? ?(learning|training) (and|&) development|(corporate trainer|training specialist)\b.*\b(learning|training) (and|&) development)\b/i,
+  "learning-development-specialist": /^(?!.*\b(software|engineer|developer|machine learning|deep learning|data)\b)((senior|sr\.?|junior|jr\.?|associate|assistant|lead|corporate) )*(((learning|training) (and|&) development|l ?& ?d|t ?& ?d) (specialist|executive|consultant|partner|associate|coordinator|officer|lead|analyst)|(executive|specialist|trainer|consultant),? ?[-–]? ?(learning|training) (and|&) development|(corporate trainer|training specialist)\b.*\b(learning|training) (and|&) development|(learning experience|instructional) designer)\b/i,
   // Warehouse executives, supervisors and shift leads; a "Logistics and Warehouse Executive" stays logistics (above),
   // and a warehouse manager has no rule.
   "warehouse-operations-executive": /^(?!.*\b(engineer|developer|software|data|sap|analyst)\b)((senior|sr\.?|junior|jr\.?|assistant) )*((inventory (and|&) )?warehouse( operations)? (executive|supervisor|officer|coordinator|incharge|in-charge|shift incharge|team lead)|executive,? ?[-–]? ?warehouse( operations)?|(floor|shift) (lead|supervisor|incharge)\b.*\bwarehouse)\b/i,
   // Lean, Six Sigma and process excellence analysts, never a software or IT process one.
-  "process-excellence-analyst": /^(?!.*\b(software|engineer|developer|data|it|sap)\b)((senior|sr\.?|junior|jr\.?|associate|lead) )?(((process|operational|operations|business) excellence|process improvement|continuous improvement|lean six sigma|six sigma|quality (and|&) process excellence) (analyst|specialist|associate|executive|consultant|lead)|six sigma (green|black) belt)\b/i,
+  "process-excellence-analyst": /^(?!.*\b(software|engineer|developer|data|it|sap)\b)((senior|sr\.?|junior|jr\.?|associate|lead) )?(((process|operational|operations|business) excellence|process improvement|continuous improvement|lean six sigma|six sigma|quality (and|&) process excellence) (analyst|specialist|associate|executive|consultant|lead)|(lean )?six sigma (green|black) belt)\b/i,
   // Retail store and showroom managers; a stores (materials) or dark store manager is not one.
   "retail-store-manager": /^(?!.*\b(software|engineer|developer|data|it|analyst|app)\b)((senior|sr\.?|assistant|deputy|associate) )*((retail )?store (manager|incharge|in-charge|operations manager)|showroom manager|boutique manager)\b/i,
 };

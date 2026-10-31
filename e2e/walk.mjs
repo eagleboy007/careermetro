@@ -5618,7 +5618,11 @@ await step("change of destination: Make this my destination, the earlier line, H
     await p.goto(gapsUrl.replace(/\/gaps\/[^/]+$/, "/gaps/cloud-engineer"));
     await settled();
     await card.getByRole("button", { name: "Make this my destination" }).click();
-    await p.getByRole("region", { name: "Cloud Engineer is your destination" }).waitFor({ timeout: 15000 });
+    const chosen = p.getByRole("region", { name: "Cloud Engineer is your destination" });
+    await chosen.waitFor({ timeout: 15000 });
+    // T178: the status line says so, and focus stays in the card rather than falling to the page.
+    await chosen.getByRole("status").getByText("Cloud Engineer is now your destination.").waitFor({ timeout: 10000 });
+    await p.waitForFunction(() => !!document.activeElement?.closest("section[aria-labelledby]")?.textContent?.includes("Cloud Engineer is now your destination."), null, { timeout: 5000 });
     await p.goto(BASE + "/map");
     await settled();
     await p.locator("main").getByText(/^Cloud Engineer · /).first().waitFor({ timeout: 10000 });

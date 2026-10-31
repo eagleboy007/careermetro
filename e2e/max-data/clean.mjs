@@ -7,6 +7,8 @@ export const MAX_DATA_EMAIL = "max-data@example.com.test";
 /** The peers' emails: max-data-peer-<n>@example.com.test. No "_" or "%" inside, so LIKE matches only these. */
 export const PEER_EMAIL_LIKE = "max-data-peer-%@example.com.test";
 export const peerEmail = (n) => `max-data-peer-${String(n).padStart(3, "0")}@example.com.test`;
+/** The On your line riders (T176): max-data-peer-rider-<n>@example.com.test, so PEER_EMAIL_LIKE removes them too. */
+export const riderEmail = (n) => `max-data-peer-rider-${n}@example.com.test`;
 
 /** Throws unless the database is on this machine (the CI e2e job's own Postgres, or a local one). */
 export function assertLocalDatabase(url) {

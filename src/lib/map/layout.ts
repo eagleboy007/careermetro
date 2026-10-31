@@ -1,3 +1,4 @@
+import { cutText } from "@/lib/cut-text";
 import type { MapGoal, MapLine } from "@/lib/schemas";
 
 /*
@@ -232,7 +233,7 @@ export function layoutLine(
     const stops = line.previous.left.slice(0, n).map((g, k) => ({
       x: round(start.x + ((k + 1) * run) / (n + 1)),
       y: levelY,
-      name: g.name.length > EARLIER_NAME_MAX ? `${g.name.slice(0, EARLIER_NAME_MAX - 1).trimEnd()}…` : g.name,
+      name: g.name.length > EARLIER_NAME_MAX ? `${cutText(g.name, EARLIER_NAME_MAX - 1).trimEnd()}…` : g.name,
     }));
     earlier = {
       d: d([{ x: gaps.x, y: gaps.y }, { x: gaps.x, y: levelY - EARLIER_BEND }, start, end]),
