@@ -105,9 +105,13 @@ const step = async (name, fn) => {
     console.log("ok  ", name, "->", new URL(p.url()).pathname);
   } catch (e) {
     failed++;
-    console.log("FAIL", name, "@", p.url(), e.message.split("\n")[0]);
+    // The first line, plus Playwright's "waiting for <locator>" line when there is one, so a timeout names its locator.
+    const lines = e.message.split("\n");
+    const waiting = lines.find((l) => /waiting for /.test(l))?.trim();
+    const said = waiting ? `${lines[0]} (${waiting.replace(/^- /, "")})` : lines[0];
+    console.log("FAIL", name, "@", p.url(), said);
     // Job logs aren't readable from every place we debug CI, but annotations are.
-    if (process.env.GITHUB_ACTIONS) console.log(`::error title=e2e step failed::${name}: ${e.message.split("\n")[0]}`);
+    if (process.env.GITHUB_ACTIONS) console.log(`::error title=e2e step failed::${name}: ${said}`);
     await shot("fail-" + name);
   }
 };
