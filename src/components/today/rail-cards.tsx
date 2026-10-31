@@ -7,16 +7,20 @@ import type { EventTeaser, NextInterviewView, OnYourLine } from "@/lib/schemas";
 const card = "flex min-w-0 flex-col gap-3.5 rounded-[18px] border border-line bg-surface p-4 md:rounded-[20px] md:px-[22px] md:py-5";
 const avatar = "grid shrink-0 place-items-center rounded-full font-mono font-medium text-ink";
 
-/** Timetable teaser: the next events for the user's goals. The full Timetable comes later (build step 11). */
+/**
+ * Timetable teaser: the next two events that match the person's goals or interests, near their city or online
+ * (docs/plans/timetable-plan.md section 7), with a link to the whole Timetable. Today leaves it out when nothing matches.
+ */
 export function TimetableTeaser({ events }: { events: EventTeaser[] }) {
   return (
     <section aria-label="Timetable" className={card}>
       <div className="flex flex-wrap items-center gap-2.5">
         <h3 className="text-[1.08rem] font-semibold tracking-[-0.01em]">Timetable</h3>
         <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-muted">near you</span>
-        <span className="ml-auto inline-flex items-center gap-1 text-[0.82rem] font-semibold text-muted">
-          All events · soon
-        </span>
+        <Link href="/timetable" className="ml-auto inline-flex min-h-11 items-center gap-1 px-2 text-[0.82rem] font-semibold text-ink hover:text-muted">
+          All events
+          <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
+        </Link>
       </div>
       <ul className="flex flex-col gap-3">
         {events.map((e) => (
@@ -25,7 +29,7 @@ export function TimetableTeaser({ events }: { events: EventTeaser[] }) {
               {e.day}
               <b className="font-display text-[0.95rem] font-semibold leading-tight text-ink">{e.date}</b>
             </span>
-            <span className="flex min-w-0 flex-col gap-0.5">
+            <span className="flex min-w-0 flex-col gap-0.5 [overflow-wrap:anywhere]">
               {e.title}
               <small className="text-[0.76rem] text-muted">{e.detail}</small>
             </span>

@@ -617,7 +617,7 @@ await step("not for me: skip the current goal on the Map, then bring it back", a
 await step("today: live signal check, board and On your line, no example data", async () => {
   await p.goto(BASE + "/today");
   await settled();
-  await p.getByText("Everything here is your own except the Timetable, which is example data until we build it.", { exact: true }).waitFor({ timeout: 10000 });
+  await p.getByText("Everything here is your own.", { exact: true }).waitFor({ timeout: 10000 });
   const board = p.locator("[data-board]");
   await board.waitFor({ timeout: 10000 });
   if ((await board.innerText()).toUpperCase().includes("MIS EXECUTIVE")) throw new Error("Today shows the example board");

@@ -72,6 +72,8 @@ import { MatchView } from "@/components/match/match-view";
 import { ConfidenceSpark } from "@/components/practice/confidence-spark";
 import { PracticeView } from "@/components/practice/practice-view";
 import { LibraryView, ReportLink, SuggestPanel } from "@/components/library/library-view";
+import { TimetableView } from "@/components/timetable/timetable-view";
+import { exampleTimetable, exampleTimetableChoices, exampleTimetableEmpty, exampleTimetableNoCity, exampleTimetableWhy } from "@/lib/timetable/fixtures";
 import { exampleEliteShelf, exampleLibrary, exampleLibraryNoResume } from "@/lib/library/fixtures";
 import { exampleMatch } from "@/lib/match/fixtures";
 import { exampleFeedback, examplePractice, examplePracticeForJob, examplePracticeSpent, exampleTrends } from "@/lib/practice/fixtures";
@@ -162,7 +164,7 @@ import { SignalCheckCard } from "@/components/today/signal-check";
 import { boardRows } from "@/lib/today/live-board";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import type { RoleCertificationView, RoleSkillView, RoleView } from "@/lib/role-view";
-import type { Gap, GoalsSummary, Profile } from "@/lib/schemas";
+import type { EventCard, Gap, GoalsSummary, Profile, TimetableView as TimetableViewData } from "@/lib/schemas";
 import {
   exampleDepartures,
   exampleEvents,
@@ -436,6 +438,18 @@ const manyMe = {
 };
 
 const colors = ["accent", "ink", "muted", "line", "line-strong", "surface-2", "accent-soft", "bad", "warn", "good", "board", "board-ink", "board-dim", "board-line", "heat-1", "heat-2", "heat-3", "heat-4", "heat-5", "elite", "elite-soft", "on-elite"] as const;
+
+// A Timetable card at its caps: a 160-character title, a long area and organiser and five tags, to check wrapping.
+const designLongEvent: EventCard = {
+  ...exampleTimetable.groups[0].events[0],
+  title: `Hunting with a SIEM ${LONG_WORD} and a very long hands-on lab night title that keeps on going until it reaches the cap`.slice(0, 160),
+  venue: `Baner ${LONG_WORD}`.slice(0, 120),
+  organiser: `Pune Security Meetup ${LONG_WORD}`.slice(0, 120),
+  cost: "₹1,500 student pass, ₹2,500 for everyone else",
+  tags: ["SIEM and log analysis", "Threat detection and hunting", "Python", "AWS", "Threat intelligence"].map((name, i) => ({ kind: "goal" as const, topic: `topic-${i}`, label: `Goal: ${name}` })),
+  rsvp: "going",
+};
+const designLongTimetable: TimetableViewData = { ...exampleTimetable, groups: [{ key: "week", label: "This week", events: [designLongEvent] }], outsideRadius: 0 };
 
 // Live counts for the Market section, from synthetic reads (src/lib/market/fixtures.ts).
 const liveOpts = { now: LIVE_FIXTURE_NOW, roles: marketRoles.map((r) => r.slug), states: marketStates };
@@ -833,6 +847,23 @@ export default function DesignPage() {
         </p>
         <LibraryView view={exampleLibrary} shelf={exampleEliteShelf(false)} tab="elite" />
         <LibraryView view={exampleLibrary} shelf={exampleEliteShelf(true)} tab="elite" />
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold">Timetable (signed in)</h2>
+        <p className="text-sm text-muted">
+          Handoff 10, FR-57, docs/plans/timetable-plan.md section 7: events picked only from the person&apos;s goals and interests, near the profile
+          city or online, grouped as This week, Later this month and by month, 20 at a time with Show more. All, My goals and My interests, Include
+          online and Show outside 25 km work on the screen. Each card has the date block, kind, place, time in IST, cost, organiser, at most five tags
+          in the neutral style (an event is not progress), Save, I&apos;m going, Add to calendar (a .ics file with a reminder the evening before) and
+          the organiser&apos;s page. The rail says why these show; the Monday digest and Suggest an event are soon. Made-up events; the cricket
+          meetup matches nothing, so it never shows, and the Mumbai summit is beyond 100 km. Then the same with no profile city (online only), with
+          a long title and long place to check wrapping, and with nothing matching.
+        </p>
+        <TimetableView view={exampleTimetable} why={exampleTimetableWhy} choices={exampleTimetableChoices} />
+        <TimetableView view={exampleTimetableNoCity} why={{ ...exampleTimetableWhy, interests: [] }} choices={exampleTimetableChoices} />
+        <TimetableView view={designLongTimetable} why={exampleTimetableWhy} choices={exampleTimetableChoices} />
+        <TimetableView view={exampleTimetableEmpty} why={{ goals: [], interests: ["Public speaking"] }} choices={exampleTimetableChoices} />
       </section>
 
       <section className="flex flex-col gap-4">

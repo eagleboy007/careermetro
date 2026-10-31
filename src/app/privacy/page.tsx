@@ -123,6 +123,7 @@ const sections: LegalSection[] = [
         <li>A resume checked without an account: deleted after 24 hours.</li>
         <li>A job shared from your phone: deleted when you open it, and within a day if you don&apos;t.</li>
         <li>Which weeks the weekly My jobs email went out: 90 days.</li>
+        <li>Timetable events, with the ones you saved or marked I&apos;m going: deleted 90 days after the event ends.</li>
         <li>
           Your account: until you delete it. Deleting starts a 30-day window in which you can change your mind. After that your data is removed for good,
           except reports you made (kept without your name) and messages a company wrote to you, which stay in the company&apos;s records.
@@ -173,5 +174,5 @@ const sections: LegalSection[] = [
 ];
 
 export default function PrivacyPage() {
-  return <LegalPage title="Privacy" intro="What CareerMetro keeps about you, why, for how long, and what you can do about it." updated="29 Oct 2026" draft sections={sections} />;
+  return <LegalPage title="Privacy" intro="What CareerMetro keeps about you, why, for how long, and what you can do about it." updated="31 Oct 2026" draft sections={sections} />;
 }

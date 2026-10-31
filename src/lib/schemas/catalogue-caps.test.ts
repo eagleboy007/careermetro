@@ -144,7 +144,7 @@ describe("catalogue caps", () => {
     expect(interestTopicsFile.safeParse(copy).error).toBeUndefined();
   });
 
-  it("tags one event with every topic it can keep, for a person whose goals are the whole taxonomy", () => {
+  it("tags one event with at most 5 of its topics, goals first, for a person whose goals are the whole taxonomy (T165)", () => {
     const names = skills.map((s) => s.name).join(", ");
     const topics = topicsOf(names, names);
     const startsAt = new Date("2026-10-16T12:30:00Z");
@@ -166,7 +166,9 @@ describe("catalogue caps", () => {
     };
     const person = { city: null, radiusKm: 25, online: true, goalSkillIds: skills.map((s) => s.id), interestKeys: interestTopics.map((t) => t.key) };
     const view = timetableFor([event], person, new Date("2026-10-14T06:30:00Z"));
-    expect(view.groups[0].events[0].tags).toHaveLength(topics.length);
+    expect(topics.length).toBeGreaterThan(5);
+    expect(view.groups[0].events[0].tags).toHaveLength(5);
+    expect(view.groups[0].events[0].tags.every((t) => t.kind === "goal")).toBe(true);
     expect(timetableView.safeParse(view).error).toBeUndefined();
   });
 });

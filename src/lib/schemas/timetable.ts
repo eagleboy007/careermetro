@@ -15,7 +15,9 @@ import {
   EVENT_TOPICS_MAX,
   EVENT_URL_MAX,
   EVENT_VENUE_MAX,
+  INTEREST_MAX,
   INTEREST_TOPIC_ALIASES_MAX,
+  INTERESTS_MAX,
   INTEREST_TOPICS_MAX,
   PERSON_CITIES,
   TIMETABLE_EVENTS_MAX,
@@ -54,6 +56,20 @@ export type EventTopic = z.infer<typeof eventTopic>;
 
 const https = z.string().max(EVENT_URL_MAX).pipe(z.url({ protocol: /^https$/ }));
 
+/** Control characters, an HTML tag, or an HTML entity ("&amp;", "&#60;"): a feed's markup, never our plain summary. */
+const NOT_PLAIN = /[\u0000-\u001f\u007f]|<\/?[A-Za-z!][^>]*>|&(?:#\d+|#x[0-9a-f]+|[a-z][a-z0-9]*);/i;
+
+/**
+ * One line of an event's summary, refused (not cleaned) when it holds control characters, tags or entities (T166): the
+ * feed job cleans what it reads before it writes, so a row that still holds them is a bug to see, not to show.
+ */
+export const eventText = (min: number, max: number) =>
+  z
+    .string()
+    .min(min)
+    .max(max)
+    .refine((s) => !NOT_PLAIN.test(s), "plain text only: no tags, entities or control characters");
+
 /** One `events` row as the store reads it (the same checks as the table's). */
 export const eventRow = z
   .strictObject({
@@ -61,25 +77,26 @@ export const eventRow = z
     source: eventSource,
     sourceKey: z.string().min(1).max(EVENT_SOURCE_KEY_MAX),
     sourceUrl: https,
-    title: z.string().min(1).max(EVENT_TITLE_MAX),
-    organiser: z.string().min(1).max(EVENT_ORGANISER_MAX),
+    title: eventText(1, EVENT_TITLE_MAX),
+    organiser: eventText(1, EVENT_ORGANISER_MAX),
     kind: eventKind,
     startsAt: z.date(),
     endsAt: z.date(),
     online: z.boolean(),
-    /** The event's city as the source gives it, one of PERSON_CITIES; null when online. */
+    /** The event's city as the source gives it, one of PERSON_CITIES; null when online, and only then (T166). */
     city: z.enum(PERSON_CITIES).nullable(),
     /** An area such as "Baner, Pune"; no street address. */
-    venue: z.string().min(1).max(EVENT_VENUE_MAX).nullable(),
+    venue: eventText(1, EVENT_VENUE_MAX).nullable(),
     /** "Free", "₹200", "₹1,500 student pass". Never a payment link. */
-    cost: z.string().max(EVENT_COST_MAX),
+    cost: eventText(0, EVENT_COST_MAX),
     status: eventStatus,
     checkedAt: z.date().nullable(),
     createdAt: z.date(),
     updatedAt: z.date(),
   })
   .refine((e) => e.endsAt.getTime() >= e.startsAt.getTime(), { message: "ends before it starts", path: ["endsAt"] })
-  .refine((e) => !e.online || e.city === null, { message: "an online event has no city", path: ["city"] });
+  .refine((e) => !e.online || e.city === null, { message: "an online event has no city", path: ["city"] })
+  .refine((e) => e.online || e.city !== null, { message: "an in-person event names its city", path: ["city"] });
 export type EventRow = z.infer<typeof eventRow>;
 
 /** The topics found in one event: each once, at most EVENT_TOPICS_MAX. */
@@ -100,15 +117,15 @@ export type EventTag = z.infer<typeof eventTag>;
 export const eventCard = z
   .strictObject({
     id: z.uuid(),
-    title: z.string().min(1).max(EVENT_TITLE_MAX),
-    organiser: z.string().min(1).max(EVENT_ORGANISER_MAX),
+    title: eventText(1, EVENT_TITLE_MAX),
+    organiser: eventText(1, EVENT_ORGANISER_MAX),
     kind: eventKind,
     startsAt: z.iso.datetime(),
     endsAt: z.iso.datetime(),
     online: z.boolean(),
     city: z.enum(PERSON_CITIES).nullable(),
-    venue: z.string().min(1).max(EVENT_VENUE_MAX).nullable(),
-    cost: z.string().max(EVENT_COST_MAX),
+    venue: eventText(1, EVENT_VENUE_MAX).nullable(),
+    cost: eventText(0, EVENT_COST_MAX),
     sourceUrl: https,
     /** Why it shows: at least one goal or interest it matches. */
     tags: z.array(eventTag).min(1).max(EVENT_TAGS_MAX),
@@ -148,6 +165,17 @@ export const timetableView = z
   .refine((v) => v.groups.reduce((n, g) => n + g.events.length, 0) <= TIMETABLE_EVENTS_MAX, { message: "too many events", path: ["groups"] })
   .refine((v) => new Set(v.groups.map((g) => g.key)).size === v.groups.length, { message: "a group twice", path: ["groups"] });
 export type TimetableView = z.infer<typeof timetableView>;
+
+/** "Save" ("saved"), "I'm going" ("going"), or neither (null takes the person's row away). The store checks the event is live. */
+export const eventRsvpInput = z.strictObject({ eventId: z.uuid(), state: eventRsvpState.nullable() });
+export type EventRsvpInput = z.infer<typeof eventRsvpInput>;
+
+/** "Why you see these": the names of the person's open goals, in goal order, and their interests as typed on Me. */
+export const timetableWhy = z.strictObject({
+  goals: z.array(z.string().min(1).max(160)).max(200),
+  interests: z.array(z.string().min(1).max(INTEREST_MAX)).max(INTERESTS_MAX),
+});
+export type TimetableWhy = z.infer<typeof timetableWhy>;
 
 /** The three Timetable choices in `user_settings`. "Show outside 25 km" sets 100 for one visit; Settings saves it. */
 export const timetableSettings = z.strictObject({
@@ -213,12 +241,12 @@ export const cityCentresFile = z
 
 /** One row of `eventRsvps` in Download your data (from export version 36): the person's own saves and "I'm going". */
 export const eventRsvpExport = z.strictObject({
-  title: z.string(),
-  organiser: z.string(),
+  title: z.string().min(1).max(EVENT_TITLE_MAX),
+  organiser: z.string().min(1).max(EVENT_ORGANISER_MAX),
   startsAt: z.date(),
-  sourceUrl: z.string(),
+  sourceUrl: https,
   state: eventRsvpState,
-  goalSkillId: z.string().nullable(),
+  goalSkillId: topicKey.nullable(),
   createdAt: z.date(),
 });
 export type EventRsvpExport = z.infer<typeof eventRsvpExport>;

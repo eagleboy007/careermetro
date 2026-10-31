@@ -7,6 +7,11 @@
  */
 import {
   BUILDER_ROWS_MAX,
+  EVENT_COST_MAX,
+  EVENT_KINDS,
+  EVENT_ORGANISER_MAX,
+  EVENT_TITLE_MAX,
+  EVENT_VENUE_MAX,
   BUILDER_TEXT_MAX,
   BUILDER_TOOLS_MAX,
   HEADLINE_MAX,
@@ -69,6 +74,8 @@ export const SIZES = {
   choiceGoals: 20,
   practiceRatings: 620,
   mockSessions: 50,
+  /** Timetable events on the member's goals: past the 200 a view keeps (T165), so the cap and Show more both show. */
+  events: 230,
 } as const;
 
 const LONG_WORD = "Supercalifragilisticexpialidociousantidisestablishmentarianismfloccinaucinihilipil".slice(0, 80);
@@ -195,6 +202,25 @@ export function maxJob(i: number) {
     city: v(i + 2, MY_JOB_CITY_MAX),
     url: `https://example.com/jobs/${i}/${textOf("unbroken", 280)}`,
     note: i === 1 ? MANY_LINES_NOTE : v(i, MY_JOB_NOTE_MAX),
+  };
+}
+
+/**
+ * One Timetable event's text at the caps: a 160-character title, a 120-character organiser and area, a 60-character
+ * cost and a long link. Every third is online (no city or area); the rest are in Pune, the member's city.
+ */
+export function maxEvent(i: number) {
+  const online = i % 3 === 0;
+  return {
+    sourceKey: `max-data-event-${i}`,
+    sourceUrl: `https://example.com/events/${i}/${textOf("unbroken", 300)}`,
+    title: v(i, EVENT_TITLE_MAX),
+    organiser: v(i + 1, EVENT_ORGANISER_MAX),
+    kind: online ? ("online" as const) : EVENT_KINDS[i % 3],
+    online,
+    city: online ? null : ("Pune" as const),
+    venue: online ? null : v(i + 2, EVENT_VENUE_MAX),
+    cost: v(i + 3, EVENT_COST_MAX),
   };
 }
 

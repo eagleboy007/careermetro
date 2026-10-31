@@ -25,7 +25,7 @@ describe("proxy", () => {
   it("answers 404 for signed-in screens in production without the preview flag, and refreshes no session", async () => {
     vi.stubEnv("VERCEL_ENV", "production");
     vi.stubEnv("TODAY_PREVIEW", "");
-    for (const p of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/library", "/builder", "/elite", "/mock", "/corporate", "/corporate/jobs/board", "/grievances", "/privacy", "/terms", "/me", "/settings", "/u/priya-n", "/account/restore", "/account/deleted", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
+    for (const p of ["/today", "/map", "/match", "/practice", "/market", "/departures", "/arrivals", "/inbox", "/network", "/library", "/timetable", "/builder", "/elite", "/mock", "/corporate", "/corporate/jobs/board", "/grievances", "/privacy", "/terms", "/me", "/settings", "/u/priya-n", "/account/restore", "/account/deleted", "/sign-in", "/sign-up/finish", "/auth/callback"]) expect((await proxy(req(p))).status).toBe(404);
     expect((await proxy(req("/start"))).headers.get("x-middleware-next")).toBe("1");
     expect(refresh).not.toHaveBeenCalled();
   });
@@ -41,6 +41,7 @@ describe("proxy", () => {
     expect((await proxy(req("/elite"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Felite");
     expect((await proxy(req("/mock"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fmock");
     expect((await proxy(req("/library"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Flibrary");
+    expect((await proxy(req("/timetable"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Ftimetable");
     expect((await proxy(req("/settings"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fsettings");
     expect((await proxy(req("/corporate/messages"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fcorporate%2Fmessages");
     expect((await proxy(req("/u/priya-n"))).headers.get("location")).toBe("https://careermetro.test/sign-in?next=%2Fu%2Fpriya-n");
