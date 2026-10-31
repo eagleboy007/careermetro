@@ -26795,5 +26795,203 @@
     ],
     "minutes": 20,
     "free": true
+  },
+  {
+    "title": "eCourts Services app: help and user guide (cause list, case status)",
+    "url": "https://services.ecourts.gov.in/App/apphelp.html",
+    "provider": "eCourts (e-Committee, Supreme Court of India)",
+    "kind": "docs",
+    "skillIds": [
+      "cause-list-tracking"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "eCourts help videos",
+    "url": "https://ecourts.gov.in/ecourts_home/static/helpvideos.php",
+    "provider": "eCourts (e-Committee, Supreme Court of India)",
+    "kind": "video",
+    "skillIds": [
+      "cause-list-tracking"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "eCourts Services mobile app and user manuals",
+    "url": "https://ecommitteesci.gov.in/service/ecourts-services-mobile-application/",
+    "provider": "e-Committee, Supreme Court of India",
+    "kind": "docs",
+    "skillIds": [
+      "cause-list-tracking"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Supreme Court of India: cause lists (daily and advance lists)",
+    "url": "https://www.main.sci.gov.in/causelist",
+    "provider": "Supreme Court of India",
+    "kind": "practice",
+    "skillIds": [
+      "cause-list-tracking"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Bahmni wiki: open-source hospital information system (user and implementer guides)",
+    "url": "https://bahmni.atlassian.net/wiki/spaces/BAH/overview",
+    "provider": "Bahmni",
+    "kind": "docs",
+    "skillIds": [
+      "his-software"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Bahmni video catalogue: registration, OPD, investigations, admit/discharge",
+    "url": "https://bahmni.atlassian.net/wiki/x/2gAwAg",
+    "provider": "Bahmni",
+    "kind": "video",
+    "skillIds": [
+      "his-software"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Bahmni online demo (try the EMR with synthetic data)",
+    "url": "https://bahmni.org/demo",
+    "provider": "Bahmni",
+    "kind": "practice",
+    "skillIds": [
+      "his-software"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "A brief guide on Ayushman Bharat Digital Mission (ABDM) and its building blocks",
+    "url": "https://abdm.gov.in/strapicms/uploads/ABDM_Building_Blocks_v8_3_External_Version_eabbc5c0f3_4_a96f40c645_5716a684de_b344369144.pdf",
+    "provider": "National Health Authority (ABDM)",
+    "kind": "docs",
+    "skillIds": [
+      "his-software"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Step-by-step guide to room service delivery in hotels",
+    "url": "https://hospitality.institute/bha303/room-service-delivery-guide-hotels/",
+    "provider": "Hospitality Institute",
+    "kind": "docs",
+    "skillIds": [
+      "fnb-service-operations"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "SITHFAB026 Provide room service (unit of competency)",
+    "url": "https://training.gov.au/training/details/SITHFAB026",
+    "provider": "training.gov.au (Australian Government)",
+    "kind": "docs",
+    "skillIds": [
+      "fnb-service-operations"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Menu planning: pairing wines with international and Indian regional cuisines",
+    "url": "https://hospitality.institute/bha204/menu-planning-wines-international-indian-cuisines/",
+    "provider": "Hospitality Institute",
+    "kind": "docs",
+    "skillIds": [
+      "menu-knowledge-food-pairing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "SITHFAB037 Provide advice on food and beverage matching (unit of competency)",
+    "url": "https://training.gov.au/training/details/SITHFAB037/unitdetails",
+    "provider": "training.gov.au (Australian Government)",
+    "kind": "docs",
+    "skillIds": [
+      "menu-knowledge-food-pairing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Essential linen room operations: activities, exchange procedures and storage",
+    "url": "https://hospitality.institute/bha205/linen-room-operations/",
+    "provider": "Hospitality Institute",
+    "kind": "docs",
+    "skillIds": [
+      "linen-inventory-control"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Mastering par stock levels and stock taking in hotel housekeeping",
+    "url": "https://hospitality.institute/bha506/mastering-par-stock-levels-hotel-housekeeping/",
+    "provider": "Hospitality Institute",
+    "kind": "docs",
+    "skillIds": [
+      "linen-inventory-control"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to create an effective public area cleaning schedule",
+    "url": "https://hospitality.institute/BHA205/create-effective-public-area-cleaning-schedule",
+    "provider": "Hospitality Institute",
+    "kind": "docs",
+    "skillIds": [
+      "public-area-cleaning"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "SITHACS009 Clean premises and equipment (unit of competency)",
+    "url": "https://training.gov.au/training/details/SITHACS009",
+    "provider": "training.gov.au (Australian Government)",
+    "kind": "docs",
+    "skillIds": [
+      "public-area-cleaning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Lost and found procedures in housekeeping: best practices",
+    "url": "https://hospitality.institute/bha205/lost-found-procedures-housekeeping/",
+    "provider": "Hospitality Institute",
+    "kind": "docs",
+    "skillIds": [
+      "lost-and-found-handling"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "SOP: Housekeeping lost and found procedures",
+    "url": "https://setupmyhotel.com/train-my-hotel-staff/how-to-define-sop-in-hotels/housekeeping-sop/254-lost-and-found.html",
+    "provider": "Setup My Hotel",
+    "kind": "docs",
+    "skillIds": [
+      "lost-and-found-handling"
+    ],
+    "minutes": 10,
+    "free": true
   }
 ]
