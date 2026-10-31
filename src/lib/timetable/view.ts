@@ -63,6 +63,9 @@ export function eventPlace(card: Pick<EventCard, "online" | "city" | "venue" | "
 
 export const kindLabel = (card: Pick<EventCard, "kind">) => EVENT_KIND_LABELS[card.kind];
 
+/** A goal tag's name without its "Goal: " lead, for "Add it as a prep task for your SIEM goal?". */
+export const goalTagName = (label: string) => label.replace(/^Goal:\s*/, "");
+
 /** What the filter row has picked. `far` is "Show outside 25 km" for this visit; `radiusKm` is the saved radius. */
 export type TimetableShown = { filter: TimetableFilter; online: boolean; far: boolean; radiusKm: number };
 
@@ -90,7 +93,12 @@ export function shownGroups(groups: readonly TimetableGroup[], shown: TimetableS
         outside++;
         continue;
       }
-      events.push(tags.length === card.tags.length ? card : { ...card, tags });
+      if (tags.length === card.tags.length) events.push(card);
+      else {
+        // My interests hides the goal tags, and with them the prep task's line, so the card stays one the schema takes.
+        const { prepGoal, ...rest } = card;
+        events.push(prepGoal && tags.some((t) => t.kind === "goal" && t.topic === prepGoal) ? { ...rest, tags, prepGoal } : { ...rest, tags });
+      }
     }
     total += events.length;
     if (events.length) out.push({ ...g, events });

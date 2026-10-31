@@ -44,6 +44,30 @@ export const exampleRide: Ride = {
   weekTasksTotal: 5,
 };
 
+/**
+ * The ride on the day of an event the person made a prep task (Timetable PR 3): the optional event task first, with its
+ * organiser's page, then a learn task and the signal check. The week's ring still counts learn tasks only.
+ */
+export const exampleEventDayRide: Ride = {
+  ...exampleRide,
+  tasks: [
+    {
+      id: "event:6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f",
+      title: "Go to SQL for analysts: window functions night",
+      detail: "Optional prep for SQL window functions · 6 to 8 pm IST",
+      minutes: 120,
+      done: false,
+      locked: false,
+      signal: false,
+      href: null,
+      eventUrl: "https://events.example.org/pune-data/window-functions",
+    },
+    exampleRide.tasks[0],
+    exampleRide.tasks[2],
+  ],
+  weekTasksTotal: 4,
+};
+
 export const exampleWeek: RideWeek = [
   { label: "M", rode: true, today: false },
   { label: "T", rode: true, today: false },

@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { departure, eventTeaser, goalsSummary, onYourLine, ride, rideWeek, signalCheck, signalLive, streak } from "@/lib/schemas";
 import { departureTone, departureWhen, greetingAt, streakLabel } from "./board";
-import { exampleDepartures, exampleEvents, exampleGoals, exampleOnYourLine, exampleRide, exampleSignalCheck, exampleStreak, exampleWeek } from "./fixtures";
+import { exampleDepartures, exampleEventDayRide, exampleEvents, exampleGoals, exampleOnYourLine, exampleRide, exampleSignalCheck, exampleStreak, exampleWeek } from "./fixtures";
 
 describe("Today fixtures", () => {
   it("match the Today schemas", () => {
     expect(() => ride.parse(exampleRide)).not.toThrow();
+    expect(() => ride.parse(exampleEventDayRide)).not.toThrow();
     expect(() => rideWeek.parse(exampleWeek)).not.toThrow();
     expect(() => streak.parse(exampleStreak)).not.toThrow();
     expect(() => goalsSummary.parse(exampleGoals)).not.toThrow();

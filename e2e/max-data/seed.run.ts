@@ -335,10 +335,12 @@ async function seed() {
     eventRows.flatMap((e) => eventGoals.map((topic) => ({ eventId: e.id, kind: "skill" as const, topic }))),
     (rows) => db.insert(schema.eventTopics).values(rows),
   );
-  const marks: { userId: string; eventId: string; state: (typeof EVENT_RSVP_STATES)[number] }[] = [];
+  // Going rows are prep tasks for the first goal (Timetable PR 3), so Today's ride shows one at its caps on event 50's day.
+  const prepGoal = goals[0]?.skillId ?? null;
+  const marks: { userId: string; eventId: string; state: (typeof EVENT_RSVP_STATES)[number]; goalSkillId?: string | null }[] = [];
   eventRows.forEach((e, i) => {
     if (i % 4 === 1) marks.push({ userId, eventId: e.id, state: "saved" });
-    if (i % 4 === 2) marks.push({ userId, eventId: e.id, state: "going" });
+    if (i % 4 === 2) marks.push({ userId, eventId: e.id, state: "going", goalSkillId: prepGoal });
   });
   await db.insert(schema.eventRsvps).values(marks);
 

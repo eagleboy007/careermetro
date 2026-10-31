@@ -6,7 +6,7 @@ import { skills } from "@/content";
 import * as schema from "@/db/schema";
 import { EXPORT_VERSION, exportAccountData } from "@/lib/account/export";
 import { eventRsvpExport } from "@/lib/schemas";
-import { clearEndedEvents, clearOldEventsDigests, exportTimetable, setEventRsvp, timetableForUser, timetablePersonFor, timetableTeaserFor } from "./store";
+import { clearEndedEvents, clearOldEventsDigests, exportTimetable, prepEventsOn, setEventPrep, setEventRsvp, timetableForUser, timetablePersonFor, timetableTeaserFor } from "./store";
 
 vi.mock("server-only", () => ({}));
 
@@ -216,6 +216,87 @@ describe.skipIf(!db)("Timetable rows (database)", () => {
     expect(await setEventRsvp(me, { eventId: "00000000-0000-4000-8000-000000000000", state: "going" }, d())).toEqual({ ok: false, error: "not_found" });
     expect(await setEventRsvp(me, { eventId: live, state: "maybe" }, d())).toEqual({ ok: false, error: "invalid" });
     expect(await rows()).toEqual([]);
+  });
+
+  it("makes I'm going a prep task for an open goal the event lists, and takes it off again", async () => {
+    const me = await person();
+    await db!.insert(schema.userGoals).values([
+      { userId: me, skillId: "siem", position: 0 },
+      { userId: me, skillId: "python", position: 1, status: "skipped" },
+    ]);
+    const live = await event();
+    const cancelled = await event({ status: "cancelled" });
+    await db!.insert(schema.eventTopics).values([
+      { eventId: live, kind: "skill", topic: "siem" },
+      { eventId: live, kind: "skill", topic: "python" },
+      { eventId: live, kind: "skill", topic: "aws" },
+      { eventId: cancelled, kind: "skill", topic: "siem" },
+    ]);
+    const goal = async () => (await db!.select({ state: schema.eventRsvps.state, goal: schema.eventRsvps.goalSkillId }).from(schema.eventRsvps).where(eq(schema.eventRsvps.userId, me)))[0] ?? null;
+    // Not going yet: nothing to make a prep task of.
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: "siem" }, d())).toEqual({ ok: false, error: "invalid" });
+    await setEventRsvp(me, { eventId: live, state: "saved" }, d());
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: "siem" }, d())).toEqual({ ok: false, error: "invalid" });
+    expect(await setEventRsvp(me, { eventId: live, state: "going" }, d())).toEqual({ ok: true });
+    // A skipped goal, a skill that is no goal of theirs, and a goal the event doesn't list are refused.
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: "python" }, d())).toEqual({ ok: false, error: "invalid" });
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: "aws" }, d())).toEqual({ ok: false, error: "invalid" });
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: "excel" }, d())).toEqual({ ok: false, error: "invalid" });
+    expect(await goal()).toEqual({ state: "going", goal: null });
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: "siem" }, d())).toEqual({ ok: true });
+    expect(await goal()).toEqual({ state: "going", goal: "siem" });
+    // Marking going again keeps it; going back to Save clears it.
+    expect(await setEventRsvp(me, { eventId: live, state: "going" }, d())).toEqual({ ok: true });
+    expect(await goal()).toEqual({ state: "going", goal: "siem" });
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: null }, d())).toEqual({ ok: true });
+    expect(await goal()).toEqual({ state: "going", goal: null });
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: "siem" }, d())).toEqual({ ok: true });
+    await setEventRsvp(me, { eventId: live, state: "saved" }, d());
+    expect(await goal()).toEqual({ state: "saved", goal: null });
+    // Only a live event; a bad input is refused.
+    await db!.insert(schema.eventRsvps).values({ userId: me, eventId: cancelled, state: "going" });
+    expect(await setEventPrep(me, { eventId: cancelled, goalSkillId: "siem" }, d())).toEqual({ ok: false, error: "not_found" });
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: "Not A Skill" }, d())).toEqual({ ok: false, error: "invalid" });
+    // Someone else's going row is never touched.
+    const other = await person();
+    await db!.insert(schema.userGoals).values({ userId: other, skillId: "siem", position: 0 });
+    await db!.insert(schema.eventRsvps).values({ userId: other, eventId: live, state: "going" });
+    expect(await setEventPrep(me, { eventId: live, goalSkillId: "siem" }, d())).toEqual({ ok: false, error: "invalid" });
+    const [theirs] = await db!.select({ goal: schema.eventRsvps.goalSkillId }).from(schema.eventRsvps).where(eq(schema.eventRsvps.userId, other));
+    expect(theirs.goal).toBeNull();
+  });
+
+  it("gives the ride the day's live prep events, and the timetable card its prep goal", async () => {
+    const me = await person();
+    await db!.update(schema.users).set({ city: "Pune" }).where(eq(schema.users.id, me));
+    await db!.insert(schema.userGoals).values({ userId: me, skillId: "siem", position: 0 });
+    // 6 pm IST two days from now, and the same day's late-night and next-morning events around it.
+    const day = new Date(Date.now() + 2 * 86_400_000).toISOString().slice(0, 10);
+    const ist = (time: string) => new Date(Date.parse(`${day}T${time}:00+05:30`));
+    const evening = await event({ startsAt: ist("18:00"), endsAt: ist("20:00") });
+    const late = await event({ startsAt: ist("23:30"), endsAt: ist("23:59"), title: "Late SIEM night" });
+    const next = await event({ startsAt: new Date(ist("00:30").getTime() + 86_400_000), endsAt: new Date(ist("02:00").getTime() + 86_400_000) });
+    const cancelled = await event({ startsAt: ist("10:00"), endsAt: ist("11:00"), status: "cancelled" });
+    const saved = await event({ startsAt: ist("12:00"), endsAt: ist("13:00") });
+    const ids = [evening, late, next, cancelled, saved];
+    await db!.insert(schema.eventTopics).values(ids.map((eventId) => ({ eventId, kind: "skill" as const, topic: "siem" })));
+    await db!.insert(schema.eventRsvps).values([
+      { userId: me, eventId: evening, state: "going", goalSkillId: "siem" },
+      { userId: me, eventId: late, state: "going", goalSkillId: null },
+      { userId: me, eventId: next, state: "going", goalSkillId: "siem" },
+      { userId: me, eventId: cancelled, state: "going", goalSkillId: "siem" },
+      { userId: me, eventId: saved, state: "saved" },
+    ]);
+    const prep = await prepEventsOn(me, day, d());
+    expect(prep.map((p) => [p.eventId, p.goalSkillId, p.title])).toEqual([[evening, "siem", "Hunting with a SIEM"]]);
+    expect(prep[0]).toMatchObject({ organiser: "Example Security Circle", sourceUrl: "https://events.example.org/pune/siem", startsAt: ist("18:00"), endsAt: ist("20:00") });
+    expect(await prepEventsOn(await person(), day, d())).toEqual([]);
+
+    const { view } = await timetableForUser(me, new Date(), d());
+    const cards = new Map(view.groups.flatMap((g) => g.events).map((c) => [c.id, c]));
+    expect(cards.get(evening)?.prepGoal).toBe("siem");
+    expect(cards.get(late)?.prepGoal).toBeUndefined();
+    expect(cards.get(saved)?.prepGoal).toBeUndefined();
   });
 
   it("goes with the account, and an event takes its topics and saves with it", async () => {

@@ -6,6 +6,8 @@ import {
   attachAdded,
   buildGoalsSummary,
   buildRide,
+  eventMinutes,
+  eventTaskId,
   goalForAdded,
   parseAddedTask,
   rideParts,
@@ -13,8 +15,10 @@ import {
   signalGoals,
   signalTaskId,
   withSignalTask,
+  type RideEvent,
   type RideGoal,
   type RidePath,
+  type RidePrep,
 } from "./build";
 
 const res = (id: string, minutes = 30) => ({ id, title: `Course ${id}`, provider: "Kaggle Learn", kind: "course", minutes });
@@ -336,5 +340,121 @@ describe("signal check goals and task", () => {
     expect(rideWithSignal(r, "2026-10-20", false)).toMatchObject({ weekTasksTotal: 2, tasks: tasks });
     const arrived = arrivedRide(4);
     expect(withSignalTask(arrived.tasks, "2026-10-20", false)).toEqual(arrived.tasks);
+  });
+});
+
+describe("an event prep task on the ride (Timetable PR 3)", () => {
+  // Synthetic events only: the organiser is made up. 12:30 UTC is 6 pm IST on 7 November.
+  const EVENT_ID = "6c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f";
+  const DAY = "2026-11-07";
+  const ev = (p: Partial<RideEvent> = {}): RideEvent => ({
+    eventId: EVENT_ID,
+    title: "Hunting with a SIEM",
+    organiser: "Example Security Circle",
+    startsAt: new Date("2026-11-07T12:30:00Z"),
+    endsAt: new Date("2026-11-07T14:30:00Z"),
+    sourceUrl: "https://events.example.org/pune/siem",
+    goalSkillId: "siem",
+    ...p,
+  });
+  const siem = goal({ goalId: "g1", skillId: "siem", name: "SIEM" });
+  const withPrep = (goals: RideGoal[], prep: RidePrep, d: { before?: string[]; today?: string[]; week?: string[] } = {}) =>
+    buildRide({ goals, path: BUILT, doneBefore: new Set(d.before ?? []), doneToday: new Set(d.today ?? []), doneThisWeek: new Set(d.week ?? []), prep });
+  const hasEvent = (goals: RideGoal[], prep: RidePrep) => withPrep(goals, prep)!.tasks.some((t) => t.eventUrl);
+
+  it("on the event's day, shows one optional task first, with its source link and the event's length, and nothing else changes", () => {
+    const r = withPrep([siem, goal({ goalId: "g2" })], { day: DAY, events: [ev()] })!;
+    expect(rideSchema.safeParse(r).error).toBeUndefined();
+    expect(r.tasks[0]).toEqual({
+      id: eventTaskId(EVENT_ID),
+      title: "Go to Hunting with a SIEM",
+      detail: "Optional prep for SIEM · 6 to 8 pm IST",
+      minutes: 120,
+      done: false,
+      locked: false,
+      signal: false,
+      href: null,
+      eventUrl: "https://events.example.org/pune/siem",
+    });
+    // The ride still shows three tasks; the pitstop, the goal and the week's count of learn tasks stay as they were.
+    expect(r.tasks.map((t) => t.id)).toEqual([eventTaskId(EVENT_ID), "g1:r:g1-1", "g1:r:g1-2"]);
+    expect(r).toMatchObject({ pitstop: 1, goalName: "SIEM", weekTasksDone: 0, weekTasksTotal: 2 });
+    expect(r.prove).toMatchObject({ pitstop: 2, goalId: "g1" });
+  });
+
+  it("shows on that India day only", () => {
+    expect(hasEvent([siem], { day: "2026-11-06", events: [ev()] })).toBe(false);
+    expect(hasEvent([siem], { day: "2026-11-08", events: [ev()] })).toBe(false);
+    // 23:00 IST on the 7th is 17:30 UTC; 00:30 IST on the 8th is 19:00 UTC on the 7th, but the 8th in India.
+    expect(hasEvent([siem], { day: DAY, events: [ev({ startsAt: new Date("2026-11-07T17:30:00Z"), endsAt: new Date("2026-11-07T18:00:00Z") })] })).toBe(true);
+    expect(hasEvent([siem], { day: DAY, events: [ev({ startsAt: new Date("2026-11-07T19:00:00Z"), endsAt: new Date("2026-11-07T20:00:00Z") })] })).toBe(false);
+  });
+
+  it("is for an open goal only: never a proved, skipped or unknown one; a swapped goal's skill and a Your choice goal count", () => {
+    expect(hasEvent([{ ...siem, proved: true }, goal({ goalId: "g2" })], { day: DAY, events: [ev()] })).toBe(false);
+    expect(hasEvent([{ ...siem, skipped: true }, goal({ goalId: "g2" })], { day: DAY, events: [ev()] })).toBe(false);
+    expect(hasEvent([siem], { day: DAY, events: [ev({ goalSkillId: "python" })] })).toBe(false);
+    expect(hasEvent([goal({ goalId: "g3", skillId: "splunk", learnSkillId: "siem" })], { day: DAY, events: [ev()] })).toBe(true);
+    const choice = (p: Partial<RideGoal> = {}) => goal({ goalId: "c1", skillId: "siem", choice: { company: null }, ...p });
+    expect(hasEvent([goal({ goalId: "g2" })], { day: DAY, events: [ev()], chosen: [choice()] })).toBe(true);
+    expect(hasEvent([goal({ goalId: "g2" })], { day: DAY, events: [ev()], chosen: [choice({ proved: true })] })).toBe(false);
+  });
+
+  it("names the goal it is for, even when another goal's pitstop is today's", () => {
+    const r = withPrep([goal({ goalId: "g0", name: "SQL" }), siem], { day: DAY, events: [ev()] })!;
+    expect(r.goalName).toBe("SQL");
+    expect(r.tasks[0]).toMatchObject({ id: eventTaskId(EVENT_ID), detail: "Optional prep for SIEM · 6 to 8 pm IST" });
+  });
+
+  it("can be ticked and taken back today, but never moves the train, the week's ring or the pitstop", () => {
+    const id = eventTaskId(EVENT_ID);
+    const before = withPrep([siem], { day: DAY, events: [ev()] })!;
+    const ticked = withPrep([siem], { day: DAY, events: [ev()] }, { today: [id], week: [id] })!;
+    expect(ticked.tasks[0]).toMatchObject({ id, done: true, locked: false });
+    expect(ticked).toMatchObject({ pitstop: before.pitstop, weekTasksDone: before.weekTasksDone, weekTasksTotal: before.weekTasksTotal, summary: before.summary });
+    // Every learn task done: the goal waits for proof, and the event task is still there to tick.
+    const learned = withPrep([siem], { day: DAY, events: [ev()] }, { before: ["g1:r:g1-1", "g1:r:g1-2", "g1:practice"] })!;
+    expect(learned.summary).toBe("Your tasks for SIEM are done. Prove it (Pitstop 2) to fill the gap and move the train.");
+    expect(learned.tasks[0]).toMatchObject({ id, done: false, locked: false });
+    expect(learned.tasks.slice(1).every((t) => t.done && t.locked)).toBe(true);
+    expect(rideSchema.safeParse(learned).error).toBeUndefined();
+  });
+
+  it("shows one event a day, the earliest, and keeps it ahead of the signal task", () => {
+    const later = ev({ eventId: "7d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a", title: "Detection rules night", startsAt: new Date("2026-11-07T14:00:00Z"), endsAt: new Date("2026-11-07T15:00:00Z") });
+    const r = withPrep([siem], { day: DAY, events: [later, ev({ startsAt: new Date("2026-11-07T04:30:00Z"), endsAt: new Date("2026-11-07T06:30:00Z") })] })!;
+    expect(r.tasks.filter((t) => t.eventUrl).map((t) => t.id)).toEqual([eventTaskId(EVENT_ID)]);
+    const day = rideWithSignal(r, DAY, false);
+    expect(day.tasks.map((t) => t.id)).toEqual([eventTaskId(EVENT_ID), "g1:r:g1-1", signalTaskId(DAY)]);
+    expect(day.weekTasksTotal).toBe(1);
+    expect(rideSchema.safeParse(day).error).toBeUndefined();
+  });
+
+  it("takes its minutes from the event's length, capped at 240, and an hour when no end is given", () => {
+    const at = (h: number) => new Date(Date.parse("2026-11-07T04:30:00Z") + h * 3600_000);
+    expect(eventMinutes(at(0), at(1.5))).toBe(90);
+    expect(eventMinutes(at(0), at(8))).toBe(240);
+    expect(eventMinutes(at(0), at(30))).toBe(240);
+    expect(eventMinutes(at(0), at(0))).toBe(60);
+    expect(eventMinutes(at(0), new Date(at(0).getTime() + 20_000))).toBe(1);
+  });
+
+  it("leaves out an event whose link isn't https, and clips a long title", () => {
+    expect(hasEvent([siem], { day: DAY, events: [ev({ sourceUrl: "http://events.example.org/x" })] })).toBe(false);
+    const long = withPrep([siem], { day: DAY, events: [ev({ title: "x".repeat(160) })] })!;
+    expect(long.tasks[0].title.length).toBeLessThanOrEqual(120);
+    expect(rideSchema.safeParse(long).error).toBeUndefined();
+  });
+
+  it("adds nothing to a ride where every goal is proved", () => {
+    const r = withPrep([{ ...siem, proved: true }], { day: DAY, events: [ev()] })!;
+    expect(r.tasks.map((t) => t.id)).toEqual(["all-proved"]);
+  });
+
+  it("refuses a second event task, or one that is locked, in the ride schema", () => {
+    const r = withPrep([siem], { day: DAY, events: [ev()] })!;
+    expect(rideSchema.safeParse({ ...r, tasks: [r.tasks[0], { ...r.tasks[0], id: "event:other" }] }).success).toBe(false);
+    expect(rideSchema.safeParse({ ...r, tasks: [{ ...r.tasks[0], locked: true }] }).success).toBe(false);
+    expect(rideSchema.safeParse({ ...r, tasks: [{ ...r.tasks[0], eventUrl: "javascript:alert(1)" }] }).success).toBe(false);
   });
 });

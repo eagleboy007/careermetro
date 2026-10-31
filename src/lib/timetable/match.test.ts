@@ -223,6 +223,19 @@ describe("timetableFor", () => {
     expect(card.rsvp).toBe("going");
   });
 
+  it("names the prep task's goal only while the person is going and the goal is still a tag", () => {
+    const prepOf = (over: Partial<TimetableEvent>, p: Partial<TimetablePerson> = {}, filter?: "goals" | "interests") =>
+      allCards(timetableFor([event(over)], person(p), NOW, filter))[0]?.prepGoal;
+    expect(prepOf({ rsvp: "going", prep: "siem" })).toBe("siem");
+    expect(prepOf({ rsvp: "going", prep: null })).toBeUndefined();
+    expect(prepOf({ rsvp: "saved", prep: "siem" })).toBeUndefined();
+    // The goal was proved or skipped since: the event still shows for an interest, without the prep task.
+    expect(prepOf({ rsvp: "going", prep: "siem", topics: [{ kind: "skill", topic: "siem" }, { kind: "interest", topic: "ai" }] }, { goalSkillIds: [], interestKeys: ["ai"] })).toBeUndefined();
+    expect(prepOf({ rsvp: "going", prep: "siem", topics: [{ kind: "skill", topic: "siem" }, { kind: "interest", topic: "ai" }] }, { interestKeys: ["ai"] }, "interests")).toBeUndefined();
+    const view = timetableFor([event({ rsvp: "going", prep: "siem" })], person(), NOW);
+    expect(timetableView.safeParse(view).error).toBeUndefined();
+  });
+
   it("returns an empty timetable when nothing matches", () => {
     const view = timetableFor([event()], person({ goalSkillIds: [], interestKeys: ["cooking"] }), NOW);
     expect(view.groups).toEqual([]);
