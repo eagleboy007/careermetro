@@ -11,7 +11,8 @@ import sampleParsed from "../../../fixtures/sample-resume/priya-sharma.parsed.js
 import { SHOWN_GAPS } from "./analysis";
 import type { ExplainClient } from "./explain";
 import { MATCHER_VERSION } from "./match";
-import { GAP_LIMITS, getGapsForOwner, rateAnalysis } from "./store";
+import { currentAnalysis, previousAnalysis } from "./current";
+import { GAP_LIMITS, getGapsForOwner, keepChoices, rateAnalysis } from "./store";
 
 // Runs against a real Postgres with migrations applied, like ingest.test.ts.
 const url = process.env.TEST_DATABASE_URL;
@@ -364,5 +365,62 @@ describe.skipIf(!db)("gap analyses (database)", () => {
     if (!r.ok) throw new Error(r.reason);
     await db!.update(schema.resumes).set({ createdAt: new Date(Date.now() - 25 * 3600_000) }).where(eq(schema.resumes.id, resumeId));
     expect(await rateAnalysis(r.analysisId, { sessionId: session }, 3, db!)).toBe(false);
+  });
+
+  // Change of destination (docs/plans/change-destination-plan.md): opening a role's Gaps page makes it the destination,
+  // also when the person comes back to a role they picked before; the role they leave is the earlier one.
+  it("makes a role the person comes back to their destination again, and the one they leave the earlier one", async () => {
+    const [user] = await db!.insert(schema.users).values({ email: `gaps-switch-${Date.now()}@example.test`, name: "Test User" }).returning({ id: schema.users.id });
+    try {
+      const [resume] = await db!.insert(schema.resumes).values({ userId: user.id, mimeType: "text/plain", sizeBytes: 10, status: "parsed" }).returning();
+      await db!.insert(schema.profiles).values({ resumeId: resume.id, version: 1, data: profile, confirmedByUser: true });
+      const owner = { userId: user.id };
+      const other = roleProfiles.find((r) => r.slug === "data-analyst")!;
+      const { client } = explainClient();
+      const a = await getGapsForOwner(resume.id, owner, role, { db: db!, client });
+      const b = await getGapsForOwner(resume.id, owner, other, { db: db!, client });
+      if (!a.ok || !b.ok) throw new Error("no analysis");
+      expect((await currentAnalysis(user.id, db!))?.id).toBe(b.analysisId);
+      expect((await previousAnalysis(user.id, { id: b.analysisId, result: b.analysis }, db!))?.id).toBe(a.analysisId);
+
+      // Back to the first role: the same stored analysis (same id, no model call), marked picked, and current again.
+      const calls = client.beta.messages.create as unknown as { mock: { calls: unknown[] } };
+      const before = calls.mock.calls.length;
+      const back = await getGapsForOwner(resume.id, owner, role, { db: db!, client });
+      if (!back.ok) throw new Error(back.reason);
+      expect(back.analysisId).toBe(a.analysisId);
+      expect(back.analysis.chosenAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(calls.mock.calls.length).toBe(before);
+      expect((await currentAnalysis(user.id, db!))?.id).toBe(a.analysisId);
+      expect((await previousAnalysis(user.id, { id: a.analysisId, result: a.analysis }, db!))?.id).toBe(b.analysisId);
+
+      // Opening the current role again writes nothing.
+      const [row] = await db!.select({ result: schema.gapAnalyses.result }).from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, a.analysisId));
+      await getGapsForOwner(resume.id, owner, role, { db: db!, client });
+      const [same] = await db!.select({ result: schema.gapAnalyses.result }).from(schema.gapAnalyses).where(eq(schema.gapAnalyses.id, a.analysisId));
+      expect(same.result).toEqual(row.result);
+    } finally {
+      await db!.delete(schema.users).where(eq(schema.users.id, user.id));
+    }
+  });
+
+  it("never marks an anonymous visitor's analysis picked", async () => {
+    const { session, resumeId } = await seed();
+    const { client } = explainClient();
+    await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
+    await getGapsForOwner(resumeId, { sessionId: session }, roleProfiles.find((r) => r.slug === "data-analyst")!, { db: db!, client });
+    const back = await getGapsForOwner(resumeId, { sessionId: session }, role, { db: db!, client });
+    expect(back.ok && back.analysis.chosenAt).toBe(undefined);
+  });
+});
+
+describe("keepChoices", () => {
+  const base = { roleSlug: "data-analyst", gaps: [], metSkillIds: [], niceToHave: [], readiness: { headline: "Close", explanation: "Close.", estimatedHours: 0 } };
+  it("carries the track and when the role was last picked onto a rebuilt analysis, and adds nothing else", () => {
+    const stored = { ...base, trackId: "bi", chosenAt: "2026-10-30T10:00:00.000Z" };
+    expect(keepChoices(base, stored)).toEqual({ ...base, trackId: "bi", chosenAt: "2026-10-30T10:00:00.000Z" });
+    expect(keepChoices(base, { ...base, trackId: null })).toEqual({ ...base, trackId: null });
+    expect(keepChoices(base, base)).toEqual(base);
+    expect("chosenAt" in keepChoices(base, base)).toBe(false);
   });
 });

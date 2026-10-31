@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS } from "./constants";
+import { GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS, OWN_PITSTOPS_PER_GOAL } from "./constants";
 import { MAX_GAPS } from "./gap";
 import { goalChoice, notForMeOffer } from "./goals";
 import { nearbyLines } from "./nearby";
@@ -56,6 +56,31 @@ export const mapGoal = z.object({
   pitstopOptions: ownPitstopOptions.optional(),
 });
 
+/**
+ * The person's earlier line after a change of destination (handoff section 14, open decision 5;
+ * docs/plans/change-destination-plan.md): the role they aimed for before, greyed out, with the new line branching off
+ * at Gaps. Nothing on it moves the train or counts toward Match. Goals are kept by the person, not the role, so their
+ * proof, learn ticks and own pitstops wait there for a switch back.
+ */
+export const previousLine = z.object({
+  role: z.object({ slug: z.string().min(1), title: z.string().min(1) }),
+  /** Gaps of the earlier line that are not on the new one, in the earlier line's order. */
+  left: z
+    .array(
+      z.object({
+        skillId: z.string().min(1),
+        name: z.string().min(1).max(80),
+        /** Accepted proof filled it; it counts for every role that asks for the skill. */
+        proved: z.boolean(),
+        /** Pitstops the person added on that goal (FR-58), kept for a switch back. */
+        ownPitstops: z.number().int().min(0).max(OWN_PITSTOPS_PER_GOAL),
+      }),
+    )
+    .max(MAX_GAPS),
+  /** Gaps of the earlier line that are on the new line too: their proof, ticks and own pitstops came along. */
+  shared: z.number().int().min(0).max(MAX_GAPS),
+});
+
 export const mapLine = z.object({
   role: z.object({ slug: z.string().min(1), title: z.string().min(1) }),
   /** Links back to the resume, gaps and path. Null in example data. */
@@ -86,8 +111,11 @@ export const mapLine = z.object({
   nearby: nearbyLines.optional(),
   /** The person has opened a path, so the courses are picked. */
   pathOpened: z.boolean(),
+  /** The earlier line after a change of destination; null or absent when the person never changed it. */
+  previous: previousLine.nullable().optional(),
 });
 
 export type MapItem = z.infer<typeof mapItem>;
 export type MapGoal = z.infer<typeof mapGoal>;
 export type MapLine = z.infer<typeof mapLine>;
+export type PreviousLine = z.infer<typeof previousLine>;

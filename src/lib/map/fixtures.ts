@@ -1,6 +1,7 @@
 import type { LifeLine, LifeMoment, MapGoal, MapLine } from "@/lib/schemas";
 import { exampleNearby } from "@/lib/nearby/fixtures";
 import { otherLines } from "./other-lines";
+import { earlierLine } from "./previous";
 
 // Synthetic example line for the design page and the Map preview, matching the Today example (Pitstop 4 of 9).
 
@@ -73,6 +74,35 @@ export const exampleOwnMapLine: MapLine = {
       };
     if (g.skillId === "python") return { ...g, ...offered, ownPitstops: [{ id: "own-3", title: "Pandas for my MIS reports", course: null }] };
     return { ...g, ...offered };
+  }),
+};
+
+/**
+ * The same line after a change of destination (handoff section 14, open decision 5): the person aimed for Business
+ * Analyst before. Its gaps that the Data Analyst line doesn't need are left on the greyed-out earlier line, with
+ * their proof and own pitstops; the goals both roles ask for came along. Worked out by the real code.
+ */
+export const exampleSwitchedMapLine: MapLine = {
+  ...exampleMapLine,
+  previous: earlierLine({
+    previous: {
+      roleSlug: "business-analyst",
+      gaps: [
+        { skillId: "sql", skillName: "SQL" },
+        { skillId: "requirements-gathering", skillName: "Requirements gathering" },
+        { skillId: "excel", skillName: "Excel" },
+        { skillId: "process-mapping", skillName: "Process mapping" },
+        { skillId: "stakeholder-management", skillName: "Stakeholder management" },
+      ],
+    },
+    title: "Business Analyst",
+    currentRoleSlug: "data-analyst",
+    lineSkillIds: new Set(exampleGoals.map((g) => g.skillId)),
+    goals: new Map([
+      ["requirements-gathering", { id: "g-req", proved: true }],
+      ["process-mapping", { id: "g-proc", proved: false }],
+    ]),
+    ownByGoal: new Map([["g-proc", 1]]),
   }),
 };
 

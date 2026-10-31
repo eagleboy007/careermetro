@@ -159,6 +159,64 @@ describe.skipIf(!db)("mapLineFor (database)", () => {
     expect((await mapLineFor(theirs, db!))?.resumeId).toBe(ids[theirs]);
     expect(await mapLineFor(await user("other"), db!)).toBeNull();
   });
+
+  // Change of destination (handoff section 14, open decision 5; docs/plans/change-destination-plan.md).
+  it("after a change of destination draws the new line, carries proof over and greys out the earlier line; switching back swaps them", async () => {
+    const userId = await user("switch");
+    const owner = { userId };
+    const r = await ingestResume({ bytes, as: "text", owner, clientHash: `h-${run}-switch` }, { db: db!, client });
+    if (!r.ok) throw new Error(r.code);
+    await confirmProfile(r.resumeId, owner, parsed, db!);
+    // Two roles with gaps in common and gaps of their own.
+    const pair = roleProfiles
+      .flatMap((a) => roleProfiles.map((b) => [a, b] as const))
+      .find(([a, b]) => {
+        const req = (x: typeof a) => new Set(x.skills.filter((s) => s.importance === "required").map((s) => s.skillId));
+        const [ra, rb] = [req(a), req(b)];
+        return a.slug !== b.slug && [...ra].some((id) => rb.has(id)) && [...ra].some((id) => !rb.has(id)) && [...rb].some((id) => !ra.has(id));
+      })!;
+    const [first, second] = pair;
+    const a = await getGapsForOwner(r.resumeId, owner, first, { db: db! });
+    if (!a.ok) throw new Error(a.reason);
+    const onFirst = await mapLineFor(userId, db!);
+    expect(onFirst!.previous).toBeNull();
+    // Proof for a gap of the first role that the second one also has.
+    const secondGapIds = new Set(second.skills.map((s) => s.skillId));
+    const shared = a.analysis.gaps.find((g) => secondGapIds.has(g.skillId) && !g.groupId);
+    if (shared) {
+      const proof = await addProof(userId, shared.skillId, { type: "skill_check", checkId: "switch" }, db!);
+      await setProofStatus(proof!, userId, "accepted", "app", db!);
+    }
+    const ownLeft = a.analysis.gaps.map((g) => g.skillId);
+
+    const b = await getGapsForOwner(r.resumeId, owner, second, { db: db! });
+    if (!b.ok) throw new Error(b.reason);
+    const onSecond = await mapLineFor(userId, db!);
+    expect(mapLine.safeParse(onSecond).success).toBe(true);
+    expect(onSecond!.role.slug).toBe(second.slug);
+    // Gaps worked out again: the line is the second role's.
+    expect(onSecond!.goals.map((g) => g.skillId).sort()).toEqual(b.analysis.gaps.map((g) => g.skillId).sort());
+    // Proof carried over.
+    if (shared && onSecond!.goals.some((g) => g.skillId === shared.skillId)) {
+      expect(onSecond!.goals.find((g) => g.skillId === shared.skillId)!.proved).toBe(true);
+    }
+    // The earlier line: the first role, with its gaps the new line doesn't need.
+    const lineIds = new Set(onSecond!.goals.map((g) => g.skillId));
+    expect(onSecond!.previous).toMatchObject({ role: { slug: first.slug, title: first.title } });
+    expect(onSecond!.previous!.left.map((g) => g.skillId)).toEqual(ownLeft.filter((id) => !lineIds.has(id)));
+    expect(onSecond!.previous!.shared).toBe(ownLeft.filter((id) => lineIds.has(id)).length);
+    // Goals left behind are kept, not removed.
+    const goals = await db!.select().from(schema.userGoals).where(eq(schema.userGoals.userId, userId));
+    for (const g of onSecond!.previous!.left) expect(goals.some((x) => x.skillId === g.skillId)).toBe(true);
+
+    // Switching back: the first role is the destination again, its analysis reused, and the second is the earlier line.
+    const back = await getGapsForOwner(r.resumeId, owner, first, { db: db! });
+    if (!back.ok) throw new Error(back.reason);
+    expect(back.analysisId).toBe(a.analysisId);
+    const onFirstAgain = await mapLineFor(userId, db!);
+    expect(onFirstAgain!.role.slug).toBe(first.slug);
+    expect(onFirstAgain!.previous!.role.slug).toBe(second.slug);
+  });
 });
 
 describe("otherLines", () => {
