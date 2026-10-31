@@ -1,6 +1,10 @@
 import { z } from "zod";
 import {
   EVENT_COST_MAX,
+  EVENT_FEED_FORMATS,
+  EVENT_FEED_LENGTH_MAX_DAYS,
+  EVENT_FEED_URLS_MAX,
+  EVENT_FEEDS_MAX,
   EVENT_KINDS,
   EVENT_ORGANISER_MAX,
   EVENT_RADII_KM,
@@ -23,6 +27,7 @@ import {
   TIMETABLE_EVENTS_MAX,
 } from "./constants";
 export {
+  EVENT_FEED_DROPS,
   EVENT_KIND_LABELS,
   EVENT_KINDS,
   EVENT_RADII_KM,
@@ -267,3 +272,109 @@ export const eventRsvpExport = z.strictObject({
   createdAt: z.date(),
 });
 export type EventRsvpExport = z.infer<typeof eventRsvpExport>;
+
+/*
+ * The event feed (Timetable PR 4, docs/plans/timetable-plan.md section 6). Each feed is listed in
+ * src/content/event-feeds.json with its terms link and the date its terms were read; it goes on only with that date
+ * (docs/timetable-sources.md keeps what the terms say). The job reads each feed's public answer, keeps our short
+ * summary and the topics code finds, and never keeps or logs the organiser's description.
+ */
+
+export const eventFeedFormat = z.enum(EVENT_FEED_FORMATS);
+
+/** A feed id: lowercase words joined by hyphens. It starts each of its events' source_key ("foss-united:…"). */
+export const eventFeedId = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/).max(40);
+
+const parsesAsHttps = (u: string) => {
+  try {
+    return new URL(u.replaceAll("{year}", "2026")).protocol === "https:";
+  } catch {
+    return false;
+  }
+};
+
+/** A feed address: https only; a confs.tech address may hold "{year}", which the job fills with this year and next. */
+const feedAddress = z.string().max(EVENT_URL_MAX).refine(parsesAsHttps, "an https address");
+
+/** One entry of src/content/event-feeds.json. */
+export const eventFeed = z
+  .strictObject({
+    id: eventFeedId,
+    /** The feed's own name, for docs. The log names the feed by its id. */
+    name: z.string().min(1).max(80),
+    /** The organiser on each event, when the feed's entries name none. */
+    organiser: eventText(1, EVENT_ORGANISER_MAX),
+    format: eventFeedFormat,
+    urls: z.array(feedAddress).min(1).max(EVENT_FEED_URLS_MAX),
+    /** The terms or licence page read before the feed went on. */
+    termsUrl: https,
+    /** The day (YYYY-MM-DD) someone read those terms and found they allow reuse; null until then. */
+    termsReadOn: z.iso.date().nullable(),
+    /** Off until termsReadOn is set; the job reads only feeds that are on. */
+    on: z.boolean(),
+    /** Why it is on or off, in a sentence or two. */
+    note: z.string().min(1).max(500),
+  })
+  .refine((f) => !f.on || f.termsReadOn !== null, { message: "a feed goes on only once its terms were read", path: ["on"] })
+  .refine((f) => f.format === "confs-tech" || f.urls.every((u) => !u.includes("{year}")), { message: "only a confs.tech address takes {year}", path: ["urls"] });
+export type EventFeed = z.infer<typeof eventFeed>;
+
+export const eventFeedsFile = z
+  .array(eventFeed)
+  .max(EVENT_FEEDS_MAX)
+  .refine((fs) => new Set(fs.map((f) => f.id)).size === fs.length, { message: "a feed id twice" });
+
+/** One VEVENT as the job reads it from an iCalendar feed, after unfolding and unescaping. Other properties are ignored. */
+export const icsEvent = z.strictObject({
+  uid: z.string().min(1).max(500),
+  summary: z.string().min(1).max(5000),
+  description: z.string().max(200_000),
+  location: z.string().max(2000),
+  url: z.string().max(EVENT_URL_MAX).nullable(),
+  status: z.string().max(40).nullable(),
+  start: z.date(),
+  /** Null when the feed gives no end. */
+  end: z.date().nullable(),
+  /** A date with no time (VALUE=DATE). */
+  allDay: z.boolean(),
+});
+export type IcsEvent = z.infer<typeof icsEvent>;
+
+/** One conference in a confs.tech conference-data file. Its other fields (twitter, cfpUrl, cocUrl, …) are ignored. */
+export const confsTechConference = z.object({
+  name: z.string().min(1).max(500),
+  url: z.string().max(EVENT_URL_MAX),
+  startDate: z.iso.date(),
+  endDate: z.iso.date().optional(),
+  city: z.string().max(200).optional(),
+  country: z.string().max(200).optional(),
+  online: z.boolean().optional(),
+});
+export type ConfsTechConference = z.infer<typeof confsTechConference>;
+/** A confs.tech file: a list of conferences, each checked on its own so one bad entry drops only itself. */
+export const confsTechFile = z.array(z.unknown()).max(5000);
+
+/**
+ * One event as the feed job writes it: the `events` row's own fields (status, checked_at and the timestamps are the
+ * store's) and its topics, at least one. The same checks as the table's, so a row that passes is never refused.
+ */
+export const feedEventRow = z
+  .strictObject({
+    sourceKey: z.string().min(1).max(EVENT_SOURCE_KEY_MAX),
+    sourceUrl: https,
+    title: eventText(1, EVENT_TITLE_MAX),
+    organiser: eventText(1, EVENT_ORGANISER_MAX),
+    kind: eventKind,
+    startsAt: z.date(),
+    endsAt: z.date(),
+    online: z.boolean(),
+    city: z.enum(PERSON_CITIES).nullable(),
+    venue: eventText(1, EVENT_VENUE_MAX).nullable(),
+    cost: eventText(0, EVENT_COST_MAX),
+    topics: eventTopicList.min(1),
+  })
+  .refine((e) => e.endsAt.getTime() >= e.startsAt.getTime(), { message: "ends before it starts", path: ["endsAt"] })
+  .refine((e) => e.endsAt.getTime() - e.startsAt.getTime() <= EVENT_FEED_LENGTH_MAX_DAYS * 86_400_000, { message: "too long", path: ["endsAt"] })
+  .refine((e) => !e.online || e.city === null, { message: "an online event has no city", path: ["city"] })
+  .refine((e) => e.online || e.city !== null, { message: "an in-person event names its city", path: ["city"] });
+export type FeedEventRow = z.infer<typeof feedEventRow>;

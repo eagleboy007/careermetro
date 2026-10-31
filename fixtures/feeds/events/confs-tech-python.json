@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Synthetic PyConf India",
+    "url": "https://pyconf.example.org/2026",
+    "startDate": "2026-11-28",
+    "endDate": "2026-11-29",
+    "city": "Hyderabad",
+    "country": "India",
+    "online": false,
+    "twitter": "@example"
+  },
+  {
+    "name": "Synthetic Python Online Day",
+    "url": "https://online.example.org/python-day",
+    "startDate": "2026-12-05",
+    "city": "Online",
+    "country": "Online",
+    "online": true
+  },
+  {
+    "name": "Synthetic EuroConf",
+    "url": "https://euro.example.org",
+    "startDate": "2026-12-10",
+    "endDate": "2026-12-11",
+    "city": "Lisbon",
+    "country": "Portugal"
+  },
+  {
+    "name": "Synthetic Past Conf",
+    "url": "https://past.example.org",
+    "startDate": "2026-03-01",
+    "city": "Pune",
+    "country": "India"
+  },
+  { "name": "Missing dates", "url": "https://broken.example.org" },
+  {
+    "name": "Synthetic Hybrid Conf",
+    "url": "https://hybrid.example.org",
+    "startDate": "2026-12-12",
+    "city": "Bengaluru",
+    "country": "India",
+    "online": true
+  }
+]
