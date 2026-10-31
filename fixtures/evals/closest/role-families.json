@@ -5,7 +5,8 @@
       "data-analyst",
       "bi-developer",
       "analytics-engineer",
-      "data-governance-analyst"
+      "data-governance-analyst",
+      "clinical-sas-programmer"
     ],
     "data-engineering": [
       "data-engineer",
@@ -26,7 +27,8 @@
       "computer-vision-engineer",
       "nlp-engineer",
       "ai-research-scientist",
-      "ai-architect"
+      "ai-architect",
+      "data-annotation-specialist"
     ],
     "security": [
       "cyber-security-analyst",
@@ -80,7 +82,9 @@
       "data-center-engineer",
       "hpc-gpu-engineer",
       "cloud-network-engineer",
-      "technical-account-manager"
+      "technical-account-manager",
+      "middleware-administrator",
+      "it-service-delivery-manager"
     ],
     "backend": [
       "software-engineer",
@@ -141,7 +145,11 @@
       "plm-developer",
       "oracle-ebs-consultant",
       "sap-pp-consultant",
-      "contact-center-developer"
+      "contact-center-developer",
+      "guidewire-developer",
+      "core-banking-consultant",
+      "sap-fiori-ui5-developer",
+      "sap-btp-integration-developer"
     ],
     "quality": [
       "qa-automation-engineer",
@@ -162,7 +170,11 @@
       "hardware-design-engineer",
       "adas-engineer",
       "hil-test-engineer",
-      "automotive-diagnostics-engineer"
+      "automotive-diagnostics-engineer",
+      "physical-design-engineer",
+      "design-verification-engineer",
+      "functional-safety-engineer",
+      "infotainment-engineer"
     ],
     "delivery": [
       "business-analyst",

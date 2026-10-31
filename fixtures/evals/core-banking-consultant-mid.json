@@ -1,0 +1,59 @@
+{
+  "id": "core-banking-consultant-mid",
+  "roleSlug": "core-banking-consultant",
+  "persona": "Mid-level Finacle functional consultant from a bank branch background",
+  "resumeText": "Rahul Deshpande | Pune | rahul.deshpande@example.com\n\nEXPERIENCE\nFinacle Functional Consultant, Sahyadri Banking Solutions, Pune (2020 - present)\n- Set up savings and current account schemes in Finacle 10.x for a regional rural bank rollout.\n- Parameterised term deposit and retail loan products, including interest tables and GL mapping.\n- Wrote functional requirement documents from workshops with bank operations teams.\n- Prepared UAT test scenarios and ran UAT cycles with branch users before go-live.\n- Used SQL queries to validate account balances and interest accruals.\n- Coordinated sign-offs with the bank's IT and operations heads.\n\nAssistant Manager - Branch Operations, Konkan Urban Co-operative Bank, Ratnagiri (2018 - 2020)\n- Handled CASA account opening, cheque clearing and cash operations at the branch.\n\nEDUCATION\nBCom, University of Mumbai, 2018\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "core-banking-systems",
+        "quote": "Set up savings and current account schemes in Finacle 10.x"
+      },
+      {
+        "skillId": "core-banking-parameterisation",
+        "quote": "Parameterised term deposit and retail loan products, including interest tables and GL mapping"
+      },
+      {
+        "skillId": "requirements-gathering",
+        "quote": "Wrote functional requirement documents from workshops with bank operations teams"
+      },
+      {
+        "skillId": "uat",
+        "quote": "Prepared UAT test scenarios and ran UAT cycles with branch users"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Used SQL queries to validate account balances"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Coordinated sign-offs with the bank's IT and operations heads"
+      },
+      {
+        "skillId": "domain-bfsi",
+        "quote": "Handled CASA account opening, cheque clearing and cash operations"
+      },
+      {
+        "skillId": "bank-branch-operations",
+        "quote": "Handled CASA account opening, cheque clearing and cash operations at the branch"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "data-migration",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "temenos-transact",
+      "rest-apis",
+      "database-programming"
+    ]
+  },
+  "reviewedBy": null
+}

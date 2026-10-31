@@ -1,0 +1,120 @@
+{
+  "slug": "sap-fiori-ui5-developer",
+  "title": "SAP Fiori/UI5 Developer",
+  "summary": "SAP Fiori/UI5 developers build the web and mobile screens people use to work in SAP systems, using SAPUI5 (SAP's JavaScript UI library) and Fiori elements templates. They work in SAP project teams with ABAP developers and functional consultants, connecting screens to backend OData services (SAP's standard web data interface).",
+  "dailyDuties": [
+    "Build freestyle SAPUI5 apps from functional specs",
+    "Generate Fiori elements apps from CDS annotations",
+    "Connect apps to OData services and debug data issues",
+    "Deploy apps from Business Application Studio to SAP BTP",
+    "Configure Fiori launchpad tiles, catalogs and roles",
+    "Fix UI defects raised in testing and support"
+  ],
+  "typicalTitles": [
+    "SAP Fiori Developer",
+    "SAP UI5 Developer",
+    "SAPUI5 Developer",
+    "SAP Fiori/UI5 Consultant",
+    "SAP Fiori Technical Consultant"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "sap-fiori-ui5",
+      "importance": "required",
+      "expectation": "Build freestyle SAPUI5 and Fiori elements apps that follow Fiori design guidelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "javascript",
+      "importance": "required",
+      "expectation": "Write JavaScript controllers, formatters and custom controls",
+      "postingShare": null
+    },
+    {
+      "skillId": "html-css",
+      "importance": "required",
+      "expectation": "Use HTML5 and CSS3 for layouts and theming",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap-hana",
+      "importance": "required",
+      "expectation": "Consume and troubleshoot OData V2/V4 services and use CDS annotations from the S/4HANA backend",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-btp-platform",
+      "importance": "required",
+      "expectation": "Develop in SAP Business Application Studio and deploy apps to SAP BTP",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-fiori-launchpad",
+      "importance": "required",
+      "expectation": "Configure Fiori launchpad catalogs, groups, tiles and target mappings",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Work with functional consultants and business users on screens and fixes",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Use Git for app source and code reviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-cap",
+      "importance": "nice_to_have",
+      "expectation": "Build simple backend services with the SAP Cloud Application Programming Model",
+      "postingShare": null
+    },
+    {
+      "skillId": "typescript",
+      "importance": "nice_to_have",
+      "expectation": "Write UI5 apps in TypeScript",
+      "postingShare": null
+    },
+    {
+      "skillId": "unit-testing",
+      "importance": "nice_to_have",
+      "expectation": "Write QUnit and OPA5 tests for apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-abap",
+      "importance": "nice_to_have",
+      "expectation": "Read and make small ABAP changes on the backend",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Use pipelines to build and transport apps",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "sap-abap-cloud-developer",
+      "importance": "optional",
+      "why": "Useful when the role also covers the ABAP Cloud and RAP backend behind Fiori apps"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

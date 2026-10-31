@@ -1,0 +1,111 @@
+{
+  "slug": "clinical-sas-programmer",
+  "title": "Clinical SAS Programmer",
+  "summary": "Writes SAS (and sometimes R) programs that turn clinical trial data into standard CDISC datasets and the tables, listings and figures used in study reports and drug submissions. Works in the biostatistics team of a pharma company or contract research organisation, next to statisticians and data managers.",
+  "dailyDuties": [
+    "Map raw trial data to SDTM domains from specifications",
+    "Derive ADaM analysis datasets from the statistical analysis plan",
+    "Program safety and efficacy tables, listings and figures",
+    "Double-program and validate a colleague's outputs",
+    "Run Pinnacle 21 checks and fix compliance issues",
+    "Update define.xml and reviewer's guides",
+    "Join study team calls on timelines and data issues"
+  ],
+  "typicalTitles": [
+    "Statistical Programmer",
+    "Clinical Trial Programmer",
+    "SDTM Programmer",
+    "ADaM Programmer",
+    "Clinical Programmer (SAS)",
+    "Biostatistical Programmer",
+    "Statistical Programming Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "sas-programming",
+      "importance": "required",
+      "expectation": "Write Base SAS, PROC SQL and macro programs on clinical trial data",
+      "postingShare": null
+    },
+    {
+      "skillId": "cdisc-sdtm",
+      "importance": "required",
+      "expectation": "Map raw EDC data to SDTM domains from study specifications",
+      "postingShare": null
+    },
+    {
+      "skillId": "cdisc-adam",
+      "importance": "required",
+      "expectation": "Build ADaM datasets such as ADSL and BDS from the analysis plan",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-tlf-programming",
+      "importance": "required",
+      "expectation": "Produce and validate tables, listings and figures for study reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "cdisc-submission-validation",
+      "importance": "required",
+      "expectation": "Run Pinnacle 21 checks and prepare define.xml and reviewer's guides",
+      "postingShare": null
+    },
+    {
+      "skillId": "clinical-trials-knowledge",
+      "importance": "required",
+      "expectation": "Work from protocols, statistical analysis plans and ICH-GCP rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "required",
+      "expectation": "Understand the statistical methods behind efficacy and safety outputs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain programming status and issues to biostatisticians and study teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "r-programming",
+      "importance": "nice_to_have",
+      "expectation": "Use R or pharmaverse packages where the sponsor asks for them",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate checks and file handling with small scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "sql",
+      "importance": "nice_to_have",
+      "expectation": "Query clinical databases outside SAS",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "nice_to_have",
+      "expectation": "Co-lead studies and review junior programmers' code",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

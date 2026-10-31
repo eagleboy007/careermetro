@@ -92,8 +92,8 @@ export const LIBRARY_MARKS = ["saved", "finished", "onRide"] as const;
 export const LIBRARY_CHANGES_PER_DAY = 300;
 /** Items one person can have on their rides at once. */
 export const ON_RIDE_MAX = 5;
-/** The Library's whole catalog (about 680 resources on 29 Oct), and each list of marks that points into it, with room to grow. */
-export const LIBRARY_ITEMS_MAX = 10_000;
+/** The Library's whole catalog (about 680 resources on 29 Oct, 2,162 on 31 Oct), and each list of marks that points into it, with room to grow. */
+export const LIBRARY_ITEMS_MAX = 20_000;
 /** Items longer than this are split into daily parts on the ride. */
 export const RIDE_SPLIT_OVER_MINUTES = 60;
 /** One daily part of a long item. */

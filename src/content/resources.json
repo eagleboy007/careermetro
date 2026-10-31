@@ -365,7 +365,8 @@
     "provider": "Let's Encrypt",
     "kind": "docs",
     "skillIds": [
-      "cryptography-basics"
+      "cryptography-basics",
+      "ssl-certificate-management"
     ],
     "minutes": 20,
     "free": true
@@ -2794,7 +2795,8 @@
     "provider": "Google SRE",
     "kind": "docs",
     "skillIds": [
-      "incident-management"
+      "incident-management",
+      "major-incident-management"
     ],
     "minutes": 40,
     "free": true
@@ -2816,7 +2818,8 @@
     "provider": "PagerDuty",
     "kind": "docs",
     "skillIds": [
-      "incident-management"
+      "incident-management",
+      "major-incident-management"
     ],
     "minutes": 120,
     "free": true
@@ -2838,7 +2841,8 @@
     "provider": "Google SRE",
     "kind": "docs",
     "skillIds": [
-      "observability"
+      "observability",
+      "service-level-management"
     ],
     "minutes": 45,
     "free": true
@@ -4479,7 +4483,8 @@
       "credit-appraisal",
       "rbi-credit-norms",
       "loan-eligibility-assessment",
-      "login-to-disbursement-tracking"
+      "login-to-disbursement-tracking",
+      "core-banking-parameterisation"
     ],
     "minutes": 1800,
     "free": true
@@ -7163,7 +7168,8 @@
     "provider": "CVAT",
     "kind": "docs",
     "skillIds": [
-      "data-annotation"
+      "data-annotation",
+      "video-annotation"
     ],
     "minutes": 30,
     "free": true
@@ -7185,7 +7191,8 @@
     "provider": "Label Studio (HumanSignal)",
     "kind": "practice",
     "skillIds": [
-      "data-annotation"
+      "data-annotation",
+      "text-audio-annotation"
     ],
     "minutes": 30,
     "free": true
@@ -8228,7 +8235,8 @@
     "provider": "Siemens Verification Academy",
     "kind": "docs",
     "skillIds": [
-      "systemverilog-uvm"
+      "systemverilog-uvm",
+      "verification-planning"
     ],
     "minutes": 240,
     "free": true
@@ -8272,7 +8280,9 @@
     "provider": "NPTEL",
     "kind": "course",
     "skillIds": [
-      "synthesis-timing"
+      "synthesis-timing",
+      "emir-signoff",
+      "physical-design-pnr"
     ],
     "minutes": 1800,
     "free": true
@@ -10024,7 +10034,8 @@
     "provider": "NPTEL",
     "kind": "course",
     "skillIds": [
-      "it-vendor-management"
+      "it-vendor-management",
+      "construction-contract-conditions"
     ],
     "minutes": 1200,
     "free": true
@@ -11494,7 +11505,8 @@
     "provider": "Texas Instruments",
     "kind": "video",
     "skillIds": [
-      "automotive-functional-safety"
+      "automotive-functional-safety",
+      "functional-safety-concept"
     ],
     "minutes": 50,
     "free": true
@@ -11517,7 +11529,8 @@
     "provider": "Ansys Innovation Space",
     "kind": "course",
     "skillIds": [
-      "automotive-functional-safety"
+      "automotive-functional-safety",
+      "functional-safety-concept"
     ],
     "minutes": 90,
     "free": true
@@ -12311,7 +12324,8 @@
     "provider": "Atlassian",
     "kind": "docs",
     "skillIds": [
-      "itsm"
+      "itsm",
+      "itil-problem-change-management"
     ],
     "minutes": 20,
     "free": true
@@ -15074,7 +15088,8 @@
     "provider": "Reserve Bank of India",
     "kind": "docs",
     "skillIds": [
-      "casa-deposit-acquisition"
+      "casa-deposit-acquisition",
+      "core-banking-parameterisation"
     ],
     "minutes": 25,
     "free": true
@@ -17246,7 +17261,8 @@
     "provider": "NAIC",
     "kind": "docs",
     "skillIds": [
-      "insurance-risk-assessment"
+      "insurance-risk-assessment",
+      "pc-insurance-domain"
     ],
     "minutes": 120,
     "free": true
@@ -17317,7 +17333,8 @@
     "skillIds": [
       "property-casualty-underwriting",
       "irdai-regulations",
-      "insurance-risk-assessment"
+      "insurance-risk-assessment",
+      "pc-insurance-domain"
     ],
     "minutes": 90,
     "free": true
@@ -17328,7 +17345,8 @@
     "provider": "IRDAI Policyholder portal",
     "kind": "docs",
     "skillIds": [
-      "property-casualty-underwriting"
+      "property-casualty-underwriting",
+      "pc-insurance-domain"
     ],
     "minutes": 15,
     "free": true
@@ -19835,7 +19853,8 @@
     "skillIds": [
       "dimensional-inspection-instruments",
       "cmm-inspection",
-      "engineering-drawing-reading"
+      "engineering-drawing-reading",
+      "tolerance-stack-up-analysis"
     ],
     "minutes": 1500,
     "free": true
@@ -20781,28 +20800,6 @@
     "free": true
   },
   {
-    "title": "IS 3043: Code of Practice for Earthing",
-    "url": "https://law.resource.org/pub/in/bis/S05/is.3043.1987.html",
-    "provider": "Bureau of Indian Standards (via law.resource.org)",
-    "kind": "docs",
-    "skillIds": [
-      "electrical-load-calculations"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "IS 732: Code of Practice for Electrical Wiring Installations",
-    "url": "https://law.resource.org/pub/in/bis/S05/is.732.1989.html",
-    "provider": "Bureau of Indian Standards (via law.resource.org)",
-    "kind": "docs",
-    "skillIds": [
-      "electrical-load-calculations"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "Electrical Distribution System Analysis (voltage drop and loss calculations)",
     "url": "https://onlinecourses-archive.nptel.ac.in/noc18_ee15/preview",
     "provider": "NPTEL",
@@ -20881,17 +20878,6 @@
     "free": true
   },
   {
-    "title": "SP 46 (2003): Engineering Drawing Practice for Schools and Colleges",
-    "url": "https://law.resource.org/pub/in/bis/S01/is.sp.46.2003.pdf",
-    "provider": "Bureau of Indian Standards (via law.resource.org)",
-    "kind": "docs",
-    "skillIds": [
-      "mechanical-2d-drafting"
-    ],
-    "minutes": 300,
-    "free": true
-  },
-  {
     "title": "Engineering Drawing and Computer Graphics",
     "url": "https://onlinecourses.nptel.ac.in/noc22_me105/preview",
     "provider": "NPTEL",
@@ -20900,17 +20886,6 @@
       "mechanical-2d-drafting"
     ],
     "minutes": 1800,
-    "free": true
-  },
-  {
-    "title": "IS 919-1 (1993): ISO Systems of Limits and Fits, Part 1",
-    "url": "https://law.resource.org/pub/in/bis/S01/is.919.1.1993.pdf",
-    "provider": "Bureau of Indian Standards (via law.resource.org)",
-    "kind": "docs",
-    "skillIds": [
-      "tolerance-stack-up-analysis"
-    ],
-    "minutes": 120,
     "free": true
   },
   {
@@ -21123,18 +21098,6 @@
     "free": true
   },
   {
-    "title": "SP 34 (1987): Handbook on Concrete Reinforcement and Detailing",
-    "url": "https://law.resource.org/pub/in/bis/S03/is.sp.34.1987.pdf",
-    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
-    "kind": "docs",
-    "skillIds": [
-      "civil-drawing-reading",
-      "bar-bending-schedule"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "Engineering/Architectural Graphics, Part I: Orthographic Projection",
     "url": "https://onlinecourses.nptel.ac.in/noc21_ar01/preview",
     "provider": "NPTEL (IIT Roorkee)",
@@ -21201,18 +21164,6 @@
     "free": true
   },
   {
-    "title": "IS 1199 (1959): Methods of Sampling and Analysis of Concrete",
-    "url": "https://law.resource.org/pub/in/bis/S03/is.1199.1959.pdf",
-    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
-    "kind": "docs",
-    "skillIds": [
-      "concrete-quality-tests",
-      "is-456-concrete-codes"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
     "title": "Concrete Technology",
     "url": "https://onlinecourses.nptel.ac.in/noc19_ce20/preview",
     "provider": "NPTEL (IIT Delhi)",
@@ -21254,29 +21205,6 @@
       "surveying-levelling"
     ],
     "minutes": 1440,
-    "free": true
-  },
-  {
-    "title": "IS 456 (2000): Plain and Reinforced Concrete, Code of Practice",
-    "url": "https://law.resource.org/pub/in/bis/S03/is.456.2000.pdf",
-    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
-    "kind": "docs",
-    "skillIds": [
-      "is-456-concrete-codes",
-      "site-execution-supervision"
-    ],
-    "minutes": 300,
-    "free": true
-  },
-  {
-    "title": "IS 10262 (2009): Concrete Mix Proportioning Guidelines",
-    "url": "https://law.resource.org/pub/in/bis/S03/is.10262.2009.pdf",
-    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
-    "kind": "docs",
-    "skillIds": [
-      "is-456-concrete-codes"
-    ],
-    "minutes": 90,
     "free": true
   },
   {
@@ -21322,17 +21250,6 @@
       "boq-rate-analysis"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "IS 2502 (1963): Bending and Fixing of Bars for Concrete Reinforcement",
-    "url": "https://law.resource.org/pub/in/bis/S03/is.2502.1963.pdf",
-    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
-    "kind": "docs",
-    "skillIds": [
-      "bar-bending-schedule"
-    ],
-    "minutes": 60,
     "free": true
   },
   {
@@ -21443,31 +21360,6 @@
       "labour-contractor-coordination"
     ],
     "minutes": 480,
-    "free": true
-  },
-  {
-    "title": "IS 1200 series: Methods of Measurement of Building and Civil Engineering Works (index of parts)",
-    "url": "https://law.resource.org/pub/in/bis/manifest.ced.44.html",
-    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
-    "kind": "docs",
-    "skillIds": [
-      "is-1200-measurement-rules"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "IS 1200 Part 2 (1974): Method of Measurement, Concrete Works",
-    "url": "https://law.resource.org/pub/in/bis/S03/is.1200.2.1974.pdf",
-    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
-    "kind": "docs",
-    "skillIds": [
-      "is-1200-measurement-rules",
-      "quantity-takeoff",
-      "measurement-book-records",
-      "ra-subcontractor-billing"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -21747,6 +21639,2224 @@
       "customs-clearance-compliance"
     ],
     "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "VLSI Physical Design (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/106105161",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "physical-design-pnr"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "OpenROAD Flow Scripts tutorial: RTL to GDS walkthrough",
+    "url": "https://openroad-flow-scripts.readthedocs.io/en/latest/tutorials/FlowTutorial.html",
+    "provider": "OpenROAD Project",
+    "kind": "practice",
+    "skillIds": [
+      "physical-design-pnr"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "ECE 720 place and route tutorials",
+    "url": "https://eda.ncsu.edu/tutorials/ece-720-place-route-tutorials",
+    "provider": "NC State University",
+    "kind": "practice",
+    "skillIds": [
+      "physical-design-pnr"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "KLayout manual: Design Rule Check (DRC)",
+    "url": "https://www.klayout.de/doc/manual/drc.html",
+    "provider": "KLayout",
+    "kind": "docs",
+    "skillIds": [
+      "physical-verification"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "KLayout manual: LVS overview",
+    "url": "https://klayout.de/doc/manual/lvs_overview.html",
+    "provider": "KLayout",
+    "kind": "docs",
+    "skillIds": [
+      "physical-verification"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Physical verification using SKY130 (DRC and LVS labs with Magic and Netgen)",
+    "url": "https://github.com/Emad-H/Physical-Verification-using-SKY130",
+    "provider": "GitHub (open workshop)",
+    "kind": "practice",
+    "skillIds": [
+      "physical-verification"
+    ],
+    "minutes": 360,
+    "free": true
+  },
+  {
+    "title": "Getting started with Magic for layout and DRC",
+    "url": "https://c2s2.engineering.cornell.edu/blogposts/SP24/Magic.html",
+    "provider": "Cornell C2S2",
+    "kind": "docs",
+    "skillIds": [
+      "physical-verification"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Minimizing EM/IR impacts on IC design reliability and performance",
+    "url": "https://semiengineering.com/minimizing-em-ir-impacts-on-ic-design-reliability-and-performance",
+    "provider": "Semiconductor Engineering",
+    "kind": "docs",
+    "skillIds": [
+      "emir-signoff"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Stop chasing IR drop at signoff: see it early, fix it once",
+    "url": "https://community.cadence.com/cadence_blogs_8/b/di/posts/stop-chasing-ir-drop-at-signoff-see-it-early-fix-it-once",
+    "provider": "Cadence",
+    "kind": "docs",
+    "skillIds": [
+      "emir-signoff"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "EE241B Lab 5: power and rail analysis with Voltus",
+    "url": "https://inst.eecs.berkeley.edu/~ee241b/sp21/assignments/lab5.pdf",
+    "provider": "UC Berkeley",
+    "kind": "practice",
+    "skillIds": [
+      "emir-signoff"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Introduction to UPF",
+    "url": "https://chipverify.com/unified-power-format/introduction-to-upf",
+    "provider": "ChipVerify",
+    "kind": "docs",
+    "skillIds": [
+      "low-power-design"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "UPF design flow",
+    "url": "https://chipverify.com/unified-power-format/upf-design-flow",
+    "provider": "ChipVerify",
+    "kind": "docs",
+    "skillIds": [
+      "low-power-design"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Low Power with UPF 2013 (IEEE 1801 tutorial slides)",
+    "url": "https://accellera.org/images/resources/videos/Low_Power_with_UPF_2013.pdf",
+    "provider": "Accellera",
+    "kind": "docs",
+    "skillIds": [
+      "low-power-design"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Tutorial: Low power design, verification and implementation with IEEE 1801 UPF (video)",
+    "url": "https://eda.org/resources/videos/upf-tutorial-2013",
+    "provider": "Accellera",
+    "kind": "video",
+    "skillIds": [
+      "low-power-design"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Verification plan",
+    "url": "https://chipverify.com/verification/verification-plan",
+    "provider": "ChipVerify",
+    "kind": "docs",
+    "skillIds": [
+      "verification-planning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What is functional coverage?",
+    "url": "https://chipverify.com/systemverilog/systemverilog-functional-coverage",
+    "provider": "ChipVerify",
+    "kind": "docs",
+    "skillIds": [
+      "verification-planning"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Best practices in verification planning (DVCon presentation)",
+    "url": "https://dvcon-proceedings.org/wp-content/uploads/best-practices-in-verification-planning-presentation.pdf",
+    "provider": "DVCon",
+    "kind": "docs",
+    "skillIds": [
+      "verification-planning"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Weak verification plans lead to project disarray: how to fix that",
+    "url": "https://community.cadence.com/cadence_blogs_8/b/fv/posts/weak-verification-plans-lead-to-project-disarray-how-to-fix-that",
+    "provider": "Cadence",
+    "kind": "docs",
+    "skillIds": [
+      "verification-planning"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "SymbiYosys: formal extensions to Verilog",
+    "url": "https://yosyshq.readthedocs.io/projects/sby/en/latest/verilog.html",
+    "provider": "YosysHQ",
+    "kind": "docs",
+    "skillIds": [
+      "formal-verification"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Getting started with formal-based technology",
+    "url": "https://verificationacademy.com/courses/Getting-Started-with-Formal-Based-Technology",
+    "provider": "Siemens Verification Academy",
+    "kind": "course",
+    "skillIds": [
+      "formal-verification"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Lecture 20: Formal verification (ASIC class slides)",
+    "url": "https://cal-poly-ramp.github.io/_static/pdf/asic-class-slides/Lecture%2020%20-%20Formal%20Verification.pdf",
+    "provider": "Cal Poly",
+    "kind": "docs",
+    "skillIds": [
+      "formal-verification"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Aggregating verified modules together (formal invariants)",
+    "url": "https://zipcpu.com/formal/2018/04/23/invariant.html",
+    "provider": "ZipCPU",
+    "kind": "docs",
+    "skillIds": [
+      "formal-verification"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "ISO 26262-1:2018 Road vehicles, functional safety, vocabulary (overview)",
+    "url": "https://www.iso.org/standard/68383.html",
+    "provider": "ISO",
+    "kind": "docs",
+    "skillIds": [
+      "functional-safety-concept"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "The ABCs of ISO 26262",
+    "url": "https://semiengineering.com/the-abcs-of-iso-26262/",
+    "provider": "Semiconductor Engineering",
+    "kind": "docs",
+    "skillIds": [
+      "functional-safety-concept"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Goal Structuring Notation community standard v3 (safety cases)",
+    "url": "https://scsc.uk/scsc-141c",
+    "provider": "Safety-Critical Systems Club",
+    "kind": "docs",
+    "skillIds": [
+      "functional-safety-concept"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Fault Tree Handbook with Aerospace Applications",
+    "url": "https://extapps.ksc.nasa.gov/reliability/Documents/Fault_Tree_Handbook_with_Aerospace_Applications_August_2002.pdf",
+    "provider": "NASA",
+    "kind": "docs",
+    "skillIds": [
+      "fault-tree-analysis"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Intro to fault tree analysis",
+    "url": "https://accendoreliability.com/intro-to-fault-tree-analysis/",
+    "provider": "Accendo Reliability",
+    "kind": "docs",
+    "skillIds": [
+      "fault-tree-analysis"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How important is dependent failure analysis in ISO 26262?",
+    "url": "https://www.embitel.com/blog/embedded-blog/how-important-is-dependent-failure-analysis-in-iso-26262",
+    "provider": "Embitel",
+    "kind": "docs",
+    "skillIds": [
+      "fault-tree-analysis"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "ISO 26262 dependent failure analysis using PSS (DVCon paper)",
+    "url": "https://dvcon-proceedings.org/wp-content/uploads/iso-26262-dependent-failure-analysis-using-pss.pdf",
+    "provider": "DVCon",
+    "kind": "docs",
+    "skillIds": [
+      "fault-tree-analysis"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Getting started with DOORS Next",
+    "url": "https://www.ibm.com/docs/SSUVLZ_7.1/doorsnext/com.ibm.rational.rrm.help.doc/topics/c_compose_reqs.html",
+    "provider": "IBM Docs",
+    "kind": "docs",
+    "skillIds": [
+      "requirements-management-tools"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Codebeamer user's guide: work item traceability",
+    "url": "https://support.ptc.com/help/codebeamer/r2.2/en/codebeamer/user_guide/ug_wk_item_traceability.html",
+    "provider": "PTC",
+    "kind": "docs",
+    "skillIds": [
+      "requirements-management-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "The essential guide to requirements management and traceability",
+    "url": "https://www.jamasoftware.com/requirements-management-guide/",
+    "provider": "Jama Software",
+    "kind": "docs",
+    "skillIds": [
+      "requirements-management-tools"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "What is Automotive SPICE?",
+    "url": "https://www.mathworks.com/discovery/automotive-spice.html",
+    "provider": "MathWorks",
+    "kind": "docs",
+    "skillIds": [
+      "automotive-spice"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "What is SPICE? (SPICE center)",
+    "url": "https://www.intacs.info/spice-center",
+    "provider": "intacs",
+    "kind": "docs",
+    "skillIds": [
+      "automotive-spice"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Android Automotive overview",
+    "url": "https://source.android.com/docs/automotive",
+    "provider": "Android Open Source Project",
+    "kind": "docs",
+    "skillIds": [
+      "android-automotive-aosp"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "VHAL interface",
+    "url": "https://source.android.com/docs/automotive/vhal/vhal-interface",
+    "provider": "Android Open Source Project",
+    "kind": "docs",
+    "skillIds": [
+      "android-automotive-aosp"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "AIDL for HALs",
+    "url": "https://source.android.com/docs/core/architecture/aidl/aidl-hals",
+    "provider": "Android Open Source Project",
+    "kind": "docs",
+    "skillIds": [
+      "android-automotive-aosp"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Qt Academy course catalog (Introduction to QML, Qt Quick and more)",
+    "url": "https://www.qt.io/academy/course-catalog",
+    "provider": "Qt Academy",
+    "kind": "course",
+    "skillIds": [
+      "qt-qml"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Free QML beginner course on YouTube",
+    "url": "https://www.qt.io/blog/free-qml-beginner-course-learn-qml-on-youtube-with-qt-academy",
+    "provider": "Qt",
+    "kind": "video",
+    "skillIds": [
+      "qt-qml"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "First steps with QML",
+    "url": "https://doc.qt.io/qt-6/qmlfirststeps.html",
+    "provider": "Qt Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "qt-qml"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Your first QtQuick/QML application (Qt for Python)",
+    "url": "https://doc.qt.io/qtforpython-6/tutorials/basictutorial/qml.html",
+    "provider": "Qt Documentation",
+    "kind": "practice",
+    "skillIds": [
+      "qt-qml"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Advanced Audio Distribution Profile (A2DP) 1.4.1 specification",
+    "url": "https://files.bluetooth.com/download/a2dp_v1-4-1",
+    "provider": "Bluetooth SIG",
+    "kind": "docs",
+    "skillIds": [
+      "bluetooth-profiles"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "ESP-IDF Classic Bluetooth profiles and protocols (A2DP, AVRCP, HFP)",
+    "url": "https://docs.espressif.com/projects/esp-idf/en/v5.5/esp32/api-guides/classic-bt/profiles-protocols.html",
+    "provider": "Espressif",
+    "kind": "docs",
+    "skillIds": [
+      "bluetooth-profiles"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Gabeldorsche Bluetooth stack architecture",
+    "url": "https://android.googlesource.com/platform/system/bt/+/6c3bb34eb3114e9a3dd9868fcab6631b947b9994/gd/docs/architecture/architecture.md",
+    "provider": "Android Open Source Project",
+    "kind": "docs",
+    "skillIds": [
+      "bluetooth-profiles"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Fluoride Bluetooth stack README",
+    "url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/da3ef2602f/README.md",
+    "provider": "Android Open Source Project",
+    "kind": "docs",
+    "skillIds": [
+      "bluetooth-profiles"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "GStreamer basic tutorials",
+    "url": "https://gstreamer.freedesktop.org/documentation/tutorials/basic/index.html",
+    "provider": "GStreamer",
+    "kind": "practice",
+    "skillIds": [
+      "multimedia-frameworks"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "GStreamer application development manual",
+    "url": "https://gstreamer.freedesktop.org/documentation/application-development/",
+    "provider": "GStreamer",
+    "kind": "docs",
+    "skillIds": [
+      "multimedia-frameworks"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Android audio overview",
+    "url": "https://source.android.com/docs/core/audio",
+    "provider": "Android Open Source Project",
+    "kind": "docs",
+    "skillIds": [
+      "multimedia-frameworks"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Implement the AIDL audio HAL",
+    "url": "https://source.android.com/docs/core/audio/aidl-implement",
+    "provider": "Android Open Source Project",
+    "kind": "docs",
+    "skillIds": [
+      "multimedia-frameworks"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Guidewire InsuranceSuite configuration guides",
+    "url": "https://www.guidewire.com/developers/developer-tools-and-guides/configuration-guides",
+    "provider": "Guidewire",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-insurancesuite"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Guidewire InsuranceSuite overview (PolicyCenter, ClaimCenter, BillingCenter)",
+    "url": "https://www.guidewire.com/products/insurancesuite/",
+    "provider": "Guidewire",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-insurancesuite",
+      "pc-insurance-domain"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "PolicyCenter 10.x Configuration Guide",
+    "url": "https://gwwars.s3.us-east-2.amazonaws.com/pc1012docs/10.x/active/config/topics/c_ik1187363.html",
+    "provider": "Guidewire documentation",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-insurancesuite"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Gosu: getting started and documentation",
+    "url": "https://gosu-lang.github.io/docs.html",
+    "provider": "Gosu project",
+    "kind": "docs",
+    "skillIds": [
+      "gosu-programming"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Gosu language basics (PolicyCenter 10.x Gosu Reference)",
+    "url": "https://gwwars.s3.us-east-2.amazonaws.com/pc1012docs/10.x/active/gosu/topics/c_p-basics.html",
+    "provider": "Guidewire documentation",
+    "kind": "docs",
+    "skillIds": [
+      "gosu-programming"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Notable differences between Gosu and Java",
+    "url": "https://gwwars.s3.us-east-2.amazonaws.com/pc1012docs/10.x/active/gosu/topics/r_in1531260.html",
+    "provider": "Guidewire documentation",
+    "kind": "docs",
+    "skillIds": [
+      "gosu-programming"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Gosu programming language",
+    "url": "https://www.guidewire.com/developers/developer-tools-and-guides/gosu-programming-language",
+    "provider": "Guidewire",
+    "kind": "docs",
+    "skillIds": [
+      "gosu-programming"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Message destinations and message plugins (PolicyCenter 10.x)",
+    "url": "https://gwwars.s3.us-east-2.amazonaws.com/pc1012docs/10.x/active/contact/topics/c_je2199048.html",
+    "provider": "Guidewire documentation",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-integration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Preparing for integration development (PolicyCenter 10.x Integration Guide)",
+    "url": "https://gwwars.s3.us-east-2.amazonaws.com/pc1012docs/10.x/active/integration/topics/c_ms2108805.html",
+    "provider": "Guidewire documentation",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-integration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Cloud integration basics: plugins",
+    "url": "https://docs.guidewire.com/education/cloud-integration-basics/latest/docs/plugins/plugins_basics",
+    "provider": "Guidewire Education",
+    "kind": "course",
+    "skillIds": [
+      "guidewire-integration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Simplifying Guidewire integration with new cloud services",
+    "url": "https://developer.guidewire.com/?p=3209",
+    "provider": "Guidewire Developer",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-integration",
+      "guidewire-cloud"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Cloud Integration Framework: the right tools for the job",
+    "url": "https://www.guidewire.com/blog/technology/cloud-integration-framework-the-right-tools-for-the-job/",
+    "provider": "Guidewire",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-integration"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Getting started with Guidewire Cloud Console",
+    "url": "https://developer.guidewire.com/?p=28629",
+    "provider": "Guidewire Developer",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-cloud"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Guidewire Cloud Platform: how it will help you in the future (video)",
+    "url": "https://developer.guidewire.com/?p=1645",
+    "provider": "Guidewire Developer",
+    "kind": "video",
+    "skillIds": [
+      "guidewire-cloud"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of Guidewire Cloud (ebook)",
+    "url": "https://success.guidewire.com/rs/140-LHX-683/images/EB_Fundamentals_Guidewire_Cloud_2307.pdf",
+    "provider": "Guidewire",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-cloud"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "The cloud advantage: Guidewire Cloud Platform",
+    "url": "https://insurance-canada.ca/2024/02/07/guidewire-cloud-platform-advantage/",
+    "provider": "Insurance-Canada.ca",
+    "kind": "docs",
+    "skillIds": [
+      "guidewire-cloud"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Temenos Transact (core banking) APIs",
+    "url": "https://developer.temenos.com/transact-apis",
+    "provider": "Temenos Developer",
+    "kind": "docs",
+    "skillIds": [
+      "temenos-transact"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "End-to-end retail lending workflow (Arrangement Architecture APIs)",
+    "url": "https://developer.temenos.com/node/1087",
+    "provider": "Temenos Developer",
+    "kind": "practice",
+    "skillIds": [
+      "temenos-transact",
+      "core-banking-parameterisation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Temenos T24 Transact practice and Arrangement Architecture",
+    "url": "https://xebia.com/articles/temenos-t24-transact-practice-and-its-excellence-in-xebia/",
+    "provider": "Xebia",
+    "kind": "docs",
+    "skillIds": [
+      "temenos-transact"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Temenos all product APIs",
+    "url": "https://developer.temenos.com/all-product-apis",
+    "provider": "Temenos Developer",
+    "kind": "docs",
+    "skillIds": [
+      "temenos-transact"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Oracle FLEXCUBE Universal Banking: Interest user guide (product-level interest setup)",
+    "url": "https://docs.oracle.com/cd/E53393_01/PDF/CORE/Modularity/Interest.pdf",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "core-banking-parameterisation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Configuring banking products (product factory, payment schedules, fees)",
+    "url": "https://docs.fintechos.com/djs/mobileretailloanorigination/userguide/content/BankingProductFactory.htm",
+    "provider": "FintechOS",
+    "kind": "docs",
+    "skillIds": [
+      "core-banking-parameterisation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Create a data migration strategy for Dynamics 365 solutions",
+    "url": "https://learn.microsoft.com/en-us/training/modules/data-migration/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "data-migration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Manage configuration and migration data for Dynamics 365 projects",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/data-management-configuration-data-migration",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "data-migration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "AWS DMS data validation",
+    "url": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Validating.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "data-migration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Migrating data to SAP S/4HANA Cloud Public Edition",
+    "url": "https://learning.sap.com/courses/migrating-data-to-sap-s-4hana-cloud-public-edition",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "data-migration"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Data migration (Power Platform architecture key concepts)",
+    "url": "https://learn.microsoft.com/en-us/power-platform/architecture/key-concepts/data-migration",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "data-migration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Exploring SAP Business Technology Platform",
+    "url": "https://learning.sap.com/courses/exploring-sap-business-technology-platform",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-btp-platform"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Set up SAP Business Application Studio for development",
+    "url": "https://developers.sap.com/tutorials/appstudio-onboarding",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-btp-platform"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Get an account on SAP BTP Trial",
+    "url": "https://developers.sap.com/tutorials/hcp-create-trial-account/",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-btp-platform"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Get started with the SAP BTP cockpit and Cloud Foundry environment",
+    "url": "https://developers.sap.com/tutorials/btp-cockpit-cf-getting-started-with-cf-env-and-cockpit",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-btp-platform"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Develop cloud applications using SAP Business Application Studio",
+    "url": "https://learning.sap.com/courses/develop-cloud-applications-using-sap-business-application-studio",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-btp-platform",
+      "sap-cap"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Learning the basics of SAP Fiori (spaces, pages and launchpad)",
+    "url": "https://learning.sap.com/courses/learning-the-basics-of-sap-fiori",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-fiori-launchpad"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SAP Fiori launchpad designer: managing catalogs, groups and tiles",
+    "url": "https://help.sap.com/saphelp_uiaddon20/helpdata/en/cb/0ae6a170754bb9bcfa66c4c4bdcc37/content.htm",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-fiori-launchpad"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Configuring Fiori launchpad catalogs and groups",
+    "url": "https://blogs.sap.com/2014/06/25/configuring-fiori-launchpad-catalogs-and-groups/",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "sap-fiori-launchpad"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Add a SAPUI5 app to a launchpad site with the Content Manager",
+    "url": "https://developers.sap.com/tutorials/cp-portal-cloud-foundry-new-sapui5",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-fiori-launchpad"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "CAP documentation: learning sources",
+    "url": "https://cap.cloud.sap/docs/get-started/learn-more",
+    "provider": "SAP (capire)",
+    "kind": "docs",
+    "skillIds": [
+      "sap-cap"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to SAP Cloud Application Programming Model",
+    "url": "https://learning.sap.com/courses/introduction-to-sap-cloud-application-programming-model",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-cap"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Develop extensions with CAP following the SAP BTP Developer's Guide",
+    "url": "https://learning.sap.com/courses/develop-extensions-with-cap-following-the-sap-btp-developer-s-guide",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-cap"
+    ],
+    "minutes": 540,
+    "free": true
+  },
+  {
+    "title": "Back to basics: CAP Node.js (playlist)",
+    "url": "https://www.youtube.com/playlist?list=PL6RpkC85SLQBHPdfHQ0Ry2TMdsT-muECx",
+    "provider": "SAP Developers (YouTube)",
+    "kind": "video",
+    "skillIds": [
+      "sap-cap"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Introduction to application development using CAP",
+    "url": "https://developers.sap.com/tutorials/introduction",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-cap"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Set up SAP Integration Suite trial",
+    "url": "https://developers.sap.com/tutorials/cp-starter-isuite-onboard-subscribe",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-integration-suite",
+      "sap-api-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Getting started with integration flow design guidelines: timer-initiated scenario",
+    "url": "https://developers.sap.com/tutorials/btp-integration-suite-design-guidelines",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-integration-suite"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SAP Cloud Platform Integration service overview",
+    "url": "https://learning.sap.com/courses/sap-cloud-platform-integration-service-overview",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "sap-integration-suite"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Cloud Integration design guidelines: use supported native APIs and Groovy",
+    "url": "https://help.sap.com/doc/978cdb2059244c10b55a8bd916484a63/CLOUD/en-US/b98a7caa6c871014bc6ce3c22a1e81b1.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-integration-suite",
+      "groovy-scripting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Learning Groovy script for Cloud Integration, part 5",
+    "url": "https://blogs.sap.com/2023/02/08/learning-groovy-script-for-cloud-integration-part-5/",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "groovy-scripting",
+      "sap-integration-suite"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Groovy documentation",
+    "url": "https://groovy-lang.org/documentation.html",
+    "provider": "Apache Groovy",
+    "kind": "docs",
+    "skillIds": [
+      "groovy-scripting"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Differences with Java (Groovy)",
+    "url": "https://groovy-lang.org/differences.html",
+    "provider": "Apache Groovy",
+    "kind": "docs",
+    "skillIds": [
+      "groovy-scripting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Getting started with SAP CPI: a beginner's handbook, part 3 (Groovy basics)",
+    "url": "https://community.sap.com/t5/technology-blog-posts-by-members/getting-started-with-sap-cpi-a-beginner-s-handbook-part-3/ba-p/14026580",
+    "provider": "SAP Community",
+    "kind": "docs",
+    "skillIds": [
+      "groovy-scripting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Expose an integration flow as an API with SAP API Management",
+    "url": "https://developers.sap.com/tutorials/cp-starter-isuite-api-management",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-api-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Create an API proxy",
+    "url": "https://developers.sap.com/tutorials/hcp-apim-create-api.html",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-api-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Create a product in SAP API Management",
+    "url": "https://developers.sap.com/tutorials/hcp-apim-create-product",
+    "provider": "SAP Developers",
+    "kind": "practice",
+    "skillIds": [
+      "sap-api-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "SAS Programming 1: Essentials (free e-learning)",
+    "url": "https://www.sas.com/sas/training/offers/sas-programming-course/overview.html",
+    "provider": "SAS",
+    "kind": "course",
+    "skillIds": [
+      "sas-programming"
+    ],
+    "minutes": 1260,
+    "free": true
+  },
+  {
+    "title": "SAS free online training",
+    "url": "https://www.sas.com/en_us/training/offers/free-training.html",
+    "provider": "SAS",
+    "kind": "course",
+    "skillIds": [
+      "sas-programming"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "SAS OnDemand for Academics (free SAS Studio for practice)",
+    "url": "https://www.sas.com/en_us/software/on-demand-for-academics.html",
+    "provider": "SAS",
+    "kind": "practice",
+    "skillIds": [
+      "sas-programming"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "SAS Macro Programming for Beginners (SUGI 29, Paper 243-29)",
+    "url": "https://support.sas.com/resources/papers/proceedings/proceedings/sugi29/243-29.pdf",
+    "provider": "SAS Users Group International",
+    "kind": "docs",
+    "skillIds": [
+      "sas-programming"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "SAS 9.4 Macro Language: Reference",
+    "url": "https://documentation.sas.com/api/collections/pgmsascdc/9.4_3.5/docsets/mcrolref/content/mcrolref.pdf?locale=en",
+    "provider": "SAS Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "sas-programming"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SAS SQL Procedure User's Guide",
+    "url": "https://documentation.sas.com/api/collections/pgmsascdc/v_046/docsets/sqlproc/content/sqlproc.pdf?locale=en",
+    "provider": "SAS Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "sas-programming"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Base SAS Procedures Guide (incl. PROC REPORT chapter)",
+    "url": "https://documentation.sas.com/api/collections/pgmsascdc/v_079/docsets/proc/content/proc.pdf?locale=en",
+    "provider": "SAS Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-tlf-programming",
+      "sas-programming"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "pharmaverse examples: SDTM, ADaM and TLG in R",
+    "url": "https://pharmaverse.github.io/examples/",
+    "provider": "pharmaverse",
+    "kind": "practice",
+    "skillIds": [
+      "cdisc-sdtm",
+      "cdisc-adam",
+      "clinical-tlf-programming",
+      "r-programming"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "admiral: ADaM in R asset library (Get started and ADSL vignette)",
+    "url": "https://pharmaverse.github.io/admiral/",
+    "provider": "pharmaverse",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-adam",
+      "r-programming"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "FDA Study Data Standards Resources (Technical Conformance Guide, Data Standards Catalog)",
+    "url": "https://www.fda.gov/industry/fda-data-standards-advisory-board/study-data-standards-resources",
+    "provider": "U.S. FDA",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-submission-validation",
+      "cdisc-sdtm",
+      "cdisc-adam"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "FDA Study Data Technical Rejection Criteria, Validation and Self-Check Worksheet",
+    "url": "https://www.fda.gov/media/135247/download",
+    "provider": "U.S. FDA",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-submission-validation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "pharmaverse eSubmission: XPT, Define-XML and reviewer's guides",
+    "url": "https://pharmaverse.github.io/examples/esub/index.html",
+    "provider": "pharmaverse",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-submission-validation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Step 3: Clinical Research (drug development process)",
+    "url": "https://www.fda.gov/patients/drug-development-process/step-3-clinical-research",
+    "provider": "U.S. FDA",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-trials-knowledge"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "ICH Efficacy Guidelines (E6 GCP, E3 CSR, E9 statistics)",
+    "url": "https://www.ich.org/page/efficacy-guidelines",
+    "provider": "ICH",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-trials-knowledge"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "ICH E9: Statistical Principles for Clinical Trials",
+    "url": "https://database.ich.org/sites/default/files/E9_Guideline.pdf",
+    "provider": "ICH",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-trials-knowledge"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Part 11, Electronic Records; Electronic Signatures: Scope and Application",
+    "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/part-11-electronic-records-electronic-signatures-scope-and-application",
+    "provider": "U.S. FDA",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-trials-knowledge"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Current regulatory requirements for conducting clinical trials in India (NPTEL)",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_ge14/preview",
+    "provider": "NPTEL (CDSA / CDSCO)",
+    "kind": "course",
+    "skillIds": [
+      "clinical-trials-knowledge"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "Health Research Fundamentals (NPTEL)",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_hs112/preview",
+    "provider": "NPTEL (ICMR-NIE)",
+    "kind": "course",
+    "skillIds": [
+      "clinical-trials-knowledge"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "R for Data Science (2e)",
+    "url": "https://r4ds.hadley.nz/",
+    "provider": "Hadley Wickham, Mine Cetinkaya-Rundel, Garrett Grolemund",
+    "kind": "docs",
+    "skillIds": [
+      "r-programming"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "CRAN manuals: An Introduction to R",
+    "url": "https://cran.r-project.org/manuals.html",
+    "provider": "R Core Team (CRAN)",
+    "kind": "docs",
+    "skillIds": [
+      "r-programming"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Exploratory Data Analysis for Data Science with R Software (NPTEL)",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_cs07/preview",
+    "provider": "NPTEL (IIT Kanpur)",
+    "kind": "course",
+    "skillIds": [
+      "r-programming"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "R Programming Tutorial: learn the basics of statistical computing",
+    "url": "https://www.freecodecamp.org/news/r-programming-course/",
+    "provider": "freeCodeCamp",
+    "kind": "video",
+    "skillIds": [
+      "r-programming"
+    ],
+    "minutes": 130,
+    "free": true
+  },
+  {
+    "title": "Oracle WebLogic Server 14.1.2: Administer (documentation index)",
+    "url": "https://docs.oracle.com/en/middleware/fusion-middleware/weblogic-server/14.1.2/administer.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "weblogic-administration"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Administering Server Environments for Oracle WebLogic Server 14.1.2",
+    "url": "https://docs.oracle.com/en/middleware/fusion-middleware/weblogic-server/14.1.2/cnfgd/administering-server-environments-oracle-weblogic-server.pdf",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "weblogic-administration"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Understanding the WebLogic Scripting Tool (WLST)",
+    "url": "https://docs.oracle.com/en/middleware/standalone/weblogic-server/15.1.1/wlstg/using_wlst.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "weblogic-administration"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Understanding Oracle WebLogic Server: system administration overview",
+    "url": "https://docs.oracle.com/en/middleware/standalone/weblogic-server/14.1.1.0/intro/sysadmin.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "weblogic-administration"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Administering Server Startup and Shutdown for Oracle WebLogic Server",
+    "url": "https://docs.oracle.com/en/middleware/standalone/weblogic-server/14.1.1.0/start/overview.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "weblogic-administration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "WebSphere Application Server ND 9.0.5: Setting up the application serving environment",
+    "url": "https://www.ibm.com/docs/en/was-nd/9.0.5?topic=90-setting-up-application-serving-environment",
+    "provider": "IBM Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "websphere-administration"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Introduction: Administrative scripting (wsadmin)",
+    "url": "https://www.ibm.com/docs/SSAW57_8.5.5/com.ibm.websphere.nd.doc/ae/welcadminscript.html",
+    "provider": "IBM Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "websphere-administration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Where to find Liberty documentation (WebSphere Liberty and Open Liberty)",
+    "url": "https://www.ibm.com/docs/SSEQTP_liberty/com.ibm.websphere.wlp.doc/ae/cwlp_docs.html",
+    "provider": "IBM Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "websphere-administration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "IBM HTTP Server 9.0.5 documentation",
+    "url": "https://www.ibm.com/docs/en/ibm-http-server/9.0.5",
+    "provider": "IBM Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "web-server-administration",
+      "websphere-administration"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "JBoss EAP 8.0 Configuration Guide: JBoss EAP management (CLI and console)",
+    "url": "https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.0/html/configuration_guide/eap-mgmt-overview_default",
+    "provider": "Red Hat",
+    "kind": "docs",
+    "skillIds": [
+      "jboss-wildfly-administration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Getting started with JBoss EAP 8.0: Administering JBoss EAP",
+    "url": "https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.0/html/getting_started_with_red_hat_jboss_enterprise_application_platform/administering_jboss_eap",
+    "provider": "Red Hat",
+    "kind": "docs",
+    "skillIds": [
+      "jboss-wildfly-administration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "JBoss EAP 8.0: Configuring managed domains",
+    "url": "https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.0/html/configuration_guide/about-eap-managed-domains_default",
+    "provider": "Red Hat",
+    "kind": "docs",
+    "skillIds": [
+      "jboss-wildfly-administration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "WildFly 42 documentation (Admin, HA and Getting Started guides)",
+    "url": "https://docs.wildfly.org/42/",
+    "provider": "WildFly",
+    "kind": "docs",
+    "skillIds": [
+      "jboss-wildfly-administration"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "An introduction to the domain mode of WildFly",
+    "url": "https://www.wildfly.org/news/2025/02/12/An-introduction-to-use-the-domain-mode-of-the-current-release-of-WildFly/",
+    "provider": "WildFly",
+    "kind": "docs",
+    "skillIds": [
+      "jboss-wildfly-administration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Reverse Proxy Guide (Apache HTTP Server 2.4)",
+    "url": "https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html",
+    "provider": "Apache Software Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "web-server-administration"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "mod_proxy_ajp: proxying to Tomcat over AJP (Apache HTTP Server 2.4)",
+    "url": "https://httpd.apache.org/docs/2.4/mod/mod_proxy_ajp.html",
+    "provider": "Apache Software Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "web-server-administration"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "nginx Beginner's Guide",
+    "url": "https://nginx.org/en/docs/beginners_guide.html",
+    "provider": "nginx",
+    "kind": "docs",
+    "skillIds": [
+      "web-server-administration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "How nginx processes a request",
+    "url": "https://nginx.org/en/docs/http/request_processing.html",
+    "provider": "nginx",
+    "kind": "docs",
+    "skillIds": [
+      "web-server-administration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Apache Tomcat 10.1 SSL/TLS Configuration How-To",
+    "url": "https://tomcat.apache.org/tomcat-10.1-doc/ssl-howto.html",
+    "provider": "Apache Software Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "ssl-certificate-management",
+      "web-server-administration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "The keytool command (Java SE 21)",
+    "url": "https://docs.oracle.com/en/java/javase/21/docs/specs/man/keytool.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "ssl-certificate-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "openssl-req: generate certificate signing requests",
+    "url": "https://docs.openssl.org/3.6/man1/openssl-req/",
+    "provider": "OpenSSL",
+    "kind": "docs",
+    "skillIds": [
+      "ssl-certificate-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Configuring HTTPS servers (nginx)",
+    "url": "https://nginx.org/en/docs/http/configuring_https_servers.html",
+    "provider": "nginx",
+    "kind": "docs",
+    "skillIds": [
+      "ssl-certificate-management",
+      "web-server-administration"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Security/Server Side TLS recommendations",
+    "url": "https://wiki.mozilla.org/Security/Server%20Side%20TLS",
+    "provider": "Mozilla",
+    "kind": "docs",
+    "skillIds": [
+      "ssl-certificate-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "What is an SLA? Service level agreements explained",
+    "url": "https://www.atlassian.com/itsm/service-request-management/slas",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "service-level-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "SRE fundamentals: SLI vs SLO vs SLA",
+    "url": "https://cloud.google.com/blog/products/devops-sre/sre-fundamentals-sli-vs-slo-vs-sla",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "service-level-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "What is a Service Level Agreement (SLA)?",
+    "url": "https://www.servicenow.com/products/itsm/what-is-sla.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "service-level-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Major incident management: process and roles",
+    "url": "https://www.atlassian.com/incident-management/itsm/major-incident-management",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "major-incident-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "The Atlassian Incident Management Handbook",
+    "url": "https://www.atlassian.com/incident-management/handbook",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "major-incident-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Incident Commander training",
+    "url": "https://response.pagerduty.com/training/incident_commander/",
+    "provider": "PagerDuty",
+    "kind": "docs",
+    "skillIds": [
+      "major-incident-management"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "How to manage technical incidents (The GDS Way)",
+    "url": "https://gds-way.digital.cabinet-office.gov.uk/standards/incident-management.html",
+    "provider": "Government Digital Service (UK)",
+    "kind": "docs",
+    "skillIds": [
+      "major-incident-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Incident Response (SRE Workbook)",
+    "url": "https://sre.google/workbook/incident-response/",
+    "provider": "Google SRE",
+    "kind": "docs",
+    "skillIds": [
+      "major-incident-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Problem management process: 6 steps in ITSM",
+    "url": "https://www.atlassian.com/itsm/problem-management/process",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "itil-problem-change-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "What is the ITIL problem management process?",
+    "url": "https://support.atlassian.com/jira-service-management-cloud/docs/what-is-the-itil-problem-management-process/",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "itil-problem-change-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "What is a CAB? Change advisory board explained",
+    "url": "https://www.atlassian.com/itsm/change-management/change-advisory-board",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "itil-problem-change-management"
+    ],
+    "minutes": 12,
+    "free": true
+  },
+  {
+    "title": "Change management types: standard, normal and emergency",
+    "url": "https://www.atlassian.com/itsm/change-management/types",
+    "provider": "Atlassian",
+    "kind": "docs",
+    "skillIds": [
+      "itil-problem-change-management"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "How do I set up an effective change advisory board?",
+    "url": "https://www.servicenow.com/content/dam/servicenow-assets/public/en-us/doc-type/success/quick-answer/change-advisory-board-setup.pdf",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "itil-problem-change-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "CVAT quality control (ground truth jobs and quality scores)",
+    "url": "https://docs.cvat.ai/docs/qa-analytics/quality-control/",
+    "provider": "CVAT",
+    "kind": "docs",
+    "skillIds": [
+      "annotation-quality-review"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "CVAT consensus-based annotation",
+    "url": "https://docs.cvat.ai/docs/qa-analytics/consensus/",
+    "provider": "CVAT",
+    "kind": "docs",
+    "skillIds": [
+      "annotation-quality-review"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to measure inter-annotator agreement and build human consensus with Label Studio",
+    "url": "https://labelstud.io/tutorials/how_to_measure_inter_annotator_agreement_and_build_human_consensus",
+    "provider": "Label Studio",
+    "kind": "practice",
+    "skillIds": [
+      "annotation-quality-review"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "cohen_kappa_score: inter-annotator agreement (scikit-learn)",
+    "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html",
+    "provider": "scikit-learn",
+    "kind": "docs",
+    "skillIds": [
+      "annotation-quality-review"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Data Collection + Evaluation: designing for labelers and labeling (People + AI Guidebook)",
+    "url": "https://pair.withgoogle.com/chapter/data-collection/",
+    "provider": "Google PAIR",
+    "kind": "docs",
+    "skillIds": [
+      "annotation-quality-review"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Label Studio: Text Named Entity Recognition template",
+    "url": "https://labelstud.io/templates/named_entity",
+    "provider": "Label Studio",
+    "kind": "docs",
+    "skillIds": [
+      "text-audio-annotation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Label Studio: Sentiment Analysis template",
+    "url": "https://labelstud.io/templates/sentiment_analysis",
+    "provider": "Label Studio",
+    "kind": "docs",
+    "skillIds": [
+      "text-audio-annotation"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Label Studio: Audio Transcription template",
+    "url": "https://labelstud.io/templates/transcribe_audio",
+    "provider": "Label Studio",
+    "kind": "docs",
+    "skillIds": [
+      "text-audio-annotation"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "doccano tutorial: named entity recognition annotation",
+    "url": "https://doccano.github.io/doccano/tutorial",
+    "provider": "doccano",
+    "kind": "practice",
+    "skillIds": [
+      "text-audio-annotation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Hugging Face Audio Course: choosing a speech recognition dataset",
+    "url": "https://huggingface.co/learn/audio-course/chapter5/choosing_dataset",
+    "provider": "Hugging Face",
+    "kind": "course",
+    "skillIds": [
+      "text-audio-annotation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Illustrating Reinforcement Learning from Human Feedback (RLHF)",
+    "url": "https://huggingface.co/blog/rlhf",
+    "provider": "Hugging Face",
+    "kind": "docs",
+    "skillIds": [
+      "ai-response-rating"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Aligning language models to follow instructions (InstructGPT)",
+    "url": "https://openai.com/index/instruction-following/",
+    "provider": "OpenAI",
+    "kind": "docs",
+    "skillIds": [
+      "ai-response-rating"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Learning to summarize with human feedback",
+    "url": "https://openai.com/index/learning-to-summarize-with-human-feedback/",
+    "provider": "OpenAI",
+    "kind": "docs",
+    "skillIds": [
+      "ai-response-rating"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Training a helpful and harmless assistant with RLHF",
+    "url": "https://www.anthropic.com/research/training-a-helpful-and-harmless-assistant-with-reinforcement-learning-from-human-feedback",
+    "provider": "Anthropic",
+    "kind": "docs",
+    "skillIds": [
+      "ai-response-rating"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "LLM evaluation guidebook: human evaluation tips and tricks",
+    "url": "https://github.com/huggingface/evaluation-guidebook/blob/main/contents/human-evaluation/tips-and-tricks.md",
+    "provider": "Hugging Face",
+    "kind": "docs",
+    "skillIds": [
+      "ai-response-rating",
+      "annotation-quality-review"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How to judge the quality of a vendor's preference data",
+    "url": "https://labelstud.io/learning-center/how-to-judge-the-quality-of-a-vendors-preference-data/",
+    "provider": "Label Studio",
+    "kind": "docs",
+    "skillIds": [
+      "ai-response-rating",
+      "annotation-quality-review"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "CVAT Track mode (interpolated video annotation)",
+    "url": "https://docs.cvat.ai/docs/annotation/manual-annotation/modes/track-mode-basics/",
+    "provider": "CVAT",
+    "kind": "docs",
+    "skillIds": [
+      "video-annotation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "CVAT 3D object annotation (cuboids)",
+    "url": "https://docs.cvat.ai/docs/annotation/manual-annotation/modes/3d-object-annotation/",
+    "provider": "CVAT",
+    "kind": "docs",
+    "skillIds": [
+      "video-annotation"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Label Studio: Video Object Detection and Tracking template",
+    "url": "https://labelstud.io/templates/video_object_detector",
+    "provider": "Label Studio",
+    "kind": "docs",
+    "skillIds": [
+      "video-annotation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "CVAT Academy Lecture 8: Track mode",
+    "url": "https://www.youtube.com/watch?v=4c6zFssovNY",
+    "provider": "CVAT (YouTube)",
+    "kind": "video",
+    "skillIds": [
+      "video-annotation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "CPWD General Conditions of Contract 2023 (copy hosted by IIT Kanpur)",
+    "url": "https://iitk.ac.in/iwd/file/2025/12-AC-EE-2025/GCC2023.pdf",
+    "provider": "IIT Kanpur (CPWD document)",
+    "kind": "docs",
+    "skillIds": [
+      "construction-contract-conditions",
+      "ra-subcontractor-billing",
+      "measurement-book-records",
+      "material-reconciliation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Public Works Department: works accounts and initial records",
+    "url": "https://cag.gov.in/uploads/media/Works-Accounts-20200604155419.pdf",
+    "provider": "Comptroller and Auditor General of India",
+    "kind": "docs",
+    "skillIds": [
+      "measurement-book-records",
+      "ra-subcontractor-billing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Measurement Book (West Bengal Form No. 2900) rules",
+    "url": "https://wbxpress.com/measurement-book/",
+    "provider": "wbxpress (West Bengal PWD code)",
+    "kind": "docs",
+    "skillIds": [
+      "measurement-book-records"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Measurement Book: procedure for recording and making corrections",
+    "url": "https://testbook.com/civil-engineering/measurement-book",
+    "provider": "Testbook",
+    "kind": "docs",
+    "skillIds": [
+      "measurement-book-records"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Estimation, Costing and Valuation II (diploma notes)",
+    "url": "https://www.diploma.rec.ac.in/images/estimation,costingandvaluation-II.pdf",
+    "provider": "Raajdhani Engineering College",
+    "kind": "docs",
+    "skillIds": [
+      "measurement-book-records",
+      "boq-rate-analysis"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Estimation and Costing lecture notes",
+    "url": "https://www.iare.ac.in/sites/default/files/lecture_notes/IARE_E%26C_LECTURE_NOTES.pdf",
+    "provider": "IARE Hyderabad",
+    "kind": "docs",
+    "skillIds": [
+      "boq-rate-analysis"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Schedule of Rates: Building Works (West Bengal PWD)",
+    "url": "https://wbxpress.com/files/2019/02/Building-Works.pdf",
+    "provider": "wbxpress (West Bengal PWD)",
+    "kind": "practice",
+    "skillIds": [
+      "boq-rate-analysis"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Construction Planning and Management (IIT Guwahati)",
+    "url": "https://nptel.ac.in/courses/105103093",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "boq-rate-analysis",
+      "construction-contract-conditions"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Principles of Construction Management (IIT Kanpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_ce20/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "construction-contract-conditions"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "FIDIC Red Book 2017: Variations (training slides)",
+    "url": "https://events.development.asia/system/files/d2-s03-fidic-redbook-2017-variations-dinesh.pdf",
+    "provider": "Asian Development Bank (Development Asia)",
+    "kind": "docs",
+    "skillIds": [
+      "construction-contract-conditions"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "NHAI model agreement (modified, 2022): change of scope and payment clauses",
+    "url": "https://nhai.gov.in/nhai/sites/default/files/2020/Modified%20DCA%2022.07.2022.pdf",
+    "provider": "National Highways Authority of India",
+    "kind": "docs",
+    "skillIds": [
+      "construction-contract-conditions"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Reconciliation statement of cement and cement coefficients as per DSR",
+    "url": "https://civil4m.com/posts/19566/",
+    "provider": "Civil4M",
+    "kind": "docs",
+    "skillIds": [
+      "material-reconciliation",
+      "boq-rate-analysis"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Construction site reconciliation statement",
+    "url": "https://civil4m.com/threads/construction-site-reconciliation-statement.7331/",
+    "provider": "Civil4M",
+    "kind": "docs",
+    "skillIds": [
+      "material-reconciliation"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Tender conditions: theoretical consumption of cement and steel",
+    "url": "https://nitm.ac.in/nitmeghalaya/ckfinder/userfiles/files/1_Conditions.pdf",
+    "provider": "NIT Meghalaya",
+    "kind": "docs",
+    "skillIds": [
+      "material-reconciliation",
+      "construction-contract-conditions"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Civil special conditions of contract (cement and steel wastage limits)",
+    "url": "https://tenders.bhel.com/sites/default/files/civil-special-conditions-of-contract-1607752712.pdf",
+    "provider": "BHEL",
+    "kind": "docs",
+    "skillIds": [
+      "material-reconciliation",
+      "construction-contract-conditions"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Electrician Trade Theory, Semester 2: wiring installation, estimation and earthing (NIMI)",
+    "url": "https://bharatskills.gov.in/pdf/E_Books/Electrician_SEM2_TT.pdf",
+    "provider": "Bharat Skills (DGT, Government of India)",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-load-calculations"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Design of Reinforced Concrete Structures (IS 456:2000), IIT Kharagpur",
+    "url": "https://nptel.ac.in/courses/105105105",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "is-456-concrete-codes"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Reinforced Concrete Design, IIT Guwahati",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_ce03/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "is-456-concrete-codes"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Advanced Concrete Technology (mixture proportioning, durability), IIT Madras",
+    "url": "https://nptel.ac.in/courses/105106176",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "is-456-concrete-codes"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Estimation and Professional Practices: lecture notes on IS 1200 measurement, estimates and rate analysis",
+    "url": "https://vssut.ac.in/lecture_notes/lecture1529931425.pdf",
+    "provider": "Veer Surendra Sai University of Technology, Burla",
+    "kind": "docs",
+    "skillIds": [
+      "is-1200-measurement-rules",
+      "boq-rate-analysis"
+    ],
+    "minutes": 180,
     "free": true
   }
 ]

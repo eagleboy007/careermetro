@@ -1,0 +1,136 @@
+{
+  "slug": "infotainment-engineer",
+  "title": "Infotainment Engineer",
+  "summary": "Builds the software inside a car's dashboard screen, the head unit that runs media, phone, navigation and vehicle settings, usually on Android Automotive or Qt on embedded Linux. Works in an automotive software team below the app layer, on platform services, HALs (hardware abstraction layers) and Bluetooth and audio.",
+  "dailyDuties": [
+    "Add features to AOSP framework services or Qt middleware",
+    "Integrate vehicle signals through the vehicle HAL",
+    "Debug Bluetooth phone and audio issues from HCI logs",
+    "Fix media playback and audio routing bugs",
+    "Bring up builds on new head-unit hardware",
+    "Review code in Gerrit and fix bench-test defects"
+  ],
+  "typicalTitles": [
+    "IVI Software Engineer",
+    "Android Automotive Developer",
+    "AAOS Engineer",
+    "Android Framework Engineer - Automotive",
+    "Infotainment Software Engineer",
+    "Bluetooth Software Engineer - Infotainment",
+    "Qt QML Developer - Automotive HMI",
+    "Infotainment Middleware Developer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "android-automotive-aosp",
+      "importance": "required",
+      "expectation": "Build on Android Automotive OS: AOSP framework services, car APIs and HALs",
+      "postingShare": null,
+      "oneOf": "ivi-platform"
+    },
+    {
+      "skillId": "qt-qml",
+      "importance": "required",
+      "expectation": "Build infotainment HMI and middleware with Qt and QML on Linux or QNX",
+      "postingShare": null,
+      "oneOf": "ivi-platform"
+    },
+    {
+      "skillId": "cpp",
+      "importance": "required",
+      "expectation": "Write C++ for HALs, middleware or Qt apps",
+      "postingShare": null,
+      "oneOf": "ivi-language"
+    },
+    {
+      "skillId": "java",
+      "importance": "required",
+      "expectation": "Write Java for Android framework services and system apps",
+      "postingShare": null,
+      "oneOf": "ivi-language"
+    },
+    {
+      "skillId": "embedded-linux",
+      "importance": "required",
+      "expectation": "Work on embedded Linux or Android BSP layers such as Yocto images and drivers",
+      "postingShare": null
+    },
+    {
+      "skillId": "bluetooth-profiles",
+      "importance": "required",
+      "expectation": "Integrate and debug Bluetooth phone, audio and contacts profiles such as HFP, A2DP, AVRCP and PBAP",
+      "postingShare": null
+    },
+    {
+      "skillId": "multimedia-frameworks",
+      "importance": "required",
+      "expectation": "Handle media playback and audio routing with GStreamer or the Android audio stack",
+      "postingShare": null
+    },
+    {
+      "skillId": "concurrency-multithreading",
+      "importance": "required",
+      "expectation": "Write multithreaded code that talks across processes over Binder, D-Bus or sockets",
+      "postingShare": null
+    },
+    {
+      "skillId": "android",
+      "importance": "nice_to_have",
+      "expectation": "Build Android system apps with the SDK",
+      "postingShare": null
+    },
+    {
+      "skillId": "kotlin",
+      "importance": "nice_to_have",
+      "expectation": "Use Kotlin for newer Android system apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "embedded-protocols",
+      "importance": "nice_to_have",
+      "expectation": "Read vehicle signals that arrive over CAN",
+      "postingShare": null
+    },
+    {
+      "skillId": "rtos",
+      "importance": "nice_to_have",
+      "expectation": "Know QNX or another RTOS used in clusters and head units",
+      "postingShare": null
+    },
+    {
+      "skillId": "git",
+      "importance": "nice_to_have",
+      "expectation": "Work with Git, Gerrit and repo on AOSP-scale code",
+      "postingShare": null
+    },
+    {
+      "skillId": "build-tools",
+      "importance": "nice_to_have",
+      "expectation": "Build images and modules with CMake, Make or Soong",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "ivi-platform",
+      "label": "An infotainment platform (Android Automotive or Qt/QML)"
+    },
+    {
+      "id": "ivi-language",
+      "label": "A platform language (C++ or Java)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

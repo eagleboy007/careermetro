@@ -1,0 +1,55 @@
+{
+  "id": "physical-design-engineer-mid",
+  "roleSlug": "physical-design-engineer",
+  "persona": "Mid-level block physical design engineer",
+  "resumeText": "Rohan Kulkarni | Bengaluru | rohan.kulkarni@example.com\n\nEXPERIENCE\nPhysical Design Engineer, Kaveri Silicon Labs, Bengaluru (2021 - present)\n- Own block-level floorplanning, placement, CTS and routing in Cadence Innovus for 7nm networking IP.\n- Closed setup and hold timing across 12 corners using PrimeTime and ECO fixes.\n- Analysed CMOS cell delays and clock skew while fixing critical timing paths.\n- Debugged and fixed DRC and LVS violations in Calibre for three tape-outs.\n- Wrote Tcl scripts to automate floorplan checks and timing report summaries.\n- Run all flows on Linux compute farms with LSF job queues.\n- Implemented power gating for two voltage domains using UPF.\n\nSKILLS\nInnovus, ICC2, PrimeTime, Calibre, Voltus, Tcl, Python, Linux\n\nEDUCATION\nBE Electronics and Communication, RV College of Engineering, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "physical-design-pnr",
+        "quote": "floorplanning, placement, CTS and routing in Cadence Innovus"
+      },
+      {
+        "skillId": "synthesis-timing",
+        "quote": "Closed setup and hold timing across 12 corners using PrimeTime"
+      },
+      {
+        "skillId": "digital-logic-design",
+        "quote": "Analysed CMOS cell delays and clock skew"
+      },
+      {
+        "skillId": "physical-verification",
+        "quote": "Debugged and fixed DRC and LVS violations in Calibre"
+      },
+      {
+        "skillId": "eda-scripting",
+        "quote": "Wrote Tcl scripts to automate floorplan checks"
+      },
+      {
+        "skillId": "linux",
+        "quote": "Run all flows on Linux compute farms"
+      },
+      {
+        "skillId": "low-power-design",
+        "quote": "Implemented power gating for two voltage domains using UPF"
+      },
+      {
+        "skillId": "emir-signoff",
+        "quote": "Voltus"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "emir-signoff",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "systemverilog-uvm",
+      "fpga-design",
+      "formal-verification"
+    ]
+  },
+  "reviewedBy": null
+}

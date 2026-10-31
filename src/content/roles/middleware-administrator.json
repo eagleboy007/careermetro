@@ -1,0 +1,148 @@
+{
+  "slug": "middleware-administrator",
+  "title": "Middleware Administrator",
+  "summary": "Installs, configures and keeps running the application servers (WebLogic, WebSphere, JBoss, Tomcat) and web servers that business Java applications run on. Sits in the infrastructure or operations team, handling deployments, certificates, patches and production issues for application teams.",
+  "dailyDuties": [
+    "Deploy application releases to WebLogic, WebSphere or JBoss servers",
+    "Renew SSL certificates and update keystores",
+    "Apply server patches and upgrades in change windows",
+    "Take thread and heap dumps to troubleshoot slow or hung apps",
+    "Configure Apache, IHS or Nginx proxies and load balancing",
+    "Automate routine tasks with WLST, Jython or shell scripts",
+    "Work incident and change tickets in the ITSM tool"
+  ],
+  "typicalTitles": [
+    "WebLogic Administrator",
+    "WebSphere Administrator",
+    "JBoss Administrator",
+    "Middleware Engineer",
+    "Application Server Administrator",
+    "Oracle Middleware Administrator",
+    "Middleware Support Engineer"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "weblogic-administration",
+      "importance": "required",
+      "expectation": "Run at least one Java application server in production",
+      "postingShare": null,
+      "oneOf": "app-server"
+    },
+    {
+      "skillId": "websphere-administration",
+      "importance": "required",
+      "expectation": "Run at least one Java application server in production",
+      "postingShare": null,
+      "oneOf": "app-server"
+    },
+    {
+      "skillId": "jboss-wildfly-administration",
+      "importance": "required",
+      "expectation": "Run at least one Java application server in production",
+      "postingShare": null,
+      "oneOf": "app-server"
+    },
+    {
+      "skillId": "web-server-administration",
+      "importance": "required",
+      "expectation": "Configure Apache, IHS, Nginx or Tomcat as web and proxy tiers",
+      "postingShare": null
+    },
+    {
+      "skillId": "ssl-certificate-management",
+      "importance": "required",
+      "expectation": "Generate CSRs, renew SSL certificates and maintain keystores",
+      "postingShare": null
+    },
+    {
+      "skillId": "linux",
+      "importance": "required",
+      "expectation": "Work daily on Linux or Unix servers to read logs and manage processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "scripting-bash",
+      "importance": "required",
+      "expectation": "Automate deployments, restarts and health checks with shell scripts",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-profiling",
+      "importance": "required",
+      "expectation": "Read thread and heap dumps and tune JVM settings",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Handle incidents and change requests through ITIL processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Script admin tasks in Python or Jython",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "nice_to_have",
+      "expectation": "Automate installs and configuration with Ansible or similar tools",
+      "postingShare": null
+    },
+    {
+      "skillId": "apm-tools",
+      "importance": "nice_to_have",
+      "expectation": "Watch application health with Dynatrace or AppDynamics",
+      "postingShare": null
+    },
+    {
+      "skillId": "java",
+      "importance": "nice_to_have",
+      "expectation": "Read Java stack traces and understand how applications are packaged",
+      "postingShare": null
+    },
+    {
+      "skillId": "ci-cd",
+      "importance": "nice_to_have",
+      "expectation": "Hook deployments into Jenkins or similar pipelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Support containerised Java apps on Kubernetes or OpenShift",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "app-server",
+      "label": "A Java application server (WebLogic, WebSphere or JBoss/WildFly)"
+    }
+  ],
+  "certifications": [
+    {
+      "certId": "rhcsa",
+      "importance": "optional",
+      "why": "Proves the Linux administration the role runs on"
+    },
+    {
+      "certId": "itil-foundation",
+      "importance": "optional",
+      "why": "Shared language for incident and change processes"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

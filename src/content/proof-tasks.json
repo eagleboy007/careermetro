@@ -2602,5 +2602,181 @@
   {
     "skillId": "tolerance-stack-up-analysis",
     "task": "For a synthetic three-part assembly with given dimensions and tolerances, do a worst case and an RSS stack-up of the gap, and say whether it fits. Share the sheet with workings."
+  },
+  {
+    "skillId": "ai-response-rating",
+    "task": "Rate 20 pairs of synthetic chatbot answers (write or generate them) side by side against a rubric you write for helpfulness, accuracy and safety, give each a score and a one-line reason, and rewrite the two worst answers. Share the rubric and sheet."
+  },
+  {
+    "skillId": "android-automotive-aosp",
+    "task": "Build and run the Android Automotive emulator from AOSP or Android Studio's automotive image, add a small car app or a custom vehicle property read through the Car API, and write how the call reaches the vehicle HAL. Share the code and notes."
+  },
+  {
+    "skillId": "annotation-quality-review",
+    "task": "Audit 100 labels from a public labelled dataset against written guidelines: mark each correct or wrong, work out accuracy and inter-annotator agreement with a second pass, and list three guideline fixes. Share the audit sheet."
+  },
+  {
+    "skillId": "automotive-spice",
+    "task": "For a synthetic ECU feature, map its work products (requirements, architecture, unit tests, integration tests) to the Automotive SPICE SWE.1 to SWE.6 processes, and mark the gaps an assessor would raise. Share the table."
+  },
+  {
+    "skillId": "bluetooth-profiles",
+    "task": "Pair a phone with a Linux PC using BlueZ, stream audio over A2DP and pull contacts over PBAP (or capture the HFP setup with btmon), and explain each profile's message flow from the log. Share the logs and notes."
+  },
+  {
+    "skillId": "cdisc-adam",
+    "task": "From a synthetic SDTM DM and AE set (or the public CDISC pilot data), write an ADSL and an ADAE specification and build both datasets in SAS or R, with derived flags and dates. Share the spec and code."
+  },
+  {
+    "skillId": "cdisc-sdtm",
+    "task": "Map a synthetic raw demographics and adverse events CRF dataset to SDTM DM and AE domains, with an annotated CRF page and a mapping spec, and build the datasets in SAS or R. Share the spec, annotations and code."
+  },
+  {
+    "skillId": "cdisc-submission-validation",
+    "task": "Run Pinnacle 21 Community on a small public SDTM sample (such as the CDISC pilot), sort the issues by severity, fix two in the data or define.xml, and draft a short reviewer's guide note for the rest. Share the report and fixes."
+  },
+  {
+    "skillId": "clinical-tlf-programming",
+    "task": "Produce a demographics summary table and an adverse events by system organ class table from the public CDISC pilot ADaM data in SAS PROC REPORT or R, matching a mock shell you draw first. Share the shells, code and output."
+  },
+  {
+    "skillId": "clinical-trials-knowledge",
+    "task": "Write a two-page note on a synthetic phase III trial: its phases so far, what the protocol and statistical analysis plan fix, the ICH GCP duties of the sponsor, and what 21 CFR Part 11 asks of the programming environment. Share it."
+  },
+  {
+    "skillId": "core-banking-parameterisation",
+    "task": "Design the parameters for a synthetic savings account and a personal loan product: interest slabs, charges, limits, GL mapping and accrual rules, as you would set them in Finacle or T24, with a test case for each. Share the sheet."
+  },
+  {
+    "skillId": "core-banking-systems",
+    "task": "Write an end-to-end flow for a synthetic customer in a core banking system: CIF creation, CASA account opening, a term deposit, a loan disbursal and end-of-day batch, naming the module and checks at each step. Share it."
+  },
+  {
+    "skillId": "data-annotation",
+    "task": "Label 200 images or text samples from a public dataset in a free tool (Label Studio or CVAT) using guidelines you write, export them in COCO or JSON format, and note edge cases you hit. Share the guidelines and export."
+  },
+  {
+    "skillId": "data-migration",
+    "task": "Write a migration plan for moving 10,000 synthetic customer records from a legacy CSV to a new schema: source to target mapping, cleansing rules, a load script and a reconciliation report of counts and totals. Share the plan, script and report."
+  },
+  {
+    "skillId": "design-fmea",
+    "task": "Write a design FMEA for a synthetic automotive part (a brake light switch or a window lifter motor) with ten failure modes, severity, occurrence and detection ratings, and actions for the top three. Share the sheet."
+  },
+  {
+    "skillId": "emir-signoff",
+    "task": "Run IR drop analysis on an open-source block in OpenROAD-flow-scripts (or work through a synthetic power grid by hand), find the worst drop, change the grid straps and show the improvement. Share the reports and notes."
+  },
+  {
+    "skillId": "fault-tree-analysis",
+    "task": "Draw a fault tree for a synthetic hazard (unintended acceleration or loss of braking) down to basic events, work out minimal cut sets and the top event probability from given failure rates. Share the diagram and workings."
+  },
+  {
+    "skillId": "functional-safety-concept",
+    "task": "For a synthetic electric power steering ECU, do a short HARA with two hazards, set ASILs and safety goals, and write the functional safety requirements that follow, with a traceability table. Share it."
+  },
+  {
+    "skillId": "gosu-programming",
+    "task": "Write a small Gosu program (with the open-source Gosu tooling) with a class, an enhancement and a rule that validates a synthetic policy object, plus unit tests. Share the code."
+  },
+  {
+    "skillId": "groovy-scripting",
+    "task": "Write a Groovy script that reads a synthetic XML order, maps it to JSON with a changed field structure, logs the result and handles a missing field, as you would in an SAP CPI script step. Share the script and test input."
+  },
+  {
+    "skillId": "guidewire-insurancesuite",
+    "task": "Write a configuration design for a synthetic personal auto product in PolicyCenter: a new coverage, its typelist entries, a PCF screen change and the validation rule, with the Gosu outline. Share the design note."
+  },
+  {
+    "skillId": "guidewire-integration",
+    "task": "Design a Guidewire messaging integration for a synthetic claims system: the event that fires, the message transport plugin, the payload and the retry rules, with a sequence diagram. Share the design."
+  },
+  {
+    "skillId": "itil-problem-change-management",
+    "task": "From a synthetic month of repeat incidents, open two problem records with root cause and workaround, and write a normal change request for the fix with risk, back-out plan and CAB summary. Share the records."
+  },
+  {
+    "skillId": "jboss-wildfly-administration",
+    "task": "Install WildFly on a Linux VM, deploy a sample WAR, set up a datasource and a two-node standalone or domain setup with the CLI, and write the steps to roll back a bad deploy. Share the CLI scripts and notes."
+  },
+  {
+    "skillId": "major-incident-management",
+    "task": "Run a tabletop major incident for a synthetic payment outage: a timeline, the bridge call roles, three stakeholder updates at set intervals, and a post-incident review with actions. Share the documents."
+  },
+  {
+    "skillId": "multimedia-frameworks",
+    "task": "Build a GStreamer pipeline on Linux that plays an audio file and a video file, then one that records from a microphone, and explain each element and how you debugged a caps error. Share the commands and notes."
+  },
+  {
+    "skillId": "pc-insurance-domain",
+    "task": "Write a one-page walk-through of a synthetic motor insurance policy's life: quote, bind, issue, mid-term change, renewal and a claim from first notice to settlement, naming the data captured at each step. Share it."
+  },
+  {
+    "skillId": "physical-design-pnr",
+    "task": "Take an open-source block (such as the gcd example) through OpenROAD-flow-scripts from netlist to GDS: floorplan, placement, CTS and routing, and report area, timing and congestion at each step. Share the reports and screenshots."
+  },
+  {
+    "skillId": "physical-verification",
+    "task": "Run DRC and LVS on an open-source layout with KLayout or Magic and Netgen (such as a SkyWater 130 example), fix two violations and explain each. Share the reports before and after."
+  },
+  {
+    "skillId": "qt-qml",
+    "task": "Build a small Qt Quick (QML) media player screen with a C++ backend model exposed to QML, play and pause controls and a track list. Share the code and a screen recording."
+  },
+  {
+    "skillId": "requirements-management-tools",
+    "task": "Set up a free trial or open-source requirements tool (or a spreadsheet with IDs) for a synthetic ECU feature with ten requirements linked to tests, and show a traceability report with one gap. Share the export."
+  },
+  {
+    "skillId": "sap-btp-platform",
+    "task": "On a free SAP BTP trial account, create a subaccount and Cloud Foundry space, deploy a small app from Business Application Studio, and bind a destination to a public API. Share screenshots and the steps."
+  },
+  {
+    "skillId": "sap-fiori-launchpad",
+    "task": "On an SAP BTP trial, build a launchpad site with two tiles for sample apps, a group and a role assignment, and write how catalogs, groups and target mappings would differ on an on-premise launchpad. Share screenshots and notes."
+  },
+  {
+    "skillId": "sap-fiori-ui5",
+    "task": "Build a SAPUI5 list-report style app against a public OData sample service (Northwind): a list with filters, a detail page and one i18n text, using MVC and data binding. Share the code."
+  },
+  {
+    "skillId": "sap-integration-suite",
+    "task": "On an SAP Integration Suite trial, build an iFlow that takes a synthetic order over HTTPS, maps it with a message mapping or Groovy script, and posts it to a public test endpoint, with error handling. Share the iFlow export and screenshots."
+  },
+  {
+    "skillId": "sas-programming",
+    "task": "Using SAS OnDemand for Academics, read a synthetic patient dataset, clean it with DATA steps, write a macro that summarises any numeric variable by group, and print the results. Share the code and log."
+  },
+  {
+    "skillId": "service-level-management",
+    "task": "For a synthetic IT support contract, define five SLAs with targets, build a monthly SLA report from given ticket data in Excel, and write a service review summary with two improvement actions. Share the report."
+  },
+  {
+    "skillId": "ssl-certificate-management",
+    "task": "Generate a CSR and a self-signed certificate with OpenSSL, load it into a Java keystore with keytool, set up HTTPS on Tomcat or Nginx with it, and write a renewal checklist. Share the commands and notes."
+  },
+  {
+    "skillId": "temenos-transact",
+    "task": "Write a design note for a synthetic retail loan product in Temenos Transact's arrangement architecture: product lines, properties, conditions and the activities for disbursal and repayment. Share it."
+  },
+  {
+    "skillId": "text-audio-annotation",
+    "task": "Transcribe five short public-domain audio clips with timestamps and speaker labels, and tag 100 synthetic sentences for intent and named entities in a free tool such as Label Studio, with guidelines. Share the exports."
+  },
+  {
+    "skillId": "verification-planning",
+    "task": "Write a verification plan for a synthetic FIFO or UART block: features, test list, functional coverage points and assertions, and track a mock coverage closure table. Share the plan."
+  },
+  {
+    "skillId": "web-server-administration",
+    "task": "Set up Nginx or Apache HTTP Server as a reverse proxy in front of two Tomcat instances on Linux with load balancing and access logs, and write the steps to roll a config change safely. Share the configs and notes."
+  },
+  {
+    "skillId": "weblogic-administration",
+    "task": "Install Oracle WebLogic (developer edition) on a Linux VM, create a domain with an admin server and a two-server cluster, deploy a sample app and script one step in WLST. Share the scripts and screenshots."
+  },
+  {
+    "skillId": "websphere-administration",
+    "task": "Install WebSphere Liberty (free), deploy a sample app, set up a datasource and SSL, and write a wsadmin or server.xml change you would script for a full WebSphere ND cell. Share the configs and notes."
   }
 ]

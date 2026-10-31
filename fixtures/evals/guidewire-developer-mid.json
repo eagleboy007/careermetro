@@ -1,0 +1,51 @@
+{
+  "id": "guidewire-developer-mid",
+  "roleSlug": "guidewire-developer",
+  "persona": "Mid-level Guidewire PolicyCenter configuration developer",
+  "resumeText": "Ananya Reddy | Hyderabad | ananya.reddy@example.com\n\nEXPERIENCE\nGuidewire Developer, Deccan InsureTech Services, Hyderabad (2021 - present)\n- Configured Guidewire PolicyCenter 10 for personal auto and homeowners lines, adding coverages and product model changes.\n- Wrote Gosu rules and enhancements for underwriting validation and quote rating.\n- Built PCF screens and wizards for the policy submission flow.\n- Extended the data model with new entities and typelists in Guidewire Studio.\n- Supported policy lifecycle testing for submission, renewal, endorsement and cancellation transactions.\n- Wrote SQL queries against the PolicyCenter database to trace failed policy transactions.\n\nJava Developer, Lakshya Softworks, Hyderabad (2019 - 2021)\n- Built REST APIs in Java and Spring Boot for an internal claims portal.\n- Fixed production defects reported by the support team.\n\nEDUCATION\nBTech Computer Science, JNTU Hyderabad, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "guidewire-insurancesuite",
+        "quote": "Configured Guidewire PolicyCenter 10 for personal auto and homeowners lines"
+      },
+      {
+        "skillId": "gosu-programming",
+        "quote": "Wrote Gosu rules and enhancements for underwriting validation"
+      },
+      {
+        "skillId": "pc-insurance-domain",
+        "quote": "policy lifecycle testing for submission, renewal, endorsement and cancellation transactions"
+      },
+      {
+        "skillId": "sql",
+        "quote": "Wrote SQL queries against the PolicyCenter database"
+      },
+      {
+        "skillId": "java",
+        "quote": "Built REST APIs in Java and Spring Boot"
+      },
+      {
+        "skillId": "rest-apis",
+        "quote": "Built REST APIs in Java and Spring Boot for an internal claims portal"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "guidewire-integration",
+        "status": "missing"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "guidewire-cloud",
+      "data-migration",
+      "soap-xml"
+    ]
+  },
+  "reviewedBy": null
+}
