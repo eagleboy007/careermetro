@@ -1,4 +1,5 @@
 import type { MyApplicationView } from "@/lib/corporate/types";
+import { calendarDayWords } from "@/lib/day-words";
 import { CAN_JOIN, type NoticeDays } from "@/lib/schemas/constants";
 
 /*
@@ -46,8 +47,7 @@ export function canJoinFrom(joinFrom: string, today: string): (typeof CAN_JOIN)[
 }
 
 /** "Fri 9 Oct", as the prototype's notice card writes a day. */
-export const noticeDayText = (day: string): string =>
-  new Date(at(day)).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).replace(",", "");
+export const noticeDayText = (day: string): string => calendarDayWords(day, { weekday: true });
 
 /**
  * The status line on the person's own profile: "Looking for a next role" while job search is on; "Working at

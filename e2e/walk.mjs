@@ -533,7 +533,13 @@ await step("static pages still load after a tick", async () => {
   }
 });
 await step("untick -> back to first, no streak", async () => {
-  await p.locator('section[aria-label="Today\'s ride"] li label').first().click();
+  // The page came from the design step's goto: wait for hydration, or the click lands on a box with no handler yet and
+  // nothing is saved (seen locally after a slow /design). The tick must reach the server.
+  await p.waitForLoadState("networkidle");
+  await Promise.all([
+    p.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/today"), { timeout: 15000 }),
+    p.locator('section[aria-label="Today\'s ride"] li label').first().click(),
+  ]);
   await p.locator('section[aria-label="Welcome"]').waitFor({ timeout: 10000 });
   if (
     await p

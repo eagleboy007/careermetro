@@ -7,6 +7,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "rea
 import { AddJobBox, EditSheet, MyJobsList, type AddedJob, type EditValues, type MyJobActions, type SharedArrival } from "@/components/departures/my-jobs";
 import { ICON, plural, seg, Soon } from "@/components/map/map-parts";
 import { StatusChip } from "@/components/ui/status-chip";
+import { istDayWords } from "@/lib/day-words";
 import {
   citiesOf,
   DEPARTURES_LEDE,
@@ -458,7 +459,7 @@ export function DeparturesView({
 
 const NO_RESUME = "Add your resume and this shows what you have and what is missing for this role.";
 
-const shortToday = () => new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" }).format(new Date());
+const shortToday = () => istDayWords(new Date());
 
 /** A day from a date field as noon in IST, as the server keeps it. */
 const istNoon = (day: string) => new Date(`${day}T12:00:00+05:30`).toISOString();
