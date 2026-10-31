@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles } from "@/content";
-import type { Profile } from "@/lib/schemas";
+import type { Profile, RoleProfile } from "@/lib/schemas";
 import { MIN_SHARE, suggestRoles } from "./suggest";
 
 const now = new Date("2026-10-12T00:00:00Z");
@@ -57,6 +57,37 @@ describe("suggestRoles", () => {
 
   it("is stable: the same resume gives the same suggestions", () => {
     expect(suggestRoles(fresher, roleProfiles, now)).toEqual(suggestRoles(fresher, roleProfiles, now));
+  });
+
+  it("counts Excel and pivot tables as one ability, so they alone suggest no role (as the closest role does)", () => {
+    const sheet = "Built a weekly Excel sheet with pivot tables of scheme spend";
+    const plain = "Kept the weekly scheme spend in an Excel sheet";
+    const orders = "Wrote SQL queries to match orders with invoices";
+    const office: RoleProfile = {
+      slug: "office-role",
+      title: "Office Role",
+      experienceBand: { minYears: 0, maxYears: 3 },
+      skills: ["excel", "excel-pivot-lookup", "sql", "machine-learning", "statistics", "power-bi", "aws", "linux"].map((skillId) => ({
+        skillId,
+        importance: "required" as const,
+        expectation: "Uses it at work",
+        postingShare: null,
+      })),
+      groups: [],
+      certifications: [],
+      sources: [{ description: "Synthetic test role", url: null }],
+      reviewedBy: null,
+      updatedOn: "2026-10-12",
+    };
+    // 2 of 8 would clear MIN_SHARE, but pivot tables imply Excel: one ability, not two.
+    expect(2 / 8).toBeGreaterThanOrEqual(MIN_SHARE);
+    const thin = profile({ skills: [skill("Excel", sheet), skill("Pivot tables", sheet)] });
+    expect(suggestRoles(thin, [office], now)).toEqual([]);
+    // Two genuinely different skills do clear it, and the card still counts every shown skill.
+    const withSql = profile({ skills: [skill("Excel", plain), skill("SQL", orders)] });
+    expect(suggestRoles(withSql, [office], now).map((s) => [s.slug, s.met, s.total])).toEqual([["office-role", 2, 8]]);
+    const all = profile({ skills: [skill("Excel", sheet), skill("Pivot tables", sheet), skill("SQL", orders)] });
+    expect(suggestRoles(all, [office], now).map((s) => [s.slug, s.met, s.total])).toEqual([["office-role", 3, 8]]);
   });
 
   it("suggests nothing when no role is covered enough", () => {
