@@ -39,8 +39,8 @@ describe("hand-entered events (src/content/manual-events.json)", () => {
     }
   });
 
-  it("holds Data research's 9 events of November 2026, both Bengaluru DevFests and not DevFest Nagpur", () => {
-    expect(events).toHaveLength(9);
+  it("holds Data research's 8 events of November 2026, both Bengaluru DevFests, not DevFest Nagpur and no sponsor deck", () => {
+    expect(events).toHaveLength(8);
     const devfests = events.filter((e) => e.city === "Bengaluru" && /devfest/i.test(e.title));
     expect(devfests.map((e) => [e.organiser, e.startsAt.slice(0, 10)]).sort()).toEqual([
       ["GDG Bangalore", "2026-12-05"],
@@ -48,6 +48,23 @@ describe("hand-entered events (src/content/manual-events.json)", () => {
     ]);
     // Held until its date is confirmed: the event page and the chapter page disagree (docs/timetable-sources.md).
     expect(events.some((e) => /nagpur/i.test(e.title) || e.city === "Nagpur")).toBe(false);
+    // The Fifth Elephant is held until it has an edition page: its only link was a sponsor deck (T175).
+    expect(events.filter((e) => /sponsor/i.test(e.sourceUrl))).toEqual([]);
+  });
+
+  it("keeps India times that match a UTC range quoted in the evidence (T175)", () => {
+    const utc = /(\d{1,2}):(\d{2}) to (\d{1,2}):(\d{2}) (AM|PM) UTC/;
+    const minutes = (h: string, m: string, half: string) => ((Number(h) % 12) + (half === "PM" ? 12 : 0)) * 60 + Number(m);
+    const ist = (iso: string) => Number(iso.slice(11, 13)) * 60 + Number(iso.slice(14, 16));
+    for (const e of events) {
+      const m = utc.exec(e.dateEvidence);
+      if (!m) continue;
+      const [, sh, sm, eh, em, half] = m;
+      const startUtc = minutes(sh, sm, half);
+      // "3:00 to 11:00 AM": an end hour below the start hour is past noon.
+      const endUtc = minutes(eh, em, Number(eh) % 12 < Number(sh) % 12 ? "PM" : half);
+      expect([ist(e.startsAt), ist(e.endsAt)], manualKey(e)).toEqual([startUtc + 330, endUtc + 330]);
+    }
   });
 
   it("refuses a listing site, a time outside India time, the same event twice and a topic twice", () => {

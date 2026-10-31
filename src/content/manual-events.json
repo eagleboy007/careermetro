@@ -58,7 +58,7 @@
     "organiser": "GDG Kolkata",
     "kind": "workshop",
     "startsAt": "2026-11-21T08:30:00+05:30",
-    "endsAt": "2026-11-21T14:30:00+05:30",
+    "endsAt": "2026-11-21T16:30:00+05:30",
     "online": false,
     "city": "Kolkata",
     "venue": "New Town, Kolkata",
@@ -91,25 +91,6 @@
     "sourceUrl": "https://gdg.community.dev/events/details/google-gdg-kolkata-presents-devfest-kolkata-2026/",
     "checkedOn": "2026-10-31",
     "dateEvidence": "Google Developer Groups GDG Kolkata presents Devfest Kolkata 2026 | Nov 22, 2026 ... start on Nov 22, 7:30 AM (IST)"
-  },
-  {
-    "title": "The Fifth Elephant 2026 Winter Edition",
-    "organiser": "The Fifth Elephant (Hasgeek)",
-    "kind": "conference",
-    "startsAt": "2026-12-04T09:00:00+05:30",
-    "endsAt": "2026-12-05T18:00:00+05:30",
-    "online": false,
-    "city": "Bengaluru",
-    "venue": "Domlur, Bengaluru",
-    "cost": "",
-    "topics": [
-      "machine-learning",
-      "etl",
-      "llm-apps"
-    ],
-    "sourceUrl": "https://hasgeek.com/fifthelephant/the-fifth-elephant-sponsorship-deck/",
-    "checkedOn": "2026-10-31",
-    "dateEvidence": "Sponsor The Fifth Elephant 2026 Winter Edition ... 4-5 December 2026 at TERI in Domlur, Bangalore, with an online component"
   },
   {
     "title": "DevFest Bengaluru 2026",
