@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState, useTransition } from "react";
+import { useEffect, useId, useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -29,6 +29,24 @@ export function MakeDestination({
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
   const id = useId();
+  // One status line from the first render, so the success words are announced (T178); after the save's refresh the
+  // button is gone, so focus moves here instead of falling to the page.
+  const statusRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    if (done && !choosable) statusRef.current?.focus();
+  }, [done, choosable]);
+  const status = (
+    <p ref={statusRef} tabIndex={-1} role="status" className="text-sm outline-none empty:hidden">
+      {done && !choosable && (
+        <>
+          {roleTitle} is now your destination.{" "}
+          <Link href="/map" className="font-medium text-ink underline underline-offset-2">
+            Open your Map
+          </Link>
+        </>
+      )}
+    </p>
+  );
 
   if (!choosable) {
     return (
@@ -36,14 +54,8 @@ export function MakeDestination({
         <h2 id={id} className="font-sans text-lg font-semibold tracking-normal">
           {roleTitle} is your destination
         </h2>
-        <p role={done ? "status" : undefined} className="text-sm text-muted">
-          Today, your goals and your Map follow it.{" "}
-          {done && (
-            <Link href="/map" className="font-medium text-ink underline underline-offset-2">
-              Open your Map
-            </Link>
-          )}
-        </p>
+        <p className="text-sm text-muted">Today, your goals and your Map follow it.</p>
+        {status}
       </section>
     );
   }
@@ -80,6 +92,7 @@ export function MakeDestination({
           {error}
         </p>
       )}
+      {status}
     </section>
   );
 }
