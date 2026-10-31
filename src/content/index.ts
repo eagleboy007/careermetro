@@ -52,20 +52,24 @@ import applicationSupportEngineer from "./roles/application-support-engineer.jso
 import appsecEngineer from "./roles/appsec-engineer.json";
 import arVrDeveloper from "./roles/ar-vr-developer.json";
 import areaSalesManager from "./roles/area-sales-manager.json";
+import auditAssociate from "./roles/audit-associate.json";
 import automotiveDiagnosticsEngineer from "./roles/automotive-diagnostics-engineer.json";
 import autosarEngineer from "./roles/autosar-engineer.json";
 import biDeveloper from "./roles/bi-developer.json";
 import blockchainDeveloper from "./roles/blockchain-developer.json";
 import buildReleaseEngineer from "./roles/build-release-engineer.json";
 import businessAnalyst from "./roles/business-analyst.json";
+import businessDevelopmentExecutive from "./roles/business-development-executive.json";
 import cloudArchitect from "./roles/cloud-architect.json";
 import cloudEngineer from "./roles/cloud-engineer.json";
 import cloudFinopsAnalyst from "./roles/cloud-finops-analyst.json";
 import cloudNetworkEngineer from "./roles/cloud-network-engineer.json";
 import cloudSecurityEngineer from "./roles/cloud-security-engineer.json";
 import cloudSupportEngineer from "./roles/cloud-support-engineer.json";
+import collectionsOfficer from "./roles/collections-officer.json";
 import computerVisionEngineer from "./roles/computer-vision-engineer.json";
 import contactCenterDeveloper from "./roles/contact-center-developer.json";
+import contentWriter from "./roles/content-writer.json";
 import cppDeveloper from "./roles/cpp-developer.json";
 import creditRiskAnalyst from "./roles/credit-risk-analyst.json";
 import crossPlatformMobileDeveloper from "./roles/cross-platform-mobile-developer.json";
@@ -108,6 +112,7 @@ import grcManager from "./roles/grc-manager.json";
 import hardwareDesignEngineer from "./roles/hardware-design-engineer.json";
 import hilTestEngineer from "./roles/hil-test-engineer.json";
 import hpcGpuEngineer from "./roles/hpc-gpu-engineer.json";
+import hrBusinessPartner from "./roles/hr-business-partner.json";
 import hrGeneralist from "./roles/hr-generalist.json";
 import iamEngineer from "./roles/iam-engineer.json";
 import implementationConsultant from "./roles/implementation-consultant.json";
@@ -124,6 +129,7 @@ import javaBackendDeveloper from "./roles/java-backend-developer.json";
 import kafkaStreamingEngineer from "./roles/kafka-streaming-engineer.json";
 import keyAccountManager from "./roles/key-account-manager.json";
 import linuxKernelDeveloper from "./roles/linux-kernel-developer.json";
+import logisticsCoordinator from "./roles/logistics-coordinator.json";
 import lowCodeDeveloper from "./roles/low-code-developer.json";
 import m365Administrator from "./roles/m365-administrator.json";
 import mainframeDeveloper from "./roles/mainframe-developer.json";
@@ -140,6 +146,7 @@ import oracleEbsConsultant from "./roles/oracle-ebs-consultant.json";
 import oracleFusionTechnicalConsultant from "./roles/oracle-fusion-technical-consultant.json";
 import otSecurityEngineer from "./roles/ot-security-engineer.json";
 import pamEngineer from "./roles/pam-engineer.json";
+import payrollExecutive from "./roles/payroll-executive.json";
 import pegaDeveloper from "./roles/pega-developer.json";
 import penetrationTester from "./roles/penetration-tester.json";
 import performanceTestEngineer from "./roles/performance-test-engineer.json";
@@ -151,6 +158,7 @@ import postSiliconValidationEngineer from "./roles/post-silicon-validation-engin
 import powerPlatformDeveloper from "./roles/power-platform-developer.json";
 import presalesEngineer from "./roles/presales-engineer.json";
 import privacyAnalyst from "./roles/privacy-analyst.json";
+import procurementExecutive from "./roles/procurement-executive.json";
 import productManager from "./roles/product-manager.json";
 import productMarketingManager from "./roles/product-marketing-manager.json";
 import pythonDeveloper from "./roles/python-developer.json";
@@ -158,6 +166,7 @@ import qaAutomationEngineer from "./roles/qa-automation-engineer.json";
 import qaLead from "./roles/qa-lead.json";
 import quantDeveloper from "./roles/quant-developer.json";
 import redTeamOperator from "./roles/red-team-operator.json";
+import relationshipManagerBanking from "./roles/relationship-manager-banking.json";
 import roboticsEngineer from "./roles/robotics-engineer.json";
 import rpaDeveloper from "./roles/rpa-developer.json";
 import rubyOnRailsDeveloper from "./roles/ruby-on-rails-developer.json";
@@ -183,12 +192,14 @@ import siemEngineer from "./roles/siem-engineer.json";
 import siteReliabilityEngineer from "./roles/site-reliability-engineer.json";
 import socAnalystL2 from "./roles/soc-analyst-l2.json";
 import socLead from "./roles/soc-lead.json";
+import socialMediaManager from "./roles/social-media-manager.json";
 import softwareEngineer from "./roles/software-engineer.json";
 import solutionsArchitect from "./roles/solutions-architect.json";
 import storageBackupEngineer from "./roles/storage-backup-engineer.json";
 import supplyChainAnalyst from "./roles/supply-chain-analyst.json";
 import systemAdministrator from "./roles/system-administrator.json";
 import talentAcquisitionSpecialist from "./roles/talent-acquisition-specialist.json";
+import taxAssociate from "./roles/tax-associate.json";
 import techLead from "./roles/tech-lead.json";
 import technicalAccountManager from "./roles/technical-account-manager.json";
 import technicalProgramManager from "./roles/technical-program-manager.json";
@@ -197,6 +208,7 @@ import technicalWriter from "./roles/technical-writer.json";
 import telecomRanEngineer from "./roles/telecom-ran-engineer.json";
 import thirdPartyRiskAnalyst from "./roles/third-party-risk-analyst.json";
 import threatIntelligenceAnalyst from "./roles/threat-intelligence-analyst.json";
+import treasuryAnalyst from "./roles/treasury-analyst.json";
 import uiUxDesigner from "./roles/ui-ux-designer.json";
 import unifiedCommunicationsEngineer from "./roles/unified-communications-engineer.json";
 import uxResearcher from "./roles/ux-researcher.json";
@@ -283,20 +295,24 @@ export const roleProfiles: RoleProfile[] = z
     appsecEngineer,
     arVrDeveloper,
     areaSalesManager,
+    auditAssociate,
     automotiveDiagnosticsEngineer,
     autosarEngineer,
     biDeveloper,
     blockchainDeveloper,
     buildReleaseEngineer,
     businessAnalyst,
+    businessDevelopmentExecutive,
     cloudArchitect,
     cloudEngineer,
     cloudFinopsAnalyst,
     cloudNetworkEngineer,
     cloudSecurityEngineer,
     cloudSupportEngineer,
+    collectionsOfficer,
     computerVisionEngineer,
     contactCenterDeveloper,
+    contentWriter,
     cppDeveloper,
     creditRiskAnalyst,
     crossPlatformMobileDeveloper,
@@ -339,6 +355,7 @@ export const roleProfiles: RoleProfile[] = z
     hardwareDesignEngineer,
     hilTestEngineer,
     hpcGpuEngineer,
+    hrBusinessPartner,
     hrGeneralist,
     iamEngineer,
     implementationConsultant,
@@ -355,6 +372,7 @@ export const roleProfiles: RoleProfile[] = z
     kafkaStreamingEngineer,
     keyAccountManager,
     linuxKernelDeveloper,
+    logisticsCoordinator,
     lowCodeDeveloper,
     m365Administrator,
     mainframeDeveloper,
@@ -371,6 +389,7 @@ export const roleProfiles: RoleProfile[] = z
     oracleFusionTechnicalConsultant,
     otSecurityEngineer,
     pamEngineer,
+    payrollExecutive,
     pegaDeveloper,
     penetrationTester,
     performanceTestEngineer,
@@ -382,6 +401,7 @@ export const roleProfiles: RoleProfile[] = z
     powerPlatformDeveloper,
     presalesEngineer,
     privacyAnalyst,
+    procurementExecutive,
     productManager,
     productMarketingManager,
     pythonDeveloper,
@@ -389,6 +409,7 @@ export const roleProfiles: RoleProfile[] = z
     qaLead,
     quantDeveloper,
     redTeamOperator,
+    relationshipManagerBanking,
     roboticsEngineer,
     rpaDeveloper,
     rubyOnRailsDeveloper,
@@ -414,12 +435,14 @@ export const roleProfiles: RoleProfile[] = z
     siteReliabilityEngineer,
     socAnalystL2,
     socLead,
+    socialMediaManager,
     softwareEngineer,
     solutionsArchitect,
     storageBackupEngineer,
     supplyChainAnalyst,
     systemAdministrator,
     talentAcquisitionSpecialist,
+    taxAssociate,
     techLead,
     technicalAccountManager,
     technicalProgramManager,
@@ -428,6 +451,7 @@ export const roleProfiles: RoleProfile[] = z
     telecomRanEngineer,
     thirdPartyRiskAnalyst,
     threatIntelligenceAnalyst,
+    treasuryAnalyst,
     uiUxDesigner,
     unifiedCommunicationsEngineer,
     uxResearcher,

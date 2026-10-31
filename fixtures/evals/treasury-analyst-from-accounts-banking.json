@@ -1,0 +1,55 @@
+{
+  "id": "treasury-analyst-from-accounts-banking",
+  "roleSlug": "treasury-analyst",
+  "persona": "Accounts executive handling bank payments moving into corporate treasury",
+  "resumeText": "Ananya Iyer | Bengaluru | ananya.iyer@example.com\n\nEXPERIENCE\nSenior Accounts Executive - Banking and Payments, Nilgiri Components Pvt Ltd, Bengaluru (2021 - present)\n- Prepared the daily cash position across 14 bank accounts and moved funds between accounts to cover payment runs.\n- Built a 13-week cash flow forecast in Excel and explained weekly variances to the finance controller.\n- Coordinated with four banks on account opening, signatory mandates and renewal of working capital limits.\n- Worked with procurement and sales teams to time vendor payments against customer collections.\n- Processed import letters of credit and bank guarantees with the bank's trade desk.\n\nEDUCATION\nM.Com, Christ University, Bengaluru, 2021\n\nSKILLS\nSAP FI, MS Excel, Forex hedging basics\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "cash-management",
+        "quote": "Prepared the daily cash position across 14 bank accounts"
+      },
+      {
+        "skillId": "cash-flow-forecasting",
+        "quote": "Built a 13-week cash flow forecast in Excel"
+      },
+      {
+        "skillId": "excel",
+        "quote": "13-week cash flow forecast in Excel"
+      },
+      {
+        "skillId": "bank-relationship-management",
+        "quote": "Coordinated with four banks on account opening, signatory mandates"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Worked with procurement and sales teams to time vendor payments"
+      },
+      {
+        "skillId": "trade-finance-instruments",
+        "quote": "Processed import letters of credit and bank guarantees"
+      },
+      {
+        "skillId": "forex-risk-hedging",
+        "quote": "Forex hedging basics"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "forex-risk-hedging",
+        "status": "weak"
+      },
+      {
+        "skillId": "surplus-fund-investments",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "treasury-management-systems",
+      "financial-modelling",
+      "credit-appraisal"
+    ]
+  },
+  "reviewedBy": null
+}

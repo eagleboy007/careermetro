@@ -7892,5 +7892,1003 @@
     ],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "banking-client-portfolio-management",
+    "name": "Banking client portfolio and AUM growth",
+    "category": "business",
+    "aliases": [
+      "client portfolio management",
+      "customer portfolio management",
+      "portfolio of hni clients",
+      "hni client relationships",
+      "priority banking clients",
+      "aum growth",
+      "wallet share growth",
+      "book of affluent clients"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "casa-deposit-acquisition",
+    "name": "CASA and deposit acquisition",
+    "category": "business",
+    "aliases": [
+      "casa acquisition",
+      "casa sourcing",
+      "casa balances",
+      "current and savings accounts",
+      "liabilities sales",
+      "deposit mobilisation",
+      "deposit mobilization",
+      "fixed deposit mobilisation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "third-party-product-distribution",
+    "name": "Mutual fund and insurance distribution (third-party products)",
+    "category": "business",
+    "aliases": [
+      "mutual fund distribution",
+      "mutual fund sales",
+      "bancassurance",
+      "insurance cross-sell",
+      "third party products",
+      "third-party products",
+      "tpp sales",
+      "sip mobilisation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "investment-suitability-compliance",
+    "name": "Investor suitability and sales compliance (SEBI, AMFI, IRDAI)",
+    "category": "business",
+    "aliases": [
+      "investor risk profiling",
+      "suitability assessment",
+      "mis-selling prevention",
+      "amfi code of conduct",
+      "sebi distributor guidelines",
+      "irdai sales guidelines"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "field-sales-meetings",
+    "name": "Field sales and face-to-face client meetings",
+    "category": "business",
+    "aliases": [
+      "field sales",
+      "face-to-face client meetings",
+      "field client visits",
+      "on-ground sales activities",
+      "door-to-door sales",
+      "client site visits"
+    ],
+    "ambiguous": [
+      "client site visits"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "sales-proposals-quotations",
+    "name": "Sales proposals and quotations",
+    "category": "business",
+    "aliases": [
+      "sales proposals",
+      "business proposals",
+      "commercial proposals",
+      "quotation preparation",
+      "preparing quotations",
+      "client proposals",
+      "techno-commercial offers"
+    ],
+    "ambiguous": [
+      "business proposals",
+      "client proposals"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "seo-content-writing",
+    "name": "SEO content writing and keyword research",
+    "category": "marketing",
+    "aliases": [
+      "seo content writing",
+      "seo writing",
+      "seo-optimised content",
+      "seo-optimized content",
+      "seo optimized content",
+      "keyword research",
+      "seo blogs",
+      "seo articles"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "editing-proofreading",
+    "name": "Editing and proofreading",
+    "category": "marketing",
+    "aliases": [
+      "copy editing",
+      "copyediting",
+      "proofreading",
+      "content editing",
+      "line editing",
+      "editorial style guide",
+      "house style guide"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "content-briefs-outlines",
+    "name": "Content briefs, outlines and editorial calendars",
+    "category": "marketing",
+    "aliases": [
+      "content briefs",
+      "seo content briefs",
+      "content outlines",
+      "article outlines",
+      "editorial calendar",
+      "editorial calendars",
+      "content plan for blogs"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cms-content-publishing",
+    "name": "Publishing content in a CMS",
+    "category": "tools",
+    "aliases": [
+      "wordpress cms",
+      "content management systems",
+      "cms publishing",
+      "publishing in wordpress",
+      "webflow cms",
+      "hubspot cms",
+      "contentful cms"
+    ],
+    "ambiguous": [
+      "wordpress cms",
+      "content management systems",
+      "contentful cms"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "social-media-calendar-planning",
+    "name": "Social media strategy and content calendars",
+    "category": "marketing",
+    "aliases": [
+      "social media calendar",
+      "social media content calendar",
+      "social content calendar",
+      "social media strategy",
+      "social content planning",
+      "monthly content calendar"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "community-management",
+    "name": "Online community management and social listening",
+    "category": "marketing",
+    "aliases": [
+      "community management",
+      "online community management",
+      "social listening",
+      "comment moderation",
+      "online reputation management",
+      "brand community building"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "influencer-creator-marketing",
+    "name": "Influencer and creator marketing",
+    "category": "marketing",
+    "aliases": [
+      "influencer marketing",
+      "influencer campaigns",
+      "influencer outreach",
+      "creator partnerships",
+      "creator collaborations",
+      "ugc campaigns",
+      "user-generated content campaigns"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "short-form-video-content",
+    "name": "Short-form video content (Reels, Shorts)",
+    "category": "marketing",
+    "aliases": [
+      "instagram reels",
+      "short-form video",
+      "short form video",
+      "youtube shorts",
+      "reels production",
+      "reels strategy"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "social-media-analytics",
+    "name": "Social media analytics and reporting",
+    "category": "marketing",
+    "aliases": [
+      "social media analytics",
+      "social media reporting",
+      "instagram insights",
+      "linkedin page analytics",
+      "engagement rate analysis"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "social-media-management-tools",
+    "name": "Social media scheduling and listening tools",
+    "category": "tools",
+    "aliases": [
+      "hootsuite",
+      "sprout social",
+      "sprinklr",
+      "buffer scheduling",
+      "meta business suite",
+      "later.com"
+    ],
+    "ambiguous": [
+      "sprinklr"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "social-creative-design",
+    "name": "Social creatives in Canva or Adobe Express",
+    "category": "marketing",
+    "aliases": [
+      "canva",
+      "adobe express",
+      "social media creatives",
+      "social media graphics",
+      "carousel posts design"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "income-tax-compliance",
+    "name": "Income tax compliance and returns",
+    "category": "business",
+    "aliases": [
+      "income tax returns",
+      "itr filing",
+      "income tax return filing",
+      "income tax computation",
+      "advance tax computation",
+      "corporate tax computation",
+      "direct tax compliance",
+      "corporate income tax returns"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "tax-assessments-litigation",
+    "name": "Tax assessments, notices and appeals",
+    "category": "business",
+    "aliases": [
+      "tax assessments",
+      "scrutiny assessments",
+      "income tax notices",
+      "gst notices",
+      "replies to tax notices",
+      "tax litigation support",
+      "show cause notice replies",
+      "appellate submissions",
+      "assessment proceedings"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "transfer-pricing-documentation",
+    "name": "Transfer pricing documentation",
+    "category": "business",
+    "aliases": [
+      "transfer pricing",
+      "transfer pricing documentation",
+      "transfer pricing study",
+      "form 3ceb",
+      "arm's length pricing",
+      "benchmarking analysis for transfer pricing"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "statutory-audit-execution",
+    "name": "Statutory audit fieldwork",
+    "category": "business",
+    "aliases": [
+      "statutory audit",
+      "statutory audits",
+      "vouching",
+      "vouching and verification",
+      "substantive testing",
+      "audit sampling",
+      "external audit",
+      "standards on auditing",
+      "caro reporting"
+    ],
+    "ambiguous": [
+      "external audit"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "internal-controls-testing",
+    "name": "Internal controls and process audit testing",
+    "category": "business",
+    "aliases": [
+      "internal controls testing",
+      "test of controls",
+      "tests of controls",
+      "icfr testing",
+      "ifc testing",
+      "internal financial controls",
+      "process walkthroughs",
+      "sox testing",
+      "risk control matrix",
+      "process audits",
+      "concurrent audit"
+    ],
+    "ambiguous": [
+      "process audits"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "audit-documentation",
+    "name": "Audit working papers and documentation",
+    "category": "business",
+    "aliases": [
+      "audit working papers",
+      "working papers",
+      "audit workpapers",
+      "audit documentation",
+      "audit file documentation",
+      "audit observations drafting"
+    ],
+    "ambiguous": [
+      "audit documentation"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "audit-software",
+    "name": "Audit and audit-analytics software",
+    "category": "tools",
+    "aliases": [
+      "caseware",
+      "caseware idea",
+      "idea data analysis",
+      "acl analytics",
+      "teammate audit software",
+      "audit command language",
+      "galvanize highbond"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "collections-portfolio-management",
+    "name": "Delinquency bucket and collections portfolio management",
+    "category": "business",
+    "aliases": [
+      "bucket management",
+      "bucket-wise collections",
+      "dpd buckets",
+      "bucket resolution",
+      "roll forward control",
+      "roll back rate",
+      "collection efficiency",
+      "emi bounce cases",
+      "delinquency buckets",
+      "early bucket collections"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "field-tele-collections",
+    "name": "Field and tele-collections",
+    "category": "business",
+    "aliases": [
+      "field collections",
+      "tele collections",
+      "tele-collections",
+      "telecalling collections",
+      "emi collections",
+      "skip tracing",
+      "promise to pay",
+      "ptp follow-up",
+      "credit card collections",
+      "loan collections"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "npa-recovery-legal",
+    "name": "NPA recovery and legal remedies",
+    "category": "business",
+    "aliases": [
+      "sarfaesi",
+      "sarfaesi act",
+      "section 138",
+      "section 138 ni act",
+      "vehicle repossession",
+      "one time settlement",
+      "ots settlement",
+      "lok adalat",
+      "drt proceedings",
+      "npa recovery",
+      "loan arbitration proceedings"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "collections-regulatory-conduct",
+    "name": "Fair practices and collections code of conduct",
+    "category": "business",
+    "aliases": [
+      "fair practices code",
+      "rbi fair practices code",
+      "rbi recovery agent guidelines",
+      "collections code of conduct",
+      "recovery agents code of conduct",
+      "dra guidelines"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "collection-agency-oversight",
+    "name": "Collection agency management",
+    "category": "business",
+    "aliases": [
+      "collection agency management",
+      "collection agencies",
+      "recovery agency management",
+      "agency allocation",
+      "dra monitoring",
+      "agency empanelment"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cash-management",
+    "name": "Cash and liquidity management",
+    "category": "business",
+    "aliases": [
+      "cash management",
+      "cash positioning",
+      "daily cash position",
+      "liquidity management",
+      "fund flow management",
+      "cash pooling",
+      "sweep arrangements"
+    ],
+    "ambiguous": [
+      "cash management",
+      "liquidity management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cash-flow-forecasting",
+    "name": "Cash flow forecasting",
+    "category": "business",
+    "aliases": [
+      "cash flow forecasting",
+      "cash forecasting",
+      "cash forecast",
+      "13-week cash flow",
+      "liquidity forecasting",
+      "fund flow forecasting",
+      "weekly cash flow forecast"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "bank-relationship-management",
+    "name": "Bank relationships and banking facilities",
+    "category": "business",
+    "aliases": [
+      "bank relationship management",
+      "banking relationships",
+      "bank account opening",
+      "bank mandates",
+      "working capital limits",
+      "banking facilities",
+      "bank limits renewal"
+    ],
+    "ambiguous": [
+      "bank account opening"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "forex-risk-hedging",
+    "name": "Forex exposure management and hedging",
+    "category": "business",
+    "aliases": [
+      "forex exposure management",
+      "fx hedging",
+      "forward contracts",
+      "foreign exchange risk management",
+      "currency hedging",
+      "fx exposure",
+      "hedge accounting",
+      "forex hedging"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "surplus-fund-investments",
+    "name": "Investment of surplus funds",
+    "category": "business",
+    "aliases": [
+      "treasury investments",
+      "surplus fund investment",
+      "investment of surplus funds",
+      "fixed deposit placements",
+      "debt mutual fund investments",
+      "money market investments",
+      "commercial paper investments"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "trade-finance-instruments",
+    "name": "Trade finance instruments and FEMA",
+    "category": "business",
+    "aliases": [
+      "letters of credit",
+      "letter of credit",
+      "bank guarantees",
+      "lc and bg",
+      "trade finance",
+      "buyer's credit",
+      "packing credit",
+      "fema compliance"
+    ],
+    "ambiguous": [
+      "trade finance"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "treasury-management-systems",
+    "name": "Treasury management systems",
+    "category": "tools",
+    "aliases": [
+      "kyriba",
+      "sap treasury",
+      "sap trm",
+      "treasury management system",
+      "ion treasury",
+      "quantum treasury",
+      "fis treasury"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hr-business-partnering",
+    "name": "HR business partnering with business leaders",
+    "category": "business",
+    "aliases": [
+      "hr business partnering",
+      "people partnering",
+      "strategic hr partnering",
+      "business hr partnering"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "workforce-planning",
+    "name": "Workforce and manpower planning",
+    "category": "business",
+    "aliases": [
+      "workforce planning",
+      "strategic workforce planning",
+      "headcount planning",
+      "manpower planning",
+      "annual manpower plan",
+      "manpower budgeting",
+      "headcount budgeting"
+    ],
+    "ambiguous": [
+      "workforce planning",
+      "headcount planning",
+      "headcount budgeting"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "talent-review-succession",
+    "name": "Talent reviews and succession planning",
+    "category": "business",
+    "aliases": [
+      "talent reviews",
+      "talent review process",
+      "succession planning",
+      "succession pipeline",
+      "9-box grid",
+      "nine box grid",
+      "high potential identification",
+      "hipo programme"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "organisation-design",
+    "name": "Organisation design and restructuring",
+    "category": "business",
+    "aliases": [
+      "organisation design",
+      "organization design",
+      "org design",
+      "organisational restructuring",
+      "organizational restructuring",
+      "spans and layers",
+      "org structure redesign"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "hr-analytics",
+    "name": "HR analytics and people dashboards",
+    "category": "business",
+    "aliases": [
+      "hr analytics",
+      "people analytics",
+      "workforce analytics",
+      "attrition analysis",
+      "attrition dashboards",
+      "hr dashboards",
+      "hr mis reporting",
+      "headcount reporting"
+    ],
+    "ambiguous": [
+      "hr analytics",
+      "attrition analysis",
+      "attrition dashboards",
+      "hr dashboards"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "compensation-planning",
+    "name": "Compensation planning and salary benchmarking",
+    "category": "business",
+    "aliases": [
+      "compensation planning",
+      "compensation benchmarking",
+      "salary benchmarking",
+      "annual increment cycle",
+      "merit increase planning",
+      "pay benchmarking",
+      "compensation and benefits"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "payroll-statutory-filings",
+    "name": "Payroll statutory deductions and filings (PF, ESI, PT, LWF)",
+    "category": "business",
+    "aliases": [
+      "pf ecr",
+      "ecr filing",
+      "ecr upload",
+      "esic monthly contributions",
+      "esic return filing",
+      "professional tax deduction",
+      "professional tax returns",
+      "labour welfare fund",
+      "lwf deduction"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "salary-tds-computation",
+    "name": "TDS on salary, investment proofs and Form 16",
+    "category": "business",
+    "aliases": [
+      "tds on salary",
+      "salary tds",
+      "section 192",
+      "form 16",
+      "form 24q",
+      "investment declarations",
+      "investment proof verification",
+      "income tax computation for employees"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "purchase-order-processing",
+    "name": "Purchase requisition to purchase order processing",
+    "category": "business",
+    "aliases": [
+      "purchase order processing",
+      "purchase order creation",
+      "po creation",
+      "pr to po",
+      "purchase requisitions",
+      "purchase requisition processing",
+      "po follow-up",
+      "material expediting"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "vendor-sourcing-development",
+    "name": "Vendor sourcing and development",
+    "category": "business",
+    "aliases": [
+      "vendor sourcing",
+      "vendor development",
+      "supplier sourcing",
+      "supplier identification",
+      "new vendor development",
+      "alternate vendor development",
+      "alternate vendors"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "rfq-quotation-comparison",
+    "name": "RFQs, quotation comparison and bid evaluation",
+    "category": "business",
+    "aliases": [
+      "request for quotation",
+      "rfq process",
+      "rfqs to vendors",
+      "quotation comparison",
+      "comparative statement",
+      "comparative statements",
+      "techno-commercial comparison",
+      "bid evaluation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "vendor-onboarding",
+    "name": "Vendor onboarding and vendor master data",
+    "category": "business",
+    "aliases": [
+      "vendor onboarding",
+      "vendor registration",
+      "vendor master creation",
+      "supplier onboarding",
+      "vendor kyc",
+      "vendor code creation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "erp-purchasing",
+    "name": "ERP and e-procurement purchasing tools",
+    "category": "tools",
+    "aliases": [
+      "sap purchasing",
+      "sap mm end user",
+      "oracle purchasing",
+      "erp purchasing",
+      "purchase module in erp",
+      "sap ariba",
+      "coupa procurement",
+      "e-procurement portal"
+    ],
+    "ambiguous": [
+      "sap purchasing",
+      "oracle purchasing",
+      "sap ariba",
+      "coupa procurement"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "shipment-dispatch-planning",
+    "name": "Shipment and dispatch planning and tracking",
+    "category": "business",
+    "aliases": [
+      "dispatch planning",
+      "shipment planning",
+      "load planning",
+      "vehicle placement",
+      "truck placement",
+      "dispatch scheduling",
+      "shipment tracking",
+      "proof of delivery",
+      "pod collection"
+    ],
+    "ambiguous": [
+      "shipment tracking",
+      "proof of delivery"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "transporter-3pl-management",
+    "name": "Transporter, 3PL and freight forwarder coordination",
+    "category": "business",
+    "aliases": [
+      "transporter management",
+      "transporter coordination",
+      "3pl coordination",
+      "3pl management",
+      "freight forwarder coordination",
+      "carrier management",
+      "transporter negotiation",
+      "transporter onboarding"
+    ],
+    "ambiguous": [
+      "carrier management"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "eway-bill-compliance",
+    "name": "E-way bills and dispatch documentation",
+    "category": "business",
+    "aliases": [
+      "e-way bill",
+      "e-way bills",
+      "eway bill",
+      "e-way bill generation",
+      "delivery challan",
+      "delivery challans",
+      "lorry receipt",
+      "consignment note"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "freight-billing-control",
+    "name": "Freight bill checking and freight cost control",
+    "category": "business",
+    "aliases": [
+      "freight bill verification",
+      "freight bill processing",
+      "freight invoice audit",
+      "freight rate negotiation",
+      "freight cost control",
+      "detention charges"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "warehouse-coordination",
+    "name": "Warehouse inbound and outbound coordination",
+    "category": "business",
+    "aliases": [
+      "warehouse coordination",
+      "inbound and outbound logistics",
+      "warehouse operations coordination",
+      "goods receipt coordination",
+      "loading and unloading supervision",
+      "stock transfer dispatches"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "exim-documentation",
+    "name": "Import and export shipping documentation",
+    "category": "business",
+    "aliases": [
+      "export documentation",
+      "import documentation",
+      "exim documentation",
+      "shipping bill",
+      "bill of lading",
+      "airway bill",
+      "incoterms",
+      "customs clearance coordination",
+      "cha coordination",
+      "certificate of origin"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

@@ -1,0 +1,52 @@
+{
+  "id": "business-development-executive-from-field-bde",
+  "roleSlug": "business-development-executive",
+  "persona": "Field business development executive with three years selling facility services to SMEs",
+  "resumeText": "Rohan Deshmukh | Pune | rohan.deshmukh@example.com\n\nEXPERIENCE\nBusiness Development Executive, Sahyadri Facility Services Pvt Ltd, Pune (2023 - present)\n- Generate new leads for housekeeping and security services through cold calling and referrals from existing clients.\n- Hold face-to-face client meetings with admin heads at factories and offices in Chakan and Hinjewadi.\n- Prepare commercial proposals and manpower costing sheets for each site after a survey.\n- Closing deals with 3 to 4 new SME clients a month against a monthly revenue target.\n- Update every lead, visit and deal stage in Zoho CRM and share a daily visit report.\n\nSales Trainee, Kesari Office Supplies, Pune (2022 - 2023)\n- Visited shops and offices in Kothrud to take orders for stationery and printer supplies.\n\nEDUCATION\nBBA, Savitribai Phule Pune University, 2022\n\nSKILLS\nContract negotiation, MS Excel, Marathi, Hindi, English\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "b2b-prospecting",
+        "quote": "through cold calling and referrals from existing clients"
+      },
+      {
+        "skillId": "field-sales-meetings",
+        "quote": "Hold face-to-face client meetings with admin heads"
+      },
+      {
+        "skillId": "sales-proposals-quotations",
+        "quote": "Prepare commercial proposals and manpower costing sheets"
+      },
+      {
+        "skillId": "deal-closing",
+        "quote": "Closing deals with 3 to 4 new SME clients a month"
+      },
+      {
+        "skillId": "crm-tools",
+        "quote": "Update every lead, visit and deal stage in Zoho CRM"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "quote": "Contract negotiation"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "commercial-negotiation",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sales-engagement-tools",
+      "solution-demos-poc",
+      "key-account-planning",
+      "distributor-management"
+    ]
+  },
+  "reviewedBy": null
+}

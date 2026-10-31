@@ -331,7 +331,8 @@
     "provider": "HubSpot Academy",
     "kind": "course",
     "skillIds": [
-      "content-marketing"
+      "content-marketing",
+      "content-briefs-outlines"
     ],
     "minutes": 360,
     "free": true
@@ -1922,7 +1923,8 @@
     "provider": "Google Search Central",
     "kind": "docs",
     "skillIds": [
-      "seo"
+      "seo",
+      "seo-content-writing"
     ],
     "minutes": 60,
     "free": true
@@ -1956,7 +1958,8 @@
     "provider": "HubSpot Academy",
     "kind": "course",
     "skillIds": [
-      "social-media-marketing"
+      "social-media-marketing",
+      "social-media-calendar-planning"
     ],
     "minutes": 300,
     "free": true
@@ -13582,7 +13585,8 @@
     "provider": "HubSpot Academy",
     "kind": "course",
     "skillIds": [
-      "b2b-prospecting"
+      "b2b-prospecting",
+      "field-sales-meetings"
     ],
     "minutes": 186,
     "free": true
@@ -13839,7 +13843,9 @@
     "provider": "NPTEL (IIT Kharagpur)",
     "kind": "course",
     "skillIds": [
-      "hr-policy-administration"
+      "hr-policy-administration",
+      "compensation-planning",
+      "hr-business-partnering"
     ],
     "minutes": 960,
     "free": true
@@ -14027,7 +14033,10 @@
     "kind": "course",
     "skillIds": [
       "inventory-planning-optimization",
-      "logistics-analytics"
+      "logistics-analytics",
+      "freight-billing-control",
+      "shipment-dispatch-planning",
+      "transporter-3pl-management"
     ],
     "minutes": 1200,
     "free": true
@@ -14172,7 +14181,10 @@
     "provider": "NPTEL",
     "kind": "course",
     "skillIds": [
-      "channel-credit-collections"
+      "channel-credit-collections",
+      "bank-relationship-management",
+      "cash-flow-forecasting",
+      "cash-management"
     ],
     "minutes": 1200,
     "free": true
@@ -14994,6 +15006,1633 @@
       "kyc-due-diligence"
     ],
     "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Management of Commercial Banking",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_mg24/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "bank-relationship-management",
+      "banking-client-portfolio-management",
+      "collection-agency-oversight"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Managing my investments",
+    "url": "https://www.open.edu/openlearn/money-business/managing-my-investments",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "banking-client-portfolio-management"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Understanding your customers",
+    "url": "https://www.open.edu/openlearn/money-business/understanding-your-customers/content-section-0",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "banking-client-portfolio-management"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "FAQs on Master Direction: Interest Rate on Deposits",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=3737",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "casa-deposit-acquisition"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "FAQs on Basic Savings Bank Deposit Account (BSBDA)",
+    "url": "https://www.rbi.org.in/CommonPerson/english/Scripts/FAQs.aspx?Id=1556",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "casa-deposit-acquisition"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "FAQs on Master Direction on KYC",
+    "url": "https://www.rbi.org.in/commonman/english/Scripts/FAQs.aspx?Id=3782",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "casa-deposit-acquisition"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Master Circular on Customer Service in Banks",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasCirculardetails.aspx?id=9862",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "casa-deposit-acquisition"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Mutual Funds Sahi Hai: investor education",
+    "url": "https://www.mutualfundssahihai.com/en",
+    "provider": "AMFI",
+    "kind": "docs",
+    "skillIds": [
+      "third-party-product-distribution"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "SEBI video-based learning modules for investors",
+    "url": "https://investor.sebi.gov.in/inv_aware_edu_videos.html",
+    "provider": "SEBI",
+    "kind": "video",
+    "skillIds": [
+      "third-party-product-distribution"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Buy With Care: Some Dos and Don'ts (insurance)",
+    "url": "https://policyholder.gov.in/buy-with-care-some-dos-and-don-ts",
+    "provider": "IRDAI",
+    "kind": "docs",
+    "skillIds": [
+      "third-party-product-distribution"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Code of Conduct for Mutual Fund Distributors (revised April 2022)",
+    "url": "https://www.amfiindia.com/uploads/Revised_Codeof_Conductfor_Mutual_Fund_Distributors_April2022_57d91fe1c4.pdf",
+    "provider": "AMFI",
+    "kind": "docs",
+    "skillIds": [
+      "investment-suitability-compliance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "FAQs on Do's and Don'ts for Mutual Fund Distributors",
+    "url": "https://www.amfiindia.com/Themes/Theme1/downloads/FAQsonRoleofMFDsAdvts.pdf",
+    "provider": "AMFI",
+    "kind": "docs",
+    "skillIds": [
+      "investment-suitability-compliance"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "FAQs on Mutual Fund Distributors Due Diligence Process",
+    "url": "https://www.amfiindia.com/Themes/Theme1/downloads/FAQsonDistributorsDueDiligence.pdf",
+    "provider": "AMFI",
+    "kind": "docs",
+    "skillIds": [
+      "investment-suitability-compliance"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Management of Field Sales",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_mg29/preview",
+    "provider": "NPTEL (IIT Kanpur)",
+    "kind": "course",
+    "skillIds": [
+      "field-sales-meetings"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Sales and Distribution Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_mg73/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "field-sales-meetings"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Business Writing Essentials: Chapter 13, Business Proposals",
+    "url": "https://pressbooks.bccampus.ca/businesswritingessentials/chapter/chapter-13-business-proposals/",
+    "provider": "BCcampus Open Education",
+    "kind": "docs",
+    "skillIds": [
+      "sales-proposals-quotations"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Professional Communications: 5.4 Proposals",
+    "url": "https://pressbooks.bccampus.ca/professionalcomms/chapter/5-4-proposals/",
+    "provider": "BCcampus Open Education",
+    "kind": "docs",
+    "skillIds": [
+      "sales-proposals-quotations"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Technical Writing: 7.2 Proposals",
+    "url": "https://opentextbc.ca/technicalwritingh5p/chapter/proposals/",
+    "provider": "BCcampus Open Education",
+    "kind": "docs",
+    "skillIds": [
+      "sales-proposals-quotations"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Creating Helpful, Reliable, People-First Content",
+    "url": "https://developers.google.com/search/docs/fundamentals/creating-helpful-content",
+    "provider": "Google Search Central",
+    "kind": "docs",
+    "skillIds": [
+      "seo-content-writing"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "SEO in the Age of AI Learning Path",
+    "url": "https://academy.hubspot.com/seo-in-the-age-of-ai-learning-path",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "seo-content-writing"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Proofreading: Where Do I Begin?",
+    "url": "https://owl.purdue.edu/owl/general_writing/the_writing_process/proofreading/index.html",
+    "provider": "Purdue OWL",
+    "kind": "docs",
+    "skillIds": [
+      "editing-proofreading"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Editing and Proofreading (graduate writing)",
+    "url": "https://owl.purdue.edu/owl/graduate_writing/graduate_writing_topics/graduate_writing_topics_editing_proofreading_new.html",
+    "provider": "Purdue OWL",
+    "kind": "docs",
+    "skillIds": [
+      "editing-proofreading"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Microsoft Writing Style Guide",
+    "url": "https://learn.microsoft.com/en-us/style-guide/welcome/",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "editing-proofreading"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Plan new GOV.UK content",
+    "url": "https://www.gov.uk/guidance/content-design/planning-content",
+    "provider": "GOV.UK",
+    "kind": "docs",
+    "skillIds": [
+      "content-briefs-outlines"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Content strategies",
+    "url": "https://design.education.gov.uk/content-design/content-strategies",
+    "provider": "UK Department for Education",
+    "kind": "docs",
+    "skillIds": [
+      "content-briefs-outlines"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Intro to Publishing with the Block Editor",
+    "url": "https://learn.wordpress.org/tutorial/intro-to-publishing-with-the-block-editor/",
+    "provider": "Learn WordPress",
+    "kind": "video",
+    "skillIds": [
+      "cms-content-publishing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Creating posts and pages with the WordPress Block Editor",
+    "url": "https://learn.wordpress.org/lesson/creating-posts-and-pages-with-the-wordpress-block-editor/",
+    "provider": "Learn WordPress",
+    "kind": "course",
+    "skillIds": [
+      "cms-content-publishing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "First steps with WordPress (Block Editor)",
+    "url": "https://wordpress.org/documentation/article/first-steps-with-wordpress-block-editor/",
+    "provider": "WordPress.org",
+    "kind": "docs",
+    "skillIds": [
+      "cms-content-publishing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Social Media Marketing II Certification",
+    "url": "https://academy.hubspot.com/courses/social_media_ii",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "social-media-calendar-planning"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Best Practices for Using the Calendar in Business Suite",
+    "url": "https://www.facebook.com/business/help/1170295510042639",
+    "provider": "Meta Business Help Centre",
+    "kind": "docs",
+    "skillIds": [
+      "social-media-calendar-planning"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Meta Community Management Online Courses",
+    "url": "https://www.facebookblueprint.com/student/path/205897-facebook-community-manager-online-courses",
+    "provider": "Meta Blueprint",
+    "kind": "course",
+    "skillIds": [
+      "community-management"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Engage and moderate a community",
+    "url": "https://www.facebookblueprint.com/student/path/196035",
+    "provider": "Meta Blueprint",
+    "kind": "course",
+    "skillIds": [
+      "community-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Social Media Listening and Monitoring",
+    "url": "https://academy.hubspot.com/lessons/social-media-listening-and-monitoring",
+    "provider": "HubSpot Academy",
+    "kind": "video",
+    "skillIds": [
+      "community-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Guidelines for Influencer Advertising in Digital Media",
+    "url": "https://www.ascionline.in/social/wp-content/uploads/2025/04/ASCI-Influencer-Guidelines.pdf",
+    "provider": "ASCI",
+    "kind": "docs",
+    "skillIds": [
+      "influencer-creator-marketing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Influencer Advertising Do's and Don'ts",
+    "url": "https://www.ascionline.in/social/dos-dont/",
+    "provider": "ASCI",
+    "kind": "docs",
+    "skillIds": [
+      "influencer-creator-marketing"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Amplify campaigns with partnership ads",
+    "url": "https://www.facebookblueprint.com/student/path/253173-partnership-ads-course",
+    "provider": "Meta Blueprint",
+    "kind": "course",
+    "skillIds": [
+      "influencer-creator-marketing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Get started creating YouTube Shorts",
+    "url": "https://support.google.com/youtube/answer/10059070?hl=en",
+    "provider": "YouTube Help",
+    "kind": "docs",
+    "skillIds": [
+      "short-form-video-content"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Level Up with Instagram Reels",
+    "url": "https://creators.instagram.com/reels",
+    "provider": "Instagram for Creators",
+    "kind": "docs",
+    "skillIds": [
+      "short-form-video-content"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Get discovered with Reels on Facebook and Instagram",
+    "url": "https://www.facebookblueprint.com/student/path/219746-fb-ig-reels-course",
+    "provider": "Meta Blueprint",
+    "kind": "course",
+    "skillIds": [
+      "short-form-video-content"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "About Instagram dashboards",
+    "url": "https://help.instagram.com/257516379077270/",
+    "provider": "Instagram Help Centre",
+    "kind": "docs",
+    "skillIds": [
+      "social-media-analytics"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "About Instagram insights",
+    "url": "https://en-gb.facebook.com/business/help/441651653251838",
+    "provider": "Meta Business Help Centre",
+    "kind": "docs",
+    "skillIds": [
+      "social-media-analytics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "LinkedIn Page analytics",
+    "url": "https://www.linkedin.com/help/linkedin/answer/a547077",
+    "provider": "LinkedIn Help",
+    "kind": "docs",
+    "skillIds": [
+      "social-media-analytics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Content analytics for your LinkedIn Page",
+    "url": "https://www.linkedin.com/help/linkedin/answer/a564051",
+    "provider": "LinkedIn Help",
+    "kind": "docs",
+    "skillIds": [
+      "social-media-analytics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Connect with customers using Meta Business Suite",
+    "url": "https://www.facebookblueprint.com/student/path/253041-meta-business-suite-customer-connection",
+    "provider": "Meta Blueprint",
+    "kind": "course",
+    "skillIds": [
+      "social-media-management-tools"
+    ],
+    "minutes": 19,
+    "free": true
+  },
+  {
+    "title": "How Meta Business Suite works",
+    "url": "https://www.facebook.com/business/help/205614130852988",
+    "provider": "Meta Business Help Centre",
+    "kind": "docs",
+    "skillIds": [
+      "social-media-management-tools"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Schedule and publish social media posts in Adobe Express",
+    "url": "https://helpx.adobe.com/express/web/publish-and-share/share-to-social-media/schedule-publish-social-posts.html",
+    "provider": "Adobe Help",
+    "kind": "docs",
+    "skillIds": [
+      "social-media-management-tools"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Marketing with Canva",
+    "url": "https://www.canva.com/design-school/courses/marketing-with-canva/",
+    "provider": "Canva Design School",
+    "kind": "course",
+    "skillIds": [
+      "social-creative-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Graphic design essentials",
+    "url": "https://www.canva.com/design-school/courses/graphic-design-essentials/",
+    "provider": "Canva Design School",
+    "kind": "course",
+    "skillIds": [
+      "social-creative-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Managing your social media",
+    "url": "https://www.canva.com/design-school/lessons/managing-your-social-media/",
+    "provider": "Canva Design School",
+    "kind": "video",
+    "skillIds": [
+      "social-creative-design"
+    ],
+    "minutes": 13,
+    "free": true
+  },
+  {
+    "title": "Income Tax Law & Practice",
+    "url": "https://onlinecourses.swayam2.ac.in/cec25_cm15/preview",
+    "provider": "SWAYAM (CEC)",
+    "kind": "course",
+    "skillIds": [
+      "income-tax-compliance"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "File ITR-1 (Sahaj) Online User Manual",
+    "url": "https://www.incometax.gov.in/iec/foportal/help/how-to-file-itr1-form-sahaj",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "income-tax-compliance"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Learn with Us: e-filing tutorial videos",
+    "url": "https://www.incometax.gov.in/iec/foportal/help/all-topics/videos",
+    "provider": "Income Tax Department",
+    "kind": "video",
+    "skillIds": [
+      "income-tax-compliance"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "e-Proceedings User Manual",
+    "url": "https://www.incometax.gov.in/iec/foportal/help/respond-to-e-proceedings",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tax-assessments-litigation"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "e-Proceedings FAQ",
+    "url": "https://www.incometax.gov.in/iec/foportal/help/respond-to-e-proceedings-faq",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tax-assessments-litigation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Filing replies during GST assessment and adjudication proceedings (FAQs)",
+    "url": "https://tutorial.gst.gov.in/userguide/assessment/FAQs_GP.htm",
+    "provider": "GSTN (GST portal tutorials)",
+    "kind": "docs",
+    "skillIds": [
+      "tax-assessments-litigation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "United Nations Practical Manual on Transfer Pricing for Developing Countries",
+    "url": "https://desapublications.un.org/publications/united-nations-practical-manual-transfer-pricing-developing-countries",
+    "provider": "United Nations DESA",
+    "kind": "docs",
+    "skillIds": [
+      "transfer-pricing-documentation"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Transfer Pricing (CA Final DT study material, Chapter 24)",
+    "url": "https://resource.cdn.icai.org/88429bos-aps2299-m4-ch24.pdf",
+    "provider": "ICAI Board of Studies",
+    "kind": "docs",
+    "skillIds": [
+      "transfer-pricing-documentation"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Transfer Pricing virtual coaching class notes (CA Final)",
+    "url": "https://live.icai.org/bos/vcc-2nd-batch-recorded-lectures/pdf/TP_Session%201_12%20November.pdf",
+    "provider": "ICAI Board of Studies",
+    "kind": "docs",
+    "skillIds": [
+      "transfer-pricing-documentation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Auditing and Corporate Governance",
+    "url": "https://onlinecourses.swayam2.ac.in/cec25_cm11/preview",
+    "provider": "SWAYAM (CEC)",
+    "kind": "course",
+    "skillIds": [
+      "statutory-audit-execution"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Auditing and Ethics study material (CA Intermediate Paper 5)",
+    "url": "https://www.icai.org/post/sm-inter-p5-may2026",
+    "provider": "ICAI Board of Studies",
+    "kind": "docs",
+    "skillIds": [
+      "statutory-audit-execution"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Audit Sampling (virtual coaching class notes)",
+    "url": "https://live.icai.org/bos/vcc/pdf/CHAPTER___7___AUDIT_SAMPLING.pdf",
+    "provider": "ICAI Board of Studies",
+    "kind": "docs",
+    "skillIds": [
+      "statutory-audit-execution"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Guidance Note on Audit of Internal Financial Controls Over Financial Reporting",
+    "url": "https://www.icai.org/post/11919",
+    "provider": "ICAI",
+    "kind": "docs",
+    "skillIds": [
+      "internal-controls-testing"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Guide to Internal Controls over Financial Reporting",
+    "url": "https://pqc.icai.org/assets/ISACourse2.0DVD/Reading%20Materials/Reference_Materials/Guide_to_Internal_Controls_Over_Financial_Reporting.pdf",
+    "provider": "ICAI",
+    "kind": "docs",
+    "skillIds": [
+      "internal-controls-testing"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Evaluation and Reporting of Internal Financial Controls (IFC) in Statutory Audit",
+    "url": "https://wymec.icai.org/womenp_upl/Evaluation-and-Reporting-of-Internal-Financial-Controls-IFC-in-Statutory-Audit.pdf",
+    "provider": "ICAI",
+    "kind": "docs",
+    "skillIds": [
+      "internal-controls-testing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Implementation Guide to SA 230, Audit Documentation",
+    "url": "https://cpeapp.icai.org/downloadBGM/5b39b17b010f9.pdf",
+    "provider": "ICAI",
+    "kind": "docs",
+    "skillIds": [
+      "audit-documentation"
+    ],
+    "minutes": 150,
+    "free": true
+  },
+  {
+    "title": "Audit documentation: a cornerstone of audit quality",
+    "url": "https://cajournal.icai.org/article-details/audit-documentation-a-cornerstone-of-audit-quality",
+    "provider": "The Chartered Accountant Journal (ICAI)",
+    "kind": "docs",
+    "skillIds": [
+      "audit-documentation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SA 230 Audit Documentation (ICAI overview)",
+    "url": "https://resource.cdn.icai.org/75000aasb60542a.pdf",
+    "provider": "ICAI",
+    "kind": "docs",
+    "skillIds": [
+      "audit-documentation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "IDEA tutorial videos",
+    "url": "https://idea.caseware.com/learn/tutorial-videos/",
+    "provider": "Caseware IDEA",
+    "kind": "video",
+    "skillIds": [
+      "audit-software"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Audit in an Automated Environment (CA Intermediate study material)",
+    "url": "https://resource.cdn.icai.org/66602bos53774-cp6.pdf",
+    "provider": "ICAI Board of Studies",
+    "kind": "docs",
+    "skillIds": [
+      "audit-software"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Data analytics for external auditors",
+    "url": "https://cpeapp.icai.org/downloadBGM/5bb74d79eeb9a.pdf",
+    "provider": "ICAEW (hosted by ICAI)",
+    "kind": "docs",
+    "skillIds": [
+      "audit-software"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Technical Guide on Information Systems Audit (CAATs)",
+    "url": "https://pqc.icai.org/assets/ISACourse2.0DVD/Reading%20Materials/Reference_Materials/Technical_Guide_to_ISAudit.pdf",
+    "provider": "ICAI",
+    "kind": "docs",
+    "skillIds": [
+      "audit-software"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Master Circular: Prudential norms on income recognition, asset classification and provisioning (2022)",
+    "url": "https://rbidocs.rbi.org.in/rdocs/notification/PDFs/15MCIRACP0104202272A68328898841D488D7CC79E35C5F73.PDF",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "collections-portfolio-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Clarification on IRAC norms: SMA and NPA classification (2021)",
+    "url": "https://rbidocs.rbi.org.in/rdocs/notification/PDFs/125IRAC5D423E89A957430AAEEE46913F90155E.PDF",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "collections-portfolio-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Management of Commercial Banking (lending and credit risk modules)",
+    "url": "https://onlinecourses.nptel.ac.in/e-learning/preview/noc23_mg47",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "collections-portfolio-management"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Guidelines on Recovery Agents",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/Notification.aspx?Id=787",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "field-tele-collections"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Code of Bank's Commitment to Customers (BCSBI), incl. Collection of Dues",
+    "url": "https://Www.Sbi.Co.In/documents/136/1364568/BCSBI_CODE.pdf",
+    "provider": "BCSBI (copy hosted by SBI)",
+    "kind": "docs",
+    "skillIds": [
+      "field-tele-collections"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Sure, I know how to talk to people! (difficult conversations)",
+    "url": "https://www.open.edu/openlearn/money-business/leadership-management/sure-i-know-how-talk-people/",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "field-tele-collections"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SARFAESI Act, 2002 (India Code)",
+    "url": "https://www.indiacode.nic.in/handle/123456789/2006",
+    "provider": "India Code (Government of India)",
+    "kind": "docs",
+    "skillIds": [
+      "npa-recovery-legal"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Negotiable Instruments Act: Section 138 (India Code)",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_2_33_00042_00042_1523271998701&orderno=143",
+    "provider": "India Code (Government of India)",
+    "kind": "docs",
+    "skillIds": [
+      "npa-recovery-legal"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Lok Adalats",
+    "url": "https://nalsa.gov.in/lok-adalats/",
+    "provider": "NALSA",
+    "kind": "docs",
+    "skillIds": [
+      "npa-recovery-legal"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Debts Recovery Tribunals / Debts Recovery Appellate Tribunals",
+    "url": "https://financialservices.gov.in/drt-drat",
+    "provider": "Department of Financial Services",
+    "kind": "docs",
+    "skillIds": [
+      "npa-recovery-legal"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Outsourcing of financial services: responsibilities of regulated entities employing recovery agents (2022)",
+    "url": "https://website.rbi.org.in/web/rbi/-/notifications/outsourcing-of-financial-services-responsibilities-of-regulated-entities-employing-recovery-agents-12378",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "collections-regulatory-conduct"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Guidelines on recovery agents engaged by banks (April 2008 circular)",
+    "url": "https://www.rbi.org.in/commonman/Upload/English/Notification/PDFs/84146.pdf",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "collections-regulatory-conduct"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Certificate Examination for Debt Recovery Agents: rules and syllabus",
+    "url": "https://www.iibf.org.in/documents/RulesSyllabus/2024/DRA_Rev_030424.pdf",
+    "provider": "IIBF",
+    "kind": "docs",
+    "skillIds": [
+      "collection-agency-oversight",
+      "collections-regulatory-conduct"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Outsourcing of Financial Services: Responsibilities of regulated entities employing Recovery Agents (2022)",
+    "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=12378",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "collection-agency-oversight"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Guidelines on recovery agents engaged by banks (2008)",
+    "url": "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=4141",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "collection-agency-oversight"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Configure cash and bank management in Dynamics 365 Finance",
+    "url": "https://learn.microsoft.com/en-us/training/modules/configure-cash-bank-management-dyn365-finance/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "cash-management",
+      "bank-relationship-management",
+      "cash-flow-forecasting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Cash and Liquidity Management (SAP S/4HANA)",
+    "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/ac319d8fa4ea4624b40a58d23e3c4627/e7d3a052c3ad224fe10000000a445394.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "cash-management",
+      "treasury-management-systems"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Intelligent Cash Flow in Dynamics 365 Finance",
+    "url": "https://learn.microsoft.com/en-us/training/modules/intelligent-cash-flow-finance/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "cash-flow-forecasting"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Overview of Cash Positioning and Forecasting",
+    "url": "https://docs.oracle.com/en/cloud/saas/financials/26b/fappp/overview-of-cash-positioning-and-forecasting.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "cash-flow-forecasting",
+      "treasury-management-systems"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Guidelines on Loan System for Delivery of Bank Credit (working capital limits)",
+    "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=11428&Mode=0",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "bank-relationship-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "International Financial Management (IIT Roorkee)",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_ec11/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "forex-risk-hedging",
+      "trade-finance-instruments"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Financial Derivatives & Risk Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc19_mg39/preview",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "forex-risk-hedging"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Master Direction: Risk Management and Inter-Bank Dealings",
+    "url": "https://rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=10485",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "forex-risk-hedging"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Your simple guide to the Indian debt market: money market, G-Secs and corporate bonds",
+    "url": "https://www.nism.ac.in/blog/your-simple-guide-to-the-indian-debt-market-how-to-learn-more",
+    "provider": "National Institute of Securities Markets (NISM)",
+    "kind": "docs",
+    "skillIds": [
+      "surplus-fund-investments"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What are different types of debt funds?",
+    "url": "https://www.mutualfundssahihai.com/en/what-are-different-types-debt-funds",
+    "provider": "AMFI (Mutual Funds Sahi Hai)",
+    "kind": "docs",
+    "skillIds": [
+      "surplus-fund-investments"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Financial Institutions and Markets",
+    "url": "https://onlinecourses.nptel.ac.in/noc20_mg10/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "surplus-fund-investments"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Debt and Investment Management (SAP S/4HANA Cloud)",
+    "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/e5ec5859d8e54df98492d80564a734c0/d02a1260556f4f34884996b77b8237df.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "surplus-fund-investments",
+      "treasury-management-systems"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Master Direction: Import of Goods and Services",
+    "url": "https://rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=10201",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "trade-finance-instruments"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Master Direction: Export of Goods and Services",
+    "url": "https://www.rbi.org.in/scripts/BS_ViewMasDirections.aspx?id=10395",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "trade-finance-instruments",
+      "exim-documentation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "International Financial Environment (International Finance)",
+    "url": "https://nptel.ac.in/courses/110105057",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "trade-finance-instruments"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Treasury and Risk Management (SAP S/4HANA Cloud)",
+    "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/e5ec5859d8e54df98492d80564a734c0/cf31a5fa099043919c7076059964b24a.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "treasury-management-systems"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Business partnering factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/business-partnering-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "hr-business-partnering"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What is strategic human resource management?",
+    "url": "https://www.open.edu/openlearn/money-business/what-strategic-human-resource-management/content-section-0",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "hr-business-partnering"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Workforce Planning Guide (2022)",
+    "url": "https://www.opm.gov/chcoc/transmittals/2022/workforce-planning-guide_508.pdf",
+    "provider": "U.S. Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "workforce-planning"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Workforce planning factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/workforce-planning-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "workforce-planning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Talent Acquisition and Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_mg60/preview",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "workforce-planning",
+      "talent-review-succession"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Succession planning factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/succession-planning-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "talent-review-succession"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Succession Planning Process",
+    "url": "https://www.opm.gov/policy-data-oversight/human-capital-framework/reference-materials/leadership-knowledge-management/successionplanning.pdf",
+    "provider": "U.S. Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "talent-review-succession"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "15.320 Strategic Organizational Design",
+    "url": "https://ocw.mit.edu/courses/15-320-strategic-organizational-design-spring-2011/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "organisation-design"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Organizational Design, Change and Transformation",
+    "url": "https://onlinecourses.nptel.ac.in/noc23_mg57/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "organisation-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Designing Work Organization",
+    "url": "https://onlinecourses.nptel.ac.in/noc23_mg121/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "organisation-design"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "HR Analytics",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_hs126/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "hr-analytics",
+      "compensation-planning"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Human Resources sample: take a tour (Power BI)",
+    "url": "https://learn.microsoft.com/en-us/power-bi/create-reports/sample-human-resources",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "hr-analytics"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Employee Hiring and History sample: take a tour (Power BI)",
+    "url": "https://learn.microsoft.com/en-us/power-bi/create-reports/sample-employee-hiring-history",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "hr-analytics"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Performance and Reward Management (IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/110105137",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "compensation-planning"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Job evaluation and market pricing factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/market-pricing-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "compensation-planning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Pay structures and pay progression factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/pay-structures-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "compensation-planning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "User manual: Re-engineered ECR (Electronic Challan cum Return)",
+    "url": "https://www.epfindia.gov.in/site_docs/PDFs/MiscPDFs/User-Manual-ReECR_v3.0.pdf",
+    "provider": "EPFO",
+    "kind": "docs",
+    "skillIds": [
+      "payroll-statutory-filings"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Frequently asked questions on the ESI scheme",
+    "url": "https://esic.gov.in/attachments/files/faq.pdf",
+    "provider": "ESIC",
+    "kind": "docs",
+    "skillIds": [
+      "payroll-statutory-filings"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Professional Tax employer FAQ (Karnataka e-Prerana)",
+    "url": "https://pt.kar.nic.in/ptemployer/FAQ",
+    "provider": "Commercial Taxes Department, Government of Karnataka",
+    "kind": "docs",
+    "skillIds": [
+      "payroll-statutory-filings"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Circular No. 3/2025: Income-tax deduction from salaries under section 192",
+    "url": "https://www.incometaxindia.gov.in/w/circular-no.-3/2025-income-tax-deduction-from-salaries-during-the-financial-year-2024-25-under-section-192-of-the-income-tax-act-1961",
+    "provider": "Income Tax Department (CBDT)",
+    "kind": "docs",
+    "skillIds": [
+      "salary-tds-computation"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "E-tutorial: Download Form 16 (Part A and Part B)",
+    "url": "https://traces61contents.tdscpc.gov.in/docs/E-Tutorial%20-Download%20Form%2016%20(Part-A%20&%20Part-B).pdf",
+    "provider": "TRACES, Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "salary-tds-computation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "TRACES e-tutorials for deductors (Form 24Q, Form 16, justification reports)",
+    "url": "https://traces61contents.tdscpc.gov.in/en/e-tutorial-deductor.html",
+    "provider": "TRACES, Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "salary-tds-computation"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Configure and perform the procure-to-purchase process in Dynamics 365 Supply Chain Management",
+    "url": "https://learn.microsoft.com/en-us/training/modules/configure-perform-procure-purchase-dyn365-supply-chain-mgmt/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "purchase-order-processing",
+      "vendor-onboarding"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Creating, changing and displaying a purchase requisition (ME51N, ME52N, ME53N)",
+    "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/af9ef57f504840d2b81be8667206d485/c680b65334e6b54ce10000000a174cb4.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "purchase-order-processing",
+      "erp-purchasing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Manual for Procurement of Goods, Second Edition 2024",
+    "url": "https://doe.gov.in/files/circulars_document/Manual_Goods_2024.pdf",
+    "provider": "Department of Expenditure, Ministry of Finance",
+    "kind": "docs",
+    "skillIds": [
+      "purchase-order-processing",
+      "rfq-quotation-comparison",
+      "vendor-onboarding",
+      "vendor-sourcing-development"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Strategic Sourcing",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_mg57/preview",
+    "provider": "NPTEL (IIT Madras)",
+    "kind": "course",
+    "skillIds": [
+      "vendor-sourcing-development"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Modelling and Analytics for Supply Chain Management (supplier selection analytics)",
+    "url": "https://onlinecourses.nptel.ac.in/noc20_mg29/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "vendor-sourcing-development",
+      "warehouse-coordination"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Enter and compare RFQ bids and award contracts",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/procurement/tasks/enter-compare-rfq-bids-award-contracts",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "rfq-quotation-comparison"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Requests for quotation (RFQs) overview",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/procurement/request-quotations",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "rfq-quotation-comparison"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Supplier Engagement overview: supplier registration and onboarding",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/supplier-engagement/supplier-engagement-overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "vendor-onboarding"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Configure and manage procurement and vendors in Dynamics 365 Supply Chain Management",
+    "url": "https://learn.microsoft.com/en-us/training/paths/configure-manage-procurement-vendors-dyn365-supply-chain-mgmt/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "erp-purchasing"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Purchase Orders (Oracle Procurement Cloud, Using Procurement)",
+    "url": "https://docs.oracle.com/en/cloud/saas/procurement/21c/oaprc/purchase-orders.html",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "erp-purchasing"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Plan loads and shipments by using the outbound load planning workbench",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/warehousing/tasks/use-load-planning-workbench-plan-loads-shipments",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "shipment-dispatch-planning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Logistics & Supply Chain Management (IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_hs128/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "shipment-dispatch-planning",
+      "transporter-3pl-management"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Manage transportation management in Dynamics 365 Supply Chain Management",
+    "url": "https://learn.microsoft.com/en-us/training/modules/configure-transportation-management-dyn365-supply-chain-mgmt/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "transporter-3pl-management",
+      "freight-billing-control"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "E-Way Bill System FAQ",
+    "url": "https://docs.ewaybillgst.gov.in/html/faq.html",
+    "provider": "GST E-Way Bill System (NIC)",
+    "kind": "docs",
+    "skillIds": [
+      "eway-bill-compliance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "FAQs on e-way bill",
+    "url": "https://cbic-gst.gov.in/pdf/18062019-FAQs-EwayBill-Faq.pdf",
+    "provider": "CBIC",
+    "kind": "docs",
+    "skillIds": [
+      "eway-bill-compliance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "CGST Rule 55: Transportation of goods without issue of invoice (delivery challan)",
+    "url": "https://taxinformation.cbic.gov.in/content/html/tax_repository/gst/rules/cgst_rules/active/chapter6/rule55_v1.00.html",
+    "provider": "CBIC",
+    "kind": "docs",
+    "skillIds": [
+      "eway-bill-compliance"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Reconcile freight in transportation management",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/transportation/reconcile-freight-transportation-management",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "freight-billing-control"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Inbound warehouse operations using Dynamics 365 Supply Chain Management",
+    "url": "https://learn.microsoft.com/en-us/training/modules/inbound-operations-supply-chain-management/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "warehouse-coordination"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Outbound warehouse operations using Dynamics 365 Supply Chain Management",
+    "url": "https://learn.microsoft.com/en-us/training/modules/outbound-operations-supply-chain-management/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "warehouse-coordination"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "How to Export: a practical guide",
+    "url": "https://content.dgft.gov.in/Website/HTE.pdf",
+    "provider": "DGFT, Ministry of Commerce & Industry",
+    "kind": "docs",
+    "skillIds": [
+      "exim-documentation",
+      "trade-finance-instruments"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Customs import export procedures",
+    "url": "https://content.dgft.gov.in/Website/CIEP.pdf",
+    "provider": "DGFT",
+    "kind": "docs",
+    "skillIds": [
+      "exim-documentation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Incoterms 2020",
+    "url": "https://iccwbo.org/business-solutions/incoterms-rules/incoterms-2020/",
+    "provider": "International Chamber of Commerce (ICC)",
+    "kind": "docs",
+    "skillIds": [
+      "exim-documentation"
+    ],
+    "minutes": 20,
     "free": true
   }
 ]

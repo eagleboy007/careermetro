@@ -1,0 +1,110 @@
+{
+  "slug": "business-development-executive",
+  "title": "Business Development Executive",
+  "summary": "A business development executive finds and wins new clients for a company that sells services or products to businesses or households, mostly through calls and in-person meetings. The role sits in the sales team of service firms and SMEs, reports to a sales or business development manager, and is measured on new closures each month.",
+  "dailyDuties": [
+    "Build lead lists and make cold calls to set up meetings",
+    "Visit prospects at their offices, factories or shops",
+    "Understand client needs and prepare proposals and quotations",
+    "Follow up and negotiate price and terms to close deals",
+    "Update leads and deal stages in the CRM",
+    "Report daily visits and monthly closures to the manager"
+  ],
+  "typicalTitles": [
+    "Business Development Executive - Field Sales",
+    "BDE - B2B Sales",
+    "Business Development Officer",
+    "Sales Executive - New Business",
+    "Corporate Sales Executive",
+    "Business Development Executive - SME",
+    "Field Business Development Executive"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "b2b-prospecting",
+      "importance": "required",
+      "expectation": "Generate new leads every week through cold calling, emails, referrals and networking",
+      "postingShare": null
+    },
+    {
+      "skillId": "field-sales-meetings",
+      "importance": "required",
+      "expectation": "Meet prospects in person at their offices, factories or shops in an assigned area",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-proposals-quotations",
+      "importance": "required",
+      "expectation": "Prepare proposals, quotations and presentations that fit each client's needs",
+      "postingShare": null
+    },
+    {
+      "skillId": "deal-closing",
+      "importance": "required",
+      "expectation": "Close new business against monthly revenue or client targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "required",
+      "expectation": "Negotiate price, scope and payment terms within approval limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "crm-tools",
+      "importance": "required",
+      "expectation": "Keep leads, meetings and deal stages up to date in a CRM",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Pitch confidently in English and the local language in meetings and on calls",
+      "postingShare": null
+    },
+    {
+      "skillId": "lead-qualification",
+      "importance": "nice_to_have",
+      "expectation": "Check a prospect's need, budget and decision maker before investing time",
+      "postingShare": null
+    },
+    {
+      "skillId": "pipeline-management",
+      "importance": "nice_to_have",
+      "expectation": "Review the pipeline and follow up on open proposals",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-market-research",
+      "importance": "nice_to_have",
+      "expectation": "Map the local market and competitors to find target segments",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Forecast the month's closures for the manager",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Maintain lead lists and daily sales reports",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

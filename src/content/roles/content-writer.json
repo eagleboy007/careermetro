@@ -1,0 +1,115 @@
+{
+  "slug": "content-writer",
+  "title": "Content Writer",
+  "summary": "A content writer writes the words on a brand's website, blog, newsletters and articles, often tuned for search engines (SEO) so people find them on Google. The role sits in a marketing team or content agency and works from briefs given by an editor, client or marketing manager.",
+  "dailyDuties": [
+    "Research topics and keywords for upcoming articles",
+    "Write blogs, website pages and newsletters from briefs",
+    "Edit and proofread drafts against the style guide",
+    "Add meta titles, headings and internal links for SEO",
+    "Publish and format posts in WordPress or another CMS",
+    "Revise drafts after feedback from editors or clients"
+  ],
+  "typicalTitles": [
+    "SEO Content Writer",
+    "Content Writer - SEO",
+    "Web Content Writer",
+    "Blog Writer",
+    "Content Writer and Editor",
+    "Copy Editor - Digital Content",
+    "Content Specialist - SEO"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "content-marketing",
+      "importance": "required",
+      "expectation": "Write blogs, website pages, articles and newsletters in a brand's voice",
+      "postingShare": null
+    },
+    {
+      "skillId": "seo-content-writing",
+      "importance": "required",
+      "expectation": "Do keyword research and write SEO-optimised articles that rank",
+      "postingShare": null
+    },
+    {
+      "skillId": "seo",
+      "importance": "required",
+      "expectation": "Apply on-page SEO basics such as meta titles, headings and internal links",
+      "postingShare": null
+    },
+    {
+      "skillId": "editing-proofreading",
+      "importance": "required",
+      "expectation": "Edit and proofread own and others' drafts against a style guide",
+      "postingShare": null
+    },
+    {
+      "skillId": "content-briefs-outlines",
+      "importance": "required",
+      "expectation": "Turn topics into briefs and outlines and keep to an editorial calendar",
+      "postingShare": null
+    },
+    {
+      "skillId": "cms-content-publishing",
+      "importance": "required",
+      "expectation": "Format and publish posts in WordPress or another CMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Take briefs from clients or product teams and handle feedback rounds",
+      "postingShare": null
+    },
+    {
+      "skillId": "web-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Check page traffic and rankings in Google Analytics or Search Console",
+      "postingShare": null
+    },
+    {
+      "skillId": "email-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Write email newsletters and campaign copy",
+      "postingShare": null
+    },
+    {
+      "skillId": "social-media-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Adapt articles into social media posts",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-market-research",
+      "importance": "nice_to_have",
+      "expectation": "Research audiences and competitors before writing",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "hubspot-seo",
+      "importance": "optional",
+      "why": "Free course covering keyword research and on-page SEO used in SEO writing"
+    },
+    {
+      "certId": "hubspot-inbound-marketing",
+      "importance": "optional",
+      "why": "Free course on inbound content strategy that many content teams follow"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

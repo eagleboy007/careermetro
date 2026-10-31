@@ -1,0 +1,48 @@
+{
+  "id": "logistics-coordinator-from-dispatch-executive",
+  "roleSlug": "logistics-coordinator",
+  "persona": "Domestic dispatch executive at an FMCG depot moving to a broader logistics coordinator role",
+  "resumeText": "Imran Shaikh | Thane | imran.shaikh@example.com\n\nEXPERIENCE\nDispatch Executive, Konkan Consumer Goods, Bhiwandi depot (2022 - present)\n- Planned daily dispatch of 15 to 20 trucks to distributors across Maharashtra.\n- Coordinated with six transporters and one 3PL partner for vehicle placement.\n- Generated e-way bills and delivery challans for every outbound load.\n- Verified freight bills against agreed transporter rates before sending them to accounts.\n- Coordinated with the warehouse team on loading schedules and stock transfers to other depots.\n- Maintained the dispatch tracker and proof of delivery status in Excel.\n\nLogistics Trainee, Sahyog Roadways, Thane (2021 - 2022)\n- Booked part-truck loads and updated customers on shipment status.\n\nSKILLS\nE-way bill portal, Excel, SAP end user\n\nEDUCATION\nBCom, University of Mumbai, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "shipment-dispatch-planning",
+        "quote": "Planned daily dispatch of 15 to 20 trucks"
+      },
+      {
+        "skillId": "transporter-3pl-management",
+        "quote": "Coordinated with six transporters and one 3PL partner"
+      },
+      {
+        "skillId": "eway-bill-compliance",
+        "quote": "Generated e-way bills and delivery challans"
+      },
+      {
+        "skillId": "freight-billing-control",
+        "quote": "Verified freight bills against agreed transporter rates"
+      },
+      {
+        "skillId": "warehouse-coordination",
+        "quote": "Coordinated with the warehouse team on loading schedules"
+      },
+      {
+        "skillId": "excel",
+        "quote": "proof of delivery status in Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "exim-documentation",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "logistics-analytics",
+      "demand-forecasting",
+      "sap-mm-configuration",
+      "sql"
+    ]
+  },
+  "reviewedBy": null
+}

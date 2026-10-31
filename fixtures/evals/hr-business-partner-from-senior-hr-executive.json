@@ -1,0 +1,64 @@
+{
+  "id": "hr-business-partner-from-senior-hr-executive",
+  "roleSlug": "hr-business-partner",
+  "persona": "Plant HR lead moving into a business-facing HRBP role",
+  "resumeText": "Priya Nair | Pune | priya.nair@example.com\n\nEXPERIENCE\nAssistant Manager - HR, Sahyadri Auto Components, Pune (2021 - present)\n- Partnered with the plant head and three functional heads as their single HR point of contact.\n- Built the annual manpower plan for 1,200 employees with the finance team.\n- Handled employee relations escalations, including domestic enquiries and grievance committee cases.\n- Ran the annual appraisal cycle and rating calibration meetings for 300 staff employees.\n- Built monthly attrition dashboards in Power BI for the leadership team.\n- Led POSH compliance and internal committee training across two plants.\n\nSenior HR Executive, Indrayani Packaging, Pune (2019 - 2021)\n- Managed joining formalities, HR policies and monthly payroll inputs for 400 employees.\n\nSKILLS\nOrganisation design, Excel, Power BI, Darwinbox\n\nEDUCATION\nMBA (HR), Symbiosis Institute of Business Management, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "hr-business-partnering",
+        "quote": "Partnered with the plant head and three functional heads"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "as their single HR point of contact"
+      },
+      {
+        "skillId": "workforce-planning",
+        "quote": "Built the annual manpower plan for 1,200 employees"
+      },
+      {
+        "skillId": "employee-relations",
+        "quote": "Handled employee relations escalations, including domestic enquiries"
+      },
+      {
+        "skillId": "performance-appraisal-administration",
+        "quote": "Ran the annual appraisal cycle and rating calibration meetings"
+      },
+      {
+        "skillId": "hr-analytics",
+        "quote": "Built monthly attrition dashboards in Power BI"
+      },
+      {
+        "skillId": "power-bi",
+        "quote": "monthly attrition dashboards in Power BI"
+      },
+      {
+        "skillId": "indian-labour-law-compliance",
+        "quote": "Led POSH compliance and internal committee training"
+      },
+      {
+        "skillId": "organisation-design",
+        "quote": "Organisation design"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "talent-review-succession",
+        "status": "missing"
+      },
+      {
+        "skillId": "organisation-design",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "compensation-planning",
+      "full-cycle-recruitment",
+      "sap-successfactors-talent-modules",
+      "workday-hcm-configuration"
+    ]
+  },
+  "reviewedBy": null
+}
