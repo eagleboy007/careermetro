@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/components/site/legal-page";
 import { GRIEVANCE_OFFICER } from "@/lib/grievance";
+import { junctionEnabled } from "@/lib/preview";
+import { JUNCTION_DELETED_KEEP_DAYS, REMOVAL_KEEP_DAYS } from "@/lib/legal-timings";
 
 export const metadata: Metadata = { title: "Privacy · CareerMetro", robots: { index: false } };
 
@@ -13,11 +15,14 @@ export const metadata: Metadata = { title: "Privacy · CareerMetro", robots: { i
  *
  * For the legal adviser (launch-readiness (b) 8): confirm Anthropic's commercial terms on training before the line in
  * "Our AI provider" ships; confirm Supabase's encryption at rest and region in its DPA; confirm the minimum age.
+ *
+ * The Junction section (FR-61, docs/plans/junction-plan.md section 2.8) is a draft for the lawyer, shown only while
+ * JUNCTION_ENABLED is "1". Its periods come from src/lib/legal-timings.ts, as the cleanup enforces them.
  */
 
 const a = "underline underline-offset-2";
 
-const sections: LegalSection[] = [
+const sections: (LegalSection & { junctionOnly?: true })[] = [
   {
     id: "who",
     heading: "Who we are",
@@ -149,6 +154,33 @@ const sections: LegalSection[] = [
     ),
   },
   {
+    id: "junction",
+    heading: "Junction",
+    junctionOnly: true,
+    body: (
+      <ul>
+        <li>
+          Your posts and comments on Junction show your name, your @handle if you have one, and your initials to everyone signed in. Your target role shows
+          on a post only if you turned on Show target role. Nothing from your resume, gaps or path goes into a post unless you write it.
+        </li>
+        <li>Upvotes and saves are private: only the counts show. A reshare shows your name only to your connections.</li>
+        <li>
+          If you delete a post or comment, it disappears at once and is removed for good after {JUNCTION_DELETED_KEEP_DAYS} days. Deleting a post deletes
+          the comments others left on it.
+        </li>
+        <li>
+          If we hide a post or comment after a report, or one with an open report is deleted, we keep a copy with who wrote it and why it was removed for{" "}
+          {REMOVAL_KEEP_DAYS} days (longer only if a court or government order asks), as India&apos;s IT Rules require. Only our admins and you can see it.
+        </li>
+        <li>
+          When your account is deleted, your posts, comments, votes, saves, reshares and pins go with it. Reports and appeals you made stay as records of the
+          complaint, without your name.
+        </li>
+        <li>Companies don&apos;t see Junction or your posts.</li>
+      </ul>
+    ),
+  },
+  {
     id: "rights",
     heading: "Your choices and rights",
     body: (
@@ -186,5 +218,7 @@ const sections: LegalSection[] = [
 ];
 
 export default function PrivacyPage() {
-  return <LegalPage title="Privacy" intro="What CareerMetro keeps about you, why, for how long, and what you can do about it." updated="31 Oct 2026" draft sections={sections} />;
+  // The Junction section shows only while Junction itself is on (src/lib/preview.ts).
+  const shown = sections.filter((s) => !s.junctionOnly || junctionEnabled()).map((s) => ({ id: s.id, heading: s.heading, body: s.body }));
+  return <LegalPage title="Privacy" intro="What CareerMetro keeps about you, why, for how long, and what you can do about it." updated="31 Oct 2026" draft sections={shown} />;
 }

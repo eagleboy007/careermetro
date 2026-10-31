@@ -4,7 +4,11 @@ import { Suspense } from "react";
 import { PageLoading } from "@/components/app/page-loading";
 import { MePlanCard } from "@/components/elite/me-plan-card";
 import { JobSearchProvider, JobSearchStatus, MeSearchSwitches } from "@/components/job-search/job-search";
+import { PinnedPosts } from "@/components/junction/profile";
 import { MeView } from "@/components/me/me-view";
+import { junctionPostsShownFor, pinnedForProfile } from "@/lib/junction/feed";
+import { junctionEnabled } from "@/lib/preview";
+import { profileActions } from "../junction/wire";
 import { readAccountSettings } from "@/lib/account/settings-store";
 import { currentAccount } from "@/lib/auth/server";
 import { planFor } from "@/lib/elite/store";
@@ -95,6 +99,14 @@ async function MeScreen() {
       return false;
     }),
   ]);
+  // "On Junction" (FR-61, part 4): your pinned posts and the "Junction posts" switch, only while Junction is on. A side
+  // section: if it can't be read, it is left out and the rest of the profile still shows.
+  const junction = junctionEnabled()
+    ? await Promise.all([pinnedForProfile(account.id, account.id, { own: true, now }), junctionPostsShownFor(account.id)]).catch((error: unknown) => {
+        logEvent("error", "junction_pins_read_failed", errorFields(error));
+        return null;
+      })
+    : null;
   const settings = saved?.settings ?? DEFAULT_SETTINGS;
   const hidden = settings.visibility === "only_me" || !saved?.username;
   return (
@@ -130,6 +142,9 @@ async function MeScreen() {
             storyGoals={storyGoals}
           />
         </JobSearchProvider>
+      )}
+      {junction?.[0] && (
+        <PinnedPosts name={me?.name ?? "You"} posts={junction[0].posts} total={junction[0].total} now={now.toISOString()} own shown={junction[1]} actions={profileActions} />
       )}
     </div>
   );

@@ -2,6 +2,7 @@ import type { JobCheckRowView } from "@/components/admin/job-check-review";
 import type { AdminCompanyView } from "@/lib/corporate/types";
 import type { LibraryAdminView } from "@/lib/schemas";
 import type { HeldProofView, HiddenMessageView, ReportReviewView, SuspendedAccountView } from "@/lib/schemas/admin";
+import type { AppealView, HiddenJunctionView } from "@/lib/schemas/junction";
 
 /** Example rows of the company review list for /design. Synthetic companies on reserved example domains. */
 export const exampleReviewCompanies: AdminCompanyView[] = [
@@ -161,6 +162,57 @@ export const exampleInForce: { messages: HiddenMessageView[]; accounts: Suspende
     },
   ],
 };
+
+/** A report about a Junction post, held for review after reports, for /design (FR-61). Synthetic people. */
+export const exampleJunctionReport: ReportReviewView = {
+  id: "7c6b5a4f-3e2d-4c1b-8a9f-0e1d2c3b4a5f",
+  reason: "Asking for money, OTP or payment",
+  what: "A post",
+  reportedAt: "2026-10-15T06:00:00.000Z",
+  acknowledgedAt: null,
+  acknowledgeBy: "2026-10-16T06:00:00.000Z",
+  decideBy: "2026-10-18T06:00:00.000Z",
+  reporter: "Kavya N.",
+  note: "Says pay a fee to get a referral.",
+  context: { label: "Post by Arjun P.", text: "Guaranteed referral at a top company\n\nSend 2,000 to my UPI and I will refer you this week." },
+  message: null,
+  account: { id: "8d7c6b5a-4f3e-4d2c-9b1a-0f1e2d3c4b5a", name: "Arjun P.", suspended: null, canSuspend: true },
+  junction: { target: "post", id: "9e8d7c6b-5a4f-4e3d-8c2b-1a0f1e2d3c4b", status: "held", tags: ["Referrals"], upvotes: 2, comments: 1, hidden: null },
+  held: true,
+};
+
+/** A hidden Junction comment in force on /admin/reports, with its removal record, for /design. Synthetic people. */
+export const exampleHiddenJunction: HiddenJunctionView[] = [
+  {
+    id: "0f9e8d7c-6b5a-4f4e-9d3c-2b1a0f1e2d3c",
+    what: "comment",
+    label: "Comment by Arjun P.",
+    title: null,
+    text: "DM me your Aadhaar and I will fast-track you.",
+    hidden: { at: "2026-10-14T10:00:00.000Z", by: "Neha R.", reason: "Asked for identity documents.", rule: "Someone's personal details (phone, address, documents)" },
+    removalId: "1a0f9e8d-7c6b-4a5f-8e4d-3c2b1a0f1e2d",
+    legalHold: false,
+    purgeAfter: "2027-04-12T10:00:00.000Z",
+  },
+];
+
+/** An open appeal on /admin/reports, for /design. Synthetic people. */
+export const exampleAppeals: AppealView[] = [
+  {
+    id: "2b1a0f9e-8d7c-4b6a-9f5e-4d3c2b1a0f1e",
+    removalId: "3c2b1a0f-9e8d-4c7b-8a6f-5e4d3c2b1a0f",
+    what: "post",
+    label: "Post by Sana K.",
+    title: "Free mock interviews this Saturday",
+    text: "I run free mock interviews for SOC roles. Link to sign up in the comments.",
+    rule: "Fake job, scam or spam",
+    removedAt: "2026-10-12T08:00:00.000Z",
+    removedByYou: true,
+    note: "These are real and free. I have run them for a year with my college.",
+    appealedAt: "2026-10-13T04:30:00.000Z",
+    decideBy: "2026-10-28T04:30:00.000Z",
+  },
+];
 
 /** Work-email checks waiting for review on /admin/companies, for /design. Made-up companies on reserved example domains. */
 export const exampleJobChecks: JobCheckRowView[] = [

@@ -39,6 +39,7 @@ const m = vi.hoisted(() => ({
   clearEventsDigests: vi.fn(async () => ({ eventsDigestRowsCleared: 0 })),
   clearEndedEvents: vi.fn(async () => ({ endedEventsDeleted: 0 })),
   clearEndedEventSuggestions: vi.fn(async () => ({ endedSuggestionsDeleted: 0 })),
+  clearJunction: vi.fn(async () => ({ removalRecordsDeleted: 0, junctionPostsDeleted: 0, junctionCommentsDeleted: 0, junctionCountsFixed: 0 })),
   runWeekly: vi.fn<
     (o: {
       site: string;
@@ -90,6 +91,7 @@ vi.mock("@/lib/my-jobs/store", () => ({ clearUnsavedJobText: m.clearJobText }));
 vi.mock("@/lib/my-jobs/weekly-store", () => ({ clearOldWeeklyEmails: m.clearWeekly, runWeeklyEmails: m.runWeekly, turnOffWeeklyEmail: m.turnOff }));
 vi.mock("@/lib/timetable/digest-store", () => ({ turnOffEventsDigest: m.turnOffDigest }));
 vi.mock("@/lib/timetable/store", () => ({ clearOldEventsDigests: m.clearEventsDigests, clearEndedEvents: m.clearEndedEvents, clearEndedEventSuggestions: m.clearEndedEventSuggestions, prepEventsOn: vi.fn(async () => []) }));
+vi.mock("@/lib/junction/moderation", () => ({ clearJunctionRecords: m.clearJunction }));
 vi.mock("@/lib/my-jobs/share", async (original) => ({ ...(await original<typeof import("@/lib/my-jobs/share")>()), clearOldSharedJobs: m.clearShared, holdSharedJob: m.holdShared }));
 vi.mock("@/lib/shared-limit", async (original) => ({ ...(await original<typeof import("@/lib/shared-limit")>()), clearOldRateLimits: m.clearLimits, takeShared: m.takeShared }));
 vi.mock("@/lib/corporate/cleanup", () => ({ endCompanyAccess: m.endAccess, eraseClosedPhones: m.erasePhones, clearPastOfferedTimes: m.clearTimes }));
@@ -611,13 +613,14 @@ describe("daily cleanup", () => {
     m.clearEventsDigests.mockResolvedValueOnce({ eventsDigestRowsCleared: 6 });
     m.clearEndedEvents.mockResolvedValueOnce({ endedEventsDeleted: 7 });
     m.clearEndedEventSuggestions.mockResolvedValueOnce({ endedSuggestionsDeleted: 2 });
+    m.clearJunction.mockResolvedValueOnce({ removalRecordsDeleted: 1, junctionPostsDeleted: 2, junctionCommentsDeleted: 3, junctionCountsFixed: 4 });
     const logs = vi.spyOn(console, "log").mockImplementation(() => {});
     const corporate = { accessEnded: 5, readMarksCleared: 7, sharedNumbersErased: 1, offeredTimesDeleted: 12 };
     expect(await json(await cleanup(get("Bearer s3cret-value")))).toEqual({ status: 200, body: { ok: true, deleted: 2, accountsDeleted: 1, corporate } });
     // The counts reach the logs, so a run can be checked there.
     const done = logs.mock.calls.map((c) => String(c[0])).find((l) => l.includes("cleanup_done"));
     expect(done).toMatch(/"anonymousResumesDeleted":2.*"accountsDeleted":1.*"peopleRenewed":4,"unconfirmedChecked":2/);
-    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2,"sharedJobsCleared":3,"weeklyRowsCleared":5,"eventsDigestRowsCleared":6,"endedEventsDeleted":7,"endedSuggestionsDeleted":2/);
+    expect(done).toMatch(/"workCodesCleared":0,"accessEnded":5,"readMarksCleared":7,"sharedNumbersErased":1,"offeredTimesDeleted":12,"oldLinksCleared":3,"profileViewsCleared":6,"practiceAnswersDeleted":8,"mockAnswersDeleted":5,"rateLimitsCleared":9,"closedPostsDeleted":4,"feedRunsDeleted":2,"resourceReportsDeleted":3,"resourceSuggestionsDeleted":1,"notificationsDeleted":4,"unsavedJobTextCleared":2,"sharedJobsCleared":3,"weeklyRowsCleared":5,"eventsDigestRowsCleared":6,"endedEventsDeleted":7,"endedSuggestionsDeleted":2,"removalRecordsDeleted":1,"junctionPostsDeleted":2,"junctionCommentsDeleted":3,"junctionCountsFixed":4/);
     logs.mockRestore();
     const none = { accessEnded: 0, readMarksCleared: 0, sharedNumbersErased: 0, offeredTimesDeleted: 0 };
     // One step failing doesn't stop the other, and the job reports the failure.

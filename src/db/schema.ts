@@ -34,7 +34,13 @@ import {
   EVENT_STATUSES,
   EVENT_SUGGESTION_STATUSES,
   EVENT_TOPIC_KINDS,
+  APPEAL_STATUSES,
+  INTAKE_SOURCES,
+  JUNCTION_COMMENT_STATUSES,
+  JUNCTION_POST_KINDS,
+  JUNCTION_STATUSES,
   NOTIFICATION_KINDS,
+  REMOVAL_CAUSES,
   RESOURCE_REPORT_REASONS,
   RESOURCE_REPORT_STATUSES,
   SUGGESTION_DECLINE_REASONS,
@@ -53,6 +59,19 @@ import type { BuilderAnswers, CredlyCheckNote, GapAnalysis, JobCriteria, JobRequ
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () => timestamp("created_at", { withTimezone: true }).notNull().defaultNow();
+
+/** The copy of removed Junction content kept in junction_removals.snapshot (IT Rules rule 3(1)(g)). */
+export type JunctionSnapshot = {
+  kind: string | null;
+  title: string | null;
+  body: string;
+  link: string | null;
+  tags: string[];
+  createdAt: string;
+  editedAt: string | null;
+  /** For a comment: the post it was under. */
+  postId: string | null;
+};
 
 /* Accounts ---------------------------------------------------------------- */
 
@@ -267,6 +286,13 @@ export const userSettings = pgTable("user_settings", {
    * connections may see their name. Never read by company code, public profiles or email.
    */
   showOnMap: boolean("show_on_map").notNull().default(false),
+  /**
+   * "Junction posts" on the profile (Junction, migration 0059): pinned posts and the post count show on Me and
+   * /u/[handle] to people who may open the profile. On by default; Junction itself is off until JUNCTION_ENABLED.
+   */
+  showJunctionPosts: boolean("show_junction_posts").notNull().default(true),
+  /** The Junction rules version last accepted; the consents row (purpose junction_rules) is the record. */
+  junctionRulesVersion: text("junction_rules_version"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 },
   (t) => [
@@ -908,8 +934,25 @@ export const reports = pgTable(
     createdAt: createdAt(),
     acknowledgedAt: timestamp("acknowledged_at", { withTimezone: true }),
     resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+    /**
+     * What the reporter is shown ("R-4F2E9A1B3C", reportReference in src/lib/junction/rules.ts), from migration 0059;
+     * null on older reports.
+     */
+    reference: text("reference"),
+    /**
+     * When it must be decided, stored at filing (migration 0059), so a logged order's shorter clock and a later change
+     * to the deadlines don't move it. Null on older reports, which use reportDeadlines.
+     */
+    decideBy: timestamp("decide_by", { withTimezone: true }),
   },
-  (t) => [index("reports_reporter").on(t.reporterId), index("reports_status_created").on(t.status, t.createdAt), check("reports_note_length", sql`char_length(${t.note}) <= 500`)],
+  (t) => [
+    index("reports_reporter").on(t.reporterId),
+    index("reports_status_created").on(t.status, t.createdAt),
+    uniqueIndex("reports_reference").on(t.reference),
+    index("reports_decide_by").on(t.decideBy).where(sql`${t.status} = 'open'`),
+    index("reports_open_target").on(t.target, t.targetId).where(sql`${t.status} = 'open'`),
+    check("reports_note_length", sql`char_length(${t.note}) <= 500`),
+  ],
 );
 
 /* Corporate (employer side) -------------------------------------------------- */
@@ -2094,11 +2137,332 @@ export const userInterests = pgTable(
     /** Lowercase, trimmed, single spaces (src/lib/me/text.ts interestKey). */
     nameKey: text("name_key").notNull(),
     createdAt: createdAt(),
+    /**
+     * The shared interest this row is (migration 0059, Junction). Filled for every row by that migration and written by
+     * the store from then on; nullable until a later contract migration, so code from before it keeps working.
+     */
+    interestId: uuid("interest_id").references(() => interests.id, { onDelete: "cascade" }),
   },
   (t) => [
     primaryKey({ columns: [t.userId, t.nameKey] }),
+    index("user_interests_interest").on(t.interestId),
     check("user_interests_name_length", sql`char_length(${t.name}) between 1 and 40`),
     check("user_interests_key_length", sql`char_length(${t.nameKey}) between 1 and 40`),
+  ],
+);
+
+/* Junction, the community board (docs/plans/junction-plan.md section 3, FR-61, migration 0059) ------------------------ */
+
+/**
+ * Shared interest tags: anything people want to learn or talk about. One row per name key (interestKey), named as
+ * first written. An admin can hide an abusive one: it leaves chips and pickers, and posts lose that tag on read.
+ * Seeded with SEED_INTERESTS so the picker isn't empty.
+ */
+export const interests = pgTable(
+  "interests",
+  {
+    id: id(),
+    name: text("name").notNull(),
+    nameKey: text("name_key").notNull(),
+    createdBy: uuid("created_by").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+    hiddenAt: timestamp("hidden_at", { withTimezone: true }),
+    /** The admin who hid it. Not indexed: an admin's id, never queried by. */
+    hiddenBy: uuid("hidden_by").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
+    hiddenReason: text("hidden_reason"),
+  },
+  (t) => [
+    uniqueIndex("interests_name_key").on(t.nameKey),
+    index("interests_created_by").on(t.createdBy),
+    check("interests_name_length", sql`char_length(${t.name}) between 1 and 40`),
+    check("interests_key_length", sql`char_length(${t.nameKey}) between 1 and 40`),
+    check("interests_hidden_reason", sql`char_length(${t.hiddenReason}) between 1 and 500`),
+    check("interests_hidden_pair", sql`(${t.hiddenAt} is null) = (${t.hiddenReason} is null)`),
+  ],
+);
+
+/**
+ * A post on Junction. Text only; at most one link, cleaned and never fetched. Counts are denormalised and changed in
+ * the same transaction as the vote, comment or reshare, under a row lock on the post; the daily cleanup rechecks the
+ * last 8 days. `status`: visible, pending (pre-moderation, unused), held (auto-hold until an admin decides) or hidden
+ * (an admin, with a junction_removals record). The author's delete sets `deleted_at`; the daily cleanup deletes the row
+ * 30 days later. Title, body and link are never logged.
+ */
+export const junctionPosts = pgTable(
+  "junction_posts",
+  {
+    id: id(),
+    authorId: uuid("author_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    kind: text("kind", { enum: JUNCTION_POST_KINDS }).notNull(),
+    title: text("title").notNull(),
+    body: text("body").notNull().default(""),
+    linkUrl: text("link_url"),
+    linkHost: text("link_host"),
+    /** The Library item the link matches, for its catalog card. */
+    resourceId: uuid("resource_id").references(() => resources.id, { onDelete: "set null" }),
+    /** The author's target role when they posted to My route, or null. */
+    routeSlug: text("route_slug"),
+    /** "Show where I am on my line": the goal, read live; never stored as text. */
+    goalId: uuid("goal_id").references(() => userGoals.id, { onDelete: "set null" }),
+    upvoteCount: integer("upvote_count").notNull().default(0),
+    commentCount: integer("comment_count").notNull().default(0),
+    reshareCount: integer("reshare_count").notNull().default(0),
+    topPoints: integer("top_points").notNull().default(0),
+    status: text("status", { enum: JUNCTION_STATUSES }).notNull().default("visible"),
+    hiddenAt: timestamp("hidden_at", { withTimezone: true }),
+    /** The admin who hid it. Not indexed: an admin's id, never queried by. */
+    hiddenBy: uuid("hidden_by").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
+    /** The admin's reason, for the record; the author's notice quotes `hidden_rule`, never this. Never logged. */
+    hiddenReason: text("hidden_reason"),
+    /** A report reason key: the rule the author's notice names. */
+    hiddenRule: text("hidden_rule"),
+    createdAt: createdAt(),
+    editedAt: timestamp("edited_at", { withTimezone: true }),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("junction_posts_author_created").on(t.authorId, t.createdAt.desc()),
+    index("junction_posts_resource").on(t.resourceId),
+    index("junction_posts_goal").on(t.goalId),
+    index("junction_posts_new").on(t.createdAt.desc(), t.id.desc()).where(sql`${t.status} = 'visible' and ${t.deletedAt} is null`),
+    index("junction_posts_route").on(t.routeSlug, t.createdAt.desc(), t.id.desc()).where(sql`${t.status} = 'visible' and ${t.deletedAt} is null`),
+    index("junction_posts_top").on(t.topPoints.desc(), t.createdAt.desc(), t.id.desc()).where(sql`${t.status} = 'visible' and ${t.deletedAt} is null`),
+    check("junction_posts_kind", sql`${t.kind} in ('idea', 'question', 'win', 'resource')`),
+    check("junction_posts_title_length", sql`char_length(${t.title}) between 5 and 140`),
+    check("junction_posts_body_length", sql`char_length(${t.body}) <= 2000`),
+    check("junction_posts_link", sql`${t.linkUrl} is null or (${t.linkUrl} like 'https://%' and char_length(${t.linkUrl}) <= 500 and ${t.linkHost} is not null)`),
+    check("junction_posts_resource_link", sql`${t.kind} <> 'resource' or ${t.linkUrl} is not null`),
+    check("junction_posts_route_length", sql`char_length(${t.routeSlug}) between 1 and 120`),
+    check("junction_posts_status", sql`${t.status} in ('visible', 'pending', 'held', 'hidden')`),
+    check("junction_posts_hidden_pair", sql`(${t.status} = 'hidden') = (${t.hiddenAt} is not null)`),
+    check("junction_posts_hidden_reason", sql`char_length(${t.hiddenReason}) between 1 and 500`),
+    check("junction_posts_counts", sql`${t.upvoteCount} >= 0 and ${t.commentCount} >= 0 and ${t.reshareCount} >= 0 and ${t.topPoints} >= 0`),
+  ],
+);
+
+/** A post's interest tags, at most 3 (the store checks). */
+export const junctionPostInterests = pgTable(
+  "junction_post_interests",
+  {
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => junctionPosts.id, { onDelete: "cascade" }),
+    interestId: uuid("interest_id")
+      .notNull()
+      .references(() => interests.id, { onDelete: "cascade" }),
+  },
+  (t) => [primaryKey({ columns: [t.postId, t.interestId] }), index("junction_post_interests_interest").on(t.interestId, t.postId)],
+);
+
+/** A comment, one level under a post. Deleted with its post. Text never logged. */
+export const junctionComments = pgTable(
+  "junction_comments",
+  {
+    id: id(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => junctionPosts.id, { onDelete: "cascade" }),
+    authorId: uuid("author_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    upvoteCount: integer("upvote_count").notNull().default(0),
+    status: text("status", { enum: JUNCTION_COMMENT_STATUSES }).notNull().default("visible"),
+    hiddenAt: timestamp("hidden_at", { withTimezone: true }),
+    /** The admin who hid it. Not indexed: an admin's id, never queried by. */
+    hiddenBy: uuid("hidden_by").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
+    hiddenReason: text("hidden_reason"),
+    hiddenRule: text("hidden_rule"),
+    createdAt: createdAt(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("junction_comments_post_created").on(t.postId, t.createdAt),
+    index("junction_comments_author").on(t.authorId),
+    check("junction_comments_body_length", sql`char_length(${t.body}) between 1 and 1000`),
+    check("junction_comments_status", sql`${t.status} in ('visible', 'held', 'hidden')`),
+    check("junction_comments_hidden_pair", sql`(${t.status} = 'hidden') = (${t.hiddenAt} is not null)`),
+    check("junction_comments_hidden_reason", sql`char_length(${t.hiddenReason}) between 1 and 500`),
+    check("junction_comments_counts", sql`${t.upvoteCount} >= 0`),
+  ],
+);
+
+/** Upvotes on posts. Private: only the count shows. */
+export const junctionVotes = pgTable(
+  "junction_votes",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => junctionPosts.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.postId] }), index("junction_votes_post").on(t.postId)],
+);
+
+/** Upvotes on comments. Private: only the count shows. */
+export const junctionCommentVotes = pgTable(
+  "junction_comment_votes",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    commentId: uuid("comment_id")
+      .notNull()
+      .references(() => junctionComments.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.commentId] }), index("junction_comment_votes_comment").on(t.commentId)],
+);
+
+/** Reshares: the post goes into the resharer's connections' Following feed. */
+export const junctionReshares = pgTable(
+  "junction_reshares",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => junctionPosts.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.postId] }), index("junction_reshares_post").on(t.postId), index("junction_reshares_user_created").on(t.userId, t.createdAt.desc())],
+);
+
+/** Saved posts. Private: no count is stored or shown. */
+export const junctionSaves = pgTable(
+  "junction_saves",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => junctionPosts.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.postId] }), index("junction_saves_post").on(t.postId)],
+);
+
+/** Up to 3 of a person's own posts pinned to their profile, in order. */
+export const junctionPins = pgTable(
+  "junction_pins",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => junctionPosts.id, { onDelete: "cascade" }),
+    position: smallint("position").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.postId] }),
+    uniqueIndex("junction_pins_user_position").on(t.userId, t.position),
+    index("junction_pins_post").on(t.postId),
+    check("junction_pins_position", sql`${t.position} between 1 and 3`),
+  ],
+);
+
+/**
+ * Records of removed content, kept under IT Rules rule 3(1)(g) (plan section 2.7): a copy of what was removed, who
+ * wrote it and who removed it, and why. No foreign key to the content or its author, so it outlives both. The daily
+ * cleanup deletes it at `purge_after` (REMOVAL_KEEP_DAYS after removal) unless `legal_hold` is set. Read only by
+ * /admin/reports and the author's own download. Never logged.
+ */
+export const junctionRemovals = pgTable(
+  "junction_removals",
+  {
+    id: id(),
+    target: text("target", { enum: ["post", "comment"] }).notNull(),
+    targetId: uuid("target_id").notNull(),
+    authorUserId: uuid("author_user_id"),
+    authorUsername: text("author_username"),
+    snapshot: jsonb("snapshot").$type<JunctionSnapshot>().notNull(),
+    rule: text("rule"),
+    cause: text("cause", { enum: REMOVAL_CAUSES }).notNull(),
+    /** The admin who removed it. Not indexed: an admin's id, never queried by. */
+    removedBy: uuid("removed_by").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
+    removedAt: timestamp("removed_at", { withTimezone: true }).notNull().defaultNow(),
+    /** The open reports at the time, by id. */
+    reportIds: uuid("report_ids").array().notNull().default(sql`'{}'::uuid[]`),
+    orderRef: text("order_ref"),
+    legalHold: boolean("legal_hold").notNull().default(false),
+    purgeAfter: timestamp("purge_after", { withTimezone: true }).notNull(),
+  },
+  (t) => [
+    index("junction_removals_target").on(t.target, t.targetId),
+    index("junction_removals_author").on(t.authorUserId),
+    index("junction_removals_purge").on(t.purgeAfter).where(sql`${t.legalHold} = false`),
+    check("junction_removals_target_kind", sql`${t.target} in ('post', 'comment')`),
+    check("junction_removals_cause", sql`${t.cause} in ('report', 'order', 'author_deleted_reported')`),
+    check("junction_removals_order_ref", sql`char_length(${t.orderRef}) <= 200`),
+  ],
+);
+
+/**
+ * An author's appeal against one removal (plan section 2.6): one per removal, within APPEAL_WITHIN_DAYS, decided within
+ * APPEAL_DECIDE_DAYS as a grievance. Outlives the account (user set null), like reports.
+ */
+export const junctionAppeals = pgTable(
+  "junction_appeals",
+  {
+    id: id(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    removalId: uuid("removal_id")
+      .notNull()
+      .references(() => junctionRemovals.id, { onDelete: "cascade" }),
+    note: text("note").notNull(),
+    status: text("status", { enum: APPEAL_STATUSES }).notNull().default("open"),
+    /** The admin who decided. Not indexed: an admin's id, never queried by. */
+    decidedBy: uuid("decided_by").references((): AnyPgColumn => users.id, { onDelete: "set null" }),
+    decisionReason: text("decision_reason"),
+    createdAt: createdAt(),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("junction_appeals_removal").on(t.removalId),
+    index("junction_appeals_user").on(t.userId),
+    index("junction_appeals_status_created").on(t.status, t.createdAt),
+    check("junction_appeals_note_length", sql`char_length(${t.note}) between 1 and 1000`),
+    check("junction_appeals_status", sql`${t.status} in ('open', 'upheld', 'reversed')`),
+    check("junction_appeals_decided", sql`(${t.status} = 'open') = (${t.decidedAt} is null)`),
+    check("junction_appeals_reason", sql`${t.status} = 'open' or char_length(${t.decisionReason}) between 1 and 500`),
+  ],
+);
+
+/**
+ * Complaints and orders an admin logs from outside the app (plan section 2.2): an emailed complaint, a court order or a
+ * government notice. Each also makes a reports row (no reporter), so it is in the one queue with its clock. `from_label`
+ * is admin-only and never logged.
+ */
+export const grievanceIntake = pgTable(
+  "grievance_intake",
+  {
+    id: id(),
+    source: text("source", { enum: INTAKE_SOURCES }).notNull(),
+    receivedAt: timestamp("received_at", { withTimezone: true }).notNull(),
+    fromLabel: text("from_label").notNull(),
+    reference: text("reference"),
+    target: reportTarget("target").notNull(),
+    targetId: uuid("target_id").notNull(),
+    reportId: uuid("report_id").references(() => reports.id, { onDelete: "set null" }),
+    /** The admin who logged it. Indexed, as the plan asks. */
+    loggedBy: uuid("logged_by").references(() => users.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("grievance_intake_report").on(t.reportId),
+    index("grievance_intake_logged_by").on(t.loggedBy),
+    check("grievance_intake_source", sql`${t.source} in ('email', 'court_order', 'government_notice', 'other')`),
+    check("grievance_intake_from_length", sql`char_length(${t.fromLabel}) between 1 and 200`),
+    check("grievance_intake_reference_length", sql`char_length(${t.reference}) <= 200`),
   ],
 );
 
@@ -2125,6 +2489,11 @@ export const notifications = pgTable(
     connectionRequestId: uuid("connection_request_id").references(() => connectionRequests.id, { onDelete: "cascade" }),
     applicationId: uuid("application_id").references(() => applications.id, { onDelete: "cascade" }),
     interviewId: uuid("interview_id").references(() => interviews.id, { onDelete: "cascade" }),
+    /** Junction and reports (migration 0059): each new kind holds exactly one of these. */
+    postId: uuid("post_id").references(() => junctionPosts.id, { onDelete: "cascade" }),
+    commentId: uuid("comment_id").references(() => junctionComments.id, { onDelete: "cascade" }),
+    reportId: uuid("report_id").references(() => reports.id, { onDelete: "cascade" }),
+    appealId: uuid("appeal_id").references(() => junctionAppeals.id, { onDelete: "cascade" }),
     createdAt: createdAt(),
     readAt: timestamp("read_at", { withTimezone: true }),
     /** Unused until the email part. */
@@ -2137,16 +2506,21 @@ export const notifications = pgTable(
     index("notifications_connection_request").on(t.connectionRequestId),
     index("notifications_application").on(t.applicationId),
     index("notifications_interview").on(t.interviewId),
+    index("notifications_post").on(t.postId),
+    index("notifications_comment").on(t.commentId),
+    index("notifications_report").on(t.reportId),
+    index("notifications_appeal").on(t.appealId),
+    // The new kinds leave these three null, so this index never matches them; notify keeps one unread row for them itself.
     uniqueIndex("notifications_one_unread")
       .on(t.userId, t.kind, sql`coalesce(${t.applicationId}, ${t.connectionRequestId}, ${t.interviewId})`)
       .where(sql`${t.readAt} is null`),
     check(
       "notifications_kind",
-      sql`${t.kind} in ('connection_request', 'connection_accepted', 'application_moved', 'application_closed', 'interview_scheduled', 'interview_cancelled')`,
+      sql`${t.kind} in ('connection_request', 'connection_accepted', 'application_moved', 'application_closed', 'interview_scheduled', 'interview_cancelled', 'junction_comment', 'junction_post_hidden', 'junction_comment_hidden', 'junction_appeal_decided', 'report_decided', 'report_filed')`,
     ),
     check(
       "notifications_refs",
-      sql`(${t.kind} in ('connection_request', 'connection_accepted') and ${t.connectionRequestId} is not null and ${t.applicationId} is null and ${t.interviewId} is null) or (${t.kind} in ('application_moved', 'application_closed') and ${t.applicationId} is not null and ${t.connectionRequestId} is null and ${t.interviewId} is null) or (${t.kind} in ('interview_scheduled', 'interview_cancelled') and ${t.interviewId} is not null and ${t.connectionRequestId} is null and ${t.applicationId} is null)`,
+      sql`num_nonnulls(${t.connectionRequestId}, ${t.applicationId}, ${t.interviewId}, ${t.postId}, ${t.commentId}, ${t.reportId}, ${t.appealId}) = 1 and ((${t.kind} in ('connection_request', 'connection_accepted') and ${t.connectionRequestId} is not null) or (${t.kind} in ('application_moved', 'application_closed') and ${t.applicationId} is not null) or (${t.kind} in ('interview_scheduled', 'interview_cancelled') and ${t.interviewId} is not null) or (${t.kind} in ('junction_comment', 'junction_post_hidden') and ${t.postId} is not null) or (${t.kind} = 'junction_comment_hidden' and ${t.commentId} is not null) or (${t.kind} = 'junction_appeal_decided' and ${t.appealId} is not null) or (${t.kind} in ('report_decided', 'report_filed') and ${t.reportId} is not null))`,
     ),
   ],
 );

@@ -1,9 +1,11 @@
 import "server-only";
 import { and, desc, eq, inArray, isNotNull, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
-import { auditLogs, conversationMembers, conversations, messages, organizations, reports, users } from "@/db/schema";
+import { auditLogs, conversationMembers, conversations, junctionComments, junctionPosts, messages, organizations, reports, users } from "@/db/schema";
 import { shortName } from "@/lib/account/name";
+import { applyJunctionRemoval, type JunctionRemovalOutcome } from "@/lib/junction/moderation";
 import { logEvent } from "@/lib/log";
+import type { ReportTarget } from "@/lib/schemas/inbox";
 import {
   hiddenMessageView,
   reportRemovalInput,
@@ -52,21 +54,46 @@ export const REMOVAL_TEXT = {
   already_suspended: "That account was already suspended.",
   lifted: "Suspension lifted. They can use CareerMetro again.",
   not_suspended: "That account isn't suspended.",
+  // Junction (migration 0059).
+  no_post: "This report isn't about a post that is still there.",
+  no_comment: "This report isn't about a comment that is still there.",
+  post_hidden: "Post hidden. Its author sees the notice and can appeal.",
+  comment_hidden: "Comment hidden. Its author sees the notice and can appeal.",
+  junction_already_hidden: "That was already hidden.",
+  post_unhidden: "Post shown again.",
+  comment_unhidden: "Comment shown again.",
+  junction_not_hidden: "That isn't hidden.",
 } as const;
 type Outcome = keyof typeof REMOVAL_TEXT;
 
-type ReportRow = { target: "message" | "person" | "chat" | "job"; targetId: string; reporterId: string | null };
+type ReportRow = { target: ReportTarget; targetId: string; reporterId: string | null };
+
+/** Junction's outcomes, as this page words them. */
+const JUNCTION_OUTCOME: Record<JunctionRemovalOutcome, Outcome> = {
+  not_open: "not_open",
+  no_post: "no_post",
+  no_comment: "no_comment",
+  post_hidden: "post_hidden",
+  comment_hidden: "comment_hidden",
+  already_hidden: "junction_already_hidden",
+  post_unhidden: "post_unhidden",
+  comment_unhidden: "comment_unhidden",
+  not_hidden: "junction_not_hidden",
+};
 
 /**
  * The account each report points at: the reported person, the writer of a reported message (none for a company
- * message whose writer's account went), or the one other person in a reported direct chat. A company chat or a job
- * points at a company, which is suspended from Company review instead.
+ * message whose writer's account went), the one other person in a reported direct chat, or the author of a reported
+ * post or comment on Junction. A company chat or a job points at a company, which is suspended from Company review
+ * instead.
  */
 async function reportedAccounts(rows: (ReportRow & { id: string })[], db: Db | Tx): Promise<Map<string, string>> {
   const out = new Map<string, string>();
   const messageIds = [...new Set(rows.filter((r) => r.target === "message").map((r) => r.targetId))];
   const chatIds = [...new Set(rows.filter((r) => r.target === "chat").map((r) => r.targetId))];
-  const [senders, members] = await Promise.all([
+  const postIds = [...new Set(rows.filter((r) => r.target === "post").map((r) => r.targetId))];
+  const commentIds = [...new Set(rows.filter((r) => r.target === "comment").map((r) => r.targetId))];
+  const [senders, members, postAuthors, commentAuthors] = await Promise.all([
     messageIds.length ? db.select({ id: messages.id, senderId: messages.senderId }).from(messages).where(inArray(messages.id, messageIds)) : [],
     chatIds.length
       ? db
@@ -75,6 +102,8 @@ async function reportedAccounts(rows: (ReportRow & { id: string })[], db: Db | T
           .innerJoin(conversations, eq(conversations.id, conversationMembers.conversationId))
           .where(and(inArray(conversationMembers.conversationId, chatIds), eq(conversationMembers.role, "member"), isNull(conversations.orgId)))
       : [],
+    postIds.length ? db.select({ id: junctionPosts.id, authorId: junctionPosts.authorId }).from(junctionPosts).where(inArray(junctionPosts.id, postIds)) : [],
+    commentIds.length ? db.select({ id: junctionComments.id, authorId: junctionComments.authorId }).from(junctionComments).where(inArray(junctionComments.id, commentIds)) : [],
   ]);
   for (const r of rows) {
     if (r.target === "person") out.set(r.id, r.targetId);
@@ -85,6 +114,10 @@ async function reportedAccounts(rows: (ReportRow & { id: string })[], db: Db | T
     if (r.target === "chat" && r.reporterId) {
       const others = members.filter((m) => m.conversationId === r.targetId && m.userId !== r.reporterId);
       if (others.length === 1) out.set(r.id, others[0]!.userId);
+    }
+    if (r.target === "post" || r.target === "comment") {
+      const author = (r.target === "post" ? postAuthors : commentAuthors).find((x) => x.id === r.targetId)?.authorId;
+      if (author) out.set(r.id, author);
     }
   }
   return out;
@@ -207,7 +240,8 @@ async function openReport(reportId: string, tx: Tx): Promise<(ReportRow & { id: 
 }
 
 /**
- * Hides or shows again a reported message, or suspends or lifts the suspension of a reported account, for the admin
+ * Hides or shows again a reported message, post or comment (Junction's go to applyJunctionRemoval, which also writes the
+ * removal record and the author's notice), or suspends or lifts the suspension of a reported account, for the admin
  * with this user id. Hide and suspend start from an open report and need a reason; the undoing takes the message or
  * account id, so it works after the report is closed. Never on an admin's account or the admin's own.
  */
@@ -223,6 +257,10 @@ export async function applyRemoval(adminUserId: string, input: unknown, deps: Re
   const env = deps.env ?? process.env;
   const actor = `admin:${adminUserId}`;
   const outcome = await db.transaction(async (tx): Promise<{ ok: boolean; outcome: Outcome }> => {
+    if (data.action === "hide_post" || data.action === "hide_comment" || data.action === "unhide_post" || data.action === "unhide_comment") {
+      const done = await applyJunctionRemoval(tx, adminUserId, data, now);
+      return { ok: !["not_open", "no_post", "no_comment"].includes(done), outcome: JUNCTION_OUTCOME[done] };
+    }
     if (data.action === "hide_message" || data.action === "unhide_message") {
       let messageId: string;
       if (data.action === "hide_message") {

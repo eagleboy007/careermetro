@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/components/site/legal-page";
+import { junctionEnabled } from "@/lib/preview";
+import { JUNCTION_REPORT_REASON_LABELS, JUNCTION_REPORT_REASONS } from "@/lib/schemas/constants";
+import { APPEAL_DECIDE_DAYS, APPEAL_WITHIN_DAYS, EDIT_WINDOW_MINUTES, GAC_APPEAL_DAYS, NEW_ACCOUNT_LINK_WAIT_DAYS, NEW_ACCOUNT_POST_WAIT_HOURS } from "@/lib/legal-timings";
 
 export const metadata: Metadata = { title: "Terms · CareerMetro", robots: { index: false } };
 
@@ -9,11 +12,15 @@ export const metadata: Metadata = { title: "Terms · CareerMetro", robots: { ind
  * docs/REQUIREMENTS.md: free during the beta, gaps worked out by code, only proof fills a goal, verified companies only,
  * Report and Block everywhere. A draft until Milin's legal adviser approves it, so it sits behind the preview gate in
  * src/proxy.ts.
+ *
+ * "Junction rules" (FR-61, docs/plans/junction-plan.md section 2.8): drafted 2026-10-31 for the lawyer to review, and
+ * shown only while JUNCTION_ENABLED is "1", so nobody reads rules for a board they can't use. The composer asks people
+ * to accept them (consents purpose junction_rules, JUNCTION_RULES_VERSION).
  */
 
 const a = "underline underline-offset-2";
 
-const sections: LegalSection[] = [
+const sections: (LegalSection & { junctionOnly?: true })[] = [
   {
     id: "service",
     heading: "What CareerMetro is",
@@ -105,6 +112,39 @@ const sections: LegalSection[] = [
     ),
   },
   {
+    id: "junction",
+    heading: "Junction rules",
+    junctionOnly: true,
+    body: (
+      <>
+        <p>
+          Junction is CareerMetro&apos;s board for ideas, questions, wins and learning resources. Everyone signed in to CareerMetro can read what you post
+          there; it isn&apos;t public and search engines don&apos;t see it. It is free for everyone.
+        </p>
+        <ul>
+          <li>Post in English, about learning, work and careers. No company or job ads.</li>
+          <li>Don&apos;t post your own or anyone&apos;s phone number, email, address or documents. Links must start with https.</li>
+          <li>
+            New accounts wait {NEW_ACCOUNT_POST_WAIT_HOURS} hours before they can post, and {NEW_ACCOUNT_LINK_WAIT_DAYS} days before a post can carry a link.
+          </li>
+          <li>You can edit a post for {EDIT_WINDOW_MINUTES} minutes; after that you can delete it. Deleting a post deletes the comments on it.</li>
+          <li>You can&apos;t post, or ask others to post, anything in this list. Use Report on any post or comment that breaks it:</li>
+        </ul>
+        <ul>
+          {JUNCTION_REPORT_REASONS.filter((r) => r !== "other").map((r) => (
+            <li key={r}>{JUNCTION_REPORT_REASON_LABELS[r]}</li>
+          ))}
+        </ul>
+        <p>
+          A post that gets enough reports may be held out of the feeds until we look at it. If we hide your post or comment, you see the rule it broke and
+          can appeal within {APPEAL_WITHIN_DAYS} days; we decide within {APPEAL_DECIDE_DAYS} days. If you still disagree, you can appeal to the Grievance
+          Appellate Committee within {GAC_APPEAL_DAYS} days. We may suspend an account that keeps breaking these rules. Nothing on Junction is checked
+          before it appears, and posts are the views of the people who write them.
+        </p>
+      </>
+    ),
+  },
+  {
     id: "content",
     heading: "Your content",
     body: (
@@ -131,5 +171,7 @@ const sections: LegalSection[] = [
 ];
 
 export default function TermsPage() {
-  return <LegalPage title="Terms" intro="The rules for using CareerMetro, for job seekers and for companies." updated="15 Oct 2026" draft sections={sections} />;
+  // Junction's rules show only while Junction itself is on (src/lib/preview.ts).
+  const shown = sections.filter((s) => !s.junctionOnly || junctionEnabled()).map((s) => ({ id: s.id, heading: s.heading, body: s.body }));
+  return <LegalPage title="Terms" intro="The rules for using CareerMetro, for job seekers and for companies." updated="15 Oct 2026" draft sections={shown} />;
 }

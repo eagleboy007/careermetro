@@ -7,13 +7,17 @@ const m = vi.hoisted(() => ({
   refresh: vi.fn(),
   reviewReport: vi.fn(),
   applyRemoval: vi.fn(),
+  decideAppeal: vi.fn(),
+  logIntake: vi.fn(),
+  setLegalHold: vi.fn(),
 }));
 vi.mock("next/cache", () => ({ refresh: m.refresh }));
 vi.mock("@/lib/admin/server", () => ({ currentAdmin: async () => m.admin }));
 vi.mock("@/lib/admin/reports", () => ({ reviewReport: m.reviewReport }));
 vi.mock("@/lib/admin/removals", () => ({ applyRemoval: m.applyRemoval }));
+vi.mock("@/lib/junction/moderation", () => ({ decideAppeal: m.decideAppeal, logIntake: m.logIntake, setLegalHold: m.setLegalHold }));
 
-import { reportRemovalAction, reviewReportAction } from "./actions";
+import { decideAppealAction, logIntakeAction, reportRemovalAction, reviewReportAction, setLegalHoldAction } from "./actions";
 
 const ME = "0b8f8a52-6a1e-4b7f-9d6a-2f1d3c4b5a69";
 const REPORT = "6f1d2c3b-4a59-4e6f-8a7b-9c0d1e2f3a4b";
@@ -67,5 +71,43 @@ describe("reportRemovalAction", () => {
     m.applyRemoval.mockResolvedValue({ ok: false, message: "An admin's account can't be suspended." });
     expect(await reportRemovalAction({ action: "unhide_message", messageId: MESSAGE })).toEqual({ ok: false, message: "An admin's account can't be suspended." });
     expect(m.refresh).not.toHaveBeenCalled();
+  });
+});
+
+describe("Junction's admin actions (FR-61)", () => {
+  const APPEAL = "8b3f4e5d-6c7b-4a8f-9c9d-1e2f3a4b5c6d";
+  const appeal = { appealId: APPEAL, decision: "upheld", reason: "Asked for a fee." } as const;
+  const intake = {
+    source: "email",
+    receivedAt: "2026-10-30T10:00:00+05:30",
+    fromLabel: "A member, by email",
+    reference: "",
+    target: "post",
+    targetId: REPORT,
+    reason: "harassment",
+  } as const;
+  const hold = { removalId: MESSAGE, hold: true };
+
+  it("does nothing for anyone who isn't an admin", async () => {
+    m.admin = null;
+    expect(await decideAppealAction(appeal)).toEqual({ ok: false, message: "That isn't available." });
+    expect(await logIntakeAction(intake)).toEqual({ ok: false, message: "That isn't available." });
+    expect(await setLegalHoldAction(hold)).toEqual({ ok: false, message: "That isn't available." });
+    expect(m.decideAppeal).not.toHaveBeenCalled();
+    expect(m.logIntake).not.toHaveBeenCalled();
+    expect(m.setLegalHold).not.toHaveBeenCalled();
+  });
+
+  it("passes the admin's own id with the raw input, and reloads only on success", async () => {
+    m.decideAppeal.mockResolvedValue({ ok: true, message: "Appeal upheld: it stays hidden. The author is told." });
+    m.logIntake.mockResolvedValue({ ok: false, message: "Fill in where it came from, when it arrived, who sent it and what it is about." });
+    m.setLegalHold.mockResolvedValue({ ok: true, message: "Legal hold set. The record is kept until you lift it." });
+    expect((await decideAppealAction(appeal)).ok).toBe(true);
+    expect(m.decideAppeal).toHaveBeenCalledWith(ME, appeal);
+    expect((await logIntakeAction(intake)).ok).toBe(false);
+    expect(m.logIntake).toHaveBeenCalledWith(ME, intake);
+    expect((await setLegalHoldAction(hold)).ok).toBe(true);
+    expect(m.setLegalHold).toHaveBeenCalledWith(ME, hold);
+    expect(m.refresh).toHaveBeenCalledTimes(2);
   });
 });

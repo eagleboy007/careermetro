@@ -5,7 +5,8 @@
  * the preview gate in src/proxy.ts with the signed-in screens; take it out of SIGNED_IN_PREFIXES when the officer is named.
  */
 export const GRIEVANCE_OFFICER = {
-  name: "Grievance Officer",
-  email: "grievance.officer@careermetro.com",
+  name: "Milin Shah",
+  email: "grievance@careermetro.com",
+  // Milin, 2026-10-31 (Junction decision 1): named, but still a placeholder until the mailbox works and the lawyer signs off.
   placeholder: true,
 } as const;

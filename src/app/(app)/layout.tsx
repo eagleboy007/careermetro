@@ -23,7 +23,7 @@ import { openNotificationsAction } from "./notifications/actions";
 import { eliteOnRequest, jobSearchForRequest } from "@/lib/request-reads";
 import { unreadCount } from "@/lib/inbox/types";
 import { exampleName, exampleStreak } from "@/lib/today/fixtures";
-import { signedInPreviewEnabled } from "@/lib/preview";
+import { junctionEnabled, signedInPreviewEnabled } from "@/lib/preview";
 import { errorFields, logEvent } from "@/lib/log";
 
 const initials = (name: string) =>
@@ -100,7 +100,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
       notificationsNew,
     };
     return (
-      <AppShell user={user} openNotifications={openNotificationsAction}>
+      <AppShell user={user} openNotifications={openNotificationsAction} junction={junctionEnabled()}>
         {children}
       </AppShell>
     );
@@ -118,7 +118,11 @@ async function Shell({ children }: { children: React.ReactNode }) {
       notificationsNew: exampleNewCount,
     };
   }
-  return <AppShell user={user}>{children}</AppShell>;
+  return (
+    <AppShell user={user} junction={junctionEnabled()}>
+      {children}
+    </AppShell>
+  );
 }
 
 export default function SignedInLayout({ children }: LayoutProps<"/">) {

@@ -88,7 +88,7 @@ function countedBy(viewerId: string): SQL {
  * "On your line right now" (handoff section 5): other people with an active goal on the skill of the viewer's current
  * goal, among those `countedBy` allows. On the first day, only people who took that goal on in the last 7 days. Null
  * below LINE_MIN_PEOPLE, and the card is hidden. Up to four initials, connections first; never a name, handle or link.
- * The tip waits for Junction.
+ * The tip comes from Junction (lineTipFor in src/lib/junction/feed.ts), added by Today only while JUNCTION_ENABLED is on.
  */
 export async function onYourLineFor(
   viewerId: string,

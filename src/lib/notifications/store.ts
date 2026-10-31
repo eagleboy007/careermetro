@@ -2,10 +2,14 @@ import "server-only";
 import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { Tx } from "@/db/lock";
-import { applications, blocks, companyBlocks, interviews, jobs, notifications, organizations, users, userSettings } from "@/db/schema";
+import { alias } from "drizzle-orm/pg-core";
+import { applications, blocks, companyBlocks, interviews, jobs, junctionAppeals, junctionComments, junctionPosts, notifications, organizations, reports, users, userSettings } from "@/db/schema";
+import { REPORT_REASON_LABELS } from "@/lib/inbox/types";
 import { displayName } from "@/lib/account/name";
 import { errorFields, logEvent } from "@/lib/log";
-import { NOTIFICATIONS_SHOWN, NOTIFICATION_KEEP_DAYS, NOTIFICATION_READ_KEEP_DAYS, NOTIFICATION_SHOWN_DAYS } from "@/lib/schemas/constants";
+import { JUNCTION_REPORT_REASON_LABELS, NOTIFICATIONS_SHOWN, NOTIFICATION_KEEP_DAYS, NOTIFICATION_READ_KEEP_DAYS, NOTIFICATION_SHOWN_DAYS, SYSTEM_NOTIFICATION_KINDS } from "@/lib/schemas/constants";
+import type { ReportReason } from "@/lib/schemas/inbox";
+import { deadlinesFor } from "@/lib/legal-timings";
 import { notificationView, notifyInput, openNotificationsInput, type NotificationExport, type NotifyInput } from "@/lib/schemas/notifications";
 import { LIMITS, takeShared } from "@/lib/shared-limit";
 import { APPLICATION_KINDS, hrefFor, relativeTime, sentenceFor } from "./rules";
@@ -38,10 +42,15 @@ export async function notify(tx: Tx | Db, raw: NotifyInput, now = new Date()): P
     return;
   }
   const n = parsed.data;
-  if (n.userId === n.actorId) return;
+  const actorId = "actorId" in n ? n.actorId : null;
+  if (n.userId === actorId) return;
   const requestId = "connectionRequestId" in n ? n.connectionRequestId : null;
   const applicationId = "applicationId" in n ? n.applicationId : null;
   const interviewId = "interviewId" in n ? n.interviewId : null;
+  const postId = "postId" in n ? n.postId : null;
+  const commentId = "commentId" in n ? n.commentId : null;
+  const reportId = "reportId" in n ? n.reportId : null;
+  const appealId = "appealId" in n ? n.appealId : null;
   try {
     const wrote = await tx.transaction(async (sp) => {
       const [to] = await sp.select({ deleted: users.deletionRequestedAt, suspended: users.suspendedAt }).from(users).where(eq(users.id, n.userId));
@@ -54,9 +63,26 @@ export async function notify(tx: Tx | Db, raw: NotifyInput, now = new Date()): P
       if (interviewId) {
         await sp.delete(notifications).where(and(eq(notifications.userId, n.userId), eq(notifications.interviewId, interviewId), isNull(notifications.readAt)));
       }
+      const junctionRef = postId ?? commentId ?? reportId ?? appealId;
+      if (junctionRef) {
+        // The new kinds (migration 0059) fall outside notifications_one_unread, so one unread row per kind and source is
+        // kept here: a newer one replaces it ("Asha commented" moves up rather than repeating).
+        await sp
+          .delete(notifications)
+          .where(
+            and(
+              eq(notifications.userId, n.userId),
+              eq(notifications.kind, n.kind),
+              isNull(notifications.readAt),
+              sql`coalesce(${notifications.postId}, ${notifications.commentId}, ${notifications.reportId}, ${notifications.appealId}) = ${junctionRef}`,
+            ),
+          );
+        await sp.insert(notifications).values({ userId: n.userId, kind: n.kind, actorId, postId, commentId, reportId, appealId, createdAt: now });
+        return true;
+      }
       await sp.execute(sql`
         insert into notifications (user_id, kind, actor_id, connection_request_id, application_id, interview_id, created_at)
-        values (${n.userId}, ${n.kind}, ${n.actorId}, ${requestId}, ${applicationId}, ${interviewId}, ${now.toISOString()}::timestamptz)
+        values (${n.userId}, ${n.kind}, ${actorId}, ${requestId}, ${applicationId}, ${interviewId}, ${now.toISOString()}::timestamptz)
         on conflict (user_id, kind, (coalesce(application_id, connection_request_id, interview_id))) where read_at is null
         do update set created_at = excluded.created_at, actor_id = excluded.actor_id`);
       return true;
@@ -89,9 +115,17 @@ export async function forgetBetween(tx: Tx | Db, x: string, y: string): Promise<
  */
 function shownTo(userId: string): SQL {
   return and(
-    isNull(users.deletionRequestedAt),
-    isNull(users.suspendedAt),
-    sql`not exists (select 1 from ${blocks} where (${blocks.blockerId} = ${userId} and ${blocks.blockedId} = ${notifications.actorId}) or (${blocks.blockerId} = ${notifications.actorId} and ${blocks.blockedId} = ${userId}))`,
+    or(
+      // CareerMetro's own notices (Junction, reports) have no actor and name nobody.
+      and(inArray(notifications.kind, [...SYSTEM_NOTIFICATION_KINDS]), isNull(notifications.actorId)),
+      and(
+        isNotNull(users.id),
+        isNull(users.deletionRequestedAt),
+        isNull(users.suspendedAt),
+        sql`not exists (select 1 from ${blocks} where (${blocks.blockerId} = ${userId} and ${blocks.blockedId} = ${notifications.actorId}) or (${blocks.blockerId} = ${notifications.actorId} and ${blocks.blockedId} = ${userId}))`,
+      ),
+    ),
+    junctionLive(userId),
     or(
       and(isNull(notifications.applicationId), isNull(notifications.interviewId)),
       and(
@@ -103,6 +137,25 @@ function shownTo(userId: string): SQL {
     ),
     or(notInArray(notifications.kind, [...APPLICATION_KINDS]), sql`coalesce(${userSettings.jobSearch}, true)`),
     or(ne(notifications.kind, "interview_scheduled"), and(isNull(interviews.cancelledAt), notInArray(interviews.status, ["cancelled", "declined"]))),
+  )!;
+}
+
+/** The post a Junction row is about: its own, or its hidden comment's. */
+const rowPost = alias(junctionPosts, "row_post");
+
+/**
+ * A Junction or report row shows while what it is about still stands: a comment's post is the person's and not deleted;
+ * a hidden post or comment is still hidden; an appeal is decided; a report is closed (for the reporter) or still open
+ * (for an admin). The sentence reads the live row, so nothing typed is ever stored in a notification.
+ */
+function junctionLive(userId: string): SQL {
+  return and(
+    or(isNull(notifications.postId), and(isNotNull(rowPost.id), isNull(rowPost.deletedAt), eq(rowPost.authorId, userId))),
+    or(ne(notifications.kind, "junction_post_hidden"), eq(rowPost.status, "hidden")),
+    or(isNull(notifications.commentId), and(isNotNull(junctionComments.id), isNull(junctionComments.deletedAt), eq(junctionComments.authorId, userId), eq(junctionComments.status, "hidden"))),
+    or(isNull(notifications.appealId), and(isNotNull(junctionAppeals.id), ne(junctionAppeals.status, "open"))),
+    or(ne(notifications.kind, "report_decided"), and(isNotNull(reports.id), ne(reports.status, "open"), eq(reports.reporterId, userId))),
+    or(ne(notifications.kind, "report_filed"), and(isNotNull(reports.id), eq(reports.status, "open"))),
   )!;
 }
 
@@ -125,19 +178,50 @@ export async function notificationsFor(userId: string, deps: Deps = {}): Promise
       job: jobs.title,
       stage: applications.stage,
       startsAt: interviews.startsAt,
+      postId: notifications.postId,
+      postTitle: rowPost.title,
+      postRule: rowPost.hiddenRule,
+      commentRule: junctionComments.hiddenRule,
+      appealStatus: junctionAppeals.status,
+      reportStatus: reports.status,
+      reportedAt: reports.createdAt,
+      reportReason: reports.reason,
+      reportDecideBy: reports.decideBy,
     })
     .from(notifications)
-    .innerJoin(users, eq(users.id, notifications.actorId))
+    .leftJoin(users, eq(users.id, notifications.actorId))
     .leftJoin(interviews, eq(interviews.id, notifications.interviewId))
     .leftJoin(applications, applicationOf)
     .leftJoin(jobs, eq(jobs.id, applications.jobId))
     .leftJoin(organizations, eq(organizations.id, applications.orgId))
     .leftJoin(userSettings, eq(userSettings.userId, notifications.userId))
+    .leftJoin(rowPost, eq(rowPost.id, notifications.postId))
+    .leftJoin(junctionComments, eq(junctionComments.id, notifications.commentId))
+    .leftJoin(junctionAppeals, eq(junctionAppeals.id, notifications.appealId))
+    .leftJoin(reports, eq(reports.id, notifications.reportId))
     .where(and(eq(notifications.userId, userId), gte(notifications.createdAt, new Date(now.getTime() - NOTIFICATION_SHOWN_DAYS * DAY)), shownTo(userId)))
     .orderBy(desc(notifications.createdAt), desc(notifications.id))
     .limit(NOTIFICATIONS_SHOWN);
   return rows.flatMap((r) => {
-    const facts = { kind: r.kind, actorName: displayName(r.actorName), actorHandle: r.actorHandle, company: r.company, job: r.job, stage: r.stage, startsAt: r.startsAt };
+    const reason = r.reportReason as ReportReason | null;
+    const rule = (r.postRule ?? r.commentRule) as ReportReason | null;
+    const facts = {
+      kind: r.kind,
+      actorName: displayName(r.actorName),
+      actorHandle: r.actorHandle,
+      company: r.company,
+      job: r.job,
+      stage: r.stage,
+      startsAt: r.startsAt,
+      postId: r.postId,
+      postTitle: r.postTitle,
+      rule: rule ? ((JUNCTION_REPORT_REASON_LABELS as Record<string, string>)[rule] ?? REPORT_REASON_LABELS[rule] ?? null) : null,
+      appealStatus: r.appealStatus,
+      reportStatus: r.reportStatus,
+      reportedAt: r.reportedAt,
+      reportReason: reason ? REPORT_REASON_LABELS[reason] : null,
+      decideBy: r.reportDecideBy ?? (reason && r.reportedAt ? deadlinesFor(reason, r.reportedAt).decideBy : null),
+    };
     const view = notificationView.safeParse({ id: r.id, kind: r.kind, text: sentenceFor(facts), href: hrefFor(facts), when: relativeTime(r.createdAt, now), isNew: r.readAt === null });
     // A row that doesn't fit (a name too long, say) is left out rather than failing the panel; logged by kind only.
     if (!view.success) logEvent("warn", "notification_unshown", { kind: r.kind });
@@ -152,10 +236,14 @@ export async function newCount(userId: string, deps: Deps = {}): Promise<number>
   const [row] = await db
     .select({ n: count() })
     .from(notifications)
-    .innerJoin(users, eq(users.id, notifications.actorId))
+    .leftJoin(users, eq(users.id, notifications.actorId))
     .leftJoin(interviews, eq(interviews.id, notifications.interviewId))
     .leftJoin(applications, applicationOf)
     .leftJoin(userSettings, eq(userSettings.userId, notifications.userId))
+    .leftJoin(rowPost, eq(rowPost.id, notifications.postId))
+    .leftJoin(junctionComments, eq(junctionComments.id, notifications.commentId))
+    .leftJoin(junctionAppeals, eq(junctionAppeals.id, notifications.appealId))
+    .leftJoin(reports, eq(reports.id, notifications.reportId))
     .where(
       and(
         eq(notifications.userId, userId),

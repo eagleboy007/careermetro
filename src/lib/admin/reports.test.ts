@@ -63,7 +63,7 @@ describe.skipIf(!db)("report review (database)", () => {
   }
   const mine = async () => (await reportsForReview({ db: db! })).filter((r) => reportIds.includes(r.id));
 
-  it("lists open reports oldest first with their deadlines and what was reported, with short names and no email", async () => {
+  it("lists open reports nearest deadline first with their deadlines and what was reported, with short names and no email", async () => {
     const asha = await person("a", "Asha", "Verma");
     const ravi = await person("r", "Ravi", "Kulkarni");
     const recruiter = await person("h", "Hari", "Menon");
@@ -79,8 +79,9 @@ describe.skipIf(!db)("report review (database)", () => {
     await db!.update(schema.reports).set({ status: "dismissed", resolvedAt: at }).where(eq(schema.reports.id, closed));
 
     const list = await mine();
-    expect(list.map((r) => r.id)).toEqual([first, second, third]);
-    expect(list[0]).toMatchObject({
+    // Impersonation is decided within 24 hours, money within 72, other within 15 days (FR-61 kept one order for all).
+    expect(list.map((r) => r.id)).toEqual([second, first, third]);
+    expect(list[1]).toMatchObject({
       reason: "Asked for money, an OTP or bank details",
       what: "A message",
       reporter: "Asha V.",
@@ -90,7 +91,7 @@ describe.skipIf(!db)("report review (database)", () => {
       decideBy: new Date(at.getTime() + 72 * HOUR).toISOString(),
       context: { label: "Message from Hari M. at Example Labs", text: "Pay a fee of 5,000 to book the interview." },
     });
-    expect(list[1]).toMatchObject({ what: "A person", decideBy: new Date(at.getTime() + 5 * 60_000 + 24 * HOUR).toISOString(), context: { label: "Person: Ravi K.", text: null } });
+    expect(list[0]).toMatchObject({ what: "A person", decideBy: new Date(at.getTime() + 5 * 60_000 + 24 * HOUR).toISOString(), context: { label: "Person: Ravi K.", text: null } });
     expect(list[2]).toMatchObject({ what: "A chat", context: { label: "Chat with Ravi K.", text: null } });
     const text = JSON.stringify(list);
     expect(text).not.toContain("@example.test");

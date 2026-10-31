@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ORG_REVIEW_STATUSES, ORG_TYPES, REMOVAL_REASON_MAX, REVIEW_DECISIONS } from "./constants";
+import { JUNCTION_REPORT_REASONS, ORG_REVIEW_STATUSES, ORG_TYPES, REMOVAL_REASON_MAX, REVIEW_DECISIONS } from "./constants";
 
 export { REMOVAL_REASON_MAX };
 
@@ -142,7 +142,7 @@ export const removalReason = z
   .min(1, "Write the reason.")
   .max(REMOVAL_REASON_MAX, `Keep the reason to ${REMOVAL_REASON_MAX} characters.`);
 
-export const REMOVAL_ACTIONS = ["hide_message", "unhide_message", "suspend_account", "lift_suspension"] as const;
+export const REMOVAL_ACTIONS = ["hide_message", "unhide_message", "suspend_account", "lift_suspension", "hide_post", "hide_comment", "unhide_post", "unhide_comment"] as const;
 export type RemovalAction = (typeof REMOVAL_ACTIONS)[number];
 
 export const reportRemovalInput = z.discriminatedUnion("action", [
@@ -150,6 +150,12 @@ export const reportRemovalInput = z.discriminatedUnion("action", [
   z.object({ action: z.literal("unhide_message"), messageId: z.uuid() }).strict(),
   z.object({ action: z.literal("suspend_account"), reportId: z.uuid(), reason: removalReason }).strict(),
   z.object({ action: z.literal("lift_suspension"), userId: z.uuid() }).strict(),
+  // Junction (migration 0059, plan section 2.5): hide a reported post or comment, naming the rule it broke (the author's
+  // notice quotes the rule, never the reason); show it again from the hidden list.
+  z.object({ action: z.literal("hide_post"), reportId: z.uuid(), reason: removalReason, rule: z.enum(JUNCTION_REPORT_REASONS) }).strict(),
+  z.object({ action: z.literal("hide_comment"), reportId: z.uuid(), reason: removalReason, rule: z.enum(JUNCTION_REPORT_REASONS) }).strict(),
+  z.object({ action: z.literal("unhide_post"), postId: z.uuid() }).strict(),
+  z.object({ action: z.literal("unhide_comment"), commentId: z.uuid() }).strict(),
 ]);
 export type ReportRemovalInput = z.infer<typeof reportRemovalInput>;
 
@@ -206,6 +212,21 @@ export const reportReviewView = z
     message: reportedMessage.nullable(),
     /** Null when the report points at no one person's account (a company chat, a job), or the account is gone. */
     account: reportedAccount.nullable(),
+    /** A post or comment on Junction (migration 0059): its state, counts and any hide in force; absent otherwise. */
+    junction: z
+      .object({
+        target: z.enum(["post", "comment"]),
+        id: z.uuid(),
+        status: z.enum(["visible", "pending", "held", "hidden"]),
+        tags: z.array(z.string().min(1).max(40)).max(3),
+        upvotes: z.number().int().nonnegative(),
+        comments: z.number().int().nonnegative(),
+        hidden: removalState.extend({ rule: z.string().min(1).max(120) }).nullable(),
+      })
+      .strict()
+      .optional(),
+    /** Held for review automatically (plan section 2.5): shown first in the queue. */
+    held: z.boolean().optional(),
   })
   .strict();
 export type ReportReviewView = z.infer<typeof reportReviewView>;

@@ -39,7 +39,7 @@ import {
   ORG_TYPES,
   WORK_EMAIL_PURPOSES,
 } from "./constants";
-import { messageBody, REPORT_NOTE_MAX_CHARS, REPORT_REASONS } from "./inbox";
+import { CHAT_REPORT_REASONS, messageBody, REPORT_NOTE_MAX_CHARS } from "./inbox";
 
 /*
  * Corporate, build steps 1 and 2 (dev/corporate-plan.md; handoff 12e and 12f): company sign-up, the work-email code,
@@ -303,7 +303,7 @@ export const applicationIdInput = z.object({ applicationId: z.uuid() });
 /** "Report this job" (plan, Abuse and compliance), into the same reports queue as the Inbox. */
 export const jobReportInput = z.object({
   jobId: z.uuid(),
-  reason: z.enum(REPORT_REASONS),
+  reason: z.enum(CHAT_REPORT_REASONS),
   note: z.string().trim().max(REPORT_NOTE_MAX_CHARS).optional(),
 });
 

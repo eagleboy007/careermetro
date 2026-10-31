@@ -14,6 +14,13 @@ const sql = url ? postgres(url, { max: 1, onnotice: () => {} }) : null;
  * resource_suggestions.decided_by hold the admin who decided on /admin/library (docs/plans/library-part-2-plan.md), the same way.
  */
 const unindexedOk = new Set([
+  // Junction (migration 0059): the admin who hid a tag, post or comment, removed content, or decided an appeal. Never
+  // queried by; only an admin's own account going sets them null.
+  "interests.hidden_by",
+  "junction_appeals.decided_by",
+  "junction_comments.hidden_by",
+  "junction_posts.hidden_by",
+  "junction_removals.removed_by",
   "gap_analyses.ai_call_id",
   "gap_analyses.role_profile_id",
   "jobs.role_profile_id",
