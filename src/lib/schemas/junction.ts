@@ -99,7 +99,7 @@ export const postInput = z
     kind: z.enum(JUNCTION_POST_KINDS),
     title,
     body: body.default(""),
-    link: link.default(""),
+    link: link.prefault(""),
     toRoute: z.boolean(),
     interestIds: z.array(z.uuid()).max(JUNCTION_TAGS_MAX, { error: JUNCTION_TEXT.tags }).default([]),
     newInterests: z.array(interestName).max(JUNCTION_TAGS_MAX, { error: JUNCTION_TEXT.tags }).default([]),
@@ -115,7 +115,7 @@ export type PostInput = z.input<typeof postInput>;
 export type PostData = z.output<typeof postInput>;
 
 /** An edit, within the edit window (the store checks it, and that a Resource keeps a link). */
-export const postEditInput = z.strictObject({ postId: z.uuid(), title, body: body.default(""), link: link.default("") });
+export const postEditInput = z.strictObject({ postId: z.uuid(), title, body: body.default(""), link: link.prefault("") });
 export type PostEditInput = z.input<typeof postEditInput>;
 
 /** A comment: 1 to 1,000 characters, no contact details and no links in v1. */
