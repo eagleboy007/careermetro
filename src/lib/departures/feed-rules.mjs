@@ -262,8 +262,11 @@ export const ROLE_TITLES = {
   "business-analyst": /\bbusiness (systems )?analyst\b|^(?!.*\bsap\b).*\b(functional|techno-?functional|requirements) (analyst|consultant)\b/i,
   // Before the manual and automation test rules, which would read "QA" or "Test" in it.
   "performance-test-engineer": /^(?!.*\bmarket).*\b(performance|load|stress|non-functional|nft)\b.*\b(test(er|ing)?|engineer|consultant)\b/i,
+  // A software QA or test manager title (senior batch TJ) before the test lead rule; never a pharma, plant, clinical or
+  // food one, and a plain "Quality Assurance Manager" (mostly pharma and plant QA in India) has no rule.
+  "qa-manager": /^(?!.*\b(pharma|pharmaceutical|plant|clinical|food|construction|civil|production|manufacturing|gmp|medical devices?|laborator(y|ies)|lab|hospital|healthcare|textile|garment)\b).*(\b(qa|test|testing|quality engineering|software quality( assurance)?|software testing|qa automation|test automation|qa engineering|qa and testing|qa & testing|qa\/testing)( and (qa|testing))? manager\b|\bmanager,? ?[-–]? ?(qa|testing|software testing|quality engineering|qa and testing)\b)/i,
   // A test lead title before the manual and automation test rules.
-  "qa-lead": /\b(qa|test|testing|quality assurance|sdet)( automation| test)? (team )?lead\b|\b(automation test|qa automation) lead\b|\blead (qa|sdet|test|quality assurance)\b|\btest (manager|architect)\b|\b(test|qa) automation architect\b/i,
+  "qa-lead": /\b(qa|test|testing|quality assurance|sdet)( automation| test)? (team )?lead\b|\b(automation test|qa automation) lead\b|\blead (qa|sdet|test|quality assurance)\b|\btest architect\b|\b(test|qa) automation architect\b/i,
   // A manual testing title, never an automation one, before the mobile and front-end rules ("Mobile Manual Tester").
   // A plain "QA Analyst", "Quality Analyst" or "Test Engineer" is manual testing; "QA Engineer" stays automation.
   "manual-test-engineer": /^(?!.*\b(automation|sdet|selenium)\b).*(\bmanual\b.*\b(test(er|ers|ing)?|qa|quality)\b|\b(test(er|ing)?|qa|quality)\b.*\bmanual\b|\b(software|functional|manual|qa|mainframe|game|games|localization|localisation) tester\b|^((senior|sr\.?|junior|jr\.?|associate|trainee) )?((qa|quality) analyst|test engineer)\b)/i,
@@ -390,10 +393,24 @@ export const ROLE_TITLES = {
   // A technical or engineering program title; a plain "Program Manager" has no rule, and an IT project one is below.
   "technical-program-manager": /\b(technical|engineering) (program|programme|project) manager\b|\bprogram(me)? manager,? ?[-–]? ?(engineering|technical)\b/i,
   "scrum-master": /\b(scrum master|agile (coach|delivery lead|project manager)|iteration manager|release train engineer)\b/i,
+  // Senior batch TJ: manager titles for ML, data, platform, delivery and IT program teams, after the technical program
+  // and agile rules and before the IT project and engineering manager rules (which would read "Delivery Manager" and
+  // "Engineering Manager - Data Platform"). "GenAI Lead" reads as the ML engineering manager (no AI engineer rule reads a
+  // lead), never a product title; "Data Science Manager" stays the senior data scientist, and a plain "Program Manager"
+  // has no rule.
+  "ml-engineering-manager": /^(?!.*\bproduct\b).*\b((ai\/ml|ml\/ai|ml|machine learning|ai|gen(erative)?[- ]?ai|llm|ml platform|mlops) engineering manager|manager,? ?[-–]? ?(ai\/ml|ml|machine learning|gen(erative)?[- ]?ai)( engineering)?|engineering manager,? ?[-–]? ?(ai\/ml|ml|machine learning|ai|gen(erative)?[- ]?ai|ml platform)|applied science manager|gen(erative)?[- ]?ai (team )?(lead|manager))\b/i,
+  "data-engineering-manager": /\b((big )?data engineering (team )?(manager|lead)|data platform (engineering )?manager|manager,? ?[-–]? ?(big )?data (engineering|platform)|engineering manager,? ?[-–]? ?data( platform| engineering)?)\b/i,
+  // Never a plant, facilities, construction or network operations one; a plain "Infrastructure Manager" or "Platform
+  // Manager" has no rule.
+  "platform-engineering-manager": /^(?!.*\b(hardware|mechanical|plant|manufacturing|electrical|civil|facilit(y|ies)|construction|telecom|network operations)\b).*(\b(platform engineering|devops|devsecops|sre|site reliability( engineering)?|cloud infrastructure|cloud platform|cloud operations|cloudops|infrastructure engineering)( (and|&) (sre|devops|site reliability|platform)( engineering)?)? manager\b|\bmanager,? ?[-–]? ?(platform engineering|devops|sre|site reliability|cloud infrastructure)( engineering)?\b|\bengineering manager,? ?[-–]? ?(platform|devops|sre|site reliability|infrastructure|cloud( infrastructure)?)\b)/i,
+  // A "Delivery Manager" in IT services (moved from the IT project rule), never a logistics, courier, retail or service
+  // delivery one.
+  "delivery-manager": /^(?!.*\b(logistics|last mile|courier|food|warehouse|supply chain|retail|service delivery|construction|civil|solar|epc|real estate|plant|hospital|bpo|voice|customer service)\b)(((senior|sr\.?|associate|technical|it|project|account|client|global|software|offshore|engagement) )*delivery (lead )?manager\b|.*\bmanager,? ?[-–]? ?(it |software )?delivery\b)/i,
+  "it-program-manager": /^(?!.*\b(civil|construction|mechanical|electrical|solar|epc|real estate|interior|site|plant|marketing|clinical|highway|roads?|hr|csr|education|events?|hospital|pharma|sales)\b).*(\b(it|technology|digital|erp|sap|cloud|it infrastructure|((digital|it|cloud|technology|business) )?transformation) program(me)? manager\b|\bprogram(me)? manager,? ?[-–]? ?(it|technology|((digital|it|cloud|business|technology) )?transformation|cloud migration|erp|sap)\b|\b(it|technology) portfolio manager\b)/i,
   // An IT, software or ERP project title after the technical program and agile rules; a plain "Project Manager" has no
   // rule, and never a civil, construction, plant or marketing one ("Project Manager - Infrastructure" can be a road). A
-  // PMO analyst and a "Delivery Manager" (never a logistics or courier one) read here too.
-  "it-project-manager": /^(?!.*\b(civil|construction|mechanical|electrical|solar|epc|real estate|interior|site|plant|marketing|clinical|highway|roads?)\b).*(\b(it|software|erp|sap|application|technology|implementation|it infrastructure) project (manager|lead)\b|\bproject manager\b.*\b(it|software|erp|sap|application delivery|implementation|it infrastructure|infrastructure)\b|\b(it )?pmo (manager|lead|analyst)\b|^(?!.*\b(logistics|last mile|courier|food|warehouse|supply chain|retail)\b)((senior|sr\.?|associate|technical|it|project) )?delivery manager\b)/i,
+  // PMO analyst reads here too; a "Delivery Manager" is the delivery manager rule above.
+  "it-project-manager": /^(?!.*\b(civil|construction|mechanical|electrical|solar|epc|real estate|interior|site|plant|marketing|clinical|highway|roads?)\b).*(\b(it|software|erp|sap|application|technology|implementation|it infrastructure) project (manager|lead)\b|\bproject manager\b.*\b(it|software|erp|sap|application delivery|implementation|it infrastructure|infrastructure)\b|\b(it )?pmo (manager|lead|analyst)\b)/i,
   "engineering-manager": /\b(engineering manager|manager,? (software )?engineering|software (development|engineering) manager|head of engineering|director of engineering|engineering director|tech lead manager)\b|^((senior|sr\.?) )?(development manager|technical manager|engineering lead)\b/i,
   "senior-data-scientist": /\b(senior|sr\.?|lead|staff|principal) (data|applied|ml|machine learning) scientist\b|\bdata science (lead|manager)\b/i,
   "data-scientist": /\b(data scientist|machine learning scientist|applied scientist|ml scientist|decision scientist|data science (associate|analyst)|(predictive|statistical) model(l)?er)\b/i,
@@ -551,13 +568,13 @@ export const ROLE_TITLES = {
   // one; a plain "Operations Executive" has no rule.
   "back-office-executive": /^(?!.*\b(software|developer|engineer|it|sap|(?<!non[- ])voice|team lead(er)?|manager|analyst)\b)((senior|sr\.?|junior|jr\.?|trainee) )*((back[- ]office|banking operations|bank operations|policy issuance|data verification|non-voice( process)?) (executive|associate|assistant|officer|processor)|(operations|process) associate,? ?[-–]? ?(back[- ]office|non-voice|banking))\b/i,
 };
-const MANAGER_OK = new Set(["product-manager", "qa-lead", "it-service-delivery-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
+const MANAGER_OK = new Set(["product-manager", "qa-lead", "qa-manager", "ml-engineering-manager", "data-engineering-manager", "platform-engineering-manager", "delivery-manager", "it-program-manager", "it-service-delivery-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
 /** The business rules that may read a sales or recruiting title, which NOT_IN_SCOPE drops for every other rule. */
 const SALES_OK = new Set(["key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive", "medical-representative", "channel-sales-manager", "real-estate-sales-executive", "home-loan-sales-officer", "fmcg-sales-officer", "management-trainee"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;
-const TEST_ROLES = new Set(["qa-automation-engineer", "manual-test-engineer", "performance-test-engineer", "qa-lead"]);
+const TEST_ROLES = new Set(["qa-automation-engineer", "manual-test-engineer", "performance-test-engineer", "qa-lead", "qa-manager"]);
 
 /** The live role a title reads as, or null. `text` only settles Java for a backend title. */
 export function classify(/** @type {string} */ title, /** @type {string} */ text = "") {

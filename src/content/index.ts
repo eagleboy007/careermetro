@@ -95,12 +95,14 @@ import dataAnnotationSpecialist from "./roles/data-annotation-specialist.json";
 import dataArchitect from "./roles/data-architect.json";
 import dataCenterEngineer from "./roles/data-center-engineer.json";
 import dataEngineer from "./roles/data-engineer.json";
+import dataEngineeringManager from "./roles/data-engineering-manager.json";
 import dataGovernanceAnalyst from "./roles/data-governance-analyst.json";
 import dataQualityEngineer from "./roles/data-quality-engineer.json";
 import dataScientist from "./roles/data-scientist.json";
 import databaseAdministrator from "./roles/database-administrator.json";
 import databaseArchitect from "./roles/database-architect.json";
 import databaseDeveloper from "./roles/database-developer.json";
+import deliveryManager from "./roles/delivery-manager.json";
 import designVerificationEngineer from "./roles/design-verification-engineer.json";
 import developerAdvocate from "./roles/developer-advocate.json";
 import devopsEngineer from "./roles/devops-engineer.json";
@@ -152,6 +154,7 @@ import investmentBankingAnalyst from "./roles/investment-banking-analyst.json";
 import iosDeveloper from "./roles/ios-developer.json";
 import iotEngineer from "./roles/iot-engineer.json";
 import itAuditor from "./roles/it-auditor.json";
+import itProgramManager from "./roles/it-program-manager.json";
 import itProjectManager from "./roles/it-project-manager.json";
 import itServiceDeliveryManager from "./roles/it-service-delivery-manager.json";
 import itSupportEngineer from "./roles/it-support-engineer.json";
@@ -173,6 +176,7 @@ import mechanicalDesignEngineer from "./roles/mechanical-design-engineer.json";
 import medicalRepresentative from "./roles/medical-representative.json";
 import middlewareAdministrator from "./roles/middleware-administrator.json";
 import mlEngineer from "./roles/ml-engineer.json";
+import mlEngineeringManager from "./roles/ml-engineering-manager.json";
 import mlopsEngineer from "./roles/mlops-engineer.json";
 import networkEngineer from "./roles/network-engineer.json";
 import networkSecurityEngineer from "./roles/network-security-engineer.json";
@@ -190,6 +194,7 @@ import performanceTestEngineer from "./roles/performance-test-engineer.json";
 import phpDeveloper from "./roles/php-developer.json";
 import physicalDesignEngineer from "./roles/physical-design-engineer.json";
 import platformEngineer from "./roles/platform-engineer.json";
+import platformEngineeringManager from "./roles/platform-engineering-manager.json";
 import plcScadaEngineer from "./roles/plc-scada-engineer.json";
 import plmDeveloper from "./roles/plm-developer.json";
 import postSiliconValidationEngineer from "./roles/post-silicon-validation-engineer.json";
@@ -204,6 +209,7 @@ import productionEngineer from "./roles/production-engineer.json";
 import pythonDeveloper from "./roles/python-developer.json";
 import qaAutomationEngineer from "./roles/qa-automation-engineer.json";
 import qaLead from "./roles/qa-lead.json";
+import qaManager from "./roles/qa-manager.json";
 import qualityControlInspector from "./roles/quality-control-inspector.json";
 import quantDeveloper from "./roles/quant-developer.json";
 import realEstateSalesExecutive from "./roles/real-estate-sales-executive.json";
@@ -386,12 +392,14 @@ export const roleProfiles: RoleProfile[] = z
     dataArchitect,
     dataCenterEngineer,
     dataEngineer,
+    dataEngineeringManager,
     dataGovernanceAnalyst,
     dataQualityEngineer,
     dataScientist,
     databaseAdministrator,
     databaseArchitect,
     databaseDeveloper,
+    deliveryManager,
     designVerificationEngineer,
     developerAdvocate,
     devopsEngineer,
@@ -443,6 +451,7 @@ export const roleProfiles: RoleProfile[] = z
     iosDeveloper,
     iotEngineer,
     itAuditor,
+    itProgramManager,
     itProjectManager,
     itServiceDeliveryManager,
     itSupportEngineer,
@@ -464,6 +473,7 @@ export const roleProfiles: RoleProfile[] = z
     medicalRepresentative,
     middlewareAdministrator,
     mlEngineer,
+    mlEngineeringManager,
     mlopsEngineer,
     networkEngineer,
     networkSecurityEngineer,
@@ -481,6 +491,7 @@ export const roleProfiles: RoleProfile[] = z
     phpDeveloper,
     physicalDesignEngineer,
     platformEngineer,
+    platformEngineeringManager,
     plcScadaEngineer,
     plmDeveloper,
     postSiliconValidationEngineer,
@@ -495,6 +506,7 @@ export const roleProfiles: RoleProfile[] = z
     pythonDeveloper,
     qaAutomationEngineer,
     qaLead,
+    qaManager,
     qualityControlInspector,
     quantDeveloper,
     realEstateSalesExecutive,

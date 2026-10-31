@@ -16,7 +16,8 @@
       "database-administrator",
       "database-architect",
       "kafka-streaming-engineer",
-      "data-quality-engineer"
+      "data-quality-engineer",
+      "data-engineering-manager"
     ],
     "data-science-ml": [
       "data-scientist",
@@ -28,7 +29,8 @@
       "nlp-engineer",
       "ai-research-scientist",
       "ai-architect",
-      "data-annotation-specialist"
+      "data-annotation-specialist",
+      "ml-engineering-manager"
     ],
     "security": [
       "cyber-security-analyst",
@@ -84,7 +86,8 @@
       "cloud-network-engineer",
       "technical-account-manager",
       "middleware-administrator",
-      "it-service-delivery-manager"
+      "it-service-delivery-manager",
+      "platform-engineering-manager"
     ],
     "backend": [
       "software-engineer",
@@ -155,7 +158,8 @@
       "qa-automation-engineer",
       "qa-lead",
       "manual-test-engineer",
-      "performance-test-engineer"
+      "performance-test-engineer",
+      "qa-manager"
     ],
     "hardware": [
       "embedded-software-engineer",
@@ -185,7 +189,9 @@
       "technical-program-manager",
       "it-project-manager",
       "ai-product-manager",
-      "customer-success-manager"
+      "customer-success-manager",
+      "delivery-manager",
+      "it-program-manager"
     ],
     "marketing": [
       "digital-marketing-executive",
@@ -431,10 +437,6 @@
     [
       "customer-support-executive",
       "relationship-manager-banking"
-    ],
-    [
-      "ai-architect",
-      "ai-product-manager"
     ]
   ]
 }

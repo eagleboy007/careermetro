@@ -2778,5 +2778,25 @@
   {
     "skillId": "websphere-administration",
     "task": "Install WebSphere Liberty (free), deploy a sample app, set up a datasource and SSL, and write a wsadmin or server.xml change you would script for a full WebSphere ND cell. Share the configs and notes."
+  },
+  {
+    "skillId": "delivery-pnl-management",
+    "task": "For a synthetic IT services account of 60 people (onsite and offshore, four grades), build a one-quarter P&L in a spreadsheet: billing rates, cost rates, utilisation and gross margin, then show two moves (pyramid or onsite-offshore mix) that lift margin by 3 points and what each risks. Share the sheet and a one-page note."
+  },
+  {
+    "skillId": "it-portfolio-governance",
+    "task": "For a synthetic bank IT portfolio of eight projects, write a governance pack: stage gates with entry and exit criteria, a steering committee agenda and RAG dashboard, a scoring sheet that ranks the projects, and a benefits register for the top two. Share the pack."
+  },
+  {
+    "skillId": "ml-system-design",
+    "task": "Write a design document for a synthetic recommendation or fraud model in production: data and feature pipeline, training and retraining, online or batch serving with a latency budget, monitoring for drift, and the trade-offs you chose, with a diagram. Share it."
+  },
+  {
+    "skillId": "quality-metrics-reporting",
+    "task": "From a synthetic release's defect and test-run data (write 100 rows), work out defect leakage, defect removal efficiency, defect density and test coverage, build a one-page release readiness dashboard in a spreadsheet or Power BI, and write a go/no-go recommendation. Share the data, dashboard and note."
+  },
+  {
+    "skillId": "test-automation-strategy",
+    "task": "For a synthetic web and mobile product with 1,200 manual regression cases, write a test automation strategy: what to automate at unit, API and UI level, tool choice with reasons, a 12-month roadmap, CI integration and an ROI estimate. Share the document."
   }
 ]

@@ -1,0 +1,64 @@
+{
+  "id": "delivery-manager-senior",
+  "roleSlug": "delivery-manager",
+  "persona": "senior",
+  "resumeText": "Sanjay Kulkarni | Pune | sanjay.kulkarni@example.com\n\nSUMMARY\nDelivery manager in IT services with 14 years across development, project management and account delivery for insurance clients.\n\nEXPERIENCE\nDelivery Manager, Sahyadri Infotech Services, Pune (2020 - present)\n- Own delivery for two insurance client accounts with six project teams in Pune and Chennai.\n- Lead six project managers and 140 engineers across the two accounts.\n- Manage account P&L and delivery margins for both accounts, including monthly billing and revenue forecasts.\n- Run weekly program governance with RAID logs and dependency tracking across the six teams.\n- Own headcount planning and fulfilment for both accounts with the central resourcing team.\n- Handled client escalations after a failed policy-admin release and ran the recovery plan to closure.\n- Moved three teams from waterfall to Scrum with two-week sprints.\n- Run monthly delivery reviews with client IT heads and our account leadership team.\n- Present quarterly delivery reviews to client leadership.\n\nProject Manager, Sahyadri Infotech Services, Pune (2016 - 2020)\n- Managed project plans, scope and schedules for a claims system rebuild using MS Project.\n- Tracked effort and change requests for a team of 25.\n\nSoftware Engineer, Deccan Code Works, Pune (2012 - 2016)\n- Built Java services for an insurance quoting portal.\n\nSKILLS\nDelivery management, Pre-sales, Agile, Jira, MS Project\n\nEDUCATION\nBE Computer Engineering, Pune University, 2012\n\nCERTIFICATIONS\nPMP (2018)\n",
+  "expected": {
+    "totalYearsExperience": 14,
+    "skills": [
+      {
+        "skillId": "delivery-pnl-management",
+        "quote": "Manage account P&L and delivery margins for both accounts"
+      },
+      {
+        "skillId": "program-management",
+        "quote": "Run weekly program governance with RAID logs and dependency tracking"
+      },
+      {
+        "skillId": "it-project-management",
+        "quote": "Managed project plans, scope and schedules for a claims system rebuild"
+      },
+      {
+        "skillId": "workforce-planning",
+        "quote": "Own headcount planning and fulfilment for both accounts"
+      },
+      {
+        "skillId": "escalation-handling",
+        "quote": "Handled client escalations after a failed policy-admin release"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Moved three teams from waterfall to Scrum with two-week sprints"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Lead six project managers and 140 engineers"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Run monthly delivery reviews with client IT heads and our account leadership team"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present quarterly delivery reviews to client leadership"
+      },
+      {
+        "skillId": "presales-solutioning",
+        "quote": "Pre-sales"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "presales-solutioning",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "scaled-agile",
+      "itsm",
+      "service-level-management",
+      "cloud-migration"
+    ]
+  },
+  "reviewedBy": null
+}

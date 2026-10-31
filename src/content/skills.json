@@ -13170,5 +13170,116 @@
       "data-annotation"
     ],
     "scoring": "gap"
+  },
+  {
+    "id": "engineering-hiring",
+    "name": "Hiring and building engineering teams",
+    "category": "workplace",
+    "aliases": [
+      "engineering hiring",
+      "hiring engineers",
+      "hired engineers",
+      "interview loops",
+      "hiring bar"
+    ],
+    "ambiguous": [
+      "engineering hiring",
+      "hiring engineers"
+    ],
+    "implies": [],
+    "scoring": "context"
+  },
+  {
+    "id": "delivery-pnl-management",
+    "name": "Delivery P&L and margin management (IT services accounts)",
+    "category": "business",
+    "aliases": [
+      "delivery p&l",
+      "delivery p&l management",
+      "account p&l",
+      "account p&l management",
+      "project p&l",
+      "delivery margins",
+      "delivery margin management",
+      "account gross margin",
+      "project gross margin",
+      "onsite-offshore mix",
+      "onsite offshore mix",
+      "pyramid optimisation",
+      "pyramid optimization"
+    ],
+    "ambiguous": [
+      "onsite-offshore mix",
+      "onsite offshore mix"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "it-portfolio-governance",
+    "name": "IT portfolio and program governance (steering committees, stage gates, benefits)",
+    "category": "product",
+    "aliases": [
+      "project portfolio management",
+      "it portfolio management",
+      "portfolio governance",
+      "pmo governance",
+      "pmo setup",
+      "steering committee governance",
+      "stage-gate governance",
+      "stage gate reviews",
+      "stage-gate reviews",
+      "benefits realisation",
+      "benefits realization"
+    ],
+    "ambiguous": [
+      "stage gate reviews",
+      "stage-gate reviews"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "test-automation-strategy",
+    "name": "Test automation strategy (tool choice, roadmap, ROI)",
+    "category": "testing",
+    "aliases": [
+      "test automation strategy",
+      "test automation roadmap",
+      "automation roi",
+      "test automation roi",
+      "test automation framework design",
+      "test automation coe",
+      "automation maturity",
+      "continuous testing strategy"
+    ],
+    "ambiguous": [
+      "test automation framework design",
+      "automation roi",
+      "automation maturity"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "quality-metrics-reporting",
+    "name": "Quality metrics and test reporting (defect leakage, coverage, release readiness)",
+    "category": "testing",
+    "aliases": [
+      "test metrics",
+      "qa metrics",
+      "defect leakage",
+      "defect removal efficiency",
+      "defect density",
+      "test coverage metrics",
+      "release readiness metrics"
+    ],
+    "ambiguous": [
+      "test metrics",
+      "qa metrics",
+      "defect density"
+    ],
+    "implies": [],
+    "scoring": "gap"
   }
 ]
