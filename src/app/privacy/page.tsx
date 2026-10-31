@@ -68,6 +68,11 @@ const sections: LegalSection[] = [
           without signing in.
         </li>
         <li>
+          <strong>Events you suggest:</strong> what you type in &quot;Suggest an event&quot; on Timetable (the organiser&apos;s link, the event&apos;s
+          name, organiser, kind, times, place and cost). We review every suggestion before it appears; until our grievance officer is named, they all
+          wait and no other member sees them. Our servers never open the link, and it is in Download your data.
+        </li>
+        <li>
           <strong>Messages and reports:</strong> your chats and the reports you make. If you report something, we keep your report and any note you wrote
           with it, so we can act on it and keep a record of the complaint.
         </li>
@@ -130,6 +135,7 @@ const sections: LegalSection[] = [
         <li>A job shared from your phone: deleted when you open it, and within a day if you don&apos;t.</li>
         <li>Which weeks the weekly My jobs email and the Monday events email went out: 90 days.</li>
         <li>Timetable events, with the ones you saved or marked I&apos;m going: deleted 90 days after the event ends.</li>
+        <li>Events you suggested: deleted 90 days after the event ends, or with your account.</li>
         <li>
           Your account: until you delete it. Deleting starts a 30-day window in which you can change your mind. After that your data is removed for good,
           except reports you made (kept without your name) and messages a company wrote to you, which stay in the company&apos;s records.

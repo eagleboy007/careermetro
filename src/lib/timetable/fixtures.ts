@@ -1,4 +1,4 @@
-import type { TimetableWhy } from "@/lib/schemas";
+import type { EventSuggestionQueue, TimetableWhy } from "@/lib/schemas";
 import { timetableFor, type TimetableEvent, type TimetablePerson } from "./match";
 import { FAR_RADIUS_KM } from "./view";
 
@@ -174,3 +174,43 @@ export const exampleTimetableNoCity = timetableFor(exampleTimetableEvents, { ...
 export const exampleTimetableEmpty = timetableFor(exampleTimetableEvents, { ...exampleTimetablePerson, goalSkillIds: [], interestKeys: ["public speaking"] }, EXAMPLE_TIMETABLE_NOW);
 
 export const exampleTimetableChoices = { radiusKm: exampleTimetablePerson.radiusKm, online: exampleTimetablePerson.online };
+
+/**
+ * Pending event suggestions as an admin sees them on /admin/reports (Timetable PR 6), for /design: made-up events on
+ * example domains, and no person.
+ */
+export const exampleSuggestionQueue: EventSuggestionQueue = {
+  total: 2,
+  rows: [
+    {
+      id: id(901),
+      sourceUrl: "https://events.example.org/pune/threat-hunting-night",
+      host: "events.example.org",
+      title: "Threat hunting night",
+      organiser: "Example Blue Team Pune",
+      kind: "meetup",
+      startsAt: "2026-10-24T12:30:00.000Z",
+      endsAt: "2026-10-24T15:00:00.000Z",
+      online: false,
+      city: "Pune",
+      venue: "Kharadi",
+      cost: "Free",
+      createdAt: "2026-10-10T04:00:00.000Z",
+    },
+    {
+      id: id(902),
+      sourceUrl: "https://example.com/genai-builders/nov",
+      host: "example.com",
+      title: "GenAI builders online meetup",
+      organiser: "Example AI Circle",
+      kind: "online",
+      startsAt: "2026-11-05T13:30:00.000Z",
+      endsAt: "2026-11-05T15:00:00.000Z",
+      online: true,
+      city: null,
+      venue: null,
+      cost: "",
+      createdAt: "2026-10-11T09:15:00.000Z",
+    },
+  ],
+};

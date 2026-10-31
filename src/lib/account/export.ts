@@ -30,7 +30,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 36;
+export const EXPORT_VERSION = 37;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -300,7 +300,9 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     // events digest is on (the defaults until you save some), every India week (its Monday) the digest went out that we
     // still keep (90 days), newest first, and
     // the events you saved or marked I'm going, each with its title, organiser, start, link and the goal a prep task is
-    // for. Nothing the digest said is kept, and nobody else's saves are here.
+    // for. Nothing the digest said is kept, and nobody else's saves are here. From version 37, timetable.suggestions:
+    // the events you suggested that we still keep (until 90 days after each ends), each as you sent it with its status,
+    // which stays pending until our grievance officer is named.
     timetable,
   };
 }
