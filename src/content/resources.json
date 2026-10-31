@@ -9080,17 +9080,6 @@
     "free": true
   },
   {
-    "title": "CMake tutorial: start here",
-    "url": "https://cmake.org/cmake-tutorial/",
-    "provider": "Kitware (CMake)",
-    "kind": "docs",
-    "skillIds": [
-      "build-tools"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Artifactory repository management",
     "url": "https://docs.jfrog.com/artifactory/docs/repository-management",
     "provider": "JFrog Documentation",
@@ -12531,17 +12520,6 @@
       "data-testing-observability"
     ],
     "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "What is CICS?",
-    "url": "https://ibm.com/support/pages/what-cics",
-    "provider": "IBM",
-    "kind": "docs",
-    "skillIds": [
-      "cics"
-    ],
-    "minutes": 15,
     "free": true
   },
   {
@@ -16591,6 +16569,39 @@
       "eway-bill-compliance"
     ],
     "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "RBI press release: recovery agents must not intimidate borrowers or call before 8 am or after 7 pm",
+    "url": "https://rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=54205",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "field-tele-collections"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "CMake Tutorial (official, step by step)",
+    "url": "https://cmake.org/cmake/help/v4.0/guide/tutorial/index.html",
+    "provider": "Kitware / CMake",
+    "kind": "docs",
+    "skillIds": [
+      "build-tools"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "CICS Transaction Server 5.6 documentation: what is available",
+    "url": "https://www.ibm.com/docs/SSGMCP_5.6.0/documentation/Intro.html",
+    "provider": "IBM",
+    "kind": "docs",
+    "skillIds": [
+      "cics"
+    ],
+    "minutes": 30,
     "free": true
   }
 ]
