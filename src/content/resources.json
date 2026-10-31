@@ -33276,17 +33276,6 @@
     "free": true
   },
   {
-    "title": "Contract Labour Act - Chief Labour Commissioner (Central)",
-    "url": "https://clc.gov.in/clc/acts-rules/contract-labour-act",
-    "provider": "Chief Labour Commissioner (Central)",
-    "kind": "docs",
-    "skillIds": [
-      "contract-labour-compliance"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "DFIR Fundamentals Poster",
     "url": "https://www.sans.org/posters/dfir-fundamentals-poster",
     "provider": "SANS Institute",
@@ -33340,17 +33329,6 @@
       "forensic-tool-suites"
     ],
     "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "CEA (Measures relating to Safety and Electric Supply) Regulations, 2023 - Gazette text",
-    "url": "https://dgms.gov.in/writereaddata/UploadFile/CentralElectricity2023.pdf",
-    "provider": "Directorate General of Mines Safety",
-    "kind": "docs",
-    "skillIds": [
-      "electrical-safety-ie-rules"
-    ],
-    "minutes": 90,
     "free": true
   },
   {
@@ -33607,17 +33585,6 @@
     "free": true
   },
   {
-    "title": "Distribution Management (Unit 12)",
-    "url": "https://egyankosh.ac.in/bitstream/123456789/79502/1/Unit-12.pdf",
-    "provider": "IGNOU eGyanKosh",
-    "kind": "docs",
-    "skillIds": [
-      "primary-secondary-sales"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "Route-to-Market (RTM) strategy: the executive's guide",
     "url": "https://www.fieldassist.com/blog/route-to-market-strategy-guide",
     "provider": "FieldAssist",
@@ -33626,17 +33593,6 @@
       "primary-secondary-sales"
     ],
     "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "Distribution Channels (Unit 12)",
-    "url": "https://egyankosh.ac.in/bitstream/123456789/99374/1/Unit-12.pdf",
-    "provider": "IGNOU eGyanKosh",
-    "kind": "docs",
-    "skillIds": [
-      "primary-secondary-sales"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -33659,40 +33615,6 @@
       "product-inspection-stages"
     ],
     "minutes": 600,
-    "free": true
-  },
-  {
-    "title": "MahaRERA model form of allotment letter",
-    "url": "https://maharera.maharashtra.gov.in/sites/default/files/inline-files/Allotment.pdf",
-    "provider": "MahaRERA",
-    "kind": "docs",
-    "skillIds": [
-      "property-booking-documentation"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "MahaRERA model form of agreement for sale",
-    "url": "https://maharera.maharashtra.gov.in/sites/default/files/inline-files/afs.pdf",
-    "provider": "MahaRERA",
-    "kind": "docs",
-    "skillIds": [
-      "property-booking-documentation"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "MahaRERA resources for homebuyers",
-    "url": "https://maharera.maharashtra.gov.in/resources-homebuyers",
-    "provider": "MahaRERA",
-    "kind": "docs",
-    "skillIds": [
-      "property-booking-documentation",
-      "buyer-home-loan-coordination"
-    ],
-    "minutes": 15,
     "free": true
   },
   {
