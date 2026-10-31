@@ -21367,17 +21367,6 @@
     "free": true
   },
   {
-    "title": "IS 1200 Part 1 (1992): Method of Measurement, Earthwork",
-    "url": "https://archive.org/details/gov.in.is.1200.1.1992",
-    "provider": "Bureau of Indian Standards (via Internet Archive)",
-    "kind": "docs",
-    "skillIds": [
-      "is-1200-measurement-rules"
-    ],
-    "minutes": 40,
-    "free": true
-  },
-  {
     "title": "Advanced Contracts, Tendering and Public Procurement",
     "url": "https://onlinecourses.nptel.ac.in/noc22_lw06/preview",
     "provider": "NPTEL",
@@ -24116,6 +24105,326 @@
       "quality-metrics-reporting"
     ],
     "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Streamline Generation of aCRF and SDTM (PharmaSUG 2024 SD-318)",
+    "url": "https://pharmasug.org/proceedings/2024/SD/PharmaSUG-2024-SD-318.pdf",
+    "provider": "PharmaSUG",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-sdtm"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "sdtm.oak: SDTM data transformation engine (docs and domain walkthroughs)",
+    "url": "https://pharmaverse.github.io/sdtm.oak/",
+    "provider": "pharmaverse",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-sdtm"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "sdtm.oak on CRAN (vignettes: Findings and Interventions domains, ISO 8601 dates)",
+    "url": "https://cran.rstudio.com/web/packages/sdtm.oak/index.html",
+    "provider": "CRAN",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-sdtm"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Tables, listings and graphs examples (rtables, tern)",
+    "url": "https://pharmaverse.github.io/examples/tlg/index.html",
+    "provider": "pharmaverse",
+    "kind": "practice",
+    "skillIds": [
+      "clinical-tlf-programming"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "rlistings: clinical trial style data listings in R",
+    "url": "https://cran.r-project.org/web/packages/rlistings/index.html",
+    "provider": "CRAN",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-tlf-programming"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Upgrading Clinical Trial Reports from ODS LISTING to ODS TAGSETS.RTF (SAS Global Forum 2020)",
+    "url": "https://support.sas.com/resources/papers/proceedings20/4936-2020.pdf",
+    "provider": "SAS",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-tlf-programming"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "A Modular Approach to Generating CSR Tables with PROC REPORT (PharmaSUG 2024 SD-217)",
+    "url": "https://pharmasug.org/proceedings/2024/SD/PharmaSUG-2024-SD-217.pdf",
+    "provider": "PharmaSUG",
+    "kind": "docs",
+    "skillIds": [
+      "clinical-tlf-programming"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Name That ADaM Dataset Structure: ADSL, BDS and OCCDS (PharmaSUG 2025 DS-028)",
+    "url": "https://pharmasug.org/proceedings/2025/DS/PharmaSUG-2025-DS-028.pdf",
+    "provider": "PharmaSUG",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-adam"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Building ADSL from SDTM in R (worked example)",
+    "url": "https://pharmaverse.github.io/examples/adam/adsl",
+    "provider": "pharmaverse",
+    "kind": "practice",
+    "skillIds": [
+      "cdisc-adam"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Study Data Technical Conformance Guide",
+    "url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/study-data-technical-conformance-guide-technical-specifications-document",
+    "provider": "U.S. FDA",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-submission-validation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Using Pinnacle 21 Community: validator and Define.xml generator",
+    "url": "https://help.pinnacle21.certara.net/en/articles/9800250-using-p21-community",
+    "provider": "Pinnacle 21 (Certara)",
+    "kind": "docs",
+    "skillIds": [
+      "cdisc-submission-validation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Automotive SPICE Process Assessment / Reference Model v4.0",
+    "url": "https://vda-qmc.de/wp-content/uploads/2023/12/Automotive-SPICE-PAM-v40.pdf",
+    "provider": "VDA QMC",
+    "kind": "docs",
+    "skillIds": [
+      "automotive-spice"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Automotive SPICE publications (PAM, guidelines, supplements)",
+    "url": "https://vda-qmc.de/en/automotive-spice/automotive-spice-veroeffentlichungen/",
+    "provider": "VDA QMC",
+    "kind": "docs",
+    "skillIds": [
+      "automotive-spice"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Automotive SPICE Pocket Guide",
+    "url": "https://www.ul.com/sites/default/files/2024-10/Automotive_Spice_Pocket_Guide.pdf",
+    "provider": "UL Solutions",
+    "kind": "docs",
+    "skillIds": [
+      "automotive-spice"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "IS 1200 Part 3: Mode of measurement of brickwork",
+    "url": "https://www.youtube.com/watch?v=TtQPvl_zT_w",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "is-1200-measurement-rules"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Mode of measurement for concrete under IS 1200",
+    "url": "https://www.youtube.com/watch?v=QJ1_rbKkgjs",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "is-1200-measurement-rules"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "How to Read Structural Drawings (example reinforcement drawing)",
+    "url": "https://www.youtube.com/watch?v=45UUd-EEcHA",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "civil-drawing-reading"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to read beam reinforcement drawings",
+    "url": "https://www.youtube.com/watch?v=__2XhAs1pUE",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "civil-drawing-reading"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to read rebar drawings",
+    "url": "https://heatonmanufacturing.co.uk/how-to-read-rebar-drawings/",
+    "provider": "Heaton Manufacturing",
+    "kind": "docs",
+    "skillIds": [
+      "civil-drawing-reading",
+      "bar-bending-schedule"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to make a bar bending schedule for beams, step by step",
+    "url": "https://www.youtube.com/watch?v=BP91ynrZAFc",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "bar-bending-schedule"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "BBS of a rectangular stirrup to IS 2502: cutting length",
+    "url": "https://www.youtube.com/watch?v=ZuQClxckgro",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "bar-bending-schedule"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Preparation of bar bending schedule for floor slabs",
+    "url": "https://structville.com/2017/08/preparation-of-bar-bending-schedule-for-floor-slabs.html",
+    "provider": "Structville",
+    "kind": "docs",
+    "skillIds": [
+      "bar-bending-schedule"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Power loading of an installation (installed power, maximum demand, ku and ks)",
+    "url": "https://www.electrical-installation.org/enwiki/Power_loading_of_an_installation",
+    "provider": "Schneider Electric Electrical Installation Guide",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-load-calculations"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "General method for cable sizing",
+    "url": "https://www.electrical-installation.org/enwiki/General_method_for_cable_sizing",
+    "provider": "Schneider Electric Electrical Installation Guide",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-load-calculations"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Electrical load calculation for a residential building",
+    "url": "https://www.youtube.com/watch?v=HmgqGPzYSMs",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "electrical-load-calculations"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "AMBA APB Protocol Specification",
+    "url": "https://developer.arm.com/documentation/ihi0024/latest",
+    "provider": "Arm Developer",
+    "kind": "docs",
+    "skillIds": [
+      "amba-protocols"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Introduction to CICS (an IBM Redbooks course)",
+    "url": "https://cognitiveclass.ai/courses/introduction-to-cics-an-ibm-redbooks-course",
+    "provider": "IBM Cognitive Class",
+    "kind": "course",
+    "skillIds": [
+      "cics"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Preventive maintenance checklist for centrifugal pumps",
+    "url": "https://www.plantservices.com/articles/2017/fh-preventive-maintenance-checklist-centrifugal-pumps/",
+    "provider": "Plant Services",
+    "kind": "docs",
+    "skillIds": [
+      "mechanical-equipment-maintenance"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Grundfos Pump Handbook",
+    "url": "https://api.grundfos.com/literature/Grundfosliterature-5448843.pdf",
+    "provider": "Grundfos",
+    "kind": "docs",
+    "skillIds": [
+      "mechanical-equipment-maintenance"
+    ],
+    "minutes": 120,
     "free": true
   }
 ]
