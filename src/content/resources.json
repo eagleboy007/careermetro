@@ -14773,5 +14773,227 @@
     ],
     "minutes": 30,
     "free": true
+  },
+  {
+    "title": "Production and Operation Management (NPTEL, IIT Roorkee) - includes aggregate sales and operations planning",
+    "url": "https://nptel.ac.in/courses/110107141",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "sales-operations-planning"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Operations and Supply Chain Management (NPTEL, IIT Madras) - forecasting, capacity and aggregate planning",
+    "url": "https://nptel.ac.in/courses/110106045",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "sales-operations-planning"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "Work with Demand planning in Dynamics 365 Supply Chain Management",
+    "url": "https://learn.microsoft.com/en-us/training/paths/work-with-demand-planning-supply-chain",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "sales-operations-planning"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "The Performance Report (budget vs actual, Managerial Accounting)",
+    "url": "https://biz.libretexts.org/Bookshelves/Accounting/Managerial_Accounting_(Lumen)/07%3A_Budgeting/7.01%3A_The_Performance_Report",
+    "provider": "LibreTexts (Lumen Learning)",
+    "kind": "docs",
+    "skillIds": [
+      "fpa-variance-reporting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Managerial Accounting (OpenStax) - Chapter 7 Budgeting and Chapter 8 Standard Costs and Variances",
+    "url": "https://biz.libretexts.org/Bookshelves/Accounting/Managerial_Accounting_(OpenStax)",
+    "provider": "LibreTexts (OpenStax)",
+    "kind": "docs",
+    "skillIds": [
+      "fpa-variance-reporting"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Delivering Exceptional Customer Support",
+    "url": "https://academy.hubspot.com/courses/delivering-exceptional-customer-support",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "customer-query-resolution"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Services Marketing: Integrating People, Technology, Strategy (NPTEL, IIT Roorkee) - complaint handling and service recovery",
+    "url": "https://nptel.ac.in/courses/110107142/",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "customer-query-resolution",
+      "escalation-handling"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Better Practice Complaint Handling Guide (2023)",
+    "url": "https://www.ombudsman.gov.au/__data/assets/pdf_file/0025/290365/Better-Practice-Complaint-Handling-Guide-2023.pdf",
+    "provider": "Commonwealth Ombudsman (Australia)",
+    "kind": "docs",
+    "skillIds": [
+      "escalation-handling"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Create and edit sequences",
+    "url": "https://knowledge.hubspot.com/sequences/create-and-edit-sequences",
+    "provider": "HubSpot",
+    "kind": "docs",
+    "skillIds": [
+      "sales-engagement-tools"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Technology Commercialization & New Product Development (NPTEL, IIT Bombay)",
+    "url": "https://nptel.ac.in/courses/110101927",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "go-to-market-launches"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Marketing Strategy (MIT 15.834)",
+    "url": "https://ocw.mit.edu/courses/15-834-marketing-strategy-spring-2003/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "competitive-intelligence"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Set up Master Planning in Dynamics 365 Supply Chain Management",
+    "url": "https://learn.microsoft.com/en-us/training/modules/set-up-master-planning",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "supply-planning-tools"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Service rep metrics (handle time, response time, CSAT) in Dynamics 365 Customer Service",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/customer-service/use/service-rep-metrics",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "contact-centre-metrics"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Customer Relationship Management (NPTEL, IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/110105145",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "cross-selling-upselling"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Central KYC Registry (CKYC) - citizen guide",
+    "url": "https://egovernance.vikaspedia.in/viewcontent/e-governance/online-citizen-services/government-to-business-services-g2b/central-kyc-registry?lgn=en",
+    "provider": "Vikaspedia (MeitY)",
+    "kind": "docs",
+    "skillIds": [
+      "kyc-verification"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Inventory analytics overview (Business Central)",
+    "url": "https://learn.microsoft.com/dynamics365/business-central/inventory-analytics-overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "supply-chain-erp-reporting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Compliance Handbook for Employers Under the Four Labour Codes",
+    "url": "https://www.labour.gov.in/static/uploads/2026/02/83978455025732b99b0165def80ab171.pdf",
+    "provider": "Ministry of Labour & Employment",
+    "kind": "docs",
+    "skillIds": [
+      "indian-labour-law-compliance",
+      "payroll-inputs-processing"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Legal Essentials for Human Resource Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_lw03/preview",
+    "provider": "NPTEL (NALSAR)",
+    "kind": "course",
+    "skillIds": [
+      "indian-labour-law-compliance"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "The Code on Wages, 2019 (official text)",
+    "url": "https://www.labour.gov.in/static/uploads/2025/06/c328da14bbb15fc4ad571dc33e7a4ab3.pdf",
+    "provider": "Ministry of Labour & Employment",
+    "kind": "docs",
+    "skillIds": [
+      "payroll-inputs-processing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Know Your Customer (KYC) Direction, 2016 (updated)",
+    "url": "https://www.rbi.org.in/CommonPerson/english/scripts/notification.aspx?id=2607",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "kyc-due-diligence"
+    ],
+    "minutes": 90,
+    "free": true
   }
 ]
