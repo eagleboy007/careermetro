@@ -16,6 +16,7 @@ const seed = JSON.parse(readFileSync(new URL("./results/max-data.json", import.m
 /**
  * Page height limits in CSS px (the proposal starts every page at 12,000). A page over its limit grows without bound or
  * needs paging. Raised only where the page shows every row by design, at the seed's sizes (record changes here):
+ * A page's `phoneLimit`, where it has one, replaces its limit at 390 px.
  * - My jobs, 16,000: the first CI run (2026-10-30) measured 13,586 at 390 px with its 20-row page (T147), each row with
  *   a three-line note (T148) and 160-character title, company and city that wrap. Already paged, so the limit rises.
  * - /me and /u (T162, C23): every list section now shows 3 items, newest first, then "Show N more"; the first run
@@ -34,8 +35,9 @@ const DEFAULT_LIMIT = 12_000;
 const PAGES = [
   { name: "today", path: "/today" },
   { name: "map", path: "/map" },
-  // My jobs on a phone (T167): 10 cards of about 680 px before Show more, plus the tabs and filters: an estimate.
-  { name: "my-jobs", path: "/departures?tab=mine", limit: 12_000 },
+  // My jobs: 20 full rows at 1280 px. At 390 px (C24) 10 folded rows of about 80 px before Show more, plus the header,
+  // tabs, filters and the add box: about 2,500, an estimate, so 4,000 is the phone height check.
+  { name: "my-jobs", path: "/departures?tab=mine", limit: 12_000, phoneLimit: 4_000 },
   { name: "me-board", path: "/me", limit: 12_000 },
   { name: "me-list", path: "/me", limit: 14_000, layout: "List" },
   { name: "profile", path: `/u/${seed.username}`, limit: 8_000 },
@@ -46,8 +48,9 @@ const PAGES = [
   { name: "mock", path: "/mock" },
   { name: "inbox", path: "/inbox" },
   { name: "network", path: "/network" },
-  // 20 event cards at their caps (230 seeded, 200 kept, then Show more) and the rail: a first estimate (T165).
-  { name: "timetable", path: "/timetable", limit: 20_000 },
+  // 20 event cards at their caps (230 seeded, 200 kept, then Show more) and the rail: a first estimate (T165). On a
+  // phone 10 cards (T168): 20 measured 15,038 at 390, so about 7,600 plus the filters.
+  { name: "timetable", path: "/timetable", limit: 20_000, phoneLimit: 12_000 },
   { name: "resume", path: `/resume/${seed.resumeId}`, limit: 6_000 },
   { name: "builder", path: "/builder" },
 ];
@@ -138,7 +141,7 @@ try {
         await q.setViewportSize(size);
         for (const page of PAGES) {
           at = `${page.name} ${size.width} ${scheme}`;
-          const limit = page.limit ?? DEFAULT_LIMIT;
+          const limit = (size.width < 760 ? page.phoneLimit : undefined) ?? page.limit ?? DEFAULT_LIMIT;
           try {
             const started = Date.now();
             const res = await q.goto(BASE + page.path, { timeout: 30000 });

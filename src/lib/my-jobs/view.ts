@@ -1,4 +1,6 @@
 import { readiness } from "@/lib/departures/filter";
+import { isClosed } from "@/lib/my-jobs/rules";
+import { MY_JOB_STATUS_LABELS } from "@/lib/schemas/constants";
 import type { JobCheckView } from "@/lib/jobs/groups";
 import type { JobPost, MyJobView } from "@/lib/schemas";
 
@@ -72,6 +74,23 @@ export function interviewWhen(iso: string): string {
   const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? "";
   return `${part("weekday")} ${part("day")} ${part("month")}, ${part("hour")}:${part("minute")}`;
 }
+
+/**
+ * The one date a folded My jobs row shows on a phone (C24): on a closed row its status and the day it closed ("Not this
+ * time 24 Oct"); else the interview if one is set ("Interview Fri 30 Oct, 10:30"); else Applied; else Saved. Null when
+ * the row has none of them.
+ */
+export function nowDate(job: Pick<MyJobView, "status" | "savedAt" | "appliedAt" | "closedAt" | "interviewAt">): { label: string; day: string } | null {
+  const closed = isClosed(job.status);
+  if (closed && job.closedAt) return { label: MY_JOB_STATUS_LABELS[job.status], day: shortDay(job.closedAt)! };
+  if (job.interviewAt && !closed) return { label: "Interview", day: interviewWhen(job.interviewAt) };
+  if (job.appliedAt) return { label: "Applied", day: shortDay(job.appliedAt)! };
+  if (job.savedAt) return { label: "Saved", day: shortDay(job.savedAt)! };
+  return null;
+}
+
+/** "2 gaps", "1 gap" or "no gaps": the still-open goals a job asks for, as a folded My jobs row counts them (C24). */
+export const gapCount = (fit: Pick<MyJobFit, "open">): string => (fit.open.length === 0 ? "no gaps" : fit.open.length === 1 ? "1 gap" : `${fit.open.length} gaps`);
 
 /** Whole India days from `now` to the interview: 0 on its day, 1 the day before. */
 export function daysUntil(iso: string, now: Date): number {

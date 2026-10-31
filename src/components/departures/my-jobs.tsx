@@ -3,7 +3,7 @@
 import { Briefcase, CalendarPlus, Check, ChevronDown, ClipboardPaste, ExternalLink, Link2, Lock, Pen, Play, Share2, ShieldCheck, Target, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
 import { ICON } from "@/components/map/map-parts";
 import { ShowMore, usePaged, usePhonePage } from "@/components/ui/show-more";
 import { StatusChip } from "@/components/ui/status-chip";
@@ -11,7 +11,7 @@ import { actionFailed, readApiReply } from "@/lib/api-reply";
 import { interviewIcs } from "@/lib/calendar/ics";
 import { initials } from "@/lib/departures/filter";
 import { inFilter, isClosed, isMoving, linkKind, LINK_HINTS, myJobsEmpty, prepareHref, type MyJobFilter, type MyJobStatus, type SharedJob } from "@/lib/my-jobs/rules";
-import { dayValue, fitSentence, fitWords, interviewWhen, minuteValue, shortDay, type MyJobFit } from "@/lib/my-jobs/view";
+import { dayValue, fitSentence, fitWords, gapCount, interviewWhen, minuteValue, nowDate, shortDay, type MyJobFit } from "@/lib/my-jobs/view";
 import type { MyJobRef, MyJobView } from "@/lib/schemas";
 import {
   JOB_COMPANY_MAX,
@@ -73,10 +73,11 @@ const today = () => shortDay(new Date().toISOString())!;
 const chipTone = (status: MyJobStatus) =>
   isMoving(status) ? "bg-accent-soft text-accent" : isClosed(status) ? "border-line bg-transparent text-muted" : "bg-surface-2 text-muted";
 
-export const Logo = ({ name }: { name: string }) => (
+/** The company's initials in a tile; `small` is the 28 px tile of a folded row on a phone (C24). */
+export const Logo = ({ name, small = false }: { name: string; small?: boolean }) => (
   <span
     aria-hidden="true"
-    className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-surface-2 font-display text-[0.85rem] font-semibold text-ink min-[760px]:h-11 min-[760px]:w-11 min-[760px]:rounded-[12px] min-[760px]:text-base"
+    className={`grid shrink-0 place-items-center bg-surface-2 font-display font-semibold text-ink ${small ? "h-7 w-7 rounded-[8px] text-[0.72rem]" : "h-9 w-9 rounded-[10px] text-[0.85rem] min-[760px]:h-11 min-[760px]:w-11 min-[760px]:rounded-[12px] min-[760px]:text-base"}`}
   >
     {initials(name)}
   </span>
@@ -154,83 +155,171 @@ export function MyJobsList({
           </button>
         </div>
       )}
-      <ShowMore left={paged.left} shown={paged.shown.length} onMore={paged.more} list={list} noun="jobs" />
+      <ShowMore left={paged.left} shown={paged.shown.length} onMore={paged.more} list={list} noun="jobs" focusRow={firstShown} />
     </section>
   );
 }
 
+/**
+ * After "Show more", the first new row's first control that shows: a row holds its folded phone head (C24) and its
+ * full body, and part of it is hidden at every width.
+ */
+function firstShown(list: HTMLElement, index: number): HTMLElement | null {
+  const row = list.children[index];
+  if (!(row instanceof HTMLElement)) return null;
+  return [...row.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")].find((el) => el.getClientRects().length > 0) ?? row;
+}
+
+/**
+ * One My jobs row. At 760 px and wider it is the full row. Below 760 px (C24) it folds to two lines, the title and the
+ * status chip, then company, the date that matters now and the gap count; tapping them opens the rest under them, and
+ * it stays open for the visit. CSS picks the layout, so the server render matches every width.
+ */
 function MyJobRow({ job, onStatus, onEdit }: { job: MyJobView; onStatus: (s: MyJobStatus) => void; onEdit: () => void }) {
   const closed = isClosed(job.status);
+  const [open, setOpen] = useState(false);
+  const bodyId = useId();
   const dates: [string, string][] = [];
   if (job.status === "saved" && job.savedAt) dates.push(["Saved", shortDay(job.savedAt)!]);
   if (job.appliedAt) dates.push(["Applied", shortDay(job.appliedAt)!]);
   if (job.interviewAt && !closed) dates.push(["Interview", interviewWhen(job.interviewAt)]);
   if (closed && job.closedAt) dates.push([MY_JOB_STATUS_LABELS[job.status], shortDay(job.closedAt)!]);
-  const meta: ReactNode[] = [job.company, job.city ?? "City not given"];
   return (
-    <li
-      data-my-job={job.key}
-      className={`grid grid-cols-[36px_minmax(0,1fr)] items-start gap-2.5 rounded-[18px] border border-line bg-surface p-3.5 min-[760px]:grid-cols-[44px_minmax(0,1fr)_auto] min-[760px]:gap-3.5 min-[760px]:p-4 ${closed ? "bg-bg" : ""}`}
-    >
-      {/* A closed row is dimmed in its logo and title only, so the small grey text keeps its contrast. */}
-      <div className={closed ? "opacity-[.72]" : undefined}>
-        <Logo name={job.company} />
-      </div>
-      <div className="flex min-w-0 flex-col gap-1.5">
-        <b className={`text-[0.98rem] font-semibold [overflow-wrap:anywhere] ${closed ? "opacity-[.72]" : ""}`}>{job.title}</b>
-        <p className="flex flex-wrap items-center gap-1.5 text-[0.8rem] text-muted">
-          {meta.map((m, i) => (
-            <span key={i} className="contents">
-              {i > 0 && <span aria-hidden="true">·</span>}
-              <span className="[overflow-wrap:anywhere]">{m}</span>
-            </span>
-          ))}
-          <span aria-hidden="true">·</span>
-          <span className={`${mono} rounded-[6px] px-[7px] py-0.5 ${job.source === "you" ? "border border-line" : "bg-surface-2"}`}>
-            {job.source === "you" ? "You added" : "Company job board"}
-          </span>
-          {job.url && (
-            <>
+    <li data-my-job={job.key} className={`rounded-[18px] border border-line bg-surface p-3.5 min-[760px]:p-4 ${closed ? "bg-bg" : ""}`}>
+      <FoldedHead job={job} open={open} controls={bodyId} onToggle={() => setOpen((o) => !o)} onStatus={onStatus} />
+      {/* The full row; below 760 px, the rest under the folded head, shown only while it is open. */}
+      <div
+        id={bodyId}
+        className={`grid grid-cols-1 items-start gap-2.5 min-[760px]:grid-cols-[44px_minmax(0,1fr)_auto] min-[760px]:gap-3.5 ${open ? "max-[759px]:mt-3 max-[759px]:border-t max-[759px]:border-line max-[759px]:pt-3" : "max-[759px]:hidden"}`}
+      >
+        {/* A closed row is dimmed in its logo and title only, so the small grey text keeps its contrast. */}
+        <div className={`max-[759px]:hidden ${closed ? "opacity-[.72]" : ""}`}>
+          <Logo name={job.company} />
+        </div>
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <b className={`text-[0.98rem] font-semibold [overflow-wrap:anywhere] max-[759px]:hidden ${closed ? "opacity-[.72]" : ""}`}>{job.title}</b>
+          <p className="flex flex-wrap items-center gap-1.5 text-[0.8rem] text-muted">
+            {/* On a phone the folded head already names the company. */}
+            <span className="contents max-[759px]:hidden">
+              <span className="[overflow-wrap:anywhere]">{job.company}</span>
               <span aria-hidden="true">·</span>
-              <a href={job.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex items-center gap-1 text-ink hover:underline">
-                Open the original
-                <ExternalLink size={13} {...ICON} />
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            </>
-          )}
-        </p>
-        {job.postClosed && <p className="text-[0.8rem] font-[550] text-muted">Closed on the company&apos;s board</p>}
-        {job.fit && <FitLine fit={job.fit} />}
-        {dates.length > 0 && (
-          <p className="flex flex-wrap gap-2.5 font-mono text-[0.7rem] tracking-[0.04em] text-muted">
-            {dates.map(([label, day], i) => (
-              <span key={label} className="contents">
-                {i > 0 && <span aria-hidden="true">·</span>}
-                <span>
-                  {label} <b className="font-medium text-ink">{day}</b>
-                </span>
-              </span>
-            ))}
+            </span>
+            <span className="[overflow-wrap:anywhere]">{job.city ?? "City not given"}</span>
+            <span aria-hidden="true">·</span>
+            <span className={`${mono} rounded-[6px] px-[7px] py-0.5 ${job.source === "you" ? "border border-line" : "bg-surface-2"}`}>
+              {job.source === "you" ? "You added" : "Company job board"}
+            </span>
+            {job.url && (
+              <>
+                <span aria-hidden="true">·</span>
+                <a href={job.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex items-center gap-1 text-ink hover:underline">
+                  Open the original
+                  <ExternalLink size={13} {...ICON} />
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </>
+            )}
           </p>
-        )}
-        {job.note && <PrivateNote note={job.note} />}
-      </div>
-      <div className="col-start-2 flex flex-wrap items-center justify-between gap-2 min-[760px]:col-start-3 min-[760px]:flex-col min-[760px]:items-end">
-        <StatusMenu job={job} onPick={onStatus} />
-        <div className="flex items-center gap-1.5">
-          {!closed && <PrepareMenu job={job} />}
-          <button
-            type="button"
-            onClick={onEdit}
-            aria-label={`Edit ${job.title} at ${job.company}`}
-            className="grid h-[34px] w-[34px] place-items-center rounded-[10px] border border-line text-muted hover:text-ink"
-          >
-            <Pen size={16} {...ICON} />
-          </button>
+          {job.postClosed && <p className="text-[0.8rem] font-[550] text-muted">Closed on the company&apos;s board</p>}
+          {job.fit && <FitLine fit={job.fit} />}
+          {dates.length > 0 && (
+            <p className="flex flex-wrap gap-2.5 font-mono text-[0.7rem] tracking-[0.04em] text-muted">
+              {dates.map(([label, day], i) => (
+                <span key={label} className="contents">
+                  {i > 0 && <span aria-hidden="true">·</span>}
+                  <span>
+                    {label} <b className="font-medium text-ink">{day}</b>
+                  </span>
+                </span>
+              ))}
+            </p>
+          )}
+          {job.note && <PrivateNote note={job.note} />}
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 min-[760px]:col-start-3 min-[760px]:flex-col min-[760px]:items-end">
+          {/* On a phone the status chip sits in the folded head, so it works on a closed row. */}
+          <div className="max-[759px]:hidden">
+            <StatusMenu job={job} onPick={onStatus} />
+          </div>
+          <div className="flex items-center gap-1.5">
+            {!closed && <PrepareMenu job={job} />}
+            <button
+              type="button"
+              onClick={onEdit}
+              aria-label={`Edit ${job.title} at ${job.company}`}
+              className="grid h-[34px] w-[34px] place-items-center rounded-[10px] border border-line text-muted hover:text-ink"
+            >
+              <Pen size={16} {...ICON} />
+            </button>
+          </div>
         </div>
       </div>
     </li>
+  );
+}
+
+/**
+ * A My jobs row folded on a phone (C24, below 760 px; hidden wider): line 1 is the small logo, the title cut to one line
+ * and the status chip; line 2 is company · the date that matters now · the gap count in muted words (never a gap
+ * colour), with a chevron at the far right. The two lines are one button that opens the rest; the status chip is its
+ * own button laid over the grid beside it, never inside it, so its menu works while the row is closed.
+ */
+function FoldedHead({
+  job,
+  open,
+  controls,
+  onToggle,
+  onStatus,
+}: {
+  job: MyJobView;
+  open: boolean;
+  controls: string;
+  onToggle: () => void;
+  onStatus: (s: MyJobStatus) => void;
+}) {
+  const closed = isClosed(job.status);
+  const when = nowDate(job);
+  const gaps = job.fit ? gapCount(job.fit) : null;
+  return (
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto] gap-x-2 gap-y-1.5 min-[760px]:hidden">
+      {/* Spans both columns, laid out on the same grid, so line 2 runs under the chip to the right edge. */}
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={controls}
+        onClick={onToggle}
+        className="col-span-2 col-start-1 row-span-2 row-start-1 grid min-w-0 grid-cols-subgrid grid-rows-subgrid text-left"
+      >
+        <span className="col-start-1 row-start-1 flex min-w-0 items-center gap-2.5">
+          {/* The button is named by its visible text (axe label-content-name-mismatch); the logo's initials stay out. */}
+          <span aria-hidden="true" className={closed ? "opacity-[.72]" : undefined}>
+            <Logo name={job.company} small />
+          </span>
+          <b className={`min-w-0 truncate text-[0.95rem] font-semibold ${closed ? "opacity-[.72]" : ""}`}>{job.title}</b>
+        </span>
+        <span className="col-span-2 col-start-1 row-start-2 flex min-w-0 items-center gap-1.5 text-[0.8rem] text-muted">
+          <span className="min-w-[4ch] truncate">{job.company}</span>
+          {when && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span className="min-w-0 shrink-[0.3] truncate">
+                {when.label} <b className="font-medium text-ink">{when.day}</b>
+              </span>
+            </>
+          )}
+          {gaps && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span className="shrink-0 whitespace-nowrap">{gaps}</span>
+            </>
+          )}
+          <ChevronDown size={16} {...ICON} className={`ml-auto shrink-0 motion-safe:transition-transform ${open ? "rotate-180" : ""}`} />
+        </span>
+      </button>
+      <div className="col-start-2 row-start-1 self-center">
+        <StatusMenu job={job} onPick={onStatus} end />
+      </div>
+    </div>
   );
 }
 
@@ -274,8 +363,9 @@ function PrivateNote({ note }: { note: string }) {
 /**
  * The status chip and its menu: all seven in order, a rule before the two closed ones, "sets 28 Oct" on each and "now"
  * on the current one. Arrow keys move between items; Escape and a click outside close it, with focus back on the chip.
+ * `end` opens the menu from the right edge, for the chip at the right of a folded phone row (C24).
  */
-function StatusMenu({ job, onPick }: { job: MyJobView; onPick: (s: MyJobStatus) => void }) {
+function StatusMenu({ job, onPick, end = false }: { job: MyJobView; onPick: (s: MyJobStatus) => void; end?: boolean }) {
   const [open, setOpen] = useState(false);
   const ids = useId();
   const wrap = useRef<HTMLDivElement>(null);
@@ -319,7 +409,7 @@ function StatusMenu({ job, onPick }: { job: MyJobView; onPick: (s: MyJobStatus) 
           id={`${ids}-menu`}
           role="menu"
           aria-label={`Status of ${job.title}`}
-          className="absolute left-0 top-[calc(100%+6px)] z-20 flex min-w-[230px] flex-col rounded-[14px] border border-line bg-surface p-1.5 shadow-[0_14px_40px_-20px_var(--shadow)] min-[760px]:left-auto min-[760px]:right-0"
+          className={`absolute top-[calc(100%+6px)] z-20 flex min-w-[230px] flex-col rounded-[14px] border border-line bg-surface p-1.5 shadow-[0_14px_40px_-20px_var(--shadow)] ${end ? "right-0" : "left-0 min-[760px]:left-auto min-[760px]:right-0"}`}
         >
           {MY_JOB_STATUSES.map((s, i) => (
             <div key={s} className="contents">
