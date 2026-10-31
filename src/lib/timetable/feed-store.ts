@@ -2,6 +2,7 @@ import "server-only";
 import { and, eq, gt, inArray, isNull, like, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { events, eventTopics } from "@/db/schema";
+import { EVENT_MANUAL_SOURCE, EVENT_STATUSES } from "@/lib/schemas/constants";
 import type { FeedRead } from "./feed";
 
 type Db = ReturnType<typeof getDb>;
@@ -13,12 +14,13 @@ const FEED_ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 /**
  * Writes one run of the event feed in a single transaction (docs/plans/timetable-plan.md section 6):
- * - every kept event is upserted by (`feed`, source_key): a new one starts live; a seen one takes the feed's latest
+ * - every kept event is upserted by (source, source_key), its read's source ("feed", or "suggestion" for the
+ *   hand-entered events of src/content/manual-events.json): a new one starts live; a seen one takes the feed's latest
  *   summary, is live again if it had been cancelled, and stays hidden if an admin hid it; checked_at is the run's time;
  * - its topics are replaced with the ones found this run;
  * - for each feed read whole (`complete`) that kept at least one event, its live events still ahead that this run
- *   didn't see are cancelled. A feed that failed, was cut short or kept nothing cancels nothing, so an outage never
- *   empties the timetable. Events that have started are left alone: an "upcoming" feed drops them once they begin.
+ *   didn't see (same source, source_key starting "<feed id>:") are cancelled. A feed that failed, was cut short or
+ *   kept nothing cancels nothing, so an outage never empties the timetable. Events that have started are left alone: an "upcoming" feed drops them once they begin.
  * Counts only come back; nothing is logged here.
  */
 export async function writeFeedRun(
@@ -26,7 +28,8 @@ export async function writeFeedRun(
   { startedAt, now = new Date() }: { startedAt: Date; now?: Date },
   db: Db = getDb(),
 ): Promise<{ upserted: number; cancelled: number; topics: number }> {
-  const rows = reads.flatMap((r) => (r.ok ? r.rows : []));
+  const rows = reads.flatMap((r) => (r.ok ? r.rows.map((row) => ({ ...row, source: r.source ?? ("feed" as const) })) : []));
+  const keyOf = (source: string, sourceKey: string) => `${source} ${sourceKey}`;
   return db.transaction(async (tx) => {
     let upserted = 0;
     let topics = 0;
@@ -36,7 +39,7 @@ export async function writeFeedRun(
         .insert(events)
         .values(
           chunk.map((r) => ({
-            source: "feed" as const,
+            source: r.source,
             sourceKey: r.sourceKey,
             sourceUrl: r.sourceUrl,
             title: r.title,
@@ -72,13 +75,13 @@ export async function writeFeedRun(
             updatedAt: now,
           },
         })
-        .returning({ id: events.id, sourceKey: events.sourceKey });
+        .returning({ id: events.id, source: events.source, sourceKey: events.sourceKey });
       upserted += saved.length;
-      const idOf = new Map(saved.map((s) => [s.sourceKey, s.id]));
+      const idOf = new Map(saved.map((s) => [keyOf(s.source, s.sourceKey), s.id]));
       const ids = saved.map((s) => s.id);
       if (ids.length) await tx.delete(eventTopics).where(inArray(eventTopics.eventId, ids));
       const topicRows = chunk.flatMap((r) => {
-        const eventId = idOf.get(r.sourceKey);
+        const eventId = idOf.get(keyOf(r.source, r.sourceKey));
         return eventId ? r.topics.map((t) => ({ eventId, kind: t.kind, topic: t.topic })) : [];
       });
       for (let j = 0; j < topicRows.length; j += 1000) {
@@ -95,7 +98,7 @@ export async function writeFeedRun(
         .set({ status: "cancelled", updatedAt: now })
         .where(
           and(
-            eq(events.source, "feed"),
+            eq(events.source, read.source ?? "feed"),
             like(events.sourceKey, `${read.feedId}:%`),
             eq(events.status, "live"),
             gt(events.startsAt, now),
@@ -107,4 +110,18 @@ export async function writeFeedRun(
     }
     return { upserted, cancelled, topics };
   });
+}
+
+/**
+ * The status of each hand-entered event already loaded, by source key, for the read-only list on /admin/reports (the
+ * caller checks the admin). Only rows under the hand-entered source and its "manual:" keys are read.
+ */
+export async function manualEventStatuses(keys: readonly string[], db: Db = getDb()): Promise<Map<string, (typeof EVENT_STATUSES)[number]>> {
+  const wanted = keys.filter((k) => k.startsWith("manual:"));
+  if (!wanted.length) return new Map();
+  const rows = await db
+    .select({ sourceKey: events.sourceKey, status: events.status })
+    .from(events)
+    .where(and(eq(events.source, EVENT_MANUAL_SOURCE), inArray(events.sourceKey, wanted)));
+  return new Map(rows.map((r) => [r.sourceKey, r.status]));
 }
