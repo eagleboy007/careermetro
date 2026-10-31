@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS, OWN_PITSTOPS_PER_GOAL } from "./constants";
+import { GOAL_CERTIFICATES_MAX, MAX_CHOICE_GOALS, OWN_PITSTOPS_PER_GOAL, PITSTOP_MIN_PEOPLE, PITSTOP_NAMES_SHOWN } from "./constants";
 import { MAX_GAPS } from "./gap";
 import { goalChoice, notForMeOffer } from "./goals";
 import { nearbyLines } from "./nearby";
@@ -123,6 +123,26 @@ export const mapLine = z.object({
   previous: previousLine.nullable().optional(),
 });
 
+/**
+ * On your line (C13, docs/plans/on-your-line-plan.md): the people on one of the viewer's pitstops (any active goal on
+ * the skill, on their current line) who turned on "Show my pitstop on the map". Only ever made at PITSTOP_MIN_PEOPLE or
+ * more, never counting anyone who hasn't opted in. `names` are the viewer's own connections the rules let them name,
+ * at most PITSTOP_NAMES_SHOWN, with `more` connections past those; a handle only when the viewer may open the profile.
+ * Shown in the side panel only, never on the map drawing, never to companies.
+ */
+export const pitstopRiders = z
+  .object({
+    skillId: z.string().min(1),
+    count: z.number().int().min(PITSTOP_MIN_PEOPLE),
+    names: z.array(z.object({ name: z.string().min(1).max(80), handle: z.string().min(1).max(60).nullable() })).max(PITSTOP_NAMES_SHOWN),
+    more: z.number().int().min(0),
+  })
+  .refine((r) => r.names.length + r.more <= r.count, { message: "more names than people", path: ["names"] })
+  .refine((r) => r.more === 0 || r.names.length === PITSTOP_NAMES_SHOWN, { message: "more only after the names shown", path: ["more"] });
+
+export const pitstopRidersList = z.array(pitstopRiders).max(MAX_GAPS);
+
+export type PitstopRiders = z.infer<typeof pitstopRiders>;
 export type MapItem = z.infer<typeof mapItem>;
 export type MapGoal = z.infer<typeof mapGoal>;
 export type MapLine = z.infer<typeof mapLine>;

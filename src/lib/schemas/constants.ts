@@ -905,3 +905,12 @@ export const EVENT_SUGGESTION_AHEAD_DAYS = 365;
 export const EVENT_SUGGESTION_QUEUE_MAX = 100;
 /** What the form, the rail and the admin queue say, every time: nothing a member suggests shows before a review. */
 export const EVENT_SUGGESTION_NOTE = "We review every suggestion before it appears. For now they all wait: member suggestions go live only once our grievance officer is named.";
+
+/* On your line (C13, docs/plans/on-your-line-plan.md): "Show my pitstop on the map", migration 0058 ------------------- */
+
+/** Below this many opted-in people a pitstop shows no count at all, so a count can't point at one person. */
+export const PITSTOP_MIN_PEOPLE = 3;
+/** Connections named under a pitstop's count; the rest are "and N more". */
+export const PITSTOP_NAMES_SHOWN = 3;
+/** "Show my pitstop on the map" changes one person makes a day, each try counted. */
+export const MAP_SHARE_CHANGES_PER_DAY = 20;

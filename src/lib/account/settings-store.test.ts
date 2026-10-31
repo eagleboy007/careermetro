@@ -281,7 +281,7 @@ describe.skipIf(!db)("account settings store (database)", () => {
     const e = await makeUser("e");
     const fresh = await exportAccountData(e, db!);
     expect(fresh?.pay).toBeNull();
-    expect(fresh?.settings).toEqual({ ...DEFAULT_SETTINGS, openToWorkIn: [], savedAt: null });
+    expect(fresh?.settings).toEqual({ ...DEFAULT_SETTINGS, openToWorkIn: [], showOnMap: false, savedAt: null });
     expect(await settingsFor(e, db!)).toEqual(DEFAULT_SETTINGS);
   });
 

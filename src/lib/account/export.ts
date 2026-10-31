@@ -30,7 +30,7 @@ import { consents, gapAnalyses, gapProofs, jobChecks, jobDescriptions, paths, pa
 type Db = ReturnType<typeof getDb>;
 
 /** Bumped when the shape of the download changes, so a person comparing two downloads can tell. */
-export const EXPORT_VERSION = 38;
+export const EXPORT_VERSION = 39;
 
 /**
  * Everything we hold about the person, for "Download your data" (DPDP Act right to access). The original resume file
@@ -256,7 +256,8 @@ export async function exportAccountData(userId: string, db: Db = getDb(), now = 
     interviewer,
     // Privacy and notification choices (the defaults, with savedAt null, until you save some). From version 31 they
     // include messageRequests (message requests from people who aren't connections) and openToWorkIn (Remote and the
-    // cities you are open to work in).
+    // cities you are open to work in). From version 39, showOnMap: "Show my pitstop on the map" (On your line). Other
+    // people's counts or names on your pitstops are never part of your download.
     settings: settings.settings,
     // Your current and expected pay, in lakh a year: only you ever see it.
     pay: settings.pay,

@@ -13,10 +13,12 @@ import { Suspense, useEffect, useId, useMemo, useRef, useState, useTransition } 
 import { RemoveGoal } from "@/components/gaps/job-check-actions";
 import { NotForMe } from "./not-for-me";
 import { addableGoals, AddPitstopPanel, goalKey, OwnPitstopsPanel } from "./own-pitstops";
-import { Cta, ghost, ICON, Key, Label, List, Panel, plural, seg, Soon, type Item } from "./map-parts";
+import { Cta, ghost, ICON, Key, Label, List, Panel, plural, seg, type Item } from "./map-parts";
+import { PitstopPeople } from "./pitstop-people";
 import { layoutLine, pitstopLabel, type EarlierBranch, type EarlierStub, type Layout, type PitstopKind, type Spur, type Station } from "@/lib/map/layout";
 import { defaultZoom, layoutLife, type LifeZoom } from "@/lib/map/life-layout";
-import type { LifeLine, MapLine } from "@/lib/schemas";
+import { ridersAt } from "@/lib/map/riders-text";
+import type { LifeLine, MapLine, PitstopRiders } from "@/lib/schemas";
 // The Life line shows only after "Life line" is picked, so it loads then, not with the map.
 const LifeSvg = dynamic(() => import("./life-line").then((m) => m.LifeSvg));
 const LifeSheet = dynamic(() => import("./life-line").then((m) => m.LifeSheet));
@@ -39,6 +41,7 @@ export function MetroMap({
   onChooseDestination,
   initialMode = "role",
   sample = false,
+  riders,
 }: {
   line: MapLine | null;
   life?: LifeLine | null;
@@ -50,6 +53,11 @@ export function MetroMap({
   onAddCertificate?: (input: CertificateInput) => Promise<CertificateResult>;
   /** "Switch back to {role}" on the earlier line (C25); without it nothing is saved. */
   onChooseDestination?: (input: { analysisId: string }) => Promise<string | null>;
+  /**
+   * On your line (C13): people who show their pitstop on the map, per goal skill, only where 3 or more do. Shown in the
+   * side panel only, never on the drawing; absent when they couldn't be read.
+   */
+  riders?: PitstopRiders[];
 }) {
   // "Hide earlier line" (C25): for this visit only, never stored. Hidden, a dotted stub stays at Gaps.
   const [earlierHidden, setEarlierHidden] = useState(false);
@@ -266,6 +274,7 @@ export function MetroMap({
               earlierHidden={earlierHidden}
               onToggleEarlier={() => setEarlierHidden((h) => !h)}
               onChooseDestination={onChooseDestination}
+              riders={riders}
             />
           )}
         </aside>
@@ -813,6 +822,7 @@ function Sheet({
   earlierHidden,
   onToggleEarlier,
   onChooseDestination,
+  riders,
 }: {
   id: string | null;
   layout: Layout;
@@ -829,6 +839,8 @@ function Sheet({
   onToggleEarlier: () => void;
   /** "Switch back to {role}": makes the earlier line's analysis the destination. */
   onChooseDestination?: (input: { analysisId: string }) => Promise<string | null>;
+  /** On your line (C13): the people on each goal's pitstops, 3 or more, opted-in only. */
+  riders?: PitstopRiders[];
 }) {
   // Add a pitstop (FR-58): "add", or "add:<skill>" with that goal picked; "own-<skill>" is one goal's own pitstops.
   if (id && (id === "add" || id.startsWith("add:"))) {
@@ -911,7 +923,7 @@ function Sheet({
         <p>
           It crosses yours at {crossing.station.name} (Pitstop {crossing.station.n}). Shared pitstops are where people swap notes.
         </p>
-        <Soon>See people on it</Soon>
+        <PitstopPeople riders={ridersAt(riders, crossing.station.goal.skillId)} />
       </Panel>
     );
   }
@@ -985,6 +997,7 @@ function Sheet({
         <p>
           Free courses plus daily tasks. This pitstop gets you ready. It does not fill the gap; Pitstop {pit.n + 1} does.
         </p>
+        <PitstopPeople riders={ridersAt(riders, goal.skillId)} />
         {items.length > 0 ? (
           <>
             <Label>Get ready: courses, videos and practice</Label>
@@ -1010,6 +1023,7 @@ function Sheet({
             ? `The pitstop that fills the ${goal.name} gap. Pick any one way to prove it.`
             : `${goal.name} is already on your resume, so the app suggests only a prove pitstop. Pick any one way to prove it.`}
       </p>
+      <PitstopPeople riders={ridersAt(riders, goal.skillId)} />
       <Label>Ways to prove it</Label>
       <List
         items={[

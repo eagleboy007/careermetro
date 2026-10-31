@@ -371,7 +371,7 @@ describe.skipIf(!db)("my jobs (database)", () => {
     expect(rows[0].description).toContain("category managers");
     for (const r of rows) expect(myJobExport.safeParse(r).success).toBe(true);
     const data = await exportAccountData(me.userId, db!);
-    expect(EXPORT_VERSION).toBe(38);
+    expect(EXPORT_VERSION).toBe(39);
     expect(data!.myJobs).toEqual(rows);
     await db!.delete(schema.resumes).where(eq(schema.resumes.userId, me.userId));
     await db!.delete(schema.users).where(eq(schema.users.id, me.userId));

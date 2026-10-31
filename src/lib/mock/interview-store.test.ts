@@ -326,8 +326,8 @@ describe.skipIf(!db)("mock interview store (database)", () => {
     const { client: c } = client();
     await endMockInterview(me, { sessionId: session.id, answers: [{ position: 1, answer: ANSWER }] }, { db: db!, now: t0, client: c });
     const data = (await exportAccountData(me, db!))!;
-    expect(EXPORT_VERSION).toBe(38);
-    expect(data.exportVersion).toBe(38);
+    expect(EXPORT_VERSION).toBe(39);
+    expect(data.exportVersion).toBe(39);
     expect(data.mockSessions).toHaveLength(1);
     expect(data.mockSessions[0]).toMatchObject({ roleSlug: "data-analyst", length: "quick", focus: "mix", summary: "You answer in order and in plain words." });
     expect(data.mockSessions[0].answers).toEqual([{ position: 1, answer: ANSWER, whatWorked: "Clear start on 1.", addNextTime: "Add one example.", followUp: null }]);

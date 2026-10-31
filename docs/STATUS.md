@@ -2,7 +2,7 @@
 
 This page lists facts only, each with a PR or doc link. Read it first. Update it in 2–3 lines at the end of every task, in the same PR. How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (Change of destination follow-ups, C25, FR-59)
+Last updated: 2026-10-31 (On your line, C13, FR-60: opt-in pitstop sharing, migration 0058, export v39)
 
 ## Built and live (https://careermetro.vercel.app)
 
@@ -43,6 +43,7 @@ Last updated: 2026-10-31 (Change of destination follow-ups, C25, FR-59)
   - Add a pitstop on the Map, FR-58 (2026-10-31, no migration; export version 38): a pitstop of your own on an open goal (a name of up to 40 characters and an optional free catalog course), stored as `path_steps.source = 'user'`, drawn as a dashed ADDED BY YOU spur with Edit and Remove; every other path-step reader takes source app only, so gaps, match, ride, train and path hours never move (`src/lib/pitstops/store.ts`).
   - Change of destination role, FR-59 (2026-10-31, handoff 14 decision 5 built at the Project manager's request, Milin's answer pending; no migration; `docs/plans/change-destination-plan.md`): coming back to a role on the Gaps page makes it current again (`chosenAt` in the analysis; before, A to B to A stayed on B). The Map greys out the earlier line below the map, leaving at Gaps, with what was left on it and Switch back. Proof and own pitstops already carried over by skill and goal.
     - Follow-ups as drawn in C25 (C25, Project manager approved on Milin's behalf, 2026-10-31; plan section 5; no migration): opening another role's Gaps page no longer switches the destination; the card "Make this your destination?" at its foot does (first analysis, the sample's successor and the same role on another resume still pick on their own). The Map's earlier line has "Left here" stops, a closed end, Switch back without a dialog and Hide earlier line for the visit; goals only the old role needs stop counting in Library, Timetable, On your line, Departures fit, Practice and Mock until a switch back.
+  - On your line, FR-60 (C13, 2026-10-31; plan and section 10 decisions by the Project manager under Milin's delegation, `docs/plans/on-your-line-plan.md`; migration 0058 `user_settings.show_on_map`, off by default; export version 39 `settings.showOnMap`): "Show my pitstop on the map" in Settings > Privacy (plus a Who sees what row) and live on Me, saved at once (20 a day). The Map's goal pitstop and Other line panels show "N people on this pitstop" from 3 opted-in people (never anyone who hasn't opted in), and up to 3 connections by name (not Only you, not gaps to Nobody); goals waiting on an earlier line don't count. Today's "On your line right now" now counts this switch instead of "Let people find me". A grep test keeps company, public profile and email code from reading it.
 - **Proof**
   - Shared app-email budget and weekly email fixes (Testing Run 7 part 2, T151 and T153; migration 0054 `app_email_days`): app emails share 40 an India day (`APP_EMAIL_DAILY_BUDGET`; the Monday digest will take at most `APP_EMAIL_DIGEST_SHARE` 20) and sign-in codes keep 60, each send taking one atomically (`src/lib/email/budget.ts`). The weekly email starts with the people sent longest ago, claims the week row before sending with `Idempotency-Key: weekly-<userId>-<week>` (an unsure send is retried once with the key and never sent again), waits and retries on Resend's per-second 429 and stops only at its daily quota.
   - Run 7 part 2 lows: customer, HR and travel desk titles no longer go to IT support (T152); the closest-role sentence counts key skills and prefers roles whose years fit (T154); the Next interview card names only skills on today's ride (T155); "It never expires" only for the 15 catalogue certificates marked `lifetime` (T156); retired DP-100 off three roles' lists, still credited (T157); the review pack README and `read-review.mjs` check whole Refs (T158).
@@ -159,7 +160,7 @@ Waiting: the end of Milin's name-search message ("city or …"); photo and certi
 
 Elite (pending items 10 and 20) is approved as C15 (Milin, 2026-10-19, prototype v44); no billing in the beta.
 
-Numbers: the next migration is **0058**. `EXPORT_VERSION` (37) lives in `src/lib/account/export.ts`. The latest FR is FR-57 (FR-36 filled a number that was never used).
+Numbers: the next migration is **0059**. `EXPORT_VERSION` (39) lives in `src/lib/account/export.ts`. The latest FR is FR-60 (FR-36 filled a number that was never used).
 
 ## Plans awaiting review
 

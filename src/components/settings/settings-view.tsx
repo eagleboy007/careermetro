@@ -8,6 +8,7 @@ import { SettingsJobSearch } from "@/components/job-search/settings-job-search";
 import { BlockedPeople, type BlockedPersonLine } from "./blocked-people";
 import { CompanyDiscovery } from "./company-discovery";
 import { FindMeSwitch } from "./find-me-switch";
+import { MapShareSwitch, type MapShareAction } from "./map-share-switch";
 import { BasicsForm } from "./basics-form";
 import { DeleteAccount } from "./delete-account";
 import { PlanCard, type PlanActions } from "./plan-card";
@@ -35,6 +36,8 @@ export type SettingsData = {
   discovery: DiscoveryView;
   /** Network's "Let people find me", saved apart from the draft (handoff 12j). */
   peopleCanFind: boolean;
+  /** "Show my pitstop on the map" (On your line, C13), saved apart from the draft, at once. Off by default. */
+  showOnMap: boolean;
   /** People this person blocked on Network or in the Inbox, newest first (gap list item 34). */
   blockedPeople: BlockedPersonLine[];
   /** Elite, free in the beta (FR-50): saved apart from the draft, at once. */
@@ -68,6 +71,7 @@ export function SettingsView({
   data,
   discoveryActions,
   findMe,
+  mapShare,
   unblockPerson,
   planActions,
   jobSearch,
@@ -77,6 +81,8 @@ export function SettingsView({
   data: SettingsData;
   discoveryActions?: DiscoveryActions;
   findMe?: (on: boolean) => Promise<string | null>;
+  /** Saves "Show my pitstop on the map"; example data without it. */
+  mapShare?: MapShareAction;
   unblockPerson?: (id: string) => Promise<string | null>;
   planActions?: PlanActions;
   /** "Looking for a job" and the notice period (SettingsJobSearch); example data without it. */
@@ -150,6 +156,7 @@ export function SettingsView({
         <Section id="acc-privacy" title="Privacy">
           <PrivacyFields />
           <FindMeSwitch initial={data.peopleCanFind} action={data.editable ? findMe : undefined} />
+          <MapShareSwitch initial={data.showOnMap} action={data.editable ? mapShare : undefined} legend />
           <WhoSeesWhat />
           <BlockedPeople people={data.blockedPeople} unblock={data.editable ? unblockPerson : undefined} />
           <CompanyDiscovery data={data.discovery} actions={data.editable ? discoveryActions : undefined} />

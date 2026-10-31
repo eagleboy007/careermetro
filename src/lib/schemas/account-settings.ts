@@ -186,6 +186,14 @@ export const settingsInput = z.object({
 /** "Looking for a job": on or off. */
 export const jobSearchInput = z.boolean();
 
+/**
+ * "Show my pitstop on the map" (On your line, C13, docs/plans/on-your-line-plan.md): on or off, saved at once from
+ * Settings > Privacy and Me. Off until the person turns it on (no row, or the column's default). Never logged, never on
+ * a profile or in email, never read by company code.
+ */
+export const showOnMapInput = z.boolean();
+export const DEFAULT_SHOW_ON_MAP = false;
+
 /** A calendar date, YYYY-MM-DD, that exists. */
 const calendarDay = z
   .string()
