@@ -1,0 +1,110 @@
+{
+  "slug": "audit-associate",
+  "title": "Audit Associate",
+  "summary": "An audit associate checks a company's accounts and controls on behalf of auditors: vouching transactions, testing controls and recording the work in working papers. You work in a CA firm or Big 4 audit team under an audit senior, on statutory audits (the yearly audit required by law) and internal audits.",
+  "dailyDuties": [
+    "Vouch and verify sampled transactions against documents",
+    "Walk through processes and test internal controls",
+    "Prepare working papers and lead schedules",
+    "Check financial statements against Ind AS and Schedule III",
+    "Raise audit queries with client finance teams",
+    "Draft audit observations for the audit senior"
+  ],
+  "typicalTitles": [
+    "Statutory Audit Associate",
+    "Assurance Associate",
+    "Internal Audit Associate",
+    "Audit Executive - CA Firm",
+    "Audit Senior Assistant",
+    "Internal Audit Executive",
+    "Audit and Assurance Associate"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 4
+  },
+  "skills": [
+    {
+      "skillId": "statutory-audit-execution",
+      "importance": "required",
+      "expectation": "Carry out statutory audit fieldwork: vouching, verification and substantive testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "internal-controls-testing",
+      "importance": "required",
+      "expectation": "Perform walkthroughs and test internal financial controls and processes",
+      "postingShare": null
+    },
+    {
+      "skillId": "audit-documentation",
+      "importance": "required",
+      "expectation": "Prepare audit working papers and draft observations to firm standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-accounting",
+      "importance": "required",
+      "expectation": "Apply Ind AS and Schedule III when reviewing financial statements",
+      "postingShare": null
+    },
+    {
+      "skillId": "gst-tds-compliance",
+      "importance": "required",
+      "expectation": "Check GST and TDS compliance during audits and tax audits",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Use Excel for sampling, analytics and audit schedules",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain queries and findings clearly to client finance teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "audit-software",
+      "importance": "nice_to_have",
+      "expectation": "Use audit and data-analytics tools such as CaseWare IDEA",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-statement-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Run ratio and trend analysis as analytical review",
+      "postingShare": null
+    },
+    {
+      "skillId": "account-reconciliations",
+      "importance": "nice_to_have",
+      "expectation": "Review ledger and balance sheet reconciliations",
+      "postingShare": null
+    },
+    {
+      "skillId": "tally-accounting-software",
+      "importance": "nice_to_have",
+      "expectation": "Work directly in clients' Tally or similar accounting packages",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate with client teams and seniors to close audits on time",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions (employer careers pages and ATS boards) and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

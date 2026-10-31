@@ -1,0 +1,52 @@
+{
+  "id": "payroll-executive-from-hr-operations",
+  "roleSlug": "payroll-executive",
+  "persona": "HR operations executive who already runs payroll at a mid-size firm",
+  "resumeText": "Rahul Verma | Noida | rahul.verma@example.com\n\nEXPERIENCE\nHR Operations Executive - Payroll, Yamuna Facility Services, Noida (2022 - present)\n- Processed monthly payroll for 850 employees across three states.\n- Uploaded the monthly PF ECR and paid ESIC contributions before the due dates.\n- Deducted professional tax as per state slabs and filed the returns.\n- Maintained wage registers under the Minimum Wages Act and Payment of Bonus Act.\n- Calculated full and final settlements for exiting employees, including gratuity and leave encashment.\n- Ran payroll on greytHR and reconciled salary variances in Excel every month.\n\nHR Assistant, Aravali Security Services, Noida (2021 - 2022)\n- Collected attendance and leave data from site supervisors for payroll.\n\nSKILLS\nTDS on salary, Excel, greytHR, PF and ESI\n\nEDUCATION\nBCom, Delhi University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 5,
+    "skills": [
+      {
+        "skillId": "payroll-inputs-processing",
+        "quote": "Processed monthly payroll for 850 employees"
+      },
+      {
+        "skillId": "payroll-statutory-filings",
+        "quote": "Uploaded the monthly PF ECR and paid ESIC contributions"
+      },
+      {
+        "skillId": "indian-labour-law-compliance",
+        "quote": "Maintained wage registers under the Minimum Wages Act"
+      },
+      {
+        "skillId": "employee-onboarding-exits",
+        "quote": "Calculated full and final settlements for exiting employees"
+      },
+      {
+        "skillId": "hrms-tools",
+        "quote": "Ran payroll on greytHR"
+      },
+      {
+        "skillId": "excel",
+        "quote": "reconciled salary variances in Excel every month"
+      },
+      {
+        "skillId": "salary-tds-computation",
+        "quote": "TDS on salary"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "salary-tds-computation",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "financial-accounting",
+      "tally-accounting-software",
+      "full-cycle-recruitment",
+      "power-bi"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,52 @@
+{
+  "id": "content-writer-from-agency-writer",
+  "roleSlug": "content-writer",
+  "persona": "Agency content writer with three years of SEO blog writing for travel and D2C brands",
+  "resumeText": "Ananya Sharma | Jaipur | ananya.sharma@example.com\n\nEXPERIENCE\nContent Writer, Thar Digital Media, Jaipur (2023 - present)\n- Write long-form travel blogs and website content writing for hotel and D2C clients, about 12 pieces a month.\n- Do keyword research in Ubersuggest and plan SEO blogs around search intent for each client.\n- Add meta titles, H2 structure and internal links as part of on-page SEO before submission.\n- Handle proofreading and copy editing for two junior writers against the house style guide.\n- Present monthly content performance to clients and agree the next month's topics with them.\n\nFreelance Writer, self-employed, Jaipur (2022 - 2023)\n- Wrote product descriptions for small fashion sellers.\n\nEDUCATION\nBA English, University of Rajasthan, 2022\n\nSKILLS\nContent briefs, Grammarly, Google Docs\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "content-marketing",
+        "quote": "long-form travel blogs and website content writing"
+      },
+      {
+        "skillId": "seo-content-writing",
+        "quote": "Do keyword research in Ubersuggest and plan SEO blogs"
+      },
+      {
+        "skillId": "seo",
+        "quote": "internal links as part of on-page SEO"
+      },
+      {
+        "skillId": "editing-proofreading",
+        "quote": "Handle proofreading and copy editing for two junior writers"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Present monthly content performance to clients"
+      },
+      {
+        "skillId": "content-briefs-outlines",
+        "quote": "Content briefs"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "content-briefs-outlines",
+        "status": "weak"
+      },
+      {
+        "skillId": "cms-content-publishing",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "technical-writing",
+      "sem-google-ads",
+      "email-marketing",
+      "structured-authoring"
+    ]
+  },
+  "reviewedBy": null
+}

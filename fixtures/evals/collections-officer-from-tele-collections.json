@@ -1,0 +1,55 @@
+{
+  "id": "collections-officer-from-tele-collections",
+  "roleSlug": "collections-officer",
+  "persona": "Tele-collections executive at an NBFC moving to a field collections officer role",
+  "resumeText": "Ravi Teja Reddy | Hyderabad | raviteja.r@example.com\n\nEXPERIENCE\nSenior Tele-Collections Executive, Deccan Finserve Ltd (NBFC), Hyderabad (2022 - present)\n- Called 120 overdue two-wheeler and personal loan customers a day in the 1-30 DPD bucket.\n- Achieved 92% bucket resolution in early delinquency and cut roll forward to 60+ DPD.\n- Negotiated repayment plans and tracked promise to pay commitments in the collections dialer.\n- Checked CIBIL reports to trace skipped borrowers and their other running loans.\n- Explained EMI, foreclosure and late-fee terms of two-wheeler and personal loans to borrowers in Telugu, Hindi and English.\n- Followed the RBI fair practices code on calling hours and borrower privacy in every call.\n- Maintained daily collection MIS in Excel for the team leader.\n\nEDUCATION\nB.Com, Osmania University, 2021\n\nCERTIFICATIONS\nIIBF Certificate for Debt Recovery Agents (2022)\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "field-tele-collections",
+        "quote": "Called 120 overdue two-wheeler and personal loan customers a day"
+      },
+      {
+        "skillId": "collections-portfolio-management",
+        "quote": "Achieved 92% bucket resolution in early delinquency"
+      },
+      {
+        "skillId": "domain-bfsi",
+        "quote": "Explained EMI, foreclosure and late-fee terms of two-wheeler and personal loans"
+      },
+      {
+        "skillId": "communication",
+        "quote": "to borrowers in Telugu, Hindi and English"
+      },
+      {
+        "skillId": "collections-regulatory-conduct",
+        "quote": "Followed the RBI fair practices code on calling hours"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Maintained daily collection MIS in Excel"
+      },
+      {
+        "skillId": "credit-bureau-analysis",
+        "quote": "Checked CIBIL reports to trace skipped borrowers"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "npa-recovery-legal",
+        "status": "missing"
+      },
+      {
+        "skillId": "collection-agency-oversight",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "credit-appraisal",
+      "credit-risk-modelling",
+      "kyc-due-diligence"
+    ]
+  },
+  "reviewedBy": null
+}

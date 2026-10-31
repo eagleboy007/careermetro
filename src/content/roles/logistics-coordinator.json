@@ -1,0 +1,111 @@
+{
+  "slug": "logistics-coordinator",
+  "title": "Logistics Coordinator",
+  "summary": "A Logistics Coordinator gets goods from the warehouse or plant to customers on time, planning dispatches, booking trucks with transporters and preparing documents such as e-way bills (the GST permit for moving goods). They sit in the logistics or supply chain team and work with warehouses, transporters, sales and accounts.",
+  "dailyDuties": [
+    "Plan daily dispatches and place vehicles with transporters",
+    "Generate e-way bills, invoices and delivery challans",
+    "Track shipments and collect proof of delivery",
+    "Coordinate loading and stock transfers with the warehouse",
+    "Check freight bills against agreed rates",
+    "Prepare import and export documents with forwarders and CHAs",
+    "Update the dispatch tracker and share daily MIS"
+  ],
+  "typicalTitles": [
+    "Logistics Executive",
+    "Dispatch Executive",
+    "Dispatch Coordinator",
+    "Shipping Coordinator",
+    "Transport Coordinator",
+    "Executive - Logistics",
+    "EXIM Logistics Coordinator"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "shipment-dispatch-planning",
+      "importance": "required",
+      "expectation": "Plan daily dispatches and track shipments to proof of delivery",
+      "postingShare": null
+    },
+    {
+      "skillId": "transporter-3pl-management",
+      "importance": "required",
+      "expectation": "Coordinate transporters, 3PLs and freight forwarders",
+      "postingShare": null
+    },
+    {
+      "skillId": "eway-bill-compliance",
+      "importance": "required",
+      "expectation": "Prepare e-way bills, delivery challans and dispatch documents",
+      "postingShare": null
+    },
+    {
+      "skillId": "freight-billing-control",
+      "importance": "required",
+      "expectation": "Verify freight bills and keep freight costs in check",
+      "postingShare": null
+    },
+    {
+      "skillId": "warehouse-coordination",
+      "importance": "required",
+      "expectation": "Coordinate loading, inbound receipts and stock transfers with the warehouse",
+      "postingShare": null
+    },
+    {
+      "skillId": "exim-documentation",
+      "importance": "required",
+      "expectation": "Handle basic import and export documents and work with CHAs",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Maintain dispatch trackers and MIS reports in spreadsheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "logistics-analytics",
+      "importance": "nice_to_have",
+      "expectation": "Report OTIF and freight cost trends",
+      "postingShare": null
+    },
+    {
+      "skillId": "supply-chain-erp-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Create deliveries and pull reports from the ERP",
+      "postingShare": null
+    },
+    {
+      "skillId": "gst-tds-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Understand GST rules behind dispatch documents",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Keep customers, sales and transporters informed",
+      "postingShare": null
+    },
+    {
+      "skillId": "problem-solving",
+      "importance": "nice_to_have",
+      "expectation": "Resolve delays, damages and vehicle shortages",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

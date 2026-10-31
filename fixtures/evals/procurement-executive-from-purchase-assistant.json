@@ -1,0 +1,52 @@
+{
+  "id": "procurement-executive-from-purchase-assistant",
+  "roleSlug": "procurement-executive",
+  "persona": "Purchase assistant at a manufacturer stepping up to procurement executive",
+  "resumeText": "Kavya Reddy | Hyderabad | kavya.reddy@example.com\n\nEXPERIENCE\nPurchase Assistant, Deccan Pumps and Valves, Hyderabad (2023 - present)\n- Converted purchase requisitions from stores and maintenance into purchase orders.\n- Raised and amended purchase orders in Oracle Purchasing for 120 active suppliers.\n- Floated RFQs to four or five vendors and prepared comparative statements for approval.\n- Developed six alternate vendors for castings and fasteners in the Hyderabad region.\n- Tracked open purchase orders and supplier delivery dates in Excel and followed up on delays.\n\nStores Assistant, Charminar Engineering Works, Hyderabad (2022 - 2023)\n- Issued materials to the shop floor and updated stock registers.\n\nSKILLS\nNegotiation, Excel, Oracle Purchasing, GST basics\n\nEDUCATION\nBCom, Osmania University, 2022\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "purchase-order-processing",
+        "quote": "Converted purchase requisitions from stores and maintenance into purchase orders"
+      },
+      {
+        "skillId": "erp-purchasing",
+        "quote": "Raised and amended purchase orders in Oracle Purchasing"
+      },
+      {
+        "skillId": "rfq-quotation-comparison",
+        "quote": "Floated RFQs to four or five vendors and prepared comparative statements"
+      },
+      {
+        "skillId": "vendor-sourcing-development",
+        "quote": "Developed six alternate vendors for castings and fasteners"
+      },
+      {
+        "skillId": "excel",
+        "quote": "supplier delivery dates in Excel"
+      },
+      {
+        "skillId": "commercial-negotiation",
+        "quote": "Negotiation"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "commercial-negotiation",
+        "status": "weak"
+      },
+      {
+        "skillId": "vendor-onboarding",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "sap-mm-configuration",
+      "procurement-analytics",
+      "demand-forecasting",
+      "inventory-planning-optimization"
+    ]
+  },
+  "reviewedBy": null
+}

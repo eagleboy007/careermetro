@@ -25,7 +25,7 @@ describe.skipIf(!db)("Timetable rows (database)", () => {
 
   beforeAll(async () => {
     // Goals point at the skills table; the content seed may not have run on this database.
-    const used = skills.filter((s) => ["siem", "python", "aws"].includes(s.id));
+    const used = skills.filter((s) => ["siem", "python", "aws", "threat-detection"].includes(s.id));
     await db!
       .insert(schema.skills)
       .values(used.map(({ id, name, category }) => ({ id, name, category })))
@@ -163,10 +163,12 @@ describe.skipIf(!db)("Timetable rows (database)", () => {
   });
 
   it("shows only live matches with the person's own marks, wide for the filter row, and the teaser under the saved choices", async () => {
+    // A goal and an interest no other test file tags: test files share one database and run in parallel, and other
+    // files' live SIEM, Python and AI events in Pune would otherwise sort into the two-row teaser as the clock moves.
     const me = await person();
     await db!.update(schema.users).set({ city: "Pune" }).where(eq(schema.users.id, me));
-    await db!.insert(schema.userGoals).values({ userId: me, skillId: "siem", position: 0 });
-    await db!.insert(schema.userInterests).values({ userId: me, name: "AI", nameKey: "ai" });
+    await db!.insert(schema.userGoals).values({ userId: me, skillId: "threat-detection", position: 0 });
+    await db!.insert(schema.userInterests).values({ userId: me, name: "Quantum computing", nameKey: "quantum" });
     const soon = new Date(Date.now() + 2 * 86_400_000);
     const at = (h: number) => ({ startsAt: new Date(soon.getTime() + h * 3600_000), endsAt: new Date(soon.getTime() + (h + 2) * 3600_000) });
     const goal = await event(at(0));
@@ -175,10 +177,10 @@ describe.skipIf(!db)("Timetable rows (database)", () => {
     const hidden = await event({ ...at(3), status: "hidden" });
     const other = await event({ ...at(4), title: "Excel tips" });
     await db!.insert(schema.eventTopics).values([
-      { eventId: goal, kind: "skill", topic: "siem" },
-      { eventId: online, kind: "interest", topic: "ai" },
-      { eventId: mumbai, kind: "skill", topic: "siem" },
-      { eventId: hidden, kind: "skill", topic: "siem" },
+      { eventId: goal, kind: "skill", topic: "threat-detection" },
+      { eventId: online, kind: "interest", topic: "quantum" },
+      { eventId: mumbai, kind: "skill", topic: "threat-detection" },
+      { eventId: hidden, kind: "skill", topic: "threat-detection" },
       { eventId: other, kind: "skill", topic: "excel" },
     ]);
     await db!.insert(schema.eventRsvps).values({ userId: me, eventId: goal, state: "saved" });
@@ -192,7 +194,7 @@ describe.skipIf(!db)("Timetable rows (database)", () => {
     // Mumbai is about 120 km from Pune: beyond even "Show outside 25 km".
     expect(view.outsideRadius).toBeGreaterThanOrEqual(1);
     expect(choices).toEqual({ radiusKm: 25, online: true });
-    expect(why.interests).toEqual(["AI"]);
+    expect(why.interests).toEqual(["Quantum computing"]);
     const teaser = (await timetableTeaserFor(me, new Date(), d())).filter((t) => mine.has(t.id));
     expect(teaser.map((t) => t.id)).toEqual([goal, online]);
   });

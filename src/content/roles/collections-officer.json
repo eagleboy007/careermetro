@@ -1,0 +1,117 @@
+{
+  "slug": "collections-officer",
+  "title": "Collections Officer",
+  "summary": "A collections officer recovers overdue payments on retail loans and credit cards for a bank or NBFC (non-bank lender), by phone and in the field. You own a set of delinquent accounts by bucket (how many days overdue), work with collection agencies, and escalate hard cases to legal recovery within RBI rules on fair collection.",
+  "dailyDuties": [
+    "Call and visit overdue borrowers and agree repayment plans",
+    "Track promises to pay and bucket-wise resolution",
+    "Allocate cases to collection agencies and review their work",
+    "Trace borrowers who cannot be reached",
+    "Recommend accounts for settlement or legal action",
+    "Update collection MIS and daily reports",
+    "Follow the fair practices code in every contact"
+  ],
+  "typicalTitles": [
+    "Collection Officer - Retail Loans",
+    "Collections Executive - Credit Cards",
+    "Debt Manager - Recoveries",
+    "Field Collection Officer",
+    "Tele Collections Executive",
+    "Recovery Officer - NBFC",
+    "Collection Manager - Two Wheeler Loans"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "collections-portfolio-management",
+      "importance": "required",
+      "expectation": "Hit bucket-wise resolution targets and control roll-forward of delinquent accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "field-tele-collections",
+      "importance": "required",
+      "expectation": "Contact and visit overdue borrowers, agree repayment plans and follow up promises to pay",
+      "postingShare": null
+    },
+    {
+      "skillId": "npa-recovery-legal",
+      "importance": "required",
+      "expectation": "Start legal recovery such as SARFAESI, Section 138, arbitration or settlement where needed",
+      "postingShare": null
+    },
+    {
+      "skillId": "collections-regulatory-conduct",
+      "importance": "required",
+      "expectation": "Follow RBI fair practices and the collections code of conduct",
+      "postingShare": null
+    },
+    {
+      "skillId": "collection-agency-oversight",
+      "importance": "required",
+      "expectation": "Allocate cases to collection agencies and monitor their performance",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Maintain collection MIS and trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "required",
+      "expectation": "Understand retail loan and credit card products and their repayment terms",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Talk to borrowers calmly and firmly in the local language",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-bureau-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Read bureau reports to trace borrowers and judge repayment ability",
+      "postingShare": null
+    },
+    {
+      "skillId": "rbi-credit-norms",
+      "importance": "nice_to_have",
+      "expectation": "Know NPA classification rules and how they drive bucket priorities",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-portfolio-monitoring",
+      "importance": "nice_to_have",
+      "expectation": "Read delinquency and roll-rate reports for the portfolio",
+      "postingShare": null
+    },
+    {
+      "skillId": "escalation-handling",
+      "importance": "nice_to_have",
+      "expectation": "Handle borrower complaints and disputes without escalation",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "nice_to_have",
+      "expectation": "Guide a small team of field or tele-collection staff",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions (employer careers pages and ATS boards) and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
