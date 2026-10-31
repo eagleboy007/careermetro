@@ -2,7 +2,7 @@
 
 This page is the current state only: read it first, then the one plan file the task needs. At the end of every task, change it in 2–3 lines in the same PR. Facts carry a PR or doc link. Everything this page held up to 2026-10-31 (each merged feature, test-run fix and feed change, word for word) is in [`docs/plans/status-history-2026-10.md`](plans/status-history-2026-10.md). How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (Junction parts 1–4 behind JUNCTION_ENABLED; TG2 to TG4 roles merged in #309)
+Last updated: 2026-10-31 (practice and timed-test drafts for every thin role, unreviewed; 66-link refill; Junction merged in #310 behind JUNCTION_ENABLED)
 
 ## Live (https://careermetro.vercel.app)
 
@@ -20,7 +20,7 @@ Last updated: 2026-10-31 (Junction parts 1–4 behind JUNCTION_ENABLED; TG2 to T
 - CSP: the host allow-list policy is report-only (`src/proxy.ts`, `src/lib/csp.ts`); the walk prints `CSP: none` or each violation. Enforcing waits on the log drain and on Milin (`docs/dev/security-sweep-2026-10-20.md`).
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/`; every role, certificate and question above waits on it.
 - Junction (FR-61, `docs/plans/junction-plan.md`), parts 1–4: data, rules, moderation and admin rows, `/junction`, post detail, Your posts, the rail, pins and the "Junction posts" switch on Me and `/u`, and the Today tip. All behind `JUNCTION_ENABLED` (off in production; on for CI's e2e build and app server, since build and runtime must agree). Grievance officer Milin Shah, still `placeholder: true`. Part 5 (launch switch) waits on a backup officer, the lawyer and the grievance mailbox.
-- Departures boards: 279 boards. The last two candidates (RISA Labs, Currencies Direct, Greenhouse EU) failed the 2026-10-31 board check with network errors (#308), so none were added; new boards wait on Research.
+- Departures boards: 279 boards. Research's 53 non-tech candidates (banks, hotels, Pune plants; Workable rows left out, not one of the four ATS APIs) are in `scripts/departures/board-candidates.csv` for the board check; boards join `job-boards.json` only if it passes them.
 
 ## Queue (all waiting on someone else)
 
