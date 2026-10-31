@@ -132,6 +132,43 @@ export function maxOwnPitstops(): string[] {
 }
 /** How many open goals the own pitstops take: full goals first, then one each for the lone names. */
 export const OWN_PITSTOP_GOALS = (OWN_PITSTOPS_MAX - LONE_PITSTOPS) / OWN_PITSTOPS_PER_GOAL + LONE_PITSTOPS;
+/**
+ * Of those, the goals on the earlier line (T176): the first names go OWN_PITSTOPS_PER_GOAL each to this many of the
+ * earlier role's goals before the switch, so its panel says "3 pitstops added by you, kept". OWN_PITSTOPS_MAX counts
+ * across all of a person's goals, so the rest stay on the current line's spurs: full goals first, then the lone names.
+ */
+export const EARLIER_OWN_PITSTOP_GOALS = 4;
+
+/**
+ * The earlier line after a change of destination (C25, T176): the seed's earlier role gets MAX_GAPS gaps, none of them
+ * on the current line, so every one waits there. Their names at the 80 the Map keeps (src/lib/map/previous.ts), the
+ * four kinds in turn. Real skill ids, so the goals are real; only the names are made up.
+ */
+export const EARLIER_GAP_NAME_MAX = 80;
+export const earlierGapName = (i: number) => labelled(`Earlier ${i + 1}`, i, EARLIER_GAP_NAME_MAX);
+
+/**
+ * On your line (C13, T176): members who show their pitstop on the map, on every goal of the member's current line, so
+ * the side panel shows a count and names. The first `connected` are the member's connections: three are named and
+ * the rest say "and 1 more connection".
+ */
+export const RIDERS = { total: 6, connected: 4 } as const;
+/** The longest first and last name sign-up keeps (NAME_PART_MAX in src/lib/account/store.ts; the seed checks they agree). */
+export const RIDER_NAME_PART = 40;
+const ONE_WORD = { latin: LONG_WORD, hindi: "विश्लेषणअनुभवपाइथनडेटा", emoji: EMOJI } as const;
+/**
+ * A rider's name: a first and a last name each at RIDER_NAME_PART with no space inside, so the Map's short form ("First
+ * L.") keeps a 40-character first word. First names in Latin, Hindi and an emoji run in turn; last names Latin, so the
+ * initial shows.
+ */
+export function riderName(n: number): string {
+  const kind = (["latin", "hindi", "emoji"] as const)[n % 3];
+  const first = fill(ONE_WORD[kind], RIDER_NAME_PART, kind === "latin" ? `Rider${n}` : "");
+  const last = fill(LONG_WORD, RIDER_NAME_PART, `Line${n}`);
+  return `${first} ${last}`;
+}
+/** A rider's username: unique, lowercase, inside USERNAME_MAX. */
+export const riderUsername = (n: number) => `max-data-rider-${n}`;
 
 /** The i-th Latin-only text: the long-word and unbroken kinds in turn, which the resume PDF's font can draw. */
 export const latinV = (i: number, max: number): string => textOf(i % 2 ? "unbroken" : "word", max);

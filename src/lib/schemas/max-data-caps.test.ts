@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  EARLIER_GAP_NAME_MAX,
+  EARLIER_OWN_PITSTOP_GOALS,
+  earlierGapName,
   LONE_PITSTOPS,
   MANY_LINES_NOTE,
   maxBuilderAnswers,
@@ -15,9 +18,16 @@ import {
   maxStories,
   OWN_PITSTOP_GOALS,
   peerName,
+  RIDER_NAME_PART,
+  riderName,
+  RIDERS,
+  riderUsername,
   SIZES,
   textOf,
 } from "../../../e2e/max-data/data";
+import { usernameProblem } from "@/lib/account/username";
+import { shortName } from "@/lib/map/riders-text";
+import { MAX_GAPS } from "./gap";
 import { builderAnswers } from "./builder";
 import {
   EVENT_TITLE_MAX,
@@ -114,6 +124,32 @@ describe("max-data seed text", () => {
     expect(names[0]).toContain(" ");
     expect((OWN_PITSTOPS_MAX - LONE_PITSTOPS) % OWN_PITSTOPS_PER_GOAL).toBe(0);
     expect(OWN_PITSTOP_GOALS).toBe((OWN_PITSTOPS_MAX - LONE_PITSTOPS) / OWN_PITSTOPS_PER_GOAL + LONE_PITSTOPS);
+  });
+
+  it("gives the earlier line MAX_GAPS names at the Map's 80 and its goals own pitstops inside the cap (T176)", () => {
+    const names = Array.from({ length: MAX_GAPS }, (_, i) => earlierGapName(i));
+    for (const name of names) {
+      expect(name.length).toBeLessThanOrEqual(EARLIER_GAP_NAME_MAX);
+      expect(name.length).toBeGreaterThanOrEqual(EARLIER_GAP_NAME_MAX - 2);
+    }
+    expect(new Set(names).size).toBe(MAX_GAPS);
+    expect(EARLIER_OWN_PITSTOP_GOALS * OWN_PITSTOPS_PER_GOAL).toBeLessThan(OWN_PITSTOPS_MAX - LONE_PITSTOPS);
+  });
+
+  it("gives the On your line riders first and last names at the sign-up cap, with a 40-character short form (T176)", () => {
+    expect(RIDERS.total).toBeGreaterThanOrEqual(3);
+    expect(RIDERS.connected).toBeGreaterThan(3);
+    for (let n = 0; n < RIDERS.total; n++) {
+      const [first, last, ...rest] = riderName(n).split(" ");
+      expect(rest).toHaveLength(0);
+      expect(first.length).toBeGreaterThanOrEqual(RIDER_NAME_PART - 1);
+      expect(first.length).toBeLessThanOrEqual(RIDER_NAME_PART);
+      expect(last).toHaveLength(RIDER_NAME_PART);
+      // The Map's short form keeps a 40-character first word and the last name's initial.
+      expect(shortName(riderName(n))).toBe(`${first.slice(0, 40)} ${last[0].toUpperCase()}.`);
+      expect(shortName(riderName(n)).length).toBeLessThanOrEqual(80);
+      expect(usernameProblem(riderUsername(n))).toBeNull();
+    }
   });
 
   it("gives a builder draft the builder's own schema keeps whole", () => {

@@ -7,8 +7,10 @@
  *
  * It runs under Vitest only so it can use the app's own stores and schema (as the store tests do): the resume's gaps,
  * path and goals are made by getGapsForOwner, getPathForOwner and syncCurrentGoals with the model calls off, and the rest
- * is written straight to the tables. Local databases only (assertLocalDatabase). Synthetic text only, never logged:
- * the log says counts. The member's resume id and username go to e2e/results/max-data.json for the browser check.
+ * is written straight to the tables. Two destinations (T176): an earlier role first, then the target role chosen with
+ * makeDestination, so the Map has an earlier line with MAX_GAPS waiting goals; and opted-in members (riders) on the
+ * line's pitstops, some of them connections, for the On your line panel. Local databases only (assertLocalDatabase).
+ * Synthetic text only, never logged: the log says counts. The member's resume id and username go to e2e/results/max-data.json for the browser check.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { and, asc, eq, isNull } from "drizzle-orm";
@@ -17,17 +19,25 @@ import postgres from "postgres";
 import { afterAll, describe, expect, it } from "vitest";
 import * as schema from "@/db/schema";
 import { mockQuestions, practiceQuestions, roleProfiles, skills as contentSkills } from "@/content";
-import { ACCOUNT_POLICY_VERSION } from "@/lib/account/store";
+import { ACCOUNT_POLICY_VERSION, NAME_PART_MAX } from "@/lib/account/store";
+import { makeDestination } from "@/lib/gaps/choose";
+import { currentAnalysis } from "@/lib/gaps/current";
+import { gapSkillsOf, leftOnEarlierLine } from "@/lib/gaps/destination";
 import { GAP_LIMITS, getGapsForOwner } from "@/lib/gaps/store";
 import { goalsOf, syncCurrentGoals } from "@/lib/goals/store";
+import { pitstopRidersFor } from "@/lib/map/riders";
+import { mapLineFor } from "@/lib/map/store";
 import { interestKey } from "@/lib/me/text";
 import { getPathForOwner, PATH_LIMITS } from "@/lib/path/store";
 import { addOwnPitstop, learningSkill, pitstopOptionsFor } from "@/lib/pitstops/store";
 import { builderAnswers } from "@/lib/schemas/builder";
-import { EVENT_RSVP_STATES, EVENT_TOPICS_MAX, OWN_PITSTOPS_MAX, OWN_PITSTOPS_PER_GOAL } from "@/lib/schemas/constants";
+import { EVENT_RSVP_STATES, EVENT_TOPICS_MAX, OWN_PITSTOPS_MAX, OWN_PITSTOPS_PER_GOAL, PITSTOP_NAMES_SHOWN } from "@/lib/schemas/constants";
+import { gapAnalysis, MAX_GAPS, type Gap, type RoleProfile } from "@/lib/schemas";
 import { profile as profileSchema } from "@/lib/schemas/profile";
-import { assertLocalDatabase, cleanMaxData, MAX_DATA_EMAIL, peerEmail } from "./clean.mjs";
+import { assertLocalDatabase, cleanMaxData, MAX_DATA_EMAIL, peerEmail, riderEmail } from "./clean.mjs";
 import {
+  EARLIER_OWN_PITSTOP_GOALS,
+  earlierGapName,
   LONE_PITSTOPS,
   MAX_DATA_NAME,
   MAX_DATA_USERNAME,
@@ -44,6 +54,10 @@ import {
   maxStories,
   OWN_PITSTOP_GOALS,
   peerName,
+  RIDER_NAME_PART,
+  riderName,
+  RIDERS,
+  riderUsername,
   SIZES,
   v,
 } from "./data";
@@ -67,6 +81,45 @@ async function insertAll<T>(rows: T[], write: (slice: T[]) => Promise<unknown>, 
 /** The role with the most skills, so the member has as many gap goals as a role can give (MAX_GAPS). */
 function targetRole() {
   return [...roleProfiles].sort((a, b) => b.skills.length - a.skills.length || a.slug.localeCompare(b.slug))[0];
+}
+
+/**
+ * The earlier destination (C25, T176): the role sharing the fewest skills with the target, so its own gaps wait on the
+ * earlier line. Most required skills the target doesn't list, then most required skills, then by slug.
+ */
+function earlierRole(target: RoleProfile) {
+  const theirs = new Set(target.skills.map((s) => s.skillId));
+  const required = (r: RoleProfile) => r.skills.filter((s) => s.importance === "required");
+  const apart = (r: RoleProfile) => required(r).filter((s) => !theirs.has(s.skillId)).length;
+  return roleProfiles
+    .filter((r) => r.slug !== target.slug)
+    .sort((a, b) => apart(b) - apart(a) || required(b).length - required(a).length || a.slug.localeCompare(b.slug))[0];
+}
+
+/**
+ * The earlier role's gaps at MAX_GAPS, none of them a skill of the target role (T176): its own gaps the target doesn't
+ * list first, then other taxonomy skills, never one Practice has questions for (so the "Your choice" goals still get
+ * those). Real skill ids, so the goals are real; every name at the Map's 80 characters. No role lists MAX_GAPS required
+ * skills today, so the list is padded to reach the cap the code allows.
+ */
+function earlierGaps(own: Gap[], target: RoleProfile, avoid: ReadonlySet<string>): Gap[] {
+  const theirs = new Set(target.skills.map((s) => s.skillId));
+  const kept = own.filter((g) => !theirs.has(g.skillId));
+  const used = new Set([...kept.map((g) => g.skillId), ...avoid, ...theirs]);
+  const extra = contentSkills
+    .map((s) => s.id)
+    .filter((id) => !used.has(id))
+    .sort()
+    .slice(0, Math.max(0, MAX_GAPS - kept.length))
+    .map((skillId): Gap => ({
+      skillId,
+      skillName: skillId,
+      status: "missing",
+      resumeQuote: null,
+      requirement: "Asked for by this role.",
+      explanation: "Nothing in your resume covers this skill yet.",
+    }));
+  return [...kept, ...extra].slice(0, MAX_GAPS).map((g, i) => ({ ...g, skillName: earlierGapName(i) }));
 }
 
 async function seed() {
@@ -140,51 +193,121 @@ async function seed() {
     .returning({ id: schema.resumes.id });
   await db.insert(schema.profiles).values({ resumeId: pdfResume.id, version: 1, data: profileSchema.parse(maxProfile([], true)), confirmedByUser: true });
   const owner = { userId };
+  const withQuestions = [...new Set(practiceQuestions.map((q) => q.skillId))];
   const limits = { explain: GAP_LIMITS.explainedPerOwnerPerDay, word: PATH_LIMITS.wordedPerOwnerPerDay };
   GAP_LIMITS.explainedPerOwnerPerDay = 0;
   PATH_LIMITS.wordedPerOwnerPerDay = 0;
+
+  // ---- Own pitstops on the Map (FR-58, T172), through the app's store so its name check and limits apply ---------
+  // OWN_PITSTOPS_MAX in all, across every goal: OWN_PITSTOPS_PER_GOAL on each goal in turn, gap goals first (they are
+  // the Map's line and draw spurs), then the lone names one a goal so their spurs show the name. The first of each call
+  // has a free course if the catalog offers one for its goal. Called twice: on the earlier role's goals before the
+  // change of destination (T176), then on the current line's.
+  const names = maxOwnPitstops();
+  let ownPitstops = 0;
+  let ownCourse = false;
+  const addOwn = async (goals: Awaited<ReturnType<typeof goalsOf>>) => {
+    const first = ownPitstops;
+    for (const goal of goals) {
+      const take = ownPitstops < names.length - LONE_PITSTOPS ? OWN_PITSTOPS_PER_GOAL : 1;
+      for (const title of names.slice(ownPitstops, ownPitstops + take)) {
+        const offered = ownPitstops === first ? (await pitstopOptionsFor([{ goalId: goal.id, skillId: learningSkill(goal)!, used: [] }], db)).get(goal.id) : undefined;
+        const resourceId = offered?.[0]?.id ?? null;
+        const added = await addOwnPitstop(userId, { goalId: goal.id, title, resourceId }, { db, now });
+        if (!added.ok) throw new Error(`own pitstop ${ownPitstops + 1}: ${added.error}`);
+        ownCourse ||= Boolean(resourceId);
+        ownPitstops++;
+      }
+    }
+  };
+  const openGoals = async () =>
+    (await goalsOf(userId, db))
+      .filter((g) => learningSkill(g))
+      .sort((a, b) => Number(a.source !== "gap") - Number(b.source !== "gap") || a.position - b.position);
+
+  // ---- The earlier destination first (change of destination, C25, T176) -----------------------------------------
+  // Its analysis is the member's first, so it becomes the destination as a first analysis does; its gaps are then set to
+  // MAX_GAPS skills the target role doesn't list, each name at the Map's 80. Its path and goals follow, and its first
+  // goals get their own pitstops. Then the target role's analysis waits for "Make this my destination", which the seed
+  // presses (makeDestination), so the earlier role becomes the Map's earlier line with every goal waiting there.
+  const earlier = earlierRole(role);
+  let earlierLeft = 0;
   try {
-    const gaps = await getGapsForOwner(resume.id, owner, role, { db });
-    if (!gaps.ok) throw new Error(`gaps: ${gaps.reason}`);
+    const before = await getGapsForOwner(resume.id, owner, earlier, { db });
+    if (!before.ok) throw new Error(`earlier gaps: ${before.reason}`);
+    const gaps = earlierGaps(before.analysis.gaps, role, new Set([...before.analysis.metSkillIds, ...withQuestions]));
+    await db.update(schema.gapAnalyses).set({ result: gapAnalysis.parse({ ...before.analysis, gaps }) }).where(eq(schema.gapAnalyses.id, before.analysisId));
+    const beforePath = await getPathForOwner(resume.id, owner, earlier, 5, { db });
+    if (!beforePath.ok) throw new Error(`earlier path: ${beforePath.reason}`);
+    await syncCurrentGoals(userId, db);
+    await addOwn((await openGoals()).filter((g) => g.source === "gap").slice(0, EARLIER_OWN_PITSTOP_GOALS));
+
+    const gaps2 = await getGapsForOwner(resume.id, owner, role, { db });
+    if (!gaps2.ok) throw new Error(`gaps: ${gaps2.reason}`);
+    const chosen = await makeDestination(userId, { analysisId: gaps2.analysisId }, { db, now });
+    if (!chosen.ok || !chosen.changed) throw new Error(`destination: ${chosen.ok ? "unchanged" : chosen.error}`);
     const path = await getPathForOwner(resume.id, owner, role, 5, { db });
     if (!path.ok) throw new Error(`path: ${path.reason}`);
+    earlierLeft = gaps.length;
   } finally {
     GAP_LIMITS.explainedPerOwnerPerDay = limits.explain;
     PATH_LIMITS.wordedPerOwnerPerDay = limits.word;
   }
   await syncCurrentGoals(userId, db);
+  const current = await currentAnalysis(userId, db);
+  if (current?.result.roleSlug !== role.slug) throw new Error("the target role is not the destination");
+  const lineGaps = gapSkillsOf(current);
 
   // "Your choice" goals up to MAX_CHOICE_GOALS, skills with Practice questions first, so Practice lists the member's.
-  const goals = await db.select({ skillId: schema.userGoals.skillId, position: schema.userGoals.position }).from(schema.userGoals).where(eq(schema.userGoals.userId, userId));
-  const taken = new Set(goals.map((g) => g.skillId));
-  const withQuestions = [...new Set(practiceQuestions.map((q) => q.skillId))];
+  // Only goals on the current line count from here on: the earlier role's wait on its line (leftOnEarlierLine).
+  const allGoals = await db
+    .select({ skillId: schema.userGoals.skillId, position: schema.userGoals.position, source: schema.userGoals.source })
+    .from(schema.userGoals)
+    .where(eq(schema.userGoals.userId, userId));
+  const goals = allGoals.filter((g) => !leftOnEarlierLine(g, lineGaps));
+  const taken = new Set(allGoals.map((g) => g.skillId));
   const choice = [...withQuestions, ...contentSkills.map((s) => s.id)].filter((id, i, all) => skillName.has(id) && !taken.has(id) && all.indexOf(id) === i).slice(0, SIZES.choiceGoals);
-  const last = Math.max(0, ...goals.map((g) => g.position));
+  const last = Math.max(0, ...allGoals.map((g) => g.position));
   await db.insert(schema.userGoals).values(choice.map((skillId, i) => ({ userId, skillId, source: "user" as const, status: "active" as const, position: last + 1 + i })));
   const practiceSkill = [...goals.map((g) => g.skillId), ...choice].find((id) => withQuestions.includes(id)) ?? null;
 
-  // ---- Own pitstops on the Map (FR-58, T172), through the app's store so its name check and limits apply ---------
-  // OWN_PITSTOPS_MAX in all: OWN_PITSTOPS_PER_GOAL on each open goal in turn, gap goals first (they are the Map's line
-  // and draw spurs), then the lone names one a goal so their spurs show the name. The first has a free course if the
-  // catalog offers one for its goal.
-  const open = (await goalsOf(userId, db))
-    .filter((g) => learningSkill(g))
-    .sort((a, b) => Number(a.source !== "gap") - Number(b.source !== "gap") || a.position - b.position)
-    .slice(0, OWN_PITSTOP_GOALS);
-  const names = maxOwnPitstops();
-  let ownPitstops = 0;
-  let ownCourse = false;
-  for (const goal of open) {
-    const take = ownPitstops < names.length - LONE_PITSTOPS ? OWN_PITSTOPS_PER_GOAL : 1;
-    for (const title of names.slice(ownPitstops, ownPitstops + take)) {
-      const offered = ownPitstops === 0 ? (await pitstopOptionsFor([{ goalId: goal.id, skillId: learningSkill(goal)!, used: [] }], db)).get(goal.id) : undefined;
-      const resourceId = offered?.[0]?.id ?? null;
-      const added = await addOwnPitstop(userId, { goalId: goal.id, title, resourceId }, { db, now });
-      if (!added.ok) throw new Error(`own pitstop ${ownPitstops + 1}: ${added.error}`);
-      ownCourse ||= Boolean(resourceId);
-      ownPitstops++;
-    }
-  }
+  // The rest of the own pitstops on the current line's goals (the earlier role's took the first): full goals, then the
+  // lone names.
+  const open = (await openGoals()).filter((g) => !leftOnEarlierLine(g, lineGaps)).slice(0, OWN_PITSTOP_GOALS - EARLIER_OWN_PITSTOP_GOALS);
+  await addOwn(open);
+
+  // ---- On your line (C13, T176): opted-in members on every goal of the current line, some of them connections ------
+  // Each with "Show my pitstop on the map" on and a goal of their own choice on each of the line's gap skills (a chosen
+  // goal is always on its person's line), so whichever pitstop the Map opens on shows the count and the names.
+  const riderSkills = [...(lineGaps ?? [])];
+  const riders = await db
+    .insert(schema.users)
+    .values(
+      Array.from({ length: RIDERS.total }, (_, n) => {
+        const [firstName, lastName] = riderName(n).split(" ");
+        return {
+          email: riderEmail(n),
+          name: riderName(n),
+          firstName,
+          lastName,
+          ageConfirmedAt: now,
+          username: riderUsername(n),
+          usernameChangedAt: now,
+          headline: v(n + 2, 80),
+        };
+      }),
+    )
+    .returning({ id: schema.users.id, email: schema.users.email });
+  const riderIds = riders.sort((a, b) => a.email.localeCompare(b.email)).map((r) => r.id);
+  await db.insert(schema.userSettings).values(riderIds.map((id) => ({ userId: id, profileVisibility: "signed_in" as const, showOnMap: true })));
+  await insertAll(
+    riderIds.flatMap((id) => riderSkills.map((skillId, i) => ({ userId: id, skillId, source: "user" as const, status: "active" as const, position: i }))),
+    (rows) => db.insert(schema.userGoals).values(rows),
+  );
+  // The first ones are connections: PITSTOP_NAMES_SHOWN named, the rest "and N more"; the others count but stay unnamed.
+  await db
+    .insert(schema.connections)
+    .values(riderIds.slice(0, RIDERS.connected).map((p) => (userId < p ? { userLow: userId, userHigh: p } : { userLow: p, userHigh: userId })).map((c) => ({ ...c, how: "same_line" as const })));
 
   // ---- Me: added roles, education, stories, interests --------------------------------------------------------------
   await db.insert(schema.meRoles).values(maxMeRoles().map((r) => ({ userId, ...r })));
@@ -374,11 +497,24 @@ async function seed() {
   // ---- Builder draft at its caps --------------------------------------------------------------------------------
   await db.insert(schema.resumeDrafts).values({ userId, answers: builderAnswers.parse(maxBuilderAnswers(role.slug)) });
 
+  // ---- What the Map will show (T176): read back through the Map's own readers, so a wrong seed fails here -----------
+  const line = await mapLineFor(userId, db, now);
+  const people = line ? await pitstopRidersFor(userId, line.goals.map((g) => g.skillId), db) : [];
+
   const counts = {
     role: role.slug,
+    earlierRole: earlier.slug,
+    earlierGaps: earlierLeft,
+    earlierLeft: line?.previous?.left.length ?? 0,
+    earlierCame: line?.previous?.came.length ?? 0,
+    earlierOwn: line?.previous?.left.filter((g) => g.ownPitstops === OWN_PITSTOPS_PER_GOAL).length ?? 0,
+    riders: riderIds.length,
+    riderPitstops: people.length,
+    riderCount: people[0]?.count ?? 0,
+    riderNames: people[0]?.names.length ?? 0,
     goals: goals.length + choice.length,
     ownPitstops,
-    ownPitstopGoals: open.length,
+    ownPitstopGoals: EARLIER_OWN_PITSTOP_GOALS + open.length,
     ownCourse,
     profileRoles: profile.roles.length,
     meRoles: SIZES.meRoles,
@@ -417,6 +553,16 @@ describe("max-data member", () => {
       expect(counts.myJobs).toBe(SIZES.myJobs);
       expect(counts.goals).toBeGreaterThan(SIZES.choiceGoals);
       expect(counts.ownPitstops).toBe(OWN_PITSTOPS_MAX);
+      // T176: the earlier line holds MAX_GAPS waiting goals, the first with their own pitstops, and the people panel a
+      // count and names on the line's pitstops.
+      expect(RIDER_NAME_PART).toBe(NAME_PART_MAX);
+      expect(counts.earlierGaps).toBe(MAX_GAPS);
+      expect(counts.earlierLeft + counts.earlierCame).toBe(MAX_GAPS);
+      expect(counts.earlierLeft).toBe(MAX_GAPS);
+      expect(counts.earlierOwn).toBe(EARLIER_OWN_PITSTOP_GOALS);
+      expect(counts.riderPitstops).toBeGreaterThan(0);
+      expect(counts.riderCount).toBe(RIDERS.total);
+      expect(counts.riderNames).toBe(Math.min(PITSTOP_NAMES_SHOWN, RIDERS.connected));
     } catch (error) {
       // Leave nothing half-written behind.
       await cleanMaxData(sqlClient);
