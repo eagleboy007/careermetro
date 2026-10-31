@@ -2,6 +2,7 @@ import { roleProfiles } from "@/content";
 import { HOURS_BY_STATUS, profileMatcher, type MatchedSkill } from "@/lib/gaps/match";
 import { MIN_SHARE } from "@/lib/gaps/suggest";
 import { matchList, type MatchHours, type MatchList, type MatchRole, type Profile, type RoleProfile } from "@/lib/schemas";
+import { wellPastBand } from "@/lib/role-view";
 import { clip } from "@/lib/text";
 
 export type MatchInput = {
@@ -46,7 +47,7 @@ function goalHours(row: MatchedSkill, pathHours: ReadonlyMap<string, number>): n
  * goals it still needs and the path hours left on them. Plain code over the same deterministic matcher as the Gaps
  * page, Nearby lines and "Closest to your resume", so "4 of 6 met" says exactly what that role's Gaps page would. A
  * role the resume barely covers (no required skill, or under MIN_SHARE of them, as "Closest to your resume" rules) is
- * left off, except the target role. Weeks follow the hours a week on the page (src/lib/match/group.ts). No AI, and
+ * left off, except the target role, and so is a role the person is more than two years past (wellPastBand, T179). Weeks follow the hours a week on the page (src/lib/match/group.ts). No AI, and
  * nothing here changes goals, gaps or the train.
  */
 export function matchListFor({
@@ -62,6 +63,7 @@ export function matchListFor({
 }: MatchInput): MatchList {
   const matchRole = profileMatcher(profile, now);
   const out: MatchRole[] = roles.flatMap((role) => {
+    if (role.slug !== targetSlug && wellPastBand(profile.totalYearsExperience, role.experienceBand)) return [];
     const match = matchRole(role);
     const required = match.readiness.requiredTotal;
     if (required === 0) return [];

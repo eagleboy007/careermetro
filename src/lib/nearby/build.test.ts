@@ -212,7 +212,7 @@ describe("nearbyLinesFor", () => {
     expect(nearbyLinesFor({ profile: analyst, targetSlug: "target-role", roles: [target, senior], now: NOW }).closest?.slug).toBe("senior-wide-role");
   });
 
-  it("leaves an entry role the resume is more than two years past out of the lines and the closest role (T179)", () => {
+  it("leaves a role the resume is more than two years past out of the lines and the closest role (T179)", () => {
     const wide = role("wide-role", ["sql", "excel", "machine-learning", "statistics", "aws", "linux"], { experienceBand: { minYears: 2, maxYears: 8 } }); // 2 of 6
     const entry = role("entry-role", ["sql", "excel", "python", "machine-learning", "statistics", "aws", "linux"], {
       experienceBand: { minYears: 0, maxYears: 2 },
