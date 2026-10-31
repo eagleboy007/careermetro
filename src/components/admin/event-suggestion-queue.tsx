@@ -57,7 +57,7 @@ export function EventSuggestionQueue({ queue }: { queue: Queue }) {
                 >
                   {r.host}
                   <ExternalLink {...ICON} />
-                  <span className="sr-only">(opens in a new tab)</span>
+                  <span className="sr-only"> (opens in a new tab)</span>
                 </a>
                 <small className="text-[0.78rem] text-muted">Sent {sentOn(r.createdAt)}</small>
               </span>

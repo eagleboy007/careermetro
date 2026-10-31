@@ -114,7 +114,17 @@ export function PitstopForm({
   }
 
   return (
-    <form onSubmit={save} noValidate className="flex flex-col gap-3 rounded-[14px] border border-line p-3 text-[0.86rem]">
+    <form
+      onSubmit={save}
+      noValidate
+      className="flex flex-col gap-3 rounded-[14px] border border-line p-3 text-[0.86rem]"
+      // Escape closes a change as Cancel does. An open select's list takes Escape first.
+      onKeyDown={(e) => {
+        if (e.key !== "Escape" || !onCancel || e.defaultPrevented || sending) return;
+        e.preventDefault();
+        onCancel();
+      }}
+    >
       {!editing && goals.length > 0 && (
         <label className="flex flex-col gap-1">
           <span className="font-medium">Goal</span>
@@ -245,6 +255,14 @@ export function OwnPitstopsPanel({
   const [editing, setEditing] = useState<string | null>(null);
   const [removing, setRemoving] = useState<string | null>(null);
   const [error, setError] = useState("");
+  // Cancel (or Escape) on a change closes its form; focus goes back to that pitstop's Edit button, never to the page.
+  const list = useRef<HTMLUListElement>(null);
+  const backTo = useRef<string | null>(null);
+  useEffect(() => {
+    if (!backTo.current || editing) return;
+    list.current?.querySelector<HTMLElement>(`[data-edit-pitstop="${CSS.escape(backTo.current)}"]`)?.focus();
+    backTo.current = null;
+  }, [editing]);
 
   async function remove(p: OwnPitstop) {
     if (removing) return;
@@ -267,7 +285,7 @@ export function OwnPitstopsPanel({
         train or change your match.
       </p>
       {own.length ? (
-        <ul className="flex flex-col gap-2">
+        <ul ref={list} className="flex flex-col gap-2">
           {own.map((p) => (
             <li key={p.id} className="flex flex-col gap-2 rounded-[14px] border border-line p-3 text-[0.86rem]">
               <div className="flex items-start gap-2.5">
@@ -282,7 +300,10 @@ export function OwnPitstopsPanel({
                   goals={[goal]}
                   editing={p}
                   demo={demo}
-                  onCancel={() => setEditing(null)}
+                  onCancel={() => {
+                    backTo.current = p.id;
+                    setEditing(null);
+                  }}
                   onSaved={() => {
                     setEditing(null);
                     onChanged("Pitstop saved.");
@@ -290,7 +311,7 @@ export function OwnPitstopsPanel({
                 />
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  <button type="button" onClick={() => setEditing(p.id)} aria-label={`Edit pitstop: ${p.title}`} className={smallButton}>
+                  <button type="button" data-edit-pitstop={p.id} onClick={() => setEditing(p.id)} aria-label={`Edit pitstop: ${p.title}`} className={smallButton}>
                     <Pencil size={14} {...ICON} />
                     Edit
                   </button>

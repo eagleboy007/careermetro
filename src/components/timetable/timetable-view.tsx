@@ -292,6 +292,9 @@ export function EventCardView({
   const [note, setNote] = useState<string | null>(null);
   const [asking, setAsking] = useState(false);
   const askRef = useRef<HTMLDivElement>(null);
+  const goingRef = useRef<HTMLButtonElement>(null);
+  // Bumped when the control pressed goes away (the prep question's buttons, Take it off): focus goes back to Going.
+  const [back, setBack] = useState(0);
   const when = dateBlock(e.startsAt);
   const place = eventPlace(e);
   const goals = e.tags.filter((t) => t.kind === "goal").map((t) => ({ skillId: t.topic, name: goalTagName(t.label) }));
@@ -301,6 +304,9 @@ export function EventCardView({
     // The question appears after "I'm going": focus moves to it, so a keyboard or screen reader user meets it at once.
     if (asking) askRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
   }, [asking]);
+  useEffect(() => {
+    if (back) goingRef.current?.focus();
+  }, [back]);
   const press = async (target: EventRsvpState) => {
     if (busy) return;
     const next = mark === target ? null : target;
@@ -314,13 +320,17 @@ export function EventCardView({
     if (busy || !onPrep) return;
     if (!goal) {
       setAsking(false);
+      setBack((n) => n + 1);
       setNote("Marked as going. No prep task added.");
       return;
     }
     setBusy(true);
     const error = await onPrep(goal.skillId);
     setBusy(false);
-    if (!error) setAsking(false);
+    if (!error) {
+      setAsking(false);
+      setBack((n) => n + 1);
+    }
     setNote(error ?? `Added. It shows on your ride on the day, for your ${goal.name} goal.`);
   };
   const takeOff = async () => {
@@ -328,6 +338,7 @@ export function EventCardView({
     setBusy(true);
     const error = await onPrep(null);
     setBusy(false);
+    if (!error) setBack((n) => n + 1);
     setNote(error ?? "Prep task taken off your ride. You're still going.");
   };
   const download = () => {
@@ -390,7 +401,7 @@ export function EventCardView({
             {mark === "saved" ? <BookmarkCheck size={15} {...ICON} /> : <Bookmark size={15} {...ICON} />}
             {mark === "saved" ? "Saved" : "Save"}
           </button>
-          <button type="button" aria-pressed={mark === "going"} aria-disabled={busy || undefined} className={markButton} onClick={() => press("going")}>
+          <button ref={goingRef} type="button" aria-pressed={mark === "going"} aria-disabled={busy || undefined} className={markButton} onClick={() => press("going")}>
             {mark === "going" ? <Check size={15} {...ICON} /> : <CalendarCheck size={15} {...ICON} />}
             {mark === "going" ? "Going" : "I'm going"}
           </button>
