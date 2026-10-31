@@ -663,7 +663,12 @@ await step("add a pitstop: add, edit and remove one of your own on the Map", asy
   ]);
   await panel.getByRole("status").filter({ hasText: "Pitstop saved." }).waitFor({ timeout: 15000 });
   await p.locator('svg g[role="button"][aria-label^="Added by you Walk labs week 2,"]').waitFor({ timeout: 10000 });
+  // Switch in place (a reload would close the panel the next steps use), then wait until the header text has been
+  // restyled dark and two frames have painted: axe once read the old light ink on the new dark background (T171).
+  const inkBefore = await p.locator("header").first().evaluate((el) => getComputedStyle(el).color);
   await p.emulateMedia({ colorScheme: "dark" });
+  await p.waitForFunction((before) => getComputedStyle(document.querySelector("header")).color !== before, inkBefore, { timeout: 10000 });
+  await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
   await a11y("map-own-pitstop-dark");
   await p.emulateMedia({ colorScheme: "light" });
 
