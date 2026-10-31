@@ -17234,18 +17234,6 @@
     "free": true
   },
   {
-    "title": "Commercial insurance: company operations (underwriting)",
-    "url": "https://www.iii.org/publications/commercial-insurance/how-it-functions/company-operations",
-    "provider": "Insurance Information Institute (Triple-I)",
-    "kind": "docs",
-    "skillIds": [
-      "insurance-risk-assessment",
-      "property-casualty-underwriting"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "A Regulator's Introduction to the Insurance Industry",
     "url": "https://content.naic.org/sites/default/files/inline-files/prod_serv_marketreg_rii_zb.pdf",
     "provider": "NAIC",
@@ -17473,17 +17461,6 @@
     "free": true
   },
   {
-    "title": "Life Insurance: combating fraud and minimizing losses (financial misrepresentation)",
-    "url": "https://www.genre.com/knowledge/publications/bulletinlh1310-en.html",
-    "provider": "Gen Re",
-    "kind": "docs",
-    "skillIds": [
-      "financial-underwriting"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Financial underwriting guidelines: life coverage",
     "url": "https://ia.ca/-/media/files/ia/formulaires/assind/en/f13-1150a-financial-underwriting-guidelines-life-coverage_20230518.pdf",
     "provider": "iA Financial Group",
@@ -17540,39 +17517,6 @@
     "free": true
   },
   {
-    "title": "Guidance Note on Meetings of the Board of Directors (GN-1)",
-    "url": "https://www.icsi.edu/media/webmodules/GN1_Guidance_Note_on_Meeting_on_Board_of_Directors.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "board-meeting-administration"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
-    "title": "Guidance Note on General Meetings (GN-2)",
-    "url": "https://www.icsi.edu/media/webmodules/GN2_Guidance_Note_on_General_Meetings.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "board-meeting-administration"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
-    "title": "SS-2 Secretarial Standard on General Meetings",
-    "url": "https://www.icsi.edu/media/webmodules/SS-2_31_2024.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "board-meeting-administration"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
     "title": "Steps for e-filing (MCA help and FAQs)",
     "url": "https://www.mca.gov.in/content/mca/global/en/help-faq/faqs/e-filing2/steps-for-e-filing.html",
     "provider": "Ministry of Corporate Affairs",
@@ -17595,152 +17539,6 @@
     "free": true
   },
   {
-    "title": "Guidance Note on Annual Return (Revised Edition)",
-    "url": "https://www.icsi.edu/media/webmodules/linksofweeks/Guidance%20note%20on%20Annual%20Return.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "roc-mca-filings",
-      "statutory-registers"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Compendium on SEBI (LODR) Regulations, 2015",
-    "url": "https://www.icsi.edu/media/webmodules/Academics/Compendium_on_SEBI_(LODR)_Regulations_2015.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "sebi-lodr-compliance"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "NSE circular: Industry Standards Note on Regulation 30 of LODR",
-    "url": "https://nsearchives.nseindia.com/web/sites/default/files/inline-files/NSE%20Circular%2025022025.pdf",
-    "provider": "NSE",
-    "kind": "docs",
-    "skillIds": [
-      "sebi-lodr-compliance"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "Capital Market and Securities Laws: Executive Programme supplement",
-    "url": "https://www.icsi.edu/media/webmodules/Academics/Capital_Market_and_Securities_Laws_28012025.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "sebi-lodr-compliance",
-      "sebi-insider-trading-compliance"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
-    "title": "Statutory registers under the Companies Act, 2013 (ICSI seminar deck)",
-    "url": "https://www.icsi.edu/media/filer_public/1e/af/1eafa0f6-ebdb-4729-a96f-24032c5592c1/statutory_registers__companies_act_2013pdf_cs_balasubramanian_r_.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "statutory-registers"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Secretarial Standard on Meetings of the Board of Directors (SS-1)",
-    "url": "https://www.icsi.edu/media/webmodules/SS-1_1_2024.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "statutory-registers"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "Company Law: Executive Programme study material",
-    "url": "https://www.icsi.edu/media/webmodules/publications/Company%20Law.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "statutory-registers",
-      "share-capital-transactions"
-    ],
-    "minutes": 600,
-    "free": true
-  },
-  {
-    "title": "Manual on Secretarial Audit",
-    "url": "https://www.icsi.edu/media/webmodules/09092022_ManualonSecretarialAudit_Complete.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "secretarial-audit-support"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "Guidance Note on Secretarial Audit",
-    "url": "https://www.icsi.edu/media/webmodules/Guidance%20Note%20on%20Secretarial%20Audit%20-%20Release%201.4.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "secretarial-audit-support"
-    ],
-    "minutes": 150,
-    "free": true
-  },
-  {
-    "title": "FAQs on Secretarial Audit",
-    "url": "https://www.icsi.edu/media/webmodules/companiesact2013/FAQs%20on%20Secretarial%20Audit.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "secretarial-audit-support"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "GN-7 Guidance Note on Prevention of Insider Trading",
-    "url": "https://www.icsi.edu/media/webmodules/GN7_Guidance_Note_on_Prevention_of_Insider_Trading.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "sebi-insider-trading-compliance"
-    ],
-    "minutes": 150,
-    "free": true
-  },
-  {
-    "title": "Compendium on SEBI (Prohibition of Insider Trading) Regulations, 2015",
-    "url": "https://www.icsi.edu/media/webmodules/Compendium_on_SEBI_PIT_Regulations_2015_27062025.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "sebi-insider-trading-compliance"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "Latest changes in SEBI (PIT) Regulations, 2015",
-    "url": "https://icsi.edu/media/filer_public/cd/fc/cdfc3a6f-f8ab-4f01-9b7e-ac8e07c71f67/sebi_pit_regulations_2015.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "sebi-insider-trading-compliance"
-    ],
-    "minutes": 40,
-    "free": true
-  },
-  {
     "title": "Master Direction: Reporting under FEMA, 1999",
     "url": "https://rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=10202",
     "provider": "Reserve Bank of India",
@@ -17749,51 +17547,6 @@
       "fema-rbi-filings"
     ],
     "minutes": 120,
-    "free": true
-  },
-  {
-    "title": "Issue, transfer and reporting of equity instruments under FEMA",
-    "url": "https://icsi.edu/media/filer_public/aa/c5/aac507ec-19c5-46f4-a058-6c37fd5b12cf/issue_of_equity_instruments_updated_nov_2021-28052022.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "fema-rbi-filings",
-      "share-capital-transactions"
-    ],
-    "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "FDI under FEMA: reporting and compliance (ICSI programme deck)",
-    "url": "https://www.icsi.edu/media/filer_public/f5/6e/f56e27b1-4c5d-4cbc-a682-b86a82b2d014/fdi_under_fema.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "fema-rbi-filings"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Issue of securities: rights issue, preferential allotment and private placement",
-    "url": "https://www.icsi.edu/media/filer_public/4c/7f/4c7f62c3-d85d-4e54-95a5-989d974cc8eb/ppt_on_right_issue_pp_pref_issue_-_amita_desai_12_august_2023_1_compressed.pdf",
-    "provider": "ICSI",
-    "kind": "docs",
-    "skillIds": [
-      "share-capital-transactions"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "Employee Stock Option Plan: concept, implementation and compliance",
-    "url": "https://www.icsi.edu/media/webmodules/CSJ/January_2026/24.pdf",
-    "provider": "ICSI (Chartered Secretary journal)",
-    "kind": "docs",
-    "skillIds": [
-      "share-capital-transactions"
-    ],
-    "minutes": 25,
     "free": true
   },
   {
@@ -18002,17 +17755,6 @@
     "free": true
   },
   {
-    "title": "Training of facilitators guide (Leadership Development Program)",
-    "url": "https://msh.org/wp-content/uploads/2015/09/2015_08_msh_training_of_facilitators_ldp_tof.pdf",
-    "provider": "Management Sciences for Health",
-    "kind": "docs",
-    "skillIds": [
-      "training-delivery-facilitation"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Deliver engaging and accessible virtual events with Microsoft Teams and Microsoft 365",
     "url": "https://learn.microsoft.com/en-us/training/paths/m365-virtual-events-fundamentals/",
     "provider": "Microsoft Learn",
@@ -18079,17 +17821,6 @@
     "free": true
   },
   {
-    "title": "Leadership Development Toolkit",
-    "url": "https://www.opm.gov/WIKI/uploads/docs/Wiki/OPM/training/Leadership_Toolkit.pdf",
-    "provider": "US Office of Personnel Management",
-    "kind": "docs",
-    "skillIds": [
-      "leadership-development-programmes"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
     "title": "Federal supervisory and managerial frameworks and guidance",
     "url": "https://www.opm.gov/policy-data-oversight/training-and-development/training-program-management/federal-supervisory-and-managerial-frameworks-and-guidance.pdf",
     "provider": "US Office of Personnel Management",
@@ -18098,17 +17829,6 @@
       "leadership-development-programmes"
     ],
     "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "Supervisory leadership development (Training and Development Policy Wiki)",
-    "url": "https://www.opm.gov/wiki/training/supervisory-leadership-development.ashx",
-    "provider": "US Office of Personnel Management",
-    "kind": "docs",
-    "skillIds": [
-      "leadership-development-programmes"
-    ],
-    "minutes": 20,
     "free": true
   },
   {
@@ -18289,17 +18009,6 @@
       "warehouse-shift-manpower"
     ],
     "minutes": 15,
-    "free": true
-  },
-  {
-    "title": "Contract Labour (Regulation and Abolition) Act, 1970: overview",
-    "url": "https://vvgnli.gov.in/sites/default/files/Contract%20Labour%20%28R%26A%29%20Act%2C%201970_0.pdf",
-    "provider": "V.V. Giri National Labour Institute",
-    "kind": "docs",
-    "skillIds": [
-      "warehouse-shift-manpower"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -18549,17 +18258,6 @@
     "free": true
   },
   {
-    "title": "Visual merchandising: investigating design principles and art elements",
-    "url": "https://www.cottonworks.com/topics/retail-marketing/merchandising/visual-merchandising-investigating-design-principles-art-elements/",
-    "provider": "Cotton Incorporated (CottonWorks)",
-    "kind": "docs",
-    "skillIds": [
-      "visual-merchandising"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
     "title": "Rest and breaks at work",
     "url": "https://www.acas.org.uk/rest-breaks",
     "provider": "Acas",
@@ -18617,17 +18315,6 @@
     "free": true
   },
   {
-    "title": "Sales Associate (job role RAS/Q0104) vocational textbook",
-    "url": "https://ncert.nic.in/vocational/pdf/kesa1ps.pdf",
-    "provider": "NCERT",
-    "kind": "docs",
-    "skillIds": [
-      "retail-customer-experience"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "Retail Cashier textbook (Class IX)",
     "url": "https://www.psscive.ac.in/storage/uploads/textbooks/pdf/english/retail-cashier-english-class-9.pdf",
     "provider": "PSS Central Institute of Vocational Education (NCERT)",
@@ -18636,17 +18323,6 @@
       "pos-store-operations"
     ],
     "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "Retail cashier billing operations (NCERT vocational unit)",
-    "url": "https://ncert.nic.in/vocational/pdf/ievc102.pdf",
-    "provider": "NCERT",
-    "kind": "docs",
-    "skillIds": [
-      "pos-store-operations"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
