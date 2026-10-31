@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { eventCard, eventTeaser, timetableView, type EventCard, type TimetableGroup } from "@/lib/schemas";
 import { exampleTimetable, exampleTimetableEmpty, exampleTimetableEvents, exampleTimetableNoCity } from "./fixtures";
-import { dateBlock, eventPlace, eventWhen, goalTagName, namesLine, shownGroups, teaserRows } from "./view";
+import { dateBlock, eventPlace, eventWhen, goalTagName, namesLine, nothingYetCopy, shownGroups, SUGGEST_EVENT_ANCHOR, teaserRows } from "./view";
 
 // Synthetic cards only.
 let n = 0;
@@ -157,5 +157,29 @@ describe("example timetable", () => {
     expect(exampleTimetableEvents.length).toBeGreaterThan(titles.length);
     // The example going event is a prep task for the SIEM goal.
     expect(exampleTimetable.groups.flatMap((g) => g.events).find((e) => e.title === "Python for log analysis")?.prepGoal).toBe("siem");
+  });
+});
+
+describe("nothingYetCopy (T181)", () => {
+  const words = (c: ReturnType<typeof nothingYetCopy>) => [c.title, c.body, ...c.links.map((l) => l.label)].join(" ");
+
+  it("keeps the goals, interests and city words when some event source covers the person", () => {
+    const c = nothingYetCopy(true);
+    expect(c.title).toBe("No events match your goals or interests yet.");
+    expect(c.links.map((l) => l.href)).toEqual(["/me", "/settings#acc-pay"]);
+  });
+
+  it("says plainly that events for the field aren't listed yet, and never points to Me, when nothing covers it", () => {
+    const c = nothingYetCopy(false);
+    expect(c.title).toBe("Events for your field aren't listed yet.");
+    expect(c.body).toMatch("coming");
+    expect(c.links.map((l) => l.href)).toEqual([`#${SUGGEST_EVENT_ANCHOR}`, "/practice", "/map"]);
+    expect(c.links[0].label).toBe("Suggest an event");
+    expect(c.links.some((l) => l.href.startsWith("/me"))).toBe(false);
+    expect(words(c)).not.toMatch(/interests on Me/);
+  });
+
+  it("uses no em dashes", () => {
+    for (const covered of [true, false]) expect(words(nothingYetCopy(covered))).not.toMatch("\u2014");
   });
 });

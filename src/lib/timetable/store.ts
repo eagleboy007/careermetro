@@ -7,6 +7,7 @@ import { goalOnCurrentLine } from "@/lib/gaps/current";
 import type { RideEvent } from "@/lib/ride/build";
 import { DEFAULT_TIMETABLE_SETTINGS, eventPrepInput, eventRsvpInput, PERSON_CITIES, type EventRsvpState, type EventTeaser, type PersonCity, type TimetableView, type TimetableWhy } from "@/lib/schemas";
 import { EVENT_RADII_KM, EVENT_RADIUS_DEFAULT_KM, EVENT_TOPIC_KINDS, TIMETABLE_EVENTS_MAX } from "@/lib/schemas/constants";
+import { timetableCovers } from "./coverage";
 import { interestTopicsFor, timetableFor, timetableWindow, type TimetableEvent, type TimetablePerson } from "./match";
 import { exportEventSuggestions } from "./suggest-store";
 import { FAR_RADIUS_KM, teaserRows } from "./view";
@@ -190,11 +191,16 @@ export async function liveEventsFor(userId: string, person: TimetablePerson, now
  * row ("My goals", "Include online", "Show outside 25 km") works on the screen without another read; `choices` says
  * what the person saved, which the filter row starts from.
  */
-export async function timetableForUser(userId: string, now = new Date(), db: Db = getDb()): Promise<{ view: TimetableView; choices: TimetableChoices; why: TimetableWhy }> {
+export async function timetableForUser(
+  userId: string,
+  now = new Date(),
+  db: Db = getDb(),
+): Promise<{ view: TimetableView; choices: TimetableChoices; why: TimetableWhy; covered: boolean }> {
   const { person, choices, why } = await timetablePersonFor(userId, db);
   const wide: TimetablePerson = { ...person, radiusKm: Math.max(person.radiusKm, FAR_RADIUS_KM), online: true };
   const view = timetableFor(await liveEventsFor(userId, wide, now, db), wide, now);
-  return { view, choices, why };
+  // Whether any event source covers the person's goals or interests at all (T181), for the empty state's words.
+  return { view, choices, why, covered: timetableCovers(person) };
 }
 
 /** Today's teaser: the next two live matches under the person's saved radius and Include online. Empty hides it. */

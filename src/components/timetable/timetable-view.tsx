@@ -28,7 +28,7 @@ import { SuggestEventForm, type SuggestEventAction } from "./suggest-event-form"
 import { eventIcs } from "@/lib/calendar/ics";
 import type { EventCard, EventRsvpState, TimetableFilter, TimetableView as View, TimetableWhy } from "@/lib/schemas";
 import { TIMETABLE_NO_CITY } from "@/lib/schemas/constants";
-import { dateBlock, eventPlace, eventWhen, FAR_RADIUS_KM, goalTagName, kindLabel, namesLine, shownGroups } from "@/lib/timetable/view";
+import { dateBlock, eventPlace, eventWhen, FAR_RADIUS_KM, goalTagName, kindLabel, namesLine, nothingYetCopy, shownGroups, SUGGEST_EVENT_ANCHOR } from "@/lib/timetable/view";
 
 /**
  * Save, I'm going and the prep task, kept on the server (src/app/(app)/timetable/actions.ts): null when it worked, or
@@ -69,7 +69,8 @@ const focusCard = (list: HTMLElement, index: number) => list.querySelectorAll<HT
  * online are where it starts ("Show outside 25 km" is for this visit only). Without `actions` (the example preview and
  * /design) Save and I'm going change the screen only, and the Monday digest switch can't be changed. `digest` is
  * whether the person turned the Monday digest on; `suggestionsPending` is how many of their own event suggestions
- * wait for review (no one else's are ever counted or shown).
+ * wait for review (no one else's are ever counted or shown). `covered` is false when no event source covers the person's
+ * goals or interests (T181): the empty state then says events for their field aren't listed yet.
  */
 export function TimetableView({
   view,
@@ -78,6 +79,7 @@ export function TimetableView({
   actions,
   digest = false,
   suggestionsPending = 0,
+  covered = true,
 }: {
   view: View;
   why: TimetableWhy;
@@ -85,6 +87,7 @@ export function TimetableView({
   actions?: TimetableActions;
   digest?: boolean;
   suggestionsPending?: number;
+  covered?: boolean;
 }) {
   const [filter, setFilter] = useState<TimetableFilter>("all");
   const [online, setOnline] = useState(choices.online);
@@ -144,7 +147,7 @@ export function TimetableView({
         </div>
 
         {allCount === 0 ? (
-          <NothingYet />
+          <NothingYet covered={covered} />
         ) : (
           <div className="flex flex-col gap-2.5">
             {rows.length === 0 && (
@@ -230,7 +233,7 @@ export function TimetableView({
           <h2 className="text-[1.02rem] font-semibold">Every Monday</h2>
           <EventsDigestSwitch initial={digest} action={actions?.digest} />
         </section>
-        <section aria-label="Know an event?" className={card}>
+        <section id={SUGGEST_EVENT_ANCHOR} aria-label="Know an event?" className={`${card} scroll-mt-20`}>
           <h2 className="text-[1.02rem] font-semibold">Know an event?</h2>
           <SuggestEventForm action={actions?.suggest} pending={suggestionsPending} />
         </section>
@@ -251,19 +254,29 @@ function WhyRow({ Icon, title, text }: { Icon: LucideIcon; title: string; text: 
   );
 }
 
-/** No event matches the person at all: say so, and where goals, interests and the city come from. */
-export function NothingYet() {
+/**
+ * No event matches the person at all. `covered` (T181): some event source covers their goals or interests, so say
+ * where goals, interests and the city come from; otherwise say events for their field aren't listed yet and offer
+ * what works now, never Me.
+ */
+export function NothingYet({ covered = true }: { covered?: boolean }) {
+  const copy = nothingYetCopy(covered);
   return (
     <div className="flex flex-col gap-2 rounded-[16px] border border-dashed border-line p-5 text-[0.88rem] text-muted">
-      <p className="font-[550] text-ink">No events match your goals or interests yet.</p>
-      <p>We only show events on your goals and interests, near your city or online.</p>
+      <p className="font-[550] text-ink">{copy.title}</p>
+      <p>{copy.body}</p>
       <div className="flex flex-wrap gap-x-4 gap-y-1">
-        <Link href="/me" className="inline-flex min-h-11 items-center font-[550] text-ink underline underline-offset-2">
-          Add interests on Me
-        </Link>
-        <Link href={SETTINGS_CITY} className="inline-flex min-h-11 items-center font-[550] text-ink underline underline-offset-2">
-          Set your city in Settings
-        </Link>
+        {copy.links.map((l) =>
+          l.href.startsWith("#") ? (
+            <a key={l.href} href={l.href} className="inline-flex min-h-11 items-center font-[550] text-ink underline underline-offset-2">
+              {l.label}
+            </a>
+          ) : (
+            <Link key={l.href} href={l.href} className="inline-flex min-h-11 items-center font-[550] text-ink underline underline-offset-2">
+              {l.label}
+            </Link>
+          ),
+        )}
       </div>
     </div>
   );

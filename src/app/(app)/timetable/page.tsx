@@ -50,7 +50,7 @@ async function TimetableScreen() {
       </p>
     );
   }
-  return <TimetableView view={data.view} why={data.why} choices={data.choices} actions={TIMETABLE_ACTIONS} digest={digest} suggestionsPending={suggestionsPending} />;
+  return <TimetableView view={data.view} why={data.why} choices={data.choices} covered={data.covered} actions={TIMETABLE_ACTIONS} digest={digest} suggestionsPending={suggestionsPending} />;
 }
 
 function Banner({ children }: { children: React.ReactNode }) {

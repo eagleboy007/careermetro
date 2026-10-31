@@ -106,6 +106,40 @@ export function shownGroups(groups: readonly TimetableGroup[], shown: TimetableS
   return { groups: out, outside, total };
 }
 
+/** Where Suggest an event sits on the Timetable rail, for a link from the empty state. */
+export const SUGGEST_EVENT_ANCHOR = "suggest-event";
+
+/** What the empty Timetable says: a heading, a line, and links to what the person can do. */
+export type NothingYetCopy = { title: string; body: string; links: { href: string; label: string }[] };
+
+/**
+ * The empty state's words (T181). `covered` is whether any event source covers the person's goals or interests
+ * (src/lib/timetable/coverage.ts). Covered: nothing is on yet, and goals, interests and the city are what pick events,
+ * so it points to Me and Settings. Not covered: no source lists this field yet, so it says so and offers what works
+ * now (Suggest an event, Practice, the Map), never Me, where adding an interest can't help.
+ */
+export function nothingYetCopy(covered: boolean): NothingYetCopy {
+  if (covered) {
+    return {
+      title: "No events match your goals or interests yet.",
+      body: "We only show events on your goals and interests, near your city or online.",
+      links: [
+        { href: "/me", label: "Add interests on Me" },
+        { href: "/settings#acc-pay", label: "Set your city in Settings" },
+      ],
+    };
+  }
+  return {
+    title: "Events for your field aren't listed yet.",
+    body: "We list mostly tech events for now, and events for your field are coming. Until then, suggest one you know, or keep going on your path.",
+    links: [
+      { href: `#${SUGGEST_EVENT_ANCHOR}`, label: "Suggest an event" },
+      { href: "/practice", label: "Practise on your goals" },
+      { href: "/map", label: "Follow your path on Map" },
+    ],
+  };
+}
+
 /** "SIEM, Python and 3 more": the first `max` names, then a count. */
 export function namesLine(names: readonly string[], max = 6): string {
   if (names.length <= max) return names.join(", ");

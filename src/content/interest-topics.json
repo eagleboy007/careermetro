@@ -181,5 +181,53 @@
     "label": "Green tech",
     "aliases": ["green tech", "climate tech", "sustainability", "clean energy"],
     "ambiguous": ["sustainability"]
+  },
+  {
+    "key": "finance",
+    "label": "Finance",
+    "aliases": ["finance", "corporate finance", "financial analysis", "financial planning", "fp&a", "investment banking", "equity research", "capital markets", "banking", "wealth management", "mutual funds", "stock market", "personal finance", "cfa"],
+    "ambiguous": ["finance", "banking"]
+  },
+  {
+    "key": "accounting-tax",
+    "label": "Accounting and tax",
+    "aliases": ["accounting and tax", "accounting", "accounts", "taxation", "tax", "gst", "income tax", "audit", "auditing", "chartered accountancy", "ca", "tally", "bookkeeping", "ind as", "financial reporting"],
+    "ambiguous": ["accounts", "tax", "ca", "audit"]
+  },
+  {
+    "key": "hr",
+    "label": "HR and people",
+    "aliases": ["hr and people", "hr", "human resources", "people management", "talent acquisition", "recruitment", "recruiting", "hr analytics", "learning and development", "l&d", "payroll", "compensation and benefits", "employee engagement", "labour law"],
+    "ambiguous": ["hr", "recruitment"]
+  },
+  {
+    "key": "manufacturing",
+    "label": "Manufacturing and mechanical",
+    "aliases": ["manufacturing and mechanical", "manufacturing", "mechanical engineering", "mechanical", "production engineering", "lean manufacturing", "six sigma", "quality control", "cad", "solidworks", "autocad", "automotive", "industrial engineering", "plant maintenance"],
+    "ambiguous": ["mechanical", "cad", "quality control"]
+  },
+  {
+    "key": "civil",
+    "label": "Civil and construction",
+    "aliases": ["civil and construction", "civil engineering", "civil", "construction", "structural engineering", "site engineering", "quantity surveying", "infrastructure projects", "real estate development", "estimation and costing"],
+    "ambiguous": ["civil", "construction"]
+  },
+  {
+    "key": "sales-marketing",
+    "label": "Sales and marketing",
+    "aliases": ["sales and marketing", "sales", "business development", "marketing", "digital marketing", "brand management", "branding", "seo", "social media marketing", "performance marketing", "content marketing", "key account management", "b2b sales", "retail sales"],
+    "ambiguous": ["sales", "marketing", "branding"]
+  },
+  {
+    "key": "operations-supply-chain",
+    "label": "Operations and supply chain",
+    "aliases": ["operations and supply chain", "operations", "supply chain", "supply chain management", "logistics", "procurement", "purchasing", "inventory management", "warehousing", "import export", "exim", "category management", "vendor management"],
+    "ambiguous": ["operations", "procurement"]
+  },
+  {
+    "key": "leadership",
+    "label": "Leadership and management",
+    "aliases": ["leadership and management", "leadership", "management", "people leadership", "team leadership", "general management", "strategy", "mba", "executive education", "change management"],
+    "ambiguous": ["management", "strategy", "mba"]
   }
 ]

@@ -158,7 +158,7 @@ import { HeldProofRow, ProofReview } from "@/components/admin/proof-review";
 import { exampleFoundThreads, exampleThreads } from "@/lib/inbox/fixtures";
 import { exampleInCommon, exampleNetwork, exampleSearch } from "@/lib/network/fixtures";
 import { exampleBuilder } from "@/lib/builder/fixtures";
-import { builderRoles, builderRoleTools } from "@/lib/builder/roles";
+import { builderRoleLinks, builderRoles, builderRoleTools } from "@/lib/builder/roles";
 import { exampleMe, exampleStoryGoals } from "@/lib/me/fixtures";
 import { publicProfile } from "@/lib/me/public";
 import { DEFAULT_SETTINGS } from "@/lib/schemas";
@@ -911,7 +911,7 @@ export default function DesignPage() {
           in the neutral style (an event is not progress), Save, I&apos;m going, Add to calendar (a .ics file with a reminder the evening before) and
           the organiser&apos;s page. The rail says why these show and holds the Monday digest switch (Timetable PR 5, shown off here) and Suggest an event (PR 6, below). Made-up events; the cricket
           meetup matches nothing, so it never shows, and the Mumbai summit is beyond 100 km. Then the same with no profile city (online only), with
-          a long title and long place to check wrapping, and with nothing matching. I&apos;m going on an event with a goal tag asks once,
+          a long title and long place to check wrapping, with nothing matching, and with nothing matching where no event source covers the person&apos;s field yet (T181: it offers Suggest an event, Practice and the Map, never Me). I&apos;m going on an event with a goal tag asks once,
           &ldquo;Add it as a prep task for your SIEM goal?&rdquo; (one button a goal when it has several); yes puts one optional task on the ride on
           the event&apos;s day, and the card then says so with Take it off. &ldquo;Python for log analysis&rdquo; shows that state.
         </p>
@@ -919,6 +919,7 @@ export default function DesignPage() {
         <TimetableView view={exampleTimetableNoCity} why={{ ...exampleTimetableWhy, interests: [] }} choices={exampleTimetableChoices} />
         <TimetableView view={designLongTimetable} why={exampleTimetableWhy} choices={exampleTimetableChoices} />
         <TimetableView view={exampleTimetableEmpty} why={{ goals: [], interests: ["Public speaking"] }} choices={exampleTimetableChoices} />
+        <TimetableView view={exampleTimetableEmpty} why={{ goals: ["Financial modelling"], interests: ["Accounting"] }} choices={exampleTimetableChoices} covered={false} />
         <p className="text-sm text-muted">
           &ldquo;Send me this week&apos;s events&rdquo; (EventsDigestSwitch), the same switch on Timetable and in Settings &gt; Notifications, on
           ink like every switch. It saves at once; here it has no action, so it can&apos;t be changed. Off, then on.
@@ -1020,7 +1021,7 @@ export default function DesignPage() {
           each line opens the answer it came from, &ldquo;Skills we found&rdquo; with sources, and the required &ldquo;Everything here is true and
           mine.&rdquo; tick. Example answers, so nothing saves.
         </p>
-        <BuilderView data={{ ...exampleBuilder, roles: builderRoles, roleTools: builderRoleTools }} />
+        <BuilderView data={{ ...exampleBuilder, roles: builderRoles, roleTools: builderRoleTools, roleLinks: builderRoleLinks }} />
       </section>
 
       <section className="flex flex-col gap-4">
