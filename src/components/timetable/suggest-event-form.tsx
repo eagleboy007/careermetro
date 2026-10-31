@@ -72,7 +72,8 @@ export function suggestionFromForm(f: SuggestEventFields): EventSuggestionInput 
  * online or a city and area, cost in words). It says every time that suggestions are reviewed before they appear; for
  * now all of them wait, since member suggestions need a grievance officer. `pending` is how many of the person's own
  * wait. Without `action` (the example preview and /design) a send changes nothing and says so. Focus moves into the
- * form when it opens and back to its button when it closes; the result is announced in a polite live region.
+ * form when it opens and back to its button when it closes (Cancel, Escape or a send); the result is announced in a
+ * polite live region.
  */
 export function SuggestEventForm({ action, pending = 0, initialOpen = false }: { action?: SuggestEventAction; pending?: number; initialOpen?: boolean }) {
   const id = useId();
@@ -132,7 +133,19 @@ export function SuggestEventForm({ action, pending = 0, initialOpen = false }: {
         </button>
       )}
       {open && (
-        <form id={`${id}-form`} aria-label="Suggest an event" className="flex min-w-0 flex-col gap-3" onSubmit={submit}>
+        <form
+          id={`${id}-form`}
+          aria-label="Suggest an event"
+          className="flex min-w-0 flex-col gap-3"
+          onSubmit={submit}
+          // Escape closes it as Cancel does, with focus back on Suggest an event. An open select's list takes Escape
+          // first, so closing that list never closes the form.
+          onKeyDown={(e) => {
+            if (e.key !== "Escape" || e.defaultPrevented || sending) return;
+            e.preventDefault();
+            toggle(false);
+          }}
+        >
           <Field label="Link to the organiser's page" htmlFor={`${id}-url`} hint="An https link. We check it by hand; we never open it from our servers.">
             <input
               ref={first}
