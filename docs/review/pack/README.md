@@ -31,7 +31,8 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 24 |
 | Testing and quality | `roles-testing.csv` | 4 |
 | Software, hardware, delivery and marketing | `roles-other.csv` | 61 |
-| Sales, finance, HR and operations | `roles-business.csv` | 41 |
+| Sales, finance, HR and operations | `roles-business.csv` | 46 |
+| Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
 
 | Questions | File | Lines |
 | --- | --- | --- |
@@ -42,7 +43,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
 
-201 role profiles await review in all.
+213 role profiles await review in all.
 
 ## Changed since the draft, awaiting sign-off
 
@@ -52,6 +53,9 @@ Development changed these lines after a test showed a problem. Their **Detail** 
 - `it-auditor#skill:domain-bfsi`: Nice to have (was Required): IT auditors work in every sector, not only banking and insurance.
 - `salesforce-developer#skill:salesforce-clouds`: Required (was Nice to have): developers build on Sales or Service Cloud from day one.
 - `salesforce-developer#skill:salesforce-security-model`: New Required skill: profiles, permission sets, sharing, and CRUD/FLS checks in code.
+- `management-trainee#title`: Grouped with sales roles (drafted under operations): most campus management trainee programmes start in sales.
+- `management-trainee#skill:financial-statement-analysis`: Nice to have (was Required): trainees learn it on the programme.
+- `site-reliability-engineer#titles`: "Production Engineer" removed: in India it usually means a manufacturing role, now its own profile.
 
 ## How answers flow back into the app
 

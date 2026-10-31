@@ -1,0 +1,56 @@
+{
+  "id": "bank-probationary-officer-fresher-campus",
+  "roleSlug": "bank-probationary-officer",
+  "persona": "fresher-campus",
+  "resumeText": "Sneha Kulkarni\nNagpur, Maharashtra | sneha.kulkarni@example.com\n\nEDUCATION\nB.Com (Banking and Finance), Vidarbha College of Commerce, Nagpur, 2026, 7.8 CGPA\nQualified IBPS PO Preliminary exam, 2025\n\nINTERNSHIP\nBanking Intern, Sahyadri Urban Co-operative Bank (made-up), Dharampeth branch, Nagpur | May 2025 - Jul 2025\n- Supported branch banking operations at the Dharampeth branch, including deposit account opening, cheque clearing and cash counter work\n- Completed kyc verification of 120 new savings account forms against Aadhaar and PAN\n- Resolved walk-in passbook, ATM card and NEFT issues as part of customer complaint handling at the help desk\n- Met cross-sell targets for recurring deposits and debit cards during a branch campaign\n- Built a daily deposit tracker in MS Excel for the branch manager\n\nPROJECT\nFinal-year project: ratio analysis of balance sheets of five MSME borrowers for a working capital proposal\n\nSKILLS\nNPA classification, Finacle (training module), MS Excel, Hindi, Marathi, English\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "bank-branch-operations",
+        "quote": "Supported branch banking operations at the Dharampeth branch"
+      },
+      {
+        "skillId": "kyc-verification",
+        "quote": "Completed kyc verification of 120 new savings account forms"
+      },
+      {
+        "skillId": "customer-query-resolution",
+        "quote": "as part of customer complaint handling at the help desk"
+      },
+      {
+        "skillId": "cross-selling-upselling",
+        "quote": "Met cross-sell targets for recurring deposits"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built a daily deposit tracker in MS Excel"
+      },
+      {
+        "skillId": "financial-statement-analysis",
+        "quote": "ratio analysis of balance sheets of five MSME borrowers"
+      },
+      {
+        "skillId": "rbi-credit-norms",
+        "quote": "NPA classification, Finacle (training module), MS Excel, Hindi, Marathi, English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "rbi-credit-norms",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "credit-appraisal",
+      "third-party-product-distribution",
+      "aml-transaction-monitoring",
+      "sanctions-screening"
+    ]
+  },
+  "reviewedBy": null
+}

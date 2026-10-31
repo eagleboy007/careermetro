@@ -1,0 +1,135 @@
+{
+  "slug": "graduate-engineer-trainee-mechanical",
+  "title": "Graduate Engineer Trainee - Mechanical",
+  "summary": "A graduate engineer trainee (GET) in mechanical joins a factory, public sector plant or EPC company (a firm that designs and builds projects) straight from college. For about a year they rotate through production, maintenance and quality on the shop floor, supporting senior engineers before being confirmed in one department.",
+  "dailyDuties": [
+    "Support shift production and record output on the shop floor",
+    "Assist preventive and breakdown maintenance under supervision",
+    "Read drawings and check parts with vernier, micrometer and gauges",
+    "Prepare or update 2D drawings and 3D models in CAD",
+    "Follow PPE and work permit rules and join safety walks",
+    "Update daily reports in Excel and attend training sessions"
+  ],
+  "typicalTitles": [
+    "GET Mechanical",
+    "Engineer Trainee - Mechanical",
+    "Graduate Trainee Engineer - Mechanical",
+    "Engineering Executive Trainee - Mechanical",
+    "Trainee Engineer - Mechanical",
+    "Graduate Apprentice Trainee - Mechanical",
+    "Mechanical Engineer Trainee - Manufacturing"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 2
+  },
+  "skills": [
+    {
+      "skillId": "3d-cad-modelling",
+      "importance": "required",
+      "expectation": "Make parts and simple assemblies in a CAD tool such as SolidWorks or Creo",
+      "postingShare": null,
+      "oneOf": "mech-cad-tool"
+    },
+    {
+      "skillId": "autocad-2d-drafting",
+      "importance": "required",
+      "expectation": "Make and edit 2D drawings in AutoCAD",
+      "postingShare": null,
+      "oneOf": "mech-cad-tool"
+    },
+    {
+      "skillId": "engineering-drawing-reading",
+      "importance": "required",
+      "expectation": "Read part and assembly drawings with tolerances and GD&T symbols",
+      "postingShare": null
+    },
+    {
+      "skillId": "materials-manufacturing-processes",
+      "importance": "required",
+      "expectation": "Understand machining, welding, casting and sheet metal processes on the shop floor",
+      "postingShare": null
+    },
+    {
+      "skillId": "dimensional-inspection-instruments",
+      "importance": "required",
+      "expectation": "Measure parts with vernier, micrometer and gauges",
+      "postingShare": null
+    },
+    {
+      "skillId": "industrial-safety-practices",
+      "importance": "required",
+      "expectation": "Follow PPE, work permit and lock-out rules on the plant floor",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Record production and inspection data and make daily reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Report shift issues clearly to supervisors and operators",
+      "postingShare": null
+    },
+    {
+      "skillId": "preventive-maintenance",
+      "importance": "nice_to_have",
+      "expectation": "Support preventive and breakdown maintenance under supervision",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "nice_to_have",
+      "expectation": "Join why-why and fishbone analysis of shop-floor problems",
+      "postingShare": null
+    },
+    {
+      "skillId": "lean-waste-elimination",
+      "importance": "nice_to_have",
+      "expectation": "Take part in kaizen activities on the line",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-inspection-stages",
+      "importance": "nice_to_have",
+      "expectation": "Help with in-process and final inspection of parts",
+      "postingShare": null
+    },
+    {
+      "skillId": "fea-basics",
+      "importance": "nice_to_have",
+      "expectation": "Run basic stress checks on design changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "iso-9001-qms-documentation",
+      "importance": "nice_to_have",
+      "expectation": "Keep records in line with ISO 9001 procedures",
+      "postingShare": null
+    },
+    {
+      "skillId": "production-planning-control",
+      "importance": "nice_to_have",
+      "expectation": "Track daily output against the production plan",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "mech-cad-tool",
+      "label": "A mechanical CAD tool (3D modelling or AutoCAD 2D)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

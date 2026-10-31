@@ -1,0 +1,129 @@
+{
+  "slug": "production-engineer",
+  "title": "Production Engineer - Manufacturing",
+  "summary": "A production engineer runs a manufacturing line day to day so that it meets its output, quality and safety targets. Early-career production engineers work in the plant's production team under a production manager, planning shifts, tracking OEE (how much of planned time a machine makes good parts) and fixing line problems with lean tools.",
+  "dailyDuties": [
+    "Plan the shift's production and allocate operators to machines",
+    "Track hourly output, OEE and downtime against line targets",
+    "Set and check process parameters with quality and maintenance",
+    "Run kaizen and 5S activities on the line",
+    "Solve repeat problems with why-why and fishbone analysis",
+    "Book production and scrap in SAP or the plant ERP",
+    "Share the daily production MIS with the production manager"
+  ],
+  "typicalTitles": [
+    "Junior Production Engineer",
+    "Production Engineer - Machining",
+    "Production Engineer - Assembly",
+    "Shift Engineer - Production",
+    "Production Shift Incharge",
+    "Assistant Engineer - Production",
+    "Graduate Engineer - Production"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "production-planning-control",
+      "importance": "required",
+      "expectation": "Plan daily and shift production to meet line targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "oee-productivity-tracking",
+      "importance": "required",
+      "expectation": "Track OEE, downtime and cycle time and act on the biggest losses",
+      "postingShare": null
+    },
+    {
+      "skillId": "materials-manufacturing-processes",
+      "importance": "required",
+      "expectation": "Know the machining, assembly or fabrication processes run on the line",
+      "postingShare": null
+    },
+    {
+      "skillId": "lean-waste-elimination",
+      "importance": "required",
+      "expectation": "Run kaizen and waste-reduction ideas on the line",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "required",
+      "expectation": "Use why-why, fishbone and Pareto to solve repeat line problems",
+      "postingShare": null
+    },
+    {
+      "skillId": "industrial-safety-practices",
+      "importance": "required",
+      "expectation": "Keep the line safe with PPE, work permits and near-miss reporting",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Maintain the production MIS and daily reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Brief operators and coordinate with quality, maintenance and stores",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-drawing-reading",
+      "importance": "nice_to_have",
+      "expectation": "Check parts and fixtures against drawings",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "nice_to_have",
+      "expectation": "Lead a shift of operators and contract workers",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-pp-configuration",
+      "importance": "nice_to_have",
+      "expectation": "Enter production orders and confirmations in SAP PP or the plant ERP",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistical-process-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Read control charts for critical process parameters",
+      "postingShare": null
+    },
+    {
+      "skillId": "dmaic-six-sigma",
+      "importance": "nice_to_have",
+      "expectation": "Contribute to Six Sigma projects on yield or scrap",
+      "postingShare": null
+    },
+    {
+      "skillId": "preventive-maintenance",
+      "importance": "nice_to_have",
+      "expectation": "Plan maintenance slots with the maintenance team",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "sap-s4hana-production-planning",
+      "importance": "optional",
+      "why": "Shows SAP PP knowledge for plants that run on SAP, though it is aimed at consultants rather than shop-floor engineers"
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

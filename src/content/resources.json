@@ -678,7 +678,8 @@
     "provider": "GCFGlobal",
     "kind": "course",
     "skillIds": [
-      "excel"
+      "excel",
+      "operations-mis-reporting"
     ],
     "minutes": 600,
     "free": true
@@ -14020,7 +14021,8 @@
     "provider": "NPTEL (IIT Kharagpur)",
     "kind": "course",
     "skillIds": [
-      "inventory-planning-optimization"
+      "inventory-planning-optimization",
+      "material-reconciliation"
     ],
     "minutes": 1800,
     "free": true
@@ -15094,7 +15096,8 @@
     "provider": "Reserve Bank of India",
     "kind": "docs",
     "skillIds": [
-      "casa-deposit-acquisition"
+      "casa-deposit-acquisition",
+      "bank-branch-operations"
     ],
     "minutes": 90,
     "free": true
@@ -20239,6 +20242,1653 @@
     "title": "ICEGATE bill of entry procedure",
     "url": "https://razorpay.com/blog/icegate-bill-of-entry-procedure/",
     "provider": "Razorpay",
+    "kind": "docs",
+    "skillIds": [
+      "customs-clearance-compliance"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Create a presentation in PowerPoint (training)",
+    "url": "https://support.microsoft.com/en-us/powerpoint/training/create-a-presentation-in-powerpoint",
+    "provider": "Microsoft Support",
+    "kind": "video",
+    "skillIds": [
+      "business-presentation-decks"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Basic tasks for creating a PowerPoint presentation",
+    "url": "https://support.microsoft.com/en-us/powerpoint/basic-tasks-for-creating-a-powerpoint-presentation",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "business-presentation-decks"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Stage your story in PowerPoint",
+    "url": "https://support.microsoft.com/en-us/education/student-help-center/stage-your-story-in-powerpoint",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "business-presentation-decks"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Apply data validation to cells",
+    "url": "https://support.microsoft.com/en-us/excel/get-started/apply-data-validation-to-cells",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "data-entry-verification"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Create a drop-down list in Excel",
+    "url": "https://support.microsoft.com/en-us/office/create-a-drop-down-list-7693307a-59ef-400a-b769-c5402dce407b",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "data-entry-verification"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Find and remove duplicates in Excel",
+    "url": "https://support.microsoft.com/en-us/excel/find-and-remove-duplicates",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "data-entry-verification"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Create a PivotTable to analyze worksheet data",
+    "url": "https://support.microsoft.com/en-us/excel/get-started/create-a-pivottable-to-analyze-worksheet-data",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "operations-mis-reporting"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Use PivotTables and other business intelligence tools to analyze your data",
+    "url": "https://support.microsoft.com/en-us/office/use-pivottables-and-other-business-intelligence-tools-to-analyze-your-data-da1b3e85-d3c0-4f15-8cd9-bef446762ec3",
+    "provider": "Microsoft Support",
+    "kind": "docs",
+    "skillIds": [
+      "operations-mis-reporting"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "FAQs on Master Direction on KYC (June 2025)",
+    "url": "https://www.rbi.org.in/commonman/Upload/English/FAQs/PDFs/KYC09062025.pdf",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "back-office-document-processing"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Master Direction - Know Your Customer (KYC) Direction",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/notification.aspx?id=2607",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "back-office-document-processing"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of Office Management and Methods",
+    "url": "https://onlinecourses.swayam2.ac.in/cec19_mg35/preview",
+    "provider": "SWAYAM (CEC)",
+    "kind": "course",
+    "skillIds": [
+      "back-office-document-processing"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Understanding operations management",
+    "url": "https://www.open.edu/openlearn/money-business/leadership-management/understanding-operations-management/content-section-0",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "process-tat-accuracy"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Operations Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_me18/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "process-tat-accuracy"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Total Quality Management - I",
+    "url": "https://onlinecourses.nptel.ac.in/e-learning/preview/noc23_mg06",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "process-tat-accuracy"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Form 3CA-3CD User Manual",
+    "url": "https://www.incometax.gov.in/iec/foportal/help/statutory-forms/popular-form/form3ca-3cd-um",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tax-audit-form-3cd"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Form 3CA-CD & Form 3CB-CD: Filing of Audit Report u/s 44AB (webinar slides)",
+    "url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2024-09/Webinar%20PPT%20for%203CA-3CD_3CB-3CD_13.09.2024.pdf",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tax-audit-form-3cd"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Form 3CB-3CD",
+    "url": "https://www.incometax.gov.in/iec/foportal/newformpage/forms/form3cb-3cd",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tax-audit-form-3cd"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Form 140 (earlier Form 26Q) User Manual",
+    "url": "https://www.incometax.gov.in/iec/foportal/newformpage/forms/form140-um",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tds-return-filing"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "TDS/TCS Statement Upload and View User Manual",
+    "url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2020-08/TDS_TCSStatement_Upload_User_Manual.pdf",
+    "provider": "Income Tax Department",
+    "kind": "docs",
+    "skillIds": [
+      "tds-return-filing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "TRACES forms and downloads",
+    "url": "https://traces61contents.tdscpc.gov.in/en/forms.html",
+    "provider": "TRACES (Income Tax Department)",
+    "kind": "docs",
+    "skillIds": [
+      "tds-return-filing"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Participant Handbook: Sales Person (Distribution), RAS/Q0604",
+    "url": "https://rasci.in/Final%20New%20Version_PH%20and%20FG/Salesperson%20Distribution/PH_Sales%20Person%20(Distribution)%20V4.0.pdf",
+    "provider": "Retailers Association's Skill Council of India",
+    "kind": "docs",
+    "skillIds": [
+      "retailer-order-booking"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Management of Field Sales",
+    "url": "https://onlinecourses.nptel.ac.in/e-learning/preview/noc21_mg29",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "retailer-order-booking"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Retail Management",
+    "url": "https://onlinecourses.swayam2.ac.in/e-learning/preview/cec19_mg40",
+    "provider": "SWAYAM (CEC)",
+    "kind": "course",
+    "skillIds": [
+      "retailer-order-booking"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Master Direction: Know Your Customer (KYC) Direction, 2016",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=11566",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "bank-branch-operations"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "FAQs on Cheque Clearing (CTS)",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=3878",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "bank-branch-operations"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Management of Commercial Banking",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_mg40/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "bank-branch-operations"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Oracle FLEXCUBE Universal Banking 14.8 Documentation Library",
+    "url": "https://docs.oracle.com/cd/G27840_01/index.htm",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "core-banking-systems"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Oracle FLEXCUBE Core Entities User Guide (Release 14.7.1)",
+    "url": "https://docs.oracle.com/cd/F90549_01/PDF/Core/CE.pdf",
+    "provider": "Oracle",
+    "kind": "docs",
+    "skillIds": [
+      "core-banking-systems"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Core Banking Solution (CBS) Requirements for Urban Co-operative Banks",
+    "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=11097",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "core-banking-systems"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "AutoCAD tutorials for beginners and students",
+    "url": "https://www.autodesk.com/solutions/aec/autocad-tutorials",
+    "provider": "Autodesk",
+    "kind": "course",
+    "skillIds": [
+      "autocad-2d-drafting"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "The Hitchhiker's Guide to AutoCAD",
+    "url": "https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-GettingStarted/files/GUID-2AA12FC5-FBB2-4ABE-9024-90D41FEB1AC3.htm",
+    "provider": "Autodesk",
+    "kind": "docs",
+    "skillIds": [
+      "autocad-2d-drafting"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "AutoCAD Learning Videos",
+    "url": "https://help.autodesk.com/cloudhelp/2023/ENU/AutoCAD-GettingStarted/files/GUID-39B76D69-225D-45EE-A9AC-59CCBF48AF64.htm",
+    "provider": "Autodesk",
+    "kind": "video",
+    "skillIds": [
+      "autocad-2d-drafting"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Electrical Machines (NPTEL)",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_ee24/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "electrical-machines-transformers"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Electrical Machines (IIT Delhi)",
+    "url": "https://onlinecourses.nptel.ac.in/noc19_ee69/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "electrical-machines-transformers"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Electrical Machines - II",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_ee06/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "electrical-machines-transformers"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Power System Protection and Switchgear",
+    "url": "https://nptel.ac.in/courses/108107167",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "substation-switchgear-basics",
+      "power-system-protection"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Electrical Distribution System Analysis",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_ee105/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "substation-switchgear-basics"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Power System Analysis: circuit breaker operating time and selection",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/108104051/chapter_6/6_9.html",
+    "provider": "NPTEL",
+    "kind": "docs",
+    "skillIds": [
+      "substation-switchgear-basics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "DOE Fundamentals Handbook: Engineering Symbology, Prints and Drawings, Vol. 1",
+    "url": "https://www.energy.gov/sites/default/files/2026-04/DOE-HDBK-1016-93_VOL1.pdf",
+    "provider": "U.S. Department of Energy",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-drawings-sld"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Develop a schematic design (AutoCAD Electrical essentials)",
+    "url": "https://www.autodesk.com/learn/ondemand/module/autocad-electrical-essentials-3-schematic-wiring",
+    "provider": "Autodesk",
+    "kind": "course",
+    "skillIds": [
+      "electrical-drawings-sld",
+      "electrical-cad-tools"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Power System Analysis: per-unit representation",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/108104051/chapter_1/1_20.html",
+    "provider": "NPTEL",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-drawings-sld"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "FIST 3-1: Testing solid insulation of electrical equipment",
+    "url": "https://www.usbr.gov/power/data/fist/fist3_1/vol3-1.pdf",
+    "provider": "U.S. Bureau of Reclamation",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-testing-commissioning"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "FIST 3-16: Maintenance of power circuit breakers",
+    "url": "https://www.usbr.gov/power/data/fist/fist3_16/FIST_3-16_(06-2020).pdf",
+    "provider": "U.S. Bureau of Reclamation",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-testing-commissioning"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "FIST 4-1B: Maintenance scheduling for electrical equipment",
+    "url": "https://www.usbr.gov/power/data/fist/FIST_4-1B_(01-2026).pdf",
+    "provider": "U.S. Bureau of Reclamation",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-testing-commissioning"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "CEA (Measures relating to Safety and Electric Supply) Regulations, 2023",
+    "url": "https://cea.nic.in/regulations/central-electricity-authority-measures-relating-to-safety-and-electric-supply-regulations-2023/?lang=en",
+    "provider": "Central Electricity Authority",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-safety-ie-rules"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Lockout/Tagout eTool tutorial",
+    "url": "https://www.osha.gov/etools/lockout-tagout/tutorial",
+    "provider": "OSHA",
+    "kind": "course",
+    "skillIds": [
+      "electrical-safety-ie-rules"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Control of Hazardous Energy (Lockout/Tagout) overview",
+    "url": "https://www.osha.gov/control-hazardous-energy",
+    "provider": "OSHA",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-safety-ie-rules",
+      "industrial-safety-practices"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "The Hitchhiker's Guide to AutoCAD Electrical (2024 Help)",
+    "url": "https://help.autodesk.com/view/ACAD_E/2024/ENU/?guid=GUID-54861097-CA39-4D32-AB52-DCE2972D7C24",
+    "provider": "Autodesk",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-cad-tools"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "AutoCAD Electrical toolset learning collection",
+    "url": "https://www.autodesk.com/learn/ondemand/curated/autocad-electrical-toolset",
+    "provider": "Autodesk",
+    "kind": "course",
+    "skillIds": [
+      "electrical-cad-tools"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Schematic Creation Part 1 (video)",
+    "url": "https://knowledge.autodesk.com/support/autocad-electrical/learn-explore/caas/CloudHelp/cloudhelp/2021/ENU/AutoCAD-Electrical/files/GUID-E4F1546A-17E5-404D-A643-97B4AA4951C4-htm.html",
+    "provider": "Autodesk",
+    "kind": "video",
+    "skillIds": [
+      "electrical-cad-tools"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "IS 3043: Code of Practice for Earthing",
+    "url": "https://law.resource.org/pub/in/bis/S05/is.3043.1987.html",
+    "provider": "Bureau of Indian Standards (via law.resource.org)",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-load-calculations"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "IS 732: Code of Practice for Electrical Wiring Installations",
+    "url": "https://law.resource.org/pub/in/bis/S05/is.732.1989.html",
+    "provider": "Bureau of Indian Standards (via law.resource.org)",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-load-calculations"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Electrical Distribution System Analysis (voltage drop and loss calculations)",
+    "url": "https://onlinecourses-archive.nptel.ac.in/noc18_ee15/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "electrical-load-calculations"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Power System Protection",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_ee101/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "power-system-protection"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of Power System Protection: Module 1",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/108101039/Module-1/Lec-1/Sec-1.1/1.1_6.html",
+    "provider": "NPTEL",
+    "kind": "docs",
+    "skillIds": [
+      "power-system-protection"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "FIST 3-9: Methods for coordinating system protective equipment",
+    "url": "https://www.usbr.gov/power/data/fist/fist3_9/vol3-9.pdf",
+    "provider": "U.S. Bureau of Reclamation",
+    "kind": "docs",
+    "skillIds": [
+      "power-system-protection"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Introducing SOLIDWORKS",
+    "url": "https://my.solidworks.com/solidworks/guide/SOLIDWORKS_Introduction_EN.pdf",
+    "provider": "SOLIDWORKS",
+    "kind": "docs",
+    "skillIds": [
+      "3d-cad-modelling"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SOLIDWORKS online tutorial: Creating a drawing of a part (Lessons 1-3)",
+    "url": "https://help.solidworks.com/2024/english/swconntutorial/t_tut_lesson3_createdrawing.htm",
+    "provider": "SOLIDWORKS",
+    "kind": "practice",
+    "skillIds": [
+      "3d-cad-modelling",
+      "mechanical-2d-drafting"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Introduction to 3D modeling using Fusion",
+    "url": "https://www.autodesk.com/learn/ondemand/course/fusion360-intro-to-3d-modeling-associate",
+    "provider": "Autodesk",
+    "kind": "course",
+    "skillIds": [
+      "3d-cad-modelling"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "SP 46 (2003): Engineering Drawing Practice for Schools and Colleges",
+    "url": "https://law.resource.org/pub/in/bis/S01/is.sp.46.2003.pdf",
+    "provider": "Bureau of Indian Standards (via law.resource.org)",
+    "kind": "docs",
+    "skillIds": [
+      "mechanical-2d-drafting"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "Engineering Drawing and Computer Graphics",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_me105/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "mechanical-2d-drafting"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Drawing and Detailing with SolidWorks",
+    "url": "https://files.solidworks.com/partners/pdfs/solidworksdrawinganddetailingbook.pdf",
+    "provider": "SOLIDWORKS",
+    "kind": "docs",
+    "skillIds": [
+      "mechanical-2d-drafting"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "IS 919-1 (1993): ISO Systems of Limits and Fits, Part 1",
+    "url": "https://law.resource.org/pub/in/bis/S01/is.919.1.1993.pdf",
+    "provider": "Bureau of Indian Standards (via law.resource.org)",
+    "kind": "docs",
+    "skillIds": [
+      "tolerance-stack-up-analysis"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "GD&T Tolerances (Engineering Graphics and Design)",
+    "url": "https://uw.pressbooks.pub/enggraphics/chapter/gdt-tolerances/",
+    "provider": "University of Wisconsin Pressbooks",
+    "kind": "docs",
+    "skillIds": [
+      "tolerance-stack-up-analysis"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Blueprint Reading: Tolerance on Dimensions",
+    "url": "https://wtcs.pressbooks.pub/blueprintreading/chapter/8-tolerance-on-dimensions/",
+    "provider": "WisTech Open",
+    "kind": "docs",
+    "skillIds": [
+      "tolerance-stack-up-analysis"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Introducing Bills of Material (BOMs)",
+    "url": "https://learning.sap.com/courses/exploring-basic-data-for-manufacturing-and-product-management-in-sap-s-4hana/introducing-bills-of-material-boms-",
+    "provider": "SAP Learning",
+    "kind": "course",
+    "skillIds": [
+      "bom-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Bills of materials and formulas",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/production-control/bill-of-material-bom",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "bom-management"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Table-based Bill of Materials (SOLIDWORKS Help)",
+    "url": "https://help.solidworks.com/2014/English/SolidWorks/sldworks/c_table_based_bom_top.htm",
+    "provider": "SOLIDWORKS",
+    "kind": "docs",
+    "skillIds": [
+      "bom-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Elements of Mechanical Design (2.72)",
+    "url": "https://ocw.mit.edu/courses/2-72-elements-of-mechanical-design-spring-2009/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "mechanical-design-calculations"
+    ],
+    "minutes": 2400,
+    "free": true
+  },
+  {
+    "title": "Design of Machine Elements I",
+    "url": "https://archive.nptel.ac.in/courses/112/105/112105124/",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "mechanical-design-calculations"
+    ],
+    "minutes": 2400,
+    "free": true
+  },
+  {
+    "title": "Design of Machine Elements (web course)",
+    "url": "https://nptel.ac.in/courses/112105125",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "mechanical-design-calculations"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of manufacturing processes",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_me71/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "materials-manufacturing-processes"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Manufacturing",
+    "url": "https://www.open.edu/openlearn/science-maths-technology/design-innovation/manufacturing/content-section-0/?printable=1",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "materials-manufacturing-processes"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Nature and Properties of Materials",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_me16/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "materials-manufacturing-processes"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Design for Manufacture and Assembly (DFMA) web course",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/107103012/module1/index.html",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "dfm-dfa"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Manufacturing Guidelines For Product Design",
+    "url": "https://nptel.ac.in/courses/112107258",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "dfm-dfa"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Product Design and Development",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_me81/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "dfm-dfa"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Finite Element Method",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_me43/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "fea-basics"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Finite Element Procedures for Solids and Structures",
+    "url": "https://ocw.mit.edu/courses/res-2-002-finite-element-procedures-for-solids-and-structures-spring-2010/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "video",
+    "skillIds": [
+      "fea-basics"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "ANSYS Learning Modules (SimCafe)",
+    "url": "https://confluence.cornell.edu/spaces/SIMULATION/pages/82383802/ANSYS+Learning+Modules",
+    "provider": "Cornell University",
+    "kind": "practice",
+    "skillIds": [
+      "fea-basics"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "What is FMEA? Failure Mode and Effects Analysis",
+    "url": "https://asq.org/quality-resources/fmea",
+    "provider": "ASQ",
+    "kind": "docs",
+    "skillIds": [
+      "design-fmea"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "MIL-STD-1629A: Procedures for Performing a Failure Mode, Effects and Criticality Analysis",
+    "url": "https://extapps.ksc.nasa.gov/Reliability/Documents/milstd1629_FMEA.pdf",
+    "provider": "NASA Kennedy Space Center",
+    "kind": "docs",
+    "skillIds": [
+      "design-fmea"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Failure Analysis and Prevention",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_me14/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "design-fmea"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "SP 34 (1987): Handbook on Concrete Reinforcement and Detailing",
+    "url": "https://law.resource.org/pub/in/bis/S03/is.sp.34.1987.pdf",
+    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
+    "kind": "docs",
+    "skillIds": [
+      "civil-drawing-reading",
+      "bar-bending-schedule"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Engineering/Architectural Graphics, Part I: Orthographic Projection",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_ar01/preview",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "civil-drawing-reading"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "Reinforced Concrete Slabs: Detailing of Reinforcement (Module 8, Lesson 19)",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/105105104/pdf/m8l19.pdf",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "docs",
+    "skillIds": [
+      "civil-drawing-reading"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "CPWD Specifications 2019, Volume 1",
+    "url": "https://cpwd.gov.in/Publication/Specs2019V1.pdf",
+    "provider": "Central Public Works Department",
+    "kind": "docs",
+    "skillIds": [
+      "site-execution-supervision"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "How to check shuttering or formwork before slab casting: checklist",
+    "url": "https://www.youtube.com/watch?v=U02ZGDU3Fjg",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "site-execution-supervision"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Checking rebar: civil site engineer inspection before concrete pour",
+    "url": "https://www.youtube.com/watch?v=7ydsJixgDws",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "site-execution-supervision"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Slump Cone Test (Virtual Lab, theory)",
+    "url": "https://concrete-1-iitd.vlabs.ac.in/exp/concrete-slump-cone/theory.html",
+    "provider": "Virtual Labs (IIT Delhi)",
+    "kind": "practice",
+    "skillIds": [
+      "concrete-quality-tests"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Compressive Strength of Concrete Test (Cube): procedure",
+    "url": "https://virtual-labs.github.io/exp-cube-test-iitd/procedure.html",
+    "provider": "Virtual Labs (IIT Delhi)",
+    "kind": "practice",
+    "skillIds": [
+      "concrete-quality-tests"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "IS 1199 (1959): Methods of Sampling and Analysis of Concrete",
+    "url": "https://law.resource.org/pub/in/bis/S03/is.1199.1959.pdf",
+    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
+    "kind": "docs",
+    "skillIds": [
+      "concrete-quality-tests",
+      "is-456-concrete-codes"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Concrete Technology",
+    "url": "https://onlinecourses.nptel.ac.in/noc19_ce20/preview",
+    "provider": "NPTEL (IIT Delhi)",
+    "kind": "course",
+    "skillIds": [
+      "concrete-quality-tests"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Introduction to Surveying",
+    "url": "https://nptel.ac.in/courses/105107122",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "surveying-levelling"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Methods of Levelling",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/105107122/modules/module4/html/38.htm",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "docs",
+    "skillIds": [
+      "surveying-levelling"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Digital Land Surveying and Mapping (total station)",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_ce08/preview",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "surveying-levelling"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "IS 456 (2000): Plain and Reinforced Concrete, Code of Practice",
+    "url": "https://law.resource.org/pub/in/bis/S03/is.456.2000.pdf",
+    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
+    "kind": "docs",
+    "skillIds": [
+      "is-456-concrete-codes",
+      "site-execution-supervision"
+    ],
+    "minutes": 300,
+    "free": true
+  },
+  {
+    "title": "IS 10262 (2009): Concrete Mix Proportioning Guidelines",
+    "url": "https://law.resource.org/pub/in/bis/S03/is.10262.2009.pdf",
+    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
+    "kind": "docs",
+    "skillIds": [
+      "is-456-concrete-codes"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Design of Reinforced Concrete Structures (as per IS 456)",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_ce123/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "is-456-concrete-codes"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Cost Estimating: quantity take-off and work breakdown (Module 5, Lecture 1)",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/105103023/module5/lec1/1.html",
+    "provider": "NPTEL",
+    "kind": "docs",
+    "skillIds": [
+      "quantity-takeoff"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Estimation and Costing: long wall/short wall and centre line methods",
+    "url": "https://gyansanchay.csjmu.ac.in/wp-content/uploads/2022/05/ESTIMATION-COSTING-2.pdf",
+    "provider": "CSJM University, Kanpur",
+    "kind": "docs",
+    "skillIds": [
+      "quantity-takeoff"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Estimation and Rate Analysis (Civil Engineering web course)",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/105103093/modules/partiii/m2/slides/slide2.htm",
+    "provider": "NPTEL (IIT Guwahati)",
+    "kind": "docs",
+    "skillIds": [
+      "quantity-takeoff",
+      "boq-rate-analysis"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "IS 2502 (1963): Bending and Fixing of Bars for Concrete Reinforcement",
+    "url": "https://law.resource.org/pub/in/bis/S03/is.2502.1963.pdf",
+    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
+    "kind": "docs",
+    "skillIds": [
+      "bar-bending-schedule"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Bar Bending Schedule Basics",
+    "url": "https://www.youtube.com/watch?v=nGoTdkCxsuk",
+    "provider": "YouTube (Civil Tutor)",
+    "kind": "video",
+    "skillIds": [
+      "bar-bending-schedule"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Bar Bending Schedule (BBS) Tutorial in Excel (playlist)",
+    "url": "https://www.youtube.com/playlist?list=PLo4LD64ASBprHaNczc6RlGTQ8SfomGhGp",
+    "provider": "YouTube",
+    "kind": "video",
+    "skillIds": [
+      "bar-bending-schedule"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Project Planning & Control",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_ce59/preview",
+    "provider": "NPTEL (IIT Madras)",
+    "kind": "course",
+    "skillIds": [
+      "site-progress-reporting"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Construction Manual Chapter 10: Project documentation and daily reports",
+    "url": "https://dot.alaska.gov/stwddes/dcsconst/assets/pdf/constman/2021/ch10.pdf",
+    "provider": "Alaska Department of Transportation",
+    "kind": "docs",
+    "skillIds": [
+      "site-progress-reporting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Construction Inspector Training 2019: diaries and documentation",
+    "url": "https://www.maine.gov/mdot/contractors/docs/presentations/2019/2019-Construction-Inspector-Training.pdf",
+    "provider": "Maine Department of Transportation",
+    "kind": "docs",
+    "skillIds": [
+      "site-progress-reporting"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Safety in Construction",
+    "url": "https://onlinecourses.nptel.ac.in/noc21_ce16/preview",
+    "provider": "NPTEL (IIT Delhi)",
+    "kind": "course",
+    "skillIds": [
+      "construction-site-safety"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "Fall Prevention Training Guide: toolbox talks for ladders, scaffolds and roofs (OSHA 3666)",
+    "url": "https://www.osha.gov/sites/default/files/publications/OSHA3666.pdf",
+    "provider": "OSHA",
+    "kind": "docs",
+    "skillIds": [
+      "construction-site-safety"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "HSG150: Health and safety in construction",
+    "url": "https://www.hse.gov.uk/pubns/books/hsg150.htm",
+    "provider": "HSE (UK)",
+    "kind": "docs",
+    "skillIds": [
+      "construction-site-safety"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "HSG159: Managing contractors",
+    "url": "https://books.hse.gov.uk/gempdf/hsg159.pdf",
+    "provider": "HSE (UK)",
+    "kind": "docs",
+    "skillIds": [
+      "labour-contractor-coordination"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Principles of Construction Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_ce56/preview",
+    "provider": "NPTEL (IIT Kanpur)",
+    "kind": "course",
+    "skillIds": [
+      "labour-contractor-coordination"
+    ],
+    "minutes": 960,
+    "free": true
+  },
+  {
+    "title": "Introduction to Lean Construction (Module 1: Lean Basics)",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_ce49/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "labour-contractor-coordination"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Delhi Schedule of Rates (DSR) 2021, Volume II",
+    "url": "https://cpwd.gov.in/Publication/DSR_2021_Vol_II_ENGLISH_Dir.pdf",
+    "provider": "Central Public Works Department",
+    "kind": "docs",
+    "skillIds": [
+      "boq-rate-analysis",
+      "material-reconciliation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Delhi Analysis of Rates (Civil) 2016, Volume 1",
+    "url": "https://www.cpwd.gov.in/Publication/DAR(Civil)I.pdf",
+    "provider": "Central Public Works Department",
+    "kind": "docs",
+    "skillIds": [
+      "boq-rate-analysis"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "General Conditions of Contract 2019: Construction Works",
+    "url": "https://www.cpwd.gov.in/Publication/GCC_Construction_2019.pdf",
+    "provider": "Central Public Works Department",
+    "kind": "docs",
+    "skillIds": [
+      "construction-contract-conditions",
+      "ra-subcontractor-billing",
+      "material-reconciliation",
+      "measurement-book-records"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "CPWD Works Manual 2019",
+    "url": "https://www.cpwd.gov.in/Publication/Work_Manual_2019_20032019.pdf",
+    "provider": "Central Public Works Department",
+    "kind": "docs",
+    "skillIds": [
+      "ra-subcontractor-billing",
+      "construction-contract-conditions",
+      "measurement-book-records"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "SOPs to CPWD Works Manual 2019",
+    "url": "https://www.cpwd.gov.in/Publication/SOPs_to_Work_Maunal_2019_20_March_2019.pdf",
+    "provider": "Central Public Works Department",
+    "kind": "docs",
+    "skillIds": [
+      "measurement-book-records",
+      "ra-subcontractor-billing"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "CPWD Works Manual 2003, Volume 2 (measurement books)",
+    "url": "https://www.cpwd.gov.in/Publication/manualvolume2.pdf",
+    "provider": "Central Public Works Department",
+    "kind": "docs",
+    "skillIds": [
+      "measurement-book-records"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "IS 1200 series: Methods of Measurement of Building and Civil Engineering Works (index of parts)",
+    "url": "https://law.resource.org/pub/in/bis/manifest.ced.44.html",
+    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
+    "kind": "docs",
+    "skillIds": [
+      "is-1200-measurement-rules"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "IS 1200 Part 2 (1974): Method of Measurement, Concrete Works",
+    "url": "https://law.resource.org/pub/in/bis/S03/is.1200.2.1974.pdf",
+    "provider": "Bureau of Indian Standards (via Public.Resource.Org)",
+    "kind": "docs",
+    "skillIds": [
+      "is-1200-measurement-rules",
+      "quantity-takeoff"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "IS 1200 Part 1 (1992): Method of Measurement, Earthwork",
+    "url": "https://archive.org/details/gov.in.is.1200.1.1992",
+    "provider": "Bureau of Indian Standards (via Internet Archive)",
+    "kind": "docs",
+    "skillIds": [
+      "is-1200-measurement-rules"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "General Conditions of Contract 2019: EPC Projects",
+    "url": "https://cpwd.gov.in/Publication/GCC_EPC_Contracts_2019.pdf",
+    "provider": "Central Public Works Department",
+    "kind": "docs",
+    "skillIds": [
+      "construction-contract-conditions"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Advanced Contracts, Tendering and Public Procurement",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_lw06/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "construction-contract-conditions"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "Permit to Work Systems",
+    "url": "https://www.hse.gov.uk/comah/sragtech/techmeaspermit.htm",
+    "provider": "HSE (UK)",
+    "kind": "docs",
+    "skillIds": [
+      "industrial-safety-practices"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Industrial Safety Engineering",
+    "url": "https://onlinecourses.nptel.ac.in/noc20_mg43/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "industrial-safety-practices"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Production and Operation Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_mg53/preview",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "production-planning-control"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Production Planning and Control: Lecture 1",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/112107142/part3/ppc/lecture1.htm",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "docs",
+    "skillIds": [
+      "production-planning-control"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Industrial Engineering and Operations Research",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_me181/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "production-planning-control"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "OEE Calculations (SAP Digital Manufacturing)",
+    "url": "https://help.sap.com/docs/sap-digital-manufacturing/insights/oee-calculations",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "oee-productivity-tracking"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "OEE Time Model (SAP Manufacturing Execution)",
+    "url": "https://help.sap.com/docs/SAP_MANUFACTURING_EXECUTION/e1adc70af32241619335c8768a892edb/02f15197929c4de9bbef1cb8f6c21607.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "oee-productivity-tracking"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Production and Operation Management (maintenance management and TPM)",
+    "url": "https://onlinecourses.nptel.ac.in/noc20_mg06/preview",
+    "provider": "NPTEL (IIT Roorkee)",
+    "kind": "course",
+    "skillIds": [
+      "oee-productivity-tracking",
+      "preventive-maintenance"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Operations and Maintenance Best Practices Guide: Achieving Operational Efficiency",
+    "url": "https://www.energy.gov/eere/femp/articles/operations-and-maintenance-best-practices-guide-achieving-operational-efficiency",
+    "provider": "US Department of Energy (FEMP)",
+    "kind": "docs",
+    "skillIds": [
+      "preventive-maintenance",
+      "mechanical-equipment-maintenance"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Reliability-Centered Maintenance Guide for Facilities and Collateral Equipment",
+    "url": "https://www.nasa.gov/wp-content/uploads/2023/06/nasa-rcmguide.pdf",
+    "provider": "NASA",
+    "kind": "docs",
+    "skillIds": [
+      "preventive-maintenance",
+      "maintenance-reliability-metrics"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Constant repair rate (HPP/exponential) model: MTBF estimates",
+    "url": "https://www.itl.nist.gov/div898/handbook/apr/section4/apr451.htm",
+    "provider": "NIST/SEMATECH e-Handbook of Statistical Methods",
+    "kind": "docs",
+    "skillIds": [
+      "maintenance-reliability-metrics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Introduction to Reliability Engineering",
+    "url": "https://onlinecourses.nptel.ac.in/noc23_ge20/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "maintenance-reliability-metrics"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Oil Hydraulics and Pneumatics",
+    "url": "https://onlinecourses.nptel.ac.in/noc24_me55/preview",
+    "provider": "NPTEL (IIT Madras)",
+    "kind": "course",
+    "skillIds": [
+      "hydraulics-pneumatics"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Introduction to Hydraulic and Pneumatic Systems (Module 1)",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/112105046/m1L1.pdf",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "docs",
+    "skillIds": [
+      "hydraulics-pneumatics"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Fluid Power Control: Introduction to Hydraulics and Pneumatics (Lecture 1)",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/112106175/Module%201/Lecture%201.pdf",
+    "provider": "NPTEL (IIT Madras)",
+    "kind": "docs",
+    "skillIds": [
+      "hydraulics-pneumatics"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Machinery Fault Diagnosis and Signal Processing",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_me60/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "mechanical-equipment-maintenance"
+    ],
+    "minutes": 1440,
+    "free": true
+  },
+  {
+    "title": "Vibration Based Condition Monitoring in Rotating Machinery",
+    "url": "https://archive.nptel.ac.in/content/storage2/courses/112103024/module15/lec2/6.html",
+    "provider": "NPTEL (IIT Guwahati)",
+    "kind": "docs",
+    "skillIds": [
+      "mechanical-equipment-maintenance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Motor Systems Tip Sheet #4: The Importance of Motor Shaft Alignment",
+    "url": "https://webarchive.library.unt.edu/web/20120916062823/http://www1.eere.energy.gov/manufacturing/tech_deployment/pdfs/importance_motor_shaft_motor_systemts4.pdf",
+    "provider": "US Department of Energy (UNT web archive)",
+    "kind": "docs",
+    "skillIds": [
+      "mechanical-equipment-maintenance"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Maintenance Process Phases (SAP S/4HANA)",
+    "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/e72f747389b340229f7fa343975bfa57/57372b93c62943718032b05fe5551733.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-pm-maintenance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Manage Maintenance Notifications and Orders (SAP S/4HANA Cloud)",
+    "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/2dfa044a255f49e89a3050daf3c61c11/d8a94ddd0c514780a9836aa04524f96f.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "sap-pm-maintenance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Work Orders module (IBM Maximo Manage)",
+    "url": "https://www.ibm.com/docs/en/mas-cd/maximo-manage/continuous-delivery?topic=manage-work-orders-module",
+    "provider": "IBM Documentation",
+    "kind": "docs",
+    "skillIds": [
+      "sap-pm-maintenance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "A comprehensive guide to customs clearance procedure in India",
+    "url": "https://www.kanakkupillai.com/learn/a-comprehensive-guide-to-customs-clearance-procedure-in-india/",
+    "provider": "Kanakkupillai",
+    "kind": "docs",
+    "skillIds": [
+      "customs-clearance-compliance"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Customs clearance of imported goods",
+    "url": "https://www.shiprocket.in/blog/custom-clearance-of-imported-goods/amp/",
+    "provider": "Shiprocket",
     "kind": "docs",
     "skillIds": [
       "customs-clearance-compliance"

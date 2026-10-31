@@ -1,0 +1,52 @@
+{
+  "id": "graduate-engineer-trainee-mechanical-fresher-campus",
+  "roleSlug": "graduate-engineer-trainee-mechanical",
+  "persona": "fresher-campus",
+  "resumeText": "Rohit Patil\nKolhapur, Maharashtra | rohit.patil@example.com\n\nEDUCATION\nB.E. Mechanical Engineering, Panchganga Institute of Engineering (made-up), Kolhapur, 2026, 8.1 CGPA\n\nINTERNSHIP\nSummer Intern, Shivam Castings and Machining Pvt Ltd (made-up), Kolhapur MIDC | Jun 2025 - Jul 2025\n- Studied machining processes on CNC lathes and VMCs in the machine shop for pump flanges\n- Checked machined flanges with vernier caliper and micrometer against the inspection report\n- Read engineering drawings of pump casings to prepare a simple process sheet\n- Attended induction on the work permit system and PPE before shop-floor access\n\nPROJECT\n- Modelled a gearbox housing in SolidWorks and prepared its 2D drawing sheets for the final-year project\n\nSKILLS\nSolidWorks, AutoCAD, MS Excel, Marathi, Hindi, English\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "3d-cad-modelling",
+        "quote": "Modelled a gearbox housing in SolidWorks"
+      },
+      {
+        "skillId": "materials-manufacturing-processes",
+        "quote": "Studied machining processes on CNC lathes"
+      },
+      {
+        "skillId": "dimensional-inspection-instruments",
+        "quote": "Checked machined flanges with vernier caliper"
+      },
+      {
+        "skillId": "engineering-drawing-reading",
+        "quote": "Read engineering drawings of pump casings"
+      },
+      {
+        "skillId": "industrial-safety-practices",
+        "quote": "Attended induction on the work permit system"
+      },
+      {
+        "skillId": "excel",
+        "quote": "SolidWorks, AutoCAD, MS Excel, Marathi, Hindi, English"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "excel",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "plc-iec-61131-programming",
+      "sap-pp-configuration",
+      "cmm-inspection",
+      "fea-basics"
+    ]
+  },
+  "reviewedBy": null
+}

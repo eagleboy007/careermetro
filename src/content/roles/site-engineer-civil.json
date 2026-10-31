@@ -1,0 +1,117 @@
+{
+  "slug": "site-engineer-civil",
+  "title": "Site Engineer - Civil",
+  "summary": "A civil site engineer makes sure a building, road or plant is built as drawn, safely and to quality. They work on the construction site under a project or senior engineer, supervising contractors and labour, checking concrete and steel work, and reporting daily progress.",
+  "dailyDuties": [
+    "Check shuttering, reinforcement and levels against structural drawings before a concrete pour",
+    "Witness slump tests and cast cubes for compressive strength testing",
+    "Supervise contractors and labour gangs on the day's work",
+    "Write the daily progress report and update site registers",
+    "Calculate quantities of concrete and steel needed for the next activities",
+    "Run toolbox talks and check PPE and scaffolding safety",
+    "Raise drawing queries with the design team"
+  ],
+  "typicalTitles": [
+    "Civil Site Engineer",
+    "Junior Site Engineer - Civil",
+    "Graduate Engineer Trainee - Civil",
+    "Site Execution Engineer - Civil",
+    "Trainee Site Engineer",
+    "Junior Engineer - Civil Execution",
+    "Assistant Site Engineer - Civil"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "civil-drawing-reading",
+      "importance": "required",
+      "expectation": "Read structural and architectural drawings and check work against them",
+      "postingShare": null
+    },
+    {
+      "skillId": "site-execution-supervision",
+      "importance": "required",
+      "expectation": "Supervise RCC, shuttering, reinforcement and finishing work on site",
+      "postingShare": null
+    },
+    {
+      "skillId": "concrete-quality-tests",
+      "importance": "required",
+      "expectation": "Carry out or witness cube, slump and other material tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "is-456-concrete-codes",
+      "importance": "required",
+      "expectation": "Apply IS 456 and related codes to concrete work",
+      "postingShare": null
+    },
+    {
+      "skillId": "surveying-levelling",
+      "importance": "required",
+      "expectation": "Use an auto level or total station to set out and check levels",
+      "postingShare": null
+    },
+    {
+      "skillId": "quantity-takeoff",
+      "importance": "required",
+      "expectation": "Work out quantities of concrete, steel and other materials from drawings",
+      "postingShare": null
+    },
+    {
+      "skillId": "site-progress-reporting",
+      "importance": "required",
+      "expectation": "Write daily progress reports and keep site records",
+      "postingShare": null
+    },
+    {
+      "skillId": "construction-site-safety",
+      "importance": "required",
+      "expectation": "Follow and enforce basic site safety such as PPE and work-at-height rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Coordinate with supervisors, contractors and the project manager",
+      "postingShare": null
+    },
+    {
+      "skillId": "labour-contractor-coordination",
+      "importance": "nice_to_have",
+      "expectation": "Plan daily work with labour gangs and subcontractors",
+      "postingShare": null
+    },
+    {
+      "skillId": "bar-bending-schedule",
+      "importance": "nice_to_have",
+      "expectation": "Check bar bending schedules before steel is cut",
+      "postingShare": null
+    },
+    {
+      "skillId": "autocad-2d-drafting",
+      "importance": "nice_to_have",
+      "expectation": "Open and mark up drawings in AutoCAD",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Track quantities and progress in Excel",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

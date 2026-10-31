@@ -1,0 +1,115 @@
+{
+  "slug": "fmcg-sales-officer",
+  "title": "FMCG Sales Officer",
+  "summary": "An FMCG sales officer is the entry-level field salesperson of a consumer goods company, covering a territory of retail shops through one or more distributors. They visit outlets on a fixed beat plan, book orders, set up displays and report daily to an area sales manager, aiming at monthly secondary sales targets (distributor-to-retailer sales).",
+  "dailyDuties": [
+    "Visit retail outlets on the day's beat plan and book orders",
+    "Open new outlets and push new products in the territory",
+    "Check distributor stock and help place primary orders",
+    "Set up displays and keep brands visible on shelves",
+    "Report visits and orders in the SFA app at the end of the day",
+    "Track secondary sales against the monthly target with the area manager"
+  ],
+  "typicalTitles": [
+    "Sales Officer - FMCG",
+    "Territory Sales Officer - General Trade",
+    "Sales Officer - General Trade",
+    "Junior Sales Officer - FMCG",
+    "Field Sales Officer - Consumer Goods",
+    "Sales Trainee - FMCG"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "primary-secondary-sales",
+      "importance": "required",
+      "expectation": "Follow the beat plan and drive secondary sales through retailers",
+      "postingShare": null
+    },
+    {
+      "skillId": "retailer-order-booking",
+      "importance": "required",
+      "expectation": "Visit retailers daily, book orders and open new outlets",
+      "postingShare": null
+    },
+    {
+      "skillId": "field-sales-meetings",
+      "importance": "required",
+      "expectation": "Spend most of the day in the market meeting shopkeepers",
+      "postingShare": null
+    },
+    {
+      "skillId": "visual-merchandising",
+      "importance": "required",
+      "expectation": "Set up displays and keep brands visible on the shelf",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-market-research",
+      "importance": "required",
+      "expectation": "Track competitor activity and retailer feedback in the territory",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep sales and outlet trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Speak the local language and English with retailers and the distributor",
+      "postingShare": null
+    },
+    {
+      "skillId": "dms-sfa-tools",
+      "importance": "nice_to_have",
+      "expectation": "Report orders and visits in the company's SFA app and DMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "distributor-management",
+      "importance": "nice_to_have",
+      "expectation": "Check distributor stock, place primary orders and guide the distributor's salesmen",
+      "postingShare": null
+    },
+    {
+      "skillId": "territory-sales-planning",
+      "importance": "nice_to_have",
+      "expectation": "Plan beats and outlet coverage for the territory",
+      "postingShare": null
+    },
+    {
+      "skillId": "trade-spend-management",
+      "importance": "nice_to_have",
+      "expectation": "Run trade schemes and promotions for retailers",
+      "postingShare": null
+    },
+    {
+      "skillId": "channel-credit-collections",
+      "importance": "nice_to_have",
+      "expectation": "Follow up on distributor payments and claims",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "nice_to_have",
+      "expectation": "Negotiate display space and order size with retailers",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

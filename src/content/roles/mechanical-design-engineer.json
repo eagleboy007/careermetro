@@ -1,0 +1,116 @@
+{
+  "slug": "mechanical-design-engineer",
+  "title": "Mechanical Design Engineer",
+  "summary": "A mechanical design engineer turns product ideas into 3D CAD models, 2D drawings and bills of materials that a factory can build. Early-career design engineers work in an R&D or engineering team under a senior designer, doing calculations, applying GD&T (the symbols that define allowed shape and size variation) and fixing designs for manufacturing.",
+  "dailyDuties": [
+    "Model parts and assemblies in SolidWorks, Creo or CATIA",
+    "Make 2D drawings with GD&T and release them for review",
+    "Prepare and update bills of materials for assemblies",
+    "Run design calculations and simple tolerance stack-ups",
+    "Discuss manufacturability with production and suppliers",
+    "Update designs after review comments and engineering changes"
+  ],
+  "typicalTitles": [
+    "Junior Design Engineer - Mechanical",
+    "Associate Design Engineer - Mechanical",
+    "CAD Design Engineer - Mechanical",
+    "SolidWorks Design Engineer",
+    "Creo Design Engineer",
+    "Graduate Engineer Trainee - Mechanical Design",
+    "Trainee Design Engineer - Mechanical"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "3d-cad-modelling",
+      "importance": "required",
+      "expectation": "Build parts and assemblies in SolidWorks, Creo, CATIA or NX",
+      "postingShare": null
+    },
+    {
+      "skillId": "mechanical-2d-drafting",
+      "importance": "required",
+      "expectation": "Make 2D manufacturing drawings that follow drafting standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-drawing-reading",
+      "importance": "required",
+      "expectation": "Apply GD&T symbols correctly on drawings",
+      "postingShare": null
+    },
+    {
+      "skillId": "tolerance-stack-up-analysis",
+      "importance": "required",
+      "expectation": "Choose fits and check a simple tolerance stack-up",
+      "postingShare": null
+    },
+    {
+      "skillId": "bom-management",
+      "importance": "required",
+      "expectation": "Prepare and update the bill of materials for an assembly",
+      "postingShare": null
+    },
+    {
+      "skillId": "mechanical-design-calculations",
+      "importance": "required",
+      "expectation": "Do hand calculations for strength, shafts, bearings and fasteners",
+      "postingShare": null
+    },
+    {
+      "skillId": "materials-manufacturing-processes",
+      "importance": "required",
+      "expectation": "Pick materials and processes such as machining, sheet metal or casting",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain designs to seniors, the shop floor and suppliers",
+      "postingShare": null
+    },
+    {
+      "skillId": "dfm-dfa",
+      "importance": "nice_to_have",
+      "expectation": "Change designs so they are easier to make and assemble",
+      "postingShare": null
+    },
+    {
+      "skillId": "fea-basics",
+      "importance": "nice_to_have",
+      "expectation": "Run basic stress checks in ANSYS or CAD simulation",
+      "postingShare": null
+    },
+    {
+      "skillId": "design-fmea",
+      "importance": "nice_to_have",
+      "expectation": "Contribute to a design FMEA",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Keep design calculations and trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "nice_to_have",
+      "expectation": "Help investigate field or production issues",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

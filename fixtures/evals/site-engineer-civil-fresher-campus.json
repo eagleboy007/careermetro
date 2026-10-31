@@ -1,0 +1,59 @@
+{
+  "id": "site-engineer-civil-fresher-campus",
+  "roleSlug": "site-engineer-civil",
+  "persona": "fresher-campus",
+  "resumeText": "Arjun Reddy | Hyderabad | arjun.reddy@example.com\n\nEDUCATION\nB.Tech Civil Engineering, Godavari Institute of Engineering, Hyderabad, 2026, CGPA 7.6\n\nINTERNSHIP\nSite Intern, Musi Buildcon Pvt Ltd, G+12 residential tower, Kokapet, May - Jul 2025\n- Checked shuttering and reinforcement for 4th floor slab against the structural drawings with the site engineer.\n- Witnessed slump tests and cast concrete cubes for 7 and 28 day compressive strength tests.\n- Helped prepare the daily progress report and updated the cement register.\n- Calculated concrete and steel quantities for two floor slabs from the drawings.\n\nPROJECTS\n- Survey camp: levelling with an auto level and a closed traverse with a total station.\n- Final year: mix design of M25 concrete as per IS 10262 and IS 456.\n\nSKILLS\nAutoCAD, MS Excel, STAAD.Pro, site safety\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "site-execution-supervision",
+        "quote": "Checked shuttering and reinforcement for 4th floor slab"
+      },
+      {
+        "skillId": "civil-drawing-reading",
+        "quote": "4th floor slab against the structural drawings"
+      },
+      {
+        "skillId": "concrete-quality-tests",
+        "quote": "Witnessed slump tests and cast concrete cubes"
+      },
+      {
+        "skillId": "site-progress-reporting",
+        "quote": "Helped prepare the daily progress report"
+      },
+      {
+        "skillId": "quantity-takeoff",
+        "quote": "Calculated concrete and steel quantities for two floor slabs from the drawings"
+      },
+      {
+        "skillId": "surveying-levelling",
+        "quote": "levelling with an auto level and a closed traverse with a total station"
+      },
+      {
+        "skillId": "is-456-concrete-codes",
+        "quote": "mix design of M25 concrete as per IS 10262 and IS 456"
+      },
+      {
+        "skillId": "construction-site-safety",
+        "quote": "AutoCAD, MS Excel, STAAD.Pro, site safety"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "construction-site-safety",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "bar-bending-schedule",
+      "ra-subcontractor-billing",
+      "labour-contractor-coordination"
+    ]
+  },
+  "reviewedBy": null
+}
