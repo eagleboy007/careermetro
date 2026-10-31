@@ -1,0 +1,121 @@
+{
+  "slug": "brand-manager",
+  "title": "Brand Manager",
+  "summary": "A brand manager runs a consumer brand like a small business: setting its plan and budget, understanding buyers, and launching products and campaigns that grow sales and market share. The role sits in the marketing team of FMCG and consumer goods companies and works closely with sales, R&D and agencies.",
+  "dailyDuties": [
+    "Review brand sales, market share and P&L against plan",
+    "Brief creative and media agencies on upcoming campaigns",
+    "Plan in-store activations and promotions with sales",
+    "Work with R&D on new product concepts and packaging",
+    "Read consumer research and brand health tracking results",
+    "Present launch plans to sales teams and leadership"
+  ],
+  "typicalTitles": [
+    "Brand Manager - FMCG",
+    "Assistant Brand Manager",
+    "Brand Marketing Manager",
+    "Category Brand Manager",
+    "Brand Manager - Consumer Products",
+    "Group Brand Manager"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "brand-pnl-management",
+      "importance": "required",
+      "expectation": "Own the brand P&L and advertising and promotion budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "brand-strategy-planning",
+      "importance": "required",
+      "expectation": "Write the annual brand plan, positioning and portfolio priorities",
+      "postingShare": null
+    },
+    {
+      "skillId": "consumer-insights",
+      "importance": "required",
+      "expectation": "Commission and use consumer research such as U&A studies, brand tracks and concept tests",
+      "postingShare": null
+    },
+    {
+      "skillId": "atl-btl-campaigns",
+      "importance": "required",
+      "expectation": "Plan and run TV, digital and in-store campaigns across ATL and BTL",
+      "postingShare": null
+    },
+    {
+      "skillId": "agency-management",
+      "importance": "required",
+      "expectation": "Brief and manage creative, media and research agencies",
+      "postingShare": null
+    },
+    {
+      "skillId": "go-to-market-launches",
+      "importance": "required",
+      "expectation": "Take new products and relaunches from brief to launch with R&D and sales",
+      "postingShare": null
+    },
+    {
+      "skillId": "market-share-tracking",
+      "importance": "required",
+      "expectation": "Track market share and distribution from retail audit data and act on it",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Align sales, R&D, supply chain and finance behind the brand plan",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Present plans and results to leadership and the sales team",
+      "postingShare": null
+    },
+    {
+      "skillId": "competitive-intelligence",
+      "importance": "nice_to_have",
+      "expectation": "Track competitor launches, pricing and advertising",
+      "postingShare": null
+    },
+    {
+      "skillId": "trade-spend-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with sales on trade schemes and their return",
+      "postingShare": null
+    },
+    {
+      "skillId": "social-media-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Brief brand social and influencer work",
+      "postingShare": null
+    },
+    {
+      "skillId": "performance-marketing",
+      "importance": "nice_to_have",
+      "expectation": "Read digital campaign returns for e-commerce and D2C",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Build brand MIS and P&L sheets",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

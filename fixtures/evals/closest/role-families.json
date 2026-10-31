@@ -179,14 +179,18 @@
       "digital-marketing-executive",
       "product-marketing-manager",
       "content-writer",
-      "social-media-manager"
+      "social-media-manager",
+      "brand-manager",
+      "seo-specialist"
     ],
     "sales": [
       "key-account-manager",
       "area-sales-manager",
       "inside-sales-executive",
       "relationship-manager-banking",
-      "business-development-executive"
+      "business-development-executive",
+      "medical-representative",
+      "channel-sales-manager"
     ],
     "finance": [
       "financial-analyst",
@@ -196,19 +200,27 @@
       "tax-associate",
       "audit-associate",
       "collections-officer",
-      "treasury-analyst"
+      "treasury-analyst",
+      "equity-research-analyst",
+      "insurance-underwriter",
+      "company-secretary-associate"
     ],
     "hr": [
       "hr-generalist",
       "talent-acquisition-specialist",
       "hr-business-partner",
-      "payroll-executive"
+      "payroll-executive",
+      "compensation-benefits-analyst",
+      "learning-development-specialist"
     ],
     "operations": [
       "supply-chain-analyst",
       "customer-support-executive",
       "procurement-executive",
-      "logistics-coordinator"
+      "logistics-coordinator",
+      "warehouse-operations-executive",
+      "process-excellence-analyst",
+      "retail-store-manager"
     ]
   },
   "neighbours": [

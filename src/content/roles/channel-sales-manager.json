@@ -1,0 +1,127 @@
+{
+  "slug": "channel-sales-manager",
+  "title": "Channel Sales Manager",
+  "summary": "A channel sales manager builds and runs the network of distributors, dealers and retailers that sells a company's products, and makes sure each partner earns a fair return. The role sits in the sales team of FMCG, consumer durables or telecom companies and reports to a regional or national sales head.",
+  "dailyDuties": [
+    "Review secondary sales and stock at each distributor",
+    "Check distributor ROI, margins and pending claims",
+    "Meet dealers to negotiate schemes, credit and targets",
+    "Appoint new partners in towns with no coverage",
+    "Launch and track dealer incentive and loyalty schemes",
+    "Coach sales officers on outlet reach and collections"
+  ],
+  "typicalTitles": [
+    "Channel Sales Manager - FMCG",
+    "Channel Sales Manager - Consumer Durables",
+    "Channel Sales Manager - Telecom",
+    "Channel Development Manager",
+    "Dealer Network Manager",
+    "Distributor Development Manager"
+  ],
+  "experienceBand": {
+    "minYears": 4,
+    "maxYears": 10
+  },
+  "skills": [
+    {
+      "skillId": "distributor-management",
+      "importance": "required",
+      "expectation": "Appoint, review and replace distributors and dealers in the region",
+      "postingShare": null
+    },
+    {
+      "skillId": "distributor-economics",
+      "importance": "required",
+      "expectation": "Work out distributor ROI, margins and investment so partners stay profitable",
+      "postingShare": null
+    },
+    {
+      "skillId": "channel-incentive-programs",
+      "importance": "required",
+      "expectation": "Design and run dealer and retailer incentive and loyalty schemes",
+      "postingShare": null
+    },
+    {
+      "skillId": "distribution-network-expansion",
+      "importance": "required",
+      "expectation": "Add dealers and outlets in uncovered towns to grow retail reach",
+      "postingShare": null
+    },
+    {
+      "skillId": "primary-secondary-sales",
+      "importance": "required",
+      "expectation": "Drive primary billing to distributors and secondary sales to retailers",
+      "postingShare": null
+    },
+    {
+      "skillId": "channel-credit-collections",
+      "importance": "required",
+      "expectation": "Control channel credit, collections and scheme claim settlement",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-forecasting",
+      "importance": "required",
+      "expectation": "Forecast monthly channel volumes and stock needs",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "required",
+      "expectation": "Negotiate margins, credit terms and scheme payouts with channel partners",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead a team of sales officers or territory managers who manage the channel",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build channel MIS, claim trackers and distributor ROI sheets in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "trade-spend-management",
+      "importance": "nice_to_have",
+      "expectation": "Track scheme spend against budget and measure its return",
+      "postingShare": null
+    },
+    {
+      "skillId": "dms-sfa-tools",
+      "importance": "nice_to_have",
+      "expectation": "Read secondary sales and outlet data from DMS and SFA apps",
+      "postingShare": null
+    },
+    {
+      "skillId": "territory-sales-planning",
+      "importance": "nice_to_have",
+      "expectation": "Map towns and routes before appointing new partners",
+      "postingShare": null
+    },
+    {
+      "skillId": "modern-trade-retail",
+      "importance": "nice_to_have",
+      "expectation": "Coordinate with large-format retail where the channel overlaps",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build channel dashboards for regional reviews",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

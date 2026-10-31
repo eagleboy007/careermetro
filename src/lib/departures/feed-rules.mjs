@@ -381,8 +381,11 @@ export const ROLE_TITLES = {
   // Social media managers, leads and strategists (batch B2) before digital marketing; a "Social Media Executive" stays
   // digital marketing, and a community manager only when the title says social media.
   "social-media-manager": /^((senior|sr\.?|lead|associate|assistant|deputy|brand) )*((influencer (and|&) )?social media( (and|&) (community|influencer))?( marketing)? (manager|lead|strategist)|social media strategy (manager|lead))\b|^((senior|sr\.?) )?community manager\b.*\bsocial media\b/i,
+  // SEO specialists, analysts, managers and leads (batch B3) before digital marketing; an "SEO Executive" stays digital
+  // marketing, and an SEO engineer or developer is not one.
+  "seo-specialist": /^((senior|sr\.?|junior|jr\.?|lead|associate|technical|on-page|off-page) )*(seo|search engine optimi[sz]ation) (specialist|analyst|manager|lead|strategist|consultant)\b/i,
   "digital-marketing-executive": /\b(digital|performance|growth|paid|search|seo|sem|social media|content|lifecycle|email|online) market(ing|er)\b|\b(seo|sem|ppc|paid social|paid search|social media) (specialist|executive|manager|associate)\b/i,
-  // Business roles (batches B1 and B2), last, each read only from the titles it is built for. A plain "Account
+  // Business roles (batches B1 to B3), last, each read only from the titles it is built for. A plain "Account
   // Executive", "Sales Manager", "Sales Executive", "Account Manager" or "Relationship Manager" has no rule.
   "product-marketing-manager": /\bproduct marketing (manager|lead|specialist|associate|executive)\b|^manager,? ?[-–]? ?product marketing\b/i,
   "key-account-manager": /^((senior|sr\.?|national|regional|zonal|corporate|associate|deputy|assistant) )*key accounts? (manager|executive|lead|specialist)\b|^((senior|sr\.?|deputy|assistant) )?modern trade (manager|executive|lead)\b/i,
@@ -422,10 +425,33 @@ export const ROLE_TITLES = {
   "procurement-executive": /^(?!.*\b(engineer|developer|software|data|sap|consultant)\b)((senior|sr\.?|junior|jr\.?|assistant|indirect|direct|strategic) )*((purchase|purchasing|procurement|sourcing|vendor development|supplier development) (executive|officer|specialist|associate|coordinator|assistant)|buyer\b.*\b(procurement|purchase|purchasing|sourcing))\b|^executive,? ?[-–]? ?(purchase|procurement)\b/i,
   // Logistics, dispatch and shipping coordinators; a "Logistics Analyst" stays supply chain analyst (above).
   "logistics-coordinator": /^(?!.*\b(engineer|developer|software|data|sap|analyst)\b)((senior|sr\.?|junior|jr\.?|assistant|exim|export|import|inbound|outbound) )*(logistics|dispatch|shipping|transport(ation)?|shipment|exim|export|import)( (and|&) (dispatch|warehouse|exim|logistics|shipping|import|export))?( operations)? (executive|coordinator|officer|associate|assistant|specialist)\b|^executive,? ?[-–]? ?(logistics|dispatch)\b/i,
+  // Batch B3. Pharma field representatives; a medical device or plain "Sales Representative" is not one.
+  "medical-representative": /^((senior|sr\.?|junior|jr\.?|trainee|associate) )*(medical (sales )?representative|medical sales officer|pharma(ceutical)? sales (representative|officer|executive)|professional service representative|therapy business executive|mr\b.*\bpharma)\b/i,
+  // Distributor and dealer channel managers, never a software, cloud or partner alliances channel.
+  "channel-sales-manager": /^(?!.*\b(saas|software|cloud|alliances?)\b)((senior|sr\.?|deputy|assistant|regional|zonal|area|state) )*(channel (sales|development) (manager|lead)|dealer (network|development) manager|distributor development manager)\b/i,
+  // Brand managers, never an employer brand, brand design or brand partnerships title.
+  "brand-manager": /^((senior|sr\.?|assistant|associate|deputy|group|category) )*brand (marketing )?manager\b/i,
+  // Sell-side and buy-side equity research; a plain "Research Analyst" has no rule.
+  "equity-research-analyst": /^(?!.*\b(data|software|engineer|developer|quant(itative)?)\b)((senior|sr\.?|junior|jr\.?|associate|lead) )?(equity research (analyst|associate)|((buy|sell)[- ]side |fundamental )?equity analyst|(research|sector) analyst\b.*\bequit(y|ies))\b/i,
+  // Life, health and general insurance underwriters; a credit or loan underwriter stays credit risk (above).
+  "insurance-underwriter": /^(?!.*\b(credit|loan|mortgage|software|engineer|developer|data)\b)((senior|sr\.?|junior|jr\.?|assistant|deputy|associate) )*(((group )?(health|life|motor|marine|fire|property|casualty|commercial lines|general|engineering|liability|medical)( (and|&) (engineering|marine|property|casualty))?( insurance)?|insurance) underwriter|underwrit(er|ing) (executive|officer|analyst|specialist|associate)\b.*\binsurance)\b/i,
+  // Company secretaries and secretarial staff; a personal or executive secretary is not one.
+  "company-secretary-associate": /^((senior|sr\.?|junior|jr\.?|assistant|deputy|associate) )*(company secretary|(company |corporate )?secretarial( compliance)? (executive|associate|assistant|officer|analyst)|associate,? ?[-–]? ?(corporate |company )?secretarial)\b/i,
+  // Compensation, benefits and total rewards analysts, never an HR systems one.
+  "compensation-benefits-analyst": /^(?!.*\b(engineer|developer|software|systems?|workday|sap|oracle|consultant)\b)((senior|sr\.?|junior|jr\.?|associate|lead) )?(compensation( (and|&) benefits)?|c&b|total rewards?|rewards|benefits) (analyst|specialist|executive|associate)\b/i,
+  // Learning and development staff and trainers, never a machine learning one.
+  "learning-development-specialist": /^(?!.*\b(software|engineer|developer|machine learning|deep learning|data)\b)((senior|sr\.?|junior|jr\.?|associate|assistant|lead|corporate) )*(((learning|training) (and|&) development|l ?& ?d|t ?& ?d) (specialist|executive|consultant|partner|associate|coordinator|officer|lead|analyst)|(executive|specialist|trainer|consultant),? ?[-–]? ?(learning|training) (and|&) development|(corporate trainer|training specialist)\b.*\b(learning|training) (and|&) development)\b/i,
+  // Warehouse executives, supervisors and shift leads; a "Logistics and Warehouse Executive" stays logistics (above),
+  // and a warehouse manager has no rule.
+  "warehouse-operations-executive": /^(?!.*\b(engineer|developer|software|data|sap|analyst)\b)((senior|sr\.?|junior|jr\.?|assistant) )*((inventory (and|&) )?warehouse( operations)? (executive|supervisor|officer|coordinator|incharge|in-charge|shift incharge|team lead)|executive,? ?[-–]? ?warehouse( operations)?|(floor|shift) (lead|supervisor|incharge)\b.*\bwarehouse)\b/i,
+  // Lean, Six Sigma and process excellence analysts, never a software or IT process one.
+  "process-excellence-analyst": /^(?!.*\b(software|engineer|developer|data|it|sap)\b)((senior|sr\.?|junior|jr\.?|associate|lead) )?(((process|operational|operations|business) excellence|process improvement|continuous improvement|lean six sigma|six sigma|quality (and|&) process excellence) (analyst|specialist|associate|executive|consultant|lead)|six sigma (green|black) belt)\b/i,
+  // Retail store and showroom managers; a stores (materials) or dark store manager is not one.
+  "retail-store-manager": /^(?!.*\b(software|engineer|developer|data|it|analyst|app)\b)((senior|sr\.?|assistant|deputy|associate) )*((retail )?store (manager|incharge|in-charge|operations manager)|showroom manager|boutique manager)\b/i,
 };
-const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer"]);
+const MANAGER_OK = new Set(["product-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager"]);
 /** The business rules that may read a sales or recruiting title, which NOT_IN_SCOPE drops for every other rule. */
-const SALES_OK = new Set(["key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive"]);
+const SALES_OK = new Set(["key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive", "medical-representative", "channel-sales-manager"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation)\b/i;

@@ -1,0 +1,123 @@
+{
+  "slug": "process-excellence-analyst",
+  "title": "Process Excellence Analyst",
+  "summary": "A process excellence analyst improves how work gets done using Lean Six Sigma (methods to cut waste and errors): mapping processes, finding root causes, tracking SLA and KPI results and spotting tasks to automate. The role sits in a quality or transformation team in a BPO, global capability centre or plant and works with operations managers.",
+  "dailyDuties": [
+    "Map current processes and find delays and rework",
+    "Run DMAIC improvement projects with operations teams",
+    "Analyse defects with fishbone, 5 whys and Pareto charts",
+    "Build and refresh SLA and KPI dashboards",
+    "Identify tasks that could be automated and size the savings",
+    "Facilitate kaizen workshops and track action items",
+    "Present project results to operations leaders"
+  ],
+  "typicalTitles": [
+    "Process Improvement Analyst",
+    "Lean Six Sigma Analyst",
+    "Continuous Improvement Analyst",
+    "Operational Excellence Analyst",
+    "Six Sigma Green Belt - Process Excellence",
+    "Business Excellence Analyst",
+    "Quality and Process Excellence Specialist"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "dmaic-six-sigma",
+      "importance": "required",
+      "expectation": "Run Green Belt projects through the DMAIC steps (define, measure, analyse, improve, control)",
+      "postingShare": null
+    },
+    {
+      "skillId": "lean-waste-elimination",
+      "importance": "required",
+      "expectation": "Use value stream maps and kaizen to remove waste and delays",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-mapping",
+      "importance": "required",
+      "expectation": "Map as-is and to-be processes with swimlane flowcharts",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "required",
+      "expectation": "Find root causes with fishbone, 5 whys and Pareto analysis",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistical-process-analysis",
+      "importance": "required",
+      "expectation": "Analyse process data in Minitab or Excel, including control charts and capability",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "required",
+      "expectation": "Build SLA and KPI dashboards that operations leaders review",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Clean and analyse operations data in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "automation-opportunity-assessment",
+      "importance": "required",
+      "expectation": "Spot tasks fit for automation and size the benefit",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with operations managers and clients to agree and sustain changes",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build dashboards in Power BI",
+      "postingShare": null
+    },
+    {
+      "skillId": "robotic-process-automation",
+      "importance": "nice_to_have",
+      "expectation": "Understand how RPA bots work when handing over automation ideas",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-case",
+      "importance": "nice_to_have",
+      "expectation": "Write the cost-benefit case for an improvement",
+      "postingShare": null
+    },
+    {
+      "skillId": "statistics",
+      "importance": "nice_to_have",
+      "expectation": "Apply hypothesis tests and regression to process data",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Present project results and train teams on new processes",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

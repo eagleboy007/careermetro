@@ -1,0 +1,110 @@
+{
+  "slug": "equity-research-analyst",
+  "title": "Equity Research Analyst",
+  "summary": "Studies listed companies and their sectors, builds earnings models and values the shares to recommend buying or selling. Works in a broking firm's research desk (sell-side) or with fund managers at a mutual fund or investment firm (buy-side), usually under a senior analyst.",
+  "dailyDuties": [
+    "Update company models after quarterly results",
+    "Write earnings previews and results update notes",
+    "Value stocks using DCF and peer multiples",
+    "Join management meetings and earnings calls and take notes",
+    "Research sector trends and run channel checks",
+    "Draft sections of initiating coverage reports",
+    "Answer questions from fund managers or the sales desk"
+  ],
+  "typicalTitles": [
+    "Equity Research Associate",
+    "Equity Research Analyst - Sell Side",
+    "Buy-Side Equity Analyst",
+    "Fundamental Equity Analyst",
+    "Research Analyst - Equities",
+    "Sector Analyst - Equity Research"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "financial-modelling",
+      "importance": "required",
+      "expectation": "Build and update company earnings models after each quarterly result",
+      "postingShare": null
+    },
+    {
+      "skillId": "equity-valuation",
+      "importance": "required",
+      "expectation": "Value stocks with DCF, peer multiples or sum-of-the-parts and set target prices",
+      "postingShare": null
+    },
+    {
+      "skillId": "equity-research-reports",
+      "importance": "required",
+      "expectation": "Write initiating coverage reports, earnings previews and results update notes",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-statement-analysis",
+      "importance": "required",
+      "expectation": "Read annual reports and analyse ratios, cash flows and balance sheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "sector-industry-research",
+      "importance": "required",
+      "expectation": "Track a sector and its stocks using industry data and channel checks",
+      "postingShare": null
+    },
+    {
+      "skillId": "company-management-interactions",
+      "importance": "required",
+      "expectation": "Prepare for and take notes in management meetings and earnings calls",
+      "postingShare": null
+    },
+    {
+      "skillId": "market-data-terminals",
+      "importance": "required",
+      "expectation": "Pull company and market data from Bloomberg, FactSet, Capital IQ or Indian databases",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Work fast in Excel for models, comps tables and screens",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Pitch stock ideas clearly to fund managers or the sales desk",
+      "postingShare": null
+    },
+    {
+      "skillId": "sebi-research-analyst-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Know the SEBI research analyst rules and report disclosures",
+      "postingShare": null
+    },
+    {
+      "skillId": "python",
+      "importance": "nice_to_have",
+      "expectation": "Automate data pulls and screens with Python",
+      "postingShare": null
+    },
+    {
+      "skillId": "competitive-intelligence",
+      "importance": "nice_to_have",
+      "expectation": "Compare competitors' strategy and market share within the sector",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

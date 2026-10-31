@@ -12716,7 +12716,8 @@
     "kind": "course",
     "skillIds": [
       "business-case",
-      "financial-modelling"
+      "financial-modelling",
+      "equity-valuation"
     ],
     "minutes": 1200,
     "free": true
@@ -12851,7 +12852,12 @@
       "channel-credit-collections",
       "distributor-management",
       "primary-secondary-sales",
-      "territory-sales-planning"
+      "territory-sales-planning",
+      "channel-incentive-programs",
+      "chemist-stockist-coverage",
+      "distribution-network-expansion",
+      "distributor-economics",
+      "field-call-reporting"
     ],
     "minutes": 1200,
     "free": true
@@ -12951,7 +12957,9 @@
     "provider": "NPTEL (IIT Roorkee)",
     "kind": "course",
     "skillIds": [
-      "product-positioning-messaging"
+      "product-positioning-messaging",
+      "brand-pnl-management",
+      "brand-strategy-planning"
     ],
     "minutes": 1800,
     "free": true
@@ -13463,7 +13471,11 @@
     "provider": "NPTEL (IIT Kanpur)",
     "kind": "course",
     "skillIds": [
-      "key-account-planning"
+      "key-account-planning",
+      "channel-incentive-programs",
+      "field-call-reporting",
+      "medical-detailing",
+      "prescription-generation"
     ],
     "minutes": 1200,
     "free": true
@@ -13474,7 +13486,10 @@
     "provider": "NPTEL (IIT Kanpur)",
     "kind": "course",
     "skillIds": [
-      "distributor-management"
+      "distributor-management",
+      "channel-incentive-programs",
+      "distribution-network-expansion",
+      "distributor-economics"
     ],
     "minutes": 1200,
     "free": true
@@ -13541,7 +13556,13 @@
     "provider": "NPTEL (IIT Kharagpur)",
     "kind": "course",
     "skillIds": [
-      "modern-trade-retail"
+      "modern-trade-retail",
+      "distribution-network-expansion",
+      "distributor-economics",
+      "retail-customer-experience",
+      "retail-store-sales",
+      "store-pnl-management",
+      "visual-merchandising"
     ],
     "minutes": 1200,
     "free": true
@@ -13708,7 +13729,9 @@
     "kind": "course",
     "skillIds": [
       "credit-appraisal",
-      "financial-statement-analysis"
+      "financial-statement-analysis",
+      "company-management-interactions",
+      "equity-research-reports"
     ],
     "minutes": 1200,
     "free": true
@@ -14882,7 +14905,8 @@
     "provider": "MIT OpenCourseWare",
     "kind": "course",
     "skillIds": [
-      "competitive-intelligence"
+      "competitive-intelligence",
+      "brand-strategy-planning"
     ],
     "minutes": 600,
     "free": true
@@ -15017,7 +15041,8 @@
     "provider": "OpenLearn (The Open University)",
     "kind": "course",
     "skillIds": [
-      "banking-client-portfolio-management"
+      "banking-client-portfolio-management",
+      "retail-customer-experience"
     ],
     "minutes": 480,
     "free": true
@@ -16237,7 +16262,11 @@
     "provider": "NPTEL",
     "kind": "course",
     "skillIds": [
-      "compensation-planning"
+      "compensation-planning",
+      "bonus-incentive-plans",
+      "employee-benefits-administration",
+      "job-evaluation-levelling",
+      "pay-structure-design"
     ],
     "minutes": 1800,
     "free": true
@@ -16248,7 +16277,9 @@
     "provider": "CIPD",
     "kind": "docs",
     "skillIds": [
-      "compensation-planning"
+      "compensation-planning",
+      "compensation-survey-tools",
+      "pay-structure-design"
     ],
     "minutes": 20,
     "free": true
@@ -16259,7 +16290,8 @@
     "provider": "CIPD",
     "kind": "docs",
     "skillIds": [
-      "compensation-planning"
+      "compensation-planning",
+      "pay-structure-design"
     ],
     "minutes": 20,
     "free": true
@@ -16510,7 +16542,9 @@
     "provider": "Microsoft Learn",
     "kind": "course",
     "skillIds": [
-      "warehouse-coordination"
+      "warehouse-coordination",
+      "order-picking-packing",
+      "wms-tools"
     ],
     "minutes": 45,
     "free": true
@@ -16583,17 +16617,6 @@
     "free": true
   },
   {
-    "title": "CMake Tutorial (official, step by step)",
-    "url": "https://cmake.org/cmake/help/v4.0/guide/tutorial/index.html",
-    "provider": "Kitware / CMake",
-    "kind": "docs",
-    "skillIds": [
-      "build-tools"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "CICS Transaction Server 5.6 documentation: what is available",
     "url": "https://www.ibm.com/docs/SSGMCP_5.6.0/documentation/Intro.html",
     "provider": "IBM",
@@ -16602,6 +16625,1987 @@
       "cics"
     ],
     "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Qualification file: Medical Sales Representative (LFS/Q0401)",
+    "url": "https://www.nqr.gov.in/qualification/file/Qualification%20File_Medical%20Sales%20Representative_15%20feb2023.pdf",
+    "provider": "NCVET National Qualifications Register",
+    "kind": "docs",
+    "skillIds": [
+      "medical-detailing",
+      "chemist-stockist-coverage",
+      "field-call-reporting",
+      "prescription-generation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Qualification file: Retail Chemist Prescription Audit",
+    "url": "https://nqr.gov.in/qualification/file/MCr3%20Qualification%20file%20Retail%20Chemist%20prescription%20Audit%2012%20December%202023.pdf",
+    "provider": "NCVET National Qualifications Register",
+    "kind": "docs",
+    "skillIds": [
+      "prescription-generation",
+      "chemist-stockist-coverage"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Ethical criteria for medicinal drug promotion",
+    "url": "https://iris.who.int/items/7dc7679c-2d5e-43fb-b67a-984fe4223cd0",
+    "provider": "World Health Organization",
+    "kind": "docs",
+    "skillIds": [
+      "medical-detailing",
+      "ucpmp-compliance"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "General Pharmacology (NPTEL, IIT BHU)",
+    "url": "https://nptel.ac.in/courses/103106838",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "therapy-product-knowledge"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "General Pharmacotherapeutics (NPTEL, IIT BHU)",
+    "url": "https://nptel.ac.in/courses/103106002",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "therapy-product-knowledge"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Medicines: drug information index",
+    "url": "https://medlineplus.gov/medicines.html",
+    "provider": "MedlinePlus (US National Library of Medicine)",
+    "kind": "docs",
+    "skillIds": [
+      "therapy-product-knowledge"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Uniform Code for Pharmaceutical Marketing Practices (UCPMP) 2024",
+    "url": "https://pharma-dept.gov.in/policy/uniform-code-pharmaceutical-marketing-practices-ucpmp-2024-reg",
+    "provider": "Department of Pharmaceuticals, Government of India",
+    "kind": "docs",
+    "skillIds": [
+      "ucpmp-compliance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Circular No. 3 of 2025 and UCPMP 2024 as amended",
+    "url": "https://pharma-dept.gov.in/sites/default/files/Circular%20No.%203%20of%202025%20and%20UCPMP%202024%20as%20amended.pdf",
+    "provider": "Department of Pharmaceuticals, Government of India",
+    "kind": "docs",
+    "skillIds": [
+      "ucpmp-compliance"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "UCPMP guidelines and reports",
+    "url": "https://www.ipa-india.org/ucpmp-guidelines",
+    "provider": "Indian Pharmaceutical Alliance",
+    "kind": "docs",
+    "skillIds": [
+      "ucpmp-compliance"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Indian FMCG Industry Analysis",
+    "url": "https://www.ibef.org/industry/fmcg-presentation",
+    "provider": "India Brand Equity Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "distribution-network-expansion",
+      "sector-industry-research"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Brand Management (NPTEL)",
+    "url": "https://nptel.ac.in/courses/110104167",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "brand-pnl-management",
+      "brand-strategy-planning"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "15.810 Marketing Management (Fall 2010)",
+    "url": "https://ocw.mit.edu/courses/15-810-marketing-management-fall-2010/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "brand-pnl-management"
+    ],
+    "minutes": 1500,
+    "free": true
+  },
+  {
+    "title": "Consumer Behaviour (NPTEL, IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_mg47/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "consumer-insights"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Marketing Research and Analysis (NPTEL, IIT Roorkee)",
+    "url": "https://nptel.ac.in/courses/110107080",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "consumer-insights",
+      "market-share-tracking"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Marketing Research and Analysis - II (NPTEL, IIT Roorkee)",
+    "url": "https://nptel.ac.in/courses/110107113",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "consumer-insights",
+      "market-share-tracking"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Consumer goods panel data (Kantar)",
+    "url": "https://ifs.org.uk/external-datasets/consumer-panel-data-kantar",
+    "provider": "Institute for Fiscal Studies",
+    "kind": "docs",
+    "skillIds": [
+      "market-share-tracking"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Integrated Marketing Communication (NPTEL, IIT Roorkee)",
+    "url": "https://nptel.ac.in/courses/110107158",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "atl-btl-campaigns",
+      "agency-management"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Advertising and Promotions Management (NPTEL, IIT-ISM Dhanbad)",
+    "url": "https://nptel.ac.in/courses/110105625",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "atl-btl-campaigns",
+      "agency-management"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Marketing communications in the digital age",
+    "url": "https://www.open.edu/openlearn/money-business/marketing/marketing-communications-the-digital-age/content-section-0",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "atl-btl-campaigns"
+    ],
+    "minutes": 720,
+    "free": true
+  },
+  {
+    "title": "The best way for a client to brief an agency",
+    "url": "https://ipa.co.uk/media/12104/better-briefs-booklet_10_single-pages.pdf",
+    "provider": "IPA (Institute of Practitioners in Advertising)",
+    "kind": "docs",
+    "skillIds": [
+      "agency-management"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Finding an Agency: best-practice guide",
+    "url": "https://ipa.co.uk/knowledge/documents/finding-an-agency",
+    "provider": "IPA and ISBA",
+    "kind": "docs",
+    "skillIds": [
+      "agency-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Consolidate duplicate URLs with canonicals",
+    "url": "https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls",
+    "provider": "Google Search Central",
+    "kind": "docs",
+    "skillIds": [
+      "technical-seo-audits"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Google crawling and indexing documentation",
+    "url": "https://developers.google.com/search/docs/crawling-indexing",
+    "provider": "Google Search Central",
+    "kind": "docs",
+    "skillIds": [
+      "technical-seo-audits"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Crawl budget management",
+    "url": "https://developers.google.com/crawling/docs/crawl-budget",
+    "provider": "Google Search Central",
+    "kind": "docs",
+    "skillIds": [
+      "technical-seo-audits"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Technical SEO Course",
+    "url": "https://ahrefs.com/academy/technical-seo-course",
+    "provider": "Ahrefs Academy",
+    "kind": "course",
+    "skillIds": [
+      "technical-seo-audits"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "SEO Course for Beginners",
+    "url": "https://ahrefs.com/academy/seo-training-course",
+    "provider": "Ahrefs Academy",
+    "kind": "course",
+    "skillIds": [
+      "keyword-strategy"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Beginner SEO with Semrush",
+    "url": "https://www.semrush.com/academy/courses/seo-essentials-with-semrush/",
+    "provider": "Semrush Academy",
+    "kind": "course",
+    "skillIds": [
+      "keyword-strategy"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "How to find your online competitors",
+    "url": "https://www.semrush.com/academy/courses/how-to-find-your-online-competitors/",
+    "provider": "Semrush Academy",
+    "kind": "course",
+    "skillIds": [
+      "keyword-strategy"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Advanced Link Building Course",
+    "url": "https://ahrefs.com/academy/link-building-course",
+    "provider": "Ahrefs Academy",
+    "kind": "course",
+    "skillIds": [
+      "link-building"
+    ],
+    "minutes": 150,
+    "free": true
+  },
+  {
+    "title": "Off-Page SEO and AI Search Essentials with Semrush",
+    "url": "https://www.semrush.com/academy/courses/off-page-seo-and-ai-search-essentials-with-semrush/",
+    "provider": "Semrush Academy",
+    "kind": "course",
+    "skillIds": [
+      "link-building"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Disavow links to your site",
+    "url": "https://support.google.com/webmasters/answer/2648487?hl=en",
+    "provider": "Google Search Console Help",
+    "kind": "docs",
+    "skillIds": [
+      "link-building"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to use Search Console",
+    "url": "https://developers.google.com/search/docs/monitor-debug/search-console-start",
+    "provider": "Google Search Central",
+    "kind": "docs",
+    "skillIds": [
+      "seo-tools-search-console"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "The Search Console Training video series",
+    "url": "https://developers.google.com/search/blog/2020/01/search-console-training-videos",
+    "provider": "Google Search Central",
+    "kind": "video",
+    "skillIds": [
+      "seo-tools-search-console"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Help with Bing Webmaster Tools",
+    "url": "https://support.microsoft.com/en-US/bing/help-with-bing-webmaster-tools",
+    "provider": "Microsoft Bing",
+    "kind": "docs",
+    "skillIds": [
+      "seo-tools-search-console"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SEO Toolkit Crash Course",
+    "url": "https://www.semrush.com/academy/courses/seo-toolkit-crash-course/",
+    "provider": "Semrush Academy",
+    "kind": "course",
+    "skillIds": [
+      "seo-tools-search-console"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Performance report (Search results): overview and basic setup",
+    "url": "https://support.google.com/webmasters/answer/7576553?hl=en",
+    "provider": "Google Search Console Help",
+    "kind": "docs",
+    "skillIds": [
+      "seo-performance-reporting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "What are impressions, position, and clicks?",
+    "url": "https://support.google.com/webmasters/answer/7042828?hl=en",
+    "provider": "Google Search Console Help",
+    "kind": "docs",
+    "skillIds": [
+      "seo-performance-reporting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Connect to Search Console in Looker Studio",
+    "url": "https://support.google.com/looker-studio/answer/7314895?hl=en",
+    "provider": "Looker Studio Help",
+    "kind": "docs",
+    "skillIds": [
+      "seo-performance-reporting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Connect Search Console to Google Analytics",
+    "url": "https://support.google.com/analytics/answer/10737381?hl=en",
+    "provider": "Google Analytics Help",
+    "kind": "docs",
+    "skillIds": [
+      "seo-performance-reporting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Damodaran online classes (Valuation)",
+    "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/onlineclass.htm",
+    "provider": "Aswath Damodaran, NYU Stern",
+    "kind": "course",
+    "skillIds": [
+      "equity-valuation"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Valuation MBA webcasts, Spring 2025",
+    "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/webcasteqspr25.htm",
+    "provider": "Aswath Damodaran, NYU Stern",
+    "kind": "video",
+    "skillIds": [
+      "equity-valuation"
+    ],
+    "minutes": 2000,
+    "free": true
+  },
+  {
+    "title": "NPTEL noc25_mg98: economic and financial analysis with fundamental analysis",
+    "url": "https://onlinecourses.nptel.ac.in/noc25_mg98/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "equity-valuation",
+      "sector-industry-research"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "CFA Institute Research Challenge classroom series",
+    "url": "https://www.cfainstitute.org/sites/default/files/docs/insights/events/research-challenge/research-challenge-classroom-series.pdf",
+    "provider": "CFA Institute",
+    "kind": "docs",
+    "skillIds": [
+      "equity-research-reports",
+      "sector-industry-research"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Standard V(A): Diligence and reasonable basis",
+    "url": "https://www.cfainstitute.org/standards/professionals/code-ethics-standards/standards-of-practice-v-a",
+    "provider": "CFA Institute",
+    "kind": "docs",
+    "skillIds": [
+      "equity-research-reports"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "IBEF research reports on Indian sectors",
+    "url": "https://www.ibef.org/research",
+    "provider": "India Brand Equity Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "sector-industry-research"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "FAQs on SEBI LODR Regulations",
+    "url": "https://www.sebi.gov.in/sebi_data/faqfiles/apr-2025/1745399101865.pdf",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "company-management-interactions",
+      "sebi-lodr-compliance",
+      "secretarial-audit-support"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Standard I(B): Independence and objectivity",
+    "url": "https://www.cfainstitute.org/standards/professionals/code-ethics-standards/standards-of-practice-i-b",
+    "provider": "CFA Institute",
+    "kind": "docs",
+    "skillIds": [
+      "company-management-interactions"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Bloomberg guides and tutorials (library guide)",
+    "url": "https://guides.library.jhu.edu/bloomberg/general/guides-and-tutorials",
+    "provider": "Johns Hopkins University Libraries",
+    "kind": "docs",
+    "skillIds": [
+      "market-data-terminals"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "User guide: CMIE Prowess dx",
+    "url": "https://iimidr.ac.in/wp-content/uploads/2025/10/User-Guide-CMIE-Prowessdx.pdf",
+    "provider": "IIM Indore Library",
+    "kind": "docs",
+    "skillIds": [
+      "market-data-terminals"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "User guide: Capitaline",
+    "url": "https://iimidr.ac.in/wp-content/uploads/2025/10/User-Guide-Capitaline.pdf",
+    "provider": "IIM Indore Library",
+    "kind": "docs",
+    "skillIds": [
+      "market-data-terminals"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SEBI (Research Analysts) Regulations, 2014",
+    "url": "https://www.sebi.gov.in/legal/regulations/sep-2014/sebi-research-analysts-regulations-2014_27895.html",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-research-analyst-compliance"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "FAQs on SEBI (Research Analysts) Regulations",
+    "url": "https://www.sebi.gov.in/sebi_data/attachdocs/1418122025732.pdf",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-research-analyst-compliance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Research Objectivity Standards",
+    "url": "https://www.cfainstitute.org/sites/default/files/-/media/documents/code/other-codes-standards/read-research-objectivity-standards.pdf",
+    "provider": "CFA Institute",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-research-analyst-compliance"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "A Regulator's Introduction to the Insurance Industry",
+    "url": "https://content.naic.org/sites/default/files/inline-files/prod_serv_marketreg_rii_zb.pdf",
+    "provider": "NAIC",
+    "kind": "docs",
+    "skillIds": [
+      "insurance-risk-assessment"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "IRDAI Master Circular on Life Insurance Products (2024)",
+    "url": "https://irdai.gov.in/documents/37343/365525/Master+Circular+on+Life+Insurance+Products.pdf/d7ca89f3-b894-8c93-3e53-d8caf67a8ba6?version=1.1&t=1718190178836",
+    "provider": "IRDAI",
+    "kind": "docs",
+    "skillIds": [
+      "insurance-risk-assessment",
+      "irdai-regulations",
+      "financial-underwriting"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "IRDAI Master Circular on Health Insurance Business (2024)",
+    "url": "https://irdai.gov.in/documents/37343/365525/%e0%a4%b8%e0%a5%8d%e0%a4%b5%e0%a4%be%e0%a4%b8%e0%a5%8d%e0%a4%a5%e0%a5%8d%e0%a4%af+%e0%a4%ac%e0%a5%80%e0%a4%ae%e0%a4%be+%e0%a4%b5%e0%a5%8d%e0%a4%af%e0%a4%b5%e0%a4%b8%e0%a4%be%e0%a4%af+%e0%a4%aa%e0%a4%b0+%e0%a4%ae%e0%a4%be%e0%a4%b8%e0%a5%8d%e0%a4%9f%e0%a4%b0+%e0%a4%aa%e0%a4%b0%e0%a4%bf%e0%a4%aa%e0%a4%a4%e0%a5%8d%e0%a4%b0+_+Master+Circular++on+Health++Insurance+Business++29052024.pdf/5e707a91-b5de-1ec1-cf18-b66273a6839d?t=1716962621002&version=1.0",
+    "provider": "IRDAI",
+    "kind": "docs",
+    "skillIds": [
+      "medical-underwriting",
+      "irdai-regulations"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Underwriting Focus: obesity and underwriting in Asia",
+    "url": "https://www.genre.com/content/dam/generalreinsuranceprogram/documents/uwfocus14-2-cheong-en.pdf",
+    "provider": "Gen Re",
+    "kind": "docs",
+    "skillIds": [
+      "medical-underwriting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Diabetes and critical illness insurance",
+    "url": "https://www.genre.com/us/knowledge/publications/2025/november/diabetes-and-critical-illness-insurance-en",
+    "provider": "Gen Re",
+    "kind": "docs",
+    "skillIds": [
+      "medical-underwriting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Understanding commercial property underwriting and COPE",
+    "url": "https://insurancejournal.com/news/national/2015/02/03/356085.htm",
+    "provider": "Insurance Journal",
+    "kind": "docs",
+    "skillIds": [
+      "property-casualty-underwriting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "IRDAI Master Circular on General Insurance Business",
+    "url": "https://irdai.gov.in/document-detail?documentId=5025428",
+    "provider": "IRDAI",
+    "kind": "docs",
+    "skillIds": [
+      "property-casualty-underwriting",
+      "irdai-regulations",
+      "insurance-risk-assessment"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Property insurance (consumer education)",
+    "url": "https://policyholder.gov.in/property-insurance",
+    "provider": "IRDAI Policyholder portal",
+    "kind": "docs",
+    "skillIds": [
+      "property-casualty-underwriting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Basic Ratemaking (Werner and Modlin)",
+    "url": "https://casact.org/library/studynotes/Werner_Modlin_Ratemaking.pdf",
+    "provider": "Casualty Actuarial Society",
+    "kind": "docs",
+    "skillIds": [
+      "insurance-pricing-rating",
+      "loss-ratio-analysis"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Estimating Unpaid Claims Using Basic Techniques (Friedland)",
+    "url": "https://www.casact.org/library/studynotes/Friedland_estimating.pdf",
+    "provider": "Casualty Actuarial Society",
+    "kind": "docs",
+    "skillIds": [
+      "loss-ratio-analysis",
+      "insurance-pricing-rating"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Credit-based insurance scores",
+    "url": "https://content.naic.org/insurance-topics/credit-based-insurance-scores",
+    "provider": "NAIC",
+    "kind": "docs",
+    "skillIds": [
+      "insurance-pricing-rating"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "IRDAI Master Circular on Standardization of Health Insurance",
+    "url": "https://irdai.gov.in/document-detail?documentId=395035",
+    "provider": "IRDAI",
+    "kind": "docs",
+    "skillIds": [
+      "policy-terms-wordings"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "What is an insurance endorsement or rider?",
+    "url": "https://content.naic.org/article/consumer-insight-what-insurance-endorsement-or-rider",
+    "provider": "NAIC",
+    "kind": "docs",
+    "skillIds": [
+      "policy-terms-wordings"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Understanding your homeowners or renter's policy",
+    "url": "https://content.naic.org/article/consumer-insight-understanding-your-homeowners-or-renters-policy",
+    "provider": "NAIC",
+    "kind": "docs",
+    "skillIds": [
+      "policy-terms-wordings"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Health insurance (consumer education)",
+    "url": "https://policyholder.gov.in/health-insurance",
+    "provider": "IRDAI Policyholder portal",
+    "kind": "docs",
+    "skillIds": [
+      "policy-terms-wordings"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "IRDAI Master Circular on Reinsurance (2024)",
+    "url": "https://irdai.gov.in/documents/37343/365525/%E0%A4%AA%E0%A5%81%E0%A4%A8%E0%A4%B0%E0%A5%8D%E0%A4%AC%E0%A5%80%E0%A4%AE%E0%A4%BE+%E0%A4%AA%E0%A4%B0+%E0%A4%AE%E0%A4%BE%E0%A4%B8%E0%A5%8D%E0%A4%9F%E0%A4%B0+%E0%A4%AA%E0%A4%B0%E0%A4%BF%E0%A4%AA%E0%A4%A4%E0%A5%8D%E0%A4%B0+_+Master+Circular+on+Reinsurance.pdf/641e5e3e-13c4-a81c-f36f-94bcc5d5a482?version=1.0&t=1717391425023",
+    "provider": "IRDAI",
+    "kind": "docs",
+    "skillIds": [
+      "reinsurance-basics",
+      "irdai-regulations"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "IRDAI Annual Report 2024-25",
+    "url": "https://irdai.gov.in/document-detail?documentId=8375620",
+    "provider": "IRDAI",
+    "kind": "practice",
+    "skillIds": [
+      "loss-ratio-analysis"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "The essential guide to reinsurance",
+    "url": "https://www.swissre.com/Library/the-essential-guide-to-reinsurance.html",
+    "provider": "Swiss Re",
+    "kind": "docs",
+    "skillIds": [
+      "reinsurance-basics"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Reinsurance (Patrik, Foundations of Casualty Actuarial Science ch. 7)",
+    "url": "https://www.casact.org/sites/default/files/database/studynotes_ch7.pdf",
+    "provider": "Casualty Actuarial Society",
+    "kind": "docs",
+    "skillIds": [
+      "reinsurance-basics"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Introduction to reinsurance",
+    "url": "https://www.casact.org/newsletter/article/introduction-reinsurance",
+    "provider": "Casualty Actuarial Society",
+    "kind": "docs",
+    "skillIds": [
+      "reinsurance-basics"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Financial underwriting guidelines: life coverage",
+    "url": "https://ia.ca/-/media/files/ia/formulaires/assind/en/f13-1150a-financial-underwriting-guidelines-life-coverage_20230518.pdf",
+    "provider": "iA Financial Group",
+    "kind": "docs",
+    "skillIds": [
+      "financial-underwriting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013",
+    "url": "https://www.mca.gov.in/content/mca/global/en/acts-rules/companies-act.html",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "companies-act-compliance",
+      "statutory-registers",
+      "secretarial-audit-support"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "MCA e-books: Acts, Rules and Regulations",
+    "url": "https://www.mca.gov.in/content/mca/global/en/acts-rules/ebooks.html",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "companies-act-compliance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Executive Programme: Company Law and Practice study material",
+    "url": "https://smash.icsi.edu/uploadedFiles/Ecart/3c2939a9-5418-4c9a-8fff-ff6d221d4658Company%20Law%20&%20Practice-Jan%2025.pdf",
+    "provider": "ICSI",
+    "kind": "docs",
+    "skillIds": [
+      "companies-act-compliance",
+      "board-meeting-administration",
+      "statutory-registers",
+      "secretarial-audit-support"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "ICSI question papers, June 2026",
+    "url": "https://www.icsi.edu/examination/previous-sessions-qps/june-2026",
+    "provider": "ICSI",
+    "kind": "practice",
+    "skillIds": [
+      "companies-act-compliance"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Steps for e-filing (MCA help and FAQs)",
+    "url": "https://www.mca.gov.in/content/mca/global/en/help-faq/faqs/e-filing2/steps-for-e-filing.html",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "roc-mca-filings"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "MCA21 V3 consolidated FAQs",
+    "url": "https://www.mca.gov.in/Ministry/pdf/V3_Consolidated_FAQ_Dated_26042022.pdf",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "roc-mca-filings"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Master Direction: Reporting under FEMA, 1999",
+    "url": "https://rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=10202",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "fema-rbi-filings"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Classifying General Schedule positions (classification standards)",
+    "url": "https://www.opm.gov/policy-data-oversight/classification-qualifications/classifying-general-schedule-positions/",
+    "provider": "US Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "pay-structure-design",
+      "job-evaluation-levelling"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "The Classifier's Handbook",
+    "url": "https://www.opm.gov/policy-data-oversight/classification-qualifications/classifying-general-schedule-positions/classifierhandbook.pdf",
+    "provider": "US Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "job-evaluation-levelling"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Job evaluation: considerations and risks",
+    "url": "https://www.acas.org.uk/sites/default/files/2021-03/job-evaluation-considerations-and-risks-advisory-booklet.pdf",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "job-evaluation-levelling"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Promoting equity: gender-neutral job evaluation for equal pay, a step-by-step guide",
+    "url": "https://www.ilo.org/publications/promoting-equity-gender-neutral-job-evaluation-equal-pay-step-step-guide-0",
+    "provider": "International Labour Organization",
+    "kind": "docs",
+    "skillIds": [
+      "pay-equity-analysis",
+      "job-evaluation-levelling"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Performance-related pay factsheet",
+    "url": "https://www.cipd.org/uk/knowledge/factsheets/pay-performance-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "bonus-incentive-plans"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Incentives and recognition: evidence review practice summary",
+    "url": "https://www.cipd.org/globalassets/media/knowledge/knowledge-hub/evidence-reviews/incentives-recognition-practice-summary_tcm18-105466.pdf",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "bonus-incentive-plans"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Employee benefits: an introduction",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/benefits-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "employee-benefits-administration"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Group insurance (policyholder guide)",
+    "url": "https://policyholder.gov.in/en/group-insurance",
+    "provider": "IRDAI",
+    "kind": "docs",
+    "skillIds": [
+      "employee-benefits-administration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "IRDAI Guidelines on Group Insurance Policies",
+    "url": "https://irdai.gov.in/documents/37343/1120206/Guidelines+on+Group+Insurance+Policies.pdf/fca6fda8-714e-2f26-b5da-5cfb9dabc760?version=1.1&t=1664998421669",
+    "provider": "IRDAI",
+    "kind": "docs",
+    "skillIds": [
+      "employee-benefits-administration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Global job leveling at Radford",
+    "url": "https://radford.aon.com/aon.radford/media/files/articles/2015/radford_global_job_leveling.pdf",
+    "provider": "Aon Radford",
+    "kind": "docs",
+    "skillIds": [
+      "compensation-survey-tools",
+      "job-evaluation-levelling"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Equal pay audit for larger organisations",
+    "url": "https://www.equalityhumanrights.com/guidance/equal-pay/how-achieve-equal-pay/equal-pay-audit-larger-organisations",
+    "provider": "Equality and Human Rights Commission",
+    "kind": "docs",
+    "skillIds": [
+      "pay-equity-analysis"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Making your gender pay gap calculations",
+    "url": "https://www.gov.uk/guidance/making-your-gender-pay-gap-calculations",
+    "provider": "GOV.UK",
+    "kind": "docs",
+    "skillIds": [
+      "pay-equity-analysis"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Training and Development (NPTEL, IIT Kharagpur)",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_hs65/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "training-needs-analysis",
+      "instructional-design",
+      "training-delivery-facilitation",
+      "training-effectiveness-evaluation"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Learning needs analysis factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/learning-needs-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "training-needs-analysis"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Guide for collection and management of training information",
+    "url": "https://www.opm.gov/policy-data-oversight/training-and-development/reference-materials/collection_management.pdf",
+    "provider": "US Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "training-needs-analysis",
+      "training-effectiveness-evaluation"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Rise 360 user guide",
+    "url": "https://community.articulate.com/kb/user-guide-series/rise-360-user-guide/1193842",
+    "provider": "Articulate",
+    "kind": "docs",
+    "skillIds": [
+      "instructional-design"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Take your teaching online",
+    "url": "https://www.open.edu/openlearn/education-development/education/take-your-teaching-online/content-section-overview",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "instructional-design"
+    ],
+    "minutes": 1920,
+    "free": true
+  },
+  {
+    "title": "Facilitating group discussions",
+    "url": "https://www.open.edu/openlearn/money-business/facilitating-group-discussions/content-section-0",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "training-delivery-facilitation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Deliver engaging and accessible virtual events with Microsoft Teams and Microsoft 365",
+    "url": "https://learn.microsoft.com/en-us/training/paths/m365-virtual-events-fundamentals/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "training-delivery-facilitation"
+    ],
+    "minutes": 180,
+    "free": true
+  },
+  {
+    "title": "Admin quick guide (MoodleDocs)",
+    "url": "https://docs.moodle.org/503/en/Admin_quick_guide",
+    "provider": "Moodle",
+    "kind": "docs",
+    "skillIds": [
+      "lms-administration"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Managing a Moodle site (MoodleDocs)",
+    "url": "https://docs.moodle.org/502/en/Managing_a_Moodle_site",
+    "provider": "Moodle",
+    "kind": "docs",
+    "skillIds": [
+      "lms-administration"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Getting started with Docebo",
+    "url": "https://help.docebo.com/hc/en-us/articles/360020128959-Getting-started-with-Docebo",
+    "provider": "Docebo",
+    "kind": "docs",
+    "skillIds": [
+      "lms-administration"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Training Evaluation Field Guide",
+    "url": "https://www.opm.gov/policy-data-oversight/training-and-development/reference-materials/training_evaluation.pdf",
+    "provider": "US Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "training-effectiveness-evaluation"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Learning evaluation, impact and transfer factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/evaluating-learning-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "training-effectiveness-evaluation"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Federal supervisory and managerial frameworks and guidance",
+    "url": "https://www.opm.gov/policy-data-oversight/training-and-development/training-program-management/federal-supervisory-and-managerial-frameworks-and-guidance.pdf",
+    "provider": "US Office of Personnel Management",
+    "kind": "docs",
+    "skillIds": [
+      "leadership-development-programmes"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Warehouse Associate textbook (Class IX vocational)",
+    "url": "https://psscive.ac.in/storage/uploads/textbooks/pdf/english/warehouse-associate-english-class-9.pdf",
+    "provider": "PSS Central Institute of Vocational Education (NCERT)",
+    "kind": "docs",
+    "skillIds": [
+      "inbound-receiving-putaway",
+      "order-picking-packing"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Receive items (Business Central)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/business-central/warehouse-how-receive-items",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "inbound-receiving-putaway"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Walkthrough: receiving and putting away in advanced warehousing",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/business-central/walkthrough-receiving-and-putting-away-in-advanced-warehousing",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "inbound-receiving-putaway"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Warehouse & Distribution Science (free textbook)",
+    "url": "https://warehouse-science.com/book/",
+    "provider": "Bartholdi and Hackman, Georgia Tech",
+    "kind": "docs",
+    "skillIds": [
+      "order-picking-packing",
+      "inbound-receiving-putaway"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Pick items for warehouse shipment (Business Central)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/business-central/warehouse-how-to-pick-items-for-warehouse-shipment",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "order-picking-packing"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Describe warehouse management in Dynamics 365 Supply Chain Management",
+    "url": "https://learn.microsoft.com/en-us/training/modules/describe-warehouse-management-dynamics-365/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "wms-tools",
+      "inventory-cycle-counting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Warehouse management overview (Supply Chain Management)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/warehousing/warehouse-management-overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "wms-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SAP Extended Warehouse Management (SAP EWM) overview",
+    "url": "https://help.sap.com/docs/SAP_EXTENDED_WAREHOUSE_MANAGEMENT/3d97bec9bf1649099384bb8167df3cf2/4ecb88b8b2422afee10000000a42189e.html",
+    "provider": "SAP Help Portal",
+    "kind": "docs",
+    "skillIds": [
+      "wms-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Cycle counting (Supply Chain Management)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/warehousing/cycle-counting",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "inventory-cycle-counting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Cycle counting example scenarios",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/warehousing/cycle-counting-scenarios",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "inventory-cycle-counting"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Define cycle counting",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/supply-chain/warehousing/tasks/define-cycle-counting",
+    "provider": "Microsoft Learn",
+    "kind": "practice",
+    "skillIds": [
+      "inventory-cycle-counting"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Warehousing: hazards and solutions",
+    "url": "https://www.osha.gov/warehousing/hazards-solutions",
+    "provider": "OSHA",
+    "kind": "docs",
+    "skillIds": [
+      "warehouse-safety-5s"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "eTool: Powered Industrial Trucks (Forklift)",
+    "url": "https://www.osha.gov/etools/powered-industrial-trucks",
+    "provider": "OSHA",
+    "kind": "docs",
+    "skillIds": [
+      "warehouse-safety-5s"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Chapter 4: 5S for workplace organization (Applying Lean Six Sigma for Operational Excellence)",
+    "url": "https://pressbooks.ulib.csuohio.edu/applyingleansixsigmaoe/chapter/chapter-4-5s-for-workplace-organization/",
+    "provider": "Cleveland State University (open textbook)",
+    "kind": "docs",
+    "skillIds": [
+      "warehouse-safety-5s",
+      "lean-waste-elimination"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Managing shift work (HSG256)",
+    "url": "https://www.hse.gov.uk/pubns/books/hsg256.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "warehouse-shift-manpower"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Shift handover",
+    "url": "https://www.hse.gov.uk/humanfactors/topics/shift-handover.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "warehouse-shift-manpower"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Six Sigma (NPTEL, IIT Kharagpur)",
+    "url": "https://nptel.ac.in/courses/110105123",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "dmaic-six-sigma",
+      "statistical-process-analysis",
+      "root-cause-analysis-tools"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "DMAIC process: Define, Measure, Analyze, Improve, Control",
+    "url": "https://asq.org/quality-resources/dmaic",
+    "provider": "ASQ",
+    "kind": "docs",
+    "skillIds": [
+      "dmaic-six-sigma"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Chapter 6: The DMAIC methodology",
+    "url": "https://pressbooks.ulib.csuohio.edu/applyingleansixsigmaoe/chapter/chapter-6-the-dmaic-methodology/",
+    "provider": "Cleveland State University (open textbook)",
+    "kind": "docs",
+    "skillIds": [
+      "dmaic-six-sigma"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Introduction to Lean Six Sigma Methods (16.660J)",
+    "url": "https://ocw.mit.edu/courses/16-660j-introduction-to-lean-six-sigma-methods-january-iap-2012/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "lean-waste-elimination",
+      "dmaic-six-sigma"
+    ],
+    "minutes": 900,
+    "free": true
+  },
+  {
+    "title": "Toyota Production System (NPTEL)",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_mg69/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "lean-waste-elimination"
+    ],
+    "minutes": 1200,
+    "free": true
+  },
+  {
+    "title": "Chapter 2: The Toyota Production System (TPS)",
+    "url": "https://pressbooks.ulib.csuohio.edu/applyingleansixsigmaoe/chapter/chapter-2-the-toyota-production-system-tps/",
+    "provider": "Cleveland State University (open textbook)",
+    "kind": "docs",
+    "skillIds": [
+      "lean-waste-elimination"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Root cause analysis using a fishbone diagram and the five whys",
+    "url": "https://library.mcmaster.ca/spark/root-cause-analysis-using-fishbone-diagram",
+    "provider": "McMaster University Library",
+    "kind": "docs",
+    "skillIds": [
+      "root-cause-analysis-tools"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Root cause analysis (ASQ quality tools guide)",
+    "url": "https://asq.org/-/media/public/wqm/ASQ-WQM_RCA.pdf",
+    "provider": "ASQ",
+    "kind": "docs",
+    "skillIds": [
+      "root-cause-analysis-tools"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Root cause analysis tools",
+    "url": "https://www.mass.gov/doc/root-cause-analysis-tools/download",
+    "provider": "Commonwealth of Massachusetts",
+    "kind": "docs",
+    "skillIds": [
+      "root-cause-analysis-tools"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Process or product monitoring and control (NIST/SEMATECH e-Handbook)",
+    "url": "https://www.itl.nist.gov/div898/handbook/pmc/pmc.htm",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "statistical-process-analysis"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Understanding control charts (Minitab support)",
+    "url": "https://support.minitab.com/en-us/minitab/help-and-how-to/quality-and-process-improvement/control-charts/supporting-topics/basics/understanding-control-charts/",
+    "provider": "Minitab",
+    "kind": "docs",
+    "skillIds": [
+      "statistical-process-analysis"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Overview for crossed gage R&R study (Minitab support)",
+    "url": "https://support.minitab.com/en-us/minitab/help-and-how-to/quality-and-process-improvement/measurement-system-analysis/how-to/gage-study/crossed-gage-r-r-study/before-you-start/overview/",
+    "provider": "Minitab",
+    "kind": "docs",
+    "skillIds": [
+      "statistical-process-analysis"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Identify automation opportunities (Power Automate process mining)",
+    "url": "https://learn.microsoft.com/en-us/power-automate/process-advisor-automation",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "automation-opportunity-assessment"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Get started with process mining in Power Automate",
+    "url": "https://learn.microsoft.com/en-us/training/paths/introduction-process-advisor/",
+    "provider": "Microsoft Learn",
+    "kind": "course",
+    "skillIds": [
+      "automation-opportunity-assessment"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Design phase for planning a Power Automate project",
+    "url": "https://learn.microsoft.com/en-us/power-automate/guidance/planning/process-design",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "automation-opportunity-assessment"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Retail Team Leader participant handbook (preview)",
+    "url": "https://www.nsdcindia.org/scmp/assets/image/582999428-11._Retail_Team_Leader_English_PH_Preview.pdf",
+    "provider": "NSDC / Retailers Association's Skill Council of India",
+    "kind": "docs",
+    "skillIds": [
+      "store-team-rostering-training",
+      "retail-store-sales"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "8 important metrics for retail industry KPIs",
+    "url": "https://www.tableau.com/learn/articles/retail-industry-metrics-kpis",
+    "provider": "Tableau",
+    "kind": "docs",
+    "skillIds": [
+      "retail-store-sales"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Retail Department Manager participant handbook (preview)",
+    "url": "https://www.nsdcindia.org/scmp/assets/image/2041019471-Retail_Department_Manager_PH_Preview.pdf",
+    "provider": "NSDC / Retailers Association's Skill Council of India",
+    "kind": "docs",
+    "skillIds": [
+      "store-pnl-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Retail Math for Profit: How to Think Like a Buyer",
+    "url": "https://cottonworks.com/wp-content/uploads/2024/10/CottonInc_RetailMath_FullBooklet.pdf",
+    "provider": "Cotton Incorporated (CottonWorks)",
+    "kind": "docs",
+    "skillIds": [
+      "store-pnl-management"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of cost accounting and environmental management accounting",
+    "url": "https://www.open.edu/openlearn/money-business/fundamentals-cost-accounting-and-environmental-management-accounting/",
+    "provider": "OpenLearn (The Open University)",
+    "kind": "course",
+    "skillIds": [
+      "store-pnl-management"
+    ],
+    "minutes": 480,
+    "free": true
+  },
+  {
+    "title": "Trainee Associate textbook (Class XI, retail)",
+    "url": "https://www.psscive.ac.in/storage/uploads/textbooks/pdf/english/retail-trainee-associate-english-class-11.pdf",
+    "provider": "PSS Central Institute of Vocational Education (NCERT)",
+    "kind": "docs",
+    "skillIds": [
+      "visual-merchandising"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Visual merchandising: plan merchandise presentation",
+    "url": "https://cottonworks.com/en/topics/retail-marketing/merchandising/visual-merchandising-plan-merchandise-presentation/",
+    "provider": "Cotton Incorporated (CottonWorks)",
+    "kind": "docs",
+    "skillIds": [
+      "visual-merchandising"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Rest and breaks at work",
+    "url": "https://www.acas.org.uk/rest-breaks",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "store-team-rostering-training"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Understanding the Working Time Regulations",
+    "url": "https://www.acas.org.uk/working-time-rules",
+    "provider": "Acas",
+    "kind": "docs",
+    "skillIds": [
+      "store-team-rostering-training"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Store Operations Assistant textbook (Class IX, retail)",
+    "url": "https://www.psscive.ac.in/storage/uploads/textbooks/pdf/english/retail-store-operations-assistant-english-class-9.pdf",
+    "provider": "PSS Central Institute of Vocational Education (NCERT)",
+    "kind": "docs",
+    "skillIds": [
+      "retail-shrinkage-inventory",
+      "retail-customer-experience"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Retail Associate-cum-Cashier textbook (Grade XII)",
+    "url": "https://www.psscive.ac.in/storage/uploads/textbooks/pdf/english/retail-associate-cum-cashier-english-class-%2012.pdf",
+    "provider": "PSS Central Institute of Vocational Education (NCERT)",
+    "kind": "docs",
+    "skillIds": [
+      "pos-store-operations",
+      "retail-shrinkage-inventory"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Retail shrink: causes and how to prevent it",
+    "url": "https://www.shopify.com/retail/retail-shrink",
+    "provider": "Shopify",
+    "kind": "docs",
+    "skillIds": [
+      "retail-shrinkage-inventory"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Retail Cashier textbook (Class IX)",
+    "url": "https://www.psscive.ac.in/storage/uploads/textbooks/pdf/english/retail-cashier-english-class-9.pdf",
+    "provider": "PSS Central Institute of Vocational Education (NCERT)",
+    "kind": "docs",
+    "skillIds": [
+      "pos-store-operations"
+    ],
+    "minutes": 240,
+    "free": true
+  },
+  {
+    "title": "Market pricing steps: benchmark jobs, survey matching and aging",
+    "url": "https://hr.oregonstate.edu/job-category-and-compensation-program/benchmarking-process/market-pricing-steps",
+    "provider": "Oregon State University HR",
+    "kind": "docs",
+    "skillIds": [
+      "compensation-survey-tools"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015",
+    "url": "https://sebi.gov.in/legal/regulations/sep-2015/sebi-listing-obligations-and-disclosure-requirements-regulations-2015_31425.html?QUERY=",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-lodr-compliance"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 204: Secretarial audit for bigger companies",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=49130&sectionno=204&orderno=208",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "secretarial-audit-support"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Form No. MR-3: Secretarial Audit Report format",
+    "url": "https://www.mca.gov.in/bin/ebook/dms/getdocument?doc=MTMzNDY%3D&docCategory=Forms&type=open",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "secretarial-audit-support"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SEBI (Prohibition of Insider Trading) Regulations, 2015 (last amended March 12, 2025)",
+    "url": "https://www.sebi.gov.in/legal/regulations/mar-2025/securities-and-exchange-board-of-india-prohibition-of-insider-trading-regulations-2015-last-amended-on-march-12-2025-_92672.html",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-insider-trading-compliance"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Comprehensive FAQs on SEBI (Prohibition of Insider Trading) Regulations, 2015",
+    "url": "https://www.sebi.gov.in/sebi_data/faqfiles/apr-2025/1744784643061.pdf",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-insider-trading-compliance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Guidance Note on SEBI (Prohibition of Insider Trading) Regulations, 2015",
+    "url": "https://www.sebi.gov.in/sebi_data/attachdocs/1440413398668.pdf",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-insider-trading-compliance"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 170: Register of directors and KMP and their shareholding",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&orderno=174",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "statutory-registers"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 189: Register of contracts or arrangements in which directors are interested",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=49115&sectionno=189&orderno=193",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "statutory-registers"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Form No. MGT-1: Register of members",
+    "url": "https://www.mca.gov.in/bin/ebook/dms/getdocument?doc=MTA3NzA%3D&docCategory=Forms&type=open",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "statutory-registers"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 42: Offer or invitation for subscription of securities on private placement",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=1232&sectionno=42&orderno=44",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "share-capital-transactions"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 62: Further issue of share capital (rights, ESOP, preferential)",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&orderno=64",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "share-capital-transactions"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 68: Power of company to purchase its own securities (buy-back)",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=1258&sectionno=68&orderno=70",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "share-capital-transactions"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 173: Meetings of Board",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=49099&sectionno=173&orderno=177",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "board-meeting-administration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 118: Minutes of proceedings of general meeting and Board meetings",
+    "url": "https://indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&amp=&amp=&amp=&orderno=121&sectionId=1309&sectionno=118",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "board-meeting-administration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "FAQs: Annual Return on Foreign Liabilities and Assets (FLA)",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=1171",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "fema-rbi-filings"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "User Manual for Single Master Form (FIRMS): FC-GPR, FC-TRS and other FDI reporting",
+    "url": "https://rbidocs.rbi.org.in/rdocs/FEMAMASTER/PDFs/SMF-FIRMS347E34AF5938415DAD0904E0584FB5A1.PDF",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "fema-rbi-filings"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Commonly Asked Questions on Annual Filing Forms (AOC-4, MGT-7 on MCA V3)",
+    "url": "https://www.mca.gov.in/content/mca/global/en/help-faq/annual-filing/commonly-asked-questions.html",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "roc-mca-filings"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Management development factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/management-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "leadership-development-programmes"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Leadership development: an evidence review (scientific summary)",
+    "url": "https://www.cipd.org/globalassets/media/knowledge/knowledge-hub/evidence-reviews/2023-pdfs/2023-leadership-development-scientific-summary-8431.pdf",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "leadership-development-programmes"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Fatigue (shift work, rosters and fatigue risk)",
+    "url": "https://www.hse.gov.uk/humanfactors/topics/fatigue.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "warehouse-shift-manpower"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Retail Management (store design, layout and visual merchandising)",
+    "url": "https://onlinecourses.swayam2.ac.in/cec20_mg01/preview",
+    "provider": "SWAYAM",
+    "kind": "course",
+    "skillIds": [
+      "visual-merchandising"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Shift and cash drawer management (POS)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/commerce/shift-drawer-management",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "pos-store-operations"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Quick CMake tutorial",
+    "url": "https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html",
+    "provider": "JetBrains",
+    "kind": "docs",
+    "skillIds": [
+      "build-tools"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Master circular for compliance with SEBI (LODR) Regulations 2015 by listed entities (exchange copy, Nov 2024)",
+    "url": "https://msei.in/SX-Content/Company-Circulars/2024/November/EXCHANGE-18-NOV-2024-MASTER-CIRCULAR-FOR-COMPLIANCE-WITH-THE-PROVISIONS-OF-THE-SEBI-(LODR)-REGULATIONS--2015-BY-LISTED-ENTITIES.pdf",
+    "provider": "Metropolitan Stock Exchange of India (SEBI circular)",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-lodr-compliance"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Financial underwriting explained (insurance dictionary)",
+    "url": "https://lifeinsurance.adityabirlacapital.com/insurance-dictionary/f/financial-underwriting/",
+    "provider": "Aditya Birla Sun Life Insurance",
+    "kind": "docs",
+    "skillIds": [
+      "financial-underwriting"
+    ],
+    "minutes": 10,
     "free": true
   }
 ]

@@ -1,0 +1,63 @@
+{
+  "id": "retail-store-manager-from-assistant-store-manager",
+  "roleSlug": "retail-store-manager",
+  "persona": "Assistant store manager in apparel retail stepping up to run a store",
+  "resumeText": "Pooja Sharma | Jaipur | pooja.sharma@example.com\n\nEXPERIENCE\nAssistant Store Manager, Gulabi Fashion Retail Pvt Ltd, Jaipur (2022 - present)\n- Helped the store achieve 108% of its annual store sales targets and lifted units per transaction from 1.8 to 2.3.\n- Executed planograms and seasonal window displays as per brand VM guidelines.\n- Planned weekly staff rostering for 18 staff based on footfall and sale events.\n- Trained new joiners on product knowledge, billing and service standards.\n- Ran monthly store inventory audits and cut shrinkage from 0.9% to 0.5% of sales.\n- Handled walk-in customer complaints and improved mystery shopper scores from 78 to 91.\n- Supervised 10 sales associates on the floor during the evening shift.\n\nSales Associate, Amber Lifestyle Stores, Jaipur (2019 - 2022)\n- Sold apparel and accessories and handled POS billing.\n\nSKILLS\nStore P&L, MS Excel, POS, visual merchandising\n\nEDUCATION\nBBA, University of Rajasthan, 2019\n",
+  "expected": {
+    "totalYearsExperience": 7,
+    "skills": [
+      {
+        "skillId": "retail-store-sales",
+        "quote": "achieve 108% of its annual store sales targets"
+      },
+      {
+        "skillId": "visual-merchandising",
+        "quote": "Executed planograms and seasonal window displays"
+      },
+      {
+        "skillId": "store-team-rostering-training",
+        "quote": "Planned weekly staff rostering for 18 staff"
+      },
+      {
+        "skillId": "retail-shrinkage-inventory",
+        "quote": "Ran monthly store inventory audits and cut shrinkage"
+      },
+      {
+        "skillId": "retail-customer-experience",
+        "quote": "improved mystery shopper scores from 78 to 91"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Supervised 10 sales associates on the floor"
+      },
+      {
+        "skillId": "pos-store-operations",
+        "quote": "Sold apparel and accessories and handled POS billing"
+      },
+      {
+        "skillId": "store-pnl-management",
+        "quote": "Store P&L"
+      },
+      {
+        "skillId": "excel",
+        "quote": "MS Excel"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "store-pnl-management",
+        "status": "weak"
+      },
+      {
+        "skillId": "excel",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "sales-forecasting",
+      "modern-trade-retail",
+      "distributor-management"
+    ]
+  },
+  "reviewedBy": null
+}
