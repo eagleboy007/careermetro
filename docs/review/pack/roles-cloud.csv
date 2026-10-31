@@ -429,7 +429,7 @@ site-reliability-engineer#day:4,Site Reliability Engineer (SRE),A normal day,Ope
 site-reliability-engineer#day:5,Site Reliability Engineer (SRE),A normal day,Write tooling in Go or Python,,,,
 site-reliability-engineer#day:6,Site Reliability Engineer (SRE),A normal day,Build safe deploys with canaries and rollbacks,,,,
 site-reliability-engineer#day:7,Site Reliability Engineer (SRE),A normal day,Plan failover and disaster recovery,,,,
-site-reliability-engineer#titles,Site Reliability Engineer (SRE),Job titles it covers,Production Engineer; Reliability Engineer; Systems Reliability Engineer; Infrastructure Reliability Engineer; Platform Reliability Engineer; Observability Engineer,,,,
+site-reliability-engineer#titles,Site Reliability Engineer (SRE),Job titles it covers,Reliability Engineer; Systems Reliability Engineer; Infrastructure Reliability Engineer; Platform Reliability Engineer; Observability Engineer,,,,
 site-reliability-engineer#years,Site Reliability Engineer (SRE),Experience (years),2-7,,,,
 site-reliability-engineer#skill:sre-practices,Site Reliability Engineer (SRE),Skill: Required,SRE practices,Set SLOs and error budgets and act on them,,,
 site-reliability-engineer#skill:observability,Site Reliability Engineer (SRE),Skill: Required,"Observability (logs, metrics, traces)","Instrument services with logs, metrics and traces",,,

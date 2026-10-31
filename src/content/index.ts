@@ -60,6 +60,7 @@ import autosarEngineer from "./roles/autosar-engineer.json";
 import backOfficeExecutive from "./roles/back-office-executive.json";
 import bankProbationaryOfficer from "./roles/bank-probationary-officer.json";
 import biDeveloper from "./roles/bi-developer.json";
+import billingQuantityEngineerCivil from "./roles/billing-quantity-engineer-civil.json";
 import blockchainDeveloper from "./roles/blockchain-developer.json";
 import brandManager from "./roles/brand-manager.json";
 import buildReleaseEngineer from "./roles/build-release-engineer.json";
@@ -123,6 +124,8 @@ import fullStackDeveloper from "./roles/full-stack-developer.json";
 import gameDeveloper from "./roles/game-developer.json";
 import gisDeveloper from "./roles/gis-developer.json";
 import golangDeveloper from "./roles/golang-developer.json";
+import graduateEngineerTraineeElectrical from "./roles/graduate-engineer-trainee-electrical.json";
+import graduateEngineerTraineeMechanical from "./roles/graduate-engineer-trainee-mechanical.json";
 import grcManager from "./roles/grc-manager.json";
 import hardwareDesignEngineer from "./roles/hardware-design-engineer.json";
 import hilTestEngineer from "./roles/hil-test-engineer.json";
@@ -153,10 +156,12 @@ import logisticsCoordinator from "./roles/logistics-coordinator.json";
 import lowCodeDeveloper from "./roles/low-code-developer.json";
 import m365Administrator from "./roles/m365-administrator.json";
 import mainframeDeveloper from "./roles/mainframe-developer.json";
+import maintenanceEngineer from "./roles/maintenance-engineer.json";
 import malwareAnalyst from "./roles/malware-analyst.json";
 import managementTrainee from "./roles/management-trainee.json";
 import manualTestEngineer from "./roles/manual-test-engineer.json";
 import marketResearchAnalyst from "./roles/market-research-analyst.json";
+import mechanicalDesignEngineer from "./roles/mechanical-design-engineer.json";
 import medicalRepresentative from "./roles/medical-representative.json";
 import mlEngineer from "./roles/ml-engineer.json";
 import mlopsEngineer from "./roles/mlops-engineer.json";
@@ -185,6 +190,7 @@ import processExcellenceAnalyst from "./roles/process-excellence-analyst.json";
 import procurementExecutive from "./roles/procurement-executive.json";
 import productManager from "./roles/product-manager.json";
 import productMarketingManager from "./roles/product-marketing-manager.json";
+import productionEngineer from "./roles/production-engineer.json";
 import pythonDeveloper from "./roles/python-developer.json";
 import qaAutomationEngineer from "./roles/qa-automation-engineer.json";
 import qaLead from "./roles/qa-lead.json";
@@ -217,6 +223,7 @@ import servicenowAdministrator from "./roles/servicenow-administrator.json";
 import servicenowDeveloper from "./roles/servicenow-developer.json";
 import sharepointDeveloper from "./roles/sharepoint-developer.json";
 import siemEngineer from "./roles/siem-engineer.json";
+import siteEngineerCivil from "./roles/site-engineer-civil.json";
 import siteReliabilityEngineer from "./roles/site-reliability-engineer.json";
 import socAnalystL2 from "./roles/soc-analyst-l2.json";
 import socLead from "./roles/soc-lead.json";
@@ -332,6 +339,7 @@ export const roleProfiles: RoleProfile[] = z
     backOfficeExecutive,
     bankProbationaryOfficer,
     biDeveloper,
+    billingQuantityEngineerCivil,
     blockchainDeveloper,
     brandManager,
     buildReleaseEngineer,
@@ -395,6 +403,8 @@ export const roleProfiles: RoleProfile[] = z
     gameDeveloper,
     gisDeveloper,
     golangDeveloper,
+    graduateEngineerTraineeElectrical,
+    graduateEngineerTraineeMechanical,
     grcManager,
     hardwareDesignEngineer,
     hilTestEngineer,
@@ -425,10 +435,12 @@ export const roleProfiles: RoleProfile[] = z
     lowCodeDeveloper,
     m365Administrator,
     mainframeDeveloper,
+    maintenanceEngineer,
     malwareAnalyst,
     managementTrainee,
     manualTestEngineer,
     marketResearchAnalyst,
+    mechanicalDesignEngineer,
     medicalRepresentative,
     mlEngineer,
     mlopsEngineer,
@@ -457,6 +469,7 @@ export const roleProfiles: RoleProfile[] = z
     procurementExecutive,
     productManager,
     productMarketingManager,
+    productionEngineer,
     pythonDeveloper,
     qaAutomationEngineer,
     qaLead,
@@ -489,6 +502,7 @@ export const roleProfiles: RoleProfile[] = z
     servicenowDeveloper,
     sharepointDeveloper,
     siemEngineer,
+    siteEngineerCivil,
     siteReliabilityEngineer,
     socAnalystL2,
     socLead,

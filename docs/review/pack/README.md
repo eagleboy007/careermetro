@@ -32,6 +32,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | Testing and quality | `roles-testing.csv` | 4 |
 | Software, hardware, delivery and marketing | `roles-other.csv` | 61 |
 | Sales, finance, HR and operations | `roles-business.csv` | 46 |
+| Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
 
 | Questions | File | Lines |
 | --- | --- | --- |
@@ -42,7 +43,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
 
-206 role profiles await review in all.
+213 role profiles await review in all.
 
 ## How answers flow back into the app
 

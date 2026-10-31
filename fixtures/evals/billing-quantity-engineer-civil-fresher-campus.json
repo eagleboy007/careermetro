@@ -1,0 +1,56 @@
+{
+  "id": "billing-quantity-engineer-civil-fresher-campus",
+  "roleSlug": "billing-quantity-engineer-civil",
+  "persona": "fresher-campus",
+  "resumeText": "Priya Nair | Kochi | priya.nair@example.com\n\nEDUCATION\nB.Tech Civil Engineering, Periyar College of Engineering, Kochi, 2026, CGPA 8.0\n\nINTERNSHIP\nBilling Intern, Vembanad Constructions, commercial building project, Ernakulam, Dec 2025 - Feb 2026\n- Took off quantities of brickwork and plastering from architectural drawings for the billing team.\n- Prepared bar bending schedules for footings and columns of the annexe block.\n- Helped compile the third RA bill and checked two subcontractor bills against site measurements.\n- Built measurement sheets in Excel with formulas for length, breadth and depth.\n\nPROJECTS\n- Estimation and costing course project: detailed estimate and rate analysis for a two-storey house using the state schedule of rates.\n\nSKILLS\nAutoCAD, MS Excel, IS 1200, structural drawings\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "quantity-takeoff",
+        "quote": "Took off quantities of brickwork and plastering from architectural drawings"
+      },
+      {
+        "skillId": "bar-bending-schedule",
+        "quote": "Prepared bar bending schedules for footings and columns"
+      },
+      {
+        "skillId": "ra-subcontractor-billing",
+        "quote": "Helped compile the third RA bill and checked two subcontractor bills"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Built measurement sheets in Excel with formulas"
+      },
+      {
+        "skillId": "boq-rate-analysis",
+        "quote": "detailed estimate and rate analysis for a two-storey house"
+      },
+      {
+        "skillId": "civil-drawing-reading",
+        "quote": "plastering from architectural drawings for the billing team"
+      },
+      {
+        "skillId": "is-1200-measurement-rules",
+        "quote": "AutoCAD, MS Excel, IS 1200, structural drawings"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "is-1200-measurement-rules",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "construction-contract-conditions",
+      "material-reconciliation",
+      "concrete-quality-tests",
+      "surveying-levelling"
+    ]
+  },
+  "reviewedBy": null
+}

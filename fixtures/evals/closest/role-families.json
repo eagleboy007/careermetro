@@ -238,6 +238,15 @@
       "quality-control-inspector",
       "export-import-executive",
       "back-office-executive"
+    ],
+    "core-engineering": [
+      "graduate-engineer-trainee-mechanical",
+      "production-engineer",
+      "maintenance-engineer",
+      "graduate-engineer-trainee-electrical",
+      "mechanical-design-engineer",
+      "site-engineer-civil",
+      "billing-quantity-engineer-civil"
     ]
   },
   "neighbours": [
@@ -360,6 +369,18 @@
     [
       "hr",
       "operations"
+    ],
+    [
+      "core-engineering",
+      "hardware"
+    ],
+    [
+      "core-engineering",
+      "operations"
+    ],
+    [
+      "core-engineering",
+      "quality"
     ]
   ],
   "alsoNear": [

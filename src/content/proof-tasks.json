@@ -2470,5 +2470,137 @@
   {
     "skillId": "retailer-order-booking",
     "task": "Plan a beat for 30 synthetic retail outlets: a visit route, an order booking sheet with lines per call and productive calls, and a one-week tracker against a secondary sales target. Share the plan and sheet."
+  },
+  {
+    "skillId": "3d-cad-modelling",
+    "task": "Model a simple assembly (a bench vice or a pulley bracket) in a free or student CAD tool (FreeCAD, Onshape or SolidWorks student), with at least four parts and mates, and export a drawing of one part. Share the files and screenshots."
+  },
+  {
+    "skillId": "autocad-2d-drafting",
+    "task": "Draw a flange or a bracket in AutoCAD (or the free LibreCAD) from a given sketch, with three views, dimensions, tolerances and a title block. Share the DWG or DXF and a PDF print."
+  },
+  {
+    "skillId": "bar-bending-schedule",
+    "task": "Prepare a bar bending schedule for a synthetic RCC beam and slab from given drawings: bar marks, shapes, cutting lengths and steel weight. Share it in Excel."
+  },
+  {
+    "skillId": "bom-management",
+    "task": "Build a multi-level bill of materials for a simple product (a table fan or a bench vice) with part numbers, quantities, materials and make or buy, and show one engineering change. Share the sheet."
+  },
+  {
+    "skillId": "boq-rate-analysis",
+    "task": "Write a BOQ for a synthetic compound wall (excavation, PCC, brickwork, plaster) and a rate analysis for one item using public schedule of rates figures. Share the sheet."
+  },
+  {
+    "skillId": "civil-drawing-reading",
+    "task": "For a public sample RCC building drawing set, list for one column and one beam the size, grade, bar sizes, spacing and cover, and three questions you would raise before casting. Share the note."
+  },
+  {
+    "skillId": "concrete-quality-tests",
+    "task": "For six synthetic cube test results and slump readings of an M25 pour, work out the mean and check them against IS 456 acceptance rules, and say what to do with a failed set. Share the workings."
+  },
+  {
+    "skillId": "construction-site-safety",
+    "task": "Write a toolbox talk and checklist for work at height on a synthetic site: scaffold checks, harness use, edge protection and permits. Share both."
+  },
+  {
+    "skillId": "electrical-cad-tools",
+    "task": "Draw the control wiring of a direct-on-line motor starter (contactor, overload relay, start and stop buttons) in AutoCAD Electrical or a free tool such as QElectroTech, with wire numbers and a terminal list. Share the drawing."
+  },
+  {
+    "skillId": "electrical-drawings-sld",
+    "task": "Draw a single line diagram for a synthetic factory LT distribution (transformer, main panel, four feeders, motor loads) in AutoCAD or a free tool, with ratings marked. Share the drawing."
+  },
+  {
+    "skillId": "electrical-load-calculations",
+    "task": "For a synthetic workshop load list (motors, lights, sockets), work out connected and maximum demand, size the main cable with voltage drop, and pick the breaker rating. Share the workings in a sheet."
+  },
+  {
+    "skillId": "electrical-machines-transformers",
+    "task": "For a synthetic 3-phase induction motor nameplate and a 500 kVA transformer, work out full-load current, slip and efficiency, and explain open and short circuit tests. Share the worked note."
+  },
+  {
+    "skillId": "electrical-safety-ie-rules",
+    "task": "Write a one-page safe work procedure for isolating an LT feeder: permit to work, lockout tagout, testing for dead and earthing, citing the CEA safety regulations it follows. Share it."
+  },
+  {
+    "skillId": "electrical-testing-commissioning",
+    "task": "Write a pre-commissioning test plan for a synthetic LT panel and motor: insulation resistance, continuity, earth resistance and relay checks, with acceptance values and a test sheet. Share it."
+  },
+  {
+    "skillId": "hydraulics-pneumatics",
+    "task": "Draw a pneumatic circuit for a double-acting cylinder with a 5/2 valve and flow control (in a free simulator such as FluidSIM demo or on paper with ISO symbols), and explain how it works and two common faults. Share it."
+  },
+  {
+    "skillId": "industrial-safety-practices",
+    "task": "For a synthetic machine shop, write a HIRA for three jobs (press operation, overhead crane lift, welding), with hazards, controls and PPE, and a sample work permit for one. Share the sheets."
+  },
+  {
+    "skillId": "is-1200-measurement-rules",
+    "task": "Measure a synthetic room's brickwork and plaster by IS 1200 rules, showing deductions for openings, and explain each rule you used. Share the workings."
+  },
+  {
+    "skillId": "is-456-concrete-codes",
+    "task": "Write a one-page note on what IS 456 says for one slab: minimum grade, cover, minimum reinforcement and curing time, with clause numbers. Share it."
+  },
+  {
+    "skillId": "maintenance-reliability-metrics",
+    "task": "From a synthetic year of breakdown records for five machines, work out MTBF and MTTR for each, rank them, and write three actions for the worst machine. Share the sheet."
+  },
+  {
+    "skillId": "materials-manufacturing-processes",
+    "task": "For three parts (a shaft, a sheet metal bracket and a pump housing), pick the material and process route (machining, press, casting, welding) with reasons and a step sequence. Share a two-page note."
+  },
+  {
+    "skillId": "mechanical-2d-drafting",
+    "task": "Make a full manufacturing drawing of a stepped shaft from a given sketch: views, sections, dimensions, tolerances, surface finish and title block in any CAD tool. Share the PDF."
+  },
+  {
+    "skillId": "mechanical-design-calculations",
+    "task": "Design a shaft for a synthetic pulley drive: work out torque, bending moment, diameter by a standard formula and pick a bearing from a public catalogue. Share the calculation sheet."
+  },
+  {
+    "skillId": "mechanical-equipment-maintenance",
+    "task": "Write a step-by-step procedure for replacing the bearing of a centrifugal pump motor, with tools, isolation, alignment checks and a trial run checklist. Share it as a one-page SOP."
+  },
+  {
+    "skillId": "oee-productivity-tracking",
+    "task": "From a synthetic week of shift logs for one CNC machine (planned time, downtime, cycle time, rejects), compute availability, performance, quality and OEE, show the top three losses on a Pareto chart, and suggest one fix. Share it."
+  },
+  {
+    "skillId": "preventive-maintenance",
+    "task": "Write a preventive maintenance schedule for a synthetic plant with a compressor, a pump and a conveyor: daily, weekly and monthly checks, who does them and a checklist for one. Share the schedule."
+  },
+  {
+    "skillId": "production-planning-control",
+    "task": "From a synthetic weekly demand for three part numbers and two machines with cycle times, build a daily production plan in Excel that meets the demand with least changeovers, and track a shift's actual against plan. Share it."
+  },
+  {
+    "skillId": "quantity-takeoff",
+    "task": "Take off quantities of excavation, PCC, RCC and steel for a synthetic footing and column from given drawings, in a measurement sheet with each dimension shown. Share it."
+  },
+  {
+    "skillId": "ra-subcontractor-billing",
+    "task": "Prepare a running account bill for a synthetic subcontractor: work done to date from a measurement sheet, previous bills, deductions and net payable. Share it in Excel."
+  },
+  {
+    "skillId": "site-execution-supervision",
+    "task": "Write a pour checklist for a synthetic RCC slab: shuttering, reinforcement, cover blocks, levels, concrete order and curing, with who signs each step. Share it."
+  },
+  {
+    "skillId": "site-progress-reporting",
+    "task": "Write a daily progress report for a synthetic building site: work done, labour and machines, materials received, hold-ups and next day's plan, plus a weekly summary chart. Share the reports."
+  },
+  {
+    "skillId": "substation-switchgear-basics",
+    "task": "Draw the single line arrangement of a synthetic 33/11 kV substation and label each item (breakers, isolators, CTs, PTs, LAs, busbars) with what it does. Share the drawing and notes."
+  },
+  {
+    "skillId": "surveying-levelling",
+    "task": "From a synthetic set of auto level readings along a 100 m line, fill a level book by the rise and fall method, check the arithmetic and work out reduced levels. Share the level book."
+  },
+  {
+    "skillId": "tolerance-stack-up-analysis",
+    "task": "For a synthetic three-part assembly with given dimensions and tolerances, do a worst case and an RSS stack-up of the gap, and say whether it fits. Share the sheet with workings."
   }
 ]

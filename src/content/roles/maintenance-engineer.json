@@ -1,0 +1,117 @@
+{
+  "slug": "maintenance-engineer",
+  "title": "Maintenance Engineer",
+  "summary": "A maintenance engineer keeps a plant's machines and utilities running by planning preventive maintenance and fixing breakdowns fast. Early-career maintenance engineers work in the plant maintenance team under a maintenance manager, tracking MTTR and MTBF (average repair time and time between failures), handling spares and following lock-out safety rules.",
+  "dailyDuties": [
+    "Carry out preventive maintenance as per the PM schedule",
+    "Attend breakdowns and restore machines quickly",
+    "Troubleshoot hydraulic, pneumatic and mechanical faults",
+    "Apply lock-out tag-out and work permits before each job",
+    "Record breakdowns and update MTTR and MTBF figures",
+    "Raise and close maintenance orders in SAP PM",
+    "Check critical spares stock and raise purchase requests"
+  ],
+  "typicalTitles": [
+    "Plant Maintenance Engineer",
+    "Mechanical Maintenance Engineer",
+    "Electrical Maintenance Engineer",
+    "Junior Engineer - Maintenance",
+    "Assistant Engineer - Maintenance",
+    "Shift Engineer - Maintenance",
+    "Front Line Engineer - Mechanical Maintenance"
+  ],
+  "experienceBand": {
+    "minYears": 0,
+    "maxYears": 3
+  },
+  "skills": [
+    {
+      "skillId": "preventive-maintenance",
+      "importance": "required",
+      "expectation": "Carry out preventive and breakdown maintenance on plant machines",
+      "postingShare": null
+    },
+    {
+      "skillId": "maintenance-reliability-metrics",
+      "importance": "required",
+      "expectation": "Track MTTR, MTBF and downtime and reduce repeat breakdowns",
+      "postingShare": null
+    },
+    {
+      "skillId": "hydraulics-pneumatics",
+      "importance": "required",
+      "expectation": "Troubleshoot hydraulic and pneumatic circuits, valves and cylinders",
+      "postingShare": null
+    },
+    {
+      "skillId": "mechanical-equipment-maintenance",
+      "importance": "required",
+      "expectation": "Maintain bearings, gearboxes, pumps and drives, including alignment and lubrication",
+      "postingShare": null
+    },
+    {
+      "skillId": "industrial-safety-practices",
+      "importance": "required",
+      "expectation": "Apply lock-out tag-out and work permits before every maintenance job",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "required",
+      "expectation": "Do why-why analysis on breakdowns and close the actions",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-drawing-reading",
+      "importance": "required",
+      "expectation": "Read machine and circuit drawings during repairs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Hand over shift status clearly to production and the next maintenance shift",
+      "postingShare": null
+    },
+    {
+      "skillId": "plc-iec-61131-programming",
+      "importance": "nice_to_have",
+      "expectation": "Read PLC ladder logic to find faults on the electrical side",
+      "postingShare": null
+    },
+    {
+      "skillId": "sap-pm-maintenance",
+      "importance": "nice_to_have",
+      "expectation": "Raise notifications and close maintenance orders in SAP PM or a CMMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "inventory-planning-optimization",
+      "importance": "nice_to_have",
+      "expectation": "Keep critical spares at min-max levels and plan spare purchases",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Keep maintenance logs and KPI sheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "lean-waste-elimination",
+      "importance": "nice_to_have",
+      "expectation": "Take part in TPM and kaizen activities",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

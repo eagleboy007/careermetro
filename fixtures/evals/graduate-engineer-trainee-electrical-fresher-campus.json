@@ -1,0 +1,63 @@
+{
+  "id": "graduate-engineer-trainee-electrical-fresher-campus",
+  "roleSlug": "graduate-engineer-trainee-electrical",
+  "persona": "fresher-campus",
+  "resumeText": "Sneha Kulkarni | Nagpur | sneha.kulkarni@example.com\n\nEDUCATION\nB.Tech Electrical Engineering, Vidarbha Institute of Technology, Nagpur, 2026, CGPA 8.1\n\nINTERNSHIP\nSummer Intern, Wardha Power Transmission Pvt Ltd, 220/33 kV substation, Jun - Jul 2025\n- Studied the single line diagram of the 220/33 kV substation and traced each bay on site.\n- Assisted the testing team with insulation resistance tests on two 33 kV breakers.\n- Noted transformer, CT and PT nameplate ratings for the substation equipment register.\n- Recorded daily test readings in an Excel tracker for the commissioning engineer.\n\nPROJECTS\n- Final year: load calculation and cable sizing for a 500 kW college hostel block, with voltage drop checks.\n- Mini project: speed control of a 3-phase induction motor using a VFD in the machines lab.\n\nSKILLS\nAutoCAD Electrical, MATLAB, MS Excel, electrical safety\n",
+  "expected": {
+    "totalYearsExperience": 0,
+    "skills": [
+      {
+        "skillId": "electrical-drawings-sld",
+        "quote": "Studied the single line diagram of the 220/33 kV substation"
+      },
+      {
+        "skillId": "electrical-testing-commissioning",
+        "quote": "Assisted the testing team with insulation resistance tests"
+      },
+      {
+        "skillId": "substation-switchgear-basics",
+        "quote": "Noted transformer, CT and PT nameplate ratings for the substation equipment register"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Recorded daily test readings in an Excel tracker"
+      },
+      {
+        "skillId": "electrical-load-calculations",
+        "quote": "load calculation and cable sizing for a 500 kW college hostel block"
+      },
+      {
+        "skillId": "electrical-machines-transformers",
+        "quote": "speed control of a 3-phase induction motor"
+      },
+      {
+        "skillId": "electrical-cad-tools",
+        "quote": "AutoCAD Electrical, MATLAB, MS Excel, electrical safety"
+      },
+      {
+        "skillId": "electrical-safety-ie-rules",
+        "quote": "AutoCAD Electrical, MATLAB, MS Excel, electrical safety"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "electrical-cad-tools",
+        "status": "weak"
+      },
+      {
+        "skillId": "electrical-safety-ie-rules",
+        "status": "weak"
+      },
+      {
+        "skillId": "communication",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "industrial-control-systems",
+      "power-system-protection",
+      "3d-cad-modelling"
+    ]
+  },
+  "reviewedBy": null
+}
