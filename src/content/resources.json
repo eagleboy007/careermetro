@@ -15041,7 +15041,8 @@
     "provider": "OpenLearn (The Open University)",
     "kind": "course",
     "skillIds": [
-      "banking-client-portfolio-management"
+      "banking-client-portfolio-management",
+      "retail-customer-experience"
     ],
     "minutes": 480,
     "free": true
@@ -16616,17 +16617,6 @@
     "free": true
   },
   {
-    "title": "CMake Tutorial (official, step by step)",
-    "url": "https://cmake.org/cmake/help/v4.0/guide/tutorial/index.html",
-    "provider": "Kitware / CMake",
-    "kind": "docs",
-    "skillIds": [
-      "build-tools"
-    ],
-    "minutes": 180,
-    "free": true
-  },
-  {
     "title": "CICS Transaction Server 5.6 documentation: what is available",
     "url": "https://www.ibm.com/docs/SSGMCP_5.6.0/documentation/Intro.html",
     "provider": "IBM",
@@ -17152,7 +17142,8 @@
     "kind": "docs",
     "skillIds": [
       "company-management-interactions",
-      "sebi-lodr-compliance"
+      "sebi-lodr-compliance",
+      "secretarial-audit-support"
     ],
     "minutes": 45,
     "free": true
@@ -17310,7 +17301,8 @@
     "kind": "docs",
     "skillIds": [
       "property-casualty-underwriting",
-      "irdai-regulations"
+      "irdai-regulations",
+      "insurance-risk-assessment"
     ],
     "minutes": 90,
     "free": true
@@ -18339,6 +18331,282 @@
       "compensation-survey-tools"
     ],
     "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015",
+    "url": "https://sebi.gov.in/legal/regulations/sep-2015/sebi-listing-obligations-and-disclosure-requirements-regulations-2015_31425.html?QUERY=",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-lodr-compliance"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Compliance Calendar - Main Board (regulation-wise LODR deadlines)",
+    "url": "https://www.nseindia.com/static/companies-listing/compliance-information-compliance-calendar-main-board",
+    "provider": "NSE India",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-lodr-compliance"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 204: Secretarial audit for bigger companies",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=49130&sectionno=204&orderno=208",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "secretarial-audit-support"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Form No. MR-3: Secretarial Audit Report format",
+    "url": "https://www.mca.gov.in/bin/ebook/dms/getdocument?doc=MTMzNDY%3D&docCategory=Forms&type=open",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "secretarial-audit-support"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "SEBI (Prohibition of Insider Trading) Regulations, 2015 (last amended March 12, 2025)",
+    "url": "https://www.sebi.gov.in/legal/regulations/mar-2025/securities-and-exchange-board-of-india-prohibition-of-insider-trading-regulations-2015-last-amended-on-march-12-2025-_92672.html",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-insider-trading-compliance"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Comprehensive FAQs on SEBI (Prohibition of Insider Trading) Regulations, 2015",
+    "url": "https://www.sebi.gov.in/sebi_data/faqfiles/apr-2025/1744784643061.pdf",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-insider-trading-compliance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Guidance Note on SEBI (Prohibition of Insider Trading) Regulations, 2015",
+    "url": "https://www.sebi.gov.in/sebi_data/attachdocs/1440413398668.pdf",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "sebi-insider-trading-compliance"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 170: Register of directors and KMP and their shareholding",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&orderno=174",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "statutory-registers"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 189: Register of contracts or arrangements in which directors are interested",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=49115&sectionno=189&orderno=193",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "statutory-registers"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Form No. MGT-1: Register of members",
+    "url": "https://www.mca.gov.in/bin/ebook/dms/getdocument?doc=MTA3NzA%3D&docCategory=Forms&type=open",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "statutory-registers"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 42: Offer or invitation for subscription of securities on private placement",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=1232&sectionno=42&orderno=44",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "share-capital-transactions"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 62: Further issue of share capital (rights, ESOP, preferential)",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&orderno=64",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "share-capital-transactions"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 68: Power of company to purchase its own securities (buy-back)",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=1258&sectionno=68&orderno=70",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "share-capital-transactions"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 173: Meetings of Board",
+    "url": "https://www.indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&sectionId=49099&sectionno=173&orderno=177",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "board-meeting-administration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Companies Act, 2013 - Section 118: Minutes of proceedings of general meeting and Board meetings",
+    "url": "https://indiacode.nic.in/show-data?actid=AC_CEN_22_29_00008_201318_1517807327856&amp=&amp=&amp=&orderno=121&sectionId=1309&sectionno=118",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "board-meeting-administration"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "FAQs: Annual Return on Foreign Liabilities and Assets (FLA)",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=1171",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "fema-rbi-filings"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "User Manual for Single Master Form (FIRMS): FC-GPR, FC-TRS and other FDI reporting",
+    "url": "https://rbidocs.rbi.org.in/rdocs/FEMAMASTER/PDFs/SMF-FIRMS347E34AF5938415DAD0904E0584FB5A1.PDF",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "fema-rbi-filings"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Commonly Asked Questions on Annual Filing Forms (AOC-4, MGT-7 on MCA V3)",
+    "url": "https://www.mca.gov.in/content/mca/global/en/help-faq/annual-filing/commonly-asked-questions.html",
+    "provider": "Ministry of Corporate Affairs",
+    "kind": "docs",
+    "skillIds": [
+      "roc-mca-filings"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "IC-38 Insurance Agents Study Material - Life (underwriting and financial underwriting chapters)",
+    "url": "https://insuranceinstituteofindia.com/documents/d/guest/ic-38-ia-eng-life",
+    "provider": "Insurance Institute of India",
+    "kind": "docs",
+    "skillIds": [
+      "financial-underwriting",
+      "insurance-risk-assessment"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Management development factsheet",
+    "url": "https://www.cipd.org/en/knowledge/factsheets/management-factsheet/",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "leadership-development-programmes"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Leadership development: an evidence review (scientific summary)",
+    "url": "https://www.cipd.org/globalassets/media/knowledge/knowledge-hub/evidence-reviews/2023-pdfs/2023-leadership-development-scientific-summary-8431.pdf",
+    "provider": "CIPD",
+    "kind": "docs",
+    "skillIds": [
+      "leadership-development-programmes"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Fatigue (shift work, rosters and fatigue risk)",
+    "url": "https://www.hse.gov.uk/humanfactors/topics/fatigue.htm",
+    "provider": "HSE",
+    "kind": "docs",
+    "skillIds": [
+      "warehouse-shift-manpower"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Retail Management (store design, layout and visual merchandising)",
+    "url": "https://onlinecourses.swayam2.ac.in/cec20_mg01/preview",
+    "provider": "SWAYAM",
+    "kind": "course",
+    "skillIds": [
+      "visual-merchandising"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Shift and cash drawer management (POS)",
+    "url": "https://learn.microsoft.com/en-us/dynamics365/commerce/shift-drawer-management",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "pos-store-operations"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Quick CMake tutorial",
+    "url": "https://www.jetbrains.com/help/clion/quick-cmake-tutorial.html",
+    "provider": "JetBrains",
+    "kind": "docs",
+    "skillIds": [
+      "build-tools"
+    ],
+    "minutes": 45,
     "free": true
   }
 ]
