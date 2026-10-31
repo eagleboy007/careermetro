@@ -1,4 +1,5 @@
 import { roleProfiles, skills } from "@/content";
+import { countAbilities } from "@/lib/gaps/implies";
 import { profileMatcher, type MatchedSkill } from "@/lib/gaps/match";
 import { formatExperience } from "@/lib/role-view";
 import {
@@ -37,11 +38,6 @@ const likeness = (a: Set<string>, b: Set<string>) => {
 };
 /** Communication, problem solving and the like: they count when shown, but never decide which role is nearest. */
 const contextIds = new Set(skills.filter((s) => s.scoring === "context").map((s) => s.id));
-
-/** Whether one skill implies another, directly or through a chain (pivot tables → Excel). */
-const impliesById = new Map(skills.map((s) => [s.id, s.implies]));
-const implies = (from: string, to: string, seen = new Set<string>()): boolean =>
-  (impliesById.get(from) ?? []).some((id) => id === to || (!seen.has(id) && (seen.add(id), implies(id, to, seen))));
 
 /** The skills a matcher row stands for: a "one of these" group's skills, or the one skill. */
 const unitSkills = (row: MatchedSkill) => row.group?.skillIds ?? [row.skillId];
@@ -93,7 +89,7 @@ export function nearbyLinesFor({ profile, targetSlug, roles = roleProfiles, prov
       // Shared key skills as separate abilities: one a shared skill implies isn't counted again, so Excel and pivot
       // tables are one, and a role can't be closest on them alone (business batch B1: Telecom RAN for a sales resume).
       const keyIds = [...match.met.filter(isKey), ...match.gaps.filter((g) => isKey(g) && byProof(g))].map((r) => r.skillId);
-      const keyAbilities = keyIds.filter((id) => !keyIds.some((other) => other !== id && implies(other, id))).length;
+      const keyAbilities = countAbilities(keyIds);
       return {
         line,
         key,

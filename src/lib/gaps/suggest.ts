@@ -1,8 +1,12 @@
 import type { Profile, RoleProfile } from "@/lib/schemas";
 import { formatExperience } from "@/lib/role-view";
+import { countAbilities } from "./implies";
 import { profileMatcher } from "./match";
 
-/** A role is only suggested once the resume shows at least this share of its required skills. */
+/**
+ * A role is only suggested once the resume shows at least this share of its required skills, counted as separate
+ * abilities: a shown skill another shown skill implies isn't counted again (Excel and pivot tables are one).
+ */
 export const MIN_SHARE = 0.25;
 
 export type RoleSuggestion = {
@@ -41,10 +45,13 @@ export function suggestRoles(profile: Profile, roles: RoleProfile[], now = new D
           fits: years >= role.experienceBand.minYears - 1,
         },
         share: requiredTotal ? requiredMet / requiredTotal : 0,
+        // Only the threshold counts abilities, as the closest role does; the card and the order still count every
+        // shown skill ("3 of 8").
+        abilityShare: requiredTotal ? countAbilities(match.met.map((s) => s.skillId)) / requiredTotal : 0,
         hours: estimatedHours,
       };
     })
-    .filter((r) => r.suggestion.met > 0 && r.share >= MIN_SHARE)
+    .filter((r) => r.suggestion.met > 0 && r.abilityShare >= MIN_SHARE)
     .sort(
       (a, b) =>
         Number(b.suggestion.fits) - Number(a.suggestion.fits) ||
