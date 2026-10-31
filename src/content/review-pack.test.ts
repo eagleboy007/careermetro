@@ -68,8 +68,9 @@ describe("the expert review pack (docs/review/pack)", () => {
     expect(known.has("Ref")).toBe(false);
   });
 
-  it("tells reviewers that Practice changes are edited in place, since Practice questions have no review mark", () => {
-    expect(pack["README.md"]).toContain("Practice questions have no review mark");
+  it("tells reviewers that the first Practice questions are edited in place, and that newer drafts get a review mark", () => {
+    expect(pack["README.md"]).toContain("The first Practice questions have no review mark");
+    expect(pack["README.md"]).toContain("`reviewed: false` on the question and on its open twin");
     expect(pack["README.md"]).not.toMatch(/for a question or a certification, it sets/);
   });
 });

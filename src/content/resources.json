@@ -2628,17 +2628,6 @@
     "free": true
   },
   {
-    "title": "Data protection impact assessments (DPIAs)",
-    "url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/accountability-and-governance/data-protection-impact-assessments-dpias/",
-    "provider": "UK Information Commissioner's Office",
-    "kind": "docs",
-    "skillIds": [
-      "privacy-program-management"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
     "title": "NIST Privacy Framework",
     "url": "https://www.nist.gov/privacy-framework",
     "provider": "NIST",
@@ -11790,28 +11779,6 @@
       "matlab-simulink"
     ],
     "minutes": 180,
-    "free": true
-  },
-  {
-    "title": "ASAM MCD-1 XCP standard overview",
-    "url": "https://www.asam.net/standards/detail/mcd-1-xcp/",
-    "provider": "ASAM",
-    "kind": "docs",
-    "skillIds": [
-      "ecu-measurement-calibration"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "ASAM MCD-1 XCP wiki",
-    "url": "https://www.asam.net/standards/detail/mcd-1-xcp/wiki",
-    "provider": "ASAM",
-    "kind": "docs",
-    "skillIds": [
-      "ecu-measurement-calibration"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -21600,17 +21567,6 @@
     "free": true
   },
   {
-    "title": "Motor Systems Tip Sheet #4: The Importance of Motor Shaft Alignment",
-    "url": "https://webarchive.library.unt.edu/web/20120916062823/http://www1.eere.energy.gov/manufacturing/tech_deployment/pdfs/importance_motor_shaft_motor_systemts4.pdf",
-    "provider": "US Department of Energy (UNT web archive)",
-    "kind": "docs",
-    "skillIds": [
-      "mechanical-equipment-maintenance"
-    ],
-    "minutes": 10,
-    "free": true
-  },
-  {
     "title": "Maintenance Process Phases (SAP S/4HANA)",
     "url": "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/e72f747389b340229f7fa343975bfa57/57372b93c62943718032b05fe5551733.html",
     "provider": "SAP Help Portal",
@@ -22707,28 +22663,6 @@
     "free": true
   },
   {
-    "title": "Groovy documentation",
-    "url": "https://groovy-lang.org/documentation.html",
-    "provider": "Apache Groovy",
-    "kind": "docs",
-    "skillIds": [
-      "groovy-scripting"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "Differences with Java (Groovy)",
-    "url": "https://groovy-lang.org/differences.html",
-    "provider": "Apache Groovy",
-    "kind": "docs",
-    "skillIds": [
-      "groovy-scripting"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Getting started with SAP CPI: a beginner's handbook, part 3 (Groovy basics)",
     "url": "https://community.sap.com/t5/technology-blog-posts-by-members/getting-started-with-sap-cpi-a-beginner-s-handbook-part-3/ba-p/14026580",
     "provider": "SAP Community",
@@ -23096,17 +23030,6 @@
       "websphere-administration"
     ],
     "minutes": 60,
-    "free": true
-  },
-  {
-    "title": "Where to find Liberty documentation (WebSphere Liberty and Open Liberty)",
-    "url": "https://www.ibm.com/docs/SSEQTP_liberty/com.ibm.websphere.wlp.doc/ae/cwlp_docs.html",
-    "provider": "IBM Documentation",
-    "kind": "docs",
-    "skillIds": [
-      "websphere-administration"
-    ],
-    "minutes": 15,
     "free": true
   },
   {
@@ -33227,6 +33150,659 @@
       "calypso-platform"
     ],
     "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Home loan sanction letter: meaning, process and contents",
+    "url": "https://homeloans.hdfc.bank.in/housing-loans/home-loans/home-loan-sanction-letter",
+    "provider": "HDFC Bank",
+    "kind": "docs",
+    "skillIds": [
+      "buyer-home-loan-coordination"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Housing Finance - Master Circular (stage-linked disbursal, tripartite agreements)",
+    "url": "https://www.rbi.org.in/commonman/Upload/English/Notification/PDFs/46MS250915FA.pdf",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "buyer-home-loan-coordination",
+      "home-loan-lap-products"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Loan to Value (LTV) ratio for housing loans",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/Notification.aspx?Id=1269",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "home-loan-lap-products"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Levy of foreclosure charges / pre-payment penalty on floating rate loans",
+    "url": "https://www.rbi.org.in/commonman/english/Scripts/Notification.aspx?Id=1381",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "home-loan-lap-products",
+      "buyer-home-loan-coordination"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Introduction and Overview of Calypso (free e-learning)",
+    "url": "https://learncalypso.nasdaq.com/courses/introduction-and-overview-of-calypso",
+    "provider": "Nasdaq Calypso Learning",
+    "kind": "course",
+    "skillIds": [
+      "calypso-platform"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Calypso Workflow course: trade, transfer and message workflows",
+    "url": "https://calypsoeducation.nasdaq.com/courses/workflow",
+    "provider": "Nasdaq Calypso Education",
+    "kind": "course",
+    "skillIds": [
+      "calypso-platform"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Calypso Trade Filters (free e-learning)",
+    "url": "https://learncalypso.nasdaq.com/courses/trade-filters",
+    "provider": "Nasdaq Calypso Learning",
+    "kind": "course",
+    "skillIds": [
+      "calypso-platform"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Calypso Reports and Reporting Framework (free e-learning)",
+    "url": "https://learncalypso.nasdaq.com/courses/reports-reporting-framework",
+    "provider": "Nasdaq Calypso Learning",
+    "kind": "course",
+    "skillIds": [
+      "calypso-platform"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Equity Capital Market (ECM): definition and offerings",
+    "url": "https://corporatefinanceinstitute.com/resources/knowledge/finance/equity-capital-market-ecm/",
+    "provider": "Corporate Finance Institute",
+    "kind": "docs",
+    "skillIds": [
+      "capital-markets-transactions"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Securities underwriting and raising capital",
+    "url": "https://www.wallstreetprep.com/knowledge/raising-capital-and-security-underwriting/",
+    "provider": "Wall Street Prep",
+    "kind": "docs",
+    "skillIds": [
+      "capital-markets-transactions"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "The Contract Labour (Regulation & Abolition) Act, 1970 - full text",
+    "url": "https://www.labour.gov.in/static/uploads/2025/06/8753816f61f0c4e552591579c2b5daa2.pdf",
+    "provider": "Ministry of Labour & Employment",
+    "kind": "docs",
+    "skillIds": [
+      "contract-labour-compliance"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "DFIR Fundamentals Poster",
+    "url": "https://www.sans.org/posters/dfir-fundamentals-poster",
+    "provider": "SANS Institute",
+    "kind": "docs",
+    "skillIds": [
+      "digital-forensics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-101 Rev. 1: Guidelines on Mobile Device Forensics",
+    "url": "https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-101r1.pdf",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "digital-forensics"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Computer Forensics Tool Testing (CFTT): mobile device tool test reports",
+    "url": "https://www.nist.gov/itl/csd/secure-systems-and-applications/computer-forensics-tool-testing-program-cftt/cftt-7",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "forensic-tool-suites",
+      "digital-forensics"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Introduction to Magnet AXIOM (webinar recording)",
+    "url": "https://www.magnetforensics.com/resources/introduction-to-magnet-axiom-webinar-recording-aug-5/",
+    "provider": "Magnet Forensics",
+    "kind": "video",
+    "skillIds": [
+      "forensic-tool-suites"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Magnet Forensics Tips & Tricks webinars (AXIOM)",
+    "url": "https://www.magnetforensics.com/tips-and-tricks-webinars/",
+    "provider": "Magnet Forensics",
+    "kind": "video",
+    "skillIds": [
+      "forensic-tool-suites"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "CEA Safety Regulations summary",
+    "url": "https://www.cbip.org/CEARegulations/CEA%20DATA/SafetyRegulation/CEA%20Safety%20Summary.pdf",
+    "provider": "Central Board of Irrigation and Power",
+    "kind": "docs",
+    "skillIds": [
+      "electrical-safety-ie-rules"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Experience Analysis and its feedback into the actuarial control cycle",
+    "url": "https://actuariesindia.org/sites/default/files/2022-05/EA_ACC_GM_SS.PDF",
+    "provider": "Institute of Actuaries of India",
+    "kind": "docs",
+    "skillIds": [
+      "experience-studies"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Long-Term Care Insurance Mortality and Lapse Study (2021)",
+    "url": "https://www.soa.org/resources/research-reports/2021/2021-ltc-mortality-lapse-study/",
+    "provider": "Society of Actuaries",
+    "kind": "docs",
+    "skillIds": [
+      "experience-studies"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "U.S. Post-Level Term Lapse and Mortality Experience report (2021)",
+    "url": "https://www.soa.org/globalassets/assets/files/resources/research-report/2021/us-post-level-term-lapse-mort-report.pdf",
+    "provider": "Society of Actuaries",
+    "kind": "docs",
+    "skillIds": [
+      "experience-studies"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Foreign Trade Policy 2023 Chapter 4: Duty Exemption / Remission Schemes (RoDTEP, drawback)",
+    "url": "https://content.dgft.gov.in/Website/FTP2023_Chapter04+dated+20.04.2026-2.pdf",
+    "provider": "DGFT",
+    "kind": "docs",
+    "skillIds": [
+      "export-incentive-claims"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Press note on RoDTEP by CBIC: declaring and claiming in shipping bills",
+    "url": "https://content.dgft.gov.in/Website/dgftprod/6d28c659-c6d7-43d9-a3ea-bd76ab4c71d9/Press%20Note%20on%20RoDTEP%20by%20CBIC.pdf",
+    "provider": "DGFT / CBIC",
+    "kind": "docs",
+    "skillIds": [
+      "export-incentive-claims"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Networking Overview for Unreal Engine",
+    "url": "https://dev.epicgames.com/documentation/unreal-engine/networking-overview-for-unreal-engine",
+    "provider": "Epic Games",
+    "kind": "docs",
+    "skillIds": [
+      "game-networking"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Networked Physics (2004): client-side prediction",
+    "url": "https://gafferongames.com/post/networked_physics_2004",
+    "provider": "Gaffer On Games",
+    "kind": "docs",
+    "skillIds": [
+      "game-networking"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Detailed Actor Replication Flow in Unreal Engine",
+    "url": "https://dev.epicgames.com/documentation/unreal-engine/detailed-actor-replication-flow-in-unreal-engine?lang=en-US",
+    "provider": "Epic Games",
+    "kind": "docs",
+    "skillIds": [
+      "game-networking"
+    ],
+    "minutes": 25,
+    "free": true
+  },
+  {
+    "title": "Investment Teaser: contents and qualities of an effective teaser",
+    "url": "https://corporatefinanceinstitute.com/resources/valuation/what-is-an-investment-teaser/",
+    "provider": "Corporate Finance Institute",
+    "kind": "docs",
+    "skillIds": [
+      "information-memorandum-drafting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Investment banker in sell-side M&A: teaser, CIM and process",
+    "url": "https://corporatefinanceinstitute.com/resources/career/investment-banker-in-sell-side-ma/",
+    "provider": "Corporate Finance Institute",
+    "kind": "docs",
+    "skillIds": [
+      "information-memorandum-drafting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "MQTT Essentials",
+    "url": "https://www.hivemq.com/mqtt/",
+    "provider": "HiveMQ",
+    "kind": "docs",
+    "skillIds": [
+      "iot-protocols"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "MQTT vs CoAP for IoT",
+    "url": "https://www.hivemq.com/blog/mqtt-vs-coap-for-iot/",
+    "provider": "HiveMQ",
+    "kind": "docs",
+    "skillIds": [
+      "iot-protocols"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Guidance on the requirements for Documented Information of ISO 9001",
+    "url": "https://www.iso.org/iso/documented_information.pdf",
+    "provider": "ISO",
+    "kind": "docs",
+    "skillIds": [
+      "iso-9001-qms-documentation"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "ISO 9001:2026 - How to use it",
+    "url": "https://www.iso.org/files/live/sites/isoorg/files/store/en/PUB100373.pdf",
+    "provider": "ISO",
+    "kind": "docs",
+    "skillIds": [
+      "iso-9001-qms-documentation"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Fundamentals of Geometric Dimensioning and Tolerancing, Part II",
+    "url": "https://www.nist.gov/publications/fundamentals-geometric-dimensioning-and-tolerancing-part-ii",
+    "provider": "NIST",
+    "kind": "video",
+    "skillIds": [
+      "mechanical-2d-drafting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Engineering Drawing and Computer Graphics",
+    "url": "https://onlinecourses.nptel.ac.in/noc20_me79/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "mechanical-2d-drafting"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Design of Machine Elements I",
+    "url": "https://nptel.ac.in/courses/112105124",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "mechanical-design-calculations"
+    ],
+    "minutes": 1800,
+    "free": true
+  },
+  {
+    "title": "Gear and Gear Unit Design: Theory and Practice",
+    "url": "https://onlinecourses.nptel.ac.in/noc22_me62/preview",
+    "provider": "NPTEL (IIT Kharagpur)",
+    "kind": "course",
+    "skillIds": [
+      "mechanical-design-calculations"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "CAPA (Corrective and Preventive Action): a quality engineer's guide",
+    "url": "https://careers.asq.org/career-resources/on-the-job-3/capa-corrective-and-preventive-action-for-quality-engineer-2026-112",
+    "provider": "ASQ",
+    "kind": "docs",
+    "skillIds": [
+      "non-conformance-capa"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Back to Basics: Corrective vs. Preventive Action",
+    "url": "https://asq.org/quality-progress/articles/corrective-vs-preventive-action?id=f5c21a6abfea4bbe8d0c079b430e33a3",
+    "provider": "ASQ Quality Progress",
+    "kind": "docs",
+    "skillIds": [
+      "non-conformance-capa"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Next-Best-Action Designer",
+    "url": "https://academy.pega.com/topic/next-best-action-designer/v2",
+    "provider": "Pega Academy",
+    "kind": "course",
+    "skillIds": [
+      "pega-decisioning"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Arbitrating between actions",
+    "url": "https://academy.pega.com/module/arbitrating-between-actions/v6",
+    "provider": "Pega Academy",
+    "kind": "course",
+    "skillIds": [
+      "pega-decisioning"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Route-to-Market (RTM) strategy: the executive's guide",
+    "url": "https://www.fieldassist.com/blog/route-to-market-strategy-guide",
+    "provider": "FieldAssist",
+    "kind": "docs",
+    "skillIds": [
+      "primary-secondary-sales"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Quality Glossary: acceptance sampling, inspection terms",
+    "url": "https://asq.org/quality-resources/quality-glossary",
+    "provider": "ASQ",
+    "kind": "docs",
+    "skillIds": [
+      "product-inspection-stages"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Production and Operation Management (quality control and acceptance sampling)",
+    "url": "https://onlinecourses.nptel.ac.in/noc26_mg66/preview",
+    "provider": "NPTEL",
+    "kind": "course",
+    "skillIds": [
+      "product-inspection-stages"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "What is ZTNA?",
+    "url": "https://www.cloudflare.com/learning/access-management/what-is-ztna/",
+    "provider": "Cloudflare",
+    "kind": "docs",
+    "skillIds": [
+      "sase-ztna"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "What is SASE?",
+    "url": "https://www.cloudflare.com/learning/access-management/what-is-sase/",
+    "provider": "Cloudflare",
+    "kind": "docs",
+    "skillIds": [
+      "sase-ztna"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Evolving to a SASE architecture with Cloudflare (reference architecture)",
+    "url": "https://developers.cloudflare.com/reference-architecture/architectures/sase/",
+    "provider": "Cloudflare",
+    "kind": "docs",
+    "skillIds": [
+      "sase-ztna"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Service Portal: developing custom widgets",
+    "url": "https://www.servicenow.com/docs/r/zurich/platform-user-interface/service-portal/widget-dev-guide.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-service-portal"
+    ],
+    "minutes": 40,
+    "free": true
+  },
+  {
+    "title": "Service Portal: general guidelines for developing widgets",
+    "url": "https://www.servicenow.com/docs/r/zurich/platform-user-interface/service-portal/general-guidelines-developing-widgets.html",
+    "provider": "ServiceNow",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-service-portal"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "New Developer Training: Service Portal",
+    "url": "https://developer.servicenow.com/blog.do?p=%2Fpost%2Fnew-developer-training-service-portal%2F",
+    "provider": "ServiceNow Developer",
+    "kind": "course",
+    "skillIds": [
+      "servicenow-service-portal"
+    ],
+    "minutes": 10,
+    "free": true
+  },
+  {
+    "title": "Understanding the data/input object in Service Portal widgets",
+    "url": "https://www.servicenow.com/community/developer-advocate-blog/understanding-the-data-input-object-in-service-portal-widgets/ba-p/3173684",
+    "provider": "ServiceNow Developer Advocates",
+    "kind": "docs",
+    "skillIds": [
+      "servicenow-service-portal"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Principles of Construction Management",
+    "url": "https://onlinecourses.nptel.ac.in/noc19_ce29/preview",
+    "provider": "NPTEL (IIT Kanpur)",
+    "kind": "course",
+    "skillIds": [
+      "site-execution-supervision"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "CDM 2015: contractors' roles and responsibilities",
+    "url": "https://www.hse.gov.uk/construction/cdm/2015/contractors.htm",
+    "provider": "UK Health and Safety Executive",
+    "kind": "docs",
+    "skillIds": [
+      "site-execution-supervision"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to write a construction daily report",
+    "url": "https://www.fieldwire.com/blog/construction-daily-report/",
+    "provider": "Fieldwire",
+    "kind": "docs",
+    "skillIds": [
+      "site-progress-reporting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "How to maintain a construction site diary",
+    "url": "https://www.projectmanager.com/blog/construction-site-diary",
+    "provider": "ProjectManager",
+    "kind": "docs",
+    "skillIds": [
+      "site-progress-reporting"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Project Planning & Control (monitoring, earned value)",
+    "url": "https://onlinecourses.nptel.ac.in/e-learning/preview/noc20_ce44",
+    "provider": "NPTEL (IIT Madras)",
+    "kind": "course",
+    "skillIds": [
+      "site-progress-reporting",
+      "site-execution-supervision"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "Standard Costing (Intermediate Cost and Management Accounting, Chapter 13)",
+    "url": "https://resource.cdn.icai.org/81947bos66078-cp13.pdf",
+    "provider": "ICAI Board of Studies",
+    "kind": "docs",
+    "skillIds": [
+      "standard-costing-variance"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Planning and operational variances (BoS lecture notes)",
+    "url": "https://live.icai.org/bos/vcc-2nd-batch-recorded-lectures/pdf/Plannin%20Variance%20(1).pdf",
+    "provider": "ICAI Board of Studies",
+    "kind": "docs",
+    "skillIds": [
+      "standard-costing-variance"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "DHS-8 Supervisor's Manual",
+    "url": "https://dhsprogram.com/pubs/pdf/DHSM2/DHS8-Supervisor-Manual-EN-15Oct2024.pdf",
+    "provider": "The DHS Program",
+    "kind": "docs",
+    "skillIds": [
+      "survey-fieldwork-management"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "DHS-6 Survey Organization Manual",
+    "url": "https://dhsprogram.com/pubs/pdf/DHSM10/DHS6_Survey_Org_Manual_7Dec2012_DHSM10.pdf",
+    "provider": "The DHS Program",
+    "kind": "docs",
+    "skillIds": [
+      "survey-fieldwork-management"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Household Sample Surveys: controlling interviewer error (Chapter IX)",
+    "url": "https://unstats.un.org/unsd/hhsurveys/pdf/chapter_9.pdf",
+    "provider": "UN Statistics Division",
+    "kind": "docs",
+    "skillIds": [
+      "survey-fieldwork-management"
+    ],
+    "minutes": 45,
     "free": true
   }
 ]

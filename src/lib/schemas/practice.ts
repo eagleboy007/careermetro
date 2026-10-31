@@ -11,7 +11,9 @@ export { countWords };
 /**
  * One question of the practice bank (src/content/practice-questions.json, handoff 12h). Content, never written by the
  * model. `lookFor` is a guide for the person; nothing scores an answer against it. The id ("python-3") stays the same
- * when the wording is edited, so a saved answer keeps pointing at its question.
+ * when the wording is edited, so a saved answer keeps pointing at its question. `reviewed: false` marks a draft that no
+ * one who works in the role has checked yet: local, preview and tests only, never production (src/content/index.ts).
+ * The first questions carry no mark and stay as they were.
  */
 export const practiceQuestion = z
   .strictObject({
@@ -20,6 +22,7 @@ export const practiceQuestion = z
     question: z.string().min(10).max(300),
     lookFor: z.string().min(10).max(300),
     level: z.literal("L1"),
+    reviewed: z.boolean().optional(),
   })
   .refine((q) => q.id.startsWith(`${q.skillId}-`) && /^[1-9][0-9]*$/.test(q.id.slice(q.skillId.length + 1)), { message: "the id is the skill id and a number" });
 

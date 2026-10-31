@@ -78,12 +78,13 @@ export type MockFollowUp = z.infer<typeof mockFollowUp>;
 /**
  * An open question for the bank: the Practice bank's question, its "look for" as "a strong answer covers", and up to
  * two follow-ups. `followUpsReviewed` is true once someone who works in the role has checked them; production asks
- * only reviewed ones.
+ * only reviewed ones. `reviewed` copies its Practice question's mark: a draft (`false`) is left out in production.
  */
 export const mockOpenQuestion = z.strictObject({
   ...common,
   kind: z.literal("open"),
   strongCovers: text(600),
+  reviewed: z.boolean().optional(),
   followUps: z.array(mockFollowUp).max(MOCK_FOLLOW_UPS_PER_QUESTION).optional(),
   followUpsReviewed: z.boolean().optional(),
 });
@@ -120,7 +121,7 @@ export type MockChoiceQuestion = z.infer<typeof mockChoiceQuestion>;
 
 /** src/content/mock-bank.json: a note on where the content came from, and the questions with unique ids. */
 export const mockBankFile = z
-  .strictObject({ note: z.string().min(1).max(1000), questions: z.array(mockQuestion).min(1).max(2000) })
+  .strictObject({ note: z.string().min(1).max(1000), questions: z.array(mockQuestion).min(1).max(4000) }) // 1,156 on 31 Oct (most are reviewed:false drafts), with room to double
   .refine((b) => new Set(b.questions.map((q) => q.id)).size === b.questions.length, { message: "question ids are unique" })
   .refine(
     (b) => {
@@ -152,7 +153,7 @@ export type MockBankItem = z.infer<typeof mockBankItem>;
 export const mockBankView = z.strictObject({
   // A role's open questions and their topics; shared questions file under many roles, so both grow with the bank.
   topics: z.array(topic).max(300),
-  items: z.array(mockBankItem).max(2000),
+  items: z.array(mockBankItem).max(4000),
 });
 export type MockBankView = z.infer<typeof mockBankView>;
 

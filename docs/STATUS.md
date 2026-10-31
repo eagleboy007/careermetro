@@ -2,7 +2,7 @@
 
 This page is the current state only: read it first, then the one plan file the task needs. At the end of every task, change it in 2–3 lines in the same PR. Facts carry a PR or doc link. Everything this page held up to 2026-10-31 (each merged feature, test-run fix and feed change, word for word) is in [`docs/plans/status-history-2026-10.md`](plans/status-history-2026-10.md). How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (Junction parts 1–4 behind JUNCTION_ENABLED; TG2 to TG4 roles merged in #309)
+Last updated: 2026-10-31 (practice and timed-test drafts for every thin role, unreviewed; 66-link refill; Junction merged in #310 behind JUNCTION_ENABLED)
 
 ## Live (https://careermetro.vercel.app)
 
@@ -11,7 +11,7 @@ Last updated: 2026-10-31 (Junction parts 1–4 behind JUNCTION_ENABLED; TG2 to T
 - **Proof:** certificate proof with the Credly check, held-proof review `/admin/proofs` (FR-44); only proof fills a goal.
 - **Employer:** Corporate steps 1–7, Express apply, "Let companies find me", Find people (T44), verified current job by work email (FR-47).
 - **Admin:** `/admin/reports` with removal tools (FR-45, FR-46), `/admin/library`, company review, event suggestions (kept as `pending` only).
-- **Platform:** RLS on every table; hardening H1–H12 except H7; the daily Departures feed over `src/content/job-boards.json` (279 boards of the 300 cap, `FEED_LIMITS`); feed health in `job_feed_boards`, `/api/health` and the 6-hourly smoke; app email through Resend; CI e2e walk plus the max-data oversize check (T150).
+- **Platform:** RLS on every table; hardening H1–H12 except H7; the daily Departures feed over `src/content/job-boards.json` (319 boards of the 500 cap, `FEED_LIMITS`); feed health in `job_feed_boards`, `/api/health` and the 6-hourly smoke; app email through Resend; CI e2e walk plus the max-data oversize check (T150).
 - **Switched off until keys arrive:** real sign-in (preview uses a test user; emailed code with the Supabase values, Google once `GOOGLE_SIGNIN=1`), company sign-up, join and re-check codes and the current-job check (`RESEND_API_KEY`, `EMAIL_FROM`, `NAME_HASH_KEY`; `dev/email-sender-steps.md`), find-people, phone sharing, and photo and certificate upload. `/privacy` and `/terms` are drafts behind the preview gate until the legal adviser approves them.
 
 ## In progress
@@ -20,7 +20,7 @@ Last updated: 2026-10-31 (Junction parts 1–4 behind JUNCTION_ENABLED; TG2 to T
 - CSP: the host allow-list policy is report-only (`src/proxy.ts`, `src/lib/csp.ts`); the walk prints `CSP: none` or each violation. Enforcing waits on the log drain and on Milin (`docs/dev/security-sweep-2026-10-20.md`).
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/`; every role, certificate and question above waits on it.
 - Junction (FR-61, `docs/plans/junction-plan.md`), parts 1–4: data, rules, moderation and admin rows, `/junction`, post detail, Your posts, the rail, pins and the "Junction posts" switch on Me and `/u`, and the Today tip. All behind `JUNCTION_ENABLED` (off in production; on for CI's e2e build and app server, since build and runtime must agree). Grievance officer Milin Shah, still `placeholder: true`. Part 5 (launch switch) waits on a backup officer, the lawyer and the grievance mailbox.
-- Departures boards: 279 boards. The last two candidates (RISA Labs, Currencies Direct, Greenhouse EU) failed the 2026-10-31 board check with network errors (#308), so none were added; new boards wait on Research.
+- Departures boards: 319. The board check passed 50 of Research's 53 non-tech candidates (31 Oct); 40 joined `job-boards.json`. Left out: 3 with no India post, 9 recruiters posting for clients, and EBANX (one stale post). Workable rows are not checked (not one of the four ATS APIs).
 
 ## Queue (all waiting on someone else)
 
@@ -53,4 +53,5 @@ The next migration is **0060**. `EXPORT_VERSION` is 40 (`src/lib/account/export.
 
 ## Recent
 
+- Draft Practice and timed-test questions (2026-10-31, branch `practice-drafts-2`, Development's own, awaiting expert review): 107 skills get 5 Practice questions (with open-bank twins and one follow-up) and 4 timed-test questions each, so every role has at least 15 Practice and 12 timed-test questions on its own skills (accounts and mechanical GET roles 20 and 16); all `reviewed: false` and dropped in production by `withoutDrafts` (`src/content/index.ts`); review pack regenerated (670 Practice, 486 timed-test lines).
 - Small fixes (2026-10-31): /design's React #418 came from dates written with Intl on both sides of hydration (Node's and the browser's ICU can differ, e.g. "Sept" against "Sep" on the example applicants); client-rendered dates now use `src/lib/day-words.ts`, guarded by a client-bundle test, and the walk's untick waits for hydration and the save. The `mapLineFor` test compares its two reads inside one repeatable-read snapshot. Dead boards ashby/cartesia and lever/employ removed (279). This page cut from 94k characters to the current state.
