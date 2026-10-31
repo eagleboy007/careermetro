@@ -1,0 +1,52 @@
+{
+  "id": "housekeeping-supervisor-mid",
+  "roleSlug": "housekeeping-supervisor",
+  "persona": "mid",
+  "resumeText": "Mohammed Irfan | Hyderabad | mohammed.irfan@example.com\n\nSUMMARY\nHotel housekeeping supervisor with 8 years in guest rooms, public areas and the linen room.\n\nEXPERIENCE\nHousekeeping Supervisor, Charminar Heights Hotel, Hyderabad (2022 - present)\n- Inspect 60 to 70 guest rooms per shift against the brand room inspection checklist before release.\n- Run the linen room par stock and the monthly linen inventory with the laundry vendor.\n- Supervise public area cleaning of the lobby, banquet halls and restrooms.\n- Log guest lost and found items in the register and return them against ID.\n- Update room status and discrepancy reports in the Opera housekeeping module.\n- Prepare the weekly duty roster and room allocation for 22 room attendants.\n- Led a team of 22 room attendants and housemen across morning and evening shifts.\n\nRoom Attendant, later Floor Supervisor, Golconda Residency, Hyderabad (2018 - 2022)\n- Cleaned and set up 14 guest rooms a shift to hotel standards.\n- Checked minibar and amenity replenishment on two floors.\n\nSKILLS\nRoom inspection, Linen control, MS Excel\n\nEDUCATION\nDiploma in Hotel Operations, Hyderabad (2018)\n",
+  "expected": {
+    "totalYearsExperience": 8,
+    "skills": [
+      {
+        "skillId": "room-inspection-standards",
+        "quote": "Inspect 60 to 70 guest rooms per shift against the brand room inspection checklist"
+      },
+      {
+        "skillId": "linen-inventory-control",
+        "quote": "Run the linen room par stock and the monthly linen inventory"
+      },
+      {
+        "skillId": "public-area-cleaning",
+        "quote": "Supervise public area cleaning of the lobby, banquet halls and restrooms"
+      },
+      {
+        "skillId": "lost-and-found-handling",
+        "quote": "Log guest lost and found items in the register"
+      },
+      {
+        "skillId": "hotel-pms-operations",
+        "quote": "Update room status and discrepancy reports in the Opera housekeeping module"
+      },
+      {
+        "skillId": "store-team-rostering-training",
+        "quote": "Prepare the weekly duty roster and room allocation for 22 room attendants"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Led a team of 22 room attendants and housemen"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "housekeeping-chemical-safety",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "night-audit",
+      "hotel-revenue-pricing",
+      "restaurant-pos-systems",
+      "fssai-food-safety-hygiene"
+    ]
+  },
+  "reviewedBy": null
+}

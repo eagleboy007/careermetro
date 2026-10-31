@@ -1,0 +1,56 @@
+{
+  "id": "regulatory-compliance-officer-mid",
+  "roleSlug": "regulatory-compliance-officer",
+  "persona": "mid",
+  "resumeText": "Sneha Iyer | Mumbai | sneha.iyer@example.com\n\nEXPERIENCE\nAssistant Manager - Compliance, Konkan Finserv Ltd (NBFC), Mumbai (2022 - present)\n- Track new RBI circulars and master directions and circulate impact notes to business heads.\n- Map applicable RBI Master Direction requirements for NBFCs into the compliance checklist.\n- Run quarterly compliance testing of loan sanction and disbursement processes.\n- Prepare and submit monthly and quarterly regulatory returns to RBI on the CIMS portal.\n- Coordinated data requests and closure of observations during the annual RBI inspection.\n- Follow up with credit, operations and IT teams on closure of compliance gaps.\n- Conducted compliance awareness sessions for 150 branch staff.\n\nAudit Assistant, Iyer & Bhat Chartered Accountants, Mumbai (2020 - 2022)\n- Checked loan files and branch records during audits of two NBFC clients.\n\nEDUCATION\nB.Com, Mumbai University, 2019; Company Secretary (Executive), ICSI\n\nSKILLS\nCompliance policy drafting, Excel, PMLA\n",
+  "expected": {
+    "totalYearsExperience": 6,
+    "skills": [
+      {
+        "skillId": "regulatory-circular-tracking",
+        "quote": "Track new RBI circulars and master directions"
+      },
+      {
+        "skillId": "rbi-regulatory-framework",
+        "quote": "Map applicable RBI Master Direction requirements for NBFCs"
+      },
+      {
+        "skillId": "compliance-testing-monitoring",
+        "quote": "Run quarterly compliance testing of loan sanction"
+      },
+      {
+        "skillId": "regulatory-returns-reporting",
+        "quote": "Prepare and submit monthly and quarterly regulatory returns"
+      },
+      {
+        "skillId": "regulatory-inspection-coordination",
+        "quote": "closure of observations during the annual RBI inspection"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Follow up with credit, operations and IT teams"
+      },
+      {
+        "skillId": "training-delivery-facilitation",
+        "quote": "Conducted compliance awareness sessions for 150 branch staff"
+      },
+      {
+        "skillId": "compliance-policy-management",
+        "quote": "Compliance policy drafting"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "compliance-policy-management",
+        "status": "weak"
+      }
+    ],
+    "mustNotClaim": [
+      "sebi-intermediary-regulations",
+      "companies-act-compliance",
+      "aml-transaction-monitoring",
+      "data-privacy"
+    ]
+  },
+  "reviewedBy": null
+}

@@ -1,0 +1,110 @@
+{
+  "slug": "hotel-revenue-manager",
+  "title": "Hotel Revenue Manager",
+  "summary": "Sets a hotel's room prices and decides which channels sell its rooms, so the hotel earns the most from each night. Sits in the commercial team with sales and reservations and reports to the general manager or a cluster revenue director.",
+  "dailyDuties": [
+    "Review pickup and set daily room rates and restrictions",
+    "Load rates and inventory on OTAs through the channel manager",
+    "Check rate parity and competitor rates",
+    "Update the rooms forecast and budget tracking",
+    "Read the weekly STR report against the competitive set",
+    "Review RMS price recommendations in IDeaS or Duetto",
+    "Lead the weekly revenue meeting with sales and front office"
+  ],
+  "typicalTitles": [
+    "Revenue Manager - Hotel",
+    "Assistant Revenue Manager - Hotel",
+    "Cluster Revenue Manager - Hotels",
+    "Revenue Management Executive - Hotel",
+    "Hotel Revenue Analyst",
+    "Distribution and Revenue Manager - Hotels"
+  ],
+  "experienceBand": {
+    "minYears": 3,
+    "maxYears": 8
+  },
+  "skills": [
+    {
+      "skillId": "hotel-revenue-pricing",
+      "importance": "required",
+      "expectation": "Set daily room rates and restrictions to grow occupancy, ADR and RevPAR",
+      "postingShare": null
+    },
+    {
+      "skillId": "ota-channel-distribution",
+      "importance": "required",
+      "expectation": "Manage rates and inventory across OTAs, the channel manager and GDS, and keep rate parity",
+      "postingShare": null
+    },
+    {
+      "skillId": "revenue-management-systems",
+      "importance": "required",
+      "expectation": "Use an RMS such as IDeaS or Duetto and review its pricing decisions",
+      "postingShare": null
+    },
+    {
+      "skillId": "hotel-demand-forecasting",
+      "importance": "required",
+      "expectation": "Build rooms forecasts from pickup, pace and on-the-books data",
+      "postingShare": null
+    },
+    {
+      "skillId": "str-compset-benchmarking",
+      "importance": "required",
+      "expectation": "Read STR and rate-shopping reports to track the hotel against its competitive set",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build revenue reports and models in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "hotel-pms-operations",
+      "importance": "required",
+      "expectation": "Pull reservation and revenue data from the PMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Run revenue meetings with sales, front office and the general manager",
+      "postingShare": null
+    },
+    {
+      "skillId": "hotel-reservations-handling",
+      "importance": "nice_to_have",
+      "expectation": "Understand how reservations and group blocks are loaded",
+      "postingShare": null
+    },
+    {
+      "skillId": "fpa-variance-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Explain budget versus actual revenue variances",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-presentation-decks",
+      "importance": "nice_to_have",
+      "expectation": "Present revenue strategy to owners and leadership",
+      "postingShare": null
+    },
+    {
+      "skillId": "power-bi",
+      "importance": "nice_to_have",
+      "expectation": "Build revenue dashboards in Power BI",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions (hotel group careers pages) and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

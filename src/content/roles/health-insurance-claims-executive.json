@@ -1,0 +1,124 @@
+{
+  "slug": "health-insurance-claims-executive",
+  "title": "Health Insurance Claims Executive",
+  "summary": "Health insurance claims executives decide hospital claims for Indian health insurers and TPAs (third-party administrators that process claims for insurers), approving cashless requests and settling reimbursement claims under the policy. Many hold BAMS, BHMS, BDS or nursing degrees and work in claims teams with medical officers and investigators.",
+  "dailyDuties": [
+    "Review cashless pre-authorisation and enhancement requests from hospitals",
+    "Adjudicate reimbursement claims against policy terms",
+    "Scrutinise discharge summaries, reports and hospital bills",
+    "Raise query letters for missing documents",
+    "Apply agreed package rates for network hospitals",
+    "Refer suspicious claims to the investigation team",
+    "Close claims within turnaround time targets"
+  ],
+  "typicalTitles": [
+    "Claims Executive - Health Insurance",
+    "Medical Officer - Health Claims",
+    "Cashless Claims Executive",
+    "Pre-Authorisation Executive - TPA",
+    "Reimbursement Claims Executive",
+    "TPA Claims Executive",
+    "Claims Processing Executive - Health Insurance",
+    "Health Claims Adjudicator"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "cashless-preauthorisation",
+      "importance": "required",
+      "expectation": "Review and decide cashless pre-authorisation and enhancement requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "reimbursement-claim-processing",
+      "importance": "required",
+      "expectation": "Adjudicate reimbursement claims and calculate the payable amount",
+      "postingShare": null
+    },
+    {
+      "skillId": "medical-document-scrutiny",
+      "importance": "required",
+      "expectation": "Scrutinise discharge summaries, reports and bills for medical necessity",
+      "postingShare": null
+    },
+    {
+      "skillId": "medical-terminology-anatomy",
+      "importance": "required",
+      "expectation": "Read diagnoses, procedures and treatment notes, usually with a medical degree",
+      "postingShare": null
+    },
+    {
+      "skillId": "policy-terms-wordings",
+      "importance": "required",
+      "expectation": "Apply policy terms, exclusions, waiting periods and sub-limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "irdai-regulations",
+      "importance": "required",
+      "expectation": "Follow IRDAI health insurance and claim settlement rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "hospital-network-tariffs",
+      "importance": "required",
+      "expectation": "Coordinate with network hospitals on queries and agreed package rates",
+      "postingShare": null
+    },
+    {
+      "skillId": "process-tat-accuracy",
+      "importance": "required",
+      "expectation": "Meet claim turnaround and accuracy targets",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear query and deduction letters to hospitals and policyholders",
+      "postingShare": null
+    },
+    {
+      "skillId": "health-claims-fraud-detection",
+      "importance": "nice_to_have",
+      "expectation": "Spot fraud triggers and refer suspicious claims for investigation",
+      "postingShare": null
+    },
+    {
+      "skillId": "icd-10-cm-coding",
+      "importance": "nice_to_have",
+      "expectation": "Assign ICD-10 codes to diagnoses on claims",
+      "postingShare": null
+    },
+    {
+      "skillId": "customer-query-resolution",
+      "importance": "nice_to_have",
+      "expectation": "Resolve policyholder claim queries and grievances",
+      "postingShare": null
+    },
+    {
+      "skillId": "operations-mis-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Prepare claims MIS and pendency reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Track pending claims and TAT in spreadsheets",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

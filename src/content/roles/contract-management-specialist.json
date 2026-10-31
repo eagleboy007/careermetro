@@ -1,0 +1,105 @@
+{
+  "slug": "contract-management-specialist",
+  "title": "Contract Management Specialist",
+  "summary": "A contract management specialist runs the life of a company's contracts: preparing them from templates, redlining (marking changes on) the other side's drafts, getting approvals and tracking renewals and obligations. They usually sit in a legal operations or contracting team and work in a contract lifecycle management (CLM) tool.",
+  "dailyDuties": [
+    "Prepare NDAs, MSAs and statements of work from approved templates",
+    "Redline counterparty contracts against the negotiation playbook",
+    "Route contracts for approval and signature in the CLM tool",
+    "Extract key terms and metadata into the contract repository",
+    "Track renewals, expiries and contract obligations",
+    "Escalate non-standard clauses to legal counsel",
+    "Report contract cycle times and pending requests to stakeholders"
+  ],
+  "typicalTitles": [
+    "Contract Management Analyst",
+    "Contracts Specialist - CLM",
+    "Contract Administrator",
+    "Senior Analyst - Contracting",
+    "Contract Lifecycle Management Analyst",
+    "Legal Contracts Analyst",
+    "Analyst - Vendor Contracts"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "contract-redlining-review",
+      "importance": "required",
+      "expectation": "Redline contracts against the negotiation playbook and escalate deviations",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-contract-drafting",
+      "importance": "required",
+      "expectation": "Prepare NDAs, MSAs, SOWs and amendments from approved templates and clause libraries",
+      "postingShare": null
+    },
+    {
+      "skillId": "clm-platforms",
+      "importance": "required",
+      "expectation": "Run contract requests, approvals and the repository in a CLM tool such as Icertis, DocuSign CLM or SAP Ariba Contracts",
+      "postingShare": null
+    },
+    {
+      "skillId": "contract-obligation-tracking",
+      "importance": "required",
+      "expectation": "Track obligations, renewal dates, notice periods and expiries",
+      "postingShare": null
+    },
+    {
+      "skillId": "contract-abstraction",
+      "importance": "required",
+      "expectation": "Extract key terms and metadata from signed contracts into the repository",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Maintain contract trackers and cycle-time reports in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with business, procurement, finance and legal teams on contract requests",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "nice_to_have",
+      "expectation": "Negotiate standard terms within the playbook",
+      "postingShare": null
+    },
+    {
+      "skillId": "indian-contract-law",
+      "importance": "nice_to_have",
+      "expectation": "Understand basic contract law concepts behind common clauses",
+      "postingShare": null
+    },
+    {
+      "skillId": "legal-research",
+      "importance": "nice_to_have",
+      "expectation": "Look up clause standards and legal positions when asked by counsel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Write clear emails and escalation notes",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

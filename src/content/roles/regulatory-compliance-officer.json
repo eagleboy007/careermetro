@@ -1,0 +1,137 @@
+{
+  "slug": "regulatory-compliance-officer",
+  "title": "Regulatory Compliance Officer",
+  "summary": "A regulatory compliance officer makes sure a regulated company, such as a bank, NBFC (non-bank lender), broker or insurer, follows the rules set by RBI, SEBI or IRDAI. They sit in the compliance function, track new circulars, test processes, file regulatory returns and train staff on what the rules require.",
+  "dailyDuties": [
+    "Track new RBI, SEBI or IRDAI circulars and circulate impact notes",
+    "Update the compliance checklist and compliance calendar",
+    "Run compliance testing of products and processes and report findings",
+    "Prepare and file monthly and quarterly regulatory returns",
+    "Coordinate regulator inspections and close their observations",
+    "Review and update compliance policies",
+    "Run compliance awareness sessions for employees"
+  ],
+  "typicalTitles": [
+    "Compliance Officer - NBFC",
+    "Regulatory Compliance Manager",
+    "Regulatory Compliance Specialist",
+    "Compliance Testing Analyst",
+    "Deputy Manager - Compliance",
+    "Compliance Executive - RBI",
+    "Compliance Analyst - Securities Broking"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 7
+  },
+  "skills": [
+    {
+      "skillId": "regulatory-circular-tracking",
+      "importance": "required",
+      "expectation": "Track new regulator circulars and master directions and map their impact",
+      "postingShare": null
+    },
+    {
+      "skillId": "rbi-regulatory-framework",
+      "importance": "required",
+      "expectation": "Know the regulator rules that apply to the company",
+      "postingShare": null,
+      "oneOf": "regulator-rules"
+    },
+    {
+      "skillId": "sebi-intermediary-regulations",
+      "importance": "required",
+      "expectation": "Know the regulator rules that apply to the company",
+      "postingShare": null,
+      "oneOf": "regulator-rules"
+    },
+    {
+      "skillId": "irdai-regulations",
+      "importance": "required",
+      "expectation": "Know the regulator rules that apply to the company",
+      "postingShare": null,
+      "oneOf": "regulator-rules"
+    },
+    {
+      "skillId": "compliance-testing-monitoring",
+      "importance": "required",
+      "expectation": "Plan and run compliance testing of products and processes and report findings",
+      "postingShare": null
+    },
+    {
+      "skillId": "regulatory-returns-reporting",
+      "importance": "required",
+      "expectation": "Prepare and file periodic regulatory returns and reports on time",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-policy-management",
+      "importance": "required",
+      "expectation": "Draft and update compliance policies and the compliance manual",
+      "postingShare": null
+    },
+    {
+      "skillId": "regulatory-inspection-coordination",
+      "importance": "required",
+      "expectation": "Coordinate regulator inspections and close their observations",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Follow up with business and operations teams on closing compliance gaps",
+      "postingShare": null
+    },
+    {
+      "skillId": "training-delivery-facilitation",
+      "importance": "nice_to_have",
+      "expectation": "Run compliance awareness training for employees",
+      "postingShare": null
+    },
+    {
+      "skillId": "aml-regulations",
+      "importance": "nice_to_have",
+      "expectation": "Understand PMLA and KYC rules that touch the compliance function",
+      "postingShare": null
+    },
+    {
+      "skillId": "companies-act-compliance",
+      "importance": "nice_to_have",
+      "expectation": "Understand Companies Act requirements that overlap with compliance",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "nice_to_have",
+      "expectation": "Maintain compliance calendars and trackers in Excel",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "nice_to_have",
+      "expectation": "Write clear impact notes and board compliance reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Understand DPDP Act requirements for customer data",
+      "postingShare": null
+    }
+  ],
+  "groups": [
+    {
+      "id": "regulator-rules",
+      "label": "Regulator rules (RBI, SEBI or IRDAI)"
+    }
+  ],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}

@@ -1,0 +1,129 @@
+{
+  "slug": "corporate-legal-associate",
+  "title": "Corporate Legal Associate",
+  "summary": "A corporate legal associate drafts and reviews commercial contracts, researches legal questions and supports company law compliance for a business or a law firm's clients. In-house, they sit in a small legal team that advises sales, procurement and finance; in a law firm, they work under partners on corporate and commercial matters.",
+  "dailyDuties": [
+    "Draft and review vendor, customer, service and partnership agreements",
+    "Negotiate commercial and legal terms with counterparties",
+    "Research statutes and case law and write short legal notes",
+    "Support board meetings, resolutions and Companies Act compliance",
+    "Coordinate legal notices and disputes with external counsel",
+    "Help prepare regulatory filings and due diligence reports",
+    "Answer legal questions from business teams"
+  ],
+  "typicalTitles": [
+    "Associate Legal Counsel",
+    "Associate Corporate Counsel",
+    "Legal Counsel - Commercial Contracts",
+    "Legal Associate - Corporate and Commercial",
+    "Associate - General Corporate Practice",
+    "In-house Legal Associate",
+    "Corporate Legal Counsel"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "commercial-contract-drafting",
+      "importance": "required",
+      "expectation": "Draft commercial agreements such as NDAs, service, vendor and distribution contracts",
+      "postingShare": null
+    },
+    {
+      "skillId": "contract-redlining-review",
+      "importance": "required",
+      "expectation": "Review and mark up counterparty contracts against the company's positions",
+      "postingShare": null
+    },
+    {
+      "skillId": "commercial-negotiation",
+      "importance": "required",
+      "expectation": "Negotiate key commercial and legal terms with counterparties",
+      "postingShare": null
+    },
+    {
+      "skillId": "legal-research",
+      "importance": "required",
+      "expectation": "Research statutes and case law and write short legal notes for the business",
+      "postingShare": null
+    },
+    {
+      "skillId": "indian-contract-law",
+      "importance": "required",
+      "expectation": "Apply the Indian Contract Act and related laws to indemnity, liability and termination clauses",
+      "postingShare": null
+    },
+    {
+      "skillId": "companies-act-compliance",
+      "importance": "required",
+      "expectation": "Support corporate governance and Companies Act 2013 compliance",
+      "postingShare": null
+    },
+    {
+      "skillId": "litigation-management",
+      "importance": "required",
+      "expectation": "Coordinate disputes and notices with external counsel and keep a litigation tracker",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Advise sales, procurement and finance teams and work to business timelines",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Explain legal risk in plain written and spoken English",
+      "postingShare": null
+    },
+    {
+      "skillId": "legal-due-diligence",
+      "importance": "nice_to_have",
+      "expectation": "Assist on legal due diligence for investments or acquisitions",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-meeting-administration",
+      "importance": "nice_to_have",
+      "expectation": "Help prepare board resolutions, notices and minutes",
+      "postingShare": null
+    },
+    {
+      "skillId": "roc-mca-filings",
+      "importance": "nice_to_have",
+      "expectation": "Support regulatory filings on the MCA portal",
+      "postingShare": null
+    },
+    {
+      "skillId": "fema-rbi-filings",
+      "importance": "nice_to_have",
+      "expectation": "Support FEMA filings for foreign investment",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Review data protection clauses under the DPDP Act",
+      "postingShare": null
+    },
+    {
+      "skillId": "clm-platforms",
+      "importance": "nice_to_have",
+      "expectation": "Route, approve and store contracts in a contract management tool such as Icertis, Ironclad or DocuSign CLM",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-10-31"
+}
