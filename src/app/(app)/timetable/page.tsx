@@ -32,9 +32,9 @@ async function TimetableScreen() {
       </div>
     );
   }
+  let data: Awaited<ReturnType<typeof timetableForUser>>;
   try {
-    const { view, choices, why } = await timetableForUser(account.id);
-    return <TimetableView view={view} why={why} choices={choices} actions={TIMETABLE_ACTIONS} />;
+    data = await timetableForUser(account.id);
   } catch (error) {
     unstable_rethrow(error);
     // Database errors can carry values; errorFields keeps only the name and code.
@@ -45,6 +45,7 @@ async function TimetableScreen() {
       </p>
     );
   }
+  return <TimetableView view={data.view} why={data.why} choices={data.choices} actions={TIMETABLE_ACTIONS} />;
 }
 
 function Banner({ children }: { children: React.ReactNode }) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { FOLD_SHOWN, foldItems, latestYear, newestFirstByYear } from "./fold";
+import { FOLD_SHOWN, FOLD_SKILL_CHIPS, foldItems, latestYear, newestFirstByYear } from "./fold";
 
 describe("foldItems (C23)", () => {
   const items = ["a", "b", "c", "d", "e"];
@@ -7,6 +7,13 @@ describe("foldItems (C23)", () => {
   it("shows the first three and counts the rest while folded", () => {
     expect(FOLD_SHOWN).toBe(3);
     expect(foldItems(items, false)).toEqual({ shown: ["a", "b", "c"], hidden: 2 });
+  });
+
+  it("folds a skills column only past 12 chips", () => {
+    const chips = Array.from({ length: 14 }, (_, i) => `skill-${i}`);
+    expect(FOLD_SKILL_CHIPS).toBe(12);
+    expect(foldItems(chips.slice(0, 12), false, FOLD_SKILL_CHIPS)).toEqual({ shown: chips.slice(0, 12), hidden: 0 });
+    expect(foldItems(chips, false, FOLD_SKILL_CHIPS)).toEqual({ shown: chips.slice(0, 12), hidden: 2 });
   });
 
   it("shows everything once opened, still counting what folds away", () => {

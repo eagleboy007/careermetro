@@ -6,6 +6,9 @@
 /** How many items a folded section shows before "Show N more". */
 export const FOLD_SHOWN = 3;
 
+/** A skills column on Me folds only past this many chips: chips are small, so 3 would hide most of a short list (C23). */
+export const FOLD_SKILL_CHIPS = 12;
+
 /** What a section shows: every item when open or short enough, else the first `first`; and how many are folded away. */
 export function foldItems<T>(items: readonly T[], open: boolean, first = FOLD_SHOWN): { shown: T[]; hidden: number } {
   const folds = items.length > first;
