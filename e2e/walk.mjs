@@ -3312,6 +3312,252 @@ await step("library review: the admin hides the reported link, and the Library n
     await sql.end();
   }
 });
+// Timetable (FR-57, docs/plans/timetable-plan.md, Testing T170). Three synthetic live events seeded here on the walk
+// account's first open goal (two online, the third in the profile city when it has one) show on /timetable. Save on
+// one and I'm going on another, which asks "Add it as a prep task for your … goal?"; Yes, add it shows the prep line
+// (kept after a reload), and Take it off removes it. The Monday events switch turns on on /timetable and in Settings >
+// Notifications and stays on after a reload; the email's off link with `&k=events` turns only the digest off and the
+// weekly My jobs email stays on. Suggest an event keeps one suggestion as waiting for review and refuses a link in the
+// name; the admin sees it on /admin/reports, read only and with no sender. axe passes on desktop and at 390 px in dark.
+// The events, the suggestion and the settings changed here are put back in `finally`.
+await step("timetable: matched events, Save, I'm going with a prep task, the Monday email on and off, Suggest an event", async () => {
+  if (!process.env.DATABASE_URL) throw new Error("needs DATABASE_URL to seed events");
+  const { default: postgres } = await import("postgres");
+  const sql = postgres(process.env.DATABASE_URL, { max: 1, onnotice: () => {} });
+  const run = `e2e-t170-${Date.now()}`;
+  const TOKEN = "e2eEventsOffToken".padEnd(43, "x");
+  const SUGGESTED = `Synthetic T170 suggested meetup ${run.slice(-6)}`;
+  const DAY = 86_400_000;
+  // A day a few days ahead, as the India date the form's date box takes.
+  const indiaDate = (days) => new Date(Date.now() + 5.5 * 3600_000 + days * DAY).toISOString().slice(0, 10);
+  let me = null;
+  let before = undefined;
+  const adm = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  try {
+    [me] = await sql`select id, city from users where email like ${testEmail + "%"} order by created_at desc limit 1`;
+    if (!me) throw new Error("the walk account isn't in the database");
+    [before] = await sql`select email_weekly_summary, email_off_token, events_digest from user_settings where user_id = ${me.id}`;
+    const [goal] = await sql`select coalesce(swapped_to, skill_id) as skill from user_goals
+      where user_id = ${me.id} and status in ('active', 'renew') order by position, skill_id limit 1`;
+    if (!goal) throw new Error("the walk account has no open goal for events to match");
+    const seed = async (n, title, days, place) => {
+      const startsAt = new Date(Date.now() + days * DAY + 2 * 3600_000);
+      const [row] = await sql`insert into events (source, source_key, source_url, title, organiser, kind, starts_at, ends_at, online, city, venue, cost, status, checked_at)
+        values ('feed', ${`${run}-${n}`}, ${`https://example.org/events/${run}-${n}`}, ${title}, 'Example Community (synthetic)', ${place ? "meetup" : "online"},
+          ${startsAt}, ${new Date(startsAt.getTime() + 2 * 3600_000)}, ${!place}, ${place}, ${place ? "Example Area" : null}, 'Free', 'live', now())
+        returning id`;
+      await sql`insert into event_topics (event_id, kind, topic) values (${row.id}, 'skill', ${goal.skill})`;
+      return { id: row.id, title };
+    };
+    const saveOne = await seed("a", `Synthetic T170 online workshop ${run.slice(-6)}`, 2, null);
+    const goOne = await seed("b", `Synthetic T170 online meetup ${run.slice(-6)}`, 3, null);
+    // In person only in a city the matcher can place (city-centres.json holds every profile city).
+    const centres = JSON.parse(readFileSync(new URL("../src/content/city-centres.json", import.meta.url), "utf8")).map((c) => c.city);
+    const city = centres.includes(me.city) ? me.city : null;
+    const third = await seed("c", `Synthetic T170 ${city ? "city" : "online"} conference ${run.slice(-6)}`, 4, city);
+
+    // The cards, each with its goal tag.
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(BASE + "/timetable");
+    await settled();
+    await p.getByRole("heading", { name: "Timetable", level: 1 }).waitFor({ timeout: 15000 });
+    const cardOf = (e) => p.getByRole("article", { name: e.title, exact: true });
+    for (const e of [saveOne, goOne, third]) {
+      await cardOf(e).waitFor({ timeout: 10000 }).catch(() => {
+        throw new Error(`timetable: the seeded event "${e.title}" has no card`);
+      });
+    }
+    const tag = await cardOf(goOne).getByRole("list", { name: "Why it shows" }).getByText(/^Goal: /).innerText();
+    const goalName = tag.replace(/^Goal:\s*/, "");
+
+    // Save on one card.
+    const saveCard = cardOf(saveOne);
+    await saveCard.getByRole("button", { name: "Save", exact: true }).click();
+    await saveCard.getByRole("status").filter({ hasText: "Saved." }).waitFor({ timeout: 10000 });
+    if ((await saveCard.getByRole("button", { name: "Saved", exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error("timetable: Save isn't pressed after a save");
+
+    // I'm going on another: the prep question, Yes, add it, and the prep line.
+    const goCard = cardOf(goOne);
+    await goCard.getByRole("button", { name: "I'm going", exact: true }).click();
+    const ask = goCard.getByRole("group", { name: "Prep task" });
+    await ask.getByText(`Add it as a prep task for your ${goalName} goal?`, { exact: true }).waitFor({ timeout: 10000 });
+    await p.waitForFunction(() => document.activeElement?.closest('[aria-label="Prep task"]') != null, null, { timeout: 5000 }).catch(() => {
+      throw new Error("timetable: focus didn't move to the prep question");
+    });
+    await shot("timetable-prep-question");
+    await a11y("timetable-prep-question");
+    await ask.getByRole("button", { name: "Yes, add it" }).click();
+    await goCard.getByRole("status").filter({ hasText: `Added. It shows on your ride on the day, for your ${goalName} goal.` }).waitFor({ timeout: 10000 });
+    await goCard.getByText(`Prep task for your ${goalName} goal, on your ride on the day.`, { exact: false }).waitFor();
+    const rsvps = await sql`select event_id, state, goal_skill_id from event_rsvps where user_id = ${me.id} and event_id in (${saveOne.id}, ${goOne.id})`;
+    const rsvpOf = (e) => rsvps.find((r) => r.event_id === e.id);
+    if (rsvpOf(saveOne)?.state !== "saved") throw new Error(`timetable: Save kept ${JSON.stringify(rsvpOf(saveOne))}`);
+    if (rsvpOf(goOne)?.state !== "going" || rsvpOf(goOne)?.goal_skill_id !== goal.skill) throw new Error(`timetable: I'm going with a prep task kept ${JSON.stringify(rsvpOf(goOne))}`);
+
+    // After a reload both marks and the prep line are still there; Take it off removes the task and keeps going.
+    await p.reload();
+    await settled();
+    await goCard.waitFor({ timeout: 15000 });
+    if ((await saveCard.getByRole("button", { name: "Saved", exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error("timetable: Saved didn't last a reload");
+    if ((await goCard.getByRole("button", { name: "Going", exact: true }).getAttribute("aria-pressed")) !== "true") throw new Error("timetable: Going didn't last a reload");
+    await goCard.getByText(`Prep task for your ${goalName} goal, on your ride on the day.`, { exact: false }).waitFor({ timeout: 10000 });
+    await goCard.getByRole("button", { name: "Take it off" }).click();
+    await goCard.getByRole("status").filter({ hasText: "Prep task taken off your ride. You're still going." }).waitFor({ timeout: 10000 });
+    await goCard.getByRole("button", { name: "Take it off" }).waitFor({ state: "detached", timeout: 5000 });
+    const [off] = await sql`select state, goal_skill_id from event_rsvps where user_id = ${me.id} and event_id = ${goOne.id}`;
+    if (off?.state !== "going" || off.goal_skill_id !== null) throw new Error(`timetable: Take it off kept ${JSON.stringify(off)}`);
+    await shot("timetable");
+    await a11y("timetable");
+
+    // The Monday events email: on from /timetable, still on after a reload, and the same switch in Settings.
+    const monday = p.getByRole("region", { name: "Every Monday" });
+    const digestSwitch = (scope) => scope.getByRole("checkbox", { name: /^Send me this week.s events/ });
+    if (await digestSwitch(monday).isChecked()) await sql`update user_settings set events_digest = false where user_id = ${me.id}`;
+    await p.reload();
+    await settled();
+    await digestSwitch(monday).waitFor({ state: "attached", timeout: 10000 });
+    if (await digestSwitch(monday).isChecked()) throw new Error("timetable: the Monday email starts on");
+    await digestSwitch(monday).click({ force: true });
+    await monday.getByRole("status").filter({ hasText: "On. The next one comes on Monday morning, if an event matches." }).waitFor({ timeout: 10000 });
+    await p.reload();
+    await settled();
+    await digestSwitch(monday).waitFor({ state: "attached", timeout: 10000 });
+    if (!(await digestSwitch(monday).isChecked())) throw new Error("timetable: the Monday email switch didn't stay on after a reload");
+    await p.goto(BASE + "/settings#acc-notif");
+    await settled();
+    const notif = p.getByRole("region", { name: "Notifications" });
+    await digestSwitch(notif).waitFor({ state: "attached", timeout: 10000 });
+    if (!(await digestSwitch(notif).isChecked())) throw new Error("settings: the Monday email switch isn't on after turning it on from the Timetable");
+    // Off and on again from Settings, each kept after a reload.
+    await digestSwitch(notif).click({ force: true });
+    await notif.getByRole("status").filter({ hasText: "Off. We won't send it." }).waitFor({ timeout: 10000 });
+    await p.reload();
+    await settled();
+    await digestSwitch(notif).waitFor({ state: "attached", timeout: 10000 });
+    if (await digestSwitch(notif).isChecked()) throw new Error("settings: the Monday email switch didn't stay off after a reload");
+    await digestSwitch(notif).click({ force: true });
+    await notif.getByRole("status").filter({ hasText: "On. The next one comes on Monday morning, if an event matches." }).waitFor({ timeout: 10000 });
+    await p.reload();
+    await settled();
+    await digestSwitch(notif).waitFor({ state: "attached", timeout: 10000 });
+    if (!(await digestSwitch(notif).isChecked())) throw new Error("settings: the Monday email switch didn't stay on after a reload");
+
+    // The digest's off link: the weekly email's token (set here as the weekly step does) with &k=events, signed out.
+    await sql`update user_settings set email_weekly_summary = true, email_off_token = ${TOKEN} where user_id = ${me.id}`;
+    const mail = await b.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+    const q = await mail.newPage();
+    try {
+      await q.goto(`${BASE}/api/email/off?t=${TOKEN}&k=events`);
+      await q.getByRole("heading", { name: "Turn off the Monday events email?" }).waitFor({ timeout: 10000 });
+      const [still] = await sql`select events_digest as on from user_settings where user_id = ${me.id}`;
+      if (!still.on) throw new Error("events off link: opening it turned the digest off");
+      await a11yOn(q, "email-off-events");
+      await q.getByRole("button", { name: "Turn it off" }).click();
+      await q.getByRole("heading", { name: "The Monday events email is off" }).waitFor({ timeout: 10000 });
+    } finally {
+      await mail.close();
+    }
+    const [after] = await sql`select events_digest, email_weekly_summary, email_off_token from user_settings where user_id = ${me.id}`;
+    if (after.events_digest) throw new Error("events off link: the button didn't turn the digest off");
+    if (!after.email_weekly_summary) throw new Error("events off link: it turned the weekly My jobs email off too");
+    // The weekly email is still on and carries the same token, so its own off link must keep working.
+    if (after.email_off_token !== TOKEN) throw new Error("events off link: it replaced the token the weekly email still uses");
+    await p.goto(BASE + "/timetable");
+    await settled();
+    await digestSwitch(monday).waitFor({ state: "attached", timeout: 15000 });
+    if (await digestSwitch(monday).isChecked()) throw new Error("timetable: the Monday email switch still shows on after the off link");
+
+    // Suggest an event: one kept as waiting for review, after a reload too.
+    const know = p.getByRole("region", { name: "Know an event?" });
+    const fillSuggestion = async (form, { url, title, days }) => {
+      await form.getByLabel("Link to the organiser's page", { exact: true }).fill(url);
+      await form.getByLabel("Event name", { exact: true }).fill(title);
+      await form.getByLabel("Organiser", { exact: true }).fill("Example Community (synthetic)");
+      await form.getByLabel("Kind", { exact: true }).selectOption("online");
+      await form.getByLabel("Start date", { exact: true }).fill(indiaDate(days));
+      await form.getByLabel("Start time", { exact: true }).fill("18:00");
+      await form.getByLabel("End time", { exact: true }).fill("20:00");
+      await form.getByLabel("Cost (optional)", { exact: true }).fill("Free");
+    };
+    await know.getByRole("button", { name: "Suggest an event" }).click();
+    const form = know.getByRole("form", { name: "Suggest an event" });
+    await form.waitFor({ timeout: 5000 });
+    await fillSuggestion(form, { url: `https://example.org/events/${run}-suggested`, title: SUGGESTED, days: 5 });
+    await form.getByRole("button", { name: "Send for review" }).click();
+    await know.getByRole("status").filter({ hasText: "Thanks. It's saved and waiting for review. Nobody else sees it until then." }).waitFor({ timeout: 10000 });
+    await know.getByText(/^1 of your suggestions is waiting for review\./).waitFor({ timeout: 5000 });
+    await form.waitFor({ state: "detached", timeout: 5000 });
+    await p.reload();
+    await settled();
+    await know.getByText(/^1 of your suggestions is waiting for review\./).waitFor({ timeout: 15000 });
+
+    // At phone width in dark: the timetable fits and passes axe, and so does the open form; a link in the name is refused.
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    await cardOf(saveOne).waitFor({ timeout: 15000 });
+    const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (overflow > 1) throw new Error("timetable scrolls sideways at 390px (dark): " + overflow + "px");
+    await a11yOn(p, "timetable-phone-dark");
+    await shot("timetable-phone-dark");
+    await know.getByRole("button", { name: "Suggest an event" }).click();
+    await form.waitFor({ timeout: 5000 });
+    await fillSuggestion(form, { url: `https://example.org/events/${run}-linked`, title: "Synthetic T170 meetup, details at www.example.org", days: 6 });
+    if (await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth > 1)) throw new Error("the open Suggest an event form scrolls sideways at 390px (dark)");
+    await a11yOn(p, "timetable-suggest-phone-dark");
+    await form.getByRole("button", { name: "Send for review" }).click();
+    await know
+      .getByRole("status")
+      .filter({ hasText: "Some details don't fit. Check the dates, the place, and that only the link box holds a link." })
+      .waitFor({ timeout: 10000 });
+    await form.waitFor({ timeout: 2000 }).catch(() => {
+      throw new Error("Suggest an event: the form closed on a refused suggestion");
+    });
+    await shot("timetable-suggest-refused-phone-dark");
+    const kept = await sql`select title from event_suggestions where user_id = ${me.id} and source_url like ${`https://example.org/events/${run}-%`}`;
+    if (kept.length !== 1 || kept[0].title !== SUGGESTED) throw new Error(`Suggest an event kept ${JSON.stringify(kept.map((k) => k.title))}`);
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+
+    // The admin's read-only queue on /admin/reports: the suggestion, with no sender and nothing to press.
+    const a = await adm.newPage();
+    a.on("pageerror", (e) => problems.push(`pageerror@${a.url()}: ${e.message.slice(0, 200)}`));
+    a.on("response", (r) => r.status() >= 500 && problems.push(`${r.status()} ${r.request().method()} ${r.url()}`));
+    a.on("console", (m) => m.type() === "error" && problems.push(`console@${a.url()}: ${m.text().slice(0, 200)}`));
+    await signInAs(a, "Admin Tester", "admin@careermetro.test");
+    await a.goto(BASE + "/admin/reports");
+    await a.getByRole("heading", { name: "Reports", level: 1 }).waitFor({ timeout: 15000 });
+    const queue = a.getByRole("region", { name: "Event suggestions" });
+    await queue.getByText(/^Read only\./).waitFor({ timeout: 10000 });
+    await queue.getByText(/^\d+ pending$/).waitFor();
+    const row = queue.getByRole("listitem").filter({ hasText: SUGGESTED });
+    await row.waitFor({ timeout: 10000 }).catch(() => {
+      throw new Error("admin reports: the event suggestion isn't in the queue");
+    });
+    await row.getByRole("link", { name: /^example\.org/ }).waitFor();
+    const text = await row.innerText();
+    if (/@|Priya|Sharma/.test(text)) throw new Error("admin reports: the event suggestion shows who sent it");
+    if (await row.getByRole("button").count()) throw new Error("admin reports: the event suggestion has a button, but the queue is read only");
+    await a.screenshot({ path: `${OUT}${String(++i).padStart(2, "0")}-admin-event-suggestions.png`, fullPage: true });
+    await axeOn(a, "admin-event-suggestions");
+  } finally {
+    await adm.close();
+    await sql`delete from events where source = 'feed' and source_key like ${`${run}-%`}`;
+    if (me) {
+      await sql`delete from event_suggestions where user_id = ${me.id} and source_url like ${`https://example.org/events/${run}-%`}`;
+      // The settings as they were: the Timetable's switch made the row if there was none.
+      if (before)
+        await sql`update user_settings set email_weekly_summary = ${before.email_weekly_summary}, email_off_token = ${before.email_off_token},
+          events_digest = ${before.events_digest} where user_id = ${me.id}`;
+      else await sql`delete from user_settings where user_id = ${me.id}`;
+    }
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await sql.end();
+  }
+});
 // The job the jobs step posts, for the applications step after it.
 let postedTitle = null;
 let proofSkill = "";
