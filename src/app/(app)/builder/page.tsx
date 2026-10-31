@@ -8,7 +8,7 @@ import { authConfig } from "@/lib/auth/config";
 import { currentAccount } from "@/lib/auth/server";
 import { testSignInEnabled } from "@/lib/auth/test-user";
 import { exampleBuilder } from "@/lib/builder/fixtures";
-import { builderRoles as roles, builderRoleTools as roleTools } from "@/lib/builder/roles";
+import { builderRoleLinks as roleLinks, builderRoles as roles, builderRoleTools as roleTools } from "@/lib/builder/roles";
 import { loadDraft } from "@/lib/builder/store";
 import { checkMyGaps, reviewBuiltResume, saveBuilderDraft } from "./actions";
 
@@ -19,11 +19,11 @@ async function Builder() {
   await connection();
   const accounts = !!authConfig() || testSignInEnabled();
   const account = accounts ? await currentAccount() : null;
-  if (!account) return <BuilderView data={{ ...exampleBuilder, roles, roleTools }} />;
+  if (!account) return <BuilderView data={{ ...exampleBuilder, roles, roleTools, roleLinks }} />;
   const { answers } = await loadDraft(account.id);
   return (
     <BuilderView
-      data={{ answers, name: displayName(account.name), roles, roleTools }}
+      data={{ answers, name: displayName(account.name), roles, roleTools, roleLinks }}
       actions={{ save: saveBuilderDraft, review: reviewBuiltResume, gaps: checkMyGaps }}
     />
   );

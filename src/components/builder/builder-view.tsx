@@ -2,8 +2,9 @@
 
 import { ArrowLeft, ArrowRight, Check, FileText, Lock, Plus, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
+import { Fragment, useEffect, useId, useRef, useState, useTransition, type ReactNode } from "react";
 import { FieldError } from "@/components/ui/field-error";
+import { profileLinkOrder, type ProfileLink } from "@/lib/builder/links";
 import { builderIssues, builderMissing, normalLink, type BuilderIssues } from "@/lib/builder/rules";
 import type { BuilderActions, BuilderData, BuilderFailure, BuilderReview } from "@/lib/builder/types";
 import type { BuilderAnswers } from "@/lib/schemas";
@@ -258,7 +259,7 @@ export function BuilderView({ data, actions }: { data: BuilderData; actions?: Bu
           {section === "jobs" && <JobsCard a={a} set={set} err={err} />}
           {section === "tools" && <ToolsCard a={a} set={set} err={err} data={data} />}
           {section === "certificates" && <CertificatesCard a={a} set={set} err={err} />}
-          {section === "links" && <LinksCard a={a} set={set} err={err} />}
+          {section === "links" && <LinksCard a={a} set={set} err={err} data={data} />}
 
           {missing[section] && <p className="text-[0.8rem] text-muted">{missing[section]}</p>}
           <div className="flex flex-wrap items-center gap-2 border-t border-line pt-3">
@@ -588,7 +589,18 @@ function CertificatesCard({ a, set, err }: CardProps) {
   );
 }
 
-function LinksCard({ a, set, err }: CardProps) {
+/** Label and placeholder of each profile link field. */
+const PROFILE_LINK_FIELDS: Record<ProfileLink, { label: string; placeholder: string }> = {
+  github: { label: "GitHub", placeholder: "https://github.com/" },
+  portfolio: { label: "Portfolio", placeholder: "https://" },
+  linkedin: { label: "LinkedIn", placeholder: "https://www.linkedin.com/in/" },
+};
+
+/**
+ * The profile links, in the order the target role makes most useful (T182): GitHub first only where code counts as
+ * evidence, the portfolio first for design roles, LinkedIn first otherwise and with no role yet.
+ */
+function LinksCard({ a, set, err, data }: CardProps & { data: BuilderData }) {
   const link = (key: keyof BuilderAnswers["links"], label: string, placeholder: string, type = "url") => (
     <Field label={label} optional error={err(`links.${key}`)}>
       {(id, invalid) => (
@@ -609,9 +621,9 @@ function LinksCard({ a, set, err }: CardProps) {
   );
   return (
     <div className="flex flex-col gap-3">
-      {link("github", "GitHub", "https://github.com/")}
-      {link("portfolio", "Portfolio", "https://")}
-      {link("linkedin", "LinkedIn", "https://www.linkedin.com/in/")}
+      {(data.roleLinks?.[a.role.roleSlug ?? ""] ?? profileLinkOrder()).map((key) => (
+        <Fragment key={key}>{link(key, PROFILE_LINK_FIELDS[key].label, PROFILE_LINK_FIELDS[key].placeholder)}</Fragment>
+      ))}
       {link("email", "Email on the resume", "you@example.com", "email")}
       <p className="text-[0.8rem] text-muted">We never ask for or store your phone number. Add it in the Word file after you download your resume.</p>
     </div>
