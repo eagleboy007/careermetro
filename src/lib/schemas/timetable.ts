@@ -10,6 +10,11 @@ import {
   EVENT_FEED_URLS_MAX,
   EVENT_FEEDS_MAX,
   EVENT_KINDS,
+  EVENT_LISTING_HOSTS,
+  EVENT_MANUAL_EVIDENCE_MAX,
+  EVENT_MANUAL_FEED_ID,
+  EVENT_MANUAL_MAX,
+  EVENT_MANUAL_TOPICS_MAX,
   EVENT_ORGANISER_MAX,
   EVENT_RADII_KM,
   EVENT_RADIUS_DEFAULT_KM,
@@ -33,6 +38,9 @@ import {
 } from "./constants";
 export {
   EVENT_FEED_DROPS,
+  EVENT_LISTING_HOSTS,
+  EVENT_MANUAL_FEED_ID,
+  EVENT_MANUAL_SOURCE,
   EVENT_KIND_LABELS,
   EVENT_KINDS,
   EVENT_RADII_KM,
@@ -365,7 +373,8 @@ export type EventFeed = z.infer<typeof eventFeed>;
 export const eventFeedsFile = z
   .array(eventFeed)
   .max(EVENT_FEEDS_MAX)
-  .refine((fs) => new Set(fs.map((f) => f.id)).size === fs.length, { message: "a feed id twice" });
+  .refine((fs) => new Set(fs.map((f) => f.id)).size === fs.length, { message: "a feed id twice" })
+  .refine((fs) => fs.every((f) => f.id !== EVENT_MANUAL_FEED_ID), { message: `"${EVENT_MANUAL_FEED_ID}" is the hand-entered events' id` });
 
 /** One VEVENT as the job reads it from an iCalendar feed, after unfolding and unescaping. Other properties are ignored. */
 export const icsEvent = z.strictObject({
@@ -421,6 +430,109 @@ export const feedEventRow = z
   .refine((e) => !e.online || e.city === null, { message: "an online event has no city", path: ["city"] })
   .refine((e) => e.online || e.city !== null, { message: "an in-person event names its city", path: ["city"] });
 export type FeedEventRow = z.infer<typeof feedEventRow>;
+
+/*
+ * Hand-entered events (docs/timetable-sources.md): src/content/manual-events.json, edited by the team in a PR from the
+ * organiser's own page. The daily event feed loads each one (src/lib/timetable/manual.ts). dateEvidence stays in the
+ * content file: it is never written to the database, shown or logged.
+ */
+
+/** "2026-11-13T09:00:00+05:30": an India wall clock with its offset, as typed from the organiser's page. */
+const indiaDateTime = z.iso
+  .datetime({ offset: true })
+  .refine((s) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?\+05:30$/.test(s), "India time: YYYY-MM-DDTHH:MM(:SS)+05:30");
+
+/** True when a link's host is one of EVENT_LISTING_HOSTS or under one. */
+export function isListingHost(url: string): boolean {
+  let host: string;
+  try {
+    host = new URL(url).hostname.toLowerCase().replace(/\.$/, "");
+  } catch {
+    return false;
+  }
+  return EVENT_LISTING_HOSTS.some((h) => host === h || host.endsWith(`.${h}`));
+}
+
+/** One hand-entered event. */
+export const manualEvent = z
+  .strictObject({
+    title: eventText(1, EVENT_TITLE_MAX),
+    organiser: eventText(1, EVENT_ORGANISER_MAX),
+    kind: eventKind,
+    startsAt: indiaDateTime,
+    endsAt: indiaDateTime,
+    online: z.boolean(),
+    /** One of PERSON_CITIES; null when online, and only then. */
+    city: z.enum(PERSON_CITIES).nullable(),
+    venue: eventText(1, EVENT_VENUE_MAX).nullable(),
+    /** "" when the page names no price. Never a payment link. */
+    cost: eventText(0, EVENT_COST_MAX),
+    /** Skill ids from skills.json (the content test checks each exists). */
+    topics: z
+      .array(topicKey)
+      .min(1)
+      .max(EVENT_MANUAL_TOPICS_MAX)
+      .refine((ts) => new Set(ts).size === ts.length, "a topic twice"),
+    /** The organiser's own page: https, never a listing or job site. */
+    sourceUrl: https.refine((u) => !isListingHost(u), "the organiser's own page, not a listing site"),
+    /** The day someone last read the date on that page. */
+    checkedOn: z.iso.date(),
+    /** A short quote of the date from the page. Kept here only: never stored, shown or logged. */
+    dateEvidence: z.string().min(1).max(EVENT_MANUAL_EVIDENCE_MAX),
+  })
+  .refine((e) => Date.parse(e.endsAt) >= Date.parse(e.startsAt), { message: "ends before it starts", path: ["endsAt"] })
+  .refine((e) => Date.parse(e.endsAt) - Date.parse(e.startsAt) <= EVENT_FEED_LENGTH_MAX_DAYS * 86_400_000, { message: "too long", path: ["endsAt"] })
+  .refine((e) => !e.online || (e.city === null && e.venue === null), { message: "an online event has no city or area", path: ["city"] })
+  .refine((e) => e.online || e.city !== null, { message: "an in-person event names its city", path: ["city"] })
+  .refine((e) => e.kind !== "online" || e.online, { message: "an Online event is online", path: ["kind"] })
+  .refine((e) => e.checkedOn <= e.startsAt.slice(0, 10), { message: "checked after it started", path: ["checkedOn"] });
+export type ManualEvent = z.infer<typeof manualEvent>;
+
+/** The title as a slug: lowercase letters and digits joined by hyphens, at most 120 characters. */
+export function manualSlug(title: string): string {
+  const slug = title
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 120)
+    .replace(/-+$/g, "");
+  return slug || "event";
+}
+
+/** A hand-entered event's stable source_key: "manual:<title slug>-<India start date>". */
+export const manualKey = (e: Pick<ManualEvent, "title" | "startsAt">): string => `manual:${manualSlug(e.title)}-${e.startsAt.slice(0, 10)}`;
+
+/** The whole content file: each event once by its key. */
+export const manualEventsFile = z
+  .array(manualEvent)
+  .max(EVENT_MANUAL_MAX)
+  .superRefine((es, ctx) => {
+    const seen = new Set<string>();
+    for (const e of es) {
+      const key = manualKey(e);
+      if (seen.has(key)) ctx.addIssue({ code: "custom", message: `${key} twice` });
+      seen.add(key);
+    }
+  });
+
+/**
+ * One hand-entered event on /admin/reports: what the file says and what the events table holds for it. state is the
+ * row's status ("live", "hidden", "cancelled"), "over" once it has ended, or "waiting" until the next daily run loads it.
+ */
+export const manualEventAdminRow = z.strictObject({
+  key: z.string().min(1).max(EVENT_SOURCE_KEY_MAX),
+  title: eventText(1, EVENT_TITLE_MAX),
+  organiser: eventText(1, EVENT_ORGANISER_MAX),
+  startsAt: z.iso.datetime({ offset: true }),
+  endsAt: z.iso.datetime({ offset: true }),
+  online: z.boolean(),
+  city: z.enum(PERSON_CITIES).nullable(),
+  sourceUrl: https,
+  checkedOn: z.iso.date(),
+  state: z.enum(["live", "hidden", "cancelled", "pending", "over", "waiting"]),
+});
+export type ManualEventAdminRow = z.infer<typeof manualEventAdminRow>;
 
 /*
  * Suggest an event (Timetable PR 6, docs/plans/timetable-plan.md section 6): a signed-in member gives the organiser's

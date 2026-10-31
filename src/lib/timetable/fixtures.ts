@@ -1,4 +1,4 @@
-import type { EventSuggestionQueue, TimetableWhy } from "@/lib/schemas";
+import type { EventSuggestionQueue, ManualEventAdminRow, TimetableWhy } from "@/lib/schemas";
 import { timetableFor, type TimetableEvent, type TimetablePerson } from "./match";
 import { FAR_RADIUS_KM } from "./view";
 
@@ -214,3 +214,43 @@ export const exampleSuggestionQueue: EventSuggestionQueue = {
     },
   ],
 };
+
+/** Hand-entered events on /admin/reports, for /design: made-up organisers and links, one of each state. */
+export const exampleManualEvents: ManualEventAdminRow[] = [
+  {
+    key: "manual:example-cloud-day-2026-10-18",
+    title: "Example Cloud Day 2026",
+    organiser: "Example Cloud Circle",
+    startsAt: "2026-10-18T09:00:00+05:30",
+    endsAt: "2026-10-18T17:00:00+05:30",
+    online: false,
+    city: "Mumbai",
+    sourceUrl: "https://events.example.org/cloud-day-2026",
+    checkedOn: "2026-10-10",
+    state: "live",
+  },
+  {
+    key: "manual:example-python-conference-2026-11-21",
+    title: "Example Python Conference (workshops 21 Nov, talks 22 Nov)",
+    organiser: "Example Python Society",
+    startsAt: "2026-11-21T09:00:00+05:30",
+    endsAt: "2026-11-22T18:00:00+05:30",
+    online: false,
+    city: "Chennai",
+    sourceUrl: "https://python.example.org/2026/",
+    checkedOn: "2026-10-11",
+    state: "waiting",
+  },
+  {
+    key: "manual:example-devops-evening-2026-10-24",
+    title: "Example DevOps evening",
+    organiser: "Example DevOps Group",
+    startsAt: "2026-10-24T18:00:00+05:30",
+    endsAt: "2026-10-24T20:00:00+05:30",
+    online: false,
+    city: "Pune",
+    sourceUrl: "https://devops.example.org/evening",
+    checkedOn: "2026-10-09",
+    state: "cancelled",
+  },
+];

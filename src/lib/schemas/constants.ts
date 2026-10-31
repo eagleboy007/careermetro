@@ -784,6 +784,7 @@ export const SAMPLE_CANT_SEND = "The sample resume can't be sent. Upload your ow
 
 /** Where an event came from: an organiser's public feed, or a moderated suggestion. */
 export const EVENT_SOURCES = ["feed", "suggestion"] as const;
+export type EventSource = (typeof EVENT_SOURCES)[number];
 export const EVENT_KINDS = ["meetup", "workshop", "conference", "online"] as const;
 export type EventKind = (typeof EVENT_KINDS)[number];
 export const EVENT_KIND_LABELS: Record<EventKind, string> = { meetup: "Meetup", workshop: "Workshop", conference: "Conference", online: "Online" };
@@ -839,6 +840,40 @@ export const EVENT_FEED_AHEAD_DAYS = 365;
 export const EVENT_FEED_LENGTH_MAX_DAYS = 14;
 /** Why the feed dropped an event it read; the log carries these as counts only. */
 export const EVENT_FEED_DROPS = ["invalid", "cancelled", "past", "too_far", "too_long", "no_place", "no_topic", "capped"] as const;
+/*
+ * Hand-entered events (docs/plans/timetable-plan.md section 6, docs/timetable-sources.md): the team types events from
+ * organisers' own pages into src/content/manual-events.json in a PR. The daily event feed loads them every run, with no
+ * network call, as admin suggestions already checked: source "suggestion", source_key "manual:<title slug>-<India start
+ * date>", status live. Member suggestions keep their own table (event_suggestions) and a suggestion id as key.
+ */
+export const EVENT_MANUAL_FEED_ID = "manual";
+export const EVENT_MANUAL_SOURCE = "suggestion" as const;
+/** Hand-entered events the content file may hold, topics one may name, and the length of its date evidence. */
+export const EVENT_MANUAL_MAX = 200;
+export const EVENT_MANUAL_TOPICS_MAX = 10;
+export const EVENT_MANUAL_EVIDENCE_MAX = 300;
+/**
+ * Listing and job sites an event link may never point at: their terms forbid reuse, or they are listings rather than
+ * the organiser's own page. A host matches itself and its subdomains.
+ */
+export const EVENT_LISTING_HOSTS = [
+  "linkedin.com",
+  "naukri.com",
+  "indeed.com",
+  "indeed.co.in",
+  "glassdoor.com",
+  "glassdoor.co.in",
+  "ambitionbox.com",
+  "wellfound.com",
+  "angel.co",
+  "meetup.com",
+  "lu.ma",
+  "luma.com",
+  "townscript.com",
+  "allevents.in",
+  "eventbrite.com",
+  "eventbrite.co.in",
+] as const;
 /**
  * App emails (the weekly My jobs email and the Monday events digest) sent a day across the whole app, counted per India
  * day in app_email_days (T151, T153). Resend's free plan allows 100 a day; sign-in codes keep the other 60.
