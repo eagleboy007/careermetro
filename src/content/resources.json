@@ -19107,7 +19107,8 @@
     "skillIds": [
       "product-cost-sheets",
       "overhead-allocation-absorption",
-      "inventory-valuation"
+      "inventory-valuation",
+      "cost-records-audit-compliance"
     ],
     "minutes": 120,
     "free": true
@@ -19133,39 +19134,6 @@
       "standard-costing-variance"
     ],
     "minutes": 1440,
-    "free": true
-  },
-  {
-    "title": "Companies (Cost Records and Audit) Rules, 2014",
-    "url": "https://icmai.in/ProfessionalDevelopment/carr_car2014.php",
-    "provider": "Institute of Cost Accountants of India",
-    "kind": "docs",
-    "skillIds": [
-      "cost-records-audit-compliance"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "Guidance note on compliance report",
-    "url": "https://icmai.in/upload/Institute/Publications/GN-on-Compliance-Report.pdf",
-    "provider": "Institute of Cost Accountants of India",
-    "kind": "docs",
-    "skillIds": [
-      "cost-records-audit-compliance"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "Information for members on cost audit",
-    "url": "https://icmai.in/upload/Info-Members-Cost-Audit.pdf",
-    "provider": "Institute of Cost Accountants of India",
-    "kind": "docs",
-    "skillIds": [
-      "cost-records-audit-compliance"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -19434,17 +19402,6 @@
     "free": true
   },
   {
-    "title": "Industrial Disputes Act: acts and rules",
-    "url": "https://clc.gov.in/clc/acts-rules/ida",
-    "provider": "Chief Labour Commissioner (Central)",
-    "kind": "docs",
-    "skillIds": [
-      "labour-authority-liaison"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "Industrial Employment (Standing Orders) Act, 1946",
     "url": "https://indiacode.nic.in/bitstream/123456789/19636/1/industrial-employment-standing-orders-act-1946.pdf",
     "provider": "India Code",
@@ -19475,17 +19432,6 @@
       "disciplinary-enquiry-drafting"
     ],
     "minutes": 40,
-    "free": true
-  },
-  {
-    "title": "Contract Labour (Regulation and Abolition) Act, 1970: acts and rules",
-    "url": "https://clc.gov.in/clc/acts-rules/contract-labour-regulation-abolition-act-1970",
-    "provider": "Chief Labour Commissioner (Central)",
-    "kind": "docs",
-    "skillIds": [
-      "contract-labour-compliance"
-    ],
-    "minutes": 45,
     "free": true
   },
   {
@@ -19844,18 +19790,6 @@
     "free": true
   },
   {
-    "title": "Quality Design and Control (IIT Kharagpur)",
-    "url": "https://archive.nptel.ac.in/noc/courses/noc22/SEM1/noc22-mg16",
-    "provider": "NPTEL",
-    "kind": "course",
-    "skillIds": [
-      "sampling-plans-aql",
-      "product-inspection-stages"
-    ],
-    "minutes": 1200,
-    "free": true
-  },
-  {
     "title": "Guide to Inspections of Quality Systems",
     "url": "https://www.fda.gov/files/Guide-to-Inspections-of-Quality-Systems.pdf",
     "provider": "US FDA",
@@ -19959,17 +19893,6 @@
     "free": true
   },
   {
-    "title": "Performing subsystem inspections (CAPA subsystem)",
-    "url": "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/inspection-guides/performing-subsystem-inspections",
-    "provider": "US FDA",
-    "kind": "docs",
-    "skillIds": [
-      "non-conformance-capa"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "CAPA within the Pharmaceutical Quality System",
     "url": "https://www.fda.gov/media/85266/download",
     "provider": "US FDA",
@@ -20000,18 +19923,6 @@
       "iso-9001-qms-documentation"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Total Quality Management - I (IIT Kanpur)",
-    "url": "https://archive.nptel.ac.in/noc/courses/noc18/SEM2/noc18-mg39",
-    "provider": "NPTEL",
-    "kind": "course",
-    "skillIds": [
-      "iso-9001-qms-documentation",
-      "sampling-plans-aql"
-    ],
-    "minutes": 960,
     "free": true
   },
   {
@@ -20056,28 +19967,6 @@
       "cmm-inspection"
     ],
     "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "ICEGATE Web Forms user manual (Bill of Entry filing)",
-    "url": "https://www.icegate.gov.in/sites/default/files/2023-11/User%20Manual%20Web%20forms_0.pdf",
-    "provider": "ICEGATE (CBIC)",
-    "kind": "docs",
-    "skillIds": [
-      "customs-clearance-compliance"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
-    "title": "FAQs on ICEGATE",
-    "url": "https://www.icegate.gov.in/help/faq",
-    "provider": "ICEGATE (CBIC)",
-    "kind": "docs",
-    "skillIds": [
-      "customs-clearance-compliance"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
@@ -20155,17 +20044,6 @@
       "export-incentive-claims"
     ],
     "minutes": 20,
-    "free": true
-  },
-  {
-    "title": "Advisory for e-scrip to avail export incentive schemes (RoDTEP, RoSCTL)",
-    "url": "https://www.icegate.gov.in/sites/default/files/2024-08/Advisory%20for%20escrip%20to%20avail%20Export%20Incentive%20schemes-%20RoDTEP%20RoSCTL%20v_0.10%20dated%20May%2030%202024%20-.pdf",
-    "provider": "ICEGATE (CBIC)",
-    "kind": "docs",
-    "skillIds": [
-      "export-incentive-claims"
-    ],
-    "minutes": 30,
     "free": true
   },
   {
