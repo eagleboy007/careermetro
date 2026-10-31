@@ -110,7 +110,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "nism-xv-research-analyst",
+      "importance": "optional",
+      "why": "Covers the valuation methods (DCF, relative, SOTP) used in deal work."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",

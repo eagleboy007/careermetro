@@ -98,7 +98,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "cswa",
+      "importance": "optional",
+      "why": "CAE engineers often clean up and simplify geometry in SolidWorks before meshing."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",

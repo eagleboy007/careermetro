@@ -123,7 +123,18 @@
       "label": "A mechanical CAD tool (3D modelling or AutoCAD 2D)"
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "cswa",
+      "importance": "optional",
+      "why": "Freshers often list CSWA to show CAD skill before their first job."
+    },
+    {
+      "certId": "autodesk-autocad-professional",
+      "importance": "optional",
+      "why": "AutoCAD is the most-listed CAD tool in GET posts."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",

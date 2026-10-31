@@ -99,7 +99,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "nism-va-mutual-fund-distributors",
+      "importance": "recommended",
+      "why": "SEBI requires staff who sell or advise on mutual funds to hold NISM V-A, so bank RM posts often ask for it."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",

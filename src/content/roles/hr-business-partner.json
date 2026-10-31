@@ -116,7 +116,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "shrm-cp",
+      "importance": "optional",
+      "why": "Some MNC HRBP posts list SHRM-CP or SCP as a plus."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31. Awaiting domain-expert review.",

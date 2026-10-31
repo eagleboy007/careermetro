@@ -110,6 +110,11 @@
       "certId": "mos-excel-expert",
       "importance": "optional",
       "why": "Shows advanced Excel skills used in compensation modelling"
+    },
+    {
+      "certId": "shrm-cp",
+      "importance": "optional",
+      "why": "Covers total rewards as one of its HR knowledge areas."
     }
   ],
   "sources": [

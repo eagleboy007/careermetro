@@ -96,6 +96,11 @@
       "certId": "mos-excel-associate",
       "importance": "optional",
       "why": "Shows Excel skill for MIS work"
+    },
+    {
+      "certId": "tally-essential",
+      "importance": "optional",
+      "why": "Back-office posts that include bookkeeping often list Tally."
     }
   ],
   "sources": [

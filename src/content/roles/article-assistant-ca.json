@@ -109,7 +109,18 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "tally-essential",
+      "importance": "optional",
+      "why": "Articleship firms audit and keep books for SME clients in Tally."
+    },
+    {
+      "certId": "gst-practitioner-exam",
+      "importance": "optional",
+      "why": "A recognised GST credential to show alongside CA studies."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",
