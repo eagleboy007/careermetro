@@ -11,7 +11,7 @@ Last updated: 2026-10-31 (practice and timed-test drafts for every thin role, un
 - **Proof:** certificate proof with the Credly check, held-proof review `/admin/proofs` (FR-44); only proof fills a goal.
 - **Employer:** Corporate steps 1–7, Express apply, "Let companies find me", Find people (T44), verified current job by work email (FR-47).
 - **Admin:** `/admin/reports` with removal tools (FR-45, FR-46), `/admin/library`, company review, event suggestions (kept as `pending` only).
-- **Platform:** RLS on every table; hardening H1–H12 except H7; the daily Departures feed over `src/content/job-boards.json` (279 boards of the 300 cap, `FEED_LIMITS`); feed health in `job_feed_boards`, `/api/health` and the 6-hourly smoke; app email through Resend; CI e2e walk plus the max-data oversize check (T150).
+- **Platform:** RLS on every table; hardening H1–H12 except H7; the daily Departures feed over `src/content/job-boards.json` (319 boards of the 500 cap, `FEED_LIMITS`); feed health in `job_feed_boards`, `/api/health` and the 6-hourly smoke; app email through Resend; CI e2e walk plus the max-data oversize check (T150).
 - **Switched off until keys arrive:** real sign-in (preview uses a test user; emailed code with the Supabase values, Google once `GOOGLE_SIGNIN=1`), company sign-up, join and re-check codes and the current-job check (`RESEND_API_KEY`, `EMAIL_FROM`, `NAME_HASH_KEY`; `dev/email-sender-steps.md`), find-people, phone sharing, and photo and certificate upload. `/privacy` and `/terms` are drafts behind the preview gate until the legal adviser approves them.
 
 ## In progress
@@ -20,7 +20,7 @@ Last updated: 2026-10-31 (practice and timed-test drafts for every thin role, un
 - CSP: the host allow-list policy is report-only (`src/proxy.ts`, `src/lib/csp.ts`); the walk prints `CSP: none` or each violation. Enforcing waits on the log drain and on Milin (`docs/dev/security-sweep-2026-10-20.md`).
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/`; every role, certificate and question above waits on it.
 - Junction (FR-61, `docs/plans/junction-plan.md`), parts 1–4: data, rules, moderation and admin rows, `/junction`, post detail, Your posts, the rail, pins and the "Junction posts" switch on Me and `/u`, and the Today tip. All behind `JUNCTION_ENABLED` (off in production; on for CI's e2e build and app server, since build and runtime must agree). Grievance officer Milin Shah, still `placeholder: true`. Part 5 (launch switch) waits on a backup officer, the lawyer and the grievance mailbox.
-- Departures boards: 279 boards. Research's 53 non-tech candidates (banks, hotels, Pune plants; Workable rows left out, not one of the four ATS APIs) are in `scripts/departures/board-candidates.csv` for the board check; boards join `job-boards.json` only if it passes them.
+- Departures boards: 319. The board check passed 50 of Research's 53 non-tech candidates (31 Oct); 40 joined `job-boards.json`. Left out: 3 with no India post, 9 recruiters posting for clients, and EBANX (one stale post). Workable rows are not checked (not one of the four ATS APIs).
 
 ## Queue (all waiting on someone else)
 

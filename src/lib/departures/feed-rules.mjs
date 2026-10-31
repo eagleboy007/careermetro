@@ -17,7 +17,7 @@ import { experienceBand, placesOf } from "../../../scripts/jd-mining/market.mjs"
 
 /** The feed's limits (plan, "Server checks and limits"). */
 export const FEED_LIMITS = {
-  boards: 300,
+  boards: 500,
   postsPerBoard: 500,
   openPosts: 10000,
   /** One SmartRecruiters page, and the most pages read per board; India posts past them leave the board cut short. */
