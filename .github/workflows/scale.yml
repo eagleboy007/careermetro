@@ -35,8 +35,9 @@ jobs:
         run: bash scripts/ci-postgres.sh
       # pg_stat_statements lists the slowest statements the pages and crons send; it needs a preload and a restart.
       - name: Load pg_stat_statements
+        # Only the library: its own settings are unknown to ALTER SYSTEM until it is loaded, and track = 'top' is the default.
         run: |
-          sudo -u postgres psql -v ON_ERROR_STOP=1 -q -c "alter system set shared_preload_libraries = 'pg_stat_statements'" -c "alter system set pg_stat_statements.track = 'top'"
+          sudo -u postgres psql -v ON_ERROR_STOP=1 -q -c "alter system set shared_preload_libraries = 'pg_stat_statements'"
           sudo systemctl restart postgresql.service
           for i in $(seq 20); do pg_isready -h localhost -p 5432 -q && break; sleep 1; done
           pg_isready -h localhost -p 5432
