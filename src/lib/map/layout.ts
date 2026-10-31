@@ -42,6 +42,23 @@ export type Spur = {
   count: number;
 };
 
+/**
+ * The earlier line after a change of destination (handoff section 14, open decision 5): greyed out, it leaves the
+ * line at Gaps, drops below the whole map and runs level to a closed end, with one small stop for each goal left on
+ * it (at most EARLIER_STOPS_MAX). The new line branches off at Gaps as it always did. Never numbered, never holds the
+ * train, never counts.
+ */
+export type EarlierBranch = {
+  /** The branch itself, from the Gaps station. */
+  d: string;
+  /** Where the level run starts and ends. */
+  start: { x: number; y: number };
+  end: { x: number; y: number };
+  stops: { x: number; y: number }[];
+  /** "EARLIER LINE · title", under the level run. */
+  label: { x: number; y: number };
+};
+
 export type Layout = {
   width: number;
   height: number;
@@ -58,6 +75,8 @@ export type Layout = {
   spurs: Spur[];
   /** Pitstops the person added on the line's goals, all spurs together. */
   ownCount: number;
+  /** The earlier line, when the person changed destination; null otherwise. */
+  earlier: EarlierBranch | null;
 };
 
 export const MAP_HEIGHT = 560;
@@ -77,6 +96,17 @@ const PREP_SHARE = 0.5;
 const NOW_GAP = 160;
 /** How far a spur of the person's own pitstops runs off the line. */
 const SPUR = 80;
+/** The earlier line runs level this far below the map's usual height, clear of every label and crossing line. */
+const EARLIER_DROP = 40;
+/** The 45 degree bend into the earlier line's level run. */
+const EARLIER_BEND = 40;
+/** The earlier line's level run: at least long enough for its label, at most this long. */
+const EARLIER_MIN = 420;
+const EARLIER_MAX = 640;
+/** Room under the earlier line for its label. */
+const EARLIER_BELOW = 48;
+/** Small stops drawn on the earlier line; the panel lists every goal left there. */
+export const EARLIER_STOPS_MAX = 8;
 
 /** What numbering a line's pitstops needs of a goal. The Map passes its goals; Network passes a person's line (FR-49). */
 export type PitstopGoal = Pick<MapGoal, "status" | "learnDone" | "proved" | "skipped">;
@@ -104,7 +134,7 @@ export function nowPitstop<G extends PitstopGoal>(pitstops: readonly Pitstop<G>[
 type Point = { x: number; y: number };
 type Unplaced = Station extends infer S ? (S extends Station ? Omit<S, "x" | "y" | "above"> : never) : never;
 
-export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout {
+export function layoutLine(line: Pick<MapLine, "goals" | "otherLines"> & Partial<Pick<MapLine, "previous">>): Layout {
   const pitstops = pitstopsFor(line.goals);
   const goalCount = line.goals.length;
   const climbs = Math.min(MAX_CLIMBS, Math.max(0, goalCount - 1));
@@ -165,7 +195,27 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout 
   x += STEP - 10;
   place({ id: "match", kind: "end", name: "Match", state: "future" });
 
-  const width = x + 50;
+  let width = x + 50;
+  let height = MAP_HEIGHT;
+  // The earlier line (handoff section 14): down from Gaps, then level under the map. The map grows to hold it.
+  let earlier: EarlierBranch | null = null;
+  if (line.previous) {
+    const gaps = stations[1];
+    const levelY = MAP_HEIGHT + EARLIER_DROP;
+    const start = { x: gaps.x + EARLIER_BEND, y: levelY };
+    const end = { x: start.x + Math.max(EARLIER_MIN, Math.min(EARLIER_MAX, width - 60 - start.x)), y: levelY };
+    const n = Math.min(EARLIER_STOPS_MAX, line.previous.left.length);
+    const stops = Array.from({ length: n }, (_, k) => ({ x: round(start.x + ((k + 1) * (end.x - start.x)) / (n + 1)), y: levelY }));
+    earlier = {
+      d: d([{ x: gaps.x, y: gaps.y }, { x: gaps.x, y: levelY - EARLIER_BEND }, start, end]),
+      start,
+      end,
+      stops,
+      label: { x: start.x + 16, y: levelY + 28 },
+    };
+    width = Math.max(width, end.x + 50);
+    height = levelY + EARLIER_BELOW;
+  }
   const nowStation = stations.findIndex((s) => s.state === "now");
   const lastDone = nowStation - 1;
   const doneRoute = route.slice(0, stationAt[lastDone] + 1);
@@ -199,7 +249,7 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout 
 
   return {
     width,
-    height: MAP_HEIGHT,
+    height,
     stations,
     track: d(route),
     done: d(doneRoute),
@@ -211,6 +261,7 @@ export function layoutLine(line: Pick<MapLine, "goals" | "otherLines">): Layout 
     pitstopCount: pitstops.length,
     spurs,
     ownCount: spurs.reduce((n, sp) => n + sp.count, 0),
+    earlier,
   };
 }
 

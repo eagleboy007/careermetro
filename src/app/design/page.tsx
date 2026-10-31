@@ -53,7 +53,7 @@ import { CertificateForm } from "@/components/proof/certificate-form";
 import { ProfileCertifications } from "@/components/me/certifications";
 import { MetroMap } from "@/components/map/metro-map";
 import { arrivedRide } from "@/lib/ride/build";
-import { exampleLifeLine, exampleLifeLineNoInterests, exampleLifeLineUndatedInterests, exampleMapLine, exampleOwnMapLine } from "@/lib/map/fixtures";
+import { exampleLifeLine, exampleLifeLineNoInterests, exampleLifeLineUndatedInterests, exampleMapLine, exampleOwnMapLine, exampleSwitchedMapLine } from "@/lib/map/fixtures";
 import { NotForMe } from "@/components/map/not-for-me";
 import { DeparturesView } from "@/components/departures/departures-view";
 import { DEPARTURES_LEDE } from "@/lib/departures/filter";
@@ -623,6 +623,12 @@ export default function DesignPage() {
           opens the form (goal, a name of up to 40 characters, an optional free course from the catalog). Example data, so nothing is saved.
         </p>
         <MetroMap line={exampleOwnMapLine} />
+        <p className="text-sm text-muted">
+          Change of destination (handoff section 14, open decision 5): after a switch from Business Analyst to Data Analyst the gaps are worked out again,
+          proof carries over, and the earlier line greys out below the map while the new line branches off at Gaps. Tap the earlier line for what was left
+          on it and Switch back. It never moves the train or counts toward Match. Example data, so nothing is saved.
+        </p>
+        <MetroMap line={exampleSwitchedMapLine} />
       </section>
 
       <section className="flex flex-col gap-4">

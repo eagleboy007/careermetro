@@ -11,6 +11,7 @@ import { getResumeForOwner } from "@/lib/resume/store";
 import { singleFlight } from "@/lib/single-flight";
 import { gapAnalysis, MAX_GAPS, type GapAnalysis, type RoleProfile } from "@/lib/schemas";
 import { buildGapAnalysis, SHOWN_GAPS } from "./analysis";
+import { currentAnalysis, type Db as CurrentDb } from "./current";
 import { EXPLAIN_MODEL, explainGaps, type ExplainClient } from "./explain";
 import { sampleExplanations } from "./sample-explanations";
 import { MATCHER_VERSION, matchProfile, metSkillIds, type MatchResult } from "./match";
@@ -84,9 +85,9 @@ async function storedAnalysis(
   const current = stored?.matcherVersion === MATCHER_VERSION;
   if (!stored || !storedResult?.success || !(current || sameReading(storedResult.data, match))) return null;
   const rebuilt = withEveryGap(storedResult.data, match);
-  // The person's track (docs/plans/tracks-plan.md) stays with the analysis when an old cut is rebuilt.
-  const kept = storedResult.data.trackId;
-  const analysis = rebuilt === storedResult.data || kept === undefined ? rebuilt : { ...rebuilt, trackId: kept };
+  // The person's track (docs/plans/tracks-plan.md) and when they last picked the role stay with the analysis when an
+  // old cut is rebuilt.
+  const analysis = rebuilt === storedResult.data ? rebuilt : keepChoices(rebuilt, storedResult.data);
   // Kept under the same id, so the rating and the goals made from it carry over.
   if (analysis !== storedResult.data || !current) {
     await tx.update(gapAnalyses).set({ result: analysis, matcherVersion: MATCHER_VERSION }).where(eq(gapAnalyses.id, stored.id));
@@ -139,6 +140,9 @@ async function analyse(
       .limit(1);
     const match = matchProfile(resume.profile, role, deps.now);
     const stored = await storedAnalysis(tx, resume.profileId, roleRow?.id ?? null, role, match);
+    // Coming back to a role picked before makes it the destination again, as a role opened for the first time is
+    // (docs/plans/change-destination-plan.md). Never for the sample, which is a made-up person's.
+    if (stored && owner.userId !== undefined && !resume.sample) return { done: { ...(await pickAgain(tx, owner.userId, stored)), sample: false } };
     if (stored) return { done: { ...stored, sample: resume.sample } };
     // A role the person fully meets needs no words from the model, so it uses none of their explanations. Nor does the
     // sample resume (T113): it gets checked-in words or the template, never the model or the shared budget.
@@ -168,6 +172,32 @@ async function analyse(
     return { ok: true, analysisId: row.id, analysis: explained.analysis, rating: null, sample: first.sample } as const;
   });
   return second === "busy" ? { ok: false, reason: "busy" } : second;
+}
+
+/** What the person chose on an analysis (its track, when they last picked its role), carried onto a rebuilt one. */
+export function keepChoices(rebuilt: GapAnalysis, stored: GapAnalysis): GapAnalysis {
+  const out = { ...rebuilt };
+  if (stored.trackId !== undefined) out.trackId = stored.trackId;
+  if (stored.chosenAt !== undefined) out.chosenAt = stored.chosenAt;
+  return out;
+}
+
+/**
+ * When a stored analysis is not the person's current one, marks it picked now (`chosenAt`), so it is current again:
+ * Today, the Map and Me follow the role the person came back to, and the role they leave becomes the Map's earlier
+ * line. The time is the database's, the clock `created_at` comes from, so the two always compare. Writes nothing when
+ * it is already current. Runs inside the Gaps lock.
+ */
+async function pickAgain(tx: Tx, userId: string, stored: StoredAnalysis): Promise<StoredAnalysis> {
+  const current = await currentAnalysis(userId, tx as unknown as CurrentDb);
+  if (!current || current.id === stored.analysisId) return stored;
+  const [row] = await tx
+    .update(gapAnalyses)
+    .set({ result: sql`jsonb_set(${gapAnalyses.result}, '{chosenAt}', to_jsonb(to_char(now() at time zone 'utc', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')))` })
+    .where(eq(gapAnalyses.id, stored.analysisId))
+    .returning({ result: gapAnalyses.result });
+  const parsed = row ? gapAnalysis.safeParse(row.result) : null;
+  return parsed?.success ? { ...stored, analysis: parsed.data } : stored;
 }
 
 /**

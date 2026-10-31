@@ -5418,6 +5418,76 @@ await step("hardening: the Life line by keyboard, light, dark and phone", async 
     await p.emulateMedia({ colorScheme: "light" });
   }
 });
+// Change of destination (handoff section 14, open decision 5; docs/plans/change-destination-plan.md): another role
+// picked on the role step works the gaps out again and the Map draws its line, with the earlier line greyed out below
+// it. The earlier line opens with Enter; its panel says the gaps were worked out again and proof carries over, passes
+// axe in light and in dark (after a reload) and fits at 390 px. Switch back makes the walk's role the destination again,
+// with the other role as the earlier line. The walk's role is put back in `finally`, whatever failed.
+await step("change of destination: the earlier line greys out on the Map, and Switch back puts the role back", async () => {
+  const gapsUrl = pathUrl.replace("/path/", "/gaps/");
+  const earlier = p.locator('main svg g[data-earlier][role="button"]');
+  const panel = p.getByRole("complementary", { name: "Pitstop details" });
+  const openEarlier = async (title) => {
+    await earlier.waitFor({ timeout: 10000 });
+    await earlier.focus();
+    await p.keyboard.press("Enter");
+    await panel.getByRole("heading", { name: `${title} line`, level: 3 }).waitFor({ timeout: 5000 });
+  };
+  try {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    await p.goto(gapsUrl.replace(/\/gaps\/[^/]+$/, "/role"));
+    await settled();
+    await p.locator('a[href$="/gaps/cloud-engineer"]').first().click();
+    await p.waitForURL(/\/gaps\/cloud-engineer$/, { timeout: 60000 });
+    await settled();
+    await p.getByRole("heading", { level: 1, name: "Your gaps" }).waitFor({ timeout: 30000 });
+    await p.goto(BASE + "/map");
+    await settled();
+    await p.locator("main").getByText(/^Cloud Engineer · /).first().waitFor({ timeout: 10000 });
+    await earlier.waitFor({ timeout: 10000 });
+    const named = await earlier.getAttribute("aria-label");
+    if (!/^EARLIER LINE · DATA ANALYST, /.test(named ?? "")) throw new Error(`the earlier line is named "${named}"`);
+    await openEarlier("Data Analyst");
+    await panel.getByText(/^Your destination is now Cloud Engineer\. Your gaps were worked out again for it/).waitFor({ timeout: 5000 });
+    await panel.getByText(/Proof counts for every role that asks for the skill\./).waitFor();
+    await shot("map-earlier-line");
+    await a11y("map-earlier-line");
+    await p.emulateMedia({ colorScheme: "dark" });
+    await p.reload();
+    await settled();
+    await openEarlier("Data Analyst");
+    await a11y("map-earlier-line-dark");
+    await p.setViewportSize({ width: 390, height: 844 });
+    await p.reload();
+    await settled();
+    await openEarlier("Data Analyst");
+    await fitsPhone(p, "the Map with the earlier line open (dark)");
+    await a11y("map-earlier-line-phone-dark");
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    // Switch back: the walk's role is the destination again, and Cloud Engineer is now the earlier line.
+    await p.reload();
+    await settled();
+    await openEarlier("Data Analyst");
+    await Promise.all([
+      p.waitForURL(/\/gaps\/data-analyst$/, { timeout: 60000 }),
+      panel.getByRole("link", { name: "Switch back to Data Analyst" }).click(),
+    ]);
+    await settled();
+    await p.goto(BASE + "/map");
+    await settled();
+    await p.locator("main").getByText(/^Data Analyst · /).first().waitFor({ timeout: 10000 });
+    const back = await earlier.getAttribute("aria-label");
+    if (!/^EARLIER LINE · CLOUD ENGINEER, /.test(back ?? "")) throw new Error(`after Switch back the earlier line is named "${back}"`);
+  } finally {
+    await p.setViewportSize({ width: 1280, height: 900 });
+    await p.emulateMedia({ colorScheme: "light" });
+    // Opening the walk's role's Gaps page makes it the destination again, so the steps after see the same line.
+    await p.goto(gapsUrl);
+    await settled();
+  }
+});
 await step("hardening: Report and Connect on a profile by keyboard, Cancel gives focus back, light, dark and phone", async () => {
   const other = await b.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
   const r = await other.newPage();

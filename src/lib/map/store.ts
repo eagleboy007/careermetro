@@ -14,13 +14,14 @@ import { fillingSkills } from "@/lib/goals/sync";
 import { certificatesFor } from "@/lib/proofs/eligible";
 import { choiceName, lineGoals } from "@/lib/ride/store";
 import { skillGroupMembers } from "@/content";
-import type { CurrentAnalysis } from "@/lib/gaps/current";
+import { previousAnalysis, type CurrentAnalysis } from "@/lib/gaps/current";
 import { clip, currentAnalysis, type Db } from "@/lib/today/state";
 import { trackRank } from "@/lib/tracks/apply";
 import { trackedCurrentAnalysis } from "@/lib/tracks/store";
 import { interestsOf } from "@/lib/me/edit-store";
 import { learningSkill, ownPitstopsByGoal, pitstopOptionsFor } from "@/lib/pitstops/store";
 import { lifeFromProfile } from "./life";
+import { earlierLine } from "./previous";
 import { otherLines } from "./other-lines";
 
 export { otherLines };
@@ -73,7 +74,7 @@ export async function mapLineFor(
     return { path, steps, rows };
   };
   // Nearby lines read the same confirmed profile and proof as the gaps; they only ever add crossings, never goals.
-  const [userGoals, notConfirmed, { path, steps, rows }, resume, proved, ownByGoal] = await Promise.all([
+  const [userGoals, notConfirmed, { path, steps, rows }, resume, proved, ownByGoal, before] = await Promise.all([
     syncGoals(userId, analysis, db),
     // Certificates rejected after review (FR-44): their goals say so until proved.
     notConfirmedSkills(userId, db),
@@ -81,6 +82,8 @@ export async function mapLineFor(
     getResumeForOwner(analysis.resumeId, { userId }, db),
     provedSkills(userId, db),
     ownPitstopsByGoal(userId, db),
+    // The destination before this one, for the greyed-out earlier line (docs/plans/change-destination-plan.md).
+    previousAnalysis(userId, analysis, db),
   ]);
   const isNotConfirmed = (own: (typeof userGoals)[number] | undefined, skillId: string) =>
     !own?.proved && (own ? fillingSkills(own, skillGroupMembers) : [skillId]).some((id) => notConfirmed.has(id));
@@ -179,6 +182,18 @@ export async function mapLineFor(
         nearbyLinesFor({ profile: resume.profile, targetSlug: result.roleSlug, proved: new Set(proved), lineSkillIds: gapGoals.map((g) => g.skillId), now }),
       )
     : undefined;
+  // The earlier line: the gaps of the role the person aimed for before that the new line doesn't need, kept with their
+  // proof and own pitstops. It never moves the train or counts toward Match.
+  const previous = before
+    ? earlierLine({
+        previous: before.result,
+        title: roleProfiles.find((r) => r.slug === before.result.roleSlug)?.title ?? before.result.roleSlug,
+        currentRoleSlug: result.roleSlug,
+        lineSkillIds: new Set(gapGoals.map((g) => g.skillId)),
+        goals: new Map(userGoals.map((g) => [g.skillId, { id: g.id, proved: g.proved }])),
+        ownByGoal: new Map([...ownByGoal].map(([id, list]) => [id, list.length])),
+      })
+    : null;
   return {
     role: { slug: result.roleSlug, title: role?.title ?? result.roleSlug },
     resumeId: analysis.resumeId,
@@ -190,6 +205,7 @@ export async function mapLineFor(
     otherLines: otherLines(result.roleSlug, gapGoals, nearby),
     nearby,
     pathOpened: Boolean(path),
+    previous,
   };
 }
 
