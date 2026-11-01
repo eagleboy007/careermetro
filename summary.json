@@ -1,0 +1,2535 @@
+{
+  "fetchedOn": "2026-11-01",
+  "totalPostings": 13742,
+  "sources": [
+    {
+      "ats": "greenhouse",
+      "board": "airbnb",
+      "jobs": 202,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "stripe",
+      "jobs": 745,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "dropbox",
+      "jobs": 24,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "databricks",
+      "jobs": 904,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "figma",
+      "jobs": 140,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "gitlab",
+      "jobs": 238,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "cloudflare",
+      "jobs": 464,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "datadog",
+      "jobs": 397,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "mongodb",
+      "jobs": 366,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "twilio",
+      "jobs": 132,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "okta",
+      "jobs": 387,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "coinbase",
+      "jobs": 254,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "robinhood",
+      "jobs": 160,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "reddit",
+      "jobs": 163,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "pinterest",
+      "jobs": 170,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "lyft",
+      "jobs": 170,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "instacart",
+      "jobs": 96,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "asana",
+      "jobs": 110,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "elastic",
+      "jobs": 407,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "grammarly",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "duolingo",
+      "jobs": 57,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "squarespace",
+      "jobs": 27,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "affirm",
+      "jobs": 244,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "brex",
+      "jobs": 263,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "gusto",
+      "jobs": 84,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "chime",
+      "jobs": 75,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "discord",
+      "jobs": 41,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "airtable",
+      "jobs": 5,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "webflow",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "intercom",
+      "jobs": 109,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "postman",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "browserstack",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "phonepe",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "razorpaysoftwareprivatelimited",
+      "jobs": 31,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "groww",
+      "jobs": 9,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "inmobi",
+      "jobs": 80,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "sharechat",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "druva",
+      "jobs": 27,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "chargebee",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "hackerrank",
+      "jobs": 28,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "whatfix",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "innovaccer",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "sprinklr",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "uber",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "toast",
+      "jobs": 329,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "samsara",
+      "jobs": 338,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "zscaler",
+      "jobs": 363,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "hubspot",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "wise",
+      "jobs": 21,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "monzo",
+      "jobs": 63,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "n26",
+      "jobs": 32,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "canonical",
+      "jobs": 314,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "celonis",
+      "jobs": 236,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "contentful",
+      "jobs": 29,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "miro",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "personio",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "deliveroo",
+      "jobs": 202,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "skyscanner",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "agoda",
+      "jobs": 312,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "grab",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "abnormalsecurity",
+      "jobs": 83,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "wizinc",
+      "jobs": 115,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "huntress",
+      "jobs": 36,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "arcticwolf",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "netskope",
+      "jobs": 122,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "lookout",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "exabeam",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "tanium",
+      "jobs": 64,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "sumologic",
+      "jobs": 10,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "rubrik",
+      "jobs": 158,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "cockroachlabs",
+      "jobs": 12,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "singlestore",
+      "jobs": 41,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "yugabyte",
+      "jobs": 13,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "couchbase",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "redis",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "imperva",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "onetrust",
+      "jobs": 81,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "securonix",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "cyble",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "meltplan",
+      "jobs": 4,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "poppulo",
+      "jobs": 9,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "atomicwork",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "earnin",
+      "jobs": 31,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "sigmoid",
+      "jobs": 45,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "ibkrexternal",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "energytechglobal",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "greenhouse",
+      "board": "mitsogoinc",
+      "jobs": 38,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "appviewx",
+      "jobs": 13,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "suki",
+      "jobs": 5,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "flywheeldigital",
+      "jobs": 1,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "adyen",
+      "jobs": 238,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "smartbear",
+      "jobs": 20,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "merqube",
+      "jobs": 6,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "bswiftindia",
+      "jobs": 5,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "crashplan",
+      "jobs": 7,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "bugcrowd",
+      "jobs": 12,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "cloudsek",
+      "jobs": 19,
+      "ok": true
+    },
+    {
+      "ats": "greenhouse",
+      "board": "alphasenseindia",
+      "jobs": 30,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "cred",
+      "jobs": 14,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "spotify",
+      "jobs": 89,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "palantir",
+      "jobs": 301,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "plaid",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "zeta",
+      "jobs": 31,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "upstox",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "jupiter",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "slice",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "dream11",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "swiggy",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "paytm",
+      "jobs": 201,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "zoomcar",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "atlan",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "rippling",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "eventbrite",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "kpmg",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "outreach",
+      "jobs": 19,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "highspot",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "mistral",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "anyscale",
+      "jobs": 1,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "binance",
+      "jobs": 5,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "snyk",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "appsecure",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "sprinto",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "lever",
+      "board": "safe",
+      "jobs": 20,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "gushwork",
+      "jobs": 12,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "keyloop",
+      "jobs": 71,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "sonatype",
+      "jobs": 15,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "meesho",
+      "jobs": 49,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "kobie",
+      "jobs": 30,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "cyderes",
+      "jobs": 22,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "nium",
+      "jobs": 25,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "greenlight",
+      "jobs": 16,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "coupa",
+      "jobs": 40,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "mindtickle",
+      "jobs": 19,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "neuron7",
+      "jobs": 15,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "brillio-2",
+      "jobs": 212,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "fampay",
+      "jobs": 18,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "bazaarvoice",
+      "jobs": 9,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "acceldata",
+      "jobs": 36,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "genesis",
+      "jobs": 1,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "employ",
+      "jobs": 3,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "valgenesis",
+      "jobs": 9,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "hevodata",
+      "jobs": 53,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "moonpay",
+      "jobs": 22,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "sophos",
+      "jobs": 84,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "dnb",
+      "jobs": 98,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "100ms",
+      "jobs": 9,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "levelai",
+      "jobs": 19,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "ConverseNow",
+      "jobs": 8,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "stable-money1",
+      "jobs": 15,
+      "ok": true
+    },
+    {
+      "ats": "lever",
+      "board": "factor",
+      "jobs": 10,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "zepto",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "notion",
+      "jobs": 148,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "ramp",
+      "jobs": 172,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "linear",
+      "jobs": 31,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "openai",
+      "jobs": 810,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "vercel",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "supabase",
+      "jobs": 68,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "deel",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "posthog",
+      "jobs": 11,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "retool",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "confluent",
+      "jobs": 0,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "clickhouse",
+      "jobs": 206,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "perplexity",
+      "jobs": 138,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "cohere",
+      "jobs": 122,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "replit",
+      "jobs": 34,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "sentry",
+      "jobs": 40,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "neon",
+      "jobs": 1,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "plane",
+      "jobs": 34,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "hasura",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "multiplier",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "atlys",
+      "jobs": 27,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "tide",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "1password",
+      "jobs": 87,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "vanta",
+      "jobs": 79,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "drata",
+      "jobs": 27,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "chainguard",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "semgrep",
+      "jobs": 13,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "socket",
+      "jobs": 27,
+      "ok": true
+    },
+    {
+      "ats": "ashby",
+      "board": "planetscale",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "timescale",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    },
+    {
+      "ats": "ashby",
+      "board": "scrut",
+      "jobs": 0,
+      "ok": false,
+      "error": "404"
+    }
+  ],
+  "roles": {
+    "presales-engineer": {
+      "postings": 55,
+      "indiaPostings": 6,
+      "companies": 19
+    },
+    "developer-advocate": {
+      "postings": 21,
+      "indiaPostings": 1,
+      "companies": 14
+    },
+    "forward-deployed-engineer": {
+      "postings": 120,
+      "indiaPostings": 8,
+      "companies": 25
+    },
+    "malware-analyst": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "security-architect": {
+      "postings": 5,
+      "indiaPostings": 1,
+      "companies": 5
+    },
+    "cloud-security-engineer": {
+      "postings": 7,
+      "indiaPostings": 1,
+      "companies": 7
+    },
+    "sap-security-grc-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "grc-manager": {
+      "postings": 5,
+      "indiaPostings": 0,
+      "companies": 3
+    },
+    "storage-backup-engineer": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "privacy-analyst": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "ot-security-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "devsecops-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "pam-engineer": {
+      "postings": 3,
+      "indiaPostings": 2,
+      "companies": 3
+    },
+    "dlp-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "iam-engineer": {
+      "postings": 19,
+      "indiaPostings": 4,
+      "companies": 12
+    },
+    "third-party-risk-analyst": {
+      "postings": 3,
+      "indiaPostings": 1,
+      "companies": 3
+    },
+    "it-auditor": {
+      "postings": 2,
+      "indiaPostings": 1,
+      "companies": 2
+    },
+    "information-security-analyst": {
+      "postings": 26,
+      "indiaPostings": 6,
+      "companies": 20
+    },
+    "red-team-operator": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "penetration-tester": {
+      "postings": 8,
+      "indiaPostings": 2,
+      "companies": 7
+    },
+    "vulnerability-management-analyst": {
+      "postings": 4,
+      "indiaPostings": 0,
+      "companies": 4
+    },
+    "appsec-engineer": {
+      "postings": 49,
+      "indiaPostings": 6,
+      "companies": 26
+    },
+    "soc-lead": {
+      "postings": 3,
+      "indiaPostings": 0,
+      "companies": 3
+    },
+    "soc-analyst-l2": {
+      "postings": 8,
+      "indiaPostings": 2,
+      "companies": 5
+    },
+    "siem-engineer": {
+      "postings": 2,
+      "indiaPostings": 1,
+      "companies": 2
+    },
+    "threat-intelligence-analyst": {
+      "postings": 5,
+      "indiaPostings": 0,
+      "companies": 3
+    },
+    "digital-forensics-analyst": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "incident-response-analyst": {
+      "postings": 11,
+      "indiaPostings": 1,
+      "companies": 6
+    },
+    "noc-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "contact-center-developer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "unified-communications-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "telecom-ran-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "m365-administrator": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "network-security-engineer": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "cyber-security-analyst": {
+      "postings": 94,
+      "indiaPostings": 21,
+      "companies": 44
+    },
+    "cloud-network-engineer": {
+      "postings": 1,
+      "indiaPostings": 1,
+      "companies": 1
+    },
+    "network-engineer": {
+      "postings": 16,
+      "indiaPostings": 3,
+      "companies": 12
+    },
+    "salesforce-administrator": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "servicenow-administrator": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-basis-administrator": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "workday-consultant": {
+      "postings": 13,
+      "indiaPostings": 1,
+      "companies": 9
+    },
+    "sap-successfactors-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "euc-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "virtualization-engineer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "data-center-engineer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "middleware-administrator": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "system-administrator": {
+      "postings": 9,
+      "indiaPostings": 2,
+      "companies": 7
+    },
+    "customer-support-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "it-support-engineer": {
+      "postings": 12,
+      "indiaPostings": 1,
+      "companies": 11
+    },
+    "cloud-support-engineer": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "application-support-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "technical-account-manager": {
+      "postings": 49,
+      "indiaPostings": 7,
+      "companies": 23
+    },
+    "customer-success-manager": {
+      "postings": 70,
+      "indiaPostings": 1,
+      "companies": 24
+    },
+    "technical-support-engineer": {
+      "postings": 94,
+      "indiaPostings": 21,
+      "companies": 45
+    },
+    "database-administrator": {
+      "postings": 7,
+      "indiaPostings": 3,
+      "companies": 4
+    },
+    "data-governance-analyst": {
+      "postings": 2,
+      "indiaPostings": 1,
+      "companies": 2
+    },
+    "data-quality-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "data-architect": {
+      "postings": 3,
+      "indiaPostings": 2,
+      "companies": 1
+    },
+    "core-banking-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "odoo-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-ewm-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-hcm-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "oracle-hcm-cloud-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "oracle-soa-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "oracle-fusion-technical-consultant": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "oracle-ebs-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "database-architect": {
+      "postings": 3,
+      "indiaPostings": 1,
+      "companies": 3
+    },
+    "data-annotation-specialist": {
+      "postings": 5,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "computer-vision-engineer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "functional-safety-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "infotainment-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "hil-test-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "adas-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "automotive-diagnostics-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "clinical-sas-programmer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "actuarial-analyst": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "biostatistician": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "clinical-data-manager": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "analytics-engineer": {
+      "postings": 13,
+      "indiaPostings": 2,
+      "companies": 13
+    },
+    "kafka-streaming-engineer": {
+      "postings": 3,
+      "indiaPostings": 0,
+      "companies": 3
+    },
+    "etl-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "database-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "data-engineer": {
+      "postings": 80,
+      "indiaPostings": 23,
+      "companies": 41
+    },
+    "ai-research-scientist": {
+      "postings": 5,
+      "indiaPostings": 1,
+      "companies": 5
+    },
+    "nlp-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "mlops-engineer": {
+      "postings": 7,
+      "indiaPostings": 0,
+      "companies": 7
+    },
+    "ai-engineer": {
+      "postings": 65,
+      "indiaPostings": 9,
+      "companies": 26
+    },
+    "ml-engineer": {
+      "postings": 139,
+      "indiaPostings": 22,
+      "companies": 44
+    },
+    "hpc-gpu-engineer": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "search-engineer": {
+      "postings": 30,
+      "indiaPostings": 0,
+      "companies": 5
+    },
+    "sap-bw-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "bi-developer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "cloud-finops-analyst": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "data-analyst": {
+      "postings": 33,
+      "indiaPostings": 11,
+      "companies": 16
+    },
+    "business-analyst": {
+      "postings": 20,
+      "indiaPostings": 8,
+      "companies": 15
+    },
+    "performance-test-engineer": {
+      "postings": 15,
+      "indiaPostings": 0,
+      "companies": 7
+    },
+    "qa-manager": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "qa-lead": {
+      "postings": 1,
+      "indiaPostings": 1,
+      "companies": 1
+    },
+    "manual-test-engineer": {
+      "postings": 1,
+      "indiaPostings": 1,
+      "companies": 1
+    },
+    "rpa-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "ecommerce-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "salesforce-developer": {
+      "postings": 10,
+      "indiaPostings": 4,
+      "companies": 5
+    },
+    "servicenow-developer": {
+      "postings": 2,
+      "indiaPostings": 1,
+      "companies": 2
+    },
+    "sap-mm-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-sd-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-pp-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-qm-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-pm-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-fico-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-abap-developer": {
+      "postings": 2,
+      "indiaPostings": 2,
+      "companies": 1
+    },
+    "sap-fiori-ui5-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sap-btp-integration-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "guidewire-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "duck-creek-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "pega-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "dynamics-365-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "siebel-crm-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "zoho-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "murex-consultant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "power-platform-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "sharepoint-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "low-code-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "plm-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "implementation-consultant": {
+      "postings": 33,
+      "indiaPostings": 5,
+      "companies": 14
+    },
+    "mainframe-developer": {
+      "postings": 1,
+      "indiaPostings": 1,
+      "companies": 1
+    },
+    "build-release-engineer": {
+      "postings": 4,
+      "indiaPostings": 1,
+      "companies": 4
+    },
+    "linux-kernel-developer": {
+      "postings": 7,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "autosar-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "ev-powertrain-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "integration-developer": {
+      "postings": 9,
+      "indiaPostings": 1,
+      "companies": 3
+    },
+    "post-silicon-validation-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "dft-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "analog-layout-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "bms-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "mes-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "analog-ic-design-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "motor-control-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "cae-simulation-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "rf-ic-design-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "fpga-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "physical-design-engineer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "design-verification-engineer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "vlsi-design-engineer": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "hardware-design-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "plc-scada-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "robotics-engineer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "embedded-software-engineer": {
+      "postings": 11,
+      "indiaPostings": 0,
+      "companies": 6
+    },
+    "ar-vr-developer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "game-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "blockchain-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "php-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "iot-engineer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "gis-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "quant-developer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "rust-developer": {
+      "postings": 5,
+      "indiaPostings": 1,
+      "companies": 3
+    },
+    "cpp-developer": {
+      "postings": 5,
+      "indiaPostings": 1,
+      "companies": 5
+    },
+    "ruby-on-rails-developer": {
+      "postings": 7,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "android-developer": {
+      "postings": 33,
+      "indiaPostings": 2,
+      "companies": 14
+    },
+    "ios-developer": {
+      "postings": 20,
+      "indiaPostings": 0,
+      "companies": 13
+    },
+    "cross-platform-mobile-developer": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "tech-lead": {
+      "postings": 35,
+      "indiaPostings": 22,
+      "companies": 14
+    },
+    "senior-backend-engineer": {
+      "postings": 266,
+      "indiaPostings": 44,
+      "companies": 64
+    },
+    "python-developer": {
+      "postings": 4,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "nodejs-developer": {
+      "postings": 1,
+      "indiaPostings": 1,
+      "companies": 1
+    },
+    "golang-developer": {
+      "postings": 7,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "dotnet-developer": {
+      "postings": 1,
+      "indiaPostings": 1,
+      "companies": 1
+    },
+    "payments-engineer": {
+      "postings": 7,
+      "indiaPostings": 0,
+      "companies": 4
+    },
+    "java-backend-developer": {
+      "postings": 22,
+      "indiaPostings": 0,
+      "companies": 9
+    },
+    "frontend-architect": {
+      "postings": 2,
+      "indiaPostings": 1,
+      "companies": 2
+    },
+    "frontend-developer": {
+      "postings": 48,
+      "indiaPostings": 8,
+      "companies": 28
+    },
+    "full-stack-developer": {
+      "postings": 105,
+      "indiaPostings": 14,
+      "companies": 34
+    },
+    "it-service-delivery-manager": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "technical-program-manager": {
+      "postings": 89,
+      "indiaPostings": 7,
+      "companies": 32
+    },
+    "scrum-master": {
+      "postings": 1,
+      "indiaPostings": 1,
+      "companies": 1
+    },
+    "ml-engineering-manager": {
+      "postings": 24,
+      "indiaPostings": 4,
+      "companies": 19
+    },
+    "data-engineering-manager": {
+      "postings": 12,
+      "indiaPostings": 0,
+      "companies": 10
+    },
+    "platform-engineering-manager": {
+      "postings": 17,
+      "indiaPostings": 4,
+      "companies": 11
+    },
+    "delivery-manager": {
+      "postings": 6,
+      "indiaPostings": 1,
+      "companies": 3
+    },
+    "it-program-manager": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "it-project-manager": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "engineering-manager": {
+      "postings": 268,
+      "indiaPostings": 38,
+      "companies": 58
+    },
+    "senior-data-scientist": {
+      "postings": 95,
+      "indiaPostings": 19,
+      "companies": 31
+    },
+    "data-scientist": {
+      "postings": 52,
+      "indiaPostings": 8,
+      "companies": 24
+    },
+    "ai-product-manager": {
+      "postings": 24,
+      "indiaPostings": 1,
+      "companies": 22
+    },
+    "product-manager": {
+      "postings": 270,
+      "indiaPostings": 28,
+      "companies": 73
+    },
+    "ux-researcher": {
+      "postings": 5,
+      "indiaPostings": 2,
+      "companies": 5
+    },
+    "ui-ux-designer": {
+      "postings": 82,
+      "indiaPostings": 10,
+      "companies": 37
+    },
+    "technical-writer": {
+      "postings": 7,
+      "indiaPostings": 3,
+      "companies": 7
+    },
+    "qa-automation-engineer": {
+      "postings": 40,
+      "indiaPostings": 18,
+      "companies": 24
+    },
+    "production-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "maintenance-engineer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "mechanical-design-engineer": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "graduate-engineer-trainee-mechanical": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "graduate-engineer-trainee-electrical": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "site-engineer-civil": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "billing-quantity-engineer-civil": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "site-reliability-engineer": {
+      "postings": 48,
+      "indiaPostings": 11,
+      "companies": 23
+    },
+    "ai-architect": {
+      "postings": 19,
+      "indiaPostings": 0,
+      "companies": 6
+    },
+    "cloud-architect": {
+      "postings": 6,
+      "indiaPostings": 2,
+      "companies": 4
+    },
+    "solutions-architect": {
+      "postings": 224,
+      "indiaPostings": 11,
+      "companies": 30
+    },
+    "cloud-engineer": {
+      "postings": 20,
+      "indiaPostings": 3,
+      "companies": 10
+    },
+    "platform-engineer": {
+      "postings": 97,
+      "indiaPostings": 9,
+      "companies": 40
+    },
+    "devops-engineer": {
+      "postings": 77,
+      "indiaPostings": 12,
+      "companies": 37
+    },
+    "software-engineer": {
+      "postings": 361,
+      "indiaPostings": 46,
+      "companies": 66
+    },
+    "marketing-automation-specialist": {
+      "postings": 14,
+      "indiaPostings": 1,
+      "companies": 10
+    },
+    "social-media-manager": {
+      "postings": 6,
+      "indiaPostings": 1,
+      "companies": 6
+    },
+    "seo-specialist": {
+      "postings": 3,
+      "indiaPostings": 2,
+      "companies": 3
+    },
+    "digital-marketing-executive": {
+      "postings": 54,
+      "indiaPostings": 7,
+      "companies": 30
+    },
+    "product-marketing-manager": {
+      "postings": 60,
+      "indiaPostings": 3,
+      "companies": 34
+    },
+    "key-account-manager": {
+      "postings": 4,
+      "indiaPostings": 0,
+      "companies": 4
+    },
+    "fmcg-sales-officer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "area-sales-manager": {
+      "postings": 6,
+      "indiaPostings": 0,
+      "companies": 3
+    },
+    "inside-sales-executive": {
+      "postings": 122,
+      "indiaPostings": 5,
+      "companies": 45
+    },
+    "financial-analyst": {
+      "postings": 12,
+      "indiaPostings": 0,
+      "companies": 10
+    },
+    "accounts-executive": {
+      "postings": 4,
+      "indiaPostings": 1,
+      "companies": 4
+    },
+    "credit-risk-analyst": {
+      "postings": 5,
+      "indiaPostings": 1,
+      "companies": 4
+    },
+    "aml-kyc-analyst": {
+      "postings": 5,
+      "indiaPostings": 0,
+      "companies": 3
+    },
+    "industrial-relations-officer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "hr-generalist": {
+      "postings": 9,
+      "indiaPostings": 1,
+      "companies": 7
+    },
+    "talent-acquisition-specialist": {
+      "postings": 52,
+      "indiaPostings": 10,
+      "companies": 24
+    },
+    "supply-chain-analyst": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "relationship-manager-banking": {
+      "postings": 1,
+      "indiaPostings": 1,
+      "companies": 1
+    },
+    "business-development-executive": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "content-writer": {
+      "postings": 2,
+      "indiaPostings": 1,
+      "companies": 2
+    },
+    "tax-associate": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "audit-associate": {
+      "postings": 5,
+      "indiaPostings": 0,
+      "companies": 5
+    },
+    "collections-officer": {
+      "postings": 19,
+      "indiaPostings": 4,
+      "companies": 5
+    },
+    "treasury-analyst": {
+      "postings": 2,
+      "indiaPostings": 1,
+      "companies": 2
+    },
+    "hr-business-partner": {
+      "postings": 26,
+      "indiaPostings": 3,
+      "companies": 22
+    },
+    "payroll-executive": {
+      "postings": 13,
+      "indiaPostings": 1,
+      "companies": 11
+    },
+    "procurement-executive": {
+      "postings": 2,
+      "indiaPostings": 1,
+      "companies": 2
+    },
+    "export-import-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "logistics-coordinator": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "medical-representative": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "channel-sales-manager": {
+      "postings": 8,
+      "indiaPostings": 0,
+      "companies": 4
+    },
+    "brand-manager": {
+      "postings": 3,
+      "indiaPostings": 1,
+      "companies": 3
+    },
+    "equity-research-analyst": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "insurance-underwriter": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "company-secretary-associate": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "compensation-benefits-analyst": {
+      "postings": 7,
+      "indiaPostings": 1,
+      "companies": 5
+    },
+    "learning-development-specialist": {
+      "postings": 5,
+      "indiaPostings": 2,
+      "companies": 5
+    },
+    "warehouse-operations-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "process-excellence-analyst": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "retail-store-manager": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "real-estate-sales-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "home-loan-sales-officer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "category-manager-ecommerce": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "market-research-analyst": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "event-marketing-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "investment-banking-analyst": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "cost-accountant": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "admin-facilities-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "customer-service-team-leader": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "quality-control-inspector": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "bank-probationary-officer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "management-trainee": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "article-assistant-ca": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "back-office-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "corporate-legal-associate": {
+      "postings": 37,
+      "indiaPostings": 5,
+      "companies": 28
+    },
+    "contract-management-specialist": {
+      "postings": 3,
+      "indiaPostings": 0,
+      "companies": 3
+    },
+    "regulatory-compliance-officer": {
+      "postings": 18,
+      "indiaPostings": 6,
+      "companies": 13
+    },
+    "litigation-paralegal": {
+      "postings": 2,
+      "indiaPostings": 0,
+      "companies": 2
+    },
+    "medical-coder": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "medical-billing-specialist": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "hospital-operations-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "health-insurance-claims-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "front-office-executive-hotel": {
+      "postings": 1,
+      "indiaPostings": 0,
+      "companies": 1
+    },
+    "food-beverage-executive": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "hotel-revenue-manager": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "housekeeping-supervisor": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "fraud-analyst": {
+      "postings": 11,
+      "indiaPostings": 4,
+      "companies": 7
+    },
+    "trust-and-safety-analyst": {
+      "postings": 3,
+      "indiaPostings": 0,
+      "companies": 3
+    },
+    "graphic-designer": {
+      "postings": 14,
+      "indiaPostings": 3,
+      "companies": 11
+    },
+    "software-asset-manager": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "ad-operations-specialist": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "video-editor": {
+      "postings": 1,
+      "indiaPostings": 1,
+      "companies": 1
+    },
+    "game-designer": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "game-artist-3d": {
+      "postings": 0,
+      "indiaPostings": 0,
+      "companies": 0
+    },
+    "motion-graphics-designer": {
+      "postings": 5,
+      "indiaPostings": 0,
+      "companies": 5
+    }
+  }
+}
