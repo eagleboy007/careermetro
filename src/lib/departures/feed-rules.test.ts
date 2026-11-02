@@ -807,6 +807,10 @@ describe("feed rules", () => {
       ["Modern Trade Manager", "key-account-manager"],
       ["Account Manager", null],
       ["Partner Account Manager", null],
+      ["KAM", "key-account-manager"],
+      ["KAM-Enterprise Sales", "key-account-manager"],
+      ["Senior KAM - Merchant Payments", "key-account-manager"],
+      ["Kamakhya Sales Officer", null],
       ["Area Sales Manager", "area-sales-manager"],
       ["Area Sales Manager - FMCG", "area-sales-manager"],
       ["Senior Area Sales Manager", "area-sales-manager"],
@@ -2112,6 +2116,33 @@ describe("feed rules", () => {
     expect(cases.map(([title]) => [title, classify(title)])).toEqual(cases);
     const roles = readdirSync(resolve(root, "src/content/roles")).map((f) => f.replace(/\.json$/, "")).sort();
     expect(Object.keys(ROLE_TITLES).sort()).toEqual(roles);
+  });
+
+  it("reads a bare hotel or field sales title as a role only when the post's text names the setting", () => {
+    const hotel = "Welcome guests at the front desk of our hotel in Mumbai and handle check-in and check-out.";
+    const cases: [string, string, string | null][] = [
+      ["Front Office Executive", hotel, "front-office-executive-hotel"],
+      ["Front Office Assistant", "Join the rooms team at our resort in Goa.", "front-office-executive-hotel"],
+      ["GSA", hotel, "front-office-executive-hotel"],
+      ["Front Office Executive", "Greet patients at our hospital and our partner hotel.", null],
+      ["GSA", "General sales agent for the airline, with hotel tie-ups.", null],
+      ["Front Office Executive", "Front desk at our corporate office.", null],
+      ["Front Office Executive", "", null],
+      ["Restaurant Manager", hotel, "food-beverage-executive"],
+      ["Outlet Manager", "Run the all-day dining outlet at the resort.", "food-beverage-executive"],
+      ["Restaurant Manager", "Run our cloud kitchen brand across Pune.", null],
+      ["Cluster Manager", "Lead team leaders and field sales executives who onboard merchants.", "area-sales-manager"],
+      ["Senior Cluster Manager - Merchant Acquisition", "Grow the sales team across the city.", "area-sales-manager"],
+      ["Cluster Manager", "Manage a cluster of three hospitals.", null],
+      // Never a bare seniority title, a team leader or an account manager, whatever the text says.
+      ["Director", hotel, null],
+      ["Staff Engineer", "Field sales tools for our merchants.", null],
+      ["Team Leader", "Lead field sales executives who onboard merchants.", null],
+      ["Account Manager", hotel, null],
+      // A title rule still wins over the text.
+      ["Front Office Executive - Hospital", hotel, "hospital-operations-executive"],
+    ];
+    expect(cases.map(([title, text]) => [title, text, classify(title, text)])).toEqual(cases);
   });
 
   it("keeps India and remote-India posts only, with an https link and a title", () => {
