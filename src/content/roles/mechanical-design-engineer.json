@@ -104,7 +104,18 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "cswa",
+      "importance": "optional",
+      "why": "SolidWorks is common in Indian design posts, and CSWA is the entry SolidWorks certificate."
+    },
+    {
+      "certId": "autodesk-autocad-professional",
+      "importance": "optional",
+      "why": "Many shops still issue 2D drawings in AutoCAD."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",

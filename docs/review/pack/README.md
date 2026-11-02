@@ -44,7 +44,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 
 | Certifications | File | Lines |
 | --- | --- | --- |
-| Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 97 |
+| Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 104 |
 
 279 role profiles await review in all.
 

@@ -33804,5 +33804,27 @@
     ],
     "minutes": 45,
     "free": true
+  },
+  {
+    "title": "The Registration Act, 1908 (India Code)",
+    "url": "https://www.indiacode.nic.in/handle/123456789/2190",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "property-booking-documentation"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Indian Stamp Act, 1899 (India Code)",
+    "url": "https://www.indiacode.nic.in/handle/123456789/15510",
+    "provider": "India Code",
+    "kind": "docs",
+    "skillIds": [
+      "property-booking-documentation"
+    ],
+    "minutes": 45,
+    "free": true
   }
 ]

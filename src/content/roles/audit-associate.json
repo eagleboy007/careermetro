@@ -98,7 +98,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "tally-essential",
+      "importance": "optional",
+      "why": "Many audit clients keep books in Tally, so auditors who can work in it get through vouching faster."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions (employer careers pages and ATS boards) and issuer outlines on 2026-10-31. Awaiting domain-expert review.",

@@ -111,7 +111,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "shrm-cp",
+      "importance": "optional",
+      "why": "Covers learning and development as one of its HR knowledge areas."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",

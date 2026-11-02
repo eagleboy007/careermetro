@@ -2,12 +2,12 @@
 
 This page is the current state only: read it first, then the one plan file the task needs. At the end of every task, change it in 2–3 lines in the same PR. Facts carry a PR or doc link. Everything this page held up to 2026-10-31 (each merged feature, test-run fix and feed change, word for word) is in [`docs/plans/status-history-2026-10.md`](plans/status-history-2026-10.md). How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (practice and timed-test drafts for every thin role, unreviewed; 66-link refill; Junction merged in #310 behind JUNCTION_ENABLED)
+Last updated: 2026-10-31 (7 non-tech certificates and 24 role links, unreviewed; two India Code links for property booking)
 
 ## Live (https://careermetro.vercel.app)
 
 - **Job seeker:** Resume, Gaps, Path, Today, Map with the Life line, Departures with My jobs (phases 1 and 2: tracker, prepare for a job, interview dates, share from the phone, weekly email), Me and the public profile, Settings, Inbox, Network, Library, Practice, Match, Mock and the Elite shelf, Market (live counts from the Departures feed), the guided resume builder and resume download (PDF and Word), the pasted-job check, Nearby lines, Not for me (FR-48), Add a pitstop (FR-58), change of destination (FR-59, C25), On your line (FR-60), Timetable PRs 1–6 with hand-entered events and the empty state for uncovered fields (T181). Requirements: `docs/REQUIREMENTS.md`; detail per feature in `docs/plans/`.
-- **Content:** 279 role profiles (all `reviewedBy` null, awaiting domain-expert review; batches up to B5 and TG4), 178 certificates (`reviewed: false`), 311 eval resumes, the practice and mock banks (follow-ups `followUpsReviewed: false`, so production asks none; the timed test and Elite shelf stay hidden in production until reviewed).
+- **Content:** 279 role profiles (all `reviewedBy` null, awaiting domain-expert review; batches up to B5 and TG4), 185 certificates (`reviewed: false`; 7 non-tech on 31 Oct: Tally, GST practitioner, NISM V-A and XV, SHRM-CP, CSWA, AutoCAD Professional), 311 eval resumes, the practice and mock banks (follow-ups `followUpsReviewed: false`, so production asks none; the timed test and Elite shelf stay hidden in production until reviewed).
 - **Proof:** certificate proof with the Credly check, held-proof review `/admin/proofs` (FR-44); only proof fills a goal.
 - **Employer:** Corporate steps 1–7, Express apply, "Let companies find me", Find people (T44), verified current job by work email (FR-47).
 - **Admin:** `/admin/reports` with removal tools (FR-45, FR-46), `/admin/library`, company review, event suggestions (kept as `pending` only).

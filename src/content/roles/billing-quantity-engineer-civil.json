@@ -106,7 +106,13 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "autodesk-autocad-professional",
+      "importance": "optional",
+      "why": "Quantity take-off often starts from AutoCAD drawings."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions and issuer outlines on 2026-10-31; awaiting domain-expert review.",

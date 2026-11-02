@@ -99,7 +99,18 @@
     }
   ],
   "groups": [],
-  "certifications": [],
+  "certifications": [
+    {
+      "certId": "tally-essential",
+      "importance": "optional",
+      "why": "Tax teams pull ledgers and GST data from Tally for SME clients."
+    },
+    {
+      "certId": "gst-practitioner-exam",
+      "importance": "optional",
+      "why": "The government exam for enrolled GST practitioners; it shows a working grasp of GST law and returns."
+    }
+  ],
   "sources": [
     {
       "description": "Drafted by CareerMetro from public India job descriptions (employer careers pages and ATS boards) and issuer outlines on 2026-10-31. Awaiting domain-expert review.",
