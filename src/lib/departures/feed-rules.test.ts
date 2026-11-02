@@ -2631,9 +2631,9 @@ describe("roleLine and unmatchedLine", () => {
     { title: "Data Analyst", roleSlug: "data-analyst" },
     { title: "Cloud Engineer", roleSlug: "cloud-engineer" },
     { title: "Data Analyst II", roleSlug: "data-analyst" },
-    { title: "Sales Manager - Pune", roleSlug: null },
-    { title: "Sales  manager (Mumbai)", roleSlug: null },
-    { title: "Accountant", roleSlug: null },
+    { title: "Sales Manager - Pune", roleSlug: null, company: "Example Pay", requiredSkillIds: ["b2b-sales", "crm"] },
+    { title: "Sales  manager (Mumbai)", roleSlug: null, company: "Example Pay", requiredSkillIds: ["b2b-sales"] },
+    { title: "Accountant", roleSlug: null, company: "Example Books" },
   ];
 
   it("counts kept posts by role, most first, then those with no role", () => {
@@ -2647,9 +2647,9 @@ describe("roleLine and unmatchedLine", () => {
     expect(unmatchedLine(rows.slice(0, 3))).toBeNull();
   });
 
-  it("writes the unmatched titles as a tab-separated file, commonest first", () => {
-    expect(unmatchedTsv(rows)).toBe("count\ttitle\n2\tsales manager\n1\taccountant\n");
-    expect(unmatchedTsv(rows, 1)).toBe("count\ttitle\n2\tsales manager\n");
-    expect(unmatchedTsv(rows.slice(0, 3))).toBe("count\ttitle\n");
+  it("writes the unmatched titles as a tab-separated file, commonest first, with who posts them and the skills found", () => {
+    expect(unmatchedTsv(rows)).toBe("count\ttitle\tcompanies\tskills\n2\tsales manager\tExample Pay 2\tb2b-sales 2; crm 1\n1\taccountant\tExample Books 1\t\n");
+    expect(unmatchedTsv(rows, 1)).toBe("count\ttitle\tcompanies\tskills\n2\tsales manager\tExample Pay 2\tb2b-sales 2; crm 1\n");
+    expect(unmatchedTsv(rows.slice(0, 3))).toBe("count\ttitle\tcompanies\tskills\n");
   });
 });
