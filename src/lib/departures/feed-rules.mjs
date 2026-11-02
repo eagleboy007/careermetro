@@ -12,7 +12,7 @@ import { experienceBand, placesOf } from "../../../scripts/jd-mining/market.mjs"
  * One posting as read from its board, before any rule: its id, title, link, location words, work type, first posted
  * time and its text as lines (headings included). The lines are read for skills and dropped.
  * @typedef {{ externalId: string; title: string; url: string; location: string; remote: boolean; workType: FeedWorkType;
- *   postedAt: Date | null; lines: string[] }} RawPost
+ *   postedAt: Date | null; lines: string[]; context?: string[] }} RawPost
  */
 
 /** The feed's limits (plan, "Server checks and limits"). */
@@ -712,8 +712,8 @@ const TEST_ROLES = new Set(["qa-automation-engineer", "manual-test-engineer", "p
  * @type {[string, RegExp, RegExp, RegExp | null][]}
  */
 const TEXT_TITLES = [
-  ["front-office-executive-hotel", /^((senior|sr\.?|junior|jr\.?|trainee|assistant) )*(front office (executive|associate|assistant|agent|officer)|gsa|guest service (agent|associate|executive))\b/i, /\b(hotels?|resorts?)\b/i, /\b(hospitals?|clinics?|patients?|airlines?|airports?)\b/i],
-  ["food-beverage-executive", /^((senior|sr\.?|assistant|deputy) )*(restaurant|outlet|banquets?) manager\b/i, /\b(hotels?|resorts?)\b/i, null],
+  ["front-office-executive-hotel", /^((senior|sr\.?|junior|jr\.?|trainee|assistant) )*(front office (executive|associate|assistant|agent|officer)|gsa|guest service (agent|associate|executive))\b/i, /\b(hotels?|resorts?|hospitality)\b/i, /\b(hospitals?|clinics?|patients?|airlines?|airports?)\b/i],
+  ["food-beverage-executive", /^((senior|sr\.?|assistant|deputy) )*(restaurant|outlet|banquets?) manager\b/i, /\b(hotels?|resorts?|hospitality)\b/i, null],
   ["area-sales-manager", /^((senior|sr\.?|deputy|assistant) )?cluster (sales )?manager\b/i, /\b(field sales|merchant (acquisition|onboarding)|sales team|distributors?)\b/i, null],
 ];
 
@@ -915,6 +915,9 @@ export function rawPost(ats, j, token) {
     workType: workTypeOf(j.typeOfEmployment?.label),
     postedAt: date(j.releasedDate),
     lines: [],
+    // The list answer's industry, function and department labels (e.g. "Hospitality"): read only to place a bare
+    // title such as "GSA" in its setting, never for skills.
+    context: [j.industry?.label, j.function?.label, j.department?.label].filter((v) => typeof v === "string" && v.trim()).map(plain),
   };
 }
 
@@ -985,6 +988,7 @@ export function postRow(ats, board, post, matchers, now = new Date()) {
   if (title.length < 2) return null;
   const text = post.lines.join("\n");
   const skills = skillsOf(post.lines.length ? post.lines : [post.title], matchers);
+  const setting = [text, ...(post.context ?? [])].filter(Boolean).join("\n");
   return {
     ats,
     boardToken: board.token,
@@ -995,7 +999,7 @@ export function postRow(ats, board, post, matchers, now = new Date()) {
     city: cityOf(post.location, post.remote),
     workType: post.workType,
     experienceNote: experienceNoteOf(text),
-    roleSlug: classify(title, text),
+    roleSlug: classify(title, setting),
     requiredSkillIds: skills.required,
     niceSkillIds: skills.nice,
     postedAt: postedAtOf(post.postedAt, now),

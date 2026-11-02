@@ -123,6 +123,9 @@ export const smartRecruitersJob = z.object({
     })
     .nullish(),
   typeOfEmployment: z.object({ label: z.string().max(80).nullish() }).nullish(),
+  industry: z.object({ label: z.string().max(120).nullish() }).nullish(),
+  function: z.object({ label: z.string().max(120).nullish() }).nullish(),
+  department: z.object({ label: z.string().max(120).nullish() }).nullish(),
 });
 
 /** @type {(d: unknown) => boolean} */

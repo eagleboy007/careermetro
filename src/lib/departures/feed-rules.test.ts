@@ -2145,6 +2145,18 @@ describe("feed rules", () => {
     expect(cases.map(([title, text]) => [title, text, classify(title, text)])).toEqual(cases);
   });
 
+  it("places a SmartRecruiters title by the posting's industry, function or department label, which it never reads for skills", () => {
+    const sr = (name: string, labels: Record<string, string>) =>
+      rawPost("smartrecruiters", { id: "7001", name, releasedDate: "2026-10-14T06:00:00.000Z", company: { identifier: "ExampleWorks" }, location: { city: "Mumbai", country: "in", fullLocation: "Mumbai, Maharashtra, India" }, ...Object.fromEntries(Object.entries(labels).map(([k, label]) => [k, { label }])) }, "ExampleWorks");
+    const rowOf = (name: string, labels: Record<string, string>) => postRow("smartrecruiters", { token: "ExampleWorks", company: "Example Works" }, sr(name, labels), matchers);
+    expect(sr("GSA", { industry: "Hospitality" })).toMatchObject({ lines: [], context: ["Hospitality"] });
+    expect(rowOf("GSA", { industry: "Hospitality" })).toMatchObject({ roleSlug: "front-office-executive-hotel", requiredSkillIds: [], experienceNote: null });
+    expect(rowOf("Restaurant Manager", { department: "Hotel Operations" })?.roleSlug).toBe("food-beverage-executive");
+    expect(rowOf("GSA", { industry: "Airlines/Aviation" })?.roleSlug).toBeNull();
+    expect(rowOf("GSA", {})?.roleSlug).toBeNull();
+    expect(rowOf("Front Office Executive", { industry: "Hospital & Health Care" })?.roleSlug).toBeNull();
+  });
+
   it("keeps India and remote-India posts only, with an https link and a title", () => {
     const at = (location: string, remote = false, url = "https://jobs.example.com/1") =>
       postRow("lever", { token: "examplecart", company: "Examplecart" }, { externalId: "1", title: "Data Analyst", url, location, remote, workType: "full_time", postedAt: null, lines: ["SQL", "Excel"] }, matchers);
