@@ -537,11 +537,30 @@ export function unmatchedCounts(/** @type {{ title: string; roleSlug: string | n
 }
 
 /**
- * The same counts as a tab-separated file for Data research, to pick new roles from real demand (the workflow uploads
- * it as an artifact). Public company job titles and counts only.
+ * The same counts as a tab-separated file for Data research and the title rules, to pick new roles from real demand
+ * and to see who posts a bare title (the workflow uploads it as an artifact). Each row adds the companies posting it
+ * and the skills found in those posts, commonest first (3 and 5 at most). Public company job titles, company names,
+ * skill ids and counts only; never post text.
  */
-export function unmatchedTsv(/** @type {{ title: string; roleSlug: string | null }[]} */ rows, top = 200) {
-  return ["count\ttitle", ...unmatchedCounts(rows).slice(0, top).map(([t, n]) => `${n}\t${t.replace(/\t/g, " ")}`)].join("\n") + "\n";
+export function unmatchedTsv(/** @type {{ title: string; roleSlug: string | null; company?: string; requiredSkillIds?: string[] }[]} */ rows, top = 200) {
+  const fold = (/** @type {string} */ t) => t.split(/ [-–] |[,(|/]/)[0].toLowerCase().replace(/\s+/g, " ").trim();
+  /** @type {Map<string, { companies: Map<string, number>; skills: Map<string, number> }>} */
+  const extra = new Map();
+  const bump = (/** @type {Map<string, number>} */ m, /** @type {string} */ k) => m.set(k, (m.get(k) ?? 0) + 1);
+  for (const r of rows) {
+    if (r.roleSlug) continue;
+    const key = fold(r.title);
+    const e = extra.get(key) ?? { companies: new Map(), skills: new Map() };
+    if (r.company) bump(e.companies, r.company);
+    for (const s of r.requiredSkillIds ?? []) bump(e.skills, s);
+    extra.set(key, e);
+  }
+  const most = (/** @type {Map<string, number> | undefined} */ m, /** @type {number} */ n) =>
+    [...(m ?? new Map()).entries()].sort(([a, x], [b, y]) => y - x || a.localeCompare(b)).slice(0, n).map(([k, c]) => `${k.replace(/[\t;]/g, " ")} ${c}`).join("; ");
+  const lines = unmatchedCounts(rows)
+    .slice(0, top)
+    .map(([t, n]) => `${n}\t${t.replace(/\t/g, " ")}\t${most(extra.get(t)?.companies, 3)}\t${most(extra.get(t)?.skills, 5)}`);
+  return ["count\ttitle\tcompanies\tskills", ...lines].join("\n") + "\n";
 }
 
 export async function main() {

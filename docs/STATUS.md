@@ -2,7 +2,7 @@
 
 This page is the current state only: read it first, then the one plan file the task needs. At the end of every task, change it in 2–3 lines in the same PR. Facts carry a PR or doc link. Everything this page held up to 2026-10-31 (each merged feature, test-run fix and feed change, word for word) is in [`docs/plans/status-history-2026-10.md`](plans/status-history-2026-10.md). How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-10-31 (7 non-tech certificates and 24 role links, unreviewed; two India Code links for property booking)
+Last updated: 2026-11-02 (feed reads KAM titles and, from the post text, hotel front office, hotel restaurant and field sales cluster manager titles; Bazaarvoice removed)
 
 ## Live (https://careermetro.vercel.app)
 
@@ -11,7 +11,7 @@ Last updated: 2026-10-31 (7 non-tech certificates and 24 role links, unreviewed;
 - **Proof:** certificate proof with the Credly check, held-proof review `/admin/proofs` (FR-44); only proof fills a goal.
 - **Employer:** Corporate steps 1–7, Express apply, "Let companies find me", Find people (T44), verified current job by work email (FR-47).
 - **Admin:** `/admin/reports` with removal tools (FR-45, FR-46), `/admin/library`, company review, event suggestions (kept as `pending` only).
-- **Platform:** RLS on every table; hardening H1–H12 except H7; the daily Departures feed over `src/content/job-boards.json` (319 boards of the 500 cap, `FEED_LIMITS`); feed health in `job_feed_boards`, `/api/health` and the 6-hourly smoke; app email through Resend; CI e2e walk plus the max-data oversize check (T150).
+- **Platform:** RLS on every table; hardening H1–H12 except H7; the daily Departures feed over `src/content/job-boards.json` (318 boards of the 500 cap, `FEED_LIMITS`); feed health in `job_feed_boards`, `/api/health` and the 6-hourly smoke; app email through Resend; CI e2e walk plus the max-data oversize check (T150).
 - **Switched off until keys arrive:** real sign-in (preview uses a test user; emailed code with the Supabase values, Google once `GOOGLE_SIGNIN=1`), company sign-up, join and re-check codes and the current-job check (`RESEND_API_KEY`, `EMAIL_FROM`, `NAME_HASH_KEY`; `dev/email-sender-steps.md`), find-people, phone sharing, and photo and certificate upload. `/privacy` and `/terms` are drafts behind the preview gate until the legal adviser approves them.
 
 ## In progress
@@ -20,7 +20,7 @@ Last updated: 2026-10-31 (7 non-tech certificates and 24 role links, unreviewed;
 - CSP: the host allow-list policy is report-only (`src/proxy.ts`, `src/lib/csp.ts`); the walk prints `CSP: none` or each violation. Enforcing waits on the log drain and on Milin (`docs/dev/security-sweep-2026-10-20.md`).
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/`; every role, certificate and question above waits on it.
 - Junction (FR-61, `docs/plans/junction-plan.md`), parts 1–4: data, rules, moderation and admin rows, `/junction`, post detail, Your posts, the rail, pins and the "Junction posts" switch on Me and `/u`, and the Today tip. All behind `JUNCTION_ENABLED` (off in production; on for CI's e2e build and app server, since build and runtime must agree). Grievance officer Milin Shah, still `placeholder: true`. Part 5 (launch switch) waits on a backup officer, the lawyer and the grievance mailbox.
-- Departures boards: 319. The board check passed 50 of Research's 53 non-tech candidates (31 Oct); 40 joined `job-boards.json`. Left out: 3 with no India post, 9 recruiters posting for clients, and EBANX (one stale post). Workable rows are not checked (not one of the four ATS APIs).
+- Departures boards: 318 (Bazaarvoice removed 2 Nov, empty 3 runs). The board check passed 50 of Research's 53 non-tech candidates (31 Oct); 40 joined `job-boards.json`. Left out: 3 with no India post, 9 recruiters posting for clients, and EBANX (one stale post). Workable rows are not checked (not one of the four ATS APIs).
 
 ## Queue (all waiting on someone else)
 

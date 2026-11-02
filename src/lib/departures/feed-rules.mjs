@@ -12,7 +12,7 @@ import { experienceBand, placesOf } from "../../../scripts/jd-mining/market.mjs"
  * One posting as read from its board, before any rule: its id, title, link, location words, work type, first posted
  * time and its text as lines (headings included). The lines are read for skills and dropped.
  * @typedef {{ externalId: string; title: string; url: string; location: string; remote: boolean; workType: FeedWorkType;
- *   postedAt: Date | null; lines: string[] }} RawPost
+ *   postedAt: Date | null; lines: string[]; context?: string[] }} RawPost
  */
 
 /** The feed's limits (plan, "Server checks and limits"). */
@@ -541,7 +541,8 @@ export const ROLE_TITLES = {
   // Business roles (batches B1 to B4, and F1), last, each read only from the titles it is built for. A plain "Account
   // Executive", "Sales Manager", "Sales Executive", "Account Manager" or "Relationship Manager" has no rule.
   "product-marketing-manager": /\bproduct marketing (manager|lead|specialist|associate|executive)\b|^manager,? ?[-–]? ?product marketing\b/i,
-  "key-account-manager": /^((senior|sr\.?|national|regional|zonal|corporate|associate|deputy|assistant) )*key accounts? (manager|executive|lead|specialist)\b|^((senior|sr\.?|deputy|assistant) )?modern trade (manager|executive|lead)\b/i,
+  // KAM is the usual short form in Indian sales titles ("KAM - Enterprise Sales").
+  "key-account-manager": /^((senior|sr\.?|national|regional|zonal|corporate|associate|deputy|assistant) )*key accounts? (manager|executive|lead|specialist)\b|^((senior|sr\.?) )?kam\b|^((senior|sr\.?|deputy|assistant) )?modern trade (manager|executive|lead)\b/i,
   // Batch F1. FMCG and general trade sales officers, before area sales and business development so a territory or field
   // sales officer whose title names FMCG, general trade or consumer goods reads here; a plain "Sales Officer" has no rule.
   "fmcg-sales-officer": /^(?!.*\b(software|saas|it|pharma\w*|medical|home loans?|housing|mortgage|insurance|real estate|loans?|banking|cards?|b2b)\b)((senior|sr\.?|junior|jr\.?|trainee|field|territory) )*((sales (officer|executive|trainee|representative)|territory sales (in-?charge|incharge))\b.*\b(fmcg|general trade|consumer goods|consumer products|cpg)\b|(fmcg|general trade|consumer goods|cpg) sales (officer|executive|trainee|representative))/i,
@@ -703,7 +704,20 @@ export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation|compliance testing)\b/i;
 const TEST_ROLES = new Set(["qa-automation-engineer", "manual-test-engineer", "performance-test-engineer", "qa-lead", "qa-manager"]);
 
-/** The live role a title reads as, or null. `text` only settles Java for a backend title. */
+/**
+ * Bare titles that read as a role only when the posting itself names the setting: a hotel group's "Front Office
+ * Executive" or "GSA" says hotel only in its text, and a payments company's "Cluster Manager" says field sales only
+ * there. Tried after every title rule, so a title rule always wins; without text (a title alone) none of these apply.
+ * [role, title, text that must appear, text that rules it out]
+ * @type {[string, RegExp, RegExp, RegExp | null][]}
+ */
+const TEXT_TITLES = [
+  ["front-office-executive-hotel", /^((senior|sr\.?|junior|jr\.?|trainee|assistant) )*(front office (executive|associate|assistant|agent|officer)|gsa|guest service (agent|associate|executive))\b/i, /\b(hotels?|resorts?|hospitality)\b/i, /\b(hospitals?|clinics?|patients?|airlines?|airports?)\b/i],
+  ["food-beverage-executive", /^((senior|sr\.?|assistant|deputy) )*(restaurant|outlet|banquets?) manager\b/i, /\b(hotels?|resorts?|hospitality)\b/i, null],
+  ["area-sales-manager", /^((senior|sr\.?|deputy|assistant) )?cluster (sales )?manager\b/i, /\b(field sales|merchant (acquisition|onboarding)|sales team|distributors?)\b/i, null],
+];
+
+/** The live role a title reads as, or null. `text` settles Java for a backend title and the bare titles in TEXT_TITLES. */
 export function classify(/** @type {string} */ title, /** @type {string} */ text = "") {
   // A pre-sales architect, engineer or consultant designs and demos solutions: "sales" in it is not a sales title.
   // SAP's Sales and Distribution module and SuccessFactors Recruiting are modules, not sales or recruiting jobs.
@@ -722,6 +736,10 @@ export function classify(/** @type {string} */ title, /** @type {string} */ text
     if (TEST_ROLES.has(slug) && NOT_SOFTWARE.test(title)) continue;
     if (slug === "java-backend-developer" && !/\bjava\b/i.test(title + " " + text) && !/\b(spring|j2ee)\b/i.test(title)) continue;
     return slug;
+  }
+  if (!text) return null;
+  for (const [slug, re, needs, rulesOut] of TEXT_TITLES) {
+    if (re.test(title) && needs.test(text) && !rulesOut?.test(text)) return slug;
   }
   return null;
 }
@@ -897,6 +915,9 @@ export function rawPost(ats, j, token) {
     workType: workTypeOf(j.typeOfEmployment?.label),
     postedAt: date(j.releasedDate),
     lines: [],
+    // The list answer's industry, function and department labels (e.g. "Hospitality"): read only to place a bare
+    // title such as "GSA" in its setting, never for skills.
+    context: [j.industry?.label, j.function?.label, j.department?.label].filter((v) => typeof v === "string" && v.trim()).map(plain),
   };
 }
 
@@ -967,6 +988,7 @@ export function postRow(ats, board, post, matchers, now = new Date()) {
   if (title.length < 2) return null;
   const text = post.lines.join("\n");
   const skills = skillsOf(post.lines.length ? post.lines : [post.title], matchers);
+  const setting = [text, ...(post.context ?? [])].filter(Boolean).join("\n");
   return {
     ats,
     boardToken: board.token,
@@ -977,7 +999,7 @@ export function postRow(ats, board, post, matchers, now = new Date()) {
     city: cityOf(post.location, post.remote),
     workType: post.workType,
     experienceNote: experienceNoteOf(text),
-    roleSlug: classify(title, text),
+    roleSlug: classify(title, setting),
     requiredSkillIds: skills.required,
     niceSkillIds: skills.nice,
     postedAt: postedAtOf(post.postedAt, now),

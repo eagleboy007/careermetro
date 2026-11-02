@@ -807,6 +807,10 @@ describe("feed rules", () => {
       ["Modern Trade Manager", "key-account-manager"],
       ["Account Manager", null],
       ["Partner Account Manager", null],
+      ["KAM", "key-account-manager"],
+      ["KAM-Enterprise Sales", "key-account-manager"],
+      ["Senior KAM - Merchant Payments", "key-account-manager"],
+      ["Kamakhya Sales Officer", null],
       ["Area Sales Manager", "area-sales-manager"],
       ["Area Sales Manager - FMCG", "area-sales-manager"],
       ["Senior Area Sales Manager", "area-sales-manager"],
@@ -2114,6 +2118,45 @@ describe("feed rules", () => {
     expect(Object.keys(ROLE_TITLES).sort()).toEqual(roles);
   });
 
+  it("reads a bare hotel or field sales title as a role only when the post's text names the setting", () => {
+    const hotel = "Welcome guests at the front desk of our hotel in Mumbai and handle check-in and check-out.";
+    const cases: [string, string, string | null][] = [
+      ["Front Office Executive", hotel, "front-office-executive-hotel"],
+      ["Front Office Assistant", "Join the rooms team at our resort in Goa.", "front-office-executive-hotel"],
+      ["GSA", hotel, "front-office-executive-hotel"],
+      ["Front Office Executive", "Greet patients at our hospital and our partner hotel.", null],
+      ["GSA", "General sales agent for the airline, with hotel tie-ups.", null],
+      ["Front Office Executive", "Front desk at our corporate office.", null],
+      ["Front Office Executive", "", null],
+      ["Restaurant Manager", hotel, "food-beverage-executive"],
+      ["Outlet Manager", "Run the all-day dining outlet at the resort.", "food-beverage-executive"],
+      ["Restaurant Manager", "Run our cloud kitchen brand across Pune.", null],
+      ["Cluster Manager", "Lead team leaders and field sales executives who onboard merchants.", "area-sales-manager"],
+      ["Senior Cluster Manager - Merchant Acquisition", "Grow the sales team across the city.", "area-sales-manager"],
+      ["Cluster Manager", "Manage a cluster of three hospitals.", null],
+      // Never a bare seniority title, a team leader or an account manager, whatever the text says.
+      ["Director", hotel, null],
+      ["Staff Engineer", "Field sales tools for our merchants.", null],
+      ["Team Leader", "Lead field sales executives who onboard merchants.", null],
+      ["Account Manager", hotel, null],
+      // A title rule still wins over the text.
+      ["Front Office Executive - Hospital", hotel, "hospital-operations-executive"],
+    ];
+    expect(cases.map(([title, text]) => [title, text, classify(title, text)])).toEqual(cases);
+  });
+
+  it("places a SmartRecruiters title by the posting's industry, function or department label, which it never reads for skills", () => {
+    const sr = (name: string, labels: Record<string, string>) =>
+      rawPost("smartrecruiters", { id: "7001", name, releasedDate: "2026-10-14T06:00:00.000Z", company: { identifier: "ExampleWorks" }, location: { city: "Mumbai", country: "in", fullLocation: "Mumbai, Maharashtra, India" }, ...Object.fromEntries(Object.entries(labels).map(([k, label]) => [k, { label }])) }, "ExampleWorks");
+    const rowOf = (name: string, labels: Record<string, string>) => postRow("smartrecruiters", { token: "ExampleWorks", company: "Example Works" }, sr(name, labels), matchers);
+    expect(sr("GSA", { industry: "Hospitality" })).toMatchObject({ lines: [], context: ["Hospitality"] });
+    expect(rowOf("GSA", { industry: "Hospitality" })).toMatchObject({ roleSlug: "front-office-executive-hotel", requiredSkillIds: [], experienceNote: null });
+    expect(rowOf("Restaurant Manager", { department: "Hotel Operations" })?.roleSlug).toBe("food-beverage-executive");
+    expect(rowOf("GSA", { industry: "Airlines/Aviation" })?.roleSlug).toBeNull();
+    expect(rowOf("GSA", {})?.roleSlug).toBeNull();
+    expect(rowOf("Front Office Executive", { industry: "Hospital & Health Care" })?.roleSlug).toBeNull();
+  });
+
   it("keeps India and remote-India posts only, with an https link and a title", () => {
     const at = (location: string, remote = false, url = "https://jobs.example.com/1") =>
       postRow("lever", { token: "examplecart", company: "Examplecart" }, { externalId: "1", title: "Data Analyst", url, location, remote, workType: "full_time", postedAt: null, lines: ["SQL", "Excel"] }, matchers);
@@ -2631,9 +2674,9 @@ describe("roleLine and unmatchedLine", () => {
     { title: "Data Analyst", roleSlug: "data-analyst" },
     { title: "Cloud Engineer", roleSlug: "cloud-engineer" },
     { title: "Data Analyst II", roleSlug: "data-analyst" },
-    { title: "Sales Manager - Pune", roleSlug: null },
-    { title: "Sales  manager (Mumbai)", roleSlug: null },
-    { title: "Accountant", roleSlug: null },
+    { title: "Sales Manager - Pune", roleSlug: null, company: "Example Pay", requiredSkillIds: ["b2b-sales", "crm"] },
+    { title: "Sales  manager (Mumbai)", roleSlug: null, company: "Example Pay", requiredSkillIds: ["b2b-sales"] },
+    { title: "Accountant", roleSlug: null, company: "Example Books" },
   ];
 
   it("counts kept posts by role, most first, then those with no role", () => {
@@ -2647,9 +2690,9 @@ describe("roleLine and unmatchedLine", () => {
     expect(unmatchedLine(rows.slice(0, 3))).toBeNull();
   });
 
-  it("writes the unmatched titles as a tab-separated file, commonest first", () => {
-    expect(unmatchedTsv(rows)).toBe("count\ttitle\n2\tsales manager\n1\taccountant\n");
-    expect(unmatchedTsv(rows, 1)).toBe("count\ttitle\n2\tsales manager\n");
-    expect(unmatchedTsv(rows.slice(0, 3))).toBe("count\ttitle\n");
+  it("writes the unmatched titles as a tab-separated file, commonest first, with who posts them and the skills found", () => {
+    expect(unmatchedTsv(rows)).toBe("count\ttitle\tcompanies\tskills\n2\tsales manager\tExample Pay 2\tb2b-sales 2; crm 1\n1\taccountant\tExample Books 1\t\n");
+    expect(unmatchedTsv(rows, 1)).toBe("count\ttitle\tcompanies\tskills\n2\tsales manager\tExample Pay 2\tb2b-sales 2; crm 1\n");
+    expect(unmatchedTsv(rows.slice(0, 3))).toBe("count\ttitle\tcompanies\tskills\n");
   });
 });
