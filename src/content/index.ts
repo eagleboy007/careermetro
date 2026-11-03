@@ -134,6 +134,7 @@ import eucEngineer from "./roles/euc-engineer.json";
 import evPowertrainEngineer from "./roles/ev-powertrain-engineer.json";
 import eventMarketingExecutive from "./roles/event-marketing-executive.json";
 import exportImportExecutive from "./roles/export-import-executive.json";
+import fieldSalesTeamLeader from "./roles/field-sales-team-leader.json";
 import financialAnalyst from "./roles/financial-analyst.json";
 import fmcgSalesOfficer from "./roles/fmcg-sales-officer.json";
 import foodBeverageExecutive from "./roles/food-beverage-executive.json";
@@ -491,6 +492,7 @@ export const roleProfiles: RoleProfile[] = z
     evPowertrainEngineer,
     eventMarketingExecutive,
     exportImportExecutive,
+    fieldSalesTeamLeader,
     financialAnalyst,
     fmcgSalesOfficer,
     foodBeverageExecutive,

@@ -3570,5 +3570,13 @@
   {
     "skillId": "zoho-deluge-scripting",
     "task": "On a free Zoho account, write Deluge functions for a synthetic sales flow: when a deal is won, create an invoice record, post a message to a webhook and log errors. Share the scripts, screenshots of a test run and a short note."
+  },
+  {
+    "skillId": "field-sales-team-management",
+    "task": "Given a synthetic table of 8 field sales executives with 4 weeks of visits, onboardings and activations, find the two weakest performers, write what you would cover in tomorrow's morning huddle, and set a 2-week coaching plan with one measurable target each."
+  },
+  {
+    "skillId": "merchant-acquisition",
+    "task": "Plan one week of merchant onboarding for a synthetic market of 400 shops: split it into beats, set a daily target per executive for QR and soundbox sign-ups, list the KYC documents you check before activation, and say how you would spot fake or inactive onboardings in the first week."
   }
 ]

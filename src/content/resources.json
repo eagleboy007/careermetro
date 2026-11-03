@@ -12861,7 +12861,8 @@
       "distributor-economics",
       "field-call-reporting",
       "mortgage-channel-sourcing",
-      "real-estate-channel-partners"
+      "real-estate-channel-partners",
+      "field-sales-team-management"
     ],
     "minutes": 1200,
     "free": true
@@ -13479,7 +13480,8 @@
       "channel-incentive-programs",
       "field-call-reporting",
       "medical-detailing",
-      "prescription-generation"
+      "prescription-generation",
+      "field-sales-team-management"
     ],
     "minutes": 1200,
     "free": true
@@ -26117,17 +26119,6 @@
     "free": true
   },
   {
-    "title": "Housekeeping safety in catering and hospitality",
-    "url": "https://hsa.ie/eng/Your_Industry/Catering_and_Hospitality/Housekeeping",
-    "provider": "Health and Safety Authority Ireland",
-    "kind": "docs",
-    "skillIds": [
-      "housekeeping-chemical-safety"
-    ],
-    "minutes": 20,
-    "free": true
-  },
-  {
     "title": "Front Office Associate participant handbook (extract)",
     "url": "https://www.nsdcindia.org/scmp/assets/image/945895286-FOA_Extact.pdf",
     "provider": "NSDC / Tourism and Hospitality Skill Council",
@@ -28090,7 +28081,8 @@
     "provider": "NPCI",
     "kind": "docs",
     "skillIds": [
-      "payment-systems-domain"
+      "payment-systems-domain",
+      "merchant-acquisition"
     ],
     "minutes": 20,
     "free": true
@@ -33825,6 +33817,64 @@
       "property-booking-documentation"
     ],
     "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Sales Management Training (HubSpot Academy)",
+    "url": "https://academy.hubspot.com/courses/sales-manager-training-program",
+    "provider": "HubSpot Academy",
+    "kind": "course",
+    "skillIds": [
+      "field-sales-team-management",
+      "people-management"
+    ],
+    "minutes": 280,
+    "free": true
+  },
+  {
+    "title": "Sales coaching: models, techniques and best practices",
+    "url": "https://blog.hubspot.com/sales/sales-coaching",
+    "provider": "HubSpot",
+    "kind": "docs",
+    "skillIds": [
+      "field-sales-team-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "RBI Master Direction: Regulation of Payment Aggregators",
+    "url": "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=12896",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "merchant-acquisition",
+      "kyc-verification"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "RBI circular: Regulation of Payment Aggregator (merchant due diligence)",
+    "url": "https://rbi.org.in/Scripts/NotificationUser.aspx?Id=12561&Mode=0",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "merchant-acquisition"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "NPCI FAQs: Merchant Discount Rate on UPI person-to-merchant payments",
+    "url": "https://www.npci.org.in/uploads/FA_Qs_Merchant_Discount_Rate_MDR_on_Select_UPI_P2_M_Transactions_58dba1d39e.pdf",
+    "provider": "NPCI",
+    "kind": "docs",
+    "skillIds": [
+      "merchant-acquisition",
+      "payment-systems-domain"
+    ],
+    "minutes": 15,
     "free": true
   }
 ]

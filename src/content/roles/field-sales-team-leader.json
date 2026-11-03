@@ -1,0 +1,129 @@
+{
+  "slug": "field-sales-team-leader",
+  "title": "Field Sales Team Leader",
+  "summary": "Field sales team leaders run a team of 5 to 15 field sales executives who sign up shops and merchants for QR codes, soundboxes, card machines or other products. They sit between the executives and the area sales manager, split the area's target across the team, go to the field with them, and check that every merchant they sign is genuine and active.",
+  "dailyDuties": [
+    "Run the morning huddle and give each executive their beat and target for the day",
+    "Go to the field with executives and help close difficult merchants",
+    "Track each executive's onboardings, activations and device deployments",
+    "Audit new merchants for KYC, location and first transactions",
+    "Hire and train new executives and coach the weak performers",
+    "Send daily and weekly productivity reports to the area sales manager"
+  ],
+  "typicalTitles": [
+    "Team Leader - Field Sales",
+    "Team Lead - Field Sales",
+    "Sales Team Leader",
+    "Sales Team Lead",
+    "Team Leader - Merchant Acquisition",
+    "Team Leader - Offline Merchant QR",
+    "Team Leader - EDC Sales",
+    "Field Sales Team Lead"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "field-sales-team-management",
+      "importance": "required",
+      "expectation": "Lead a team of 5 or more field sales executives, run daily huddles and track each person's productivity",
+      "postingShare": null
+    },
+    {
+      "skillId": "merchant-acquisition",
+      "importance": "required",
+      "expectation": "Drive merchant onboarding for QR, soundbox and EDC/POS devices and the quality of each acquisition",
+      "postingShare": null
+    },
+    {
+      "skillId": "territory-sales-planning",
+      "importance": "required",
+      "expectation": "Map the market and assign beats so the team covers every pocket of the area",
+      "postingShare": null
+    },
+    {
+      "skillId": "sales-forecasting",
+      "importance": "required",
+      "expectation": "Split the monthly target across the team by market and product and track it daily",
+      "postingShare": null
+    },
+    {
+      "skillId": "field-sales-meetings",
+      "importance": "required",
+      "expectation": "Go to the field with executives, meet merchants and close difficult accounts",
+      "postingShare": null
+    },
+    {
+      "skillId": "kyc-verification",
+      "importance": "required",
+      "expectation": "Check merchant KYC and documents before activation and audit the team's onboardings",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Keep daily productivity and target reports in Excel or Google Sheets",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Hire, train and coach executives and handle attrition in the team",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Pitch and train in the local language and English",
+      "postingShare": null
+    },
+    {
+      "skillId": "payment-systems-domain",
+      "importance": "nice_to_have",
+      "expectation": "Explain UPI, cards and settlement to merchants",
+      "postingShare": null
+    },
+    {
+      "skillId": "distributor-management",
+      "importance": "nice_to_have",
+      "expectation": "Work with channel partners who supply or service devices",
+      "postingShare": null
+    },
+    {
+      "skillId": "cross-selling-upselling",
+      "importance": "nice_to_have",
+      "expectation": "Sell loans, insurance or extra devices to active merchants",
+      "postingShare": null
+    },
+    {
+      "skillId": "dms-sfa-tools",
+      "importance": "nice_to_have",
+      "expectation": "Use the company's sales app to assign leads and track visits",
+      "postingShare": null
+    },
+    {
+      "skillId": "field-call-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Collect and check the team's daily visit reports",
+      "postingShare": null
+    },
+    {
+      "skillId": "full-cycle-recruitment",
+      "importance": "nice_to_have",
+      "expectation": "Source and hire new field sales executives as the team grows",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions on employer ATS boards on 2026-11-03. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-03"
+}
