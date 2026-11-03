@@ -16904,5 +16904,55 @@
     "ambiguous": [],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "merchant-acquisition",
+    "name": "Merchant acquisition and onboarding (QR, soundbox, EDC/POS)",
+    "category": "business",
+    "aliases": [
+      "merchant acquisition",
+      "merchant onboarding",
+      "merchant sourcing",
+      "merchant activation",
+      "qr onboarding",
+      "qr code onboarding",
+      "soundbox sales",
+      "soundbox deployment",
+      "edc sales",
+      "edc deployment",
+      "edc machine sales",
+      "pos terminal deployment"
+    ],
+    "ambiguous": [
+      "merchant onboarding",
+      "merchant activation",
+      "edc sales",
+      "edc deployment"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "field-sales-team-management",
+    "name": "Leading a field sales team (targets, huddles, productivity)",
+    "category": "business",
+    "aliases": [
+      "field sales team management",
+      "managing field sales executives",
+      "leading field sales executives",
+      "team of field sales executives",
+      "fse team management",
+      "field force management",
+      "sales team handling",
+      "daily sales huddles",
+      "morning huddles",
+      "field team productivity tracking"
+    ],
+    "ambiguous": [
+      "field force management",
+      "morning huddles"
+    ],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

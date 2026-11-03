@@ -126,6 +126,7 @@ const ROLE_SEED: Record<string, { openings: number; pay: [number, number, number
   "event-marketing-executive": { openings: 600, pay: [3, 4.5, 6.5, 9.5], yearChange: 0.02, seniority: "mid" },
   "export-import-executive": { openings: 1200, pay: [2.5, 3.8, 5.5, 8.5], yearChange: 0.03, seniority: "mid" },
   "financial-analyst": { openings: 1300, pay: [4.5, 8, 13, 20], yearChange: 0.05, seniority: "mid" },
+  "field-sales-team-leader": { openings: 1800, pay: [3, 4.2, 5.6, 7.5], yearChange: 0.04, seniority: "mid" },
   "fmcg-sales-officer": { openings: 2000, pay: [2.8, 3.6, 5, 6.5], yearChange: 0.03, seniority: "entry" },
   "food-beverage-executive": { openings: 1100, pay: [2.4, 3.4, 4.8, 7], yearChange: 0.05, seniority: "mid" },
   "forward-deployed-engineer": { openings: 200, pay: [15, 25, 40, 60], yearChange: 0.35, seniority: "mid" },

@@ -31,7 +31,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 41 |
 | Testing and quality | `roles-testing.csv` | 5 |
 | Software, hardware, delivery and marketing | `roles-other.csv` | 82 |
-| Sales, finance, HR and operations | `roles-business.csv` | 46 |
+| Sales, finance, HR and operations | `roles-business.csv` | 47 |
 | Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
 | Legal and compliance | `roles-legal.csv` | 4 |
 | Healthcare administration (coding, billing, hospital operations and claims) | `roles-healthcare-admin.csv` | 4 |
@@ -46,7 +46,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 104 |
 
-279 role profiles await review in all.
+280 role profiles await review in all.
 
 ## Changed since the draft, awaiting sign-off
 

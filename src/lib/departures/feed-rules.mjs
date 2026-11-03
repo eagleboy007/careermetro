@@ -547,6 +547,9 @@ export const ROLE_TITLES = {
   // sales officer whose title names FMCG, general trade or consumer goods reads here; a plain "Sales Officer" has no rule.
   "fmcg-sales-officer": /^(?!.*\b(software|saas|it|pharma\w*|medical|home loans?|housing|mortgage|insurance|real estate|loans?|banking|cards?|b2b)\b)((senior|sr\.?|junior|jr\.?|trainee|field|territory) )*((sales (officer|executive|trainee|representative)|territory sales (in-?charge|incharge))\b.*\b(fmcg|general trade|consumer goods|consumer products|cpg)\b|(fmcg|general trade|consumer goods|cpg) sales (officer|executive|trainee|representative))/i,
   "area-sales-manager": /^((senior|sr\.?|deputy|assistant) )?((area|territory) sales (manager|officer|executive|lead)|area manager\b.*\bsales|area business manager)\b/i,
+  // Field sales team leaders (2026-11-03): a sales team leader, or a team leader of field sales, merchant acquisition or a
+  // payments vertical (EDC, QR, soundbox). Never a contact-centre, inside sales or tech team lead.
+  "field-sales-team-leader": /^(?!.*\b(inside|tele-?sales|tele-?calling|telecallers?|call|contact|bpo|voice|chat|customer|software|engineer\w*|developers?|it|technical|qa|data)\b)((senior|sr\.?|assistant|deputy) )*((field )?sales team lead(er)?|team lead(er)?,? ?[-–]? ?((field sales|merchant (acquisition|onboarding|sourcing)|offline merchant|edc (sales|retail|mid ?market)|(offline |merchant )?qr|soundbox|o ?& ?g|railway transit)\b))/i,
   "inside-sales-executive": /^((senior|sr\.?|associate|junior|jr\.?) )?(inside sales (executive|representative|rep|associate|specialist)|(sales|business) development (representative|rep)|sdr|bdr)\b|^account executive\b.*\binside sales\b/i,
   // FP&A and business finance analysts; never a financial systems, crime, data or cloud cost one.
   "financial-analyst": /^(?!.*\b(systems?|crime|data|cloud|software|it)\b)((senior|sr\.?|associate|junior|jr\.?|lead) )?(fp ?& ?a|financial planning (and|&) analysis|business finance|commercial finance|budgeting (and|&) forecasting|financial|finance) (analyst|associate)\b/i,
@@ -698,7 +701,7 @@ export const ROLE_TITLES = {
 };
 const MANAGER_OK = new Set(["product-manager", "software-asset-manager", "clinical-data-manager", "marketing-automation-specialist", "regulatory-compliance-officer", "hospital-operations-executive", "food-beverage-executive", "hotel-revenue-manager", "qa-lead", "qa-manager", "ml-engineering-manager", "data-engineering-manager", "platform-engineering-manager", "delivery-manager", "it-program-manager", "it-service-delivery-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
 /** The business rules that may read a sales, recruiting or legal title, which NOT_IN_SCOPE drops for every other rule. */
-const SALES_OK = new Set(["corporate-legal-associate", "contract-management-specialist", "litigation-paralegal", "key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive", "medical-representative", "channel-sales-manager", "real-estate-sales-executive", "home-loan-sales-officer", "fmcg-sales-officer", "management-trainee"]);
+const SALES_OK = new Set(["corporate-legal-associate", "contract-management-specialist", "litigation-paralegal", "key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive", "medical-representative", "channel-sales-manager", "real-estate-sales-executive", "home-loan-sales-officer", "fmcg-sales-officer", "management-trainee", "field-sales-team-leader"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
 export const INDIA = /\b(india|bengaluru|bangalore|mumbai|pune|hyderabad|chennai|gurgaon|gurugram|noida|delhi|new delhi|kolkata|ahmedabad|jaipur|kochi)\b/i;
 const NOT_SOFTWARE = /\b(hardware|manufacturing|supplier|mechanical|electrical|silicon|asic|firmware|validation|compliance testing)\b/i;
@@ -715,6 +718,8 @@ const TEXT_TITLES = [
   ["front-office-executive-hotel", /^((senior|sr\.?|junior|jr\.?|trainee|assistant) )*(front office (executive|associate|assistant|agent|officer)|gsa|guest service (agent|associate|executive))\b/i, /\b(hotels?|resorts?|hospitality)\b/i, /\b(hospitals?|clinics?|patients?|airlines?|airports?)\b/i],
   ["food-beverage-executive", /^((senior|sr\.?|assistant|deputy) )*(restaurant|outlet|banquets?) manager\b/i, /\b(hotels?|resorts?|hospitality)\b/i, null],
   ["area-sales-manager", /^((senior|sr\.?|deputy|assistant) )?cluster (sales )?manager\b/i, /\b(field sales|merchant (acquisition|onboarding)|sales team|distributors?)\b/i, null],
+  // A bare "Team Leader" only from Paytm Payments Services (merchant field sales) or a post that names field sales.
+  ["field-sales-team-leader", /^((senior|sr\.?) )?team lead(er)?\s*$/i, /\b(field sales|merchant (acquisition|onboarding|sourcing)|soundbox|paytm payments services)\b/i, /\b(call cent(re|er)|contact cent(re|er)|voice process|inbound calls|software|developers?)\b/i],
 ];
 
 /** The live role a title reads as, or null. `text` settles Java for a backend title and the bare titles in TEXT_TITLES. */
@@ -988,7 +993,8 @@ export function postRow(ats, board, post, matchers, now = new Date()) {
   if (title.length < 2) return null;
   const text = post.lines.join("\n");
   const skills = skillsOf(post.lines.length ? post.lines : [post.title], matchers);
-  const setting = [text, ...(post.context ?? [])].filter(Boolean).join("\n");
+  // The employer's name counts too: "Paytm Payments Services" or "Radisson Hotel Group" names the setting.
+  const setting = [text, ...(post.context ?? []), board.company].filter(Boolean).join("\n");
   return {
     ats,
     boardToken: board.token,

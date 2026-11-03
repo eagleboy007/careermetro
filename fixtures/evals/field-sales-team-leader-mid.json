@@ -1,0 +1,60 @@
+{
+  "id": "field-sales-team-leader-mid",
+  "roleSlug": "field-sales-team-leader",
+  "persona": "mid",
+  "resumeText": "Rohit Patil | Pune | rohit.patil@example.com\n\nSUMMARY\nField sales team leader with 4 years in merchant payments sales for small shops.\n\nEXPERIENCE\nTeam Leader - Offline Merchant QR, Sahyadri Pay Services, Pune (2024 - present)\n- Lead a team of field sales executives covering 6 markets in east Pune.\n- Managed a team of 8 and held one-to-one reviews with each executive every month.\n- Do sales target planning each month and split the target across the team by market.\n- Drive merchant onboarding for QR codes and soundbox deployment in kirana, pharmacy and hardware shops.\n- Do territory planning for new markets with low coverage and assign beats.\n- Track daily productivity of each executive in Excel and send the report to the area manager.\n- Train new joiners on the pitch in Marathi and Hindi and use strong communication skills with shop owners.\n\nField Sales Executive, Sahyadri Pay Services, Pune (2022 - 2024)\n- Did field sales visits to 25 shops a day to pitch QR codes and card machines.\n- Did cross selling of merchant loans to active merchants.\n\nSKILLS\nMerchant acquisition, Soundbox sales, Excel, Marathi, Hindi, English\n\nEDUCATION\nBCom, Savitribai Phule Pune University, 2021\n",
+  "expected": {
+    "totalYearsExperience": 4,
+    "skills": [
+      {
+        "skillId": "field-sales-team-management",
+        "quote": "Lead a team of field sales executives covering 6 markets"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 8 and held one-to-one reviews"
+      },
+      {
+        "skillId": "sales-forecasting",
+        "quote": "Do sales target planning each month"
+      },
+      {
+        "skillId": "merchant-acquisition",
+        "quote": "Drive merchant onboarding for QR codes and soundbox deployment"
+      },
+      {
+        "skillId": "territory-sales-planning",
+        "quote": "Do territory planning for new markets"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Track daily productivity of each executive in Excel"
+      },
+      {
+        "skillId": "communication",
+        "quote": "use strong communication skills with shop owners"
+      },
+      {
+        "skillId": "field-sales-meetings",
+        "quote": "Did field sales visits to 25 shops a day"
+      },
+      {
+        "skillId": "cross-selling-upselling",
+        "quote": "Did cross selling of merchant loans"
+      }
+    ],
+    "gaps": [
+      {
+        "skillId": "kyc-verification",
+        "status": "missing"
+      }
+    ],
+    "mustNotClaim": [
+      "distributor-management",
+      "dms-sfa-tools",
+      "crm-tools",
+      "full-cycle-recruitment"
+    ]
+  },
+  "reviewedBy": null
+}
