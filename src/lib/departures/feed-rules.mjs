@@ -718,8 +718,8 @@ const TEXT_TITLES = [
   ["front-office-executive-hotel", /^((senior|sr\.?|junior|jr\.?|trainee|assistant) )*(front office (executive|associate|assistant|agent|officer)|gsa|guest service (agent|associate|executive))\b/i, /\b(hotels?|resorts?|hospitality)\b/i, /\b(hospitals?|clinics?|patients?|airlines?|airports?)\b/i],
   ["food-beverage-executive", /^((senior|sr\.?|assistant|deputy) )*(restaurant|outlet|banquets?) manager\b/i, /\b(hotels?|resorts?|hospitality)\b/i, null],
   ["area-sales-manager", /^((senior|sr\.?|deputy|assistant) )?cluster (sales )?manager\b/i, /\b(field sales|merchant (acquisition|onboarding)|sales team|distributors?)\b/i, null],
-  // A bare "Team Leader" only from Paytm Payments Services (merchant field sales) or a post that names field sales.
-  ["field-sales-team-leader", /^((senior|sr\.?) )?team lead(er)?\s*$/i, /\b(field sales|merchant (acquisition|onboarding|sourcing)|soundbox|paytm payments services)\b/i, /\b(call cent(re|er)|contact cent(re|er)|voice process|inbound calls|software|developers?)\b/i],
+  // A bare "Team Leader" (or one with a place or code after it) only from Paytm Payments Services (merchant field sales) or a post that names field sales.
+  ["field-sales-team-leader", /^(?!.*\b(software|engineer\w*|developers?|it|technical|qa|data|customer|contact|call|voice|chat|bpo|hr|finance|accounts?|operations|ops|quality|kitchen|housekeeping|f ?& ?b)\b)((senior|sr\.?) )?team lead(er)?\s*($|[-–,(|/:])/i, /\b(field sales|merchant (acquisition|onboarding|sourcing)|soundbox|paytm payments services)\b/i, /\b(call cent(re|er)|contact cent(re|er)|voice process|inbound calls|software|developers?)\b/i],
 ];
 
 /** The live role a title reads as, or null. `text` settles Java for a backend title and the bare titles in TEXT_TITLES. */

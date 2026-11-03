@@ -2157,6 +2157,10 @@ describe("feed rules", () => {
       // A bare team leader only when the post names field sales or merchants, or comes from Paytm Payments Services.
       ["Team Leader", "Lead field sales executives who onboard merchants.", "field-sales-team-leader"],
       ["Team Leader", "Paytm Payments Services", "field-sales-team-leader"],
+      ["Team Leader - Pune", "Paytm Payments Services", "field-sales-team-leader"],
+      ["Team Leader (Kolkata)", "Paytm Payments Services", "field-sales-team-leader"],
+      ["Team Leader - Operations", "Paytm Payments Services", null],
+      ["Team Leader - Kitchen", "Field sales of our meal kits. Example Foods", null],
       ["Team Leader", "Lead the inbound calls team at our contact centre. Paytm Payments Services", null],
       ["Team Lead", "Lead a team of software developers.", null],
       ["Team Leader - Operations", "Field sales support.", null],
