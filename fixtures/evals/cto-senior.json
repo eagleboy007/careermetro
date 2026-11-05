@@ -1,0 +1,50 @@
+{
+  "id": "cto-senior",
+  "roleSlug": "cto",
+  "persona": "senior",
+  "resumeText": "Sameer Khan | Bengaluru | sameer.khan@example.com\n\nSUMMARY\nEngineering leader with 17 years building consumer and fintech platforms.\n\nEXPERIENCE\nVP of Engineering, Sahyadri Lending, Bengaluru (2020 - present)\n- Set the technology strategy and three-year platform roadmap with the CEO.\n- Own high level design reviews for the lending, payments and data platforms.\n- Took architecture decisions on moving the monolith to services.\n- Grew the engineering team to 120 through engineering hiring and interview loops.\n- Managed a team of 9 engineering managers.\n- Run budget forecasting for cloud and vendor spend each quarter.\n- Give monthly board updates on delivery, reliability and technology risk.\n- Drive cross-functional collaboration with product, risk and operations.\n\nEngineering Manager, Konark Retail Tech, Pune (2014 - 2020)\n- Led checkout and catalogue teams.\n\nSoftware Engineer to Tech Lead, various product companies (2009 - 2014)\n\nEDUCATION\nBTech Computer Science, IIT Bombay, 2009\n",
+  "expected": {
+    "totalYearsExperience": 17,
+    "skills": [
+      {
+        "skillId": "technology-strategy",
+        "quote": "Set the technology strategy and three-year platform roadmap"
+      },
+      {
+        "skillId": "system-design",
+        "quote": "Own high level design reviews"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Took architecture decisions on moving the monolith"
+      },
+      {
+        "skillId": "engineering-hiring",
+        "quote": "through engineering hiring and interview loops"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 9 engineering managers"
+      },
+      {
+        "skillId": "spend-forecasting",
+        "quote": "Run budget forecasting for cloud and vendor spend"
+      },
+      {
+        "skillId": "board-executive-reporting",
+        "quote": "Give monthly board updates on delivery"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Drive cross-functional collaboration with product"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "security-program-leadership",
+      "ai-strategy-portfolio",
+      "it-vendor-management"
+    ]
+  },
+  "reviewedBy": null
+}

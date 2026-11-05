@@ -1,0 +1,54 @@
+{
+  "id": "cyber-risk-manager-mid",
+  "roleSlug": "cyber-risk-manager",
+  "persona": "mid",
+  "resumeText": "Arjun Menon | Bengaluru | arjun.menon@example.com\n\nSUMMARY\nTechnology and cyber risk manager with 10 years across security operations, IT audit and second-line risk.\n\nEXPERIENCE\nTechnology Risk Manager, Konkan Payments Global Centre, Bengaluru (2021 - present)\n- Lead risk and control self-assessment cycles for technology across four countries.\n- Own the risk assessment method and challenge ratings proposed by first-line teams.\n- Introduced cyber risk quantification using the FAIR model for the top ten scenarios.\n- Keep the centre aligned with the RBI master direction on IT governance and SEBI CSCRF for the broking arm.\n- Oversee vendor risk assessment for cloud and payment processors.\n- Use NIST CSF as the control baseline for all technology risk reviews.\n- Prepare board risk committee papers on cyber risk and overdue issues.\n- Managed a team of 4 risk analysts and set their review calendar.\n- Drive cross-functional collaboration with CIO, CISO and business heads on remediation.\n\nInformation Security Analyst, Malabar Bank, Kochi (2016 - 2021)\n- Ran vulnerability tracking and supported RBI cyber audits.\n\nCERTIFICATIONS\nCRISC, CISA\n\nEDUCATION\nBTech Computer Science, NIT Calicut, 2016\n",
+  "expected": {
+    "totalYearsExperience": 10,
+    "skills": [
+      {
+        "skillId": "operational-risk-management",
+        "quote": "Lead risk and control self-assessment cycles"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Own the risk assessment method"
+      },
+      {
+        "skillId": "cyber-risk-quantification",
+        "quote": "Introduced cyber risk quantification using the FAIR model"
+      },
+      {
+        "skillId": "india-cyber-regulations",
+        "quote": "aligned with the RBI master direction on IT governance and SEBI CSCRF"
+      },
+      {
+        "skillId": "third-party-risk",
+        "quote": "Oversee vendor risk assessment for cloud"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "Use NIST CSF as the control baseline"
+      },
+      {
+        "skillId": "board-executive-reporting",
+        "quote": "Prepare board risk committee papers on cyber risk"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 4 risk analysts"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Drive cross-functional collaboration with CIO, CISO"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "business-continuity",
+      "enterprise-risk-management",
+      "data-privacy"
+    ]
+  },
+  "reviewedBy": null
+}

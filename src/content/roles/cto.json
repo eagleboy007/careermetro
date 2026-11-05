@@ -1,0 +1,122 @@
+{
+  "slug": "cto",
+  "title": "Chief Technology Officer (CTO)",
+  "summary": "A CTO is the senior leader accountable for a company's technology. They set the technology strategy and architecture, build and lead the engineering organisation, own the technology budget and vendors, and report technology plans and risks to the CEO and board. In regulated firms they also answer to regulators for IT governance.",
+  "dailyDuties": [
+    "Set the technology strategy and roadmap with the CEO",
+    "Own architecture decisions for core platforms",
+    "Build, lead and hire for the engineering organisation",
+    "Plan and control the technology budget and vendors",
+    "Review reliability, security and major incidents with the CISO",
+    "Report technology plans and risks to the board"
+  ],
+  "typicalTitles": [
+    "Chief Technology Officer",
+    "CTO",
+    "VP of Engineering",
+    "Head of Technology",
+    "SVP Engineering",
+    "Deputy CTO",
+    "Group CTO"
+  ],
+  "experienceBand": {
+    "minYears": 15,
+    "maxYears": 25
+  },
+  "skills": [
+    {
+      "skillId": "technology-strategy",
+      "importance": "required",
+      "expectation": "Set the technology strategy and multi-year roadmap",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Own the architecture of core systems and platforms",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Lead architecture choices and engineering standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Build and lead the engineering organisation",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-hiring",
+      "importance": "required",
+      "expectation": "Hire senior engineers and engineering leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "required",
+      "expectation": "Plan and control the technology budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "required",
+      "expectation": "Report technology plans, risk and spend to the board",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with the CEO, product and business heads",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-program-leadership",
+      "importance": "nice_to_have",
+      "expectation": "Work with the CISO on security strategy",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "nice_to_have",
+      "expectation": "Manage large technology vendors",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "nice_to_have",
+      "expectation": "Control cloud spend",
+      "postingShare": null
+    },
+    {
+      "skillId": "ai-strategy-portfolio",
+      "importance": "nice_to_have",
+      "expectation": "Decide where AI fits in the product",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "nice_to_have",
+      "expectation": "Own reliability and major outages",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "nice_to_have",
+      "expectation": "Set how engineering plans and delivers",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and regulator notices on 2026-11-04. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

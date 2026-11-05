@@ -1,0 +1,50 @@
+{
+  "id": "chief-risk-officer-senior",
+  "roleSlug": "chief-risk-officer",
+  "persona": "senior",
+  "resumeText": "Anita Verma | Mumbai | anita.verma@example.com\n\nSUMMARY\nRisk leader with 20 years in credit, portfolio and enterprise risk at banks and NBFCs.\n\nEXPERIENCE\nHead of Risk, Deccan Finserv (NBFC), Mumbai (2019 - present)\n- Built the enterprise risk management framework and the board-approved risk appetite statement.\n- Oversaw credit risk modelling for retail and MSME scorecards and IFRS 9 ECL.\n- Set up operational risk management with RCSA and loss data for all branches.\n- Led compliance with RBI master directions on scale based regulation and the CRO role.\n- Run early warning signals and NPA monitoring for the loan book.\n- Report to the board risk committee every quarter.\n- Managed a team of 40 across credit, operational and fraud risk.\n- Use stakeholder communication to challenge business growth plans.\n\nSenior Credit Risk Manager, Indus Valley Bank, Mumbai (2010 - 2019)\n- Approved large corporate and SME credit and reviewed portfolio concentration.\n\nCredit Analyst, Indus Valley Bank, Mumbai (2006 - 2010)\n\nCERTIFICATIONS\nFRM\n\nEDUCATION\nMBA Finance, IIM Lucknow, 2006\n",
+  "expected": {
+    "totalYearsExperience": 20,
+    "skills": [
+      {
+        "skillId": "enterprise-risk-management",
+        "quote": "Built the enterprise risk management framework"
+      },
+      {
+        "skillId": "credit-risk-modelling",
+        "quote": "Oversaw credit risk modelling for retail"
+      },
+      {
+        "skillId": "operational-risk-management",
+        "quote": "Set up operational risk management with RCSA"
+      },
+      {
+        "skillId": "rbi-regulatory-framework",
+        "quote": "Led compliance with RBI master directions"
+      },
+      {
+        "skillId": "credit-portfolio-monitoring",
+        "quote": "Run early warning signals and NPA monitoring"
+      },
+      {
+        "skillId": "board-executive-reporting",
+        "quote": "Report to the board risk committee every quarter"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 40"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication to challenge business"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "market-risk-pnl",
+      "cyber-risk-quantification",
+      "irdai-regulations"
+    ]
+  },
+  "reviewedBy": null
+}

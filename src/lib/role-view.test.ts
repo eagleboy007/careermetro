@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { roleProfiles, skills } from "@/content";
-import { formatExperience, getRoleView, postingsAnalysed, roleViews, toRoleView } from "./role-view";
+import { formatExperience, getRoleView, postingsAnalysed, roleViews, toRoleView, wellPastBand } from "./role-view";
 
 describe("role views", () => {
   it("has one view per role profile, sorted by title", () => {
@@ -56,5 +56,14 @@ describe("role views", () => {
 
   it("returns undefined for an unknown slug", () => {
     expect(getRoleView("astronaut")).toBeUndefined();
+  });
+
+  // TR1: the leadership roles start at 14 or 15 years. Only people more than two years past a band's top are kept from
+  // a role, so a 13-year security architect still sees CISO, and nobody under 28 years is kept from the 14-25 roles.
+  it("never keeps a person below or inside a leadership band from it", () => {
+    for (const slug of ["ciso", "cto", "head-of-ai", "chief-risk-officer"]) {
+      const band = roleProfiles.find((r) => r.slug === slug)!.experienceBand;
+      expect([slug, wellPastBand(13, band), wellPastBand(25, band), wellPastBand(27, band), wellPastBand(28, band)]).toEqual([slug, false, false, false, true]);
+    }
   });
 });

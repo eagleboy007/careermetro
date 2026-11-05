@@ -76,6 +76,8 @@ import businessDevelopmentExecutive from "./roles/business-development-executive
 import caeSimulationEngineer from "./roles/cae-simulation-engineer.json";
 import categoryManagerEcommerce from "./roles/category-manager-ecommerce.json";
 import channelSalesManager from "./roles/channel-sales-manager.json";
+import chiefRiskOfficer from "./roles/chief-risk-officer.json";
+import ciso from "./roles/ciso.json";
 import clinicalDataManager from "./roles/clinical-data-manager.json";
 import clinicalSasProgrammer from "./roles/clinical-sas-programmer.json";
 import cloudArchitect from "./roles/cloud-architect.json";
@@ -97,9 +99,12 @@ import costAccountant from "./roles/cost-accountant.json";
 import cppDeveloper from "./roles/cpp-developer.json";
 import creditRiskAnalyst from "./roles/credit-risk-analyst.json";
 import crossPlatformMobileDeveloper from "./roles/cross-platform-mobile-developer.json";
+import cto from "./roles/cto.json";
 import customerServiceTeamLeader from "./roles/customer-service-team-leader.json";
 import customerSuccessManager from "./roles/customer-success-manager.json";
 import customerSupportExecutive from "./roles/customer-support-executive.json";
+import cyberRiskAnalyst from "./roles/cyber-risk-analyst.json";
+import cyberRiskManager from "./roles/cyber-risk-manager.json";
 import cyberSecurityAnalyst from "./roles/cyber-security-analyst.json";
 import dataAnalyst from "./roles/data-analyst.json";
 import dataAnnotationSpecialist from "./roles/data-annotation-specialist.json";
@@ -157,6 +162,7 @@ import graphicDesigner from "./roles/graphic-designer.json";
 import grcManager from "./roles/grc-manager.json";
 import guidewireDeveloper from "./roles/guidewire-developer.json";
 import hardwareDesignEngineer from "./roles/hardware-design-engineer.json";
+import headOfAi from "./roles/head-of-ai.json";
 import healthInsuranceClaimsExecutive from "./roles/health-insurance-claims-executive.json";
 import hilTestEngineer from "./roles/hil-test-engineer.json";
 import homeLoanSalesOfficer from "./roles/home-loan-sales-officer.json";
@@ -217,6 +223,8 @@ import nlpEngineer from "./roles/nlp-engineer.json";
 import nocEngineer from "./roles/noc-engineer.json";
 import nodejsDeveloper from "./roles/nodejs-developer.json";
 import odooDeveloper from "./roles/odoo-developer.json";
+import operationalRiskAnalyst from "./roles/operational-risk-analyst.json";
+import operationalRiskManager from "./roles/operational-risk-manager.json";
 import oracleEbsConsultant from "./roles/oracle-ebs-consultant.json";
 import oracleFusionTechnicalConsultant from "./roles/oracle-fusion-technical-consultant.json";
 import oracleHcmCloudConsultant from "./roles/oracle-hcm-cloud-consultant.json";
@@ -434,6 +442,8 @@ export const roleProfiles: RoleProfile[] = z
     caeSimulationEngineer,
     categoryManagerEcommerce,
     channelSalesManager,
+    chiefRiskOfficer,
+    ciso,
     clinicalDataManager,
     clinicalSasProgrammer,
     cloudArchitect,
@@ -455,9 +465,12 @@ export const roleProfiles: RoleProfile[] = z
     cppDeveloper,
     creditRiskAnalyst,
     crossPlatformMobileDeveloper,
+    cto,
     customerServiceTeamLeader,
     customerSuccessManager,
     customerSupportExecutive,
+    cyberRiskAnalyst,
+    cyberRiskManager,
     cyberSecurityAnalyst,
     dataAnalyst,
     dataAnnotationSpecialist,
@@ -515,6 +528,7 @@ export const roleProfiles: RoleProfile[] = z
     grcManager,
     guidewireDeveloper,
     hardwareDesignEngineer,
+    headOfAi,
     healthInsuranceClaimsExecutive,
     hilTestEngineer,
     homeLoanSalesOfficer,
@@ -575,6 +589,8 @@ export const roleProfiles: RoleProfile[] = z
     nocEngineer,
     nodejsDeveloper,
     odooDeveloper,
+    operationalRiskAnalyst,
+    operationalRiskManager,
     oracleEbsConsultant,
     oracleFusionTechnicalConsultant,
     oracleHcmCloudConsultant,

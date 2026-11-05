@@ -1,0 +1,54 @@
+{
+  "id": "head-of-ai-senior",
+  "roleSlug": "head-of-ai",
+  "persona": "senior",
+  "resumeText": "Kavya Iyer | Bengaluru | kavya.iyer@example.com\n\nSUMMARY\nAI engineering leader with 16 years in software, machine learning and GenAI products.\n\nEXPERIENCE\nDirector of AI, Nilgiri Commerce, Bengaluru (2022 - present)\n- Set the AI strategy and roadmap with the CEO and business heads.\n- Run AI use case prioritisation each quarter and stop projects that miss value targets.\n- Took architecture decisions on build or buy for models and vector stores.\n- Shipped GenAI assistants for sellers and support using large language models.\n- Set up model monitoring and MLflow for all production models.\n- Wrote the AI governance policy with legal and risk teams.\n- Grew the team from 12 to 45 through engineering hiring for ML and data roles.\n- Managed a team of 6 managers across AI engineering and data science.\n- Give quarterly board presentations on AI value, cost and risk.\n- Drive cross-functional collaboration with product and operations on adoption.\n\nML Engineering Manager, Konark Software, Pune (2016 - 2022)\n- Led recommendation and search ML teams.\n\nSoftware Engineer to Senior Engineer, various product companies (2010 - 2016)\n\nEDUCATION\nMTech Computer Science, IIT Madras, 2010\n",
+  "expected": {
+    "totalYearsExperience": 16,
+    "skills": [
+      {
+        "skillId": "ai-strategy-portfolio",
+        "quote": "Set the AI strategy and roadmap"
+      },
+      {
+        "skillId": "technical-leadership",
+        "quote": "Took architecture decisions on build or buy"
+      },
+      {
+        "skillId": "llm-apps",
+        "quote": "Shipped GenAI assistants for sellers"
+      },
+      {
+        "skillId": "mlops",
+        "quote": "Set up model monitoring and MLflow"
+      },
+      {
+        "skillId": "responsible-ai-governance",
+        "quote": "Wrote the AI governance policy"
+      },
+      {
+        "skillId": "engineering-hiring",
+        "quote": "through engineering hiring for ML and data roles"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 6 managers"
+      },
+      {
+        "skillId": "board-executive-reporting",
+        "quote": "Give quarterly board presentations on AI value"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Drive cross-functional collaboration with product"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "cloud-cost",
+      "llm-evaluation",
+      "it-vendor-management"
+    ]
+  },
+  "reviewedBy": null
+}

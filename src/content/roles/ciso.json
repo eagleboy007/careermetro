@@ -1,0 +1,138 @@
+{
+  "slug": "ciso",
+  "title": "Chief Information Security Officer (CISO)",
+  "summary": "A CISO is the senior leader accountable for an organisation's information and cyber security. They set the security strategy, run the security team and budget, lead response to major incidents, meet regulator rules from RBI, SEBI, IRDAI and CERT-In, and report cyber risk to the board. Indian regulators expect regulated firms to have one.",
+  "dailyDuties": [
+    "Set the security strategy, roadmap and budget",
+    "Review the cyber risk register and approve risk treatment",
+    "Lead response to major incidents and report to CERT-In and regulators",
+    "Present cyber risk to the board and its risk committee",
+    "Handle regulator inspections and audit findings",
+    "Build and lead the security operations, engineering and GRC teams"
+  ],
+  "typicalTitles": [
+    "Chief Information Security Officer",
+    "CISO",
+    "Head of Information Security",
+    "Head of Cyber Security",
+    "VP - Information Security",
+    "Deputy CISO",
+    "Chief Information and Security Officer"
+  ],
+  "experienceBand": {
+    "minYears": 14,
+    "maxYears": 25
+  },
+  "skills": [
+    {
+      "skillId": "security-program-leadership",
+      "importance": "required",
+      "expectation": "Set the security strategy and run the security programme",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Own the cyber risk picture and decide which risks to treat",
+      "postingShare": null
+    },
+    {
+      "skillId": "india-cyber-regulations",
+      "importance": "required",
+      "expectation": "Meet RBI, SEBI, IRDAI and CERT-In cyber requirements and inspections",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-architecture",
+      "importance": "required",
+      "expectation": "Set security architecture standards for cloud, identity and networks",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Lead response to major cyber incidents and regulator reporting",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Run the ISMS against ISO 27001 and NIST CSF",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "required",
+      "expectation": "Brief the board and risk committee on cyber risk",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Build and lead the security organisation",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with the CTO, CRO, business heads and regulators",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "nice_to_have",
+      "expectation": "Oversee vendor and cloud security risk",
+      "postingShare": null
+    },
+    {
+      "skillId": "cyber-risk-quantification",
+      "importance": "nice_to_have",
+      "expectation": "Show cyber risk as likely loss",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-continuity",
+      "importance": "nice_to_have",
+      "expectation": "Oversee cyber resilience and recovery",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Work with the DPO on the DPDP Act",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Plan and defend the security budget",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "cissp",
+      "importance": "recommended",
+      "why": "Indian bank and insurer CISO adverts ask for CISSP."
+    },
+    {
+      "certId": "cism",
+      "importance": "recommended",
+      "why": "Common for security leaders."
+    },
+    {
+      "certId": "cisa",
+      "importance": "optional",
+      "why": "Some adverts ask for CISA as well."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and regulator notices on 2026-11-04. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

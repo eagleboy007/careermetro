@@ -1,0 +1,116 @@
+{
+  "slug": "chief-risk-officer",
+  "title": "Chief Risk Officer (CRO)",
+  "summary": "A chief risk officer leads all risk management in a bank, NBFC, insurer or large fintech. They set the risk appetite with the board, oversee credit, market, operational, fraud and cyber risk, challenge risky business decisions, and report to the board's risk management committee. RBI requires larger NBFCs and banks to have an independent CRO.",
+  "dailyDuties": [
+    "Set and monitor the risk appetite and limits with the board",
+    "Review large credit decisions and portfolio trends",
+    "Oversee operational, fraud, cyber and market risk teams",
+    "Report to the board risk management committee",
+    "Handle RBI inspections, ICAAP and stress tests",
+    "Challenge new products and growth plans on risk"
+  ],
+  "typicalTitles": [
+    "Chief Risk Officer",
+    "CRO",
+    "Head of Risk",
+    "Head - Risk Management",
+    "Chief Risk Manager",
+    "Group Chief Risk Officer",
+    "Deputy Chief Risk Officer"
+  ],
+  "experienceBand": {
+    "minYears": 15,
+    "maxYears": 25
+  },
+  "skills": [
+    {
+      "skillId": "enterprise-risk-management",
+      "importance": "required",
+      "expectation": "Run the enterprise risk framework and risk appetite",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-risk-modelling",
+      "importance": "required",
+      "expectation": "Oversee credit risk measurement and portfolio limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "operational-risk-management",
+      "importance": "required",
+      "expectation": "Oversee operational risk and resilience",
+      "postingShare": null
+    },
+    {
+      "skillId": "rbi-regulatory-framework",
+      "importance": "required",
+      "expectation": "Meet RBI rules on risk management, capital and the CRO role",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-portfolio-monitoring",
+      "importance": "required",
+      "expectation": "Watch portfolio quality, concentration and early warnings",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "required",
+      "expectation": "Report to the board risk management committee",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead the credit, market, operational and fraud risk teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Challenge the CEO and business heads on risk-taking",
+      "postingShare": null
+    },
+    {
+      "skillId": "market-risk-pnl",
+      "importance": "nice_to_have",
+      "expectation": "Oversee market and liquidity risk where the firm trades",
+      "postingShare": null
+    },
+    {
+      "skillId": "fraud-case-investigation",
+      "importance": "nice_to_have",
+      "expectation": "Oversee fraud risk management",
+      "postingShare": null
+    },
+    {
+      "skillId": "cyber-risk-quantification",
+      "importance": "nice_to_have",
+      "expectation": "Bring cyber risk into the enterprise view",
+      "postingShare": null
+    },
+    {
+      "skillId": "irdai-regulations",
+      "importance": "nice_to_have",
+      "expectation": "Apply IRDAI rules in insurers",
+      "postingShare": null
+    },
+    {
+      "skillId": "financial-statement-analysis",
+      "importance": "nice_to_have",
+      "expectation": "Read the firm's and borrowers' financials",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and regulator notices on 2026-11-04. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

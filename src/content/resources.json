@@ -308,7 +308,8 @@
     "skillIds": [
       "compliance-frameworks",
       "security-policies",
-      "risk-assessment"
+      "risk-assessment",
+      "security-program-leadership"
     ],
     "minutes": 180,
     "free": true
@@ -1736,7 +1737,8 @@
     "provider": "NIST",
     "kind": "docs",
     "skillIds": [
-      "risk-assessment"
+      "risk-assessment",
+      "cyber-risk-quantification"
     ],
     "minutes": 180,
     "free": true
@@ -3077,7 +3079,8 @@
     "provider": "CERT-In, Government of India",
     "kind": "docs",
     "skillIds": [
-      "data-breach-response"
+      "data-breach-response",
+      "india-cyber-regulations"
     ],
     "minutes": 60,
     "free": true
@@ -11655,7 +11658,8 @@
     "provider": "NIST",
     "kind": "docs",
     "skillIds": [
-      "responsible-ai-governance"
+      "responsible-ai-governance",
+      "ai-strategy-portfolio"
     ],
     "minutes": 120,
     "free": true
@@ -33875,6 +33879,302 @@
       "payment-systems-domain"
     ],
     "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "Revisions to the principles for the sound management of operational risk",
+    "url": "https://www.bis.org/bcbs/publ/d515.htm",
+    "provider": "Basel Committee (BIS)",
+    "kind": "docs",
+    "skillIds": [
+      "operational-risk-management"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "FSI summary: Principles for the sound management of operational risk",
+    "url": "https://www.bis.org/publications/fsi-summary-principles-sound-management-operational-risk-psmor-executive-summary.pdf",
+    "provider": "BIS Financial Stability Institute",
+    "kind": "docs",
+    "skillIds": [
+      "operational-risk-management"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "RBI Guidance Note on Operational Risk Management and Operational Resilience",
+    "url": "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12679&Mode=0",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "operational-risk-management",
+      "rbi-regulatory-framework",
+      "business-continuity"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "The four lines of defence model for financial institutions (FSI paper)",
+    "url": "https://www.bis.org/publications/fsi-paper-11-four-lines-defence-model-financial-institutions.pdf",
+    "provider": "BIS Financial Stability Institute",
+    "kind": "docs",
+    "skillIds": [
+      "operational-risk-management",
+      "enterprise-risk-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "What is FAIR? Cyber risk quantification",
+    "url": "https://www.fairinstitute.org/what-is-fair",
+    "provider": "FAIR Institute",
+    "kind": "docs",
+    "skillIds": [
+      "cyber-risk-quantification"
+    ],
+    "minutes": 15,
+    "free": true
+  },
+  {
+    "title": "NIST IR 8286A Rev. 1: Identifying and estimating cybersecurity risk for ERM",
+    "url": "https://csrc.nist.gov/pubs/ir/8286/a/r1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "cyber-risk-quantification",
+      "risk-assessment"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "NIST IR 8286 Rev. 1: Integrating cybersecurity and enterprise risk management",
+    "url": "https://csrc.nist.gov/pubs/ir/8286/r1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "cyber-risk-quantification",
+      "enterprise-risk-management"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "NIST IR 8286C Rev. 1: Staging cybersecurity risks for ERM and governance oversight",
+    "url": "https://csrc.nist.gov/pubs/ir/8286/c/r1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "enterprise-risk-management",
+      "board-executive-reporting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "RBI (IT Governance, Risk, Controls and Assurance Practices) Directions, 2023",
+    "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=12562&Mode=0",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "india-cyber-regulations",
+      "security-program-leadership"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "RBI circular: Cyber Security Framework in Banks (2016)",
+    "url": "https://www.rbi.org.in/commonman/english/scripts/Notification.aspx?Id=1721",
+    "provider": "Reserve Bank of India",
+    "kind": "docs",
+    "skillIds": [
+      "india-cyber-regulations"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "SEBI Cybersecurity and Cyber Resilience Framework (CSCRF) for regulated entities",
+    "url": "https://www.sebi.gov.in/legal/circulars/aug-2024/cybersecurity-and-cyber-resilience-framework-cscrf-for-sebi-regulated-entities-res-_85964.html",
+    "provider": "SEBI",
+    "kind": "docs",
+    "skillIds": [
+      "india-cyber-regulations"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "FSB Principles for an Effective Risk Appetite Framework",
+    "url": "https://www.fsb.org/uploads/r_131118.pdf",
+    "provider": "Financial Stability Board",
+    "kind": "docs",
+    "skillIds": [
+      "enterprise-risk-management"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "Basel corporate governance principles: risk management function and CRO",
+    "url": "https://www.bis.org/committees/bcbs/basel-consolidated-guidelines/module/cgo/10",
+    "provider": "Basel Committee (BIS)",
+    "kind": "docs",
+    "skillIds": [
+      "enterprise-risk-management",
+      "board-executive-reporting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "COSO ERM Framework",
+    "url": "https://www.coso.org/erm-framework",
+    "provider": "COSO",
+    "kind": "docs",
+    "skillIds": [
+      "enterprise-risk-management"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Cyber Security Toolkit for Boards",
+    "url": "https://www.ncsc.gov.uk/collection/board-toolkit",
+    "provider": "UK NCSC",
+    "kind": "docs",
+    "skillIds": [
+      "board-executive-reporting",
+      "security-program-leadership"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Board Toolkit: questions for the board to ask about cyber security",
+    "url": "https://www.ncsc.gov.uk/sites/default/files/documents/NCSC-Cyber-Security-Toolkit-For-Boards-full-question-set.pdf",
+    "provider": "UK NCSC",
+    "kind": "docs",
+    "skillIds": [
+      "board-executive-reporting",
+      "security-program-leadership"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Technology Strategy (MIT 15.912)",
+    "url": "https://ocw.mit.edu/courses/15-912-technology-strategy-fall-2008/",
+    "provider": "MIT OpenCourseWare",
+    "kind": "course",
+    "skillIds": [
+      "technology-strategy"
+    ],
+    "minutes": 600,
+    "free": true
+  },
+  {
+    "title": "An Overview of the AWS Cloud Adoption Framework",
+    "url": "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/welcome.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "technology-strategy"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Cloud Adoption Framework for Azure: overview",
+    "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/overview",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "technology-strategy"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "AWS CAF: Business Perspective",
+    "url": "https://docs.aws.amazon.com/pdfs/whitepapers/latest/aws-caf-business-perspective/aws-caf-business-perspective.pdf",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "technology-strategy"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-100 Rev. 1 (draft): Information Security Handbook, a guide for executive leadership",
+    "url": "https://csrc.nist.gov/pubs/sp/800/100/r1/ipd",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "security-program-leadership"
+    ],
+    "minutes": 120,
+    "free": true
+  },
+  {
+    "title": "Information Security Guide for Government Executives (NIST IR 7359)",
+    "url": "https://csrc.nist.gov/files/pubs/ir/7359/final/docs/csd_execguide-booklet.pdf",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "security-program-leadership"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "AI strategy: guidance to set your organisation's AI strategy",
+    "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/ai/strategy",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "ai-strategy-portfolio"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Establish an AI Center of Excellence",
+    "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ai/center-of-excellence",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "ai-strategy-portfolio"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "AWS Cloud Adoption Framework for AI, ML and generative AI",
+    "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-caf-for-ai/aws-caf-for-ai.html",
+    "provider": "AWS",
+    "kind": "docs",
+    "skillIds": [
+      "ai-strategy-portfolio"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "AI Transformation Playbook",
+    "url": "https://landing.ai/wp-content/uploads/2020/05/LandingAI_Transformation_Playbook_11-19.pdf",
+    "provider": "LandingAI",
+    "kind": "docs",
+    "skillIds": [
+      "ai-strategy-portfolio"
+    ],
+    "minutes": 30,
     "free": true
   }
 ]

@@ -1,0 +1,53 @@
+{
+  "id": "operational-risk-manager-mid",
+  "roleSlug": "operational-risk-manager",
+  "persona": "mid",
+  "resumeText": "Rahul Deshmukh | Mumbai | rahul.deshmukh@example.com\n\nSUMMARY\nOperational risk manager with 11 years in banking operations and second-line risk.\n\nEXPERIENCE\nOperational Risk Manager, Western Coast Bank, Mumbai (2020 - present)\n- Own the RCSA, loss data and KRI framework for retail and operations.\n- Set KRI thresholds under the bank's risk appetite framework and escalate breaches.\n- Implemented the RBI master direction requirements and guidance on operational resilience across operations.\n- Oversee BCP testing for critical operations and review recovery results.\n- Review outsourcing and vendor risk for collection agencies and IT vendors.\n- Review results of internal controls testing from the first line and audit.\n- Present operational risk to the risk management committee each quarter through board reporting packs.\n- Managed a team of 5 operational risk analysts.\n- Use stakeholder communication to challenge business heads on overdue actions.\n\nOperations Risk Officer, Western Coast Bank, Mumbai (2015 - 2020)\n- Investigated loss events and ran root-cause reviews.\n\nEDUCATION\nMBA Finance, Mumbai University, 2015\n",
+  "expected": {
+    "totalYearsExperience": 11,
+    "skills": [
+      {
+        "skillId": "operational-risk-management",
+        "quote": "Own the RCSA, loss data and KRI framework"
+      },
+      {
+        "skillId": "enterprise-risk-management",
+        "quote": "under the bank's risk appetite framework"
+      },
+      {
+        "skillId": "rbi-regulatory-framework",
+        "quote": "Implemented the RBI master direction requirements"
+      },
+      {
+        "skillId": "business-continuity",
+        "quote": "Oversee BCP testing for critical operations"
+      },
+      {
+        "skillId": "third-party-risk",
+        "quote": "Review outsourcing and vendor risk"
+      },
+      {
+        "skillId": "internal-controls-testing",
+        "quote": "Review results of internal controls testing"
+      },
+      {
+        "skillId": "board-executive-reporting",
+        "quote": "through board reporting packs"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 5 operational risk analysts"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication to challenge business heads"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "fraud-case-investigation",
+      "data-visualization"
+    ]
+  },
+  "reviewedBy": null
+}

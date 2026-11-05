@@ -1,0 +1,132 @@
+{
+  "slug": "cyber-risk-manager",
+  "title": "Cyber Risk Manager",
+  "summary": "Cyber risk managers run the second-line view of technology and cyber risk. They set how risks are assessed, lead RCSAs across units, challenge security and IT owners on gaps, track remediation and report the firm's cyber risk to senior management and the risk committee. Most work in banks, insurers, payments firms and global capability centres.",
+  "dailyDuties": [
+    "Set the method and calendar for technology risk assessments",
+    "Lead RCSAs and review the ratings analysts propose",
+    "Challenge remediation plans and escalate overdue issues",
+    "Review major cyber incidents and vendor risks for critical services",
+    "Track regulator rules and inspection findings to closure",
+    "Present cyber risk and KRIs to senior management and the risk committee"
+  ],
+  "typicalTitles": [
+    "Technology Risk Manager",
+    "Manager - Technology Risk Management",
+    "Cyber Risk Lead",
+    "Information and Cyber Risk Manager",
+    "Technology and Cyber Risk Manager",
+    "ICT Risk Manager",
+    "Lead Technology Risk Manager"
+  ],
+  "experienceBand": {
+    "minYears": 7,
+    "maxYears": 14
+  },
+  "skills": [
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Own the technology and cyber risk assessment method and its results",
+      "postingShare": null
+    },
+    {
+      "skillId": "operational-risk-management",
+      "importance": "required",
+      "expectation": "Lead RCSA, KRIs and issue management for technology across units or countries",
+      "postingShare": null
+    },
+    {
+      "skillId": "cyber-risk-quantification",
+      "importance": "required",
+      "expectation": "Express top cyber risks as likely loss so leaders can compare them",
+      "postingShare": null
+    },
+    {
+      "skillId": "india-cyber-regulations",
+      "importance": "required",
+      "expectation": "Keep the firm aligned with RBI, SEBI and CERT-In cyber rules and inspections",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "required",
+      "expectation": "Oversee cloud and vendor risk for critical services",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Use NIST CSF and ISO 27001 as the control baseline",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "required",
+      "expectation": "Report cyber risk to the risk committee in business terms",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead a small team of risk analysts",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Challenge technology and business owners on risk and remediation",
+      "postingShare": null
+    },
+    {
+      "skillId": "enterprise-risk-management",
+      "importance": "nice_to_have",
+      "expectation": "Link cyber risk to the firm's risk appetite",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-continuity",
+      "importance": "nice_to_have",
+      "expectation": "Review resilience and recovery testing for critical services",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "nice_to_have",
+      "expectation": "Review major incidents and their lessons",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Cover DPDP Act and privacy risks",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "crisc",
+      "importance": "recommended",
+      "why": "The certificate most technology risk manager posts ask for."
+    },
+    {
+      "certId": "cism",
+      "importance": "optional",
+      "why": "Shows security management depth."
+    },
+    {
+      "certId": "cissp",
+      "importance": "optional",
+      "why": "Often listed with CRISC and CISM."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and regulator notices on 2026-11-04. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}
