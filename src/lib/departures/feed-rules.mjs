@@ -74,6 +74,9 @@ const SENIOR_TITLES = /\b(principal|staff) (data architect|database engineer|bac
 /** Leadership titles SENIOR would drop that read only as the TR1 leadership roles (never as a lower role's rule). */
 const LEADER_TITLES = /\b(chief (information( and)? security|security|cyber ?security|risk|technology|ai|artificial intelligence) (officer|manager)|ciso|cto)\b|\bhead(,| of| -| –)? ?(ai|ai\/ml|ml\/ai|artificial intelligence|gen ?ai|generative ai|machine learning|information security|cyber ?security|(enterprise )?risk|technology)\b|\bdirector(,| of| -| –)? ?(ai|artificial intelligence|gen ?ai|generative ai)\b|\b(ai|gen ?ai) engineering director\b|\b((s|e)?vp|(senior |executive )?vice president),? ?(of )?[-–]? ?(engineering|information security|cyber ?security)\b/i;
 const LEADERS = new Set(["ciso", "head-of-ai", "chief-risk-officer", "cto"]);
+/** Hotel roles a post's own text can rule out: a hospital's, clinic's or airport's housekeeping or guest relations post (T183). */
+const HOTEL_ROLES = new Set(["housekeeping-supervisor", "front-office-executive-hotel"]);
+const NOT_A_HOTEL = /\b(hospitals?|clinics?|patients?|nursing|wards?|airport (terminals?|operations)|airlines?)\b/i;
 // Order matters: the first matching role wins, so a narrower role comes before the broader one that would also match
 // ("Cloud security engineer" before security, "SRE" and "Cloud engineer" before DevOps, "React Native" before front end).
 export const ROLE_TITLES = {
@@ -684,7 +687,7 @@ export const ROLE_TITLES = {
   // Hotel and restaurant service supervisors, never food production, food safety, food tech or delivery ones.
   "food-beverage-executive": /^(?!.*\b(software|developer|engineer|it|data|marketing|production|processing|quality|qa|qc|plant|safety|technologist|delivery|controller|purchase)\b)((senior|sr\.?|junior|jr\.?|trainee|assistant|outlet) )*((f ?& ?b|f and b|food (and|&) beverages?|fnb)( service)? (supervisor|executive|associate|captain|team leader|officer)|(restaurant|banquets?|in-room dining|ird|bar|outlet) (supervisor|captain)|captain,? ?[-–]? ?(f ?& ?b|food (and|&) beverages?( service)?|restaurant|banquets?)|restaurant manager\b.*\b(hotels?|resorts?))\b/i,
   "hotel-revenue-manager": /^(?!.*\b(software|developer|engineer|rcm|healthcare|medical|hospitals?|accounts?|finance|airlines?|aviation|saas)\b)(?=.*\b(hotels?|resorts?|hospitality|rooms)\b)((senior|sr\.?|junior|jr\.?|assistant|associate|cluster|area) )*((distribution (and|&) )?revenue( (and|&) distribution)? (manager|management (executive|analyst|associate|manager)|analyst|executive)|(hotel|rooms) revenue (manager|analyst|executive))\b/i,
-  "housekeeping-supervisor": /^(?!.*\b(software|developer|engineer|it|data|executive housekeeper)\b)((senior|sr\.?|junior|jr\.?|trainee) )*(house ?keeping (supervisor|executive|team lead(er)?|coordinator|incharge|in-charge|captain|officer)|executive,? ?[-–]? ?house ?keeping|(public area|linen( room)?|laundry|uniform room) supervisor|floor supervisor,? ?[-–]? ?(house ?keeping|hotels?|resorts?)|(deputy|assistant) housekeeper)\b/i,
+  "housekeeping-supervisor": /^(?!.*\b(software|developer|engineer|it|data|executive housekeeper|hospitals?|clinics?|healthcare|medical|patients?|airports?|aviation|facility|facilities|fm)\b)((senior|sr\.?|junior|jr\.?|trainee) )*(house ?keeping (supervisor|executive|team lead(er)?|coordinator|incharge|in-charge|captain|officer)|executive,? ?[-–]? ?house ?keeping|(public area|linen( room)?|laundry|uniform room) supervisor|floor supervisor,? ?[-–]? ?(house ?keeping|hotels?|resorts?)|(deputy|assistant) housekeeper)\b/i,
   // Tech batch TG2, after every other rule so none of them moves. Payments fraud and chargeback titles, never a data
   // scientist, engineer, AML, insurance claims, forensic or plain "Risk Analyst" one.
   "fraud-analyst": /^(?!.*\b(scientist|engineer|developer|software|data science|machine learning|aml|kyc|insurance|claims?|forensics?)\b)(.*\bfraud\b.*\b(analyst|investigator|specialist|associate|executive|officer)\b|.*\b(chargebacks?|payment disputes?|card disputes?|payment risk|transaction risk) (analyst|specialist|associate|executive)\b|.*\brisk investigator\b)/i,
@@ -756,6 +759,7 @@ export function classify(/** @type {string} */ title, /** @type {string} */ text
     if (outOfScope && !SALES_OK.has(slug)) continue;
     if (leaderOnly && !LEADERS.has(slug)) continue;
     if (!re.test(title)) continue;
+    if (HOTEL_ROLES.has(slug) && NOT_A_HOTEL.test(text)) continue;
     if (!MANAGER_OK.has(slug) && /\bmanager\b/i.test(title)) continue;
     if (TEST_ROLES.has(slug) && NOT_SOFTWARE.test(title)) continue;
     if (slug === "java-backend-developer" && !/\bjava\b/i.test(title + " " + text) && !/\b(spring|j2ee)\b/i.test(title)) continue;

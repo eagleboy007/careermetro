@@ -1783,7 +1783,12 @@ describe("feed rules", () => {
       ["Head of Revenue Management - Hotels", null],
       ["Housekeeping Supervisor", "housekeeping-supervisor"],
       ["Laundry Supervisor", "housekeeping-supervisor"],
-      ["Housekeeping Supervisor - Hospital", "housekeeping-supervisor"],
+      // T183: a hospital's, airport's or facility firm's housekeeping is not the hotel role.
+      ["Housekeeping Supervisor - Hospital", null],
+      ["Housekeeping Supervisor (Healthcare)", null],
+      ["Floor Supervisor - Housekeeping, Apollo Hospitals", null],
+      ["Housekeeping Supervisor - Airport", null],
+      ["Housekeeping Supervisor - Facility Management", null],
       ["Executive Housekeeper", null],
       ["Floor Supervisor", null],
       ["Housekeeping Manager", null],
@@ -2256,6 +2261,13 @@ describe("feed rules", () => {
       ["CRO", "Own conversion rate optimisation and landing pages.", null],
       ["CRO Specialist", "Run A/B tests on landing pages for our bank's app.", null],
       ["CRO", "Manage the CRO relationship for clinical trials at our bank.", null],
+      // T183: a bare hotel title whose post names a hospital, its wards or an airport terminal is not the hotel role.
+      ["Housekeeping Supervisor", "Supervise housekeeping on the hospital wards. Apollo Hospitals", null],
+      ["Housekeeping Executive", "Keep the airport terminal clean across shifts.", null],
+      ["Guest Relations Executive", "Welcome patients and families at our hospital.", null],
+      ["Housekeeping Supervisor", "Supervise room attendants across 200 rooms at our resort. Accor", "housekeeping-supervisor"],
+      ["Housekeeping Executive", "Rooms division of our hotel, with airport transfers for guests. Radisson Hotel Group", "housekeeping-supervisor"],
+      ["Guest Relations Executive", "Welcome guests at our hotel lobby.", "front-office-executive-hotel"],
       // Never a bare seniority title or an account manager, whatever the text says.
       ["Director", hotel, null],
       ["Staff Engineer", "Field sales tools for our merchants.", null],
