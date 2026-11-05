@@ -279,17 +279,6 @@
     "free": true
   },
   {
-    "title": "Purdue Online Writing Lab",
-    "url": "https://owl.purdue.edu/owl/purdue_owl.html",
-    "provider": "Purdue OWL",
-    "kind": "docs",
-    "skillIds": [
-      "communication"
-    ],
-    "minutes": 120,
-    "free": true
-  },
-  {
     "title": "Technical Writing courses",
     "url": "https://developers.google.com/tech-writing",
     "provider": "Google for Developers",

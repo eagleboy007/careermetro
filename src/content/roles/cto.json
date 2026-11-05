@@ -73,15 +73,15 @@
       "postingShare": null
     },
     {
-      "skillId": "security-program-leadership",
-      "importance": "nice_to_have",
-      "expectation": "Work with the CISO on security strategy",
+      "skillId": "it-vendor-management",
+      "importance": "required",
+      "expectation": "Manage large technology vendors",
       "postingShare": null
     },
     {
-      "skillId": "it-vendor-management",
+      "skillId": "security-program-leadership",
       "importance": "nice_to_have",
-      "expectation": "Manage large technology vendors",
+      "expectation": "Work with the CISO on security strategy",
       "postingShare": null
     },
     {

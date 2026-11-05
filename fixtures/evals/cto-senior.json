@@ -39,7 +39,12 @@
         "quote": "Drive cross-functional collaboration with product"
       }
     ],
-    "gaps": [],
+    "gaps": [
+      {
+        "skillId": "it-vendor-management",
+        "status": "missing"
+      }
+    ],
     "mustNotClaim": [
       "security-program-leadership",
       "ai-strategy-portfolio",

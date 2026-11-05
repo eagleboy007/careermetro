@@ -55,6 +55,7 @@ export const SIGN_OFF = [
   { ref: "ev-powertrain-engineer#skill:powertrain-dyno-testing", note: "Skill name shortened to Powertrain dyno and vehicle testing (drafted Powertrain dynamometer and vehicle testing, 83 characters): skill names show in fields capped at 80 characters." },
   { ref: "head-of-ai#title", note: "Thin evidence, needs an expert's sign-off before it is trusted: no India employer post for Head of AI on the allowed sources, so the profile rests on global posts and Microsoft and AWS guidance. \"Chief AI Officer\" sits here because India has few such posts." },
   { ref: "chief-risk-officer#title", note: "Thin evidence, needs an expert's sign-off before it is trusted: drafted from NABARD's CRO notice, the Basel principles and the RBI CRO rule, not employer posts. Credit risk modelling is required because most Indian CROs come from lending; an insurer's CRO would have it as nice to have." },
+  { ref: "cto#skill:it-vendor-management", note: "Required (was Nice to have): with people skills set aside, the draft had four skills a resume can be scored on, below the five every role keeps. CTOs in Indian companies own the large technology vendor contracts." },
   { ref: "grc-manager#titles", note: "\"IT Risk Manager\" and \"Cyber Risk Manager\" removed: they are now the Cyber Risk Manager profile (batch TR1)." },
   { ref: "information-security-analyst#titles", note: "\"IT Risk Analyst\" and \"Cyber Risk Analyst\" removed: they are now the Cyber Risk Analyst profile (batch TR1)." },
 ];

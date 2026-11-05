@@ -404,8 +404,9 @@ cto#skill:engineering-hiring,Chief Technology Officer (CTO),Skill: Required,Hiri
 cto#skill:spend-forecasting,Chief Technology Officer (CTO),Skill: Required,Budgeting and spend forecasting,Plan and control the technology budget,,,
 cto#skill:board-executive-reporting,Chief Technology Officer (CTO),Skill: Required,Board and executive committee reporting,"Report technology plans, risk and spend to the board",,,
 cto#skill:stakeholder-management,Chief Technology Officer (CTO),Skill: Required,Stakeholder management,"Work with the CEO, product and business heads",,,
+cto#skill:it-vendor-management,Chief Technology Officer (CTO),Skill: Required,IT vendor and contract management,"Manage large technology vendors
+Changed since the draft, awaiting your sign-off: Required (was Nice to have): with people skills set aside, the draft had four skills a resume can be scored on, below the five every role keeps. CTOs in Indian companies own the large technology vendor contracts.",,,
 cto#skill:security-program-leadership,Chief Technology Officer (CTO),Skill: Nice to have,Security strategy and programme leadership,Work with the CISO on security strategy,,,
-cto#skill:it-vendor-management,Chief Technology Officer (CTO),Skill: Nice to have,IT vendor and contract management,Manage large technology vendors,,,
 cto#skill:cloud-cost,Chief Technology Officer (CTO),Skill: Nice to have,Cloud cost management (FinOps),Control cloud spend,,,
 cto#skill:ai-strategy-portfolio,Chief Technology Officer (CTO),Skill: Nice to have,AI strategy and use-case portfolio,Decide where AI fits in the product,,,
 cto#skill:incident-management,Chief Technology Officer (CTO),Skill: Nice to have,Incident management and on-call,Own reliability and major outages,,,
