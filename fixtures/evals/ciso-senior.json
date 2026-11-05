@@ -1,0 +1,54 @@
+{
+  "id": "ciso-senior",
+  "roleSlug": "ciso",
+  "persona": "senior",
+  "resumeText": "Vikram Joshi | Mumbai | vikram.joshi@example.com\n\nSUMMARY\nSecurity leader with 18 years in security operations, architecture and governance in banking and insurance.\n\nEXPERIENCE\nHead of Information Security, Arabian Sea General Insurance, Mumbai (2019 - present)\n- Wrote and run the information security strategy and three-year security roadmap.\n- Own the cyber risk register and approve risk treatment plans.\n- Led the programme to meet IRDAI information and cyber security guidelines and CERT-In directions.\n- Set zero trust and enterprise security architecture standards for cloud and identity.\n- Led incident response for two major incidents and reported them to CERT-In within six hours.\n- Run the ISMS and keep ISO 27001 certification across all offices.\n- Brief the board risk committee every quarter on cyber risk.\n- Managed a team of 30 across SOC, security engineering and GRC.\n- Use stakeholder communication with the CTO, CRO and regulators.\n\nSecurity Architect, Lakeview Bank, Mumbai (2012 - 2019)\n- Designed network and identity security for core banking.\n\nSecurity Engineer, Konkan Infotech, Pune (2008 - 2012)\n\nCERTIFICATIONS\nCISSP, CISM\n\nEDUCATION\nBE Electronics, VJTI Mumbai, 2008\n",
+  "expected": {
+    "totalYearsExperience": 18,
+    "skills": [
+      {
+        "skillId": "security-program-leadership",
+        "quote": "Wrote and run the information security strategy"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Own the cyber risk register"
+      },
+      {
+        "skillId": "india-cyber-regulations",
+        "quote": "IRDAI information and cyber security guidelines and CERT-In directions"
+      },
+      {
+        "skillId": "security-architecture",
+        "quote": "Set zero trust and enterprise security architecture standards"
+      },
+      {
+        "skillId": "security-incident-response",
+        "quote": "Led incident response for two major incidents"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "keep ISO 27001 certification"
+      },
+      {
+        "skillId": "board-executive-reporting",
+        "quote": "Brief the board risk committee every quarter"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 30"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication with the CTO"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "cyber-risk-quantification",
+      "spend-forecasting",
+      "data-privacy"
+    ]
+  },
+  "reviewedBy": null
+}

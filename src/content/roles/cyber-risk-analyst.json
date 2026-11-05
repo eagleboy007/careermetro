@@ -1,0 +1,126 @@
+{
+  "slug": "cyber-risk-analyst",
+  "title": "Cyber Risk Analyst",
+  "summary": "Cyber risk analysts find, rate and track technology and cyber risks for a bank, insurer, payments firm or large company. They sit in the technology risk or second-line risk team, run risk and control self-assessments, test controls, and report open issues and key risk indicators to the risk manager.",
+  "dailyDuties": [
+    "Run risk and control self-assessments with technology and security teams",
+    "Rate new risks and keep the technology risk register up to date",
+    "Test key controls and record evidence and gaps",
+    "Track issues and remediation plans to closure",
+    "Check incidents and new rules (RBI, SEBI, CERT-In) for risk impact",
+    "Prepare monthly KRI and issue reports for the risk manager"
+  ],
+  "typicalTitles": [
+    "Technology Risk Analyst",
+    "Technology Risk and Controls Analyst",
+    "Cyber Risk and Controls Analyst",
+    "Information Risk Analyst",
+    "Technology Risk Associate",
+    "Cyber Risk Associate",
+    "Senior Technology Risk Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 2,
+    "maxYears": 6
+  },
+  "skills": [
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Run technology and cyber risk assessments and keep the risk register current",
+      "postingShare": null
+    },
+    {
+      "skillId": "operational-risk-management",
+      "importance": "required",
+      "expectation": "Support RCSA for technology processes and track KRIs and issues",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Map controls to ISO 27001, NIST CSF and the regulator's rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "internal-controls-testing",
+      "importance": "required",
+      "expectation": "Test the design and working of technology and security controls",
+      "postingShare": null
+    },
+    {
+      "skillId": "india-cyber-regulations",
+      "importance": "required",
+      "expectation": "Know the RBI IT and cyber directions, SEBI CSCRF and CERT-In reporting rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Build risk registers, KRI trackers and issue logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear risk findings and follow up with technology owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "nice_to_have",
+      "expectation": "Assess vendor and cloud provider risk",
+      "postingShare": null
+    },
+    {
+      "skillId": "cyber-risk-quantification",
+      "importance": "nice_to_have",
+      "expectation": "Estimate loss exposure for top cyber scenarios",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-policies",
+      "importance": "nice_to_have",
+      "expectation": "Review security policies and exceptions",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Work within bank or payments regulation",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Build risk dashboards for managers",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "crisc",
+      "importance": "optional",
+      "why": "Banks and payments firms list CRISC for technology risk roles."
+    },
+    {
+      "certId": "isc2-cc",
+      "importance": "optional",
+      "why": "An entry security certificate that shows the basics."
+    },
+    {
+      "certId": "iso27001-lead-auditor",
+      "importance": "optional",
+      "why": "Useful where the role tests ISO 27001 controls."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and regulator notices on 2026-11-04. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

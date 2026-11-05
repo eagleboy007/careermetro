@@ -30,7 +30,7 @@ const IMPORTANCE = { required: "Required", nice_to_have: "Nice to have" };
 
 /**
  * Changes Development made to a drafted role after an eval showed a problem, or when a new profile took over some of its
- * titles (F0, F1, TG1, B5, TG2, TG3 and TG4, 2026-10-31). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
+ * titles (F0, F1, TG1, B5, TG2, TG3 and TG4, 2026-10-31; TR1, 2026-11-05). Each one waits for the field's reviewer: the line's Detail says what changed and why. Remove an entry once the role is reviewed.
  */
 export const SIGN_OFF = [
   { ref: "export-import-executive#years", note: "Starts at 1 year (was 2): EXIM and export documentation executives are commonly hired at 0-2 years." },
@@ -53,6 +53,11 @@ export const SIGN_OFF = [
   { ref: "marketing-automation-specialist#title", note: "Grouped with data and analytics roles (drafted under marketing): no live marketing role asks for its CRM, segmentation and SQL skills, so its resume's nearest roles are data scientist and analytics roles." },
   { ref: "ev-powertrain-engineer#skill:electrical-machines-transformers", note: "The live Electrical machines and transformers skill (drafted as Traction and drive motors, electric-machines, which TG3 folded into the live skill): it already holds the PMSM, BLDC and IPM motor phrases." },
   { ref: "ev-powertrain-engineer#skill:powertrain-dyno-testing", note: "Skill name shortened to Powertrain dyno and vehicle testing (drafted Powertrain dynamometer and vehicle testing, 83 characters): skill names show in fields capped at 80 characters." },
+  { ref: "head-of-ai#title", note: "Thin evidence, needs an expert's sign-off before it is trusted: no India employer post for Head of AI on the allowed sources, so the profile rests on global posts and Microsoft and AWS guidance. \"Chief AI Officer\" sits here because India has few such posts." },
+  { ref: "chief-risk-officer#title", note: "Thin evidence, needs an expert's sign-off before it is trusted: drafted from NABARD's CRO notice, the Basel principles and the RBI CRO rule, not employer posts. Credit risk modelling is required because most Indian CROs come from lending; an insurer's CRO would have it as nice to have." },
+  { ref: "cto#skill:it-vendor-management", note: "Required (was Nice to have): with people skills set aside, the draft had four skills a resume can be scored on, below the five every role keeps. CTOs in Indian companies own the large technology vendor contracts." },
+  { ref: "grc-manager#titles", note: "\"IT Risk Manager\" and \"Cyber Risk Manager\" removed: they are now the Cyber Risk Manager profile (batch TR1)." },
+  { ref: "information-security-analyst#titles", note: "\"IT Risk Analyst\" and \"Cyber Risk Analyst\" removed: they are now the Cyber Risk Analyst profile (batch TR1)." },
 ];
 const signOffNote = new Map(SIGN_OFF.map((c) => [c.ref, c.note]));
 

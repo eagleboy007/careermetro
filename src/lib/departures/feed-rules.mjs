@@ -71,9 +71,23 @@ const NOT_IN_SCOPE = /\b(counsel|attorney|legal|paralegal|sales|account executiv
 const SENIOR = /\b(director|head of|vice president|vp|principal|(?<!technical )staff|chief|intern|internship)\b/i;
 // The principal, staff and head-of titles that a senior role is built for, so they read as it rather than being dropped.
 const SENIOR_TITLES = /\b(principal|staff) (data architect|database engineer|back[- ]?end (engineer|developer)|front[- ]?end (engineer|developer)|data scientist|technical program(me)? manager)\b|\bhead of (engineering|grc|security operations|soc)\b|\bdirector of engineering\b|\bengineering director\b/i;
+/** Leadership titles SENIOR would drop that read only as the TR1 leadership roles (never as a lower role's rule). */
+const LEADER_TITLES = /\b(chief (information( and)? security|security|cyber ?security|risk|technology|ai|artificial intelligence) (officer|manager)|ciso|cto)\b|\bhead(,| of| -| –)? ?(ai|ai\/ml|ml\/ai|artificial intelligence|gen ?ai|generative ai|machine learning|information security|cyber ?security|(enterprise )?risk|technology)\b|\bdirector(,| of| -| –)? ?(ai|artificial intelligence|gen ?ai|generative ai)\b|\b(ai|gen ?ai) engineering director\b|\b((s|e)?vp|(senior |executive )?vice president),? ?(of )?[-–]? ?(engineering|information security|cyber ?security)\b/i;
+const LEADERS = new Set(["ciso", "head-of-ai", "chief-risk-officer", "cto"]);
 // Order matters: the first matching role wins, so a narrower role comes before the broader one that would also match
 // ("Cloud security engineer" before security, "SRE" and "Cloud engineer" before DevOps, "React Native" before front end).
 export const ROLE_TITLES = {
+  // Batch TR1 (2026-11-05): four leadership roles, let past SENIOR by SENIOR_TITLES, then four risk roles. First, so the
+  // broader security, GRC and engineering manager rules can't take their titles. Generic director, head and VP titles
+  // stay out: each rule names the function.
+  "ciso": /^(?!.*\b(operations|soc|architect\w*|compliance|audit|sales|pre-?sales|engineering|engineer)\b)(((deputy|group|associate|assistant) )?(ciso|chief information( and)? security officer|chief (cyber ?security|security) officer)|head(,| of| -| –)? ?(information|cyber) ?security|((s|e)?vp|(senior |executive )?vice president),? ?(of )?[-–]? ?(information|cyber) ?security)\b/i,
+  "head-of-ai": /^(?!.*\b(sales|marketing|products?|policy|legal|annotation|content|recruit\w*)\b)(head(,| of| -| –)? ?(ai|ai\/ml|ml\/ai|artificial intelligence|gen ?ai|generative ai|machine learning)( (and|&) (ml|machine learning|data science))?( engineering)?|director(,| of| -| –)? ?(ai|artificial intelligence|gen ?ai|generative ai)( engineering)?|(ai|gen ?ai) engineering director|chief (ai|artificial intelligence) officer|caio)\b/i,
+  "chief-risk-officer": /^(((deputy|group|associate) )?chief risk (officer|manager)|head(,| of| -| –)? ?(enterprise )?risk( management)?(?! (analytics|operations|modell?ing|technology|engineering|data|product))|(deputy|group) cro\s*$)\b/i,
+  "cto": /^(((deputy|group|interim|fractional|associate) )?(cto|chief technology officer)\b(?!.*\b(office|architect|engineer|developer|analyst)\b)|head(,| of| -| –)? ?technology\b(?!.*\b(sales|pre-?sales|recruit\w*|risk|audit)\b)|((s|e)?vp|(senior |executive )?vice president),? ?(of )?[-–]? ?engineering\b)/i,
+  "cyber-risk-manager": /^(?!.*\b(analyst|associate)\b)((senior|sr\.?|lead|deputy|assistant|associate) )*((information (and|&) )?(cyber|it|ict|technology|information|tech)( (and|&) cyber)? risk (manager|lead)|manager,? ?[-–]? ?(cyber|it|ict|technology|information) risk( management)?)\b/i,
+  "cyber-risk-analyst": /^((senior|sr\.?|junior|jr\.?) )?(cyber|it|ict|technology|information|tech) risk( (and|&) controls?)? (analyst|associate|specialist|officer|consultant)\b/i,
+  "operational-risk-manager": /^((senior|sr\.?|lead|deputy|assistant|associate) )*(operational risk( (and|&) resilience)? (manager|lead)|manager,? ?[-–]? ?operational risk|lead risk manager,? ?[-–]? ?operational risk)\b/i,
+  "operational-risk-analyst": /^((senior|sr\.?|junior|jr\.?) )?(operational risk (analyst|associate|officer|specialist|executive)|risk (and|&) controls? analyst|(rcsa|control self[- ]assessment) analyst)\b/i,
   // A pre-sales engineer or consultant title before the security, network and cloud rules that would read the rest of
   // it ("Cyber Security Presales Engineer"); a pre-sales architect stays a solutions architect, and a plain "Sales
   // Engineer" stays out of scope.
@@ -699,7 +713,7 @@ export const ROLE_TITLES = {
   // video editor (above), and a plain "Animator" is not one.
   "motion-graphics-designer": /^(?!.*\b(software|developer|engineer|programmer|sales)\b)(.*\bmotion (graphics? )?(designer|artist|animator)\b|.*\bmotion graphics (executive|specialist|associate|lead)\b|.*\blottie (animator|designer)\b|.*\b(ui|ux|product) animator\b)/i,
 };
-const MANAGER_OK = new Set(["product-manager", "software-asset-manager", "clinical-data-manager", "marketing-automation-specialist", "regulatory-compliance-officer", "hospital-operations-executive", "food-beverage-executive", "hotel-revenue-manager", "qa-lead", "qa-manager", "ml-engineering-manager", "data-engineering-manager", "platform-engineering-manager", "delivery-manager", "it-program-manager", "it-service-delivery-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
+const MANAGER_OK = new Set(["product-manager", "cyber-risk-manager", "operational-risk-manager", "chief-risk-officer", "software-asset-manager", "clinical-data-manager", "marketing-automation-specialist", "regulatory-compliance-officer", "hospital-operations-executive", "food-beverage-executive", "hotel-revenue-manager", "qa-lead", "qa-manager", "ml-engineering-manager", "data-engineering-manager", "platform-engineering-manager", "delivery-manager", "it-program-manager", "it-service-delivery-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
 /** The business rules that may read a sales, recruiting or legal title, which NOT_IN_SCOPE drops for every other rule. */
 const SALES_OK = new Set(["corporate-legal-associate", "contract-management-specialist", "litigation-paralegal", "key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive", "medical-representative", "channel-sales-manager", "real-estate-sales-executive", "home-loan-sales-officer", "fmcg-sales-officer", "management-trainee", "field-sales-team-leader"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
@@ -718,6 +732,9 @@ const TEXT_TITLES = [
   ["front-office-executive-hotel", /^((senior|sr\.?|junior|jr\.?|trainee|assistant) )*(front office (executive|associate|assistant|agent|officer)|gsa|guest service (agent|associate|executive))\b/i, /\b(hotels?|resorts?|hospitality)\b/i, /\b(hospitals?|clinics?|patients?|airlines?|airports?)\b/i],
   ["food-beverage-executive", /^((senior|sr\.?|assistant|deputy) )*(restaurant|outlet|banquets?) manager\b/i, /\b(hotels?|resorts?|hospitality)\b/i, null],
   ["area-sales-manager", /^((senior|sr\.?|deputy|assistant) )?cluster (sales )?manager\b/i, /\b(field sales|merchant (acquisition|onboarding)|sales team|distributors?)\b/i, null],
+  // A bare "CRO" is a chief risk officer only where the post names risk or lending; it is also conversion rate
+  // optimisation in marketing and a contract research organisation in pharma.
+  ["chief-risk-officer", /^cro\b/i, /\b(risk management|enterprise risk|risk officer|banks?|nbfcs?|lending|credit risk|insur(er|ance))\b/i, /\b(conversion rate|landing pages?|a\/b tests?|clinical|trials?)\b/i],
   // A bare "Team Leader" (or one with a place or code after it) only from Paytm Payments Services (merchant field sales) or a post that names field sales.
   ["field-sales-team-leader", /^(?!.*\b(software|engineer\w*|developers?|it|technical|qa|data|customer|contact|call|voice|chat|bpo|hr|finance|accounts?|operations|ops|quality|kitchen|housekeeping|f ?& ?b)\b)((senior|sr\.?) )?team lead(er)?\s*($|[-–,(|/:])/i, /\b(field sales|merchant (acquisition|onboarding|sourcing)|soundbox|paytm payments services)\b/i, /\b(call cent(re|er)|contact cent(re|er)|voice process|inbound calls|software|developers?)\b/i],
 ];
@@ -731,11 +748,13 @@ export function classify(/** @type {string} */ title, /** @type {string} */ text
     .replace(/\b(technical|cloud) pre-?sales\b/i, "")
     .replace(/\bsales (and|&) distribution\b/i, (m) => (/\bsap\b/i.test(title) ? "" : m))
     .replace(/\b(successfactors|sap sf) (recruiting|recruitment)\b/i, "$1");
-  if (SENIOR.test(title) && !SENIOR_TITLES.test(title)) return null;
+  const leaderOnly = SENIOR.test(title) && !SENIOR_TITLES.test(title);
+  if (leaderOnly && !LEADER_TITLES.test(title)) return null;
   // A sales, recruiting or legal title reads only as a business rule built for it ("Sales Engineer" stays null).
   const outOfScope = NOT_IN_SCOPE.test(unsold);
   for (const [slug, re] of Object.entries(ROLE_TITLES)) {
     if (outOfScope && !SALES_OK.has(slug)) continue;
+    if (leaderOnly && !LEADERS.has(slug)) continue;
     if (!re.test(title)) continue;
     if (!MANAGER_OK.has(slug) && /\bmanager\b/i.test(title)) continue;
     if (TEST_ROLES.has(slug) && NOT_SOFTWARE.test(title)) continue;
@@ -744,6 +763,7 @@ export function classify(/** @type {string} */ title, /** @type {string} */ text
   }
   if (!text) return null;
   for (const [slug, re, needs, rulesOut] of TEXT_TITLES) {
+    if (leaderOnly && !LEADERS.has(slug)) continue;
     if (re.test(title) && needs.test(text) && !rulesOut?.test(text)) return slug;
   }
   return null;

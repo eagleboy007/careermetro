@@ -1,0 +1,46 @@
+{
+  "id": "operational-risk-analyst-mid",
+  "roleSlug": "operational-risk-analyst",
+  "persona": "mid",
+  "resumeText": "Sneha Rao | Chennai | sneha.rao@example.com\n\nSUMMARY\nOperational risk analyst with 3 years in an NBFC's risk team.\n\nEXPERIENCE\nOperational Risk Analyst, Coromandel Housing Finance, Chennai (2023 - present)\n- Collect and validate operational loss events and near misses from branches and operations.\n- Run RCSA workshops with collections and disbursement teams.\n- Perform tests of controls on disbursement and KYC processes and record evidence.\n- Rate process risks and keep the risk assessment for each department up to date.\n- Use fishbone analysis and 5 whys to find the root cause of repeat losses.\n- Maintain loss data and KRI trackers in Microsoft Excel.\n- Track RBI master directions for changes that affect operations.\n- Strong communication skills with branch and operations managers.\n\nOperations Executive, Coromandel Housing Finance, Chennai (2022 - 2023)\n- Checked loan files before disbursement.\n\nEDUCATION\nBCom, University of Madras, 2021\n",
+  "expected": {
+    "totalYearsExperience": 3,
+    "skills": [
+      {
+        "skillId": "operational-risk-management",
+        "quote": "Collect and validate operational loss events"
+      },
+      {
+        "skillId": "internal-controls-testing",
+        "quote": "Perform tests of controls on disbursement"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "keep the risk assessment for each department up to date"
+      },
+      {
+        "skillId": "root-cause-analysis-tools",
+        "quote": "Use fishbone analysis and 5 whys"
+      },
+      {
+        "skillId": "excel",
+        "quote": "Maintain loss data and KRI trackers in Microsoft Excel"
+      },
+      {
+        "skillId": "rbi-regulatory-framework",
+        "quote": "Track RBI master directions for changes"
+      },
+      {
+        "skillId": "communication",
+        "quote": "Strong communication skills with branch"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "business-continuity",
+      "third-party-risk",
+      "data-visualization"
+    ]
+  },
+  "reviewedBy": null
+}

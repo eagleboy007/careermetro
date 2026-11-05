@@ -3578,5 +3578,49 @@
   {
     "skillId": "merchant-acquisition",
     "task": "Plan one week of merchant onboarding for a synthetic market of 400 shops: split it into beats, set a daily target per executive for QR and soundbox sign-ups, list the KYC documents you check before activation, and say how you would spot fake or inactive onboardings in the first week."
+  },
+  {
+    "skillId": "ai-strategy-portfolio",
+    "task": "For a synthetic mid-size Indian bank, list 8 AI use cases, score each on value, feasibility, data readiness and risk, pick the top 3 for the next year with a rough budget, and write a one-page AI roadmap with the measures you would report each quarter."
+  },
+  {
+    "skillId": "board-executive-reporting",
+    "task": "Turn a synthetic quarter of results for your function (a sheet of 10 metrics against target) into a 5-slide board pack: one headline slide, the three risks or decisions the board must know about, and the asks. Keep each slide to what a director reads in one minute."
+  },
+  {
+    "skillId": "business-continuity",
+    "task": "Write a business continuity plan for one critical process of a synthetic company (for example payment processing): a business impact analysis with RTO and RPO, the recovery steps, the call tree, and a tabletop test script with what you would check."
+  },
+  {
+    "skillId": "credit-risk-modelling",
+    "task": "Build a simple probability-of-default scorecard on a public credit dataset (such as the German credit data): bin the variables, fit a logistic regression, report Gini and KS on a hold-out set, and write a one-page note on its limits. Share the notebook."
+  },
+  {
+    "skillId": "cyber-risk-quantification",
+    "task": "Quantify one cyber risk for a synthetic company (for example ransomware on the core system) with the FAIR model: estimate loss event frequency and loss magnitude as ranges, run a simple Monte Carlo in a sheet or notebook, and report the annualised loss with and without one control."
+  },
+  {
+    "skillId": "engineering-hiring",
+    "task": "Design the hiring loop for a synthetic senior backend engineer opening: the scorecard with 5 competencies, the stages and who runs each, one structured interview question per competency with what a strong answer covers, and how you would avoid bias in the debrief."
+  },
+  {
+    "skillId": "enterprise-risk-management",
+    "task": "Draft a risk appetite statement for a synthetic NBFC: 5 risk types, a qualitative statement and one or two measurable limits for each with an early-warning trigger, and a one-page dashboard showing where the synthetic current numbers sit against them."
+  },
+  {
+    "skillId": "india-cyber-regulations",
+    "task": "Map a synthetic payments company's controls against the CERT-In directions of April 2022 and the RBI master direction on IT governance: a table of 10 requirements, the control that meets each, the gaps, and a 90-day plan to close them."
+  },
+  {
+    "skillId": "operational-risk-management",
+    "task": "Run an RCSA for one synthetic process (for example branch cash handling): list 8 risks, rate inherent risk, map the controls, rate residual risk, propose 3 key risk indicators with thresholds, and log 2 synthetic loss events with root cause and actions."
+  },
+  {
+    "skillId": "security-program-leadership",
+    "task": "Write a one-year information security strategy for a synthetic 500-person fintech: the current state against a framework such as NIST CSF, the 5 priorities, a budget split, the team you need and the 6 measures you would report to the board each quarter."
+  },
+  {
+    "skillId": "technology-strategy",
+    "task": "For a synthetic startup moving from a monolith to growth, write a two-page technology strategy: the target architecture, three build-versus-buy decisions with the reasoning, a 12-month roadmap, the hiring plan and the risks you would watch."
   }
 ]

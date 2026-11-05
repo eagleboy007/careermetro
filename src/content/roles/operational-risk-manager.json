@@ -1,0 +1,116 @@
+{
+  "slug": "operational-risk-manager",
+  "title": "Operational Risk Manager",
+  "summary": "Operational risk managers run the operational risk framework for a bank, NBFC, insurer or fintech. They lead RCSAs, own loss data and key risk indicators, review new products and outsourcing for risk, oversee operational resilience, and report to senior management and the risk management committee.",
+  "dailyDuties": [
+    "Lead RCSAs and review risk and control ratings",
+    "Review large loss events and drive root-cause fixes",
+    "Set and monitor KRIs against risk appetite",
+    "Review new products, processes and outsourcing for risk",
+    "Oversee resilience testing for critical operations",
+    "Present operational risk to the risk management committee"
+  ],
+  "typicalTitles": [
+    "Operational Risk Manager",
+    "Manager - Operational Risk",
+    "Senior Operational Risk Manager",
+    "Operational Risk Lead",
+    "Lead Risk Manager - Operational Risk",
+    "Senior Manager - Risk Operations",
+    "Operational Risk and Resilience Manager"
+  ],
+  "experienceBand": {
+    "minYears": 6,
+    "maxYears": 14
+  },
+  "skills": [
+    {
+      "skillId": "operational-risk-management",
+      "importance": "required",
+      "expectation": "Own the RCSA, loss data and KRI framework for a business or country",
+      "postingShare": null
+    },
+    {
+      "skillId": "enterprise-risk-management",
+      "importance": "required",
+      "expectation": "Tie operational risk to the firm's risk appetite and limits",
+      "postingShare": null
+    },
+    {
+      "skillId": "rbi-regulatory-framework",
+      "importance": "required",
+      "expectation": "Apply RBI guidance on operational risk and operational resilience",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-continuity",
+      "importance": "required",
+      "expectation": "Oversee resilience of critical operations and continuity testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "required",
+      "expectation": "Oversee outsourcing and vendor risk",
+      "postingShare": null
+    },
+    {
+      "skillId": "internal-controls-testing",
+      "importance": "required",
+      "expectation": "Review control testing and assurance results",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "required",
+      "expectation": "Report operational risk to the risk management committee",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead a team of operational risk analysts",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Challenge business heads on risk and remediation",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "nice_to_have",
+      "expectation": "Lead deep dives on large losses",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Know banking and NBFC products",
+      "postingShare": null
+    },
+    {
+      "skillId": "fraud-case-investigation",
+      "importance": "nice_to_have",
+      "expectation": "Work with fraud risk on loss events",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Build risk dashboards for senior management",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and regulator notices on 2026-11-04. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

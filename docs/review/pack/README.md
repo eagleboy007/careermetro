@@ -26,12 +26,12 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | Field | File | Roles awaiting review |
 | --- | --- | --- |
 | Cloud and infrastructure | `roles-cloud.csv` | 29 |
-| Security | `roles-security.csv` | 26 |
-| Data, analytics and AI | `roles-data.csv` | 31 |
+| Security | `roles-security.csv` | 29 |
+| Data, analytics and AI | `roles-data.csv` | 32 |
 | Enterprise apps (SAP, Oracle, Salesforce, ServiceNow and others) | `roles-enterprise-apps.csv` | 41 |
 | Testing and quality | `roles-testing.csv` | 5 |
-| Software, hardware, delivery and marketing | `roles-other.csv` | 82 |
-| Sales, finance, HR and operations | `roles-business.csv` | 47 |
+| Software, hardware, delivery and marketing | `roles-other.csv` | 83 |
+| Sales, finance, HR and operations | `roles-business.csv` | 50 |
 | Core engineering (mechanical, electrical and civil) | `roles-core-engineering.csv` | 7 |
 | Legal and compliance | `roles-legal.csv` | 4 |
 | Healthcare administration (coding, billing, hospital operations and claims) | `roles-healthcare-admin.csv` | 4 |
@@ -46,7 +46,7 @@ In the certifications file, **Proves** lists skills that holding the certificate
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | `certifications.csv` | 104 |
 
-280 role profiles await review in all.
+288 role profiles await review in all.
 
 ## Changed since the draft, awaiting sign-off
 
@@ -72,6 +72,11 @@ Development changed these lines after a test showed a problem. Their **Detail** 
 - `marketing-automation-specialist#title`: Grouped with data and analytics roles (drafted under marketing): no live marketing role asks for its CRM, segmentation and SQL skills, so its resume's nearest roles are data scientist and analytics roles.
 - `ev-powertrain-engineer#skill:electrical-machines-transformers`: The live Electrical machines and transformers skill (drafted as Traction and drive motors, electric-machines, which TG3 folded into the live skill): it already holds the PMSM, BLDC and IPM motor phrases.
 - `ev-powertrain-engineer#skill:powertrain-dyno-testing`: Skill name shortened to Powertrain dyno and vehicle testing (drafted Powertrain dynamometer and vehicle testing, 83 characters): skill names show in fields capped at 80 characters.
+- `head-of-ai#title`: Thin evidence, needs an expert's sign-off before it is trusted: no India employer post for Head of AI on the allowed sources, so the profile rests on global posts and Microsoft and AWS guidance. "Chief AI Officer" sits here because India has few such posts.
+- `chief-risk-officer#title`: Thin evidence, needs an expert's sign-off before it is trusted: drafted from NABARD's CRO notice, the Basel principles and the RBI CRO rule, not employer posts. Credit risk modelling is required because most Indian CROs come from lending; an insurer's CRO would have it as nice to have.
+- `cto#skill:it-vendor-management`: Required (was Nice to have): with people skills set aside, the draft had four skills a resume can be scored on, below the five every role keeps. CTOs in Indian companies own the large technology vendor contracts.
+- `grc-manager#titles`: "IT Risk Manager" and "Cyber Risk Manager" removed: they are now the Cyber Risk Manager profile (batch TR1).
+- `information-security-analyst#titles`: "IT Risk Analyst" and "Cyber Risk Analyst" removed: they are now the Cyber Risk Analyst profile (batch TR1).
 
 ## How answers flow back into the app
 

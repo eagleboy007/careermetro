@@ -16954,5 +16954,175 @@
     ],
     "implies": [],
     "scoring": "gap"
+  },
+  {
+    "id": "operational-risk-management",
+    "name": "Operational risk management (RCSA, KRIs, loss events)",
+    "category": "business",
+    "aliases": [
+      "operational risk management",
+      "operational risk",
+      "op risk",
+      "rcsa",
+      "risk and control self assessment",
+      "risk and control self-assessment",
+      "risk control self assessment",
+      "key risk indicators",
+      "operational loss events",
+      "loss event reporting",
+      "operational loss data",
+      "manager control assessment",
+      "kris"
+    ],
+    "ambiguous": [
+      "kris"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "cyber-risk-quantification",
+    "name": "Cyber risk quantification (FAIR, loss exposure in money terms)",
+    "category": "security",
+    "aliases": [
+      "cyber risk quantification",
+      "fair model",
+      "factor analysis of information risk",
+      "open fair",
+      "annualized loss expectancy",
+      "annualised loss expectancy",
+      "quantified cyber risk",
+      "cyber risk in financial terms",
+      "crq"
+    ],
+    "ambiguous": [
+      "crq"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "india-cyber-regulations",
+    "name": "Indian cyber security regulations (RBI IT directions, SEBI CSCRF, CERT-In)",
+    "category": "security",
+    "aliases": [
+      "rbi it governance directions",
+      "rbi master direction on it governance",
+      "rbi itgrcap",
+      "cert-in directions",
+      "cert-in guidelines",
+      "sebi cscrf",
+      "cscrf",
+      "irdai information and cyber security guidelines",
+      "cyber security framework in banks"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "enterprise-risk-management",
+    "name": "Enterprise risk management and risk appetite",
+    "category": "business",
+    "aliases": [
+      "enterprise risk management",
+      "erm framework",
+      "risk appetite framework",
+      "risk appetite statement",
+      "coso erm",
+      "iso 31000",
+      "icaap",
+      "risk management committee",
+      "risk culture",
+      "integrated risk management",
+      "erm"
+    ],
+    "ambiguous": [
+      "erm"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "board-executive-reporting",
+    "name": "Board and executive committee reporting",
+    "category": "workplace",
+    "aliases": [
+      "board presentations",
+      "presenting to the board",
+      "board reporting",
+      "board updates",
+      "board risk committee",
+      "excom presentations",
+      "executive committee reporting",
+      "audit committee presentations"
+    ],
+    "ambiguous": [
+      "board updates"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "technology-strategy",
+    "name": "Technology strategy and multi-year roadmap",
+    "category": "product",
+    "aliases": [
+      "technology strategy",
+      "technology roadmap",
+      "it strategy",
+      "digital transformation strategy",
+      "technology vision",
+      "build vs buy",
+      "build versus buy",
+      "tech strategy",
+      "enterprise technology roadmap"
+    ],
+    "ambiguous": [
+      "build vs buy",
+      "build versus buy"
+    ],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "security-program-leadership",
+    "name": "Security strategy and programme leadership",
+    "category": "security",
+    "aliases": [
+      "security strategy",
+      "information security strategy",
+      "cyber security strategy",
+      "cybersecurity strategy",
+      "security roadmap",
+      "security program management",
+      "information security program",
+      "information security programme",
+      "security operating model",
+      "cybersecurity program"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
+  },
+  {
+    "id": "ai-strategy-portfolio",
+    "name": "AI strategy and use-case portfolio",
+    "category": "ml",
+    "aliases": [
+      "ai strategy",
+      "ai roadmap",
+      "genai strategy",
+      "ai use case prioritisation",
+      "ai use case prioritization",
+      "ai portfolio",
+      "ai centre of excellence",
+      "ai center of excellence",
+      "ai coe",
+      "ai transformation"
+    ],
+    "ambiguous": [],
+    "implies": [],
+    "scoring": "gap"
   }
 ]

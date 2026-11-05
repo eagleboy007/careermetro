@@ -1,0 +1,123 @@
+{
+  "slug": "head-of-ai",
+  "title": "Head of AI",
+  "summary": "A Head of AI sets a company's AI strategy and turns it into products that work. They pick which use cases to fund, lead the AI engineering and data science teams, decide what to build or buy, set AI governance with risk and legal teams, and answer to the CEO or CTO for the value, cost and risk of AI.",
+  "dailyDuties": [
+    "Set the AI strategy and roadmap with business leaders",
+    "Choose and fund AI use cases and stop weak ones",
+    "Lead AI engineering, data science and MLOps teams",
+    "Decide build or buy for models, platforms and vendors",
+    "Set AI governance and review high-risk use cases",
+    "Report AI value, spend and risk to the CEO and board"
+  ],
+  "typicalTitles": [
+    "Head of AI",
+    "Head of AI/ML",
+    "Head of Artificial Intelligence",
+    "Head of GenAI",
+    "Director of AI",
+    "AI Engineering Director",
+    "Chief AI Officer",
+    "Head of AI Engineering"
+  ],
+  "experienceBand": {
+    "minYears": 14,
+    "maxYears": 25
+  },
+  "skills": [
+    {
+      "skillId": "ai-strategy-portfolio",
+      "importance": "required",
+      "expectation": "Set the AI strategy and choose which use cases to fund",
+      "postingShare": null
+    },
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Lead AI architecture and build or buy choices",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "required",
+      "expectation": "Know how GenAI products are built and where they fail",
+      "postingShare": null
+    },
+    {
+      "skillId": "mlops",
+      "importance": "required",
+      "expectation": "Make sure models run reliably and are monitored in production",
+      "postingShare": null
+    },
+    {
+      "skillId": "responsible-ai-governance",
+      "importance": "required",
+      "expectation": "Set AI governance, risk and policy with legal and risk teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Build and lead AI engineering and data science teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-hiring",
+      "importance": "required",
+      "expectation": "Hire senior AI engineers and leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "required",
+      "expectation": "Report AI value, cost and risk to the CEO and board",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with business heads on adoption and value",
+      "postingShare": null
+    },
+    {
+      "skillId": "ml-system-design",
+      "importance": "nice_to_have",
+      "expectation": "Review designs for large ML and GenAI systems",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-evaluation",
+      "importance": "nice_to_have",
+      "expectation": "Set how GenAI quality is measured",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "nice_to_have",
+      "expectation": "Control GPU and model API spend",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Plan and track the AI budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "nice_to_have",
+      "expectation": "Manage model, cloud and AI vendor contracts",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and regulator notices on 2026-11-04. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}

@@ -1,0 +1,104 @@
+{
+  "slug": "operational-risk-analyst",
+  "title": "Operational Risk Analyst",
+  "summary": "Operational risk analysts help a bank, NBFC, insurer or fintech spot and reduce losses from failed processes, people, systems or outside events. They run risk and control self-assessments, record loss events and near misses, test controls and track issues and key risk indicators for the operational risk manager.",
+  "dailyDuties": [
+    "Collect and check operational loss events and near misses",
+    "Run RCSA workshops with operations and business teams",
+    "Test key controls and record evidence",
+    "Track issues and action plans with owners",
+    "Update KRIs and flag breaches",
+    "Prepare monthly operational risk reports"
+  ],
+  "typicalTitles": [
+    "Operational Risk Analyst",
+    "Operational Risk Associate",
+    "Operational Risk Officer",
+    "Risk and Control Analyst",
+    "Control Self-Assessment Analyst",
+    "RCSA Analyst",
+    "Senior Operational Risk Analyst"
+  ],
+  "experienceBand": {
+    "minYears": 1,
+    "maxYears": 5
+  },
+  "skills": [
+    {
+      "skillId": "operational-risk-management",
+      "importance": "required",
+      "expectation": "Run RCSAs, collect loss events and update KRIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "internal-controls-testing",
+      "importance": "required",
+      "expectation": "Test whether process controls work and record evidence",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Rate process risks by impact and likelihood",
+      "postingShare": null
+    },
+    {
+      "skillId": "root-cause-analysis-tools",
+      "importance": "required",
+      "expectation": "Find the root cause of loss events and near misses",
+      "postingShare": null
+    },
+    {
+      "skillId": "excel",
+      "importance": "required",
+      "expectation": "Maintain loss data, KRI trackers and issue logs",
+      "postingShare": null
+    },
+    {
+      "skillId": "rbi-regulatory-framework",
+      "importance": "required",
+      "expectation": "Know the RBI guidance on operational risk and resilience",
+      "postingShare": null
+    },
+    {
+      "skillId": "communication",
+      "importance": "required",
+      "expectation": "Write clear findings and follow up with process owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Understand banking products and operations",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-continuity",
+      "importance": "nice_to_have",
+      "expectation": "Help test business continuity plans",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-visualization",
+      "importance": "nice_to_have",
+      "expectation": "Build risk dashboards",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "nice_to_have",
+      "expectation": "Check outsourcing and vendor risks",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India job descriptions and regulator notices on 2026-11-04. Awaiting domain-expert review.",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-04"
+}
