@@ -2,7 +2,7 @@
 
 This page is the current state only: read it first, then the one plan file the task needs. At the end of every task, change it in 2–3 lines in the same PR. Facts carry a PR or doc link. Everything this page held up to 2026-10-31 (each merged feature, test-run fix and feed change, word for word) is in [`docs/plans/status-history-2026-10.md`](plans/status-history-2026-10.md). How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-11-05 (T183: hospital, airport and facility housekeeping and guest relations posts no longer land on the hotel roles)
+Last updated: 2026-11-05 (v2 coverage table in `docs/plans/v2-coverage.md`: 23 of 36 handoff items built, 11 partly (mostly switched off until keys, the lawyer or experts), the L1 AI interview not built, Elite payments deferred)
 
 ## Live (https://careermetro.vercel.app)
 
