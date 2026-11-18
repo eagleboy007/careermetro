@@ -1,0 +1,130 @@
+{
+  "slug": "director-grc",
+  "title": "Director of Governance, Risk and Compliance (GRC)",
+  "summary": "A director of GRC leads technology governance, risk and compliance for a large company or global capability centre. They own the control framework, run SOX, ISO 27001 and SOC 2 programmes, manage third-party cyber risk, coordinate audits and lead a team of GRC managers and analysts.",
+  "dailyDuties": [
+    "Own the control framework and GRC tool set-up",
+    "Plan and coordinate SOX, ISO 27001 and SOC 2 audits",
+    "Review top technology and cyber risks with owners",
+    "Oversee vendor and third-party cyber risk reviews",
+    "Report compliance status to leaders and the audit committee",
+    "Lead and grow a team of GRC managers"
+  ],
+  "typicalTitles": [
+    "Director - GRC",
+    "Director, Governance, Risk and Compliance",
+    "Director - Technology Risk and Compliance",
+    "Senior Director - IT GRC",
+    "Director - IT Risk and Compliance",
+    "Associate Director - GRC"
+  ],
+  "experienceBand": {
+    "minYears": 12,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "security-policies",
+      "importance": "required",
+      "expectation": "Own the GRC framework, policies and ISMS",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Run SOX, ISO 27001, SOC 2 and PCI DSS programmes",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Run technology and cyber risk assessments and the risk register",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "required",
+      "expectation": "Run vendor and third-party cyber risk",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-audits",
+      "importance": "required",
+      "expectation": "Coordinate internal, external and regulator audits",
+      "postingShare": null
+    },
+    {
+      "skillId": "internal-controls-testing",
+      "importance": "required",
+      "expectation": "Own the control framework and control testing",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead a large GRC team with managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with IT, audit, legal and business owners",
+      "postingShare": null
+    },
+    {
+      "skillId": "india-cyber-regulations",
+      "importance": "nice_to_have",
+      "expectation": "Map controls to RBI, SEBI and CERT-In rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Report compliance status to the audit committee",
+      "postingShare": null
+    },
+    {
+      "skillId": "cyber-risk-quantification",
+      "importance": "nice_to_have",
+      "expectation": "Show top risks as likely loss",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Cover DPDP Act controls with the DPO",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "crisc",
+      "importance": "recommended",
+      "why": "GRC director posts list CRISC."
+    },
+    {
+      "certId": "cisa",
+      "importance": "recommended",
+      "why": "Common for leaders from IT audit."
+    },
+    {
+      "certId": "cism",
+      "importance": "optional",
+      "why": "Listed as a plus in posts."
+    },
+    {
+      "certId": "iso27001-lead-auditor",
+      "importance": "optional",
+      "why": "Helps with ISO audits."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India employer job posts and regulator notices on 2026-11-17. Awaiting domain-expert sign-off (L7 leadership role).",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-17"
+}

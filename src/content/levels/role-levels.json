@@ -1,0 +1,1487 @@
+{
+  "draft": true,
+  "reviewedBy": null,
+  "updatedOn": "2026-11-17",
+  "roles": {
+    "accounts-executive": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "actuarial-analyst": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "ad-operations-specialist": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "adas-engineer": {
+      "level": "L4",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "admin-facilities-executive": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "ai-architect": {
+      "level": "L6",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "ai-engineer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "ai-product-manager": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "ai-research-scientist": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "aml-kyc-analyst": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "analog-ic-design-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "analog-layout-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "analytics-engineer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "android-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "application-support-engineer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "appsec-engineer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "ar-vr-developer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "area-sales-manager": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "article-assistant-ca": {
+      "level": "L1",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "audit-associate": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "automotive-diagnostics-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "autosar-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "back-office-executive": {
+      "level": "L2",
+      "alsoLevel": "L1",
+      "basis": "band"
+    },
+    "bank-probationary-officer": {
+      "level": "L1",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "bi-developer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "billing-quantity-engineer-civil": {
+      "level": "L2",
+      "alsoLevel": "L1",
+      "basis": "band"
+    },
+    "biostatistician": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "blockchain-developer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "bms-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "brand-manager": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title+band"
+    },
+    "build-release-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "business-analyst": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "business-development-executive": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "cae-simulation-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "category-manager-ecommerce": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title+band"
+    },
+    "channel-sales-manager": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "chief-risk-officer": {
+      "level": "L8",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "ciso": {
+      "level": "L8",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "clinical-data-manager": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "title+band"
+    },
+    "clinical-sas-programmer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "cloud-architect": {
+      "level": "L6",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "cloud-engineer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "cloud-finops-analyst": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "cloud-network-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "cloud-security-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "cloud-support-engineer": {
+      "level": "L2",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "collections-officer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "company-secretary-associate": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "compensation-benefits-analyst": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band+scope"
+    },
+    "computer-vision-engineer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "contact-center-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "content-writer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "contract-management-specialist": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "core-banking-consultant": {
+      "level": "L4",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "corporate-legal-associate": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "cost-accountant": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "cpp-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "credit-risk-analyst": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "cross-platform-mobile-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "cto": {
+      "level": "L8",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "customer-service-team-leader": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title"
+    },
+    "customer-success-manager": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title+band"
+    },
+    "customer-support-executive": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "cyber-risk-analyst": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "cyber-risk-manager": {
+      "level": "L5",
+      "alsoLevel": "L6",
+      "basis": "title"
+    },
+    "cyber-security-analyst": {
+      "level": "L2",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "data-analyst": {
+      "level": "L2",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "data-annotation-specialist": {
+      "level": "L2",
+      "alsoLevel": "L1",
+      "basis": "band"
+    },
+    "data-architect": {
+      "level": "L6",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "data-center-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "data-engineer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "data-engineering-manager": {
+      "level": "L6",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "data-governance-analyst": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "data-quality-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "data-scientist": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "database-administrator": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "database-architect": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "database-developer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "delivery-manager": {
+      "level": "L6",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "design-verification-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "developer-advocate": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "devops-engineer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "devsecops-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "dft-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "digital-forensics-analyst": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "digital-marketing-executive": {
+      "level": "L2",
+      "alsoLevel": "L1",
+      "basis": "band"
+    },
+    "director-cloud-infrastructure": {
+      "level": "L7",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "director-data-ai": {
+      "level": "L7",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "director-grc": {
+      "level": "L7",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "director-information-security": {
+      "level": "L7",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "director-of-engineering": {
+      "level": "L7",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "director-of-product": {
+      "level": "L7",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "dlp-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "dotnet-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "duck-creek-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "dynamics-365-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "ecommerce-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "embedded-software-engineer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "engineering-manager": {
+      "level": "L6",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "equity-research-analyst": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "etl-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "euc-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "ev-powertrain-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "event-marketing-executive": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "export-import-executive": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "field-sales-team-leader": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "financial-analyst": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "fmcg-sales-officer": {
+      "level": "L2",
+      "alsoLevel": "L1",
+      "basis": "band"
+    },
+    "food-beverage-executive": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "forward-deployed-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "fpga-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "fraud-analyst": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "front-office-executive-hotel": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "frontend-architect": {
+      "level": "L6",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "frontend-developer": {
+      "level": "L2",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "full-stack-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "functional-safety-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "game-artist-3d": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "game-designer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "game-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "gis-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "golang-developer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "graduate-engineer-trainee-electrical": {
+      "level": "L1",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "graduate-engineer-trainee-mechanical": {
+      "level": "L1",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "graphic-designer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "grc-manager": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "guidewire-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "hardware-design-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "head-of-ai": {
+      "level": "L8",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "head-of-it": {
+      "level": "L7",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "head-of-risk": {
+      "level": "L7",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "health-insurance-claims-executive": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "hil-test-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "home-loan-sales-officer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "hospital-operations-executive": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "hotel-revenue-manager": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title+band"
+    },
+    "housekeeping-supervisor": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "hpc-gpu-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "hr-business-partner": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "hr-generalist": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "iam-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "implementation-consultant": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "incident-response-analyst": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "industrial-relations-officer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "information-security-analyst": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "infotainment-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "inside-sales-executive": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "insurance-underwriter": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "integration-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "investment-banking-analyst": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "ios-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "iot-engineer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "it-auditor": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "it-program-manager": {
+      "level": "L6",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "it-project-manager": {
+      "level": "L5",
+      "alsoLevel": "L6",
+      "basis": "title"
+    },
+    "it-service-delivery-manager": {
+      "level": "L5",
+      "alsoLevel": "L6",
+      "basis": "title"
+    },
+    "it-support-engineer": {
+      "level": "L2",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "java-backend-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "kafka-streaming-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "key-account-manager": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "learning-development-specialist": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "linux-kernel-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "litigation-paralegal": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "logistics-coordinator": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "low-code-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "m365-administrator": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "mainframe-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "maintenance-engineer": {
+      "level": "L2",
+      "alsoLevel": "L1",
+      "basis": "band"
+    },
+    "malware-analyst": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "management-trainee": {
+      "level": "L1",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "manual-test-engineer": {
+      "level": "L2",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "market-research-analyst": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "marketing-automation-specialist": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "mechanical-design-engineer": {
+      "level": "L2",
+      "alsoLevel": "L1",
+      "basis": "band"
+    },
+    "medical-billing-specialist": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "medical-coder": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "medical-representative": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "mes-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "middleware-administrator": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "ml-engineer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "ml-engineering-manager": {
+      "level": "L6",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "mlops-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "motion-graphics-designer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "motor-control-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "murex-consultant": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "network-engineer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "network-security-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "nlp-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "noc-engineer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "nodejs-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "odoo-developer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "operational-risk-analyst": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "operational-risk-manager": {
+      "level": "L5",
+      "alsoLevel": "L6",
+      "basis": "title"
+    },
+    "oracle-ebs-consultant": {
+      "level": "L5",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "oracle-fusion-technical-consultant": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "oracle-hcm-cloud-consultant": {
+      "level": "L4",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "oracle-soa-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "ot-security-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "pam-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "payments-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "payroll-executive": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "pega-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "penetration-tester": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "performance-test-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "php-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "physical-design-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "platform-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "platform-engineering-manager": {
+      "level": "L6",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "plc-scada-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "plm-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "post-silicon-validation-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "power-platform-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "presales-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "privacy-analyst": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "process-excellence-analyst": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "procurement-executive": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "product-manager": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "title+band"
+    },
+    "product-marketing-manager": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title+band"
+    },
+    "production-engineer": {
+      "level": "L2",
+      "alsoLevel": "L1",
+      "basis": "band"
+    },
+    "python-developer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "qa-automation-engineer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "qa-lead": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "qa-manager": {
+      "level": "L6",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "quality-control-inspector": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "quant-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "real-estate-sales-executive": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "red-team-operator": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "regulatory-compliance-officer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "relationship-manager-banking": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title+band"
+    },
+    "retail-store-manager": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title+band"
+    },
+    "rf-ic-design-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "robotics-engineer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "rpa-developer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "ruby-on-rails-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "rust-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "salesforce-administrator": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "salesforce-developer": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "sap-abap-developer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "sap-basis-administrator": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "sap-btp-integration-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "sap-bw-consultant": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "sap-ewm-consultant": {
+      "level": "L4",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "sap-fico-consultant": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "sap-fiori-ui5-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "sap-hcm-consultant": {
+      "level": "L4",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "sap-mm-consultant": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "sap-pm-consultant": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "sap-pp-consultant": {
+      "level": "L5",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "sap-qm-consultant": {
+      "level": "L4",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "sap-sd-consultant": {
+      "level": "L4",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "sap-security-grc-consultant": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "sap-successfactors-consultant": {
+      "level": "L4",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "scrum-master": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "search-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "security-architect": {
+      "level": "L6",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "senior-backend-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "senior-data-scientist": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "seo-specialist": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "servicenow-administrator": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "servicenow-developer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "sharepoint-developer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "siebel-crm-developer": {
+      "level": "L4",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "siem-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "site-engineer-civil": {
+      "level": "L2",
+      "alsoLevel": "L1",
+      "basis": "band"
+    },
+    "site-reliability-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "soc-analyst-l2": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "soc-lead": {
+      "level": "L5",
+      "alsoLevel": "L6",
+      "basis": "title"
+    },
+    "social-media-manager": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title+band"
+    },
+    "software-asset-manager": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "title+band"
+    },
+    "software-engineer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "solutions-architect": {
+      "level": "L6",
+      "alsoLevel": "L5",
+      "basis": "band"
+    },
+    "storage-backup-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "supply-chain-analyst": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "system-administrator": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "talent-acquisition-specialist": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "tax-associate": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "tech-lead": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "technical-account-manager": {
+      "level": "L5",
+      "alsoLevel": null,
+      "basis": "title"
+    },
+    "technical-program-manager": {
+      "level": "L5",
+      "alsoLevel": "L4",
+      "basis": "title"
+    },
+    "technical-support-engineer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "technical-writer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "telecom-ran-engineer": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "third-party-risk-analyst": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "threat-intelligence-analyst": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "treasury-analyst": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "trust-and-safety-analyst": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "ui-ux-designer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "unified-communications-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "ux-researcher": {
+      "level": "L4",
+      "alsoLevel": "L3",
+      "basis": "band"
+    },
+    "video-editor": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "virtualization-engineer": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "vlsi-design-engineer": {
+      "level": "L3",
+      "alsoLevel": "L2",
+      "basis": "band"
+    },
+    "vulnerability-management-analyst": {
+      "level": "L3",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "warehouse-operations-executive": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    },
+    "workday-consultant": {
+      "level": "L4",
+      "alsoLevel": null,
+      "basis": "band"
+    },
+    "zoho-developer": {
+      "level": "L3",
+      "alsoLevel": "L4",
+      "basis": "band"
+    }
+  }
+}

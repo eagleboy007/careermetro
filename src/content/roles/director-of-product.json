@@ -1,0 +1,121 @@
+{
+  "slug": "director-of-product",
+  "title": "Director of Product",
+  "summary": "A director of product leads a product line and the product managers who run it, usually reporting to a VP Product or CPO. They set the product vision and roadmap, set goals and track results, make the business case for investment, plan launches with marketing and sales, and hire and coach product managers.",
+  "dailyDuties": [
+    "Review roadmap progress and product metrics",
+    "Coach product managers on discovery and priorities",
+    "Agree quarterly plans with engineering and business leaders",
+    "Write the business case for new bets",
+    "Plan launches with marketing and sales",
+    "Hire product managers"
+  ],
+  "typicalTitles": [
+    "Director - Product Management",
+    "Director, Product",
+    "Head of Product",
+    "VP Product",
+    "Vice President - Product",
+    "Senior Director - Product",
+    "Associate Director - Product"
+  ],
+  "experienceBand": {
+    "minYears": 12,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "roadmapping",
+      "importance": "required",
+      "expectation": "Own the roadmap for a product line",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-discovery",
+      "importance": "required",
+      "expectation": "Make sure teams learn from customers before building",
+      "postingShare": null
+    },
+    {
+      "skillId": "product-metrics",
+      "importance": "required",
+      "expectation": "Set product goals and track outcomes",
+      "postingShare": null
+    },
+    {
+      "skillId": "business-case",
+      "importance": "required",
+      "expectation": "Make the case for investment",
+      "postingShare": null
+    },
+    {
+      "skillId": "go-to-market-launches",
+      "importance": "required",
+      "expectation": "Plan launches with marketing and sales",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead product managers and group PMs",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree plans with engineering, design and business",
+      "postingShare": null
+    },
+    {
+      "skillId": "technology-strategy",
+      "importance": "required",
+      "expectation": "Shape build versus buy and platform choices with engineering",
+      "postingShare": null
+    },
+    {
+      "skillId": "pricing-packaging",
+      "importance": "nice_to_have",
+      "expectation": "Shape pricing and plans",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Brief leadership on product results",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-hiring",
+      "importance": "nice_to_have",
+      "expectation": "Hire product managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "domain-bfsi",
+      "importance": "nice_to_have",
+      "expectation": "Fintech domain knowledge for BFSI products",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "cspo",
+      "importance": "optional",
+      "why": "Some posts list it."
+    },
+    {
+      "certId": "pspo",
+      "importance": "optional",
+      "why": "Some posts list it."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India employer job posts and regulator notices on 2026-11-17. Awaiting domain-expert sign-off (L7 leadership role).",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-17"
+}

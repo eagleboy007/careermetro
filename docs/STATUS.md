@@ -2,12 +2,12 @@
 
 This page is the current state only: read it first, then the one plan file the task needs. At the end of every task, change it in 2–3 lines in the same PR. Facts carry a PR or doc link. Everything this page held up to 2026-10-31 (each merged feature, test-run fix and feed change, word for word) is in [`docs/plans/status-history-2026-10.md`](plans/status-history-2026-10.md). How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-11-05 (v2 coverage table in `docs/plans/v2-coverage.md`: 23 of 36 handoff items built, 11 partly (mostly switched off until keys, the lawyer or experts), the L1 AI interview not built, Elite payments deferred)
+Last updated: 2026-11-18 (C26 sign-up without a target role, part 1: build plan `docs/plans/signup-levels-plan.md`, level data L1 to L8 in `src/content/levels/` and the 8 Director roles of batch L7, all awaiting expert sign-off)
 
 ## Live (https://careermetro.vercel.app)
 
 - **Job seeker:** Resume, Gaps, Path, Today, Map with the Life line, Departures with My jobs (phases 1 and 2: tracker, prepare for a job, interview dates, share from the phone, weekly email), Me and the public profile, Settings, Inbox, Network, Library, Practice, Match, Mock and the Elite shelf, Market (live counts from the Departures feed), the guided resume builder and resume download (PDF and Word), the pasted-job check, Nearby lines, Not for me (FR-48), Add a pitstop (FR-58), change of destination (FR-59, C25), On your line (FR-60), Timetable PRs 1–6 with hand-entered events and the empty state for uncovered fields (T181). Requirements: `docs/REQUIREMENTS.md`; detail per feature in `docs/plans/`.
-- **Content:** 288 role profiles (all `reviewedBy` null, awaiting domain-expert review; batches up to B5, TG4 and TR1; Head of AI and Chief Risk Officer rest on thin evidence and are flagged for sign-off in the review pack), 185 certificates (`reviewed: false`; 7 non-tech on 31 Oct: Tally, GST practitioner, NISM V-A and XV, SHRM-CP, CSWA, AutoCAD Professional), 320 eval resumes, the practice and mock banks (follow-ups `followUpsReviewed: false`, so production asks none; the timed test and Elite shelf stay hidden in production until reviewed).
+- **Content:** 296 role profiles (all `reviewedBy` null, awaiting domain-expert review; batches up to B5, TG4, TR1 and L7; Head of AI, Chief Risk Officer and Head of Risk rest on thin evidence and are flagged for sign-off in the review pack), a level (L1 to L8) for every role and 43 sign-up titles (drafts, `levels.csv` in the review pack), 185 certificates (`reviewed: false`; 7 non-tech on 31 Oct: Tally, GST practitioner, NISM V-A and XV, SHRM-CP, CSWA, AutoCAD Professional), 328 eval resumes, the practice and mock banks (follow-ups `followUpsReviewed: false`, so production asks none; the timed test and Elite shelf stay hidden in production until reviewed).
 - **Proof:** certificate proof with the Credly check, held-proof review `/admin/proofs` (FR-44); only proof fills a goal.
 - **Employer:** Corporate steps 1–7, Express apply, "Let companies find me", Find people (T44), verified current job by work email (FR-47).
 - **Admin:** `/admin/reports` with removal tools (FR-45, FR-46), `/admin/library`, company review, event suggestions (kept as `pending` only).
@@ -16,6 +16,7 @@ Last updated: 2026-11-05 (v2 coverage table in `docs/plans/v2-coverage.md`: 23 o
 
 ## In progress
 
+- C26 sign-up without a target role (Milin approved the flow 2026-11-17 and the design 2026-11-18; `docs/plans/signup-levels-plan.md`): part 1 (level data, Director roles) in this PR; next parse prompt v4 and the level code, then Where you stand, Where next and the Today "Set your destination" card, then a pasted job as the main destination for L6 and up.
 - Scale check (`docs/scale-check.md`, `.github/workflows/scale.yml`, CI Postgres only): 10,000 synthetic members, page p95 budget 2.5 s, crons at 80% of maxDuration. Open: the events digest may never reach people behind opted-in members with no event that week.
 - CSP: the host allow-list policy is report-only (`src/proxy.ts`, `src/lib/csp.ts`); the walk prints `CSP: none` or each violation. Enforcing waits on the log drain and on Milin (`docs/dev/security-sweep-2026-10-20.md`).
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/`; every role, certificate and question above waits on it.

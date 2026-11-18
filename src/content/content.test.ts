@@ -181,7 +181,8 @@ describe("resource catalog", () => {
 // (DSA, OOP, unit testing, Java, JavaScript, C++; T127, 2026-10-26). Self-checked only; no expert has reviewed it yet.
 // Then 107 skills drafted by Development (2026-10-31) so every role has at least 15 Practice questions on skills of its
 // own and 12 timed-test questions (the accounts and mechanical GET roles 20 and 16), each marked `reviewed: false` and
-// hidden in production until someone who works in the role checks it.
+// hidden in production until someone who works in the role checks it. Five more on 2026-11-18 (enterprise risk, MLOps,
+// data governance, Kubernetes, roadmaps) for the Director roles of batch L7.
 describe("practice question bank", () => {
   const known = new Set(skills.map((s) => s.id));
 
@@ -189,11 +190,11 @@ describe("practice question bank", () => {
     expect(practiceQuestions.filter((q) => !known.has(q.skillId)).map((q) => q.id)).toEqual([]);
     const perSkill = new Map<string, number>();
     for (const q of practiceQuestions) perSkill.set(q.skillId, (perSkill.get(q.skillId) ?? 0) + 1);
-    expect(perSkill.size).toBe(134);
+    expect(perSkill.size).toBe(139);
     expect([...perSkill].filter(([, n]) => n !== 5)).toEqual([]);
     // A skill's questions are all drafts or none are, so a review signs off a whole skill.
     const drafts = new Set(practiceQuestions.filter((q) => q.reviewed === false).map((q) => q.skillId));
-    expect(drafts.size).toBe(107);
+    expect(drafts.size).toBe(112);
     expect(practiceQuestions.filter((q) => drafts.has(q.skillId) && q.reviewed !== false).map((q) => q.id)).toEqual([]);
   });
 
@@ -217,7 +218,7 @@ describe("practice question bank", () => {
   it("leaves draft Practice and open bank questions out in production, and keeps multiple-choice ones for the rules to pick", () => {
     expect(withoutDrafts(practiceQuestions, true)).toEqual(practiceQuestions);
     const live = withoutDrafts(practiceQuestions, false);
-    expect(live.length).toBe(practiceQuestions.length - 535);
+    expect(live.length).toBe(practiceQuestions.length - 560);
     expect(live.some((q) => q.reviewed === false)).toBe(false);
     const bank = withoutDrafts(mockQuestions, false);
     expect(bank.some((q) => q.kind === "open" && q.reviewed === false)).toBe(false);

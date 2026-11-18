@@ -5223,5 +5223,205 @@
     "lookFor": "Listing every contract and its renewal cost, expected increases, equipment due for replacement, new assets, and comparing cost against breakdown history to decide renewals.",
     "level": "L1",
     "reviewed": false
+  },
+  {
+    "id": "enterprise-risk-management-1",
+    "skillId": "enterprise-risk-management",
+    "question": "How would you set a risk appetite statement for a mid-size NBFC?",
+    "lookFor": "Board-approved limits tied to strategy and capital: credit loss, concentration, liquidity, operational loss and conduct metrics, each with a tolerance and a trigger, owners named, and reported against at every risk committee.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "enterprise-risk-management-2",
+    "skillId": "enterprise-risk-management",
+    "question": "What goes into a risk register for the whole company, and how do you keep it alive?",
+    "lookFor": "Each risk with an owner, cause and impact, inherent and residual rating, controls, key risk indicators and actions with dates; reviewed by owners each quarter, refreshed after incidents and new products, and summarised for the board.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "enterprise-risk-management-3",
+    "skillId": "enterprise-risk-management",
+    "question": "How do the three lines of defence work, and where does the risk function sit?",
+    "lookFor": "The business owns and manages risk (first line), risk and compliance set the framework and challenge it independently (second line), internal audit gives assurance to the board (third line); the head of risk is second line and reports to the CRO or risk committee.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "enterprise-risk-management-4",
+    "skillId": "enterprise-risk-management",
+    "question": "A new digital lending product is about to launch. What does the risk function check before it goes live?",
+    "lookFor": "A new product approval: credit, fraud, operational, technology, outsourcing and conduct risks, RBI digital lending rules, data and partner checks, limits and early warning metrics, and a post-launch review date.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "enterprise-risk-management-5",
+    "skillId": "enterprise-risk-management",
+    "question": "How do you report the top risks to the board's risk committee?",
+    "lookFor": "A short pack: risk appetite dashboard with breaches and trends, top risks with movement and actions, emerging risks, stress test results and decisions needed, with detail kept in annexes.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "mlops-1",
+    "skillId": "mlops",
+    "question": "How do you take a model from a notebook to production safely?",
+    "lookFor": "Versioned code, data and model; a reproducible training pipeline; automated tests and evaluation against a baseline; a model registry with approval; staged or shadow deployment; and monitoring with a rollback plan.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "mlops-2",
+    "skillId": "mlops",
+    "question": "What do you monitor for a model in production?",
+    "lookFor": "Input data drift and quality, prediction drift, model performance once labels arrive, latency and errors, and business metrics, with alerts and owners for each.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "mlops-3",
+    "skillId": "mlops",
+    "question": "When and how do you retrain a model?",
+    "lookFor": "On a schedule or when drift or performance alerts fire; retrain through the same pipeline, compare against the live model on a holdout, and promote only if it is better, keeping the old version for rollback.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "mlops-4",
+    "skillId": "mlops",
+    "question": "Why keep a feature store, and what problem does it solve?",
+    "lookFor": "One definition of each feature for training and serving, so the model sees the same values in both; it avoids training-serving skew, lets teams reuse features and records lineage.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "mlops-5",
+    "skillId": "mlops",
+    "question": "How would you set up MLOps for a data science team that ships one model a quarter by hand?",
+    "lookFor": "Start with the costliest pain: shared templates, CI for training code, a registry and one automated deployment path, then monitoring; measure lead time and incidents, and grow the platform as more models arrive.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "data-governance-1",
+    "skillId": "data-governance",
+    "question": "What does a data governance programme need in its first six months?",
+    "lookFor": "A sponsor and council, named data owners and stewards for key domains, a business glossary, data quality rules for critical data, an access policy and a way to measure and report progress.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "data-governance-2",
+    "skillId": "data-governance",
+    "question": "How do you decide who owns a data set?",
+    "lookFor": "The business head accountable for the process that creates it owns it; a steward handles definitions and quality day to day; IT runs the platform but does not own the meaning.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "data-governance-3",
+    "skillId": "data-governance",
+    "question": "How do you measure data quality, and what do you do with the numbers?",
+    "lookFor": "Rules for completeness, accuracy, timeliness, consistency and uniqueness on critical fields, scored and trended on a dashboard, with issues raised to owners and fixed at the source.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "data-governance-4",
+    "skillId": "data-governance",
+    "question": "What changes for data governance under India's DPDP Act?",
+    "lookFor": "Knowing where personal data sits, a lawful purpose and consent for each use, notices, retention limits and deletion, rights requests handled on time, breach reporting, and controls over processors.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "data-governance-5",
+    "skillId": "data-governance",
+    "question": "A business team wants access to customer data for a new model. How do you decide?",
+    "lookFor": "Check the purpose against consent and policy, give only the fields needed, mask or pseudonymise where possible, record the approval and set an expiry and a review.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "kubernetes-1",
+    "skillId": "kubernetes",
+    "question": "Explain how a Deployment, a ReplicaSet and a Pod relate.",
+    "lookFor": "A Deployment declares the desired state and manages ReplicaSets for rollouts and rollbacks; a ReplicaSet keeps the set number of Pods running; a Pod runs one or more containers that share network and storage.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "kubernetes-2",
+    "skillId": "kubernetes",
+    "question": "A pod keeps restarting with CrashLoopBackOff. How do you find out why?",
+    "lookFor": "kubectl describe pod for events, kubectl logs with --previous for the crashed container, check the command, config and secrets, resource limits (OOMKilled) and liveness probes, then fix and redeploy.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "kubernetes-3",
+    "skillId": "kubernetes",
+    "question": "How do you expose a service to users outside the cluster?",
+    "lookFor": "A Service of type LoadBalancer or NodePort, or an Ingress or Gateway in front of ClusterIP services, with TLS, DNS and a controller that routes by host or path.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "kubernetes-4",
+    "skillId": "kubernetes",
+    "question": "How do requests and limits affect scheduling and stability?",
+    "lookFor": "Requests are what the scheduler reserves to place a pod; limits cap use. Too-low requests overpack nodes, too-low memory limits get pods killed, and missing requests make autoscaling and capacity planning unreliable.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "kubernetes-5",
+    "skillId": "kubernetes",
+    "question": "How would you run upgrades of a production cluster with little risk?",
+    "lookFor": "Read the release notes and deprecated APIs, upgrade a staging cluster first, keep pod disruption budgets, upgrade the control plane then node pools one at a time, watch workloads and keep a rollback plan.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "roadmapping-1",
+    "skillId": "roadmapping",
+    "question": "How do you build a product roadmap for the next two quarters?",
+    "lookFor": "Start from company goals and customer problems, size opportunities, pick outcomes to aim for, sequence themes with engineering capacity and dependencies, and share it with clear confidence levels rather than fixed dates far out.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "roadmapping-2",
+    "skillId": "roadmapping",
+    "question": "Sales asks you to promise a feature to close a big deal. What do you do?",
+    "lookFor": "Understand the customer problem and deal value, check fit with strategy and other customers, see what it displaces on the roadmap, then agree an answer with sales and leadership, without promising dates engineering hasn't seen.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "roadmapping-3",
+    "skillId": "roadmapping",
+    "question": "What is the difference between an outcome roadmap and a feature roadmap?",
+    "lookFor": "An outcome roadmap names the problems and measurable results the team aims for and leaves room on the solution; a feature roadmap lists outputs and dates. Outcomes keep teams focused on impact and make change easier to explain.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "roadmapping-4",
+    "skillId": "roadmapping",
+    "question": "How do you say no to a request from a senior stakeholder?",
+    "lookFor": "Show the request against the goals and what it would push out, offer what can be done or when it could be looked at, and record the decision so it is not reopened every week.",
+    "level": "L1",
+    "reviewed": false
+  },
+  {
+    "id": "roadmapping-5",
+    "skillId": "roadmapping",
+    "question": "How often should a roadmap change, and how do you communicate it?",
+    "lookFor": "Review it on a fixed rhythm, such as monthly or quarterly, and when evidence changes; share what changed and why with sales, support and leadership, so nobody learns it from a customer.",
+    "level": "L1",
+    "reviewed": false
   }
 ]

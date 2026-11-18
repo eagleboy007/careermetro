@@ -1,0 +1,121 @@
+{
+  "slug": "director-data-ai",
+  "title": "Director of Data and AI",
+  "summary": "A director of data and AI leads data science, data engineering and analytics for a company or business unit. They choose which data and AI projects to fund, set standards for models and data quality, oversee the data platform and lead several team managers. They report to the CTO, CDO or Head of AI.",
+  "dailyDuties": [
+    "Agree data and AI priorities with business heads",
+    "Review model results and launch decisions",
+    "Set data quality, governance and MLOps standards",
+    "Oversee the data platform roadmap and cost",
+    "Lead and hire data science and engineering managers",
+    "Report outcomes and value to leadership"
+  ],
+  "typicalTitles": [
+    "Director - Data Science",
+    "Director, AI/ML and Data Science",
+    "Head of Data Science",
+    "Head of Data",
+    "Director - Data and Analytics",
+    "Director - Data and AI",
+    "Associate Director - Data Science"
+  ],
+  "experienceBand": {
+    "minYears": 12,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "ai-strategy-portfolio",
+      "importance": "required",
+      "expectation": "Pick and fund data and AI use cases with business leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "machine-learning",
+      "importance": "required",
+      "expectation": "Guide model approach and review results",
+      "postingShare": null
+    },
+    {
+      "skillId": "mlops",
+      "importance": "required",
+      "expectation": "Set standards to deploy and monitor models",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-governance",
+      "importance": "required",
+      "expectation": "Own data quality, lineage and access rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-data-warehouse",
+      "importance": "required",
+      "expectation": "Oversee the data platform",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead data science, data engineering and analytics managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with business heads on outcomes",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-hiring",
+      "importance": "required",
+      "expectation": "Hire data and ML leads",
+      "postingShare": null
+    },
+    {
+      "skillId": "llm-apps",
+      "importance": "nice_to_have",
+      "expectation": "Guide GenAI use cases",
+      "postingShare": null
+    },
+    {
+      "skillId": "responsible-ai-governance",
+      "importance": "nice_to_have",
+      "expectation": "Apply responsible AI and model risk rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-ai-platforms",
+      "importance": "nice_to_have",
+      "expectation": "Choose cloud AI services",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Report value from data and AI to leadership",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "gcp-professional-ml-engineer",
+      "importance": "optional",
+      "why": "Useful for leaders still close to ML delivery."
+    },
+    {
+      "certId": "cdmp",
+      "importance": "optional",
+      "why": "Shows data management depth."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India employer job posts and regulator notices on 2026-11-17. Awaiting domain-expert sign-off (L7 leadership role).",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-17"
+}

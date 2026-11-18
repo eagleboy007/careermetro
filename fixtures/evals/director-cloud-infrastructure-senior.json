@@ -1,0 +1,49 @@
+{
+  "id": "director-cloud-infrastructure-senior",
+  "roleSlug": "director-cloud-infrastructure",
+  "persona": "senior",
+  "resumeText": "Siddharth Menon | Bengaluru | siddharth.menon@example.com\n\nSUMMARY\nInfrastructure leader with 15 years in data centre and cloud operations.\n\nEXPERIENCE\nSenior Manager - Cloud Platform, Bluewave Fintech, Bengaluru (2019 - present)\n- Wrote the cloud technology strategy and three-year plan.\n- Built the AWS landing zone with Control Tower for 120 accounts.\n- Set Terraform standards for all teams.\n- Introduced SLOs and on-call for platform services.\n- Run FinOps reviews and cut cloud spend 22 percent.\n- Own disaster recovery tests twice a year across two regions.\n- Managed a team of 35 across SRE, platform and network.\n- Use stakeholder communication with engineering, security and finance.\n\nInfrastructure Manager, Harbour Bank, Mumbai (2013 - 2019)\n- Ran data centre servers and storage.\n\nSystem Administrator, Deccan Infosystems, Pune (2011 - 2013)\n\nEDUCATION\nBE Electronics, RV College of Engineering, 2011\n\nCERTIFICATIONS\nAWS Solutions Architect Professional",
+  "expected": {
+    "totalYearsExperience": 15,
+    "skills": [
+      {
+        "skillId": "technology-strategy",
+        "quote": "Wrote the cloud technology strategy"
+      },
+      {
+        "skillId": "cloud-landing-zones",
+        "quote": "Built the AWS landing zone with"
+      },
+      {
+        "skillId": "terraform",
+        "quote": "Set Terraform standards for all teams"
+      },
+      {
+        "skillId": "sre-practices",
+        "quote": "Introduced SLOs and on-call for"
+      },
+      {
+        "skillId": "cloud-cost",
+        "quote": "Run FinOps reviews and cut"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "quote": "Own disaster recovery tests twice"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 35"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication with engineering"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "cloud-security-posture",
+      "cloud-migration"
+    ]
+  },
+  "reviewedBy": null
+}

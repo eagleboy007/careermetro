@@ -1943,3 +1943,83 @@ amc-contract-management-mc-4,AMC and facility equipment maintenance contracts,L1
 B. Stop using the equipment immediately in all cases
 C. Ask the vendor for a root cause and fix, and review the contract
 D. Remove the AMC","C. Ask the vendor for a root cause and fix, and review the contract","Repeat faults need root cause analysis and vendor accountability, and may affect renewal or replacement decisions.",,,
+enterprise-risk-management-mc-1,Enterprise risk management and risk appetite,L1,Who owns and manages risk day to day under the three lines of defence?,"A. Internal audit
+B. The board alone
+C. The business units, the first line
+D. The external auditor","C. The business units, the first line","The first line, the business, owns and manages its risks; the second line sets the framework and challenges, and audit gives assurance.",,,
+enterprise-risk-management-mc-2,Enterprise risk management and risk appetite,L1,A key risk indicator has crossed its trigger. What should happen first?,"A. Change the trigger so it no longer breaches
+B. Wait for the next annual review
+C. Remove the indicator from the dashboard
+D. Escalate to the risk owner and committee with a plan as the framework sets out",D. Escalate to the risk owner and committee with a plan as the framework sets out,"A breached trigger is escalated as the risk appetite framework says, with a plan to bring it back within tolerance.",,,
+enterprise-risk-management-mc-3,Enterprise risk management and risk appetite,L1,Residual risk is:,"A. The risk left after controls are taken into account
+B. The risk before any controls
+C. Risk that has already happened
+D. Risk transferred to an insurer",A. The risk left after controls are taken into account,Inherent risk is before controls; residual risk is what remains after them.,,,
+enterprise-risk-management-mc-4,Enterprise risk management and risk appetite,L1,Which is the best reason to run a stress test?,"A. To replace the risk register
+B. To see how capital, liquidity and losses behave under severe but plausible scenarios
+C. To show regulators only the base case
+D. To set salaries for the risk team","B. To see how capital, liquidity and losses behave under severe but plausible scenarios",Stress tests show how the firm holds up in bad but plausible conditions and inform limits and capital plans.,,,
+mlops-mc-1,MLOps,L1,Training-serving skew means:,"A. The model trains faster than it serves
+B. Training uses more GPUs than serving
+C. Features are computed differently in training and in production
+D. The model is served in two regions",C. Features are computed differently in training and in production,Skew happens when the model sees different feature values or logic in production than in training; a shared feature pipeline prevents it.,,,
+mlops-mc-2,MLOps,L1,What does a model registry give a team?,"A. Versioned models with metadata, stages and approvals
+B. Free GPUs
+C. Automatic labelling of data
+D. A replacement for monitoring","A. Versioned models with metadata, stages and approvals","A registry tracks model versions, their lineage and which version is approved for which stage.",,,
+mlops-mc-3,MLOps,L1,Input data drift is detected on a live model. What is the sensible next step?,"A. Delete the model at once
+B. Ignore it until customers complain
+C. Turn off monitoring
+D. Check its effect on performance and retrain or roll back through the pipeline if needed",D. Check its effect on performance and retrain or roll back through the pipeline if needed,Drift is a signal to check performance and act through the normal retraining and release path.,,,
+mlops-mc-4,MLOps,L1,Shadow deployment of a new model means:,"A. It serves all users immediately
+B. It receives live traffic and its predictions are logged but not used
+C. It is trained only on synthetic data
+D. It runs only on a laptop",B. It receives live traffic and its predictions are logged but not used,In shadow mode the new model sees real traffic so it can be compared safely before it takes over.,,,
+data-governance-mc-1,Data governance,L1,Who should own the meaning and quality rules of the customer master data?,"A. The business owner of that data, with a data steward
+B. The database administrator
+C. Any analyst who uses it
+D. The cloud vendor","A. The business owner of that data, with a data steward",Ownership sits with the accountable business owner; stewards manage definitions and quality day to day.,,,
+data-governance-mc-2,Data governance,L1,A business glossary is mainly used to:,"A. Store passwords
+B. Replace the data warehouse
+C. List vendors
+D. Agree one definition for each business term across teams",D. Agree one definition for each business term across teams,"A glossary gives terms like active customer or NPA one agreed meaning, so reports agree.",,,
+data-governance-mc-3,Data governance,L1,"Under India's DPDP Act, personal data should be kept:","A. Forever, in case it is useful later
+B. Only while needed for the stated purpose, then erased
+C. Only on paper
+D. Only outside India","B. Only while needed for the stated purpose, then erased","Personal data is kept only as long as its purpose needs, then erased unless a law requires keeping it.",,,
+data-governance-mc-4,Data governance,L1,The best place to fix a recurring data quality error is:,"A. In each report that shows it
+B. In a spreadsheet after export
+C. At the source system or process that creates it
+D. Nowhere, if dashboards look fine",C. At the source system or process that creates it,Fixing at the source stops the error spreading to every downstream use.,,,
+kubernetes-mc-1,Kubernetes,L1,Which object keeps a set number of identical pods running and handles rolling updates?,"A. ConfigMap
+B. Deployment
+C. Secret
+D. Namespace",B. Deployment,A Deployment manages ReplicaSets to keep the desired pod count and roll out changes.,,,
+kubernetes-mc-2,Kubernetes,L1,A container status shows OOMKilled. The most likely cause is:,"A. It used more memory than its limit
+B. The image tag was wrong
+C. The service had no selector
+D. The node had too much CPU",A. It used more memory than its limit,OOMKilled means the container went over its memory limit and was killed.,,,
+kubernetes-mc-3,Kubernetes,L1,What does a readiness probe decide?,"A. Whether the node is healthy
+B. Whether the image is signed
+C. Whether the cluster can be upgraded
+D. Whether the pod should receive traffic from a Service",D. Whether the pod should receive traffic from a Service,Readiness controls whether a pod is added to Service endpoints; liveness decides restarts.,,,
+kubernetes-mc-4,Kubernetes,L1,To route traffic for two hostnames to two services through one entry point you would use:,"A. A DaemonSet
+B. A PersistentVolume
+C. An Ingress or Gateway with host rules
+D. A Job",C. An Ingress or Gateway with host rules,Ingress or Gateway resources route by host and path to different services.,,,
+roadmapping-mc-1,Roadmapping and prioritization,L1,An outcome-based roadmap item reads best as:,"A. Build a new settings page by 3 March
+B. Cut failed first payments by 20% this quarter
+C. Use React for the dashboard
+D. Hire two engineers",B. Cut failed first payments by 20% this quarter,"An outcome names the measurable result, leaving the team room to find the best solution.",,,
+roadmapping-mc-2,Roadmapping and prioritization,L1,A large customer demands a feature not on the roadmap. The first step is to:,"A. Promise it to win the deal
+B. Refuse without discussion
+C. Understand the underlying problem and its value across customers
+D. Add it to the top of the backlog",C. Understand the underlying problem and its value across customers,Understanding the problem and its wider value comes before any commitment.,,,
+roadmapping-mc-3,Roadmapping and prioritization,L1,"Why show confidence levels or time horizons (now, next, later) on a roadmap?","A. Because far-off items are less certain and may change
+B. To hide the plan from engineering
+C. Because dates are illegal
+D. To avoid talking to customers",A. Because far-off items are less certain and may change,Horizons signal that near work is firm and later work is a direction that may change with evidence.,,,
+roadmapping-mc-4,Roadmapping and prioritization,L1,"When the roadmap changes, who should hear about it first?","A. Customers on social media
+B. Nobody until the next year
+C. Only the engineering team
+D. The teams who talk to customers and depend on it, such as sales, support and leadership","D. The teams who talk to customers and depend on it, such as sales, support and leadership","People who make promises to customers need to know first, with the reason.",,,

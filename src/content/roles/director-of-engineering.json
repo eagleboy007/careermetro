@@ -1,0 +1,110 @@
+{
+  "slug": "director-of-engineering",
+  "title": "Director of Engineering",
+  "summary": "A director of engineering leads several engineering teams through their managers, usually reporting to a VP Engineering or CTO. They own the technical roadmap for a product area, set architecture direction, hire and grow managers, and make sure the teams deliver reliably. In India they often lead the India centre of a global product company.",
+  "dailyDuties": [
+    "Review delivery, quality and reliability across teams",
+    "Coach and manage engineering managers",
+    "Hire managers and senior engineers",
+    "Review designs and major technical decisions",
+    "Agree quarterly plans with product leaders",
+    "Plan headcount and budget for the area"
+  ],
+  "typicalTitles": [
+    "Engineering Director",
+    "Senior Director of Engineering",
+    "VP Engineering",
+    "Vice President - Engineering",
+    "Director - Software Engineering",
+    "Associate Director - Engineering",
+    "Director of Engineering - India"
+  ],
+  "experienceBand": {
+    "minYears": 12,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "technical-leadership",
+      "importance": "required",
+      "expectation": "Set architecture direction across several teams",
+      "postingShare": null
+    },
+    {
+      "skillId": "system-design",
+      "importance": "required",
+      "expectation": "Review designs for scale and reliability",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Manage engineering managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "engineering-hiring",
+      "importance": "required",
+      "expectation": "Hire managers and senior engineers and set the hiring bar",
+      "postingShare": null
+    },
+    {
+      "skillId": "technology-strategy",
+      "importance": "required",
+      "expectation": "Own the technical roadmap for a product area",
+      "postingShare": null
+    },
+    {
+      "skillId": "program-management",
+      "importance": "required",
+      "expectation": "Run delivery across teams and dependencies",
+      "postingShare": null
+    },
+    {
+      "skillId": "agile-scrum",
+      "importance": "required",
+      "expectation": "Run planning and delivery rhythms",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Agree plans with product and business leaders",
+      "postingShare": null
+    },
+    {
+      "skillId": "sre-practices",
+      "importance": "required",
+      "expectation": "Set reliability targets and on-call standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "nice_to_have",
+      "expectation": "Control cloud spend for the area",
+      "postingShare": null
+    },
+    {
+      "skillId": "organisation-design",
+      "importance": "nice_to_have",
+      "expectation": "Shape team structure as the area grows",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Brief the CTO and leadership on delivery",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India employer job posts and regulator notices on 2026-11-17. Awaiting domain-expert sign-off (L7 leadership role).",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-17"
+}

@@ -37,7 +37,8 @@
       "ai-architect",
       "data-annotation-specialist",
       "ml-engineering-manager",
-      "head-of-ai"
+      "head-of-ai",
+      "director-data-ai"
     ],
     "security": [
       "cyber-security-analyst",
@@ -68,7 +69,9 @@
       "sap-security-grc-consultant",
       "cyber-risk-analyst",
       "cyber-risk-manager",
-      "ciso"
+      "ciso",
+      "director-information-security",
+      "director-grc"
     ],
     "infra-cloud": [
       "cloud-engineer",
@@ -99,7 +102,9 @@
       "middleware-administrator",
       "it-service-delivery-manager",
       "platform-engineering-manager",
-      "software-asset-manager"
+      "software-asset-manager",
+      "director-cloud-infrastructure",
+      "head-of-it"
     ],
     "backend": [
       "software-engineer",
@@ -230,7 +235,9 @@
       "delivery-manager",
       "it-program-manager",
       "game-designer",
-      "cto"
+      "cto",
+      "director-of-engineering",
+      "director-of-product"
     ],
     "marketing": [
       "digital-marketing-executive",
@@ -277,7 +284,8 @@
       "bank-probationary-officer",
       "operational-risk-analyst",
       "operational-risk-manager",
-      "chief-risk-officer"
+      "chief-risk-officer",
+      "head-of-risk"
     ],
     "hr": [
       "hr-generalist",
@@ -536,6 +544,10 @@
     [
       "operational-risk-manager",
       "cyber-risk-manager"
+    ],
+    [
+      "head-of-it",
+      "cto"
     ]
   ]
 }

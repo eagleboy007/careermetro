@@ -1,0 +1,50 @@
+{
+  "id": "director-grc-senior",
+  "roleSlug": "director-grc",
+  "persona": "senior",
+  "resumeText": "Ananya Iyer | Bengaluru | ananya.iyer@example.com\n\nSUMMARY\nTechnology risk and GRC leader with 15 years in IT audit and GRC at global capability centres.\n\nEXPERIENCE\nAssociate Director - IT GRC, Northstar Retail Technology Centre, Bengaluru (2020 - present)\n- Own the governance, risk and compliance framework and the ISMS policy set.\n- Run SOX ITGC and ISO 27001 and SOC 2 programmes across 40 applications.\n- Lead technology risk assessment and keep the enterprise risk register.\n- Built the vendor risk assessment process for 300 suppliers.\n- Coordinate internal audit, external audit and customer audits.\n- Own the internal controls testing plan and test of controls results.\n- Managed a team of 25 through three GRC managers.\n- Use stakeholder communication with IT owners, legal and internal audit.\n\nIT Audit Manager, Big Four firm, Bengaluru (2011 - 2020)\n- Led ITGC audits for banking and retail clients.\n\nEDUCATION\nBTech Information Technology, PES University, 2011\n\nCERTIFICATIONS\nCISA, CRISC",
+  "expected": {
+    "totalYearsExperience": 15,
+    "skills": [
+      {
+        "skillId": "security-policies",
+        "quote": "governance, risk and compliance framework"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "ITGC and ISO 27001 and SOC 2"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Lead technology risk assessment and keep"
+      },
+      {
+        "skillId": "third-party-risk",
+        "quote": "Built the vendor risk assessment process"
+      },
+      {
+        "skillId": "security-audits",
+        "quote": "Coordinate internal audit, external audit"
+      },
+      {
+        "skillId": "internal-controls-testing",
+        "quote": "Own the internal controls testing plan"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 25"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication with IT owners"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "india-cyber-regulations",
+      "cyber-risk-quantification",
+      "data-privacy"
+    ]
+  },
+  "reviewedBy": null
+}

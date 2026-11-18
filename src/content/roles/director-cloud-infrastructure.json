@@ -1,0 +1,131 @@
+{
+  "slug": "director-cloud-infrastructure",
+  "title": "Director of Cloud and Infrastructure",
+  "summary": "A director of cloud and infrastructure leads platform, SRE and infrastructure teams. They set the cloud strategy and standards, own reliability, disaster recovery and cloud cost, handle escalations from major outages and lead several managers, often across India and other countries.",
+  "dailyDuties": [
+    "Review reliability, incidents and SLOs across platforms",
+    "Set cloud standards and approve major infrastructure changes",
+    "Review cloud spend and agree savings with teams",
+    "Test disaster recovery and resilience plans",
+    "Lead and hire platform and SRE managers",
+    "Plan the infrastructure roadmap and budget"
+  ],
+  "typicalTitles": [
+    "Director - Infrastructure Engineering",
+    "Director - Cloud Infrastructure",
+    "Head of Cloud Infrastructure",
+    "Director - Platform and Infrastructure",
+    "VP - Platform and Infrastructure",
+    "Director - Cloud Operations",
+    "Head of SRE"
+  ],
+  "experienceBand": {
+    "minYears": 12,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "technology-strategy",
+      "importance": "required",
+      "expectation": "Own the cloud and infrastructure strategy",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-landing-zones",
+      "importance": "required",
+      "expectation": "Set landing zone and well-architected standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "terraform",
+      "importance": "required",
+      "expectation": "Set infrastructure-as-code standards",
+      "postingShare": null
+    },
+    {
+      "skillId": "sre-practices",
+      "importance": "required",
+      "expectation": "Set SLOs, on-call and reliability practice",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-cost",
+      "importance": "required",
+      "expectation": "Run FinOps and cloud cost control",
+      "postingShare": null
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "required",
+      "expectation": "Own disaster recovery and resilience",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead platform, SRE and infrastructure managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with engineering, security and finance",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-security-posture",
+      "importance": "nice_to_have",
+      "expectation": "Work with security on cloud posture",
+      "postingShare": null
+    },
+    {
+      "skillId": "incident-management",
+      "importance": "nice_to_have",
+      "expectation": "Lead escalation of major outages",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-migration",
+      "importance": "nice_to_have",
+      "expectation": "Lead data centre to cloud moves",
+      "postingShare": null
+    },
+    {
+      "skillId": "kubernetes",
+      "importance": "nice_to_have",
+      "expectation": "Guide container platform choices",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "aws-solutions-architect-professional",
+      "importance": "optional",
+      "why": "Common for AWS-heavy teams."
+    },
+    {
+      "certId": "gcp-professional-cloud-architect",
+      "importance": "optional",
+      "why": "For Google Cloud teams."
+    },
+    {
+      "certId": "azure-solutions-architect-expert",
+      "importance": "optional",
+      "why": "For Azure teams."
+    },
+    {
+      "certId": "finops-certified-practitioner",
+      "importance": "optional",
+      "why": "Shows cost control practice."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India employer job posts and regulator notices on 2026-11-17. Awaiting domain-expert sign-off (L7 leadership role).",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-17"
+}

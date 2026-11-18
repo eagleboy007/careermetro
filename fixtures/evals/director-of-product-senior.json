@@ -1,0 +1,49 @@
+{
+  "id": "director-of-product-senior",
+  "roleSlug": "director-of-product",
+  "persona": "senior",
+  "resumeText": "Neha Joshi | Bengaluru | neha.joshi@example.com\n\nSUMMARY\nProduct leader with 13 years in fintech and SaaS products.\n\nEXPERIENCE\nGroup Product Manager, Coral Payments, Bengaluru (2020 - present)\n- Own the product roadmap for merchant lending and payouts.\n- Run customer discovery with merchants before every major bet.\n- Set the north star metric and KPIs for the lending line.\n- Wrote the business case for a new working capital product.\n- Planned product launches with marketing and sales for three products.\n- Line manager for five product managers.\n- Use stakeholder communication with engineering, design and risk.\n- Led the build vs buy decision for the loan management system.\n\nProduct Manager, Pinecrest Software, Pune (2015 - 2020)\n- Ran the invoicing product.\n\nBusiness Analyst, Konkan Infotech, Pune (2013 - 2015)\n\nEDUCATION\nMBA, IIM Indore, 2013\nBTech, VJTI Mumbai, 2011",
+  "expected": {
+    "totalYearsExperience": 13,
+    "skills": [
+      {
+        "skillId": "roadmapping",
+        "quote": "Own the product roadmap for merchant"
+      },
+      {
+        "skillId": "product-discovery",
+        "quote": "Run customer discovery with merchants"
+      },
+      {
+        "skillId": "product-metrics",
+        "quote": "Set the north star metric and KPIs"
+      },
+      {
+        "skillId": "business-case",
+        "quote": "Wrote the business case for"
+      },
+      {
+        "skillId": "go-to-market-launches",
+        "quote": "Planned product launches with marketing"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Line manager for five product managers"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication with engineering"
+      },
+      {
+        "skillId": "technology-strategy",
+        "quote": "Led the build vs buy decision"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "pricing-packaging",
+      "board-executive-reporting"
+    ]
+  },
+  "reviewedBy": null
+}
