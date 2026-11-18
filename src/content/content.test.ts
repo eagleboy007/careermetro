@@ -307,7 +307,7 @@ describe("interview prep bank (FR-50, handoff 12l)", () => {
 
   it("gives every open question one or two follow-ups, numbered in order, each its own text", () => {
     const open = mockQuestions.filter((q) => q.kind === "open");
-    expect(open).toHaveLength(670);
+    expect(open).toHaveLength(695);
     for (const q of open) {
       const ups = followUpsOf(q, true);
       expect([q.id, ups.length >= 1 && ups.length <= 2]).toEqual([q.id, true]);

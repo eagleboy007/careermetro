@@ -30266,6 +30266,839 @@
       "followUpsReviewed": false
     },
     {
+      "id": "enterprise-risk-management-1",
+      "kind": "open",
+      "roleSlugs": [
+        "chief-risk-officer",
+        "cyber-risk-manager",
+        "head-of-risk",
+        "operational-risk-manager"
+      ],
+      "skillId": "enterprise-risk-management",
+      "topic": "Enterprise risk",
+      "question": "How would you set a risk appetite statement for a mid-size NBFC?",
+      "strongCovers": "Board-approved limits tied to strategy and capital: credit loss, concentration, liquidity, operational loss and conduct metrics, each with a tolerance and a trigger, owners named, and reported against at every risk committee.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "enterprise-risk-management-1-fu-1",
+          "text": "Which metric would you put first for the board, and why?",
+          "skipIf": [
+            "capital",
+            "credit loss"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "enterprise-risk-management-2",
+      "kind": "open",
+      "roleSlugs": [
+        "chief-risk-officer",
+        "cyber-risk-manager",
+        "head-of-risk",
+        "operational-risk-manager"
+      ],
+      "skillId": "enterprise-risk-management",
+      "topic": "Enterprise risk",
+      "question": "What goes into a risk register for the whole company, and how do you keep it alive?",
+      "strongCovers": "Each risk with an owner, cause and impact, inherent and residual rating, controls, key risk indicators and actions with dates; reviewed by owners each quarter, refreshed after incidents and new products, and summarised for the board.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "enterprise-risk-management-2-fu-1",
+          "text": "How do you stop the register becoming a box-ticking list?",
+          "skipIf": [
+            "key risk indicators",
+            "kri",
+            "incidents"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "enterprise-risk-management-3",
+      "kind": "open",
+      "roleSlugs": [
+        "chief-risk-officer",
+        "cyber-risk-manager",
+        "head-of-risk",
+        "operational-risk-manager"
+      ],
+      "skillId": "enterprise-risk-management",
+      "topic": "Enterprise risk",
+      "question": "How do the three lines of defence work, and where does the risk function sit?",
+      "strongCovers": "The business owns and manages risk (first line), risk and compliance set the framework and challenge it independently (second line), internal audit gives assurance to the board (third line); the head of risk is second line and reports to the CRO or risk committee.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "enterprise-risk-management-3-fu-1",
+          "text": "Where have you seen the lines blur, and how was it fixed?",
+          "skipIf": [
+            "independence",
+            "conflict"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "enterprise-risk-management-4",
+      "kind": "open",
+      "roleSlugs": [
+        "chief-risk-officer",
+        "cyber-risk-manager",
+        "head-of-risk",
+        "operational-risk-manager"
+      ],
+      "skillId": "enterprise-risk-management",
+      "topic": "Enterprise risk",
+      "question": "A new digital lending product is about to launch. What does the risk function check before it goes live?",
+      "strongCovers": "A new product approval: credit, fraud, operational, technology, outsourcing and conduct risks, RBI digital lending rules, data and partner checks, limits and early warning metrics, and a post-launch review date.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "enterprise-risk-management-4-fu-1",
+          "text": "What would make you say no to the launch?",
+          "skipIf": [
+            "appetite",
+            "breach",
+            "regulation"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "enterprise-risk-management-5",
+      "kind": "open",
+      "roleSlugs": [
+        "chief-risk-officer",
+        "cyber-risk-manager",
+        "head-of-risk",
+        "operational-risk-manager"
+      ],
+      "skillId": "enterprise-risk-management",
+      "topic": "Enterprise risk",
+      "question": "How do you report the top risks to the board's risk committee?",
+      "strongCovers": "A short pack: risk appetite dashboard with breaches and trends, top risks with movement and actions, emerging risks, stress test results and decisions needed, with detail kept in annexes.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "enterprise-risk-management-5-fu-1",
+          "text": "What do you leave out of the pack, and why?",
+          "skipIf": [
+            "annex",
+            "detail"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "mlops-1",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-architect",
+        "computer-vision-engineer",
+        "data-scientist",
+        "director-data-ai",
+        "head-of-ai",
+        "ml-engineer",
+        "ml-engineering-manager",
+        "mlops-engineer",
+        "senior-data-scientist"
+      ],
+      "skillId": "mlops",
+      "topic": "MLOps",
+      "question": "How do you take a model from a notebook to production safely?",
+      "strongCovers": "Versioned code, data and model; a reproducible training pipeline; automated tests and evaluation against a baseline; a model registry with approval; staged or shadow deployment; and monitoring with a rollback plan.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "mlops-1-fu-1",
+          "text": "What would you automate first, and why?",
+          "skipIf": [
+            "ci",
+            "pipeline",
+            "tests"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "mlops-2",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-architect",
+        "computer-vision-engineer",
+        "data-scientist",
+        "director-data-ai",
+        "head-of-ai",
+        "ml-engineer",
+        "ml-engineering-manager",
+        "mlops-engineer",
+        "senior-data-scientist"
+      ],
+      "skillId": "mlops",
+      "topic": "MLOps",
+      "question": "What do you monitor for a model in production?",
+      "strongCovers": "Input data drift and quality, prediction drift, model performance once labels arrive, latency and errors, and business metrics, with alerts and owners for each.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "mlops-2-fu-1",
+          "text": "How do you monitor quality when the labels arrive months later?",
+          "skipIf": [
+            "proxy",
+            "delayed labels"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "mlops-3",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-architect",
+        "computer-vision-engineer",
+        "data-scientist",
+        "director-data-ai",
+        "head-of-ai",
+        "ml-engineer",
+        "ml-engineering-manager",
+        "mlops-engineer",
+        "senior-data-scientist"
+      ],
+      "skillId": "mlops",
+      "topic": "MLOps",
+      "question": "When and how do you retrain a model?",
+      "strongCovers": "On a schedule or when drift or performance alerts fire; retrain through the same pipeline, compare against the live model on a holdout, and promote only if it is better, keeping the old version for rollback.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "mlops-3-fu-1",
+          "text": "Who decides that a retrained model may go live?",
+          "skipIf": [
+            "approval",
+            "sign-off",
+            "owner"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "mlops-4",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-architect",
+        "computer-vision-engineer",
+        "data-scientist",
+        "director-data-ai",
+        "head-of-ai",
+        "ml-engineer",
+        "ml-engineering-manager",
+        "mlops-engineer",
+        "senior-data-scientist"
+      ],
+      "skillId": "mlops",
+      "topic": "MLOps",
+      "question": "Why keep a feature store, and what problem does it solve?",
+      "strongCovers": "One definition of each feature for training and serving, so the model sees the same values in both; it avoids training-serving skew, lets teams reuse features and records lineage.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "mlops-4-fu-1",
+          "text": "When is a feature store not worth building?",
+          "skipIf": [
+            "few models",
+            "small team",
+            "cost"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "mlops-5",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-architect",
+        "computer-vision-engineer",
+        "data-scientist",
+        "director-data-ai",
+        "head-of-ai",
+        "ml-engineer",
+        "ml-engineering-manager",
+        "mlops-engineer",
+        "senior-data-scientist"
+      ],
+      "skillId": "mlops",
+      "topic": "MLOps",
+      "question": "How would you set up MLOps for a data science team that ships one model a quarter by hand?",
+      "strongCovers": "Start with the costliest pain: shared templates, CI for training code, a registry and one automated deployment path, then monitoring; measure lead time and incidents, and grow the platform as more models arrive.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "mlops-5-fu-1",
+          "text": "How would you show leadership that the platform paid off?",
+          "skipIf": [
+            "lead time",
+            "incidents",
+            "metrics"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-governance-1",
+      "kind": "open",
+      "roleSlugs": [
+        "data-architect",
+        "data-engineer",
+        "data-engineering-manager",
+        "data-governance-analyst",
+        "data-quality-engineer",
+        "database-architect",
+        "director-data-ai",
+        "information-security-analyst",
+        "privacy-analyst"
+      ],
+      "skillId": "data-governance",
+      "topic": "Data governance",
+      "question": "What does a data governance programme need in its first six months?",
+      "strongCovers": "A sponsor and council, named data owners and stewards for key domains, a business glossary, data quality rules for critical data, an access policy and a way to measure and report progress.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "data-governance-1-fu-1",
+          "text": "How do you keep the business engaged after the launch?",
+          "skipIf": [
+            "sponsor",
+            "council"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-governance-2",
+      "kind": "open",
+      "roleSlugs": [
+        "data-architect",
+        "data-engineer",
+        "data-engineering-manager",
+        "data-governance-analyst",
+        "data-quality-engineer",
+        "database-architect",
+        "director-data-ai",
+        "information-security-analyst",
+        "privacy-analyst"
+      ],
+      "skillId": "data-governance",
+      "topic": "Data governance",
+      "question": "How do you decide who owns a data set?",
+      "strongCovers": "The business head accountable for the process that creates it owns it; a steward handles definitions and quality day to day; IT runs the platform but does not own the meaning.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "data-governance-2-fu-1",
+          "text": "What happens when two teams both claim the same data?",
+          "skipIf": [
+            "escalate",
+            "council",
+            "decision"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-governance-3",
+      "kind": "open",
+      "roleSlugs": [
+        "data-architect",
+        "data-engineer",
+        "data-engineering-manager",
+        "data-governance-analyst",
+        "data-quality-engineer",
+        "database-architect",
+        "director-data-ai",
+        "information-security-analyst",
+        "privacy-analyst"
+      ],
+      "skillId": "data-governance",
+      "topic": "Data governance",
+      "question": "How do you measure data quality, and what do you do with the numbers?",
+      "strongCovers": "Rules for completeness, accuracy, timeliness, consistency and uniqueness on critical fields, scored and trended on a dashboard, with issues raised to owners and fixed at the source.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "data-governance-3-fu-1",
+          "text": "Which data would you measure first, and why?",
+          "skipIf": [
+            "critical data",
+            "regulatory"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-governance-4",
+      "kind": "open",
+      "roleSlugs": [
+        "data-architect",
+        "data-engineer",
+        "data-engineering-manager",
+        "data-governance-analyst",
+        "data-quality-engineer",
+        "database-architect",
+        "director-data-ai",
+        "information-security-analyst",
+        "privacy-analyst"
+      ],
+      "skillId": "data-governance",
+      "topic": "Data governance",
+      "question": "What changes for data governance under India's DPDP Act?",
+      "strongCovers": "Knowing where personal data sits, a lawful purpose and consent for each use, notices, retention limits and deletion, rights requests handled on time, breach reporting, and controls over processors.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "data-governance-4-fu-1",
+          "text": "How do you handle a request to delete someone's data?",
+          "skipIf": [
+            "erasure",
+            "rights request"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "data-governance-5",
+      "kind": "open",
+      "roleSlugs": [
+        "data-architect",
+        "data-engineer",
+        "data-engineering-manager",
+        "data-governance-analyst",
+        "data-quality-engineer",
+        "database-architect",
+        "director-data-ai",
+        "information-security-analyst",
+        "privacy-analyst"
+      ],
+      "skillId": "data-governance",
+      "topic": "Data governance",
+      "question": "A business team wants access to customer data for a new model. How do you decide?",
+      "strongCovers": "Check the purpose against consent and policy, give only the fields needed, mask or pseudonymise where possible, record the approval and set an expiry and a review.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "data-governance-5-fu-1",
+          "text": "What do you do if the team needs the full data set after all?",
+          "skipIf": [
+            "exception",
+            "approval",
+            "review"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "kubernetes-1",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-engineer",
+        "application-support-engineer",
+        "build-release-engineer",
+        "cloud-architect",
+        "cloud-engineer",
+        "cloud-finops-analyst",
+        "cloud-security-engineer",
+        "devops-engineer",
+        "devsecops-engineer",
+        "director-cloud-infrastructure",
+        "full-stack-developer",
+        "golang-developer",
+        "hpc-gpu-engineer",
+        "java-backend-developer",
+        "middleware-administrator",
+        "mlops-engineer",
+        "platform-engineer",
+        "platform-engineering-manager",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "solutions-architect"
+      ],
+      "skillId": "kubernetes",
+      "topic": "Kubernetes",
+      "question": "Explain how a Deployment, a ReplicaSet and a Pod relate.",
+      "strongCovers": "A Deployment declares the desired state and manages ReplicaSets for rollouts and rollbacks; a ReplicaSet keeps the set number of Pods running; a Pod runs one or more containers that share network and storage.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "kubernetes-1-fu-1",
+          "text": "What happens to running pods during a rolling update?",
+          "skipIf": [
+            "maxsurge",
+            "maxunavailable",
+            "readiness"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "kubernetes-2",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-engineer",
+        "application-support-engineer",
+        "build-release-engineer",
+        "cloud-architect",
+        "cloud-engineer",
+        "cloud-finops-analyst",
+        "cloud-security-engineer",
+        "devops-engineer",
+        "devsecops-engineer",
+        "director-cloud-infrastructure",
+        "full-stack-developer",
+        "golang-developer",
+        "hpc-gpu-engineer",
+        "java-backend-developer",
+        "middleware-administrator",
+        "mlops-engineer",
+        "platform-engineer",
+        "platform-engineering-manager",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "solutions-architect"
+      ],
+      "skillId": "kubernetes",
+      "topic": "Kubernetes",
+      "question": "A pod keeps restarting with CrashLoopBackOff. How do you find out why?",
+      "strongCovers": "kubectl describe pod for events, kubectl logs with --previous for the crashed container, check the command, config and secrets, resource limits (OOMKilled) and liveness probes, then fix and redeploy.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "kubernetes-2-fu-1",
+          "text": "What would you check if the logs are empty?",
+          "skipIf": [
+            "events",
+            "image",
+            "init container"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "kubernetes-3",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-engineer",
+        "application-support-engineer",
+        "build-release-engineer",
+        "cloud-architect",
+        "cloud-engineer",
+        "cloud-finops-analyst",
+        "cloud-security-engineer",
+        "devops-engineer",
+        "devsecops-engineer",
+        "director-cloud-infrastructure",
+        "full-stack-developer",
+        "golang-developer",
+        "hpc-gpu-engineer",
+        "java-backend-developer",
+        "middleware-administrator",
+        "mlops-engineer",
+        "platform-engineer",
+        "platform-engineering-manager",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "solutions-architect"
+      ],
+      "skillId": "kubernetes",
+      "topic": "Kubernetes",
+      "question": "How do you expose a service to users outside the cluster?",
+      "strongCovers": "A Service of type LoadBalancer or NodePort, or an Ingress or Gateway in front of ClusterIP services, with TLS, DNS and a controller that routes by host or path.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "kubernetes-3-fu-1",
+          "text": "How do you add TLS certificates and renew them?",
+          "skipIf": [
+            "cert-manager",
+            "secret"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "kubernetes-4",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-engineer",
+        "application-support-engineer",
+        "build-release-engineer",
+        "cloud-architect",
+        "cloud-engineer",
+        "cloud-finops-analyst",
+        "cloud-security-engineer",
+        "devops-engineer",
+        "devsecops-engineer",
+        "director-cloud-infrastructure",
+        "full-stack-developer",
+        "golang-developer",
+        "hpc-gpu-engineer",
+        "java-backend-developer",
+        "middleware-administrator",
+        "mlops-engineer",
+        "platform-engineer",
+        "platform-engineering-manager",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "solutions-architect"
+      ],
+      "skillId": "kubernetes",
+      "topic": "Kubernetes",
+      "question": "How do requests and limits affect scheduling and stability?",
+      "strongCovers": "Requests are what the scheduler reserves to place a pod; limits cap use. Too-low requests overpack nodes, too-low memory limits get pods killed, and missing requests make autoscaling and capacity planning unreliable.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "kubernetes-4-fu-1",
+          "text": "How do you pick the numbers for a new service?",
+          "skipIf": [
+            "load test",
+            "metrics",
+            "vpa"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "kubernetes-5",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-engineer",
+        "application-support-engineer",
+        "build-release-engineer",
+        "cloud-architect",
+        "cloud-engineer",
+        "cloud-finops-analyst",
+        "cloud-security-engineer",
+        "devops-engineer",
+        "devsecops-engineer",
+        "director-cloud-infrastructure",
+        "full-stack-developer",
+        "golang-developer",
+        "hpc-gpu-engineer",
+        "java-backend-developer",
+        "middleware-administrator",
+        "mlops-engineer",
+        "platform-engineer",
+        "platform-engineering-manager",
+        "senior-backend-engineer",
+        "site-reliability-engineer",
+        "solutions-architect"
+      ],
+      "skillId": "kubernetes",
+      "topic": "Kubernetes",
+      "question": "How would you run upgrades of a production cluster with little risk?",
+      "strongCovers": "Read the release notes and deprecated APIs, upgrade a staging cluster first, keep pod disruption budgets, upgrade the control plane then node pools one at a time, watch workloads and keep a rollback plan.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "kubernetes-5-fu-1",
+          "text": "What would make you stop an upgrade halfway?",
+          "skipIf": [
+            "errors",
+            "rollback",
+            "alerts"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "roadmapping-1",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-product-manager",
+        "director-of-product",
+        "engineering-manager",
+        "ml-engineering-manager",
+        "product-manager",
+        "technical-program-manager"
+      ],
+      "skillId": "roadmapping",
+      "topic": "Roadmaps",
+      "question": "How do you build a product roadmap for the next two quarters?",
+      "strongCovers": "Start from company goals and customer problems, size opportunities, pick outcomes to aim for, sequence themes with engineering capacity and dependencies, and share it with clear confidence levels rather than fixed dates far out.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "roadmapping-1-fu-1",
+          "text": "How do you decide what does not make the roadmap?",
+          "skipIf": [
+            "opportunity",
+            "trade-off"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "roadmapping-2",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-product-manager",
+        "director-of-product",
+        "engineering-manager",
+        "ml-engineering-manager",
+        "product-manager",
+        "technical-program-manager"
+      ],
+      "skillId": "roadmapping",
+      "topic": "Roadmaps",
+      "question": "Sales asks you to promise a feature to close a big deal. What do you do?",
+      "strongCovers": "Understand the customer problem and deal value, check fit with strategy and other customers, see what it displaces on the roadmap, then agree an answer with sales and leadership, without promising dates engineering hasn't seen.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "roadmapping-2-fu-1",
+          "text": "What if leadership overrules you and promises it anyway?",
+          "skipIf": [
+            "escalate",
+            "scope",
+            "record"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "roadmapping-3",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-product-manager",
+        "director-of-product",
+        "engineering-manager",
+        "ml-engineering-manager",
+        "product-manager",
+        "technical-program-manager"
+      ],
+      "skillId": "roadmapping",
+      "topic": "Roadmaps",
+      "question": "What is the difference between an outcome roadmap and a feature roadmap?",
+      "strongCovers": "An outcome roadmap names the problems and measurable results the team aims for and leaves room on the solution; a feature roadmap lists outputs and dates. Outcomes keep teams focused on impact and make change easier to explain.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "roadmapping-3-fu-1",
+          "text": "Give an example of turning a feature request into an outcome.",
+          "skipIf": [
+            "metric",
+            "problem"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "roadmapping-4",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-product-manager",
+        "director-of-product",
+        "engineering-manager",
+        "ml-engineering-manager",
+        "product-manager",
+        "technical-program-manager"
+      ],
+      "skillId": "roadmapping",
+      "topic": "Roadmaps",
+      "question": "How do you say no to a request from a senior stakeholder?",
+      "strongCovers": "Show the request against the goals and what it would push out, offer what can be done or when it could be looked at, and record the decision so it is not reopened every week.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "roadmapping-4-fu-1",
+          "text": "How do you keep the relationship after saying no?",
+          "skipIf": [
+            "follow up",
+            "alternative"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
+      "id": "roadmapping-5",
+      "kind": "open",
+      "roleSlugs": [
+        "ai-product-manager",
+        "director-of-product",
+        "engineering-manager",
+        "ml-engineering-manager",
+        "product-manager",
+        "technical-program-manager"
+      ],
+      "skillId": "roadmapping",
+      "topic": "Roadmaps",
+      "question": "How often should a roadmap change, and how do you communicate it?",
+      "strongCovers": "Review it on a fixed rhythm, such as monthly or quarterly, and when evidence changes; share what changed and why with sales, support and leadership, so nobody learns it from a customer.",
+      "level": "L1",
+      "reviewed": false,
+      "followUps": [
+        {
+          "id": "roadmapping-5-fu-1",
+          "text": "How do you stop the roadmap changing every week?",
+          "skipIf": [
+            "rhythm",
+            "evidence"
+          ]
+        }
+      ],
+      "followUpsReviewed": false
+    },
+    {
       "id": "compensation-planning-mc-1",
       "kind": "choice",
       "roleSlugs": [

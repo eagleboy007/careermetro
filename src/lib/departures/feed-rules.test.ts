@@ -131,7 +131,7 @@ describe("feed rules", () => {
     expect(cityOf("India", false)).toBe("India");
     expect([workTypeOf("Full-time"), workTypeOf("Part-time"), workTypeOf("Contract"), workTypeOf("FullTime"), workTypeOf(null)]).toEqual(["full_time", "part_time", "freelance", "full_time", "full_time"]);
     expect(classify("Junior Data Analyst")).toBe("data-analyst");
-    expect(classify("Director, Data Analytics")).toBeNull();
+    expect(classify("Director, Data Analytics")).toBe("director-data-ai");
   });
 
   it("reads a title as one of the live role profiles, the most specific first", () => {
