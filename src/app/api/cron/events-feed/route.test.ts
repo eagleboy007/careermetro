@@ -105,7 +105,9 @@ describe("the daily event feed", () => {
     // The fixture's events are dated November 2026: read them on the day the test was written, as the feed test does, so they stay upcoming.
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-10-31T00:30:00Z"));
-    onTestFinished(() => vi.useRealTimers());
+    onTestFinished(() => {
+      vi.useRealTimers();
+    });
     m.feeds = [feed, { ...feed, id: "off-feed", on: false, termsReadOn: null }];
     const fetch = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(ics));
     m.write.mockResolvedValueOnce({ upserted: 4, cancelled: 1, topics: 9 });

@@ -10097,17 +10097,6 @@
     "free": true
   },
   {
-    "title": "Salesforce B2C Commerce for Developers",
-    "url": "https://trailhead.salesforce.com/modules/cc-digital-for-developers",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "salesforce-b2c-commerce"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "Tools & Resources for Salesforce B2C Commerce Developers",
     "url": "https://trailhead.salesforce.com/content/learn/modules/b2c-developer-resources-and-tools",
     "provider": "Salesforce Trailhead",
@@ -10492,17 +10481,6 @@
       "sap-sd-configuration"
     ],
     "minutes": 420,
-    "free": true
-  },
-  {
-    "title": "Configuring Pricing in SAP S/4HANA Sales",
-    "url": "https://learning.sap.com/learning-journeys/configuring-pricing-in-sap-s-4hana-sales",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-sd-configuration"
-    ],
-    "minutes": 600,
     "free": true
   },
   {
@@ -29056,17 +29034,6 @@
     "free": true
   },
   {
-    "title": "TI Precision Labs: Digital-to-analog converters (DACs) video series",
-    "url": "https://ti.com/video/series/digital-to-analog-converters--dacs-.html",
-    "provider": "Texas Instruments",
-    "kind": "video",
-    "skillIds": [
-      "data-converter-design"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "Types of noise in ADCs (TI Precision Labs)",
     "url": "https://training.ti.com/types-noise-adcs",
     "provider": "Texas Instruments",
@@ -34233,29 +34200,6 @@
     "kind": "docs",
     "skillIds": [
       "third-party-risk"
-    ],
-    "minutes": 90,
-    "free": true
-  },
-  {
-    "title": "Cross-sector cybersecurity performance goals",
-    "url": "https://www.cisa.gov/resources-tools/resources/cross-sector-cybersecurity-performance-goals",
-    "provider": "CISA",
-    "kind": "docs",
-    "skillIds": [
-      "security-program-leadership"
-    ],
-    "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "AWS Well-Architected Framework",
-    "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
-    "provider": "AWS",
-    "kind": "docs",
-    "skillIds": [
-      "cloud-landing-zones",
-      "high-availability-dr"
     ],
     "minutes": 90,
     "free": true
