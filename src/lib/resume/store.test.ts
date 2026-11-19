@@ -76,6 +76,18 @@ describe.skipIf(!db)("resume store (database)", () => {
     expect(saved?.profile.skills).toEqual([{ name: "SQL", lastUsed: null, evidence: [] }]);
   });
 
+  it("keeps the parsed level facts, whatever the page sends (C26)", async () => {
+    const id = await upload(`${session}-l`);
+    const before = (await getResumeForOwner(id, { sessionId: `${session}-l` }, db!))?.profile.levelFacts;
+    const forged: Profile = {
+      ...parsed,
+      levelFacts: { yearsInThisWork: 20, thisWork: null, peopleLed: 500, peopleLedQuote: "Led 500 people", managesManagers: true, managesManagersQuote: "Led managers", budget: "Owned a ₹900 crore P&L", reportsTo: "CEO", reportsToQuote: "Reported to the CEO", scope: null },
+    };
+    await confirmProfile(id, { sessionId: `${session}-l` }, forged, db!);
+    const saved = await getResumeForOwner(id, { sessionId: `${session}-l` }, db!);
+    expect(saved?.profile.levelFacts).toEqual(before);
+  });
+
   it("reports a conflict when two saves race for the same version", async () => {
     const id = await upload(`${session}-r`);
     const results = await Promise.all([1, 2, 3].map(() => confirmProfile(id, { sessionId: `${session}-r` }, parsed, db!)));

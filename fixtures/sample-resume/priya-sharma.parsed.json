@@ -33,4 +33,17 @@
   ],
   "education": [{ "qualification": "B.Com", "institution": "Savitribai Phule Pune University", "year": "2021" }],
   "certifications": [{ "name": "Google Data Analytics Professional Certificate", "earned": null, "expires": null }]
+,
+  "levelFacts": {
+    "yearsInThisWork": 3,
+    "thisWork": "Retail sales reporting",
+    "peopleLed": null,
+    "peopleLedQuote": null,
+    "managesManagers": false,
+    "managesManagersQuote": null,
+    "budget": null,
+    "reportsTo": null,
+    "reportsToQuote": null,
+    "scope": "Wrote SQL queries for weekly sales reports across 40 stores"
+  }
 }

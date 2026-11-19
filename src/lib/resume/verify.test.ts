@@ -198,3 +198,47 @@ Assistant Systems Engineer`;
     expect(normalizeForMatch("  • Jun 2022 – Present’s  \n work")).toBe("jun 2022 - present's work");
   });
 });
+
+describe("verifyProfile, level facts (C26)", () => {
+  const facts = {
+    yearsInThisWork: 9,
+    thisWork: "Retail reporting",
+    peopleLed: 40,
+    peopleLedQuote: "Led a team of 40 analysts",
+    managesManagers: true,
+    managesManagersQuote: "Managed four team leads",
+    budget: "Owned a ₹5 crore budget",
+    reportsTo: "CEO",
+    reportsToQuote: "Reported to the CEO",
+    scope: "Wrote SQL queries for weekly sales reports across 40 stores",
+  };
+
+  it("keeps only facts the resume shows, caps the years at the total, and clears the rest (AI-5)", () => {
+    const { profile, report } = verifyProfile({ ...base, levelFacts: facts }, resume);
+    expect(profile.levelFacts).toEqual({
+      yearsInThisWork: 3,
+      thisWork: "Retail reporting",
+      peopleLed: null,
+      peopleLedQuote: null,
+      managesManagers: false,
+      managesManagersQuote: null,
+      budget: null,
+      reportsTo: null,
+      reportsToQuote: null,
+      scope: "Wrote SQL queries for weekly sales reports across 40 stores",
+    });
+    expect(report.droppedQuotes).toBe(4);
+  });
+
+  it("keeps a reporting line only when its own resume line names it", () => {
+    const text = `${resume}\nReported to the Managing Director`;
+    const ok = verifyProfile({ ...base, levelFacts: { ...facts, reportsTo: "Managing Director", reportsToQuote: "Reported to the Managing Director" } }, text);
+    expect(ok.profile.levelFacts?.reportsTo).toBe("Managing Director");
+    const other = verifyProfile({ ...base, levelFacts: { ...facts, reportsTo: "CEO", reportsToQuote: "Reported to the Managing Director" } }, text);
+    expect(other.profile.levelFacts?.reportsTo).toBeNull();
+  });
+
+  it("leaves a profile from before level facts without them", () => {
+    expect("levelFacts" in verifyProfile(base, resume).profile).toBe(false);
+  });
+});

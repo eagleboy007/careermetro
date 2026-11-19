@@ -631,6 +631,8 @@ export const PROFILE_ROLES_MAX = 40;
 export const PROFILE_SKILLS_MAX = 100;
 export const PROFILE_EDUCATION_MAX = 20;
 export const PROFILE_CERTIFICATIONS_MAX = 30;
+/** C26 level facts: the short labels "this kind of work" and "reports to". Quotes use PROFILE_HIGHLIGHT_MAX. */
+export const LEVEL_FACT_TEXT_MAX = 60;
 
 /** Caps from the plan, section 4. */
 export const BUILDER_ROWS_MAX = 20;
