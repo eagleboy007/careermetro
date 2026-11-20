@@ -12650,17 +12650,6 @@
     "free": true
   },
   {
-    "title": "SAP HANA - Installation and Administration",
-    "url": "https://learning.sap.com/learning-journeys/installing-and-administering-sap-hana",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-basis-administration"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "NIST SP 800-86: Guide to Integrating Forensic Techniques into Incident Response",
     "url": "https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-86.pdf",
     "provider": "NIST",
@@ -19507,17 +19496,6 @@
       "facility-vendor-management"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Contracting out Cleaning and Security Contracts",
-    "url": "https://innet.icac.org.hk/docs/Contracting%20out%20Cleaning%20and%20Security%20Contracts%20EN.pdf",
-    "provider": "ICAC Hong Kong",
-    "kind": "docs",
-    "skillIds": [
-      "facility-vendor-management"
-    ],
-    "minutes": 60,
     "free": true
   },
   {
