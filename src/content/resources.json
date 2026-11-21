@@ -4497,17 +4497,6 @@
     "free": true
   },
   {
-    "title": "Free Google Ads training (Skillshop)",
-    "url": "https://skillshop.withgoogle.com/googleads/",
-    "provider": "Google Skillshop",
-    "kind": "course",
-    "skillIds": [
-      "sem-google-ads"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "Start marketing with Meta technologies (Meta Blueprint)",
     "url": "https://www.facebookblueprint.com/student/path/211554-meta-marketing",
     "provider": "Meta Blueprint",
