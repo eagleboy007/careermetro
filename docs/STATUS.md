@@ -2,7 +2,7 @@
 
 This page is the current state only: read it first, then the one plan file the task needs. At the end of every task, change it in 2–3 lines in the same PR. Facts carry a PR or doc link. Everything this page held up to 2026-10-31 (each merged feature, test-run fix and feed change, word for word) is in [`docs/plans/status-history-2026-10.md`](plans/status-history-2026-10.md). How to work is in `.claude/skills/careermetro-dev/SKILL.md`.
 
-Last updated: 2026-11-18 (C26 sign-up without a target role, part 1: build plan `docs/plans/signup-levels-plan.md`, level data L1 to L8 in `src/content/levels/` and the 8 Director roles of batch L7, all awaiting expert sign-off)
+Last updated: 2026-11-21 (C26 part 2: parse prompt v4 adds `levelFacts` (years in this work, people led, budget, reporting line, scope, each with its resume line), and `src/lib/levels/level.ts` turns them into L1 to L8 in plain code, never reading the title; no screen uses it yet)
 
 ## Live (https://careermetro.vercel.app)
 
@@ -16,7 +16,7 @@ Last updated: 2026-11-18 (C26 sign-up without a target role, part 1: build plan 
 
 ## In progress
 
-- C26 sign-up without a target role (Milin approved the flow 2026-11-17 and the design 2026-11-18; `docs/plans/signup-levels-plan.md`): part 1 (level data, Director roles) in this PR; next parse prompt v4 and the level code, then Where you stand, Where next and the Today "Set your destination" card, then a pasted job as the main destination for L6 and up.
+- C26 sign-up without a target role (Milin approved the flow 2026-11-17 and the design 2026-11-18; `docs/plans/signup-levels-plan.md`): part 1 (level data, Director roles) merged in PR 320; part 2 (parse v4, level code) in this PR; next Where you stand, Where next and the Today "Set your destination" card, then a pasted job as the main destination for L6 and up.
 - Scale check (`docs/scale-check.md`, `.github/workflows/scale.yml`, CI Postgres only): 10,000 synthetic members, page p95 budget 2.5 s, crons at 80% of maxDuration. Open: the events digest may never reach people behind opted-in members with no event that week.
 - CSP: the host allow-list policy is report-only (`src/proxy.ts`, `src/lib/csp.ts`); the walk prints `CSP: none` or each violation. Enforcing waits on the log drain and on Milin (`docs/dev/security-sweep-2026-10-20.md`).
 - Expert review pack (pending item 27): `node scripts/review/build-review-pack.mjs` writes `docs/review/pack/`; every role, certificate and question above waits on it.
