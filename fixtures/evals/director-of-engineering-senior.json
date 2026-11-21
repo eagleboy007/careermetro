@@ -1,0 +1,53 @@
+{
+  "id": "director-of-engineering-senior",
+  "roleSlug": "director-of-engineering",
+  "persona": "senior",
+  "resumeText": "Arjun Nair | Bengaluru | arjun.nair@example.com\n\nSUMMARY\nEngineering leader with 15 years building SaaS and data products.\n\nEXPERIENCE\nSenior Engineering Manager, Tidewater Analytics, Bengaluru (2019 - present)\n- Make architecture decisions across five teams in the data platform group.\n- Review high level design for services handling two billion events a day.\n- Line manager for four engineering managers and two staff engineers.\n- Run interview loops and hired engineers and managers for a team growing from 30 to 70.\n- Own the technology roadmap for the data platform area.\n- Lead program management across teams and cross-team dependencies.\n- Run sprint planning and quarterly planning with product.\n- Set SLOs and error budgets for all platform services.\n- Use stakeholder communication with product and sales leaders.\n\nEngineering Manager, Pinecrest Software, Pune (2014 - 2019)\n- Led the billing team.\n\nSoftware Engineer, Konkan Infotech, Pune (2011 - 2014)\n\nEDUCATION\nBTech Computer Science, NIT Calicut, 2011",
+  "expected": {
+    "totalYearsExperience": 15,
+    "skills": [
+      {
+        "skillId": "technical-leadership",
+        "quote": "Make architecture decisions across five teams"
+      },
+      {
+        "skillId": "system-design",
+        "quote": "Review high level design for services"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Line manager for four engineering managers"
+      },
+      {
+        "skillId": "engineering-hiring",
+        "quote": "Run interview loops and hired engineers"
+      },
+      {
+        "skillId": "technology-strategy",
+        "quote": "Own the technology roadmap for the"
+      },
+      {
+        "skillId": "program-management",
+        "quote": "Lead program management across teams"
+      },
+      {
+        "skillId": "agile-scrum",
+        "quote": "Run sprint planning and quarterly planning"
+      },
+      {
+        "skillId": "sre-practices",
+        "quote": "Set SLOs and error budgets"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication with product"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "cloud-cost",
+      "organisation-design"
+    ]
+  },
+  "reviewedBy": null
+}

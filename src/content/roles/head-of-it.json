@@ -1,0 +1,132 @@
+{
+  "slug": "head-of-it",
+  "title": "Head of IT",
+  "summary": "A head of IT leads the whole IT function in a mid-sized company or a division of a large one. They own infrastructure, network, enterprise applications such as ERP, the help desk, IT vendors and the IT budget, and keep systems secure and available. Larger firms split this into IT infrastructure and applications heads.",
+  "dailyDuties": [
+    "Review uptime, tickets and SLAs with teams and vendors",
+    "Plan and track IT projects and ERP changes",
+    "Negotiate IT contracts and renewals",
+    "Approve access, backup and DR checks",
+    "Plan the IT budget with finance",
+    "Lead and hire the IT team"
+  ],
+  "typicalTitles": [
+    "IT Head",
+    "Head - IT",
+    "Head of IT Infrastructure",
+    "General Manager - IT",
+    "Director - IT",
+    "Director - Enterprise Applications and IT Infrastructure",
+    "Head - IT and Infrastructure"
+  ],
+  "experienceBand": {
+    "minYears": 12,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "technology-strategy",
+      "importance": "required",
+      "expectation": "Set the IT strategy and roadmap",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-portfolio-governance",
+      "importance": "required",
+      "expectation": "Run IT projects and enterprise applications",
+      "postingShare": null
+    },
+    {
+      "skillId": "it-vendor-management",
+      "importance": "required",
+      "expectation": "Manage IT vendors, contracts and licences",
+      "postingShare": null
+    },
+    {
+      "skillId": "itsm",
+      "importance": "required",
+      "expectation": "Run IT service management and the help desk",
+      "postingShare": null
+    },
+    {
+      "skillId": "service-level-management",
+      "importance": "required",
+      "expectation": "Hold vendors and teams to SLAs",
+      "postingShare": null
+    },
+    {
+      "skillId": "identity-access-management",
+      "importance": "required",
+      "expectation": "Control user access and provisioning",
+      "postingShare": null
+    },
+    {
+      "skillId": "high-availability-dr",
+      "importance": "required",
+      "expectation": "Own backups, DR and business continuity for IT",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead the IT team",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with business heads and finance",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Plan and track the IT budget",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-policies",
+      "importance": "nice_to_have",
+      "expectation": "Run IT policies and ISMS with security",
+      "postingShare": null
+    },
+    {
+      "skillId": "cloud-migration",
+      "importance": "nice_to_have",
+      "expectation": "Move servers and apps to cloud",
+      "postingShare": null
+    },
+    {
+      "skillId": "endpoint-management",
+      "importance": "nice_to_have",
+      "expectation": "Oversee laptops and device management",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "itil-foundation",
+      "importance": "recommended",
+      "why": "IT head posts list ITIL."
+    },
+    {
+      "certId": "pmp",
+      "importance": "optional",
+      "why": "Listed as an advantage."
+    },
+    {
+      "certId": "cissp",
+      "importance": "optional",
+      "why": "Listed as an advantage where IT also covers security."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India employer job posts and regulator notices on 2026-11-17. Awaiting domain-expert sign-off (L7 leadership role).",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-17"
+}

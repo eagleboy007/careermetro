@@ -1,0 +1,53 @@
+{
+  "id": "head-of-it-senior",
+  "roleSlug": "head-of-it",
+  "persona": "senior",
+  "resumeText": "Prakash Desai | Thane | prakash.desai@example.com\n\nSUMMARY\nIT leader with 17 years running infrastructure and applications for manufacturers.\n\nEXPERIENCE\nSenior Manager - IT, Sahyadri Engineering, Thane (2017 - present)\n- Wrote the IT strategy and three-year roadmap for six plants.\n- Run IT portfolio management for ERP and plant system projects.\n- Handle vendor management for 14 IT vendors and contract renewals.\n- Run IT service management on ITIL v4 with a 12-person help desk.\n- Hold monthly service reviews with vendors against SLAs.\n- Control access through Active Directory and MFA for 2,000 users.\n- Own backup and recovery and disaster recovery drills.\n- Managed a team of 20 across infrastructure, ERP and support.\n- Use stakeholder communication with plant heads and finance.\n\nIT Manager, Konkan Auto Parts, Pune (2011 - 2017)\n- Ran network, servers and SAP support.\n\nSystem Engineer, Deccan Infosystems, Pune (2008 - 2011)\n\nEDUCATION\nBE Computer Engineering, University of Pune, 2008\n\nCERTIFICATIONS\nITIL 4 Foundation",
+  "expected": {
+    "totalYearsExperience": 17,
+    "skills": [
+      {
+        "skillId": "technology-strategy",
+        "quote": "Wrote the IT strategy and three-year roadmap"
+      },
+      {
+        "skillId": "it-portfolio-governance",
+        "quote": "Run IT portfolio management for ERP"
+      },
+      {
+        "skillId": "it-vendor-management",
+        "quote": "Handle vendor management for 14 IT vendors"
+      },
+      {
+        "skillId": "itsm",
+        "quote": "Run IT service management on ITIL v4"
+      },
+      {
+        "skillId": "service-level-management",
+        "quote": "Hold monthly service reviews with vendors"
+      },
+      {
+        "skillId": "identity-access-management",
+        "quote": "Control access through Active Directory and MFA"
+      },
+      {
+        "skillId": "high-availability-dr",
+        "quote": "Own backup and recovery and disaster recovery"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 20"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication with plant heads"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "cloud-migration",
+      "spend-forecasting"
+    ]
+  },
+  "reviewedBy": null
+}

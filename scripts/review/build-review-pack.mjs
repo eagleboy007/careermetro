@@ -56,8 +56,20 @@ export const SIGN_OFF = [
   { ref: "head-of-ai#title", note: "Thin evidence, needs an expert's sign-off before it is trusted: no India employer post for Head of AI on the allowed sources, so the profile rests on global posts and Microsoft and AWS guidance. \"Chief AI Officer\" sits here because India has few such posts." },
   { ref: "chief-risk-officer#title", note: "Thin evidence, needs an expert's sign-off before it is trusted: drafted from NABARD's CRO notice, the Basel principles and the RBI CRO rule, not employer posts. Credit risk modelling is required because most Indian CROs come from lending; an insurer's CRO would have it as nice to have." },
   { ref: "cto#skill:it-vendor-management", note: "Required (was Nice to have): with people skills set aside, the draft had four skills a resume can be scored on, below the five every role keeps. CTOs in Indian companies own the large technology vendor contracts." },
-  { ref: "grc-manager#titles", note: "\"IT Risk Manager\" and \"Cyber Risk Manager\" removed: they are now the Cyber Risk Manager profile (batch TR1)." },
+  { ref: "grc-manager#titles", note: "\"IT Risk Manager\" and \"Cyber Risk Manager\" removed: they are now the Cyber Risk Manager profile (batch TR1). \"Head of GRC\" removed: it is now Director of GRC (batch L7)." },
   { ref: "information-security-analyst#titles", note: "\"IT Risk Analyst\" and \"Cyber Risk Analyst\" removed: they are now the Cyber Risk Analyst profile (batch TR1)." },
+  { ref: "director-information-security#title", note: "Director level (L7, batch L7), needs an expert's sign-off before it is trusted, like CISO, CRO and CTO. \"Head of Information Security\", \"Head of Cyber Security\" and \"VP - Information Security\" moved here from CISO, which keeps chief and deputy CISO titles." },
+  { ref: "head-of-risk#title", note: "Thin evidence, needs an expert's sign-off before it is trusted: no India employer post with this title on the allowed sources, so duties lean on the PNB CRO notice, RBI's CRO rule and NBFC risk committee rules. Credit-heavy because most Indian heads of risk sit in lending; for an insurer, credit risk modelling would be nice to have. \"Head of Risk\" and \"Head - Risk Management\" moved here from Chief Risk Officer. FRM is not in the certificate catalogue, so only CRISC is listed." },
+  { ref: "director-grc#title", note: "Director level (L7, batch L7), needs an expert's sign-off. \"Head of GRC\" moved here from GRC Manager." },
+  { ref: "director-of-engineering#title", note: "Director level (L7, batch L7), needs an expert's sign-off. \"Head of Engineering\" moved here from Engineering Manager and \"VP of Engineering\" from CTO. No certificate: posts ask for none." },
+  { ref: "director-data-ai#title", note: "Director level (L7, batch L7), needs an expert's sign-off. Takes data science leadership titles only; Head of AI keeps \"Director of AI\" and \"AI Engineering Director\"." },
+  { ref: "director-cloud-infrastructure#title", note: "Director level (L7, batch L7), needs an expert's sign-off. Shares disaster recovery and strategy skills with Head of IT: this role leads cloud and platform teams, Head of IT the whole corporate IT function." },
+  { ref: "head-of-it#title", note: "Director level (L7, batch L7), needs an expert's sign-off. Rests on two employer posts (Dr. Reddy's, Zeta); mid-size company duties are inferred." },
+  { ref: "director-of-product#title", note: "Director level (L7, batch L7), needs an expert's sign-off before it is trusted." },
+  { ref: "ciso#titles", note: "\"Head of Information Security\", \"Head of Cyber Security\" and \"VP - Information Security\" removed: they are now Director of Information Security (batch L7)." },
+  { ref: "chief-risk-officer#titles", note: "\"Head of Risk\" and \"Head - Risk Management\" removed: they are now Head of Risk (batch L7)." },
+  { ref: "engineering-manager#titles", note: "\"Head of Engineering\" removed: it is now Director of Engineering (batch L7)." },
+  { ref: "cto#titles", note: "\"VP of Engineering\" removed: it is now Director of Engineering (batch L7)." },
 ];
 const signOffNote = new Map(SIGN_OFF.map((c) => [c.ref, c.note]));
 
@@ -80,11 +92,15 @@ export function loadContent() {
   const bank = read("src/content/mock-bank.json").questions;
   const practice = read("src/content/practice-questions.json");
   const certifications = read("src/content/certifications.json");
-  return { roles, skills, families, bank, practice, certifications };
+  const levels = read("src/content/levels/levels.json");
+  const roleLevels = read("src/content/levels/role-levels.json").roles;
+  return { roles, skills, families, bank, practice, certifications, levels, roleLevels };
 }
 
-/** One review line per field of a role: title, summary, each normal-day duty, typical titles, years, each skill. */
-export function roleRows(role, skills) {
+const BASIS = { band: "from the experience band", title: "from the title", "title+band": "from the title and the band", "band+scope": "from the band, one step up for the team or budget in its duties" };
+
+/** One review line per field of a role: title, summary, each normal-day duty, typical titles, years, level, each skill. */
+export function roleRows(role, skills, levelOf = undefined) {
   const ref = (part) => `${role.slug}#${part}`;
   const rows = [
     [ref("title"), role.title, "Title", role.title, ""],
@@ -93,6 +109,8 @@ export function roleRows(role, skills) {
     [ref("titles"), role.title, "Job titles it covers", role.typicalTitles.join("; "), ""],
     [ref("years"), role.title, "Experience (years)", `${role.experienceBand.minYears}-${role.experienceBand.maxYears}`, ""],
   ];
+  const level = levelOf?.[role.slug];
+  if (level) rows.push([ref("level"), role.title, "Level (L1 to L8)", level.alsoLevel ? `${level.level}, also ${level.alsoLevel}` : level.level, `Drafted ${BASIS[level.basis]}.`]);
   for (const s of role.skills) {
     const kind = s.oneOf ? `${IMPORTANCE[s.importance]}, one of (${role.skills.filter((o) => o.oneOf === s.oneOf).map((o) => skills.get(o.skillId) ?? o.skillId).join(" / ")})` : IMPORTANCE[s.importance];
     rows.push([ref(`skill:${s.skillId}`), role.title, `Skill: ${kind}`, skills.get(s.skillId) ?? s.skillId, s.expectation]);
@@ -115,7 +133,7 @@ export function certificationRows(certifications, roles, skills) {
 }
 
 export function buildPack() {
-  const { roles, skills, families, bank, practice, certifications } = loadContent();
+  const { roles, skills, families, bank, practice, certifications, levels, roleLevels } = loadContent();
   const familyOf = new Map(Object.entries(families).flatMap(([fam, slugs]) => slugs.map((s) => [s, fam])));
   /** @type {Record<string, string>} */
   const files = {};
@@ -123,7 +141,7 @@ export function buildPack() {
   const awaiting = roles.filter((r) => r.reviewedBy === null);
   for (const field of FIELDS) {
     const inField = awaiting.filter((r) => field.families.includes(familyOf.get(r.slug)));
-    files[field.file] = csv([ROLE_COLUMNS, ...inField.flatMap((r) => roleRows(r, skills))]);
+    files[field.file] = csv([ROLE_COLUMNS, ...inField.flatMap((r) => roleRows(r, skills, roleLevels))]);
     counts.push(`| ${field.name} | \`${field.file}\` | ${inField.length} |`);
   }
   const unplaced = awaiting.filter((r) => !familyOf.has(r.slug)).map((r) => r.slug);
@@ -151,11 +169,16 @@ export function buildPack() {
   ]);
   const certRows = certificationRows(certifications, roles, skills);
   files["certifications.csv"] = csv([["Ref", "Name", "Issuer", "Proves", "Partial", "Roles", ...ANSWER_COLUMNS], ...certRows]);
-  files["README.md"] = readme(counts, awaiting.length, choice.length, practice.length, certRows.length);
+  const levelRows = [
+    ...levels.levels.map((l) => [`level:${l.level}`, l.level, l.name, `${l.typicalYears.min}${l.typicalYears.max === null ? "+" : `-${l.typicalYears.max}`} years`, l.meaning, "", "", ""]),
+    ...levels.titles.map((t) => [`title:${t.title}`, t.level, t.title, t.variants.join("; "), t.note ?? "", "", "", ""]),
+  ];
+  files["levels.csv"] = csv([["Ref", "Level", "Name or title", "Years or other names", "Meaning or note", ...ANSWER_COLUMNS], ...levelRows]);
+  files["README.md"] = readme(counts, awaiting.length, choice.length, practice.length, certRows.length, levelRows.length);
   return files;
 }
 
-function readme(counts, roleCount, choiceCount, practiceCount, certCount) {
+function readme(counts, roleCount, choiceCount, practiceCount, certCount, levelCount) {
   return `# CareerMetro expert review pack
 
 Generated from \`src/content\` by \`node scripts/review/build-review-pack.mjs\`. Do not edit these files by hand in the repo; re-run the script after content changes.
@@ -193,6 +216,10 @@ ${counts.join("\n")}
 | Certifications | File | Lines |
 | --- | --- | --- |
 | Certifications awaiting review (what each proves, and the roles that recommend it) | \`certifications.csv\` | ${certCount} |
+
+| Levels | File | Lines |
+| --- | --- | --- |
+| The eight levels L1 to L8 and the job titles offered at sign-up (a title is a label and never sets the level; each role file also has a Level line) | \`levels.csv\` | ${levelCount} |
 
 ${roleCount} role profiles await review in all.
 

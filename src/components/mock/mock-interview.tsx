@@ -399,13 +399,13 @@ export function MockInterview({
             </button>
           </div>
         ) : (
-          <label htmlFor={`${id}-role`} className="flex flex-col gap-1 text-[0.78rem] text-muted">
+          <label htmlFor={`${id}-role`} className="flex min-w-0 max-w-full flex-col gap-1 text-[0.78rem] text-muted">
             Role
             <select
               id={`${id}-role`}
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="min-h-11 max-w-[360px] rounded-md border border-line-strong bg-surface px-3 text-[0.88rem] text-ink"
+              className="min-h-11 w-full max-w-[360px] rounded-md border border-line-strong bg-surface px-3 text-[0.88rem] text-ink"
             >
               {roles.map((r) => (
                 <option key={r.slug} value={r.slug}>

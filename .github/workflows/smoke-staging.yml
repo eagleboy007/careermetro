@@ -28,7 +28,8 @@ permissions:
 
 jobs:
   dry-run:
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest moved to 26.04, which Playwright's Chromium doesn't support yet (2026-11-18).
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
       - name: Note the job's start

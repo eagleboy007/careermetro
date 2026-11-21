@@ -4497,17 +4497,6 @@
     "free": true
   },
   {
-    "title": "Free Google Ads training (Skillshop)",
-    "url": "https://skillshop.withgoogle.com/googleads/",
-    "provider": "Google Skillshop",
-    "kind": "course",
-    "skillIds": [
-      "sem-google-ads"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "Start marketing with Meta technologies (Meta Blueprint)",
     "url": "https://www.facebookblueprint.com/student/path/211554-meta-marketing",
     "provider": "Meta Blueprint",
@@ -10097,17 +10086,6 @@
     "free": true
   },
   {
-    "title": "Salesforce B2C Commerce for Developers",
-    "url": "https://trailhead.salesforce.com/modules/cc-digital-for-developers",
-    "provider": "Salesforce Trailhead",
-    "kind": "course",
-    "skillIds": [
-      "salesforce-b2c-commerce"
-    ],
-    "minutes": 45,
-    "free": true
-  },
-  {
     "title": "Tools & Resources for Salesforce B2C Commerce Developers",
     "url": "https://trailhead.salesforce.com/content/learn/modules/b2c-developer-resources-and-tools",
     "provider": "Salesforce Trailhead",
@@ -10492,17 +10470,6 @@
       "sap-sd-configuration"
     ],
     "minutes": 420,
-    "free": true
-  },
-  {
-    "title": "Configuring Pricing in SAP S/4HANA Sales",
-    "url": "https://learning.sap.com/learning-journeys/configuring-pricing-in-sap-s-4hana-sales",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-sd-configuration"
-    ],
-    "minutes": 600,
     "free": true
   },
   {
@@ -12667,17 +12634,6 @@
     "kind": "course",
     "skillIds": [
       "automation-anywhere"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
-    "title": "SAP HANA - Installation and Administration",
-    "url": "https://learning.sap.com/learning-journeys/installing-and-administering-sap-hana",
-    "provider": "SAP Learning",
-    "kind": "course",
-    "skillIds": [
-      "sap-basis-administration"
     ],
     "minutes": 240,
     "free": true
@@ -19529,17 +19485,6 @@
       "facility-vendor-management"
     ],
     "minutes": 30,
-    "free": true
-  },
-  {
-    "title": "Contracting out Cleaning and Security Contracts",
-    "url": "https://innet.icac.org.hk/docs/Contracting%20out%20Cleaning%20and%20Security%20Contracts%20EN.pdf",
-    "provider": "ICAC Hong Kong",
-    "kind": "docs",
-    "skillIds": [
-      "facility-vendor-management"
-    ],
-    "minutes": 60,
     "free": true
   },
   {
@@ -29056,17 +29001,6 @@
     "free": true
   },
   {
-    "title": "TI Precision Labs: Digital-to-analog converters (DACs) video series",
-    "url": "https://ti.com/video/series/digital-to-analog-converters--dacs-.html",
-    "provider": "Texas Instruments",
-    "kind": "video",
-    "skillIds": [
-      "data-converter-design"
-    ],
-    "minutes": 240,
-    "free": true
-  },
-  {
     "title": "Types of noise in ADCs (TI Precision Labs)",
     "url": "https://training.ti.com/types-noise-adcs",
     "provider": "Texas Instruments",
@@ -34162,6 +34096,199 @@
     "kind": "docs",
     "skillIds": [
       "ai-strategy-portfolio"
+    ],
+    "minutes": 30,
+    "free": true
+  },
+  {
+    "title": "Principles for effective risk data aggregation and risk reporting (BCBS 239)",
+    "url": "https://www.bis.org/publ/bcbs239.htm",
+    "provider": "Basel Committee (BIS)",
+    "kind": "docs",
+    "skillIds": [
+      "enterprise-risk-management",
+      "board-executive-reporting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Corporate governance principles for banks",
+    "url": "https://www.bis.org/bcbs/publ/d328.htm",
+    "provider": "Basel Committee (BIS)",
+    "kind": "docs",
+    "skillIds": [
+      "enterprise-risk-management",
+      "board-executive-reporting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-37 Rev. 2: Risk Management Framework",
+    "url": "https://csrc.nist.gov/pubs/sp/800/37/r2/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "risk-assessment",
+      "security-policies"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-221A: Information and communications technology risk outcomes",
+    "url": "https://csrc.nist.gov/pubs/sp/800/221/a/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "enterprise-risk-management",
+      "risk-assessment"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-55 Vol. 1: Measurement guide for information security",
+    "url": "https://csrc.nist.gov/pubs/sp/800/55/v1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "security-program-leadership",
+      "board-executive-reporting"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "NIST SP 800-161 Rev. 1: Cybersecurity supply chain risk management",
+    "url": "https://csrc.nist.gov/pubs/sp/800/161/r1/upd1/final",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "third-party-risk"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Google Cloud Well-Architected Framework",
+    "url": "https://cloud.google.com/architecture/framework",
+    "provider": "Google Cloud",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-landing-zones",
+      "sre-practices"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "Microsoft Cloud Adoption Framework for Azure",
+    "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/",
+    "provider": "Microsoft Learn",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-landing-zones",
+      "cloud-migration",
+      "technology-strategy"
+    ],
+    "minutes": 90,
+    "free": true
+  },
+  {
+    "title": "FinOps Framework",
+    "url": "https://www.finops.org/framework/",
+    "provider": "FinOps Foundation",
+    "kind": "docs",
+    "skillIds": [
+      "cloud-cost",
+      "spend-forecasting"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "DORA's software delivery performance metrics",
+    "url": "https://dora.dev/guides/dora-metrics-four-keys/",
+    "provider": "DORA",
+    "kind": "docs",
+    "skillIds": [
+      "technical-leadership",
+      "sre-practices"
+    ],
+    "minutes": 20,
+    "free": true
+  },
+  {
+    "title": "Google re:Work guides for managers and hiring",
+    "url": "https://rework.withgoogle.com/",
+    "provider": "Google",
+    "kind": "docs",
+    "skillIds": [
+      "people-management",
+      "engineering-hiring"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "GitLab Handbook: Engineering",
+    "url": "https://handbook.gitlab.com/handbook/engineering/",
+    "provider": "GitLab",
+    "kind": "docs",
+    "skillIds": [
+      "technical-leadership",
+      "engineering-hiring",
+      "organisation-design"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "GitLab Handbook: Product",
+    "url": "https://handbook.gitlab.com/handbook/product/",
+    "provider": "GitLab",
+    "kind": "docs",
+    "skillIds": [
+      "roadmapping",
+      "product-discovery",
+      "product-metrics"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "SVPG articles on product leadership",
+    "url": "https://www.svpg.com/articles/",
+    "provider": "Silicon Valley Product Group",
+    "kind": "docs",
+    "skillIds": [
+      "product-discovery",
+      "roadmapping"
+    ],
+    "minutes": 45,
+    "free": true
+  },
+  {
+    "title": "NIST AI Risk Management Framework",
+    "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+    "provider": "NIST",
+    "kind": "docs",
+    "skillIds": [
+      "responsible-ai-governance",
+      "ai-strategy-portfolio"
+    ],
+    "minutes": 60,
+    "free": true
+  },
+  {
+    "title": "Thoughtworks Technology Radar",
+    "url": "https://www.thoughtworks.com/radar",
+    "provider": "Thoughtworks",
+    "kind": "docs",
+    "skillIds": [
+      "technology-strategy"
     ],
     "minutes": 30,
     "free": true

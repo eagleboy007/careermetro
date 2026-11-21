@@ -1,0 +1,116 @@
+{
+  "slug": "head-of-risk",
+  "title": "Head of Risk (VP Risk)",
+  "summary": "A head of risk (often titled VP or Director of Risk) leads the risk team in an NBFC, fintech, bank business unit or insurer. They own credit policy and portfolio monitoring, oversee operational and fraud risk, meet RBI rules and present to the risk management committee. In smaller firms they are the senior-most risk person below the CEO.",
+  "dailyDuties": [
+    "Review portfolio quality, delinquency and early warning signals",
+    "Approve credit policy changes and scorecard cut-offs",
+    "Oversee operational and fraud risk reviews",
+    "Prepare risk packs for the risk management committee",
+    "Handle RBI inspections and risk returns",
+    "Lead and hire risk managers"
+  ],
+  "typicalTitles": [
+    "VP - Risk Management",
+    "Vice President - Risk",
+    "Director - Risk Management",
+    "Head - Credit and Risk",
+    "Head of Risk Management - NBFC",
+    "AVP - Risk Management",
+    "Head - Portfolio Risk"
+  ],
+  "experienceBand": {
+    "minYears": 12,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "enterprise-risk-management",
+      "importance": "required",
+      "expectation": "Run the risk framework and risk appetite under the CRO or board",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-portfolio-monitoring",
+      "importance": "required",
+      "expectation": "Track portfolio quality, delinquency and early warning signals",
+      "postingShare": null
+    },
+    {
+      "skillId": "credit-risk-modelling",
+      "importance": "required",
+      "expectation": "Own scorecards and credit policy rules with the model team",
+      "postingShare": null
+    },
+    {
+      "skillId": "operational-risk-management",
+      "importance": "required",
+      "expectation": "Oversee RCSA, loss events and KRIs",
+      "postingShare": null
+    },
+    {
+      "skillId": "rbi-regulatory-framework",
+      "importance": "required",
+      "expectation": "Meet RBI scale-based regulation and risk rules",
+      "postingShare": null
+    },
+    {
+      "skillId": "regulatory-returns-reporting",
+      "importance": "required",
+      "expectation": "Sign off risk returns and inspection responses",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "required",
+      "expectation": "Present to the risk management committee",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead credit, operational and fraud risk managers",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Challenge and support business and collections heads",
+      "postingShare": null
+    },
+    {
+      "skillId": "fraud-detection-rules",
+      "importance": "nice_to_have",
+      "expectation": "Oversee fraud risk controls",
+      "postingShare": null
+    },
+    {
+      "skillId": "market-risk-pnl",
+      "importance": "nice_to_have",
+      "expectation": "Oversee treasury and market risk where relevant",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "nice_to_have",
+      "expectation": "Bring in cyber and technology risk views",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "crisc",
+      "importance": "optional",
+      "why": "Useful where the role also covers technology risk."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India employer job posts and regulator notices on 2026-11-17. Awaiting domain-expert sign-off (L7 leadership role).",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-17"
+}

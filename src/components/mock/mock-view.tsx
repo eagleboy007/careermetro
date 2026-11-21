@@ -111,14 +111,15 @@ export function MockView({
         {tab !== "interview" && (
           <form action="/mock" method="get" className="flex flex-wrap items-end gap-2">
             <input type="hidden" name="tab" value={tab} />
-            <label htmlFor={`${id}-role`} className="flex flex-col gap-1 text-[0.78rem] text-muted">
+            <label htmlFor={`${id}-role`} className="flex min-w-0 max-w-full flex-col gap-1 text-[0.78rem] text-muted">
               Role
+              {/* A long role title ("Director of Governance, Risk and Compliance (GRC)") must not widen the page at 390px. */}
               <select
                 id={`${id}-role`}
                 name="role"
                 defaultValue={view.role.slug}
                 key={view.role.slug}
-                className="min-h-11 rounded-md border border-line-strong bg-surface px-3 text-[0.88rem] text-ink"
+                className="min-h-11 max-w-full rounded-md border border-line-strong bg-surface px-3 text-[0.88rem] text-ink"
               >
                 {view.roles.map((r) => (
                   <option key={r.slug} value={r.slug}>
