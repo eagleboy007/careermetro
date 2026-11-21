@@ -27,9 +27,11 @@ export type ParseClient = Pick<Anthropic, "beta">;
  * It has no length caps: a long line or list is cut to the profile's caps after the check (clampProfile, T146), so it
  * never fails the whole resume.
  */
-export const parsedResume = uncappedProfile.extend({ personName: z.string().nullable() });
-// Reading tolerates a missing name (older mocks and fixtures) as "no name shown".
-const readSchema = uncappedProfile.extend({ personName: z.string().nullable().catch(null) });
+// The model always answers levelFacts (null when the resume shows no work), so the output format has no optional field.
+const modelFacts = uncappedProfile.shape.levelFacts.unwrap();
+export const parsedResume = uncappedProfile.extend({ personName: z.string().nullable(), levelFacts: modelFacts });
+// Reading tolerates a missing name (older mocks and fixtures) as "no name shown", and missing or broken level facts as none.
+const readSchema = uncappedProfile.extend({ personName: z.string().nullable().catch(null), levelFacts: modelFacts.catch(null) });
 
 export type ParseResult =
   | { ok: true; profile: Profile; personName: string | null; report: VerifyReport; calls: AiCallRecord[] }

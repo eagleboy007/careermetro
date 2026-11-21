@@ -27,7 +27,7 @@ Every quote goes through the existing exact-match check. A fact whose quote fail
 
 1. **Years.** `totalYearsExperience`, or plain code's count over role dates when the model gave none. Cut points (the same as Research's role tags): L1 under 1, L2 under 2.5, L3 under 4.5, L4 under 7.5, L5 under 11, L6 under 13.5, L7 under 16, L8 16 and more.
 2. **Change of field.** With `yearsInThisWork` set, the level is the higher of "cut of years in this work" and "cut of total years, minus one". A career changer drops one step at most.
-3. **Scope.** One step up, once, when any of these holds and the years reach one year below the next level's typical minimum: `peopleLed` 5 or more, `managesManagers`, a budget or P&L line, or `reportsTo` naming a CEO, MD, founder, board or a chief officer. Never above L8.
+3. **Scope.** One step up, once, when any of these holds and the years reach the next level's typical minimum: `peopleLed` 5 or more, `managesManagers`, a budget or P&L line, or `reportsTo` naming a CEO, MD, founder, board or a chief officer. Never above L8.
 4. **The title is never read.** The title picker and parsed titles change nothing (a test checks this).
 
 The result is `{ level, basis, facts }`, where basis lists which rules moved it. The level is worked out each time from the latest profile version, so a correction on the profile page moves it the same way.

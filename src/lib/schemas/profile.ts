@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { cutText } from "@/lib/cut-text";
 import {
+  LEVEL_FACT_TEXT_MAX,
   ME_EDUCATION_TEXT_MAX,
   ME_EDUCATION_YEAR_MAX,
   PROFILE_CERTIFICATION_NAME_MAX,
@@ -27,6 +28,19 @@ const yearMonth = z
 function profileShape(capped: boolean) {
   const text = (max: number) => (capped ? z.string().max(max) : z.string());
   const list = <T extends z.ZodType>(item: T, max: number) => (capped ? z.array(item).max(max) : z.array(item));
+  const quote = text(PROFILE_HIGHLIGHT_MAX).nullable();
+  const facts = z.object({
+    yearsInThisWork: z.number().nonnegative().nullable(),
+    thisWork: text(LEVEL_FACT_TEXT_MAX).nullable(),
+    peopleLed: z.number().int().nonnegative().nullable(),
+    peopleLedQuote: quote,
+    managesManagers: z.boolean(),
+    managesManagersQuote: quote,
+    budget: quote,
+    reportsTo: text(LEVEL_FACT_TEXT_MAX).nullable(),
+    reportsToQuote: quote,
+    scope: quote,
+  });
   const certification = z.object({
     name: text(PROFILE_CERTIFICATION_NAME_MAX).min(1),
     earned: yearMonth.nullable(),
@@ -62,6 +76,11 @@ function profileShape(capped: boolean) {
       PROFILE_EDUCATION_MAX,
     ),
     certifications: list(certification, PROFILE_CERTIFICATIONS_MAX),
+    /**
+     * C26: the facts behind the person's level (parse-resume v4 on). Facts only, each with the resume line behind it;
+     * plain code turns them into a level (src/lib/levels/level.ts). Missing on profiles parsed before v4.
+     */
+    levelFacts: facts.nullable().optional(),
   });
 }
 
@@ -74,6 +93,10 @@ export type Profile = z.infer<typeof profile>;
  * "none" when it never expires (the user ticked "Doesn't expire", or the resume says lifetime) and null when not stated.
  */
 export const heldCertification = profile.shape.certifications.element;
+
+/** The facts behind a level (C26), as stored: never a level, and every claim backed by a resume line. */
+export const levelFacts = profile.shape.levelFacts.unwrap().unwrap();
+export type LevelFacts = z.infer<typeof levelFacts>;
 export type HeldCertification = z.infer<typeof heldCertification>;
 
 /** The same profile without the length caps: only for reading the parser's output before clampProfile cuts it. */
@@ -124,6 +147,12 @@ export function clampProfile(data: Profile): Profile {
     })),
     certifications: first(data.certifications, PROFILE_CERTIFICATIONS_MAX).map((c) => ({ ...c, name: cut(c.name, PROFILE_CERTIFICATION_NAME_MAX) })),
   };
+  const f = data.levelFacts;
+  if (f) {
+    const q = (v: string | null) => (v === null ? null : cut(v, PROFILE_HIGHLIGHT_MAX));
+    const t = (v: string | null) => (v === null ? null : cut(v, LEVEL_FACT_TEXT_MAX));
+    out.levelFacts = { ...f, thisWork: t(f.thisWork), reportsTo: t(f.reportsTo), peopleLedQuote: q(f.peopleLedQuote), managesManagersQuote: q(f.managesManagersQuote), budget: q(f.budget), reportsToQuote: q(f.reportsToQuote), scope: q(f.scope) };
+  }
   return changed ? out : data;
 }
 

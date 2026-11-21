@@ -44,7 +44,8 @@ export type ConfirmResult = { ok: true; version: number } | { ok: false; reason:
 /**
  * FR-6: saves the user's corrected profile as a new confirmed version.
  * Evidence quotes and highlights are kept only if the parsed profile already had them: the user can remove
- * them but not add new ones, so every quote still comes from the resume (AI-5).
+ * them but not add new ones, so every quote still comes from the resume (AI-5). Level facts (C26) always come from
+ * the version before, whatever the page sends.
  */
 export async function confirmProfile(
   resumeId: string,
@@ -65,6 +66,9 @@ export async function confirmProfile(
     roles: profile.roles.map((r) => ({ ...r, highlights: r.highlights.filter((h) => known.has(h)) })),
     skills: profile.skills.map((s) => ({ ...s, evidence: s.evidence.filter((q) => known.has(q)) })),
   };
+  // C26 level facts aren't edited here: the saved version carries the parsed ones, never facts sent from the page.
+  delete data.levelFacts;
+  if (current.profile.levelFacts !== undefined) data.levelFacts = current.profile.levelFacts;
   const version = current.version + 1;
   try {
     await db.insert(profiles).values({ resumeId, version, data, confirmedByUser: true });

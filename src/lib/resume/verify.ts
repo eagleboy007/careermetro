@@ -165,5 +165,37 @@ export function verifyProfile(parsed: Profile, resumeText: string): { profile: P
     ];
   });
 
-  return { profile: { ...parsed, roles, skills, education, certifications }, report };
+  // C26 level facts: each claim stays only with a resume line that shows it; "this kind of work" is a label, and its
+  // years can't pass the total. A fact without its line is cleared, never guessed (AI-5).
+  const facts = parsed.levelFacts;
+  const backed = (quote: string | null) => {
+    if (quote === null) return null;
+    if (found(quote)) return quote;
+    report.droppedQuotes++;
+    return null;
+  };
+  const levelFacts = facts
+    ? (() => {
+        const peopleLedQuote = facts.peopleLed === null ? null : backed(facts.peopleLedQuote);
+        const managesManagersQuote = facts.managesManagers ? backed(facts.managesManagersQuote) : null;
+        const reportsToQuote = facts.reportsTo === null ? null : backed(facts.reportsToQuote);
+        const reportsTo = reportsToQuote && facts.reportsTo && containsPhrase(normalizeForMatch(reportsToQuote), normalizeForMatch(facts.reportsTo)) ? facts.reportsTo : null;
+        const total = parsed.totalYearsExperience;
+        const years = facts.yearsInThisWork === null ? null : total === null ? facts.yearsInThisWork : Math.min(facts.yearsInThisWork, total);
+        return {
+          yearsInThisWork: years,
+          thisWork: facts.thisWork,
+          peopleLed: peopleLedQuote ? facts.peopleLed : null,
+          peopleLedQuote,
+          managesManagers: managesManagersQuote !== null,
+          managesManagersQuote,
+          budget: backed(facts.budget),
+          reportsTo,
+          reportsToQuote: reportsTo ? reportsToQuote : null,
+          scope: backed(facts.scope),
+        };
+      })()
+    : facts;
+
+  return { profile: { ...parsed, roles, skills, education, certifications, ...(facts === undefined ? {} : { levelFacts }) }, report };
 }
