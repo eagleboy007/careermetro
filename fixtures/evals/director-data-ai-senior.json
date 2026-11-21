@@ -1,0 +1,50 @@
+{
+  "id": "director-data-ai-senior",
+  "roleSlug": "director-data-ai",
+  "persona": "senior",
+  "resumeText": "Meera Kulkarni | Pune | meera.kulkarni@example.com\n\nSUMMARY\nData science leader with 14 years in insurance and retail analytics.\n\nEXPERIENCE\nHead of Data Science, Saffron General Insurance, Pune (2020 - present)\n- Wrote the AI roadmap and ran AI use case prioritisation with business heads.\n- Reviewed supervised learning models for claims fraud and renewal.\n- Set up MLflow and model monitoring for 25 production models.\n- Led data lineage and data stewardship work with the data office.\n- Moved reporting to Snowflake as the main data platform.\n- Managed a team of 28 across data science and data engineering.\n- Use stakeholder communication with claims, underwriting and sales heads.\n- Hired engineers and data scientists for two new teams.\n\nLead Data Scientist, Indus Retail, Mumbai (2015 - 2020)\n- Built demand forecasting models.\n\nData Analyst, Konkan Infotech, Pune (2012 - 2015)\n\nEDUCATION\nMSc Statistics, Savitribai Phule Pune University, 2012",
+  "expected": {
+    "totalYearsExperience": 14,
+    "skills": [
+      {
+        "skillId": "ai-strategy-portfolio",
+        "quote": "Wrote the AI roadmap and ran"
+      },
+      {
+        "skillId": "machine-learning",
+        "quote": "Reviewed supervised learning models for claims"
+      },
+      {
+        "skillId": "mlops",
+        "quote": "Set up MLflow and model monitoring"
+      },
+      {
+        "skillId": "data-governance",
+        "quote": "Led data lineage and data stewardship"
+      },
+      {
+        "skillId": "cloud-data-warehouse",
+        "quote": "Moved reporting to Snowflake as"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 28"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication with claims"
+      },
+      {
+        "skillId": "engineering-hiring",
+        "quote": "Hired engineers and data scientists"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "llm-apps",
+      "responsible-ai-governance",
+      "cloud-ai-platforms"
+    ]
+  },
+  "reviewedBy": null
+}

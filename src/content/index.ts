@@ -126,6 +126,12 @@ import devsecopsEngineer from "./roles/devsecops-engineer.json";
 import dftEngineer from "./roles/dft-engineer.json";
 import digitalForensicsAnalyst from "./roles/digital-forensics-analyst.json";
 import digitalMarketingExecutive from "./roles/digital-marketing-executive.json";
+import directorCloudInfrastructure from "./roles/director-cloud-infrastructure.json";
+import directorDataAi from "./roles/director-data-ai.json";
+import directorGrc from "./roles/director-grc.json";
+import directorInformationSecurity from "./roles/director-information-security.json";
+import directorOfEngineering from "./roles/director-of-engineering.json";
+import directorOfProduct from "./roles/director-of-product.json";
 import dlpEngineer from "./roles/dlp-engineer.json";
 import dotnetDeveloper from "./roles/dotnet-developer.json";
 import duckCreekDeveloper from "./roles/duck-creek-developer.json";
@@ -163,6 +169,8 @@ import grcManager from "./roles/grc-manager.json";
 import guidewireDeveloper from "./roles/guidewire-developer.json";
 import hardwareDesignEngineer from "./roles/hardware-design-engineer.json";
 import headOfAi from "./roles/head-of-ai.json";
+import headOfIt from "./roles/head-of-it.json";
+import headOfRisk from "./roles/head-of-risk.json";
 import healthInsuranceClaimsExecutive from "./roles/health-insurance-claims-executive.json";
 import hilTestEngineer from "./roles/hil-test-engineer.json";
 import homeLoanSalesOfficer from "./roles/home-loan-sales-officer.json";
@@ -492,6 +500,12 @@ export const roleProfiles: RoleProfile[] = z
     dftEngineer,
     digitalForensicsAnalyst,
     digitalMarketingExecutive,
+    directorCloudInfrastructure,
+    directorDataAi,
+    directorGrc,
+    directorInformationSecurity,
+    directorOfEngineering,
+    directorOfProduct,
     dlpEngineer,
     dotnetDeveloper,
     duckCreekDeveloper,
@@ -529,6 +543,8 @@ export const roleProfiles: RoleProfile[] = z
     guidewireDeveloper,
     hardwareDesignEngineer,
     headOfAi,
+    headOfIt,
+    headOfRisk,
     healthInsuranceClaimsExecutive,
     hilTestEngineer,
     homeLoanSalesOfficer,

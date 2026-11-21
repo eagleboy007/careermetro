@@ -1,0 +1,53 @@
+{
+  "id": "head-of-risk-senior",
+  "roleSlug": "head-of-risk",
+  "persona": "senior",
+  "resumeText": "Rohan Mehta | Mumbai | rohan.mehta@example.com\n\nSUMMARY\nRisk leader with 15 years in retail lending at NBFCs and a bank.\n\nEXPERIENCE\nVP - Risk Management, Sahyadri Finance (NBFC, upper layer), Mumbai (2019 - present)\n- Run the risk appetite framework and limits approved by the board.\n- Lead credit portfolio monitoring with early warning signals and vintage analysis.\n- Own the application scorecard development cycle with the analytics team.\n- Set up RCSA and key risk indicators for branches and collections.\n- Keep the company compliant with scale based regulation and RBI master directions.\n- Sign off regulatory returns and RBI inspection responses.\n- Present risk packs to the board risk committee each quarter.\n- Managed a team of 18 across credit and operational risk.\n- Use stakeholder communication with business, collections and the CEO.\n\nSenior Manager - Credit Risk, Lakeview Bank, Mumbai (2013 - 2019)\n- Built portfolio MIS for personal loans.\n\nCredit Analyst, Konkan Capital, Pune (2011 - 2013)\n\nEDUCATION\nMBA Finance, Jamnalal Bajaj Institute, 2011\nBCom, University of Mumbai, 2009",
+  "expected": {
+    "totalYearsExperience": 15,
+    "skills": [
+      {
+        "skillId": "enterprise-risk-management",
+        "quote": "Run the risk appetite framework and limits"
+      },
+      {
+        "skillId": "credit-portfolio-monitoring",
+        "quote": "Lead credit portfolio monitoring with early"
+      },
+      {
+        "skillId": "credit-risk-modelling",
+        "quote": "Own the application scorecard development cycle"
+      },
+      {
+        "skillId": "operational-risk-management",
+        "quote": "Set up RCSA and key risk indicators"
+      },
+      {
+        "skillId": "rbi-regulatory-framework",
+        "quote": "compliant with scale based regulation"
+      },
+      {
+        "skillId": "regulatory-returns-reporting",
+        "quote": "Sign off regulatory returns and RBI"
+      },
+      {
+        "skillId": "board-executive-reporting",
+        "quote": "Present risk packs to the board risk committee"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 18"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication with business"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "market-risk-pnl",
+      "fraud-detection-rules"
+    ]
+  },
+  "reviewedBy": null
+}

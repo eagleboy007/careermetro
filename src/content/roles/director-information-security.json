@@ -1,0 +1,132 @@
+{
+  "slug": "director-information-security",
+  "title": "Director of Information Security",
+  "summary": "A director of information security runs the security programme day to day, usually reporting to the CISO or CTO. They lead several security managers, keep the company in line with ISO 27001 and RBI, SEBI or CERT-In rules, handle audits and serious incidents, and turn the CISO's strategy into a roadmap that teams deliver.",
+  "dailyDuties": [
+    "Run the security roadmap and track delivery across teams",
+    "Review the cyber risk register and agree fixes with owners",
+    "Lead response to serious incidents and regulator reporting",
+    "Prepare for ISO 27001, RBI or SEBI audits and close findings",
+    "Lead and hire security managers across SOC, engineering and GRC",
+    "Report security metrics to the CISO and risk committee"
+  ],
+  "typicalTitles": [
+    "Director - Information Security",
+    "Director of Cyber Security",
+    "Information Security Director",
+    "Associate Director - Information Security",
+    "Senior Director - Information Security",
+    "Director - Data Privacy and Information Security",
+    "Head - Cyber Security Programme"
+  ],
+  "experienceBand": {
+    "minYears": 12,
+    "maxYears": 18
+  },
+  "skills": [
+    {
+      "skillId": "security-program-leadership",
+      "importance": "required",
+      "expectation": "Run the information security programme and roadmap for the CISO",
+      "postingShare": null
+    },
+    {
+      "skillId": "risk-assessment",
+      "importance": "required",
+      "expectation": "Keep the cyber risk register and drive risk treatment",
+      "postingShare": null
+    },
+    {
+      "skillId": "india-cyber-regulations",
+      "importance": "required",
+      "expectation": "Meet RBI, SEBI, IRDAI and CERT-In cyber directions and inspections",
+      "postingShare": null
+    },
+    {
+      "skillId": "compliance-frameworks",
+      "importance": "required",
+      "expectation": "Run the ISMS against ISO 27001 and NIST CSF",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-architecture",
+      "importance": "required",
+      "expectation": "Set security standards for cloud, identity and networks",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-incident-response",
+      "importance": "required",
+      "expectation": "Lead response to serious incidents and regulator reporting",
+      "postingShare": null
+    },
+    {
+      "skillId": "security-audits",
+      "importance": "required",
+      "expectation": "Handle internal, external and regulator audits and close findings",
+      "postingShare": null
+    },
+    {
+      "skillId": "people-management",
+      "importance": "required",
+      "expectation": "Lead security managers across SOC, engineering and GRC",
+      "postingShare": null
+    },
+    {
+      "skillId": "stakeholder-management",
+      "importance": "required",
+      "expectation": "Work with IT, business heads and the CISO",
+      "postingShare": null
+    },
+    {
+      "skillId": "board-executive-reporting",
+      "importance": "nice_to_have",
+      "expectation": "Prepare cyber risk updates for the risk committee",
+      "postingShare": null
+    },
+    {
+      "skillId": "third-party-risk",
+      "importance": "nice_to_have",
+      "expectation": "Oversee vendor and cloud security reviews",
+      "postingShare": null
+    },
+    {
+      "skillId": "data-privacy",
+      "importance": "nice_to_have",
+      "expectation": "Work with the DPO on the DPDP Act",
+      "postingShare": null
+    },
+    {
+      "skillId": "spend-forecasting",
+      "importance": "nice_to_have",
+      "expectation": "Plan and track the security budget",
+      "postingShare": null
+    }
+  ],
+  "groups": [],
+  "certifications": [
+    {
+      "certId": "cissp",
+      "importance": "recommended",
+      "why": "Indian employer posts for security directors ask for CISSP."
+    },
+    {
+      "certId": "cism",
+      "importance": "recommended",
+      "why": "Common for security managers moving into leadership."
+    },
+    {
+      "certId": "cisa",
+      "importance": "optional",
+      "why": "Some posts list CISA as well."
+    }
+  ],
+  "sources": [
+    {
+      "description": "Drafted by CareerMetro from public India employer job posts and regulator notices on 2026-11-17. Awaiting domain-expert sign-off (L7 leadership role).",
+      "url": null
+    }
+  ],
+  "reviewedBy": null,
+  "updatedOn": "2026-11-17"
+}

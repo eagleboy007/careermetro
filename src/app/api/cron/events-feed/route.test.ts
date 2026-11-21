@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from "vitest";
 import type { EventFeed } from "@/lib/schemas";
 
 // Synthetic feed answers only: every organiser, link and event here is made up.
@@ -102,6 +102,12 @@ describe("the daily event feed", () => {
   });
 
   it("reads each feed that is on, writes its rows and logs counts only", async () => {
+    // The fixture's events are dated November 2026: read them on the day the test was written, as the feed test does, so they stay upcoming.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-10-31T00:30:00Z"));
+    onTestFinished(() => {
+      vi.useRealTimers();
+    });
     m.feeds = [feed, { ...feed, id: "off-feed", on: false, termsReadOn: null }];
     const fetch = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(ics));
     m.write.mockResolvedValueOnce({ upserted: 4, cancelled: 1, topics: 9 });

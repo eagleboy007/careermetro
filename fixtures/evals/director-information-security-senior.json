@@ -1,0 +1,54 @@
+{
+  "id": "director-information-security-senior",
+  "roleSlug": "director-information-security",
+  "persona": "senior",
+  "resumeText": "Kavita Rao | Mumbai | kavita.rao@example.com\n\nSUMMARY\nSecurity leader with 16 years in banking and payments security.\n\nEXPERIENCE\nAssociate Director - Information Security, Western Coast Payments, Mumbai (2020 - present)\n- Run the information security programme and the three-year security roadmap for the CISO.\n- Maintain the risk register and agree treatment plans with system owners.\n- Led readiness for RBI IT governance directions and CERT-In directions reporting.\n- Keep ISO 27001 certification and map controls to NIST CSF.\n- Approve enterprise security architecture standards for cloud and identity.\n- Led incident response for a card data exposure and filed regulator reports.\n- Manage IT audit findings from internal audit and RBI inspection teams.\n- Managed a team of 22 through four security managers.\n- Use stakeholder communication with the CTO, payments heads and the CISO.\n\nSecurity Manager, Harbour Bank, Mumbai (2014 - 2020)\n- Ran the SOC and vulnerability management.\n\nSecurity Engineer, Deccan Infosystems, Pune (2010 - 2014)\n\nCERTIFICATIONS\nCISSP, CISM\n\nEDUCATION\nBE Computer Engineering, University of Mumbai, 2010",
+  "expected": {
+    "totalYearsExperience": 16,
+    "skills": [
+      {
+        "skillId": "security-program-leadership",
+        "quote": "Run the information security programme"
+      },
+      {
+        "skillId": "risk-assessment",
+        "quote": "Maintain the risk register and agree"
+      },
+      {
+        "skillId": "india-cyber-regulations",
+        "quote": "RBI IT governance directions and CERT-In directions"
+      },
+      {
+        "skillId": "compliance-frameworks",
+        "quote": "Keep ISO 27001 certification and map"
+      },
+      {
+        "skillId": "security-architecture",
+        "quote": "Approve enterprise security architecture standards"
+      },
+      {
+        "skillId": "security-incident-response",
+        "quote": "Led incident response for a card"
+      },
+      {
+        "skillId": "security-audits",
+        "quote": "Manage IT audit findings from internal"
+      },
+      {
+        "skillId": "people-management",
+        "quote": "Managed a team of 22"
+      },
+      {
+        "skillId": "stakeholder-management",
+        "quote": "Use stakeholder communication with the CTO"
+      }
+    ],
+    "gaps": [],
+    "mustNotClaim": [
+      "third-party-risk",
+      "spend-forecasting",
+      "data-privacy"
+    ]
+  },
+  "reviewedBy": null
+}

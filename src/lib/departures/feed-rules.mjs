@@ -71,15 +71,29 @@ const NOT_IN_SCOPE = /\b(counsel|attorney|legal|paralegal|sales|account executiv
 const SENIOR = /\b(director|head of|vice president|vp|principal|(?<!technical )staff|chief|intern|internship)\b/i;
 // The principal, staff and head-of titles that a senior role is built for, so they read as it rather than being dropped.
 const SENIOR_TITLES = /\b(principal|staff) (data architect|database engineer|back[- ]?end (engineer|developer)|front[- ]?end (engineer|developer)|data scientist|technical program(me)? manager)\b|\bhead of (engineering|grc|security operations|soc)\b|\bdirector of engineering\b|\bengineering director\b/i;
-/** Leadership titles SENIOR would drop that read only as the TR1 leadership roles (never as a lower role's rule). */
-const LEADER_TITLES = /\b(chief (information( and)? security|security|cyber ?security|risk|technology|ai|artificial intelligence) (officer|manager)|ciso|cto)\b|\bhead(,| of| -| –)? ?(ai|ai\/ml|ml\/ai|artificial intelligence|gen ?ai|generative ai|machine learning|information security|cyber ?security|(enterprise )?risk|technology)\b|\bdirector(,| of| -| –)? ?(ai|artificial intelligence|gen ?ai|generative ai)\b|\b(ai|gen ?ai) engineering director\b|\b((s|e)?vp|(senior |executive )?vice president),? ?(of )?[-–]? ?(engineering|information security|cyber ?security)\b/i;
-const LEADERS = new Set(["ciso", "head-of-ai", "chief-risk-officer", "cto"]);
+/**
+ * The leadership roles a title SENIOR would drop may read as (batch TR1, then the Director and VP batch L7 on
+ * 2026-11-18). Such a title is tried against these rules only, never a lower role's.
+ */
+const LEADERS = new Set(["director-information-security", "head-of-risk", "director-grc", "director-of-engineering", "director-data-ai", "director-cloud-infrastructure", "head-of-it", "director-of-product", "ciso", "head-of-ai", "chief-risk-officer", "cto"]);
+/** The start of a Director, Head or VP title, up to the function it names ("Senior Director - ", "VP of ", "Head, "). */
+const LEAD = String.raw`(((senior|sr\.?|associate|assistant|deputy|group) )?(director|head)|(s|e|a)?vp|((senior|executive|assistant) )?vice president)(,| of| -| –)? ?(the )?`;
 /** Hotel roles a post's own text can rule out: a hospital's, clinic's or airport's housekeeping or guest relations post (T183). */
 const HOTEL_ROLES = new Set(["housekeeping-supervisor", "front-office-executive-hotel"]);
 const NOT_A_HOTEL = /\b(hospitals?|clinics?|patients?|nursing|wards?|airport (terminals?|operations)|airlines?)\b/i;
 // Order matters: the first matching role wins, so a narrower role comes before the broader one that would also match
 // ("Cloud security engineer" before security, "SRE" and "Cloud engineer" before DevOps, "React Native" before front end).
 export const ROLE_TITLES = {
+  // Batch L7 (2026-11-18): Director and VP roles, first so the CISO, CRO, CTO, GRC and engineering manager rules can't
+  // take their titles. Each rule names the function; a bare "Director" or "VP" title stays out.
+  "director-information-security": new RegExp(String.raw`^(?!.*\b(operations|soc|architect\w*|compliance|audit|sales|pre-?sales|engineering|engineer)\b)(${LEAD}((data privacy (and|&) )?(information|cyber) ?security( (programme|program|governance))?)|(information|cyber) ?security director)\b`, "i"),
+  "head-of-risk": new RegExp(String.raw`^(?!.*\b(analytics|operations|modell?ing|technology|engineering|data|product|cyber|it|ict|information|clinical|marketing|compliance)\b)${LEAD}((enterprise|credit|portfolio|operational|market) )?(and|&)? ?risk( management)?\b|^${LEAD}credit (and|&) risk\b`, "i"),
+  "director-grc": new RegExp(String.raw`^(?!.*\b(sales|pre-?sales)\b)${LEAD}((it|technology|information security|cyber) )?(grc|governance,? risk,? (and|&) compliance|(technology|it) risk (and|&) compliance)\b`, "i"),
+  "director-of-engineering": new RegExp(String.raw`^(?!.*\b(sales|pre-?sales|hardware|mechanical|electrical|civil|plant|manufacturing|construction|quality|qa|test|data|platform|infrastructure|cloud|devops|sre|security|products?|ai|ml)\b)(${LEAD}(software )?engineering|(software )?engineering director)\b`, "i"),
+  "director-data-ai": new RegExp(String.raw`^(?!.*\b(sales|marketing|privacy|protection|cent(re|er)s?|entry)\b)(${LEAD}(ai\/ml (and|&) data science|data (and|&) (analytics|ai)|data science|data|analytics)|data science director)\b`, "i"),
+  "director-cloud-infrastructure": new RegExp(String.raw`^(?!.*\b(sales|pre-?sales|security|facilit(y|ies)|civil|construction|plant|telecom|network operations)\b)${LEAD}(cloud( (infrastructure|operations|platform|engineering))?|infrastructure( engineering)?|platform (and|&) infrastructure|sre|site reliability( engineering)?|devops)\b`, "i"),
+  "head-of-it": new RegExp(String.raw`^(?!.*\b(sales|pre-?sales|recruit\w*|audit|security|risk|compliance)\b)((${LEAD}|general manager(,| -| –)? ?|gm(,| -| –)? ?)(it|information technology)(( (and|&))? infrastructure)?|${LEAD}enterprise applications (and|&) it infrastructure|it head)\b`, "i"),
+  "director-of-product": new RegExp(String.raw`^(?!.*\b(sales|marketing|design|support|engineering|engineer)\b)(${LEAD}(product( management)?|products)|product director)\b`, "i"),
   // Batch TR1 (2026-11-05): four leadership roles, let past SENIOR by SENIOR_TITLES, then four risk roles. First, so the
   // broader security, GRC and engineering manager rules can't take their titles. Generic director, head and VP titles
   // stay out: each rule names the function.
@@ -716,7 +730,7 @@ export const ROLE_TITLES = {
   // video editor (above), and a plain "Animator" is not one.
   "motion-graphics-designer": /^(?!.*\b(software|developer|engineer|programmer|sales)\b)(.*\bmotion (graphics? )?(designer|artist|animator)\b|.*\bmotion graphics (executive|specialist|associate|lead)\b|.*\blottie (animator|designer)\b|.*\b(ui|ux|product) animator\b)/i,
 };
-const MANAGER_OK = new Set(["product-manager", "cyber-risk-manager", "operational-risk-manager", "chief-risk-officer", "software-asset-manager", "clinical-data-manager", "marketing-automation-specialist", "regulatory-compliance-officer", "hospital-operations-executive", "food-beverage-executive", "hotel-revenue-manager", "qa-lead", "qa-manager", "ml-engineering-manager", "data-engineering-manager", "platform-engineering-manager", "delivery-manager", "it-program-manager", "it-service-delivery-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
+const MANAGER_OK = new Set(["head-of-it", "product-manager", "cyber-risk-manager", "operational-risk-manager", "chief-risk-officer", "software-asset-manager", "clinical-data-manager", "marketing-automation-specialist", "regulatory-compliance-officer", "hospital-operations-executive", "food-beverage-executive", "hotel-revenue-manager", "qa-lead", "qa-manager", "ml-engineering-manager", "data-engineering-manager", "platform-engineering-manager", "delivery-manager", "it-program-manager", "it-service-delivery-manager", "digital-marketing-executive", "grc-manager", "soc-lead", "engineering-manager", "scrum-master", "senior-data-scientist", "technical-program-manager", "it-project-manager", "technical-account-manager", "implementation-consultant", "ai-product-manager", "customer-success-manager", "product-marketing-manager", "key-account-manager", "area-sales-manager", "social-media-manager", "relationship-manager-banking", "collections-officer", "seo-specialist", "channel-sales-manager", "brand-manager", "retail-store-manager", "real-estate-sales-executive", "category-manager-ecommerce", "cost-accountant", "bank-probationary-officer"]);
 /** The business rules that may read a sales, recruiting or legal title, which NOT_IN_SCOPE drops for every other rule. */
 const SALES_OK = new Set(["corporate-legal-associate", "contract-management-specialist", "litigation-paralegal", "key-account-manager", "area-sales-manager", "inside-sales-executive", "talent-acquisition-specialist", "business-development-executive", "medical-representative", "channel-sales-manager", "real-estate-sales-executive", "home-loan-sales-officer", "fmcg-sales-officer", "management-trainee", "field-sales-team-leader"]);
 /** A location in India (moved from mine.mjs). Remote posts count only when they say India too. */
@@ -752,7 +766,6 @@ export function classify(/** @type {string} */ title, /** @type {string} */ text
     .replace(/\bsales (and|&) distribution\b/i, (m) => (/\bsap\b/i.test(title) ? "" : m))
     .replace(/\b(successfactors|sap sf) (recruiting|recruitment)\b/i, "$1");
   const leaderOnly = SENIOR.test(title) && !SENIOR_TITLES.test(title);
-  if (leaderOnly && !LEADER_TITLES.test(title)) return null;
   // A sales, recruiting or legal title reads only as a business rule built for it ("Sales Engineer" stays null).
   const outOfScope = NOT_IN_SCOPE.test(unsold);
   for (const [slug, re] of Object.entries(ROLE_TITLES)) {
