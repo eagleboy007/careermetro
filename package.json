@@ -20,21 +20,21 @@
     "brand": "node scripts/brand-assets.mjs"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.135.0",
+    "@anthropic-ai/sdk": "^0.137.0",
     "@pdf-lib/fontkit": "^1.1.1",
     "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.118.0",
-    "docx": "^9.12.0",
+    "@supabase/supabase-js": "^2.119.2",
+    "docx": "^9.16.0",
     "drizzle-orm": "^0.45.4",
-    "lucide-react": "^1.59.0",
+    "lucide-react": "^1.76.0",
     "mammoth": "^1.13.0",
-    "next": "16.4.2",
+    "next": "16.4.6",
     "pdf-lib": "^1.17.1",
     "postgres": "^3.4.9",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "server-only": "^0.0.1",
-    "unpdf": "^1.9.0",
+    "unpdf": "^1.9.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -42,13 +42,13 @@
     "@types/node": "^22.20.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "axe-core": "4.14.0",
+    "axe-core": "4.14.1",
     "drizzle-kit": "^0.31.11",
     "eslint": "^9",
-    "eslint-config-next": "16.4.2",
+    "eslint-config-next": "16.4.6",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^5.0.5"
+    "vitest": "^5.1.1"
   },
   "engines": {
     "node": ">=22"
